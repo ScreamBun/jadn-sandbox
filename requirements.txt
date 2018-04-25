@@ -1,4 +1,6 @@
 alembic
 flask
+flask_restful
 flask_sqlalchemy
+multiprocessing_logging
 sqlalchemy

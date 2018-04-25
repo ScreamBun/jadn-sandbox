@@ -42,4 +42,16 @@ class Validator(object):
             print(e)
             return False, "Message Invalid"
 
+        # Validate Message here??
+        for type in schema['types']:
+            # print(type)
+            psudoTypeKeys = [k[1] for k in type[len(type)-1]]
+            msgKeys = list(message.keys())
+
+            print(psudoTypeKeys)
+            print(msgKeys)
+
+            if psudoTypeKeys == msgKeys:
+                print(type[0])
+
         return v, random.choice(self.validMsgs) if v else random.choice(self.invalidMsgs)

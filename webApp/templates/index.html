@@ -24,6 +24,10 @@
                     <div class="form-group col-md-12">
                         <textarea class="form-control border" placeholder="Paste JADN schema here" id="schema-text" name="schema-text" rows="10"></textarea>
                     </div>
+
+                    <div class="float-right">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="format('schema')">Format Schema</button>
+                    </div>
                 </fieldset>
 
                 <fieldset>
@@ -45,6 +49,10 @@
                     <div class="form-group col-md-12">
                         <textarea class="form-control border" placeholder="Paste message to be validated here" id="message-text" name="message-text" rows="5"></textarea>
                     </div>
+
+                    <div class="float-right">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="format('message')">Format Message</button>
+                    </div>
                 </fieldset>
 
                 <div class="form-group">
@@ -61,23 +69,29 @@
     $("select").change(function(e) {
         id = $(e.target).attr("id")
         selected = $(e.target).val()
+
+        console.log(id, selected)
+
         if (selected == "" || selected == null) {
             return
         } else if (selected == "empty") {
+            $("#"+id+"-text").val("")
             $("#"+id+"-text").text("")
             return
         }
 
-
-        // console.log(id, selected)
         $.get(
             "/load/"+id+"/"+selected,
             function(data) {
                 try {
                     $.parseJSON(data)
-                    $("#"+id+"-text").text(JSON.stringify($.parseJSON(data), null, 4))
+                    j = JSON.stringify($.parseJSON(data), null, 4)
+                    $("#"+id+"-text").val(j)
+                    $("#"+id+"-text").text(j)
                 } catch(e) {
-                    $("#"+id+"-text").text(JSON.stringify(data, null, 2))
+                    j = JSON.stringify(data, null, 4)
+                    $("#"+id+"-text").val(j)
+                    $("#"+id+"-text").text(j)
                 }
             }
         ).fail(function() {
@@ -88,6 +102,7 @@
 
     $("button[type='reset']").click(function(e) {
         $("textarea").each(function(i, e) {
+            $(e).val("")
             $(e).text("")
         });
     });
@@ -110,6 +125,19 @@
         }
 
         return true
+    }
+
+    function format(id) {
+        try {
+            data = $("#"+id+"-text").val()
+            j = JSON.stringify($.parseJSON(data), null, 4)
+                    $("#"+id+"-text").val(j)
+                    $("#"+id+"-text").text(j)
+        } catch(e) {
+            msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid: " + e.message
+            closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
+            $("#alert-container").append($("<div/>").addClass("alert alert-warning alert-dismissible fade show").attr("role", "alert").text(msg).append(closeBtn))
+        }
     }
 
 </script>
