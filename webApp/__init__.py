@@ -1,13 +1,16 @@
 import logging
+import multiprocessing_logging
 import os
 import sys
-from optparse import OptionParser
-import multiprocessing_logging
+
 from alembic.config import Config as Alembic_Config
 from alembic import command as alembic_cmd
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from optparse import OptionParser
+
 from .config import Config
+from .validator import Validator
 
 _LEVELS = {
     "CRITICAL": logging.CRITICAL,
@@ -106,6 +109,8 @@ if option.revision and option.message is not None:
     init_database(option.message)
 else:
     init_database()
+
+app.validator = Validator()
 
 from .views import *
 register_all(app, database)

@@ -19,8 +19,13 @@ class LoadFile(Resource):
         :param content: path that was navigated to
         :return: file or 404
         """
+        filePath = os.path.join(current_app.config.get("APP_DIR"), 'openc2_files', filename)
+        if os.path.isfile(filePath):
+            rtn = send_file(filePath)
+        else:
+            rtn = '', 404
 
-        return send_file(os.path.join(current_app.config.get("APP_DIR"), 'openc2_files', filename))
+        return rtn
 
 
 # Register resources

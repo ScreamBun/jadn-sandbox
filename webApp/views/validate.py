@@ -30,9 +30,14 @@ class Verify(Resource):
 
     def post(self):
         args = parser.parse_args()
+
+        val = current_app.validator.validateMessage(args['schema-text'], args['message-text'])
+
         page_data = {
             "schema": args['schema-text'],
-            "message": args['message-text']
+            "message": args['message-text'],
+            "valid_bool": val[0],
+            "valid_msg": val[1]
         }
 
         return Response(render_template("validate.html", page_title="Message Validation", page_data=page_data))

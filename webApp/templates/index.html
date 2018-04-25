@@ -11,7 +11,7 @@
                     <legend>JADN Schema</legend>
                     <div class="form-group col-md-4">
                         <select class="form-control" id="schema" name="schema">
-                            <option value="" selected="">Schema</option>
+                            <option value="empty" selected="">Schema</option>
                             <option value="proto1.jadn">Proto-1</option>
                             <option value="proto2.jadn">Proto-2</option>
                             <option value="openc2.jadn">OpenC2</option>
@@ -30,7 +30,7 @@
                     <legend>Message</legend>
                     <div class="form-group col-md-4">
                         <select class="form-control" id="message" name-="message">
-                            <option value="" selected="">Message</option>
+                            <option value="empty" selected="">Message</option>
                             <option value="proto1.json">Proto-1</option>
                             <option value="proto2.json">Proto-2</option>
                             <option value="query_actions.json">Query actions</option>
@@ -61,9 +61,17 @@
     $("select").change(function(e) {
         id = $(e.target).attr("id")
         selected = $(e.target).val()
+        if (selected == "" || selected == null) {
+            return
+        } else if (selected == "empty") {
+            $("#"+id+"-text").text("")
+            return
+        }
+
+
         // console.log(id, selected)
         $.get(
-            "/load/"+selected,
+            "/load/"+id+"/"+selected,
             function(data) {
                 try {
                     $.parseJSON(data)
@@ -72,7 +80,10 @@
                     $("#"+id+"-text").text(JSON.stringify(data, null, 2))
                 }
             }
-        )
+        ).fail(function() {
+            closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
+            $("#alert-container").append($("<div/>").addClass("alert alert-warning").attr("role", "alert").text("Cannot load data").append(closeBtn))
+        })
     });
 
     $("button[type='reset']").click(function(e) {
@@ -82,11 +93,10 @@
     });
 
     function validateForm() {
-        closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
-
         try {
             $.parseJSON($("#schema-text").text())
         } catch(e) {
+            closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
             $("#alert-container").append($("<div/>").addClass("alert alert-warning").attr("role", "alert").text("Schema Invalid").append(closeBtn))
             return false
         }
@@ -94,6 +104,7 @@
         try {
             $.parseJSON($("#message-text").text())
         } catch(e) {
+            closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
             $("#alert-container").append($("<div/>").addClass("alert alert-warning alert-dismissible fade show").attr("role", "alert").text("Message Invalid").append(closeBtn))
             return false
         }

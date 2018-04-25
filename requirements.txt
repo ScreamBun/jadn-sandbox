@@ -1,2 +1,4 @@
-flask
 alembic
+flask
+flask_sqlalchemy
+sqlalchemy
