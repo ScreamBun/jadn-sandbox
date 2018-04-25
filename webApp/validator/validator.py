@@ -1,6 +1,9 @@
 import json
 import random
 
+from webApp.jadn.codec.codec import Codec
+from webApp.jadn.codec.jadn import jadn_loads
+
 
 class Validator(object):
     """
@@ -26,32 +29,80 @@ class Validator(object):
         :param m: (JSON String) message to validate against the schema
         :return: (tuple) valid/invalid bool, message
         """
-        v = False
-        schema = None
-        message = None
 
         try:
-            schema = json.loads(s)
+            schema = jadn_loads(s)
         except Exception as e:
-            print(e)
-            return False, "Schema Invalid"
+            return False, f"Schema Invalid - {e}"
 
         try:
             message = json.loads(m)
         except Exception as e:
-            print(e)
-            return False, "Message Invalid"
+            return False, f"Message Invalid - {e}"
 
+        tc = Codec(schema, True, True)
+        msgRecord = ""
+        err = random.choice(self.invalidMsgs)
+
+        for d in [d[0] for d in schema['types'] if d[1] == "Record"]:
+            msgRecord = d
+            print(msgRecord)
+            match1 = True
+            match2 = True
+
+            try:
+                print(tc.decode(d, message))
+
+            except ValueError as e:
+                err = e
+                if str(e).startswith(d):
+                    match1 = False
+                    print("Umm...")
+                # print(e)
+
+            except TypeError as e:
+                err = e
+                if str(e).startswith(d):
+                    match = False
+                    print("Umm...")
+                # print(e)
+
+            if match1 and match2:
+                break
+
+        '''
         # Validate Message here??
         for type in schema['types']:
-            # print(type)
-            psudoTypeKeys = [k[1] for k in type[len(type)-1]]
+            if type[1] != "Record":
+                continue
+            
             msgKeys = list(message.keys())
+            msgFormat = {}
 
-            print(psudoTypeKeys)
-            print(msgKeys)
+            for k in type[len(type)-1]:
+                req = True
+                if len(k) >= 4:
+                    if len(k[3]) >= 1:
+                        req = False if k[3][0] == '?' else True
 
-            if psudoTypeKeys == msgKeys:
+                msgFormat[k[1]] = (k[2], req)
+
+            if self.checkKeys(type[len(type)-1], message):
+                print("Valid Keys")
+
+                return True, random.choice(self.validMsgs)
+                     
+            if len(msgKeys) < len(formatKeys):
+                return False, random.choice(self.invalidMsgs)
+
+            for k in msgKeys:
+                if k not in formatKeys:
+                    continue
+
+            if msgKeys == [kf[0] for kf in msgFormat]:
                 print(type[0])
+                # print(msgFormat)
 
-        return v, random.choice(self.validMsgs) if v else random.choice(self.invalidMsgs)
+                return True, random.choice(self.validMsgs)
+            '''
+        return False, f"Looks Like {msgRecord} but has error:\n{err}"

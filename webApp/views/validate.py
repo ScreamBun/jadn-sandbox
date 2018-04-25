@@ -43,5 +43,17 @@ class Verify(Resource):
         return Response(render_template("validate.html", page_title="Message Validation", page_data=page_data))
 
 
+class Format(Resource):
+    """
+    Endpoint for /validate/format
+    """
+    def get(self):
+        return Response("")
+
+    def post(self):
+        return Response("")
+
+
 # Register resources
 api.add_resource(Verify, '/')
+api.add_resource(Format, '/format')

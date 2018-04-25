@@ -20,6 +20,7 @@ class LoadFile(Resource):
         :return: file or 404
         """
         filePath = os.path.join(current_app.config.get("APP_DIR"), 'openc2_files', filename)
+
         if os.path.isfile(filePath):
             rtn = send_file(filePath)
         else:

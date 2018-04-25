@@ -109,7 +109,7 @@
 
     function validateForm() {
         try {
-            $.parseJSON($("#schema-text").text())
+            $.parseJSON($("#schema-text").val())
         } catch(e) {
             closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
             $("#alert-container").append($("<div/>").addClass("alert alert-warning").attr("role", "alert").text("Schema Invalid").append(closeBtn))
@@ -117,7 +117,7 @@
         }
 
         try {
-            $.parseJSON($("#message-text").text())
+            $.parseJSON($("#message-text").val())
         } catch(e) {
             closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
             $("#alert-container").append($("<div/>").addClass("alert alert-warning alert-dismissible fade show").attr("role", "alert").text("Message Invalid").append(closeBtn))
