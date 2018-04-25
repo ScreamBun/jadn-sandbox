@@ -1,0 +1,105 @@
+{% extends "static/base.html" %}
+{% block body %}
+    {% include "static/nav.html" %}
+
+    <div id="alert-container" class="container-fluid mt-3"></div>
+
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <form class="mx-auto col-12" action="/validate" method="post" onsubmit="return validateForm()">
+                <fieldset>
+                    <legend>JADN Schema</legend>
+                    <div class="form-group col-md-4">
+                        <select class="form-control" id="schema" name="schema">
+                            <option value="" selected="">Schema</option>
+                            <option value="proto1.jadn">Proto-1</option>
+                            <option value="proto2.jadn">Proto-2</option>
+                            <option value="openc2.jadn">OpenC2</option>
+                            <option disabled="">──────────</option>
+                            <option value="">File...</option>
+                            <option value="">URL...</option>
+                        </select>
+                   </div>
+
+                    <div class="form-group col-md-12">
+                        <textarea class="form-control border" placeholder="Paste JADN schema here" id="schema-text" name="schema-text" rows="10"></textarea>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Message</legend>
+                    <div class="form-group col-md-4">
+                        <select class="form-control" id="message" name-="message">
+                            <option value="" selected="">Message</option>
+                            <option value="proto1.json">Proto-1</option>
+                            <option value="proto2.json">Proto-2</option>
+                            <option value="query_actions.json">Query actions</option>
+                            <option value="query_actions_response.json">Query response</option>
+                            <option value="deny_ip.json">Deny ip</option>
+                            <option disabled="">──────────</option>
+                            <option value="">File...</option>
+                            <option value="">URL...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <textarea class="form-control border" placeholder="Paste message to be validated here" id="message-text" name="message-text" rows="5"></textarea>
+                    </div>
+                </fieldset>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-outline-primary">Validate</button>
+                    <button type="reset" class="btn btn-outline-danger">Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_script %}
+<script type="text/javascript">
+    $("select").change(function(e) {
+        id = $(e.target).attr("id")
+        selected = $(e.target).val()
+        // console.log(id, selected)
+        $.get(
+            "/load/"+selected,
+            function(data) {
+                try {
+                    $.parseJSON(data)
+                    $("#"+id+"-text").text(JSON.stringify($.parseJSON(data), null, 4))
+                } catch(e) {
+                    $("#"+id+"-text").text(JSON.stringify(data, null, 2))
+                }
+            }
+        )
+    });
+
+    $("button[type='reset']").click(function(e) {
+        $("textarea").each(function(i, e) {
+            $(e).text("")
+        });
+    });
+
+    function validateForm() {
+        closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
+
+        try {
+            $.parseJSON($("#schema-text").text())
+        } catch(e) {
+            $("#alert-container").append($("<div/>").addClass("alert alert-warning").attr("role", "alert").text("Schema Invalid").append(closeBtn))
+            return false
+        }
+
+        try {
+            $.parseJSON($("#message-text").text())
+        } catch(e) {
+            $("#alert-container").append($("<div/>").addClass("alert alert-warning alert-dismissible fade show").attr("role", "alert").text("Message Invalid").append(closeBtn))
+            return false
+        }
+
+        return true
+    }
+
+</script>
+{% endblock %}

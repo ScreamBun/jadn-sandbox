@@ -1,0 +1,17 @@
+/*
+Custom CSS Styles
+*/
+
+.container-fluid .row > *{
+    max-width: 1200px;
+}
+
+pre, textarea {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1em;
+}
+
+div.scroll {
+    max-height: 20em;
+    overflow: scroll;
+}
