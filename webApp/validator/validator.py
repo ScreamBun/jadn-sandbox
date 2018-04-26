@@ -22,7 +22,7 @@ class Validator(object):
 
         pass
 
-    def validateMessage(self, s, m):
+    def validateMessage(self, s, m, d):
         """
         Validate messages against the given schema
         :param s: (JSON String) schema to validate against
@@ -41,68 +41,20 @@ class Validator(object):
             return False, f"Message Invalid - {e}"
 
         tc = Codec(schema, True, True)
-        msgRecord = ""
+        err = ""
+        records = [t[0] for t in schema['types'] if t[1] == "Record"]
         err = random.choice(self.invalidMsgs)
 
-        for d in [d[0] for d in schema['types'] if d[1] == "Record"]:
-            msgRecord = d
-            print(msgRecord)
-            match1 = True
-            match2 = True
+        if d in records:
+            print("Valid Record Type")
 
             try:
                 print(tc.decode(d, message))
-
-            except ValueError as e:
-                err = e
-                if str(e).startswith(d):
-                    match1 = False
-                    print("Umm...")
-                # print(e)
-
-            except TypeError as e:
-                err = e
-                if str(e).startswith(d):
-                    match = False
-                    print("Umm...")
-                # print(e)
-
-            if match1 and match2:
-                break
-
-        '''
-        # Validate Message here??
-        for type in schema['types']:
-            if type[1] != "Record":
-                continue
-            
-            msgKeys = list(message.keys())
-            msgFormat = {}
-
-            for k in type[len(type)-1]:
-                req = True
-                if len(k) >= 4:
-                    if len(k[3]) >= 1:
-                        req = False if k[3][0] == '?' else True
-
-                msgFormat[k[1]] = (k[2], req)
-
-            if self.checkKeys(type[len(type)-1], message):
-                print("Valid Keys")
-
                 return True, random.choice(self.validMsgs)
-                     
-            if len(msgKeys) < len(formatKeys):
-                return False, random.choice(self.invalidMsgs)
 
-            for k in msgKeys:
-                if k not in formatKeys:
-                    continue
+            except (ValueError, TypeError) as e:
+                err = str(e)
 
-            if msgKeys == [kf[0] for kf in msgFormat]:
-                print(type[0])
-                # print(msgFormat)
+            return False, err
 
-                return True, random.choice(self.validMsgs)
-            '''
-        return False, f"Looks Like {msgRecord} but has error:\n{err}"
+        return False, random.choice(self.invalidMsgs)

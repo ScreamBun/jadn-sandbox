@@ -22,7 +22,7 @@
                    </div>
 
                     <div class="form-group col-md-12">
-                        <textarea class="form-control border" placeholder="Paste JADN schema here" id="schema-text" name="schema-text" rows="10"></textarea>
+                        <textarea class="form-control border" placeholder="Paste JADN schema here" id="schema-text" name="schema-text" rows="10" required="required"></textarea>
                     </div>
 
                     <div class="float-right">
@@ -32,22 +32,30 @@
 
                 <fieldset>
                     <legend>Message</legend>
-                    <div class="form-group col-md-4">
-                        <select class="form-control" id="message" name-="message">
-                            <option value="empty" selected="">Message</option>
-                            <option value="proto1.json">Proto-1</option>
-                            <option value="proto2.json">Proto-2</option>
-                            <option value="query_actions.json">Query actions</option>
-                            <option value="query_actions_response.json">Query response</option>
-                            <option value="deny_ip.json">Deny ip</option>
-                            <option disabled="">──────────</option>
-                            <option value="">File...</option>
-                            <option value="">URL...</option>
-                        </select>
-                    </div>
+					<div class="form-row">
+						<div class="form-group col col-md-4">
+							<select class="form-control" id="message" name="message">
+								<option value="empty" selected="">Message</option>
+								<option value="proto1.json">Proto-1</option>
+								<option value="proto2.json">Proto-2</option>
+								<option value="query_actions.json">Query actions</option>
+								<option value="query_actions_response.json">Query response</option>
+								<option value="deny_ip.json">Deny ip</option>
+								<option disabled="">──────────</option>
+								<option value="">File...</option>
+								<option value="">URL...</option>
+							</select>
+						</div>
+						
+						<div class="form-group col-md-4">
+							<select class="form-control" id="decode" name="decode">
+								<option value="empty" selected="">Decode</option>
+							</select>
+						</div>
+					</div>
 
                     <div class="form-group col-md-12">
-                        <textarea class="form-control border" placeholder="Paste message to be validated here" id="message-text" name="message-text" rows="5"></textarea>
+                        <textarea class="form-control border" placeholder="Paste message to be validated here" id="message-text" name="message-text" rows="5" required="required"></textarea>
                     </div>
 
                     <div class="float-right">
@@ -66,7 +74,9 @@
 
 {% block page_script %}
 <script type="text/javascript">
-    $("select").change(function(e) {
+	var alert_id = 1
+	
+    $("#schema, #message").change(function(e) {
         id = $(e.target).attr("id")
         selected = $(e.target).val()
 
@@ -93,19 +103,46 @@
                     $("#"+id+"-text").val(j)
                     $("#"+id+"-text").text(j)
                 }
+				if (id == "schema") {
+					loadDecodeTypes()
+				}
             }
         ).fail(function() {
             closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
             $("#alert-container").append($("<div/>").addClass("alert alert-warning").attr("role", "alert").text("Cannot load data").append(closeBtn))
         })
-    });
+    })
 
     $("button[type='reset']").click(function(e) {
         $("textarea").each(function(i, e) {
             $(e).val("")
             $(e).text("")
         });
-    });
+    })
+	
+	$("#schema-text").on('input change paste', loadDecodeTypes)
+	
+	function loadDecodeTypes() {
+		console.log("DERP")
+		
+		try {
+			schema_records = $.map($.parseJSON($("#schema-text").val())['types'], function(v, k) {
+				if (v[1] == "Record") {
+					return v[0]
+				}
+			})
+		} catch (e) {
+			schema_records = $.parseJSON("{}")
+			opt = $("<option/>").addClass("schema_record").attr("disabled", "").text("Cannot Load, Invalid Schema")
+			$("#decode").append(opt)
+		}
+		
+		$("#decode option.schema_record").remove()
+		$.each(schema_records, function(i, sr) {
+			opt = $("<option/>").addClass("schema_record").attr("value", sr).text(sr)
+			$("#decode").append(opt)
+		})
+	}
 
     function validateForm() {
         try {
@@ -134,9 +171,17 @@
                     $("#"+id+"-text").val(j)
                     $("#"+id+"-text").text(j)
         } catch(e) {
+			msg_id = "alert_"+alert_id
+			alert_id++
+			
             msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid: " + e.message
             closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
-            $("#alert-container").append($("<div/>").addClass("alert alert-warning alert-dismissible fade show").attr("role", "alert").text(msg).append(closeBtn))
+			msg = $("<div/>").addClass("alert alert-warning alert-dismissible fade show").attr("role", "alert").attr("id", msg_id).text(msg).append(closeBtn)
+            $("#alert-container").append(msg)
+			
+			setTimeout(function (m_id) {
+				$("#"+m_id).alert('close')
+			}, 5000, msg_id)
         }
     }
 

@@ -114,8 +114,3 @@ app.validator = Validator()
 
 from .views import *
 register_all(app, database)
-
-
-if __name__ == 'webApp':
-    options = app.config.get('OPTIONS')
-    app.run(debug=options.debug, host=options.host, port=int(options.port))

@@ -13,6 +13,7 @@ parser.add_argument('schema', type=str)
 parser.add_argument('schema-text', type=str)
 parser.add_argument('message', type=str)
 parser.add_argument('message-text', type=str)
+parser.add_argument('decode', type=str)
 
 
 class Verify(Resource):
@@ -31,11 +32,12 @@ class Verify(Resource):
     def post(self):
         args = parser.parse_args()
 
-        val = current_app.validator.validateMessage(args['schema-text'], args['message-text'])
+        val = current_app.validator.validateMessage(args['schema-text'], args['message-text'], args['decode'])
 
         page_data = {
             "schema": args['schema-text'],
             "message": args['message-text'],
+            "message_type": args['decode'],
             "valid_bool": val[0],
             "valid_msg": val[1]
         }
