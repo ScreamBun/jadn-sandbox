@@ -22,6 +22,13 @@ class Validator(object):
 
         pass
 
+    def validateSchema(self, s):
+        try:
+            return True, jadn_loads(s)
+
+        except Exception as e:
+            return False, f"Schema Invalid - {e}"
+
     def validateMessage(self, s, m, d):
         """
         Validate messages against the given schema
@@ -30,10 +37,9 @@ class Validator(object):
         :return: (tuple) valid/invalid bool, message
         """
 
-        try:
-            schema = jadn_loads(s)
-        except Exception as e:
-            return False, f"Schema Invalid - {e}"
+        v, schema = self.validateSchema(s)
+        if not v:
+            return False, random.choice(self.invalidMsgs)
 
         try:
             message = json.loads(m)

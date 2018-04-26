@@ -1,6 +1,8 @@
 alembic
 flask
+flask_admin
 flask_restful
 flask_sqlalchemy
 multiprocessing_logging
+jsonschema
 sqlalchemy

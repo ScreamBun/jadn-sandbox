@@ -6,13 +6,19 @@ Custom CSS Styles
   width: auto;
   -moz-padding: 15px; /* firefox bug fix */
 }
+#alert-container {
+	z-index: 100;
+	position: fixed;
+	bottom: 1em;
+	right: 1em;
+}
 .container-fluid .row > *{
     max-width: 1200px;
 }
 .code, textarea {
     font-family: "Courier New", Courier, monospace;
     font-size: 1em;
-	white-space: pre;
+	white-space: pre-wrap;
 }
 div.scroll {
     max-height: 20em;
