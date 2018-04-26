@@ -1,13 +1,14 @@
+import json
 import logging
 import multiprocessing_logging
 import os
+import re
 import sys
 
 from alembic.config import Config as Alembic_Config
 from alembic import command as alembic_cmd
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from optparse import OptionParser
 
 from .config import Config
 from .validator import Validator
@@ -50,9 +51,7 @@ def init_database(rev_msg=None):
     if not os.path.isfile(database_file):
         logging.info("Database Does Not Exists, Creating Database")
         versions = os.path.join(app.config.get('APP_DIR'), 'alembic/versions')
-        ver_list = list(filter(lambda f: not f.startswith('.'), os.listdir(versions)))
-
-        print(os.path.isdir(versions), len(ver_list))
+        ver_list = list(filter(lambda f: not f.startswith('.') and not os.path.isdir(os.path.join(versions, f)), os.listdir(versions)))
 
         if os.path.isdir(versions) and len(ver_list) == 0:
             alembic_cmd.revision(alembic_cfg, message="Init Database", autogenerate=True)
@@ -74,41 +73,39 @@ def init_database(rev_msg=None):
 
 Config.LOG_HANDLER = logging.StreamHandler(sys.stdout)
 
-parser = OptionParser(description='NetVamp REST Server')
-parser.add_option('-H', '--host', default='127.0.0.1')
-parser.add_option('-P', '--port', default='8080')
-parser.add_option('-L', '--log-level', default="INFO", dest="level", help='DEBUG|INFO|WARNING|ERROR|CRITICAL')
-parser.add_option('-R', '--revision', default=False, dest="revision", action="store_true")
-parser.add_option('-M', '--message', dest="message")
-parser.add_option('-D', '--debug', default=False, dest="debug", action="store_true")
-parser.add_option('-V', '--version', default=Config.VERSION, dest="version", action='version')
-
-option, args = parser.parse_args()
-
-Config.OPTIONS = option
-
-set_logging(option.level)
-logging.info(f"Runtime Options: {option}")
+set_logging(Config.LOG_LEVEL)
 
 # Initialize the app
 app = Flask(__name__, static_url_path='/static')
 
-app.config.from_object('webApp.config.DefaultConfig')
+app.config.from_object('webApp.config.DevConfig')
 app.url_map.strict_slashes = False
 
 app.logger.handlers = []
 app.logger.addHandler(logging.getLogger().handlers[0])
 
 logging.info('Starting OpenC2 Flask Server')
-logging.info(f'Flask setup with {"Debug" if option.debug else "Prod"}, {option.host}:{option.port}')
 
 database = SQLAlchemy(app)
 from .models import *
 
-if option.revision and option.message is not None:
-    init_database(option.message)
-else:
-    init_database()
+init_database()
+
+for tbl in db_tables:
+    path = os.path.join(app.config.get('APP_DIR'), 'openc2_files', tbl)
+    for fle in os.listdir(path):
+        if not os.path.isdir(os.path.join(path, fle)) and not fle.startswith('.') and re.match(r'.*\.(json|jadn)$', fle):
+            name = fle[:fle.rfind('.')]
+            if db_tables[tbl].query.filter(db_tables[tbl].name == name).count() == 0:
+                fle_data = json.load(open(os.path.join(path, fle)))
+
+                db_data = {
+                    'name': name,
+                    'data': json.dumps(fle_data)
+                }
+                database.session.add(db_tables[tbl](**db_data))
+                database.session.commit()
+
 
 app.validator = Validator()
 

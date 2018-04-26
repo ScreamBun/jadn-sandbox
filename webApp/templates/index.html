@@ -9,21 +9,25 @@
             <form class="mx-auto col-12" action="/validate" method="post" onsubmit="return validateForm()">
                 <fieldset>
                     <legend>JADN Schema</legend>
-                    <div class="form-group col-md-4">
-                        <select class="form-control" id="schema" name="schema">
-                            <option value="empty" selected="">Schema</option>
-                            <option value="proto1.jadn">Proto-1</option>
-                            <option value="proto2.jadn">Proto-2</option>
-                            <option value="openc2.jadn">OpenC2</option>
-                            <option disabled="">──────────</option>
-                            <option value="">File...</option>
-                            <option value="">URL...</option>
-                        </select>
-                   </div>
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<select class="form-control" id="schema" name="schema">
+								<option value="empty" selected="">Schema</option>
+								{% for opt in options.schemas %}
+									<option value="{{ opt }}">{{ opt }}</option>
+								{% endfor %}
+								<option disabled="">──────────</option>
+								<option value="">File...</option>
+								<option value="">URL...</option>
+							</select>
+					   </div>
+					</div>
 
-                    <div class="form-group col-md-12">
-                        <textarea class="form-control border" placeholder="Paste JADN schema here" id="schema-text" name="schema-text" rows="10" required="required"></textarea>
-                    </div>
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<textarea class="form-control border" placeholder="Paste JADN schema here" id="schema-text" name="schema-text" rows="10" required="required"></textarea>
+						</div>
+					</div>
 
                     <div class="float-right">
                         <button type="button" class="btn btn-secondary btn-sm" onclick="format('schema')">Format Schema</button>
@@ -36,11 +40,9 @@
 						<div class="form-group col col-md-4">
 							<select class="form-control" id="message" name="message">
 								<option value="empty" selected="">Message</option>
-								<option value="proto1.json">Proto-1</option>
-								<option value="proto2.json">Proto-2</option>
-								<option value="query_actions.json">Query actions</option>
-								<option value="query_actions_response.json">Query response</option>
-								<option value="deny_ip.json">Deny ip</option>
+								{% for opt in options.messages %}
+									<option value="{{ opt }}">{{ opt }}</option>
+								{% endfor %}
 								<option disabled="">──────────</option>
 								<option value="">File...</option>
 								<option value="">URL...</option>
@@ -53,14 +55,16 @@
 							</select>
 						</div>
 					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<textarea class="form-control border" placeholder="Paste message to be validated here" id="message-text" name="message-text" rows="5" required="required"></textarea>
+						</div>
+					</div>
 
-                    <div class="form-group col-md-12">
-                        <textarea class="form-control border" placeholder="Paste message to be validated here" id="message-text" name="message-text" rows="5" required="required"></textarea>
-                    </div>
-
-                    <div class="float-right">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="format('message')">Format Message</button>
-                    </div>
+					<div class="float-right">
+						<button type="button" class="btn btn-secondary btn-sm" onclick="format('message')">Format Message</button>
+					</div>                    
                 </fieldset>
 
                 <div class="form-group">
@@ -91,7 +95,7 @@
         }
 
         $.get(
-            "/load/"+id+"/"+selected,
+            "/load/"+id+"s/"+selected,
             function(data) {
                 try {
                     $.parseJSON(data)

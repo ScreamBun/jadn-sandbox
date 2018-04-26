@@ -69,12 +69,16 @@ class Config(object):
 
 
 class DefaultConfig(Config):
+    ADMIN_ENABLED = False
+
     DEBUG = False
 
     LOG_LEVEL = 'INFO'
 
 
 class DevConfig(Config):
+    ADMIN_ENABLED = True
+
     DEBUG = True
 
     LOG_LEVEL = 'DEBUG'

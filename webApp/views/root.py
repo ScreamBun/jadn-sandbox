@@ -2,9 +2,10 @@ import logging
 import re
 
 from flask import Blueprint, current_app, url_for, render_template, Response, send_from_directory
-
 from flask_restful import Api, Resource
 from urllib.parse import unquote
+
+from ..models import *
 
 logger = logging.getLogger()
 root = Blueprint('index', __name__)
@@ -16,7 +17,12 @@ class Info(Resource):
     Endpoint for /
     """
     def get(self):
-        resp = Response(render_template('index.html', page_title="Message Validator"), mimetype='text/html')
+        opts = {
+            'schemas': [s.name for s in Schemas.query.add_column(Schemas.name).all()],
+            'messages': [m.name for m in Messages.query.add_column(Messages.name).all()]
+        }
+
+        resp = Response(render_template('index.html', page_title="Message Validator", options=opts), mimetype='text/html')
         resp.status_code = 200
         return resp
 
@@ -63,11 +69,17 @@ class CatchAll(Resource):
         :return: error message
         """
         current_app.logger.warning("Endpoint Does Not Exist: %s", content)
-        return {
-            'message': "The requested URL was not found on the server. "
-                       "If you entered the URL manually please check your spelling and try again. "
-                       "You have requested this URI [/{}] but did you mean /{} ?".format(content, 'DERP!!')
+
+        err = {
+            'message': [
+                f'The requested URL /{content} was not found on the server.',
+                'If you entered the URL manually please check your spelling and try again.',
+            ]
         }
+
+        resp = Response(render_template('error.html', error=err, page_title="Error"), mimetype='text/html')
+        resp.status_code = 200
+        return resp
 
 
 # Register resources

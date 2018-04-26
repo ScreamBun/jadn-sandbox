@@ -1,8 +1,11 @@
+import json
 import logging
 import os
 
-from flask import Blueprint, current_app, url_for, render_template, Response, send_file
+from flask import Blueprint, current_app, send_file
 from flask_restful import Api, Resource
+
+from ..models import *
 
 logger = logging.getLogger()
 load = Blueprint('load', __name__)
@@ -13,21 +16,30 @@ class LoadFile(Resource):
     """
     Endpoint for /[:content]
     """
-    def get(self, filename):
+    def get(self, filetype, filename):
         """
         check if the requested file exists, load and send to client if available
         :param content: path that was navigated to
         :return: file or 404
         """
-        filePath = os.path.join(current_app.config.get("APP_DIR"), 'openc2_files', filename)
+        filePath = os.path.join(current_app.config.get("APP_DIR"), 'openc2_files', filetype, filename)
 
-        if os.path.isfile(filePath):
-            rtn = send_file(filePath)
-        else:
-            rtn = '', 404
+        if filetype in db_tables:
+            rslt = db_tables[filetype].query.filter(db_tables[filetype].name == filename).first()
+            if rslt is not None:
+                try:
+                    data = json.loads(rslt.data)
+                except json.decoder.JSONDecodeError as e:
+                    print(e)
+                    data = rslt.data
 
-        return rtn
+                return data, 200
+
+        elif os.path.isfile(filePath):
+            return send_file(filePath)
+
+        return '', 404
 
 
 # Register resources
-api.add_resource(LoadFile, '/<path:filename>')
+api.add_resource(LoadFile, '/<string:filetype>/<path:filename>')

@@ -49,7 +49,7 @@ class Validator(object):
             print("Valid Record Type")
 
             try:
-                print(tc.decode(d, message))
+                msg = tc.decode(d, message)
                 return True, random.choice(self.validMsgs)
 
             except (ValueError, TypeError) as e:
