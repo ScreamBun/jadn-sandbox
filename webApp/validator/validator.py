@@ -22,9 +22,16 @@ class Validator(object):
 
         pass
 
-    def validateSchema(self, s):
+    def validateSchema(self, s, m=True):
+        """
+        Validate the given schema
+        :param s: (JSON String) schema to validate against
+        :param m: (bool) return success message or schema
+        :return: (tuple) valid/invalid bool, message/schema
+        """
         try:
-            return True, jadn_loads(s)
+            j = jadn_loads(s)
+            return True, random.choice(self.validMsgs) if m else j
 
         except Exception as e:
             return False, f"Schema Invalid - {e}"
@@ -37,9 +44,9 @@ class Validator(object):
         :return: (tuple) valid/invalid bool, message
         """
 
-        v, schema = self.validateSchema(s)
+        v, schema = self.validateSchema(s, False)
         if not v:
-            return False, random.choice(self.invalidMsgs)
+            return False, schema
 
         try:
             message = json.loads(m)
@@ -47,20 +54,16 @@ class Validator(object):
             return False, f"Message Invalid - {e}"
 
         tc = Codec(schema, True, True)
-        err = ""
         records = [t[0] for t in schema['types'] if t[1] == "Record"]
         err = random.choice(self.invalidMsgs)
 
         if d in records:
-            print("Valid Record Type")
-
             try:
                 msg = tc.decode(d, message)
                 return True, random.choice(self.validMsgs)
 
             except (ValueError, TypeError) as e:
                 err = str(e)
+                return False, err
 
-            return False, err
-
-        return False, random.choice(self.invalidMsgs)
+        return False, err

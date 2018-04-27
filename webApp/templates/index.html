@@ -25,7 +25,7 @@
 
 					<div class="form-row">
 						<div class="form-group col-md-12">
-							<textarea class="form-control border" placeholder="Paste JADN schema here" id="schema-text" name="schema-text" rows="10" required=""></textarea>
+							<textarea class="form-control border" placeholder="Paste JADN schema here" id="schema-json" name="schema-json" rows="10" required=""></textarea>
 						</div>
 					</div>
 
@@ -34,8 +34,9 @@
     						Schema Options
 					  	</button>
 					  	<div class="dropdown-menu" aria-labelledby="schemaOptions">
-                       		<a class="dropdown-item" href="#" onclick="format('schema')">Format</a>
-							<a class="dropdown-item" href="#" onclick="minify('schema')">Minify</a>
+                       		<a class="dropdown-item" href="#" onclick="formatJson('schema-json')">Format</a>
+                       		<a class="dropdown-item" href="#" onclick="formatJson('schema-json')">Verbose</a>
+							<a class="dropdown-item" href="#" onclick="minifyJson('schema-json')">Minify</a>
 							<a class="dropdown-item" href="#" onclick="verifySchema()">Verify</a>
 					  	</div>
 					</div>
@@ -65,7 +66,7 @@
 					
 					<div class="form-row">
 						<div class="form-group col-md-12">
-							<textarea class="form-control border" placeholder="Paste message to be validated here" id="message-text" name="message-text" rows="5" required=""></textarea>
+							<textarea class="form-control border" placeholder="Paste message to be validated here" id="message-json" name="message-json" rows="5" required=""></textarea>
 						</div>
 					</div>
 
@@ -74,8 +75,9 @@
     						Message Options
 					  	</button>
 					  	<div class="dropdown-menu" aria-labelledby="messageOptions">
-                       		<a class="dropdown-item" href="#" onclick="format('message')">Format</a>
-							<a class="dropdown-item" href="#" onclick="minify('minify')">Minify</a>
+                       		<a class="dropdown-item" href="#" onclick="formatJson('message-json')">Format</a>
+                       		<a class="dropdown-item" href="#" onclick="formatJosn('message-json')">Verbose</a>
+							<a class="dropdown-item" href="#" onclick="minifyJson('message-json')">Minify</a>
 					  	</div>
 					</div>                    
                 </fieldset>
@@ -90,18 +92,8 @@
 {% endblock %}
 
 {% block page_script %}
-<script type="text/javascript">
-	var alert_id = 1,
-		alert_levels = [
-			'primary',
-			'secondary',
-			'light',
-			'info',
-			'success',
-			'warning',
-			'danger'
-		]
-	
+<script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<script type="text/javascript">	
     $("#schema, #message").change(function(e) {
         id = $(e.target).attr("id")
         selected = $(e.target).val()
@@ -111,8 +103,7 @@
         if (selected == "" || selected == null) {
             return
         } else if (selected == "empty") {
-            $("#"+id+"-text").val("")
-            $("#"+id+"-text").text("")
+                    $("#"+id+"-json").text(j).val(j)
             return
         }
 
@@ -122,20 +113,17 @@
                 try {
                     $.parseJSON(data)
                     j = JSON.stringify($.parseJSON(data), null, 4)
-                    $("#"+id+"-text").val(j)
-                    $("#"+id+"-text").text(j)
+                    $("#"+id+"-json").text(j).val(j)
                 } catch(e) {
                     j = JSON.stringify(data, null, 4)
-                    $("#"+id+"-text").val(j)
-                    $("#"+id+"-text").text(j)
+                    $("#"+id+"-json").text(j).val(j)
                 }
 				if (id == "schema") {
 					loadDecodeTypes()
 				}
             }
         ).fail(function() {
-            closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").text("X"))
-            $("#alert-container").append($("<div/>").addClass("alert alert-warning").attr("role", "alert").text("Cannot load data").append(closeBtn))
+			alertMsg("#alert-container", "Cannot load data")
         })
     })
 
@@ -146,23 +134,11 @@
         });
     })
 	
-	$("#schema-text").on('input change paste', loadDecodeTypes)
-	
-	function alertMsg(m, l=5, t=5000) {
-		msg_id = "alert_"+alert_id
-		alert_id++
-			
-        closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").html("&times;"))
-        $("#alert-container").append($("<div/>").addClass("alert alert-"+alert_levels[l]).attr("role", "alert").attr("id", msg_id).text(m).append(closeBtn))
-		
-		setTimeout(function (m_id) {
-			$("#"+m_id).alert('close')
-		}, t, msg_id)
-	}
+	$("#schema-json").on('input change paste', loadDecodeTypes)
 	
 	function loadDecodeTypes() {		
 		try {
-			schema_records = $.map($.parseJSON($("#schema-text").val())['types'], function(v, k) {
+			schema_records = $.map($.parseJSON($("#schema-json").val())['types'], function(v, k) {
 				if (v[1] == "Record") {
 					return v[0]
 				}
@@ -182,66 +158,42 @@
 
     function validateForm() {
         try {
-            $.parseJSON($("#schema-text").val())
+            $.parseJSON($("#schema-json").val())
         } catch(e) {
-			alertMsg("Schema Invalid")			
+			alertMsg("#alert-container", "Schema Invalid")			
 			return false
         }
 
         try {
-            $.parseJSON($("#message-text").val())
+            $.parseJSON($("#message-json").val())
         } catch(e) {
-			alertMsg("Message Invalid")
+			alertMsg("#alert-container", "Message Invalid")
         }
 		
 		decode = $("#decode option:selected").val()
 		if ($.inArray(decode, [null, "", "empty"]) >= 0) {
-			alertMsg("Message Decode Type Invalid")			
+			alertMsg("#alert-container", "Message Decode Type Invalid")			
             return false
 		}
 
         return true
     }
-
-    function format(id) {
-        try {
-            data = $("#"+id+"-text").val()
-            j = JSON.stringify($.parseJSON(data), null, 4)
-            $("#"+id+"-text").val(j)
-            $("#"+id+"-text").text(j)
-        } catch(e) {
-			msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid: " + e.message
-			alertMsg(msg)
-        }
-    }
-	
-	function minify(id) {
-        data = $("#"+id+"-text").val()
-		try {
-			j = JSON.stringify($.parseJSON(data), null, 0)
-			$("#"+id+"-text").val(j)
-			$("#"+id+"-text").text(j)
-		} catch (e) {
-			msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid, cannot minify: " + e.message
-			alertMsg(msg)		
-		}		
-	}
 	
 	function verifySchema(id) {
-		data = $("#schema-text").val()
+		data = $("#schema-json").val()
 		
 		 $.post(
             "/validate/schema",
 			{
-				"schema-text": data
+				"schema-json": data
 			},
             function(d) {
 				if (d['valid_bool']) {
 					msg = "Valid Schema: " + d['valid_msg']
-					alertMsg(msg, 3)
+					alertMsg("#alert-container", msg, 3)
 				} else {
 					msg = "Invalid Schema: " + d['valid_msg'].replace(/^.*?\-/, '')
-					alertMsg(msg)
+					alertMsg("#alert-container", msg)
 				}
 				console.log(d)
 			}

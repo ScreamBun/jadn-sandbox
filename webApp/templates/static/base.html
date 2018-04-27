@@ -8,11 +8,10 @@
         <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon/favicon.ico') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/themes/sandstone.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-        <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/popper-1.14.0.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-         {% block page_header %}{% endblock %}
-  </body>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/popper-1.14.0.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        {% block page_header %}{% endblock %}
     </head>
 
     <body>

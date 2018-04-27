@@ -77,7 +77,7 @@ class CatchAll(Resource):
             ]
         }
 
-        resp = Response(render_template('error.html', error=err, page_title="Error"), mimetype='text/html')
+        resp = Response(render_template('error/error.html', error=err, page_title="Error"), mimetype='text/html')
         resp.status_code = 200
         return resp
 

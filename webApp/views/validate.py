@@ -10,9 +10,9 @@ api = Api(validate)
 
 parser = reqparse.RequestParser()
 parser.add_argument('schema', type=str)
-parser.add_argument('schema-text', type=str)
+parser.add_argument('schema-json', type=str)
 parser.add_argument('message', type=str)
-parser.add_argument('message-text', type=str)
+parser.add_argument('message-json', type=str)
 parser.add_argument('decode', type=str)
 
 
@@ -26,17 +26,17 @@ class VerifyMessage(Resource):
     def post(self):
         args = parser.parse_args()
 
-        val = current_app.validator.validateMessage(args['schema-text'], args['message-text'], args['decode'])
+        val = current_app.validator.validateMessage(args['schema-json'], args['message-json'], args['decode'])
 
         page_data = {
-            "schema": json.dumps(json.loads(args['schema-text']), indent=4, sort_keys=True),
-            "message": json.dumps(json.loads(args['message-text']), indent=4, sort_keys=True),
+            "schema": json.dumps(json.loads(args['schema-json']), indent=4, sort_keys=True),
+            "message": json.dumps(json.loads(args['message-json']), indent=4, sort_keys=True),
             "message_type": args['decode'],
             "valid_bool": val[0],
             "valid_msg": val[1]
         }
 
-        return Response(render_template("validate.html", page_title="Message Validation", page_data=page_data))
+        return Response(render_template("validate/validate.html", page_title="Message Validation", page_data=page_data))
 
 
 class VerifySchema(Resource):
@@ -49,7 +49,7 @@ class VerifySchema(Resource):
     def post(self):
         args = parser.parse_args()
 
-        val = current_app.validator.validateSchema(args['schema-text'])
+        val = current_app.validator.validateSchema(args['schema-json'])
         data = {
             "valid_bool": val[0],
             "valid_msg": val[1]
