@@ -70,6 +70,23 @@ def init_database(rev_msg=None):
 
         logging.info("Database updated to current")
 
+    for tbl in db_tables:
+        path = os.path.join(app.config.get('APP_DATA'), 'openc2_files', tbl)
+        for fle in os.listdir(path):
+            if not os.path.isdir(os.path.join(path, fle)) and not fle.startswith('.') and re.match(r'.*\.(json|jadn)$',
+                                                                                                   fle):
+                name = fle[:fle.rfind('.')]
+                if db_tables[tbl].query.filter(db_tables[tbl].name == name).count() == 0:
+                    logging.info(f"Loading {tbl} {name} into database")
+                    fle_data = json.load(open(os.path.join(path, fle)))
+
+                    db_data = {
+                        'name': name,
+                        'data': json.dumps(fle_data)
+                    }
+                    database.session.add(db_tables[tbl](**db_data))
+                    database.session.commit()
+
 
 Config.LOG_HANDLER = logging.StreamHandler(sys.stdout)
 
@@ -90,23 +107,6 @@ database = SQLAlchemy(app)
 from .models import *
 
 init_database()
-
-for tbl in db_tables:
-    path = os.path.join(app.config.get('APP_DIR'), 'data', 'openc2_files', tbl)
-    for fle in os.listdir(path):
-        if not os.path.isdir(os.path.join(path, fle)) and not fle.startswith('.') and re.match(r'.*\.(json|jadn)$', fle):
-            name = fle[:fle.rfind('.')]
-            if db_tables[tbl].query.filter(db_tables[tbl].name == name).count() == 0:
-                logging.info(f"Loading {tbl} {name} into database")
-                fle_data = json.load(open(os.path.join(path, fle)))
-
-                db_data = {
-                    'name': name,
-                    'data': json.dumps(fle_data)
-                }
-                database.session.add(db_tables[tbl](**db_data))
-                database.session.commit()
-
 
 app.validator = Validator()
 

@@ -17,10 +17,14 @@
 									<option value="{{ opt }}">{{ opt }}</option>
 								{% endfor %}
 								<option disabled="">──────────</option>
-								<option value="">File...</option>
+								<option value="file">File...</option>
 								<option value="">URL...</option>
 							</select>
-					   </div>
+					   	</div>
+						
+						<div id="schema-file-group" class="form-group col-md-4 d-none">
+							<input type="file" class="form-control-file" id="schema-file" name="schema-file" accept=".jadn">
+					  	</div>
 					</div>
 
 					<div class="form-row">
@@ -28,8 +32,8 @@
 							<textarea class="form-control border" placeholder="Paste JADN schema here" id="schema-json" name="schema-json" rows="10" required=""></textarea>
 						</div>
 					</div>
-
-                    <div class="dropdown float-right">
+					
+					<div class="dropdown float-right">
   						<button class="btn btn-info dropdown-toggle" type="button" id="schemaOptions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     						Schema Options
 					  	</button>
@@ -52,10 +56,14 @@
 									<option value="{{ opt }}">{{ opt }}</option>
 								{% endfor %}
 								<option disabled="">──────────</option>
-								<option value="">File...</option>
+								<option value="file">File...</option>
 								<option value="">URL...</option>
 							</select>
 						</div>
+						
+						<div id="message-file-group" class="form-group col-md-4 d-none">
+							<input type="file" class="form-control-file" id="message-file" name="message-file" accept=".json">
+					  	</div>
 						
 						<div class="form-group col-md-4">
 							<select class="form-control" id="decode" name="decode" required="">
@@ -79,7 +87,7 @@
                        		<a class="dropdown-item" href="#" onclick="formatJosn('message-json')">Verbose</a>
 							<a class="dropdown-item" href="#" onclick="minifyJson('message-json')">Minify</a>
 					  	</div>
-					</div>                    
+					</div>
                 </fieldset>
 
                 <div class="form-group">
@@ -97,15 +105,19 @@
     $("#schema, #message").change(function(e) {
         id = $(e.target).attr("id")
         selected = $(e.target).val()
-
-        console.log(id, selected)
-
+		
+		$("#"+id+"-file-group").addClass("d-none")
+		
         if (selected == "" || selected == null) {
             return
         } else if (selected == "empty") {
-                    $("#"+id+"-json").text(j).val(j)
+            $("#"+id+"-json").text('').val('')
             return
-        }
+        } else if (selected == "file") {
+			console.log("File")
+			$("#"+id+"-file-group").removeClass("d-none")
+			return
+		}
 
         $.get(
             "/load/"+id+"s/"+selected,
@@ -126,6 +138,31 @@
 			alertMsg("#alert-container", "Cannot load data")
         })
     })
+	
+	$("#schema-file, #message-file").change(function(e) {
+		console.log("FILE CHANGED")
+		src = $(e.target).attr("id").split('-')[0]
+		
+		var fileReader = new FileReader()
+    	fileReader.onload = function () {
+			try {
+				data = $.parseJSON(fileReader.result)
+				j = JSON.stringify(data, null, 4)
+				$("#"+id+"-json").text(j).val(j)
+            } catch(e) {
+				j = JSON.stringify(fileReader.result, null, 4)
+				$("#"+id+"-json").text(j).val(j)
+            }
+			
+			if (id == "schema") {
+				loadDecodeTypes()
+			}
+      		//console.log(fileReader.result)  // data <-- in this var you have the file data in Base64 format
+    	}
+		
+    	fileReader.readAsText($(e.target).prop('files')[0])
+		
+	})
 
     $("button[type='reset']").click(function(e) {
         $("textarea").each(function(i, e) {
