@@ -5,6 +5,8 @@ import os
 class Config(object):
     APP_DIR = os.path.realpath(os.path.dirname(__file__))
 
+    APP_DATA = os.path.join(APP_DIR, 'data')
+
     APPLICATION_ROOT = '/'
 
     TEMPLATE_FOLDER = os.path.join(APP_DIR, "templates")
@@ -28,13 +30,13 @@ class Config(object):
 
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
-    SQLALCHEMY_DATABASE_FILE = os.path.join(APP_DIR, 'OpenC2.sqlite')
+    SQLALCHEMY_DATABASE_FILE = os.path.join(APP_DATA, 'OpenC2.sqlite')
 
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + SQLALCHEMY_DATABASE_FILE
 
     VERSION = '1.1.1'
 
-    VERSION_INFO = json.loads(open(os.path.join(APP_DIR, 'version.json'), 'r').read())
+    VERSION_INFO = json.loads(open(os.path.join(APP_DATA, 'version.json'), 'r').read())
 
     # Allowed Headers/Methods
     HEADERS = [
@@ -57,7 +59,7 @@ class Config(object):
     ]
 
     # Alembic
-    ALEMBIC_CONFIG_FILE = os.path.join(APP_DIR, "alembic/alembic.ini")
+    ALEMBIC_CONFIG_FILE = os.path.join(APP_DIR, "alembic", "alembic.ini")
 
     ALEMBIC_UPDATE = {
         "script_location": os.path.join(APP_DIR, "alembic"),

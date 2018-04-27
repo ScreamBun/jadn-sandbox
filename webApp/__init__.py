@@ -92,11 +92,12 @@ from .models import *
 init_database()
 
 for tbl in db_tables:
-    path = os.path.join(app.config.get('APP_DIR'), 'openc2_files', tbl)
+    path = os.path.join(app.config.get('APP_DIR'), 'data', 'openc2_files', tbl)
     for fle in os.listdir(path):
         if not os.path.isdir(os.path.join(path, fle)) and not fle.startswith('.') and re.match(r'.*\.(json|jadn)$', fle):
             name = fle[:fle.rfind('.')]
             if db_tables[tbl].query.filter(db_tables[tbl].name == name).count() == 0:
+                logging.info(f"Loading {tbl} {name} into database")
                 fle_data = json.load(open(os.path.join(path, fle)))
 
                 db_data = {

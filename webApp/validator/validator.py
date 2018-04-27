@@ -1,8 +1,8 @@
 import json
 import random
 
-from webApp.jadn.codec.codec import Codec
-from webApp.jadn.codec.jadn import jadn_loads
+from webApp.libs.jadn.codec.codec import Codec
+from webApp.libs.jadn.codec.jadn import jadn_loads
 
 
 class Validator(object):
