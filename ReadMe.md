@@ -64,7 +64,18 @@
 	3. Run the server
 	
 		```bash
-		docker run open_c2 -b
+		docker run --name open_c2_validator -p 80:80 open_c2 -b
 		```
 		
-#### Note: If using docker and command line is not preferred, install [Portainer](https://portainer.io/) (web gui management for docker)
+		
+#### Gunicorn Note
+- Valid settings can be found on the [Docs page](http://docs.gunicorn.org/en/latest/settings.html)
+- Settings are passed as environment variables with docker run (-e VAR VAL) in the format of GUNICORN_(VAR)
+	- Ex) changing the number of workers
+		
+		```bash
+		docker run -e GUNICORN_WORKERS=8 --name open_c2_validator -p 80:80 open_c2 -b
+		```
+
+#### General Notes
+- If using docker and command line is not preferred, install [Portainer](https://portainer.io/) (web gui management for docker)

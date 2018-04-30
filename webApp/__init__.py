@@ -1,9 +1,7 @@
 import json
 import logging
-import multiprocessing_logging
 import os
 import re
-import sys
 
 from alembic.config import Config as Alembic_Config
 from alembic import command as alembic_cmd
@@ -12,31 +10,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from .config import Config
 from .validator import Validator
-
-_LEVELS = {
-    "CRITICAL": logging.CRITICAL,
-    "ERROR": logging.ERROR,
-    "WARNING": logging.WARNING,
-    "INFO": logging.INFO,
-    "DEBUG": logging.DEBUG,
-    "NOTSET": logging.NOTSET
-}
-
-
-def set_logging(verbosity="INFO"):
-    log_level = _LEVELS.get(verbosity, logging.INFO)
-    log_format = '%(asctime)s %(name)-5s %(levelname)-8s %(message)s'
-    log_date_format = '%Y-%m-%d %H:%M:%S'
-    Config.LOG_HANDLER.setLevel(log_level)
-
-    logging.basicConfig(
-        level=log_level,
-        format=log_format,
-        datefmt=log_date_format,
-        handlers=[Config.LOG_HANDLER]
-    )
-
-    multiprocessing_logging.install_mp_handler()
 
 
 def init_database(rev_msg=None):
@@ -73,8 +46,7 @@ def init_database(rev_msg=None):
     for tbl in db_tables:
         path = os.path.join(app.config.get('APP_DATA'), 'openc2_files', tbl)
         for fle in os.listdir(path):
-            if not os.path.isdir(os.path.join(path, fle)) and not fle.startswith('.') and re.match(r'.*\.(json|jadn)$',
-                                                                                                   fle):
+            if not os.path.isdir(os.path.join(path, fle)) and not fle.startswith('.') and re.match(r'.*\.(json|jadn)$', fle):
                 name = fle[:fle.rfind('.')]
                 if db_tables[tbl].query.filter(db_tables[tbl].name == name).count() == 0:
                     logging.info(f"Loading {tbl} {name} into database")
@@ -88,14 +60,19 @@ def init_database(rev_msg=None):
                     database.session.commit()
 
 
-Config.LOG_HANDLER = logging.StreamHandler(sys.stdout)
-
-set_logging(Config.LOG_LEVEL)
-
 # Initialize the app
 app = Flask(__name__, static_url_path='/static')
+# Gunicorn config - https://sebest.github.io/post/protips-using-gunicorn-inside-a-docker-image/
 
-app.config.from_object('webApp.config.DevConfig')
+if os.path.isfile('/.dockerenv'):
+    logging.info('Im running in a docker container.....')
+    for dirName, subdirList, fileList in os.walk(app.config.get('APP_DATA')):
+        pass
+
+else:
+    logging.info('Im running on true system.....')
+
+app.config.from_object('webApp.config.DefaultConfig')
 app.url_map.strict_slashes = False
 
 app.logger.handlers = []

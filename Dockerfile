@@ -7,10 +7,6 @@ vendor="OpenC2" \
 license="BSD" \
 description="This is the validator container for OpenC2"
 
-COPY webApp/ /opt/OpenC2/webApp/
-COPY requirements.txt /opt/OpenC2/
-COPY gunicorn/ /opt/OpenC2/gunicorn/
-
 # Package installation
 # Packages - https://pkgs.alpinelinux.org/packages
 RUN apk upgrade --update && \
@@ -27,10 +23,10 @@ apk add --no-cache bash \
     python-dev \
     libffi \
     openssl && \
+mkdir /data && \
 # Python Config
 python3 -m ensurepip && \
 pip3 install --upgrade pip setuptools && \
-pip3 install -r /opt/OpenC2/requirements.txt && \
 # Cleanup
 apk del gnupg && \
 rm /var/cache/apk/* && \
@@ -40,9 +36,17 @@ rm -rf *.tar.gz* /usr/src /root/.gnupg /tmp/* && \
 python3 --version && \
 pip3 --version
 
+# Copy & Config App
+COPY webApp/ /opt/OpenC2/webApp/
+COPY requirements.txt /opt/OpenC2/
+COPY gunicorn/ /opt/OpenC2/gunicorn/
+RUN pip3 install -r /opt/OpenC2/requirements.txt
 
 # Websockets and Web UI
 EXPOSE 80/tcp 443/tcp
+
+# persist data
+VOLUME /data
 
 WORKDIR /opt/OpenC2/
 
