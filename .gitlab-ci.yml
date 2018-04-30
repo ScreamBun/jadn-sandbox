@@ -6,7 +6,16 @@ variables:
   IMAGE_NAME: '$CI_REGISTRY/screamingbunny/webvalidator'
 
 services:
-- docker:dind
+  - name: docker:dind
+    command:
+      - /bin/sh
+      - -c
+      - |
+          apk update && apk add openssl
+          mkdir -p /etc/docker/certs.d/g2-inc.net
+          curl https://portal.g2-inc.com/sites/default/files/G2-Root-CA.pem > /etc/docker/certs.d/g2-inc.net/ca.crt || exit
+          dockerd-entrypoint.sh || exit
+
 
 stages:
   - build
