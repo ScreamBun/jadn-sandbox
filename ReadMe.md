@@ -1,5 +1,5 @@
 # ScreamingBunny (OpenC2) Web Message Validator
-## Running Server (developement)
+## Running Server (Developement)
 1. Install Python3 and pip3
 	- Install varies based on the system...
 
