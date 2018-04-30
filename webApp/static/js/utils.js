@@ -2,7 +2,8 @@
 Custom Utility Function File
 */
 
-var alert_id = 1,
+var indext = 2,
+	alert_id = 1,
 	alert_levels = [
 		'primary',
 		'secondary',
@@ -25,9 +26,9 @@ function alertMsg(c, m, l=5, t=5000) {
 	}, t, msg_id)
 }
 
-function formatJson(id, s=4) {
-	try {
-		data = $("#"+id).val() || $("#"+id).text()
+function formatJson(id, s=indext) {
+	data = $("#"+id).val() || $("#"+id).text()
+	try {	
 		j = JSON.stringify($.parseJSON(data), null, s)
 		$("#"+id).text(j)
 		$("#"+id).val(j)
@@ -39,6 +40,7 @@ function formatJson(id, s=4) {
 
 function minifyJson(id) {
 	data = $("#"+id).val() || $("#"+id).text()
+	
 	try {
 		j = JSON.stringify($.parseJSON(data), null, 0)
 		$("#"+id).text(j)

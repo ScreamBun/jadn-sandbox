@@ -101,7 +101,7 @@
 
 {% block page_script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
-<script type="text/javascript">	
+<script type="text/javascript">
     $("#schema, #message").change(function(e) {
         id = $(e.target).attr("id")
         selected = $(e.target).val()
@@ -124,10 +124,10 @@
             function(data) {
                 try {
                     $.parseJSON(data)
-                    j = JSON.stringify($.parseJSON(data), null, 4)
+                    j = JSON.stringify($.parseJSON(data), null, indext)
                     $("#"+id+"-json").text(j).val(j)
                 } catch(e) {
-                    j = JSON.stringify(data, null, 4)
+                    j = JSON.stringify(data, null, indext)
                     $("#"+id+"-json").text(j).val(j)
                 }
 				if (id == "schema") {
@@ -140,28 +140,25 @@
     })
 	
 	$("#schema-file, #message-file").change(function(e) {
-		console.log("FILE CHANGED")
 		src = $(e.target).attr("id").split('-')[0]
-		
 		var fileReader = new FileReader()
+		
     	fileReader.onload = function () {
 			try {
 				data = $.parseJSON(fileReader.result)
-				j = JSON.stringify(data, null, 4)
+				j = JSON.stringify(data, null, indext)
 				$("#"+id+"-json").text(j).val(j)
             } catch(e) {
-				j = JSON.stringify(fileReader.result, null, 4)
+				j = JSON.stringify(fileReader.result, null, indext)
 				$("#"+id+"-json").text(j).val(j)
             }
 			
 			if (id == "schema") {
 				loadDecodeTypes()
 			}
-      		//console.log(fileReader.result)  // data <-- in this var you have the file data in Base64 format
     	}
 		
     	fileReader.readAsText($(e.target).prop('files')[0])
-		
 	})
 
     $("button[type='reset']").click(function(e) {
@@ -176,9 +173,7 @@
 	function loadDecodeTypes() {		
 		try {
 			schema_records = $.map($.parseJSON($("#schema-json").val())['types'], function(v, k) {
-				if (v[1] == "Record") {
-					return v[0]
-				}
+				return [[v[1], v[0]]]
 			})
 		} catch (e) {
 			schema_records = $.parseJSON("{}")
@@ -186,9 +181,22 @@
 			$("#decode").append(opt)
 		}
 		
+		schema_records.sort(function(a, b){
+			var r1 = a[0].toLowerCase();
+  			var r2 = b[0].toLowerCase();
+  			var n1 = a[1].toLowerCase();
+  			var n2 = b[1].toLowerCase();
+
+  			if (r1 < r2) return -1;
+  			if (r1 > r2) return 1;
+  			if (n1 < n2) return -1;
+  			if (n1 > n2) return 1;
+  			return 0;
+		});
+		
 		$("#decode option.schema_record").remove()
-		$.each(schema_records, function(i, sr) {
-			opt = $("<option/>").addClass("schema_record").attr("value", sr).text(sr)
+		$.each(schema_records, function(i, v) {
+			opt = $("<option/>").addClass("schema_record").attr("value", [v[1]]).text(v[0] + " - " + v[1])
 			$("#decode").append(opt)
 		})
 	}
@@ -232,7 +240,6 @@
 					msg = "Invalid Schema: " + d['valid_msg'].replace(/^.*?\-/, '')
 					alertMsg("#alert-container", msg)
 				}
-				console.log(d)
 			}
 		)
 	}

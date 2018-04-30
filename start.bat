@@ -1,5 +1,3 @@
-#! /usr/bin/env bash
-
 set FLASK_APP=webApp
 set FLASK_DEBUG=1
 

@@ -29,8 +29,8 @@ class VerifyMessage(Resource):
         val = current_app.validator.validateMessage(args['schema-json'], args['message-json'], args['decode'])
 
         page_data = {
-            "schema": json.dumps(json.loads(args['schema-json']), indent=4, sort_keys=True),
-            "message": json.dumps(json.loads(args['message-json']), indent=4, sort_keys=True),
+            "schema": json.dumps(json.loads(args['schema-json']), indent=2),
+            "message": json.dumps(json.loads(args['message-json']), indent=2),
             "message_type": args['decode'],
             "valid_bool": val[0],
             "valid_msg": val[1]

@@ -1,5 +1,3 @@
-#! /usr/bin/env bash
-
 export FLASK_APP=webApp
 export FLASK_DEBUG=1
 

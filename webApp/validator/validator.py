@@ -12,15 +12,15 @@ class Validator(object):
     def __init__(self):
         self.validMsgs = [
             'Success',
-            'It\'s Gonna do the thing!!'
+            'It\'s Gonna do the thing!!',
+            'Whoot! It works'
         ]
 
         self.invalidMsgs = [
             'Fail',
-            'It\'s Broken'
+            'It\'s Broken',
+            'That\'s not right'
         ]
-
-        pass
 
     def validateSchema(self, s, m=True):
         """
@@ -54,7 +54,7 @@ class Validator(object):
             return False, f"Message Invalid - {e}"
 
         tc = Codec(schema, True, True)
-        records = [t[0] for t in schema['types'] if t[1] == "Record"]
+        records = [t[0] for t in schema['types']]
         err = random.choice(self.invalidMsgs)
 
         if d in records:
