@@ -64,7 +64,7 @@
 	3. Run the server
 	
 		```bash
-		docker run --name open_c2_validator -p 80:80 open_c2 -b
+		docker run --name open_c2_validator -p 80:80 -v $(pwd)/data:/data open_c2 -b
 		```
 		
 		
@@ -74,7 +74,7 @@
 	- Ex) changing the number of workers
 		
 		```bash
-		docker run -e GUNICORN_WORKERS=8 --name open_c2_validator -p 80:80 open_c2 -b
+		docker run -e GUNICORN_WORKERS=8 --name open_c2_validator -p 80:80 -v $(pwd)/data:/data open_c2 -b
 		```
 
 #### General Notes

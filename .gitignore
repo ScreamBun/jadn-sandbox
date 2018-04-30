@@ -212,3 +212,4 @@ venv.bak/
 
 # Custom Ignore
 .idea/*
+*.sqlite

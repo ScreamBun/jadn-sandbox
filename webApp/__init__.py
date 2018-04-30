@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import re
+import shutil
 
 from alembic.config import Config as Alembic_Config
 from alembic import command as alembic_cmd
@@ -60,14 +61,28 @@ def init_database(rev_msg=None):
                     database.session.commit()
 
 
+def walkCopy(src, dst):
+    for dirName, subdirList, fileList in os.walk(src):
+        d = dirName.replace(src, dst)
+        dl = os.listdir(d) if os.path.isdir(d) else []
+
+        for f in fileList:
+            if f not in dl:
+                # logging.info(f"Copy File {d}/{f}")
+                os.makedirs(d, exist_ok=True)
+                shutil.copyfile(os.path.join(dirName, f), os.path.join(d, f))
+
+
+# Gunicorn config - https://sebest.github.io/post/protips-using-gunicorn-inside-a-docker-image/
 # Initialize the app
 app = Flask(__name__, static_url_path='/static')
-# Gunicorn config - https://sebest.github.io/post/protips-using-gunicorn-inside-a-docker-image/
 
-if os.path.isfile('/.dockerenv'):
+app.config.from_object('webApp.config.DefaultConfig')
+app.url_map.strict_slashes = False
+
+if app.config.get('ORIGINAL_DATA'):
     logging.info('Im running in a docker container.....')
-    for dirName, subdirList, fileList in os.walk(app.config.get('APP_DATA')):
-        pass
+    walkCopy(app.config.get('ORIGINAL_DATA'), app.config.get('APP_DATA'))
 
 else:
     logging.info('Im running on true system.....')

@@ -5,7 +5,14 @@ import os
 class Config(object):
     APP_DIR = os.path.realpath(os.path.dirname(__file__))
 
-    APP_DATA = os.path.join(APP_DIR, 'data')
+    if os.path.isfile('/.dockerenv'):
+        ORIGINAL_DATA = os.path.join(APP_DIR, 'data')
+        VERSION_INFO = json.loads(open(os.path.join(ORIGINAL_DATA, 'version.json'), 'r').read())
+        APP_DATA = os.path.join('/', 'data')
+
+    else:
+        APP_DATA = os.path.join(APP_DIR, 'data')
+        VERSION_INFO = json.loads(open(os.path.join(APP_DATA, 'version.json'), 'r').read())
 
     APPLICATION_ROOT = '/'
 
@@ -35,8 +42,6 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + SQLALCHEMY_DATABASE_FILE
 
     VERSION = '1.1.1'
-
-    VERSION_INFO = json.loads(open(os.path.join(APP_DATA, 'version.json'), 'r').read())
 
     # Allowed Headers/Methods
     HEADERS = [
