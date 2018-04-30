@@ -1,0 +1,22 @@
+image: docker:latest
+
+variables:
+  GIT_SSL_NO_VERIFY: "true"
+  DOCKER_DRIVER: overlay2
+  IMAGE_NAME: '$CI_REGISTRY/screamingbunny/webvalidator'
+
+services:
+- docker:dind
+
+stages:
+  - build
+
+before_script:
+  - docker version
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+build:
+  stage: build
+  script:
+   - docker build -t $IMAGE_NAME .
+   - docker push $IMAGE_NAME
