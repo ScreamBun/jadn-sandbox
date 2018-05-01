@@ -1,10 +1,6 @@
-alembic
 flask
-flask_admin
 flask_restful
-flask_sqlalchemy
 gunicorn
 multiprocessing_logging
 json-logging-py
 jsonschema
-sqlalchemy

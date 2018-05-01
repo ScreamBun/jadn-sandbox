@@ -1,15 +1,20 @@
 import logging
+import os
 import re
 
 from flask import Blueprint, current_app, url_for, render_template, Response, send_from_directory
 from flask_restful import Api, Resource
-from urllib.parse import unquote
-
-from ..models import *
 
 logger = logging.getLogger()
 root = Blueprint('index', __name__)
 api = Api(root)
+
+VALID_SCHEMAS = ['jadn']
+VALID_MESSAGES = ['json']
+
+
+def unquote(url):
+    return re.compile('%([0-9a-fA-F]{2})', re.M).sub(lambda m: chr(int(m.group(1), 16)), url)
 
 
 class Info(Resource):
@@ -17,9 +22,12 @@ class Info(Resource):
     Endpoint for /
     """
     def get(self):
+        schemas = re.compile('\.(' + '|'.join(VALID_SCHEMAS) + ')$')
+        messages = re.compile('\.(' + '|'.join(VALID_MESSAGES) + ')$')
+
         opts = {
-            'schemas': [s.name for s in Schemas.query.add_column(Schemas.name).all()],
-            'messages': [m.name for m in Messages.query.add_column(Messages.name).all()]
+            'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if schemas.search(s)],
+            'messages': [m for m in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'messages')) if messages.search(m)]
         }
 
         resp = Response(render_template('index.html', page_title="Message Validator", options=opts), mimetype='text/html')
@@ -44,7 +52,8 @@ class Endpoints(Resource):
             url = url_for(rule.endpoint, **options)
 
             if not re.match(r'^\/admin\/admin_', unquote(url)):
-                if url_app not in routes_by_app: routes_by_app[url_app] = []
+                if url_app not in routes_by_app:
+                    routes_by_app[url_app] = []
 
                 routes_by_app[url_app].append({
                     'url': unquote(url),
@@ -72,7 +81,7 @@ class CatchAll(Resource):
 
         err = {
             'message': [
-                f'The requested URL /{content} was not found on the server.',
+                'The requested URL /{} was not found on the server.'.format(content),
                 'If you entered the URL manually please check your spelling and try again.',
             ]
         }

@@ -18,6 +18,8 @@ class Config(object):
 
     TEMPLATE_FOLDER = os.path.join(APP_DIR, "templates")
 
+    OPEN_C2_DATA = os.path.join(APP_DATA, "openc2_files")
+
     SECRET_KEY = 'openc2openc2'
 
     DEBUG = False
@@ -28,18 +30,6 @@ class Config(object):
     LOGGER_NAME = 'OpenC2_JADN'
 
     LOG_LEVEL = 'INFO'
-
-    # Set in server (pkg) __init__
-    LOG_HANDLER = None
-
-    # SQLAlchemy
-    SQLALCHEMY_ECHO = False
-
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
-
-    SQLALCHEMY_DATABASE_FILE = os.path.join(APP_DATA, 'OpenC2.sqlite')
-
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + SQLALCHEMY_DATABASE_FILE
 
     VERSION = '1.1.1'
 
@@ -63,29 +53,17 @@ class Config(object):
         'PUT'
     ]
 
-    # Alembic
-    ALEMBIC_CONFIG_FILE = os.path.join(APP_DIR, "alembic", "alembic.ini")
-
-    ALEMBIC_UPDATE = {
-        "script_location": os.path.join(APP_DIR, "alembic"),
-        "sqlalchemy.url": SQLALCHEMY_DATABASE_URI
-    }
-
     # Options parsed in from cmdline
     OPTIONS = None
 
 
 class DefaultConfig(Config):
-    ADMIN_ENABLED = False
-
     DEBUG = False
 
     LOG_LEVEL = 'INFO'
 
 
 class DevConfig(Config):
-    ADMIN_ENABLED = True
-
     DEBUG = True
 
     LOG_LEVEL = 'DEBUG'
