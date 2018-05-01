@@ -23,7 +23,7 @@ before_script:
   - docker version
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
-build:
+Build-Image:
   stage: build
   script:
    - docker build -t $IMAGE_NAME .
