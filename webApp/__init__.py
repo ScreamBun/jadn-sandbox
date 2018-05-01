@@ -38,7 +38,7 @@ def init_database(rev_msg=None):
         alembic_cmd.upgrade(alembic_cfg, 'head')
 
     if rev_msg is not None:
-        logging.info(f"Saving database revision, commit message '{rev_msg}'")
+        logging.info("Saving database revision, commit message '{}'".format(rev_msg))
         alembic_cmd.revision(alembic_cfg, message=rev_msg, autogenerate=True)
         alembic_cmd.upgrade(alembic_cfg, 'head')
 
@@ -50,7 +50,7 @@ def init_database(rev_msg=None):
             if not os.path.isdir(os.path.join(path, fle)) and not fle.startswith('.') and re.match(r'.*\.(json|jadn)$', fle):
                 name = fle[:fle.rfind('.')]
                 if db_tables[tbl].query.filter(db_tables[tbl].name == name).count() == 0:
-                    logging.info(f"Loading {tbl} {name} into database")
+                    logging.info("Loading {} {} into database".format(tbl, name))
                     fle_data = json.load(open(os.path.join(path, fle)))
 
                     db_data = {
