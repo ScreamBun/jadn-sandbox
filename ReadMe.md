@@ -33,39 +33,10 @@
 	3. Run the server
 	
 		```bash
-		cd (OpenC2 app directory)
+		cd (OpenC2 directory)
 		gunicorn --config gunicorn/gunicorn.conf --log-config gunicorn/logging.conf webApp:app
 		```
-		
-- Docker
-	1. Install docker
-	- Install varies based on the system...
 
-	2. Build/Pull the container
-		- Build
-		
-		```bash
-		docker build -t open_c2 -f Dockerfile .
-		```
-		
-		- Pull
-			- If on Docker Hub
-		
-			```bash
-			docker pull open_c2/open_c2
-			```
-			
-			- If not on Docker Hub
-		
-			```bash
-			docker pull REPO_NAME_TO_CONTAINER
-			```
-	
-	3. Run the server
-	
-		```bash
-		docker run --name open_c2_validator -p 80:80 -v $(pwd)/data:/data open_c2 -b
-		```
 		
 ## Google App Engine
 TODO: Fill in info based on [simple flask app](https://cloud.google.com/appengine/docs/standard/python/getting-started/python-standard-env)
@@ -73,12 +44,10 @@ TODO: Fill in info based on [simple flask app](https://cloud.google.com/appengin
 		
 #### Gunicorn Note
 - Valid settings can be found on the [Docs page](http://docs.gunicorn.org/en/latest/settings.html)
-- Settings are passed as environment variables with docker run (-e VAR VAL) in the format of GUNICORN_(VAR)
-	- Ex) changing the number of workers
-		
-		```bash
-		docker run -e GUNICORN_WORKERS=8 --name open_c2_validator -p 80:80 -v $(pwd)/data:/data open_c2 -b
-		```
 
 #### General Notes
-- If using docker and command line is not preferred, install [Portainer](https://portainer.io/) (web gui management for docker)
+- Install oc2 whl using local install
+
+    ```bash
+    pip install ./oc2-0.0.1-py2-none-any.whl
+    ```
