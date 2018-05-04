@@ -23,11 +23,11 @@
                     <h3 class="float-left">Schema</h3>
 					
 					<div class="float-right btn-group">
-						<button type="button" class="btn btn-outline-secondary" onclick="formatJson('schema-json')">Verbose</button>
-						<button type="button" class="btn btn-outline-secondary" onclick="minifyJson('schema-json')">Minify</button>
+						<button type="button" class="btn btn-outline-secondary" onclick="format('schema')">Verbose</button>
+						<button type="button" class="btn btn-outline-secondary" onclick="minify('schema')">Minify</button>
 					</div>
                 </div>
-                <div id="schema-json" class="card-body scroll code">{{ page_data.schema }}</div>
+                <div id="schema" class="card-body scroll code">{{ page_data.schema }}</div>
             </div>
 
             <div class="col-12" style="height: 1.25em;"></div>
@@ -37,11 +37,11 @@
                     <h3 class="float-left">Message - {{ page_data.message_type }}</h3>
 					
 					<div class="float-right btn-group">
-						<button type="button" class="btn btn-outline-secondary" onclick="formatJson('message-json')">Verbose</button>
-						<button type="button" class="btn btn-outline-secondary" onclick="minifyJson('message-json')">Minify</button>
+						<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
+						<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
 					</div>
                 </div>
-                <div id="message-json" class="card-body scroll code">{{ page_data.message }}</div>
+                <div id="message" class="card-body scroll code">{{ page_data.message }}</div>
             </div>
         </div>
     </div>

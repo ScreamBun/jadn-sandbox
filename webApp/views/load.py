@@ -22,7 +22,12 @@ class LoadFile(Resource):
         filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
 
         if os.path.isfile(filePath):
-            return send_file(filePath)
+            with open(filePath, 'r') as f:
+                return {
+                    'file': filename,
+                    'type': filetype,
+                    'data': ''.join(["\\x{}".format(c.encode('hex')) if ord(c) > 128 else c for c in ''.join(f.readlines())])
+                }, 200
 
         return '', 404
 
