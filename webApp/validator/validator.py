@@ -43,25 +43,24 @@ class Validator(object):
         except Exception as e:
             return False, "Schema Invalid - {}".format(e)
 
-    def validateMessage(self, s, m, f, d):
+    def validateMessage(self, s, m, d, f='json'):
         """
         Validate messages against the given schema
         :param s: (JSON String) schema to validate against
         :param m: (JSON String) message to validate against the schema
-        :param f: (str) format of the message to decode
-        :param d: (str) format to decode the message as
         :return: (tuple) valid/invalid bool, message
         """
 
         v, schema = self.validateSchema(s, False)
-        err = random.choice(self.invalidMsgs)
 
         if not v:
             return False, schema
 
+        err = random.choice(self.invalidMsgs)
+
         if f in self._formats:
             try:
-                m = ''.join([mp[:2].decode('hex') + mp[2:] for mp in m.split('\\x')])
+                m = ''.join([mp[:2].decode('hex') + mp[2:] for mp in m.split('\\x')]) if '\\x' in m else m
                 message = self._formats[f](m)
             except Exception as e:
                 return False, "Message Invalid - {}".format(e)
@@ -70,11 +69,9 @@ class Validator(object):
 
         tc = Codec(schema, True, True)
         records = [t[0] for t in schema['types']]
-        err = random.choice(self.invalidMsgs)
 
         if d in records:
             try:
-                print(message.json_dump())
                 msg = tc.decode(d, message.json_dump())
                 return True, random.choice(self.validMsgs)
 
@@ -83,3 +80,4 @@ class Validator(object):
                 return False, err
 
         return False, err
+

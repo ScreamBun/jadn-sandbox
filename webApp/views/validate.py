@@ -1,3 +1,4 @@
+import json
 import logging
 
 from flask import Blueprint, current_app, redirect, render_template, Response
@@ -23,12 +24,11 @@ class VerifyMessage(Resource):
 
     def post(self):
         args = parser.parse_args()
-        val = current_app.validator.validateMessage(args['schema'], args['message'], args['message-format'], args['message-decode'])
+        val = current_app.validator.validateMessage(args['schema'], args['message'], args['message-decode'])
 
         page_data = {
-            "schema": args['schema'],
-            "message": args['message'],
-            "message_format": args['message-format'],
+            "schema": json.dumps(json.loads(args['schema']), indent=2),
+            "message": json.dumps(json.loads(args['message']), indent=2),
             "message_type": args['message-decode'],
             "valid_bool": val[0],
             "valid_msg": val[1]

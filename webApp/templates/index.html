@@ -66,6 +66,12 @@
 						<div id="message-file-group" class="form-group col-md-3 d-none pr-1 pl-1">
 							<input type="file" class="form-control-file" id="message-file" name="message-file" accept=".json,.xml,.cbor">
 					  	</div>
+
+						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
+							<select class="form-control" id="message-decode" name="message-decode" required="">
+								<option value="empty" selected="">Decode</option>
+							</select>
+						</div>
 					</div>
 					
 					<div class="form-row">
@@ -74,22 +80,7 @@
 						</div>
 					</div>
 						
-					<div class="form-row-fluid">						
-						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
-							<select class="form-control" id="message-format" name="message-format" required="">
-								<option value="" selected="">Format</option>
-								<option value="json">json</option>
-								<option value="cbor">cbor</option>
-								<!--<option value="protobuf">protobuf</option>
-								<option value="xml">xml</option>-->
-							</select>
-						</div>
-						
-						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
-							<select class="form-control" id="message-decode" name="message-decode" required="">
-								<option value="empty" selected="">Decode</option>
-							</select>
-						</div>
+					<div class="form-row-fluid">
 						
 						<div class="dropdown float-right">
 							<button class="btn btn-info dropdown-toggle" type="button" id="message-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
