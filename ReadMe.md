@@ -1,18 +1,24 @@
 # ScreamingBunny (OpenC2) Web Message Validator
-## Running Server (developement)
-1. Install Python3 and pip3
+## Running Server (General)
+1. Install Python and pip
 	- Install varies based on the system...
+2. Install oc2 whl using local install
 
-2. Install the python packages from the requirements.txt file
+    ```bash
+    pip install ./oc2-0.0.1-py2-none-any.whl
+    ```
+
+## Running Server (developement)
+1. Install the python packages from the requirements.txt file
 	
 	```bash
-	pip3 install -r requirements.txt
+	pip install -r requirements.txt
 	```
 	
-3. Run the server
+2. Run the server
 	
 	```bash
-	python3 -m webApp
+	python -m webApp
 	```
 	
 #### Notes
@@ -21,16 +27,13 @@
 
 ## Running Gunicorn Server (production)
 - Standalone
-	1. Install Python3 and pip3
-	- Install varies based on the system...
-
-	2. Install the python packages from the requirements.txt file
+	1. Install the python packages from the requirements.txt file
 	
 		```bash
-		pip3 install -r requirements.txt
+		pip install -r requirements.txt
 		```
 	
-	3. Run the server
+	2. Run the server
 	
 		```bash
 		cd (OpenC2 directory)
@@ -41,13 +44,9 @@
 ## Google App Engine
 TODO: Fill in info based on [simple flask app](https://cloud.google.com/appengine/docs/standard/python/getting-started/python-standard-env)
 		
-		
-#### Gunicorn Note
+### Notes:
+#### Gunicorn
 - Valid settings can be found on the [Docs page](http://docs.gunicorn.org/en/latest/settings.html)
 
-#### General Notes
-- Install oc2 whl using local install
-
-    ```bash
-    pip install ./oc2-0.0.1-py2-none-any.whl
-    ```
+#### General
+- Using [Git Flow](https://danielkummer.github.io/git-flow-cheatsheet/) for simple feature intigration

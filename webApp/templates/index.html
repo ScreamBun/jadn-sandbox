@@ -80,8 +80,8 @@
 								<option value="" selected="">Format</option>
 								<option value="json">json</option>
 								<option value="cbor">cbor</option>
-								<!--<option value="protobuf">protobuf</option>
-								<option value="xml">xml</option>-->
+								<!--<option value="protobuf">protobuf</option>-->
+								<option value="xml">xml</option>
 							</select>
 						</div>
 						
@@ -114,6 +114,7 @@
 {% endblock %}
 
 {% block page_script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
     $("#schema-list, #message-list").change(function(e) {
@@ -137,6 +138,7 @@
             "/load/"+type+"s/"+selected,
             function(data) {
 				if (data['type'] == type+"s" && data['file'] == selected) {
+					$("#"+type).removeClass('minify format')
 					
 					if (type == "message") {
 						t = data['file'].split('.')[1]
@@ -165,6 +167,7 @@
     })
 	
 	$("#schema-file, #message-file").change(function(e) {
+		// TODO: NEEDS WORK!!!
 		id = $(e.target).attr("id").split('-')[0]
 		var fileReader = new FileReader()
 		

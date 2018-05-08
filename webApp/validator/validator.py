@@ -2,7 +2,7 @@ import cbor2
 import random
 
 from oc2.codec import Codec, jadn_loads
-from oc2.load import CBOR, JSON, ProtoBuf, XML
+from oc2.message import OpenC2Message, OpenC2MessageFormats
 
 
 class Validator(object):
@@ -10,12 +10,7 @@ class Validator(object):
     Validate messages against a given schema
     """
     def __init__(self):
-        self._formats = {
-            'cbor': CBOR,
-            'json': JSON,
-            'proto': ProtoBuf,
-            'xml': XML
-        }
+        self._formats = OpenC2MessageFormats.list(val=True)
 
         self.validMsgs = [
             'Success',
@@ -61,8 +56,7 @@ class Validator(object):
 
         if f in self._formats:
             try:
-                m = ''.join([mp[:2].decode('hex') + mp[2:] for mp in m.split('\\x')])
-                message = self._formats[f](m)
+                message = OpenC2Message(m, f)
             except Exception as e:
                 return False, "Message Invalid - {}".format(e)
         else:
@@ -74,7 +68,6 @@ class Validator(object):
 
         if d in records:
             try:
-                print(message.json_dump())
                 msg = tc.decode(d, message.json_dump())
                 return True, random.choice(self.validMsgs)
 

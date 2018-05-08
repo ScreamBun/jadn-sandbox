@@ -31,39 +31,42 @@ function format(id, s=indent) {
 		return
 	}
 	$("#"+id).removeClass('minify')
-	
 	data = $("#"+id).val() || $("#"+id).text()
 	
 	if (id == "message") {
-		type = $("#message-format").val()
-		switch (type) {
-			case "cbor":
-				c = bytes2cbor(data)
-				$("#"+id).text(c).val(c)
-				break
-			case "json":
-				try {	
-					j = JSON.stringify($.parseJSON(data), null, s)
+		type = ($("#message-format").val() || $("#message-format").text()).toLowerCase()
+		try {
+			switch (type) {
+				case "cbor":
+					c = bytes2cbor(data)
+					$("#"+id).text(c).val(c)
+					break
+				case "json":
+					j = vkbeautify.json(data, ' '.repeat(indent))
 					$("#"+id).text(j).val(j)
-				} catch(e) {
-					msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid: " + e.message
+					break
+				case "xml":
+					x = vkbeautify.xml(data, ' '.repeat(indent))
+					$("#"+id).text(x).val(x)
+					break
+				default:
+					msg = id.charAt(0).toUpperCase() + id.slice(1) + " Error, cannot format " + type + " message"
 					alertMsg("#alert-container", msg)
-				}
-			break;
-			default:
-				msg = id.charAt(0).toUpperCase() + id.slice(1) + " Error, cannot minify " + type + " message"
-				alertMsg("#alert-container", msg)
+			}
+		} catch(e) {
+			msg = id.charAt(0).toUpperCase() + id.slice(1) + " Error, cannot format: " + e.message
+			alertMsg("#alert-container", msg)
 		}
 	} else if (id == "schema") {
 		try {
-			j = JSON.stringify($.parseJSON(data), null, 0)
+			j = vkbeautify.json(data)
 			$("#"+id).text(j).val(j)
 		} catch (e) {
-			msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid, cannot minify: " + e.message
+			msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid, cannot format: " + e.message
 			alertMsg("#alert-container", msg)		
 		}
 	}
-	$("#"+id).addClass('minify')
+	$("#"+id).addClass('format')
 }
 
 function minify(id) {
@@ -71,32 +74,35 @@ function minify(id) {
 		return
 	}
 	$("#"+id).removeClass('format')
-		
 	data = $("#"+id).val() || $("#"+id).text()
 	
 	if (id == "message") {
-		type = $("#message-format").val()
-		switch (type) {
-			case "cbor":
-				c = cbor2bytes(data)
-				$("#"+id).text(c).val(c)
-				break
-			case "json":
-				try {
-					j = JSON.stringify($.parseJSON(data), null, 0)
+		type = ($("#message-format").val() || $("#message-format").text()).toLowerCase()
+		try {
+			switch (type) {
+				case "cbor":
+					c = cbor2bytes(data)
+					$("#"+id).text(c).val(c)
+					break
+				case "json":
+					j = vkbeautify.jsonmin(data)
 					$("#"+id).text(j).val(j)
-				} catch (e) {
-					msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid, cannot minify: " + e.message
-					alertMsg("#alert-container", msg)		
-				}
-			break;
-			default:
-				msg = id.charAt(0).toUpperCase() + id.slice(1) + " Error, cannot minify " + type + " message"
-				alertMsg("#alert-container", msg)
+				break
+				case "xml":
+					x = vkbeautify.xmlmin(data, true)
+					$("#"+id).text(x).val(x)
+					break
+				default:
+					msg = id.charAt(0).toUpperCase() + id.slice(1) + " Error, cannot minify " + type + " message"
+					alertMsg("#alert-container", msg)
+			}
+		} catch (e) {
+			msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid, cannot minify: " + e.message
+			alertMsg("#alert-container", msg)		
 		}
 	} else if (id == "schema") {
 		try {
-			j = JSON.stringify($.parseJSON(data), null, 0)
+			j = vkbeautify.jsonmin(data)
 			$("#"+id).text(j).val(j)
 		} catch (e) {
 			msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid, cannot minify: " + e.message

@@ -34,7 +34,7 @@
 
             <div class="card mx-auto w-100">
                 <div class="card-header">
-                    <h3 class="float-left">Message - {{ page_data.message_type }}</h3>
+                    <h3 class="float-left"><span id="message-format">{{ page_data.message_format|upper }}</span> Message - {{ page_data.message_type }}</h3>
 					
 					<div class="float-right btn-group">
 						<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
@@ -48,6 +48,7 @@
 {% endblock %}
 
 {% block page_script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
 
