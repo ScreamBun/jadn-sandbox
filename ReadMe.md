@@ -44,7 +44,9 @@
 ## Google App Engine
 TODO: Fill in info based on [simple flask app](https://cloud.google.com/appengine/docs/standard/python/getting-started/python-standard-env)
 		
-### Notes:
+### Notes
+- Using Git flow for developement
+
 #### Gunicorn
 - Valid settings can be found on the [Docs page](http://docs.gunicorn.org/en/latest/settings.html)
 

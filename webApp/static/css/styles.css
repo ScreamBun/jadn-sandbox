@@ -12,7 +12,7 @@ Custom CSS Styles
 	bottom: 1em;
 	right: 1em;
 }
-.container-fluid .row > *{
+.container-fluid .row > * {
     max-width: 1200px;
 }
 .code, textarea {
@@ -21,6 +21,10 @@ Custom CSS Styles
 	white-space: pre-wrap;
 }
 div.scroll {
-    max-height: 20em;
+    height: 20em;
+    overflow: scroll;
+}
+div.scroll-large {
+    height: 40em;
     overflow: scroll;
 }

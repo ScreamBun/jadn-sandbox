@@ -6,43 +6,49 @@
 
     <div class="container-fluid mt-3">
         <div class="row">
-            <div class="card border-{{'success' if page_data.valid_bool else 'danger'}} mx-auto w-100">
-                <div class="card-header">
-                    <h3>Status</h3>
-                </div>
-                <div class="card-body">
-                    <p>Valid: {{ page_data.valid_bool }}</p>
-                    <p>{{ page_data.valid_msg }}</p>
-                </div>
-            </div>
+			<div class="col-12 mx-auto">
+				<div class="card border-{{ 'success' if page_data.valid_bool else 'danger' }}">
+					<div class="card-header">
+						<h3>Status</h3>
+					</div>
+					<div class="card-body">
+						<p>Valid: {{ page_data.valid_bool }}</p>
+						<p>{{ page_data.valid_msg }}</p>
+					</div>
+				</div>
+			</div>
 
             <div class="col-12" style="height: 1.25em;"></div>
+			
+			<div class="col-12 col-xl-6 mx-auto">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="float-left">Schema</h3>
 
-            <div class="card mx-auto w-100">
-                <div class="card-header">
-                    <h3 class="float-left">Schema</h3>
-					
-					<div class="float-right btn-group">
-						<button type="button" class="btn btn-outline-secondary" onclick="format('schema')">Verbose</button>
-						<button type="button" class="btn btn-outline-secondary" onclick="minify('schema')">Minify</button>
+						<div class="float-right btn-group">
+							<button type="button" class="btn btn-outline-secondary" onclick="format('schema')">Verbose</button>
+							<button type="button" class="btn btn-outline-secondary" onclick="minify('schema')">Minify</button>
+						</div>
 					</div>
-                </div>
-                <div id="schema" class="card-body scroll code">{{ page_data.schema }}</div>
-            </div>
+					<div id="schema" class="card-body scroll code">{{ page_data.schema }}</div>
+				</div>
+			</div>
 
-            <div class="col-12" style="height: 1.25em;"></div>
+            <div class="col-12 d-xl-none" style="height: 1.25em;"></div>
 
-            <div class="card mx-auto w-100">
-                <div class="card-header">
-                    <h3 class="float-left"><span id="message-format">{{ page_data.message_format|upper }}</span> Message - {{ page_data.message_type }}</h3>
-					
-					<div class="float-right btn-group">
-						<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
-						<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
+            <div class="col-12 col-xl-6 mx-auto">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="float-left"><span id="message-format">{{ page_data.message_format|upper }}</span> Message - {{ page_data.message_type }}</h3>
+
+						<div class="float-right btn-group">
+							<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
+							<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
+						</div>
 					</div>
-                </div>
-                <div id="message" class="card-body scroll code">{{ page_data.message }}</div>
-            </div>
+					<div id="message" class="card-body scroll code{% if page_data.message_format == 'cbor' %} minify{% endif %}">{{ page_data.message }}</div>
+				</div>
+			</div>
         </div>
     </div>
 {% endblock %}
@@ -51,6 +57,18 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
-
+	$(window).resize(checkSize)
+	checkSize()
+	function checkSize() {
+		if ($(window).width() > 1200) {
+			$('#schema, #message').each(function(i, elm) {
+				$(elm).removeClass('scroll').addClass('scroll-large')
+			})
+		} else {
+			$('#schema, #message').each(function(i, elm) {
+				$(elm).removeClass('scroll-large').addClass('scroll')
+			})
+		}
+	}
 </script>
 {% endblock %}
