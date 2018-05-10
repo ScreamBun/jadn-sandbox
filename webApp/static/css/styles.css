@@ -21,10 +21,10 @@ Custom CSS Styles
 	white-space: pre-wrap;
 }
 div.scroll {
-    height: 20em;
+    max-height: 20em;
     overflow: scroll;
 }
 div.scroll-large {
-    height: 40em;
+    max-height: 40em;
     overflow: scroll;
 }

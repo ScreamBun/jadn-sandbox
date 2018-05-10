@@ -20,7 +20,7 @@
 
             <div class="col-12" style="height: 1.25em;"></div>
 			
-			<div class="col-12 col-xl-6 mx-auto">
+			<div class="col-12 mx-auto">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="float-left">Schema</h3>
@@ -34,9 +34,9 @@
 				</div>
 			</div>
 
-            <div class="col-12 d-xl-none" style="height: 1.25em;"></div>
+            <div class="col-12" style="height: 1.25em;"></div>
 
-            <div class="col-12 col-xl-6 mx-auto">
+            <div class="col-12 mx-auto">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="float-left"><span id="message-format">{{ page_data.message_format|upper }}</span> Message - {{ page_data.message_type }}</h3>
@@ -57,18 +57,5 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
-	$(window).resize(checkSize)
-	checkSize()
-	function checkSize() {
-		if ($(window).width() > 1200) {
-			$('#schema, #message').each(function(i, elm) {
-				$(elm).removeClass('scroll').addClass('scroll-large')
-			})
-		} else {
-			$('#schema, #message').each(function(i, elm) {
-				$(elm).removeClass('scroll-large').addClass('scroll')
-			})
-		}
-	}
 </script>
 {% endblock %}

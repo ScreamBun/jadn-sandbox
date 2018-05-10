@@ -11,8 +11,6 @@ class Validator(object):
     Validate messages against a given schema
     """
     def __init__(self):
-        self._formats = OpenC2MessageFormats.list(val=True)
-
         self.validMsgs = [
             'Success',
             'It\'s Gonna do the thing!!',
@@ -55,7 +53,7 @@ class Validator(object):
         if not v:
             return False, s
 
-        if fmt in self._formats:
+        if fmt in OpenC2MessageFormats.values():
             try:
                 message = OpenC2Message(msg, fmt)
             except Exception as e:
