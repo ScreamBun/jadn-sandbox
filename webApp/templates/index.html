@@ -117,6 +117,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
+	
     $("#schema-list, #message-list").change(function(e) {
         id = $(e.target).attr("id")
 		type = id.split('-')[0]
@@ -197,6 +198,8 @@
     })
 	
 	$("#schema").on('input change paste', loadDecodeTypes)
+	
+	$("#schema-list").val('OpenC2.jadn').trigger('change');
 	
 	function loadDecodeTypes() {
 		data = $("#schema").val() || $("#schema").text()

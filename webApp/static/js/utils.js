@@ -2,6 +2,23 @@
 Custom Utility Function File
 */
 
+/* https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format */
+String.prototype.format = String.prototype.format || function () {
+    "use strict";
+    var str = this.toString();
+    if (arguments.length) {
+        var t = typeof arguments[0];
+        var key;
+        var args = ("string" === t || "number" === t) ? Array.prototype.slice.call(arguments) : arguments[0];
+
+        for (key in args) {
+            str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+        }
+    }
+
+    return str;
+}
+
 var indent = 2,
 	alert_id = 1,
 	alert_levels = [
@@ -13,6 +30,11 @@ var indent = 2,
 		'warning',
 		'danger'
 	]
+
+regex_pun = "\\~\\`\\!\\@\\#\\$\\%\\^\\&\\*\\-\\_\\=\\+\\|\\;\\:\\'\\\"\\,\\<\\.\\>\\/\\?\\(\\)\\[\\]"
+regex_str = "\\\"[\\w{pun}]+\\\",".format({pun: regex_pun})
+regex_num = "\\d+,"
+regex_br = "\\n\\s+"
 
 function alertMsg(c, m, l=5, t=5000) {
 	msg_id = "alert_"+alert_id
@@ -59,9 +81,10 @@ function format(id, s=indent) {
 		}
 	} else if (id == "schema") {
 		try {
-			j = vkbeautify.json(data)
+			j = formatJADN(data)
 			$("#"+id).text(j).val(j)
 		} catch (e) {
+			console.log(e)
 			msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid, cannot format: " + e.message
 			alertMsg("#alert-container", msg)		
 		}
@@ -112,6 +135,67 @@ function minify(id) {
 	$("#"+id).addClass('minify')
 }
 
+function formatJADN(jadn) {
+	idn = ' '.repeat(indent)
+	jadn = JSON.parse(jadn)
+	meta = "{idn}\"meta\":{obj}".format({idn: idn, obj: $.map(vkbeautify.json(jadn.meta, idn).split(/\n/g), function(itm, i) {
+		return (i > 0 ? ' '.repeat(indent): '') + itm
+	}).join('\n')})
+	
+	types = "[{obj}\n{idn}]".format({idn: idn, obj: $.map(jadn.types, function(type) {
+		header = $.map(type.slice(0, -1), function(itm) {
+			switch (typeof(itm)) {
+				case "object":
+					return "[{obj}]".format({obj: $.map(itm, function(i) { return "\"{itm}\"".format({itm: i.replace(/\"/g, "\\\"")}) }).join(', ')})
+				default:
+					return "\"{itm}\"".format({itm: itm})
+			}
+		}).join(", ")
+		
+		defs = $.map(type.slice(-1), function(def) {
+			switch (typeof(def)) {
+				case "object":
+					return $.map(def, function(itm) {
+						switch (typeof(itm)) {
+							case "object":
+								return "{idn}{idn}{idn}[{obj}]".format({idn: idn, obj: $.map(itm, function(itm1) {
+									switch (typeof(itm1)) {
+										case "object":
+											return "[{obj}]".format({obj: $.map(itm1, function(i) {
+												switch (typeof(i)) {
+													case 'string':
+														return "\"{itm}\"".format({itm: i.replace(/\"/g, "\\\"")})
+													default:
+														return i
+												}
+											}).join(', ')})
+										case "string":
+											return "\"{itm}\"".format({itm: itm1.replace(/\"/g, "\\\"")})
+										default:
+											return itm1
+									}
+								}).join(", ")})
+							case "string":
+								return "\"{itm}\"".format({idn: idn, itm: itm.replace(/\"/g, "\\\"")})
+							default:
+								return itm
+						}
+					}).join(",\n")
+				default:
+					return "\"{itm}\"".format({itm: def})
+			}
+		}).join(",\n")
+		if (defs.match(/^\s+\[/)) {
+			defs = "[\n{defs}\n{idn}{idn}]".format({idn: idn, defs: defs})
+		}
+		
+		return "\n{idn}{idn}[{header}, {defs}]".format({idn: idn, header: header, defs: defs})
+	}).join(", ".format({idn: idn}))})
+	
+	//console.log(types)
+	
+	return "{\n{meta},\n{idn}\"types\": {types}\n}".format({idn: idn, meta: meta, types: types})
+}
 /*
  * General Util Functions
  */
