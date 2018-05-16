@@ -23,7 +23,9 @@ class VerifyMessage(Resource):
 
     def post(self):
         args = parser.parse_args()
-        val = current_app.validator.validateMessage(args['schema'], args['message'], args['message-format'], args['message-decode'])
+        fmt = args['message-format'] or 'json'
+        print(fmt)
+        val = current_app.validator.validateMessage(args['schema'], args['message'], fmt, args['message-decode'])
 
         page_data = {
             "schema": args['schema'],

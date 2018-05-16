@@ -10,7 +10,7 @@ root = Blueprint('index', __name__)
 api = Api(root)
 
 VALID_SCHEMAS = ['jadn']
-VALID_MESSAGES = ['json', 'cbor', 'xml']
+VALID_MESSAGES = ['json'] # , 'cbor', 'xml']
 
 
 def unquote(url):

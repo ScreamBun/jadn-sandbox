@@ -74,16 +74,18 @@
 						</div>
 					</div>
 						
-					<div class="form-row-fluid">					
+					<div class="form-row-fluid">
+						<input type="hidden" id="message-format" name="message-format" val="json" />
+						<!--
 						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
 							<select class="form-control" id="message-format" name="message-format" required="">
 								<option value="" selected="">Format</option>
 								<option value="json">json</option>
 								<option value="cbor">cbor</option>
-								<!--<option value="protobuf">protobuf</option>-->
+								<!--<option value="protobuf">protobuf</option>--
 								<option value="xml">xml</option>
 							</select>
-						</div>
+						</div>-->
 						
 						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
 							<select class="form-control" id="message-decode" name="message-decode" required="">
@@ -198,8 +200,6 @@
     })
 	
 	$("#schema").on('input change paste', loadDecodeTypes)
-	
-	$("#schema-list").val('OpenC2.jadn').trigger('change');
 	
 	function loadDecodeTypes() {
 		data = $("#schema").val() || $("#schema").text()
