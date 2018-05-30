@@ -1,4 +1,3 @@
-import cbor2
 import random
 
 from oc2 import OpenC2MessageFormats

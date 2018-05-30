@@ -48,14 +48,14 @@ function alertMsg(c, m, l=5, t=5000) {
 	}, t, msg_id)
 }
 
-function format(id, s=indent) {
-	if ($("#"+id).hasClass('format')) {
-		return
-	}
+function format(id, s=indent) {	
 	$("#"+id).removeClass('minify')
 	data = $("#"+id).val() || $("#"+id).text()
 	
 	if (id == "message") {
+		if ($("#"+id).hasClass('format')) {
+			return
+		}
 		type = ($("#message-format").val() || $("#message-format").text()).toLowerCase()
 		try {
 			switch (type) {
@@ -80,11 +80,11 @@ function format(id, s=indent) {
 			alertMsg("#alert-container", msg)
 		}
 	} else if (id == "schema") {
+		console.log()
 		try {
 			j = formatJADN(data)
 			$("#"+id).text(j).val(j)
 		} catch (e) {
-			console.log(e)
 			msg = id.charAt(0).toUpperCase() + id.slice(1) + " Invalid, cannot format: " + e.message
 			alertMsg("#alert-container", msg)		
 		}
@@ -92,14 +92,14 @@ function format(id, s=indent) {
 	$("#"+id).addClass('format')
 }
 
-function minify(id) {
-	if ($("#"+id).hasClass('minify')) {
-		return
-	}
+function minify(id) {	
 	$("#"+id).removeClass('format')
 	data = $("#"+id).val() || $("#"+id).text()
 	
 	if (id == "message") {
+		if ($("#"+id).hasClass('minify')) {
+			return
+		}
 		type = ($("#message-format").val() || $("#message-format").text()).toLowerCase()
 		try {
 			switch (type) {
@@ -138,9 +138,23 @@ function minify(id) {
 function formatJADN(jadn) {
 	idn = ' '.repeat(indent)
 	jadn = JSON.parse(jadn)
-	meta = "{idn}\"meta\":{obj}".format({idn: idn, obj: $.map(vkbeautify.json(jadn.meta, idn).split(/\n/g), function(itm, i) {
-		return (i > 0 ? ' '.repeat(indent): '') + itm
-	}).join('\n')})
+	meta = "{idn}\"meta\": {\n{obj}\n{idn}}".format({idn: idn, obj: $.map(jadn.meta, function(val, key) {
+		switch (typeof(val)){
+			case 'object':
+				obj = $.map(val, function(val1, key1) {
+					if (typeof(val1) == 'object') {
+						return '{idn}[\"{v}\"]'.format({idn: idn.repeat(3), v: val1.join('\", \"')})
+					} else {
+						return '{idn}\"{v}\"'.format({idn: idn.repeat(3), v: val1})
+					}
+				}).join(',\n')
+				
+				return '{idn}\"{k}\": [\n{v}\n{idn}]'.format({idn: idn.repeat(2), k: key, v: obj})
+				break;
+			default:
+			return '{idn}\"{k}\": \"{v}\"'.format({idn: idn.repeat(2), k: key, v: val})		
+		}
+	}).join(',\n')})
 	
 	types = "[{obj}\n{idn}]".format({idn: idn, obj: $.map(jadn.types, function(type) {
 		header = $.map(type.slice(0, -1), function(itm) {
@@ -192,10 +206,9 @@ function formatJADN(jadn) {
 		return "\n{idn}{idn}[{header}, {defs}]".format({idn: idn, header: header, defs: defs})
 	}).join(", ".format({idn: idn}))})
 	
-	//console.log(types)
-	
 	return "{\n{meta},\n{idn}\"types\": {types}\n}".format({idn: idn, meta: meta, types: types})
 }
+
 /*
  * General Util Functions
  */
@@ -220,6 +233,5 @@ function bytes2cbor(b) {
 		cs = String.fromCharCode(ci)
 		c += ci > 128 ? "\\x"+hb[i] : cs
 	}
-	console.log(c)
 	return c
 }

@@ -103,6 +103,11 @@
     [4, "*", "Results", [], "Data or extended status information that was requested from an OpenC2 command"]]
   ],
 
+  ["Results", "Choice", [], "", [
+    [1, "string", "String", ["[0","]0"], "List of strings"],
+    [2, "media", "Media", [], "Media type and data"]]
+  ],
+
   ["Status-Code", "Enumerated", ["="], "", [
     [102, "", "Processing - an interim response used to inform the client that the server has accepted the request but not yet completed it."],
     [200, "", "OK - the request has succeeded."],

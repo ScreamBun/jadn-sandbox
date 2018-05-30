@@ -1,6 +1,8 @@
 import json
 import os
 
+from oc2.enums import FrozenDict
+
 
 class Config(object):
     APP_DIR = os.path.realpath(os.path.dirname(__file__))
@@ -17,8 +19,6 @@ class Config(object):
     APPLICATION_ROOT = '/'
 
     TEMPLATE_FOLDER = os.path.join(APP_DIR, "templates")
-
-    OPEN_C2_DATA = os.path.join(APP_DATA, "openc2_files")
 
     SECRET_KEY = 'openc2openc2'
 
@@ -55,6 +55,24 @@ class Config(object):
 
     # Options parsed in from cmdline
     OPTIONS = None
+
+    # OpenC2 Options
+    OPEN_C2_DATA = os.path.join(APP_DATA, "openc2_files")
+
+    VALID_SCHEMAS = ['jadn']
+
+    VALID_SCHEMA_CONV = FrozenDict({
+        'JADN': 'jadn',
+        'ProtoBuf3': 'proto',
+        'CDDL': 'cddl',
+        'Relax-NG': 'relax',
+        # 'MarkDown': 'md',
+        # 'HTML': 'html',
+        # 'JSON': 'json',
+        # 'Thrift': 'thrift'
+    })
+
+    VALID_MESSAGES = ['json', 'cbor', 'xml']
 
 
 class DefaultConfig(Config):

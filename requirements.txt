@@ -4,3 +4,4 @@ gunicorn
 multiprocessing_logging
 json-logging-py
 jsonschema
+lxml
