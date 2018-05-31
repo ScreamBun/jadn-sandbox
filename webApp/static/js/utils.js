@@ -80,7 +80,6 @@ function format(id, s=indent) {
 			alertMsg("#alert-container", msg)
 		}
 	} else if (id == "schema") {
-		console.log()
 		try {
 			j = formatJADN(data)
 			$("#"+id).text(j).val(j)

@@ -63,11 +63,11 @@ class Config(object):
 
     VALID_SCHEMA_CONV = FrozenDict({
         'JADN': 'jadn',
-        'ProtoBuf3': 'proto',
+        'ProtoBuf3': 'proto3',
         'CDDL': 'cddl',
-        'Relax-NG': 'relax',
-        # 'MarkDown': 'md',
-        # 'HTML': 'html',
+        'Relax-NG': 'rng',
+        'MarkDown': 'md',
+        'HTML': 'html',
         # 'JSON': 'json',
         # 'Thrift': 'thrift'
     })

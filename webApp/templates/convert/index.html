@@ -20,10 +20,13 @@
 						
 						<textarea class="form-control border" placeholder="Paste JADN schema here" id="schema" name="schema" rows="25" required="">{{ options.schema.base }}</textarea>
 						
+						<div class="col-12 m-1"></div>
+						
 						<div class="dropdown float-right">
 							<button class="btn btn-sm btn-info dropdown-toggle" type="button" id="schema-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								Schema Options
 							</button>
+							
 							<div class="dropdown-menu" aria-labelledby="schema-options">
 								<a class="dropdown-item" href="#" onclick="format('schema')">Format</a>
 								<a class="dropdown-item" href="#" onclick="format('schema')">Verbose</a>
@@ -53,8 +56,12 @@
 
 					<fieldset class="col-6 p-0 float-left">
 						<legend>Converted</legend>
+						
 						<textarea class="form-control border" placeholder="Converted JADN schema" id="convert" name="convert" rows="25">{{ options.schema.convert }}</textarea>
-						<button type="button" class="btn btn-sm btn-primary float-right" onclick="downloadFile()">Download</button>
+						
+						<div class="col-12 m-1"></div>
+						
+						<a class="btn btn-sm btn-primary float-right" href="#" id="download-link" onclick="downloadFile()">Download</a>
 					</fieldset>
 				</div>
 				
@@ -65,7 +72,7 @@
 						<select id="convert-to" name="convert-to" class="form-control">
 							<option value="empty" {% if not request.form['convert-to'] %}selected=""{% endif %}>Convert To...</option>
 								{% for conv in options.convs %}
-									<option value="{{ conv }}" {% if request.form['convert-to'] == conv %}selected=""{% endif %}>{{ conv }}</option>
+									<option value="{{ options.convs[conv] }}" {% if request.form['convert-to'] == options.convs[conv] %}selected=""{% endif %}>{{ conv }}</option>
 								{% endfor %}
 						</select>
 					</div>
@@ -81,6 +88,16 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
+	if ($('#convert-to').val() == 'jadn') {
+		data = $("#convert").val() || $("#convert").text()
+		try {
+			j = formatJADN(data)
+			$("#convert").text(j).val(j)
+		} catch (e) {
+			console.log(e)
+		}
+	}
+	
     $("#schema-list").change(function(e) {
         id = $(e.target).attr("id")
 		type = id.split('-')[0]
@@ -141,6 +158,7 @@
         $("textarea").each(function(i, e) {
             $(e).text("").val("").removeClass('minify format')
         });
+		// todo: clear selects....
     })
 	
 	$("#schema").on('input change paste', loadDecodeTypes)
@@ -167,7 +185,41 @@
 	}
 	
 	function downloadFile() {
+		type = $('#convert-to').val()
+		conv = $("#convert").val() || $("#convert").text()
+		download = $('#download-link')
+		download.attr('download', 'schema.{ext}'.format({ext: type}));
 		
+		mime = {
+			proto3: 'text/x-c',
+			rng: 'application/xml',
+			html: 'text/html',
+			md: 'text/plain',
+			cddl: 'text/plain',
+			thrift: 'text/plain'
+		}
+		
+		console.log(type) 
+		switch (type) {
+			case 'jadn': //application/json
+				download.attr('href', "data:application/json;charset=utf-8,{conv}".format({conv: encodeURIComponent(conv)}));
+				break;
+			case 'proto3': //text/x-c
+			case 'rng': //application/xml
+			case 'html': //text/html
+			case 'md': //text/plain
+			case 'cddl': //text/plain
+			case 'thrift': //text/plain
+				download.attr('href', "data:{data}};charset=utf-8,{conv}".format({data: mime[type], conv: encodeURIComponent(conv)}));
+				break;
+			default:
+				download.attr('href', "data:text/plain;charset=utf-8,{conv}".format({conv: encodeURIComponent('Theres some issues....')}));
+				break
+		}
+		
+		console.log(download)
+		// download.click()
+		// window.location.href = "data:text/plain;charset=UTF-8,Hello World";
 	}
 
     function validateForm() {

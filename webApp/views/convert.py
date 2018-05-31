@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import re
@@ -5,7 +6,9 @@ import re
 from flask import Blueprint, current_app, url_for, render_template, redirect, Response
 from flask_restful import Api, Resource, reqparse
 
+from oc2.codec import jadn_loads
 from oc2.convert import base_dumps, cddl_dumps, proto_dumps, relax_dumps
+from oc2.utils import Utils
 
 logger = logging.getLogger()
 convert = Blueprint('convert', __name__)
@@ -23,9 +26,10 @@ class Convert(Resource):
     Endpoint for /convert
     """
     conversions = {
-        'proto': (proto_dumps, ),
+        'jadn': (lambda x: json.dumps(x), ),
+        'proto3': (proto_dumps, ),
         'cddl': (cddl_dumps, ),
-        'relax': (relax_dumps, ),
+        'rng': (relax_dumps, ),
         'md': (base_dumps, {'form': 'markdown'}),
         'html': (base_dumps, {'form': 'html'})
     }
@@ -35,7 +39,7 @@ class Convert(Resource):
 
         opts = {
             'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if schemas.search(s)],
-            'convs': current_app.config.get('VALID_SCHEMA_CONV').keys(),
+            'convs': current_app.config.get('VALID_SCHEMA_CONV'),
             'schema': {}
         }
 
@@ -47,27 +51,22 @@ class Convert(Resource):
         args = parser.parse_args()
         schemas = re.compile('\.(' + '|'.join(current_app.config.get('VALID_SCHEMAS')) + ')$')
         err = []
-        conv = 'FML'
+        conv = 'Their are some issues....'
 
         val = current_app.validator.validateSchema(args['schema'])
 
         if val[0]:  # Valid Schema
             conv = 'Valid Base Schema'
-            conv_to = current_app.config.get('VALID_SCHEMA_CONV').get(args['convert-to'])
-            if conv_to is None:
+            conv_fun = self.conversions.get(args['convert-to'])
+
+            print(args['convert-to'], args['convert-to'])
+
+            if conv_fun is None:
                 conv = 'Invalid Conversion Type'
 
-            elif conv_to == 'jadn':
-                conv = args['schema']
-
             else:
-                conv_fun = self.conversions.get(conv_to)
-                if conv_fun is None:
-                    conv = 'Invalid Conversion Type'
-
-                else:
-                    opts = {} if len(conv_fun) == 1 else conv_fun[1]
-                    conv = conv_fun[0](args['schema'], **opts)
+                opts = {} if len(conv_fun) == 1 else conv_fun[1]
+                conv = conv_fun[0](jadn_loads(args['schema']), **opts)
 
         else:  # Invalid Schema
             err.append(val[1])
@@ -75,7 +74,7 @@ class Convert(Resource):
 
         opts = {
             'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if schemas.search(s)],
-            'convs': current_app.config.get('VALID_SCHEMA_CONV').keys(),
+            'convs': current_app.config.get('VALID_SCHEMA_CONV'),
             'schema': {
                 'base': args['schema'],
                 'convert': conv
