@@ -59,8 +59,6 @@ class Convert(Resource):
             conv = 'Valid Base Schema'
             conv_fun = self.conversions.get(args['convert-to'])
 
-            print(args['convert-to'], args['convert-to'])
-
             if conv_fun is None:
                 conv = 'Invalid Conversion Type'
 
