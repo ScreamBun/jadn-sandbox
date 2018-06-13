@@ -18,15 +18,11 @@ class Validator(object):
         }
 
         self.validMsgs = [
-            'Success',
-            'It\'s Gonna do the thing!!',
-            'Whoot! It works'
+            'Success'
         ]
 
         self.invalidMsgs = [
-            'Fail',
-            'It\'s Broken',
-            'That\'s not right'
+            'Fail'
         ]
 
     def validateSchema(self, s, m=True):
