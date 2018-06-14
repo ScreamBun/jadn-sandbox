@@ -1,5 +1,6 @@
-from .root import root
+from .convert import convert
 from .load import load
+from .root import root
 from .validate import validate
 
 
@@ -8,6 +9,7 @@ def register_all(app):
     app.register_blueprint(root, url_prefix='')
     app.register_blueprint(load, url_prefix='/load')
     app.register_blueprint(validate, url_prefix='/validate')
+    app.register_blueprint(convert, url_prefix='/convert')
 
 
 __all__ = ['root', 'register_all']

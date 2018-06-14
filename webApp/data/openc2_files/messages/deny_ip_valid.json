@@ -1,10 +1,5 @@
 {
     "action": "deny",
-    "actuator": {
-        "firewall": {
-            "asset_id": "309924"
-        }
-    },
     "id": "101",
     "target": {
         "ip_connection": {
@@ -14,5 +9,9 @@
             "src_addr": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
             "src_port": "10996"
         }
+    },
+    "args": {
+        "duration": "PT2M30S",
+        "start_time": "2016-11-25T08:10:31-04:00"
     }
 }

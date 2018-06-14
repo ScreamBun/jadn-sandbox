@@ -1,0 +1,279 @@
+{% extends "static/base.html" %}
+{% block body %}
+    {% include "static/nav.html" %}
+
+    <div id="alert-container" class="w-50"></div>
+
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <form class="mx-auto col-12" action="/validate" method="post" onsubmit="return validateForm()">
+                <fieldset>
+                    <legend>JADN Schema</legend>
+					<div class="form-row">
+						<div class="form-group col-md-3 pr-1 pl-1">
+							<select id="schema-list" name="schema-list" class="form-control">
+								<option value="empty" selected="">Schema</option>
+								{% for opt in options.schemas %}
+									<option value="{{ opt }}">{{ opt }}</option>
+								{% endfor %}
+								<option disabled="">──────────</option>
+								<option value="file">File...</option>
+								<option value="">URL...</option>
+							</select>
+					   	</div>
+						
+						<div id="schema-file-group" class="form-group col-md-3 d-none pr-1 pl-1">
+							<input type="file" class="form-control-file" id="schema-file" name="schema-file" accept=".jadn">
+					  	</div>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<textarea class="form-control border" placeholder="Paste JADN schema here" id="schema" name="schema" rows="10" required=""></textarea>
+						</div>
+					</div>
+					
+					<div class="form-row-fluid">
+						<div class="dropdown float-right">
+							<button class="btn btn-info dropdown-toggle" type="button" id="schema-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Schema Options
+							</button>
+							<div class="dropdown-menu" aria-labelledby="schema-options">
+								<a class="dropdown-item" href="#" onclick="format('schema')">Format</a>
+								<a class="dropdown-item" href="#" onclick="format('schema')">Verbose</a>
+								<a class="dropdown-item" href="#" onclick="minify('schema')">Minify</a>
+								<a class="dropdown-item" href="#" onclick="verifySchema()">Verify</a>
+							</div>
+						</div>
+					</div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Message</legend>
+					<div class="form-row">
+						<div class="form-group col-md-3 pr-1 pl-1">
+							<select id="message-list" name="message-list" class="form-control">
+								<option value="empty" selected="">Message</option>
+								{% for opt in options.messages %}
+									<option value="{{ opt }}">{{ opt }}</option>
+								{% endfor %}
+								<option disabled="">──────────</option>
+								<option value="file">File...</option>
+								<option value="">URL...</option>
+							</select>
+						</div>
+						
+						<div id="message-file-group" class="form-group col-md-3 d-none pr-1 pl-1">
+							<input type="file" class="form-control-file" id="message-file" name="message-file" accept=".json,.xml,.cbor">
+					  	</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-12">
+							<textarea class="form-control border" placeholder="Paste message to be validated here" id="message" name="message" rows="10" required=""></textarea>
+						</div>
+					</div>
+						
+					<div class="form-row-fluid">
+						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
+							<select class="form-control" id="message-format" name="message-format" required="">
+								<option value="" selected="">Format</option>
+								<option value="json">json</option>
+								<option value="cbor">cbor</option>
+								<!--<option value="protobuf">protobuf</option>-->
+								<option value="xml">xml</option>
+							</select>
+						</div>
+						
+						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
+							<select class="form-control" id="message-decode" name="message-decode" required="">
+								<option value="empty" selected="">Decode</option>
+							</select>
+						</div>
+						
+						<div class="dropdown float-right">
+							<button class="btn btn-info dropdown-toggle" type="button" id="message-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Message Options
+							</button>
+							<div class="dropdown-menu" aria-labelledby="message-options">
+								<a class="dropdown-item" href="#" onclick="format('message')">Format</a>
+								<a class="dropdown-item" href="#" onclick="format('message')">Verbose</a>
+								<a class="dropdown-item" href="#" onclick="minify('message')">Minify</a>
+							</div>
+						</div>
+					</div>
+                </fieldset>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-outline-primary">Validate</button>
+                    <button type="reset" class="btn btn-outline-danger">Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<script type="text/javascript">
+	
+    $("#schema-list, #message-list").change(function(e) {
+        id = $(e.target).attr("id")
+		type = id.split('-')[0]
+        selected = $(e.target).val()
+		
+		$("#"+type+"-file-group").addClass("d-none")
+		
+        if (selected == "" || selected == null) {
+            return
+        } else if (selected == "empty") {
+            $(e).text("").val("")
+            return
+        } else if (selected == "file") {
+			$("#"+type+"-file-group").removeClass("d-none")
+			return
+		}
+
+        $.get(
+            "/load/"+type+"s/"+selected,
+            function(data) {
+				if (data['type'] == type+"s" && data['file'] == selected) {
+					$("#"+type).removeClass('minify format')
+					
+					if (type == "message") {
+						t = data['file'].split('.')[1]
+						$("#message-format").val(t)
+						switch(t) {
+							case 'cbor':
+								$("#"+type).addClass('minify')
+								d = cbor2bytes(data['data'])
+								break
+							default:
+								d = data['data']
+						}
+						$("#"+type).text(d).val(d)
+						
+					} else if (type == "schema") {
+						$("#"+type).text(data['data']).val(data['data'])
+						loadDecodeTypes()
+					}
+				} else {
+					alertMsg("#alert-container", "Cannot load data")
+				}
+            }
+        ).fail(function() {
+			alertMsg("#alert-container", "Cannot load data")
+        })
+    })
+	
+	$("#schema-file, #message-file").change(function(e) {
+		// TODO: NEEDS WORK!!!
+		id = $(e.target).attr("id").split('-')[0]
+		var fileReader = new FileReader()
+		
+    	fileReader.onload = function (e) {
+			data = fileReader.result
+			try {
+				j = JSON.stringify($.parseJSON(data), null, indent)
+            } catch(e) {
+				data = atob(data.substr(data.indexOf(',')+1))
+				$("#"+type).addClass('minify')
+				j = cbor2bytes(data)
+            }
+			$("#"+id).text(j).val(j)
+			
+			if (id == "schema") {
+				loadDecodeTypes()
+			}
+    	}
+		
+    	fileReader.readAsDataURL($(e.target).prop('files')[0])
+	})
+
+    $("button[type='reset']").click(function(e) {
+        $("textarea").each(function(i, e) {
+            $(e).text("").val("").removeClass('minify format')
+        });
+    })
+	
+	$("#schema").on('input change paste', loadDecodeTypes)
+	
+	function loadDecodeTypes() {
+		data = $("#schema").val() || $("#schema").text()
+		try {
+			schema_records = $.map($.parseJSON(data)['meta']['exports'], function(v, k) {
+				return v
+			})
+		} catch (e) {
+			schema_records = $.parseJSON("{}")
+			opt = $("<option/>").addClass("schema_record").attr("disabled", "").text("Cannot Load, Invalid Schema")
+			$("#message-decode").append(opt)
+		}
+		
+		schema_records.sort();
+		
+		$("#message-decode option.schema_record").remove()
+		$.each(schema_records, function(i, v) {
+			opt = $("<option/>").addClass("schema_record").attr("value", v).text(v)
+			$("#message-decode").append(opt)
+		})
+	}
+
+    function validateForm() {
+		schema = $("#schema").val() || $("#schema").text()
+        try {
+            $.parseJSON(schema)
+        } catch(e) {
+			alertMsg("#alert-container", "Schema Invalid")			
+			return false
+        }
+		
+		message = $("#message").val() || $("#message").text()
+		message_type = $("#message-format").val()
+		console.log(message_type)
+		switch (message_type) {
+			case 'cbor':
+				minify('message')
+				break
+			case 'json':
+				try {
+					$.parseJSON(message)
+				} catch(e) {
+					alertMsg("#alert-container", "Message Invalid")
+				}
+				break
+			default:
+				break
+		}
+		
+		decode = $("#decode option:selected").val()
+		if ($.inArray(decode, [null, "", "empty"]) >= 0) {
+			alertMsg("#alert-container", "Message Decode Type Invalid")			
+            return false
+		}
+
+        return true
+    }
+	
+	function verifySchema(id) {
+		data = $("#schema").val() || $("#schema").text()
+		
+		 $.post(
+            "/validate/schema",
+			{
+				"schema": data
+			},
+            function(d) {
+				if (d['valid_bool']) {
+					msg = "Valid Schema: " + d['valid_msg']
+					alertMsg("#alert-container", msg, 3)
+				} else {
+					msg = "Invalid Schema: " + d['valid_msg'].replace(/^.*?\-/, '')
+					alertMsg("#alert-container", msg)
+				}
+			}
+		)
+	}
+</script>
+{% endblock %}

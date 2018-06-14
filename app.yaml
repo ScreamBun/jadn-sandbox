@@ -5,6 +5,8 @@ threadsafe: true
 libraries:
 - name: ssl
   version: latest
+- name: lxml
+  version: "3.7.3"
 
 handlers:
 - url: /static
