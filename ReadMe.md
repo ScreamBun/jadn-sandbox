@@ -2,10 +2,10 @@
 ## Running Server (General)
 1. Install Python and pip
 	- Install varies based on the system...
-2. Install oc2 whl using local install
+2. Install OpenC2 JADN whl using local install
 
     ```bash
-    pip install ./oc2-0.0.1-py2-none-any.whl
+    pip install -r OpenC2-*.whl
     ```
 
 ## Running Server (developement)
@@ -13,13 +13,20 @@
 	
 	```bash
 	pip install -r requirements.txt
-	```
+   	```
 	
 2. Run the server
+	- Linux
+		
+		```bash
+		start.sh
+		```
 	
-	```bash
-	python -m webApp
-	```
+	- Windows
+	
+		```cmd
+		start.bat
+		```
 	
 #### Notes
 - Recomended to use virtualenv, if not currently, while on a delvelopement system
