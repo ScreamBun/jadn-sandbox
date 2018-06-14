@@ -25,14 +25,11 @@ class Validate(Resource):
         messages = re.compile('\.(' + '|'.join(current_app.config.get('VALID_MESSAGES')) + ')$')
 
         opts = {
-            'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if
-                        schemas.search(s)],
-            'messages': [m for m in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'messages')) if
-                         messages.search(m)]
+            'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if schemas.search(s)],
+            'messages': [m for m in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'messages')) if messages.search(m)]
         }
 
-        resp = Response(render_template('index.html', page_title="Message Validator", options=opts),
-                        mimetype='text/html')
+        resp = Response(render_template('index.html', page_title="Message Validator", options=opts), mimetype='text/html')
         resp.status_code = 200
         return resp
 

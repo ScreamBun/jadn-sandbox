@@ -45,7 +45,6 @@ class Validator(object):
         :param decode: (str) format to decode the message as
         :return: (tuple) valid/invalid bool, message
         """
-        print(decode)
         v, s = self.validateSchema(schema, False)
         err = random.choice(self.invalidMsgs)
 
