@@ -36,7 +36,7 @@
 
             <div class="col-12" style="height: 1.25em;"></div>
 
-            <div class="col-12 mx-auto">
+            <div class="col-6 mx-auto">
 				<div class="card">
 					<div class="card-header">
 						<h3 class="float-left"><span id="message-format">{{ page_data.message_format|upper }}</span> Message - {{ page_data.message_type }}</h3>
@@ -46,7 +46,7 @@
 							<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
 						</div>
 					</div>
-					<div id="message" class="card-body scroll code{% if page_data.message_format == 'cbor' %} minify{% endif %}">{{ page_data.message }}</div>
+					<div id="message" class="card-body scroll code">{{ page_data.message_original }}</div>
 				</div>
 			</div>
         </div>

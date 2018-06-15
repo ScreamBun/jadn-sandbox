@@ -1,4 +1,3 @@
-import logging
 import os
 import shutil
 
@@ -27,16 +26,13 @@ app.config.from_object('webApp.config.DevConfig')
 app.url_map.strict_slashes = False
 
 if app.config.get('ORIGINAL_DATA'):
-    logging.info('Im running in a docker container.....')
+    print('Im running in a docker container.....')
     walkCopy(app.config.get('ORIGINAL_DATA'), app.config.get('APP_DATA'))
 
 else:
-    logging.info('Im running on true system.....')
+    print('Im running on true system.....')
 
-app.logger.handlers = []
-app.logger.addHandler(logging.getLogger().handlers[0])
-
-logging.info('Starting OpenC2 Flask Server')
+print('Starting OpenC2 Flask Server')
 
 app.validator = Validator()
 

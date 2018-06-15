@@ -3,6 +3,7 @@ import random
 from oc2 import OpenC2MessageFormats
 from oc2.codec import Codec, jadn_loads
 from oc2.message import OpenC2Message
+from oc2.utils import Utils
 
 
 class Validator(object):
@@ -55,9 +56,10 @@ class Validator(object):
             try:
                 message = OpenC2Message(msg, fmt)
             except Exception as e:
-                return False, "Message Invalid - {}".format(e)
+                message = ''
+                return False, "Message Invalid - {}".format(e), '', msg
         else:
-            return False, err
+            return False, err, '', msg
 
         tc = Codec(s, True, True)
         records = [t[0] for t in s['types']]
@@ -66,10 +68,10 @@ class Validator(object):
         if decode in records:
             try:
                 msg = tc.decode(decode, message.json_dump())
-                return True, random.choice(self.validMsgs)
+                return True, random.choice(self.validMsgs), Utils.defaultDecode(message.json_dump()), message.original_dump()
 
             except (ValueError, TypeError) as e:
                 err = str(e)
-                return False, err
+                return False, err, Utils.defaultDecode(message.json_dump()), message.original_dump(),
 
-        return False, err
+        return False, err, '', msg

@@ -37,15 +37,16 @@ class Validate(Resource):
         args = parser.parse_args()
         fmt = args['message-format'] or 'json'
 
-        val = current_app.validator.validateMessage(args['schema'], args['message'], fmt, args['message-decode'])
+        val, valMsg, msgJson, msgOrig = current_app.validator.validateMessage(args['schema'], args['message'], fmt, args['message-decode'])
 
         page_data = {
             "schema": args['schema'],
-            "message": args['message'],
+            "message_original": msgOrig,
+            "message_json": msgJson,
             "message_format": args['message-format'],
             "message_type": args['message-decode'],
-            "valid_bool": val[0],
-            "valid_msg": val[1]
+            "valid_bool": val,
+            "valid_msg": valMsg
         }
 
         return Response(render_template("validate/validate.html", page_title="Message Validation", page_data=page_data))

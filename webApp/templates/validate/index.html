@@ -18,12 +18,21 @@
 								{% endfor %}
 								<option disabled="">──────────</option>
 								<option value="file">File...</option>
-								<option value="">URL...</option>
+								<option value="url">URL...</option>
 							</select>
 					   	</div>
 						
-						<div id="schema-file-group" class="form-group col-md-3 d-none pr-1 pl-1">
-							<input type="file" class="form-control-file" id="schema-file" name="schema-file" accept=".jadn">
+						<div id="schema-file-group" class="form-group col-md-4 d-none pr-1 pl-1">
+							<input type="file" class="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn">
+					  	</div>
+
+						<div id="schema-url-group" class="form-group col-md-4 d-none pr-1 pl-1">
+							<div class="input-group">
+        						<div class="input-group-prepend">
+          							<button type="button" class="btn btn-info" onclick="loadURL('schema')">Load URL</button>
+        						</div>
+        						<input type="text" class="form-control" id="schema-url">
+      						</div>
 					  	</div>
 					</div>
 
@@ -59,12 +68,21 @@
 								{% endfor %}
 								<option disabled="">──────────</option>
 								<option value="file">File...</option>
-								<option value="">URL...</option>
+								<option value="url">URL...</option>
 							</select>
 						</div>
 						
-						<div id="message-file-group" class="form-group col-md-3 d-none pr-1 pl-1">
-							<input type="file" class="form-control-file" id="message-file" name="message-file" accept=".json,.xml,.cbor">
+						<div id="message-file-group" class="form-group col-md-4 d-none pr-1 pl-1">
+							<input type="file" class="btn btn-light form-control-file" id="message-file" name="message-file" accept=".json,.xml,.cbor">
+					  	</div>
+
+						<div id="message-url-group" class="form-group col-md-4 d-none pr-1 pl-1">
+							<div class="input-group">
+        						<div class="input-group-prepend">
+          							<button type="button" class="btn btn-info" onclick="loadURL('message')">Load URL</button>
+        						</div>
+        						<input type="text" class="form-control" id="message-url">
+      						</div>
 					  	</div>
 					</div>
 					
@@ -128,11 +146,19 @@
         if (selected == "" || selected == null) {
             return
         } else if (selected == "empty") {
-            $(e).text("").val("")
+			$("#"+type).text("").val("")
             return
         } else if (selected == "file") {
+			$("#"+type+"-url-group").addClass("d-none")
 			$("#"+type+"-file-group").removeClass("d-none")
 			return
+		} else if (selected == "url") {
+			$("#"+type+"-file-group").addClass("d-none")
+			$("#"+type+"-url-group").removeClass("d-none")
+			return
+		} else {
+			$("#"+type+"-file-group").addClass("d-none")
+			$("#"+type+"-url-group").addClass("d-none")
 		}
 
         $.get(
@@ -175,11 +201,12 @@
     	fileReader.onload = function (e) {
 			data = fileReader.result
 			try {
-				j = JSON.stringify($.parseJSON(data), null, indent)
+				dataStr = atob(data.split(',')[1])
+				j = JSON.stringify($.parseJSON(dataStr), null, indent)
             } catch(e) {
 				data = atob(data.substr(data.indexOf(',')+1))
 				$("#"+type).addClass('minify')
-				j = cbor2bytes(data)
+				j = cbor2bytes(data.hexify())
             }
 			$("#"+id).text(j).val(j)
 			
@@ -189,6 +216,8 @@
     	}
 		
     	fileReader.readAsDataURL($(e.target).prop('files')[0])
+		t = $(e.target).prop('files')[0].name.split('.')[1]
+		$("#message-format").val(t)
 	})
 
     $("button[type='reset']").click(function(e) {
@@ -198,6 +227,58 @@
     })
 	
 	$("#schema").on('input change paste', loadDecodeTypes)
+	
+	function loadURL(id) {
+		url = $('#'+id+'-url').text() || $('#'+id+'-url').val()
+		
+		file = url.substring(url.lastIndexOf("/") + 1)
+		fileName = file.substring(0, file.lastIndexOf("."))
+		fileExt = file.substring(file.lastIndexOf(".") + 1)
+		
+		formatMsg = false
+		hexifyMsg = false
+		
+		switch (fileExt) {
+			case 'jadn':
+				formatMsg = true
+				if (id != 'schema'){
+					alertMsg("#alert-container", "Cannot load {ext} data as {id}".format({id: id, ext: fileExt}))
+					return
+				}
+				break;
+			case 'cbor':
+				hexifyMsg = true
+			case 'json':
+				formatMsg = true
+			case 'xml':
+				if (id != 'message'){
+					alertMsg("#alert-container", "Cannot load {ext} data as {id}".format({id: id, ext: fileExt}))
+					return
+				}
+				$("#message-format").val(fileExt)
+				break;
+			default:
+				alertMsg("#alert-container", "Cannot load {id} data, improper file type {ext}".format({id: id, ext: fileExt}))
+				return
+		}
+		
+		console.log('PASSED SWITCH')
+
+		$.get(
+			url,
+			function(data) {
+				if (hexifyMsg) {
+					data = cbor2bytes(data.hexify())
+					$('#'+id).text(data).val(data)					
+				} else if (formatMsg) {
+					$('#'+id).text(data).val(data)
+					format(id)
+				}
+			}
+		).fail(function() {
+			alertMsg("#alert-container", "An error has occured loading the {id} data from {file}.Check the URL and try again".format({id: id, file: file}))
+		})
+	}
 	
 	function loadDecodeTypes() {
 		data = $("#schema").val() || $("#schema").text()
@@ -235,7 +316,8 @@
 		switch (message_type) {
 			case 'cbor':
 				minify('message')
-				break
+				sleep(500)
+				break;
 			case 'json':
 				try {
 					$.parseJSON(message)
@@ -252,7 +334,9 @@
 			alertMsg("#alert-container", "Message Decode Type Invalid")			
             return false
 		}
-
+		
+		sleep(500)
+		
         return true
     }
 	

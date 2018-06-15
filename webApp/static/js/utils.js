@@ -19,6 +19,33 @@ String.prototype.format = String.prototype.format || function () {
     return str;
 }
 
+String.prototype.hexify = String.prototype.hexify || function() {
+	"use strict"
+	var rtnStr = ''
+	var str = this.toString()
+	
+	for (var i in str) {
+		var code = str.charCodeAt(i)
+		var char = str.charAt(i)
+		rtnStr += ((code > 128) ? '\\x' + code.toString(16) : char)
+	}
+	return rtnStr
+}
+
+String.prototype.dehexify = String.prototype.dehexify || function() {
+	"use strict"
+	var rtnStr = ''
+	var str = this.toString().split(/\\x/g)
+	
+	for (var i in str) {
+		console.log(str[i])
+		// var code = str.charCodeAt(i)
+		// var char = str.charAt(i)
+		// rtnStr += ((code > 128) ? '\\x' + code.toString(16) : char)
+	}
+	return rtnStr
+}
+
 var indent = 2,
 	alert_id = 1,
 	alert_levels = [
@@ -233,4 +260,9 @@ function bytes2cbor(b) {
 		c += ci > 128 ? "\\x"+hb[i] : cs
 	}
 	return c
+}
+
+function sleep(miliseconds) {
+	var currentTime = new Date().getTime();
+    while (currentTime + miliseconds >= new Date().getTime()) {}
 }
