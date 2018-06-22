@@ -36,26 +36,61 @@
 
             <div class="col-12" style="height: 1.25em;"></div>
 
-            <div class="col-6 mx-auto">
+            <div class="col-12 mx-auto">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="float-left"><span id="message-format">{{ page_data.message_format|upper }}</span> Message - {{ page_data.message_type }}</h3>
+						<h3 class="float-left">Message - {{ page_data.message_type }}</h3>
+					</div>
+					<div class="card-body py-0 row">
+						{% if page_data.message_format != 'json' %}
+						<div class="card col-md-6">
+							<div class="card-header">
+								<h3 class="float-left">JSON</h3>
 
-						<div class="float-right btn-group">
-							<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
-							<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
+								<div class="float-right btn-group">
+									<button type="button" class="btn btn-outline-secondary" onclick="format('message-json', indent, 'json')">Verbose</button>
+									<button type="button" class="btn btn-outline-secondary" onclick="minify('message-json', 'json')">Minify</button>
+								</div>
+							</div>
+							<div id="message-json" class="card-body scroll code">{{ page_data.message_json }}</div>
+						</div>
+						{% endif %}
+						
+						<div class="card {{ 'col-12' if page_data.message_format == 'json' else ' col-md-6' }}">
+							<div class="card-header">
+								<h3 class="float-left"><span id="message-format">{{ page_data.message_format|upper }}</span></h3>
+
+								<div class="float-right btn-group">
+									<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
+									<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
+								</div>
+							</div>
+							<div id="message" class="card-body scroll code">{{ page_data.message_original }}</div>
 						</div>
 					</div>
-					<div id="message" class="card-body scroll code">{{ page_data.message_original }}</div>
 				</div>
 			</div>
         </div>
+		
+		<div class="col-12" style="height: 1.25em;"></div>
     </div>
 {% endblock %}
 
 {% block page_script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
-<script type="text/javascript">
+<script type="text/javascript">	
+	if ($("#message-json").length == 1) {
+		format('message-json', indent, 'json')
+	}
+	msg_format = "{{ page_data.message_format }}"
+	switch(msg_format) {
+		case 'cbor':
+			minify('message')
+			break;
+		default:
+			format('message')
+			break;
+    }
 </script>
 {% endblock %}

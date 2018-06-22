@@ -75,15 +75,15 @@ function alertMsg(c, m, l=5, t=5000) {
 	}, t, msg_id)
 }
 
-function format(id, s=indent) {	
+function format(id, s=indent, type=null) {
 	$("#"+id).removeClass('minify')
 	data = $("#"+id).val() || $("#"+id).text()
 	
-	if (id == "message") {
+	if (id == "message" || id == "message-json") {
 		if ($("#"+id).hasClass('format')) {
 			return
 		}
-		type = ($("#message-format").val() || $("#message-format").text()).toLowerCase()
+		type = (type == null ? ($("#message-format").val() || $("#message-format").text()) : type ).toLowerCase()
 		try {
 			switch (type) {
 				case "cbor":
@@ -118,15 +118,15 @@ function format(id, s=indent) {
 	$("#"+id).addClass('format')
 }
 
-function minify(id) {	
+function minify(id, type=null) {
 	$("#"+id).removeClass('format')
 	data = $("#"+id).val() || $("#"+id).text()
 	
-	if (id == "message") {
+	if (id == "message" || id == "message-json") {
 		if ($("#"+id).hasClass('minify')) {
 			return
 		}
-		type = ($("#message-format").val() || $("#message-format").text()).toLowerCase()
+		type = (type == null ? ($("#message-format").val() || $("#message-format").text()) : type ).toLowerCase()
 		try {
 			switch (type) {
 				case "cbor":

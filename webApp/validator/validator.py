@@ -1,3 +1,4 @@
+import json
 import random
 
 from oc2 import OpenC2MessageFormats
@@ -13,13 +14,11 @@ class Validator(object):
     def __init__(self):
         self.validMsgs = [
             'Success',
-            'It\'s Gonna do the thing!!',
             'Whoot! It works'
         ]
 
         self.invalidMsgs = [
             'Fail',
-            'It\'s Broken',
             'That\'s not right'
         ]
 
@@ -68,10 +67,14 @@ class Validator(object):
         if decode in records:
             try:
                 msg = tc.decode(decode, message.json_dump())
-                return True, random.choice(self.validMsgs), Utils.defaultDecode(message.json_dump()), message.original_dump()
+
+                msgOrig = message.original_dump()
+                msgOrig = json.dumps(msgOrig) if type(msgOrig) is dict else msgOrig
+
+                return True, random.choice(self.validMsgs), json.dumps(message.json_dump()), msgOrig
 
             except (ValueError, TypeError) as e:
                 err = str(e)
-                return False, err, Utils.defaultDecode(message.json_dump()), message.original_dump(),
+                return False, err, json.dumps(message.json_dump()), message.original_dump(),
 
         return False, err, '', msg
