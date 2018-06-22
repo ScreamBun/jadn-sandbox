@@ -69,7 +69,7 @@ class Config(object):
         'MarkDown': 'md',
         'HTML': 'html',
         # 'JSON': 'json',
-        # 'Thrift': 'thrift'
+        'Thrift': 'thrift'
     })
 
     VALID_MESSAGES = ['json', 'cbor', 'xml']

@@ -7,7 +7,7 @@ from flask import Blueprint, current_app, url_for, render_template, redirect, Re
 from flask_restful import Api, Resource, reqparse
 
 from oc2.codec import jadn_loads
-from oc2.convert import base_dumps, cddl_dumps, proto_dumps, relax_dumps
+from oc2.convert import base_dumps, cddl_dumps, proto_dumps, relax_dumps, thrift_dumps
 from oc2.utils import Utils
 
 logger = logging.getLogger()
@@ -26,12 +26,14 @@ class Convert(Resource):
     Endpoint for /convert
     """
     conversions = {
+        'cddl': (cddl_dumps,),
+        'html': (base_dumps, {'form': 'html'}),
         'jadn': (lambda x: json.dumps(x), ),
-        'proto3': (proto_dumps, ),
-        'cddl': (cddl_dumps, ),
-        'rng': (relax_dumps, ),
+        # 'json': (json_dumps, ),
         'md': (base_dumps, {'form': 'markdown'}),
-        'html': (base_dumps, {'form': 'html'})
+        'proto3': (proto_dumps, ),
+        'rng': (relax_dumps, ),
+        'thrift': (thrift_dumps, ),
     }
 
     def get(self):
