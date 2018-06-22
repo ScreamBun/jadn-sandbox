@@ -135,7 +135,6 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
-	
     $("#schema-list, #message-list").change(function(e) {
         id = $(e.target).attr("id")
 		type = id.split('-')[0]
@@ -144,6 +143,8 @@
 		$("#"+type+"-file-group").addClass("d-none")
 		
         if (selected == "" || selected == null) {
+			$("#"+type+"-url-group").removeClass("d-none")
+			$("#"+type+"-file-group").removeClass("d-none")
             return
         } else if (selected == "empty") {
 			$("#"+type).text("").val("")

@@ -94,7 +94,9 @@
 	if ($("#message-json").length == 1) {
 		format('message-json', indent, 'json')
 	}
+	
 	msg_format = "{{ page_data.message_format }}"
+	
 	switch(msg_format) {
 		case 'cbor':
 			minify('message')
