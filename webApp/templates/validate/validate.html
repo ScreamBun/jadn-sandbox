@@ -37,38 +37,49 @@
             <div class="col-12" style="height: 1.25em;"></div>
 
             <div class="col-12 mx-auto">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="float-left">Message - {{ page_data.message_type }}</h3>
-					</div>
-					<div class="card-body py-0 row">
-						{% if page_data.message_format != 'json' %}
-						<div class="card col-md-6">
-							<div class="card-header">
-								<h3 class="float-left">JSON</h3>
+				<h3>Message - {{ page_data.message_type }}</h3>
+				
+				{% if page_data.message_format != 'json' %}
+					<ul class="nav nav-tabs">
+						<li class="nav-item">
+							<a class="nav-link" data-toggle="tab" href="#json-card">JSON</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link active show" data-toggle="tab" href="#message-card">{{ page_data.message_format|upper }} <span class="badge badge-pill badge-info">Original</span>
+</a>
+						</li>
+					</ul>
+					
+					<div class="tab-content">					
+						<div id="json-card" class="tab-pane fade">
+							<div class="card">
+								<div class="card-header">
+									<h3 class="float-left">JSON</h3>
 
-								<div class="float-right btn-group">
-									<button type="button" class="btn btn-outline-secondary" onclick="format('message-json', indent, 'json')">Verbose</button>
-									<button type="button" class="btn btn-outline-secondary" onclick="minify('message-json', 'json')">Minify</button>
+									<div class="float-right btn-group">
+										<button type="button" class="btn btn-outline-secondary" onclick="format('message-json', indent, 'json')">Verbose</button>
+										<button type="button" class="btn btn-outline-secondary" onclick="minify('message-json', 'json')">Minify</button>
+									</div>
 								</div>
+								<div id="message-json" class="card-body scroll code">{{ page_data.message_json }}</div>
 							</div>
-							<div id="message-json" class="card-body scroll code">{{ page_data.message_json }}</div>
 						</div>
-						{% endif %}
+				{% endif %}
 						
-						<div class="card {{ 'col-12' if page_data.message_format == 'json' else ' col-md-6' }}">
-							<div class="card-header">
-								<h3 class="float-left"><span id="message-format">{{ page_data.message_format|upper }}</span></h3>
+				<div id="message-card" class="tab-pane fade active show">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="float-left"><span id="message-format">{{ page_data.message_format|upper }}</span></h3>
 
-								<div class="float-right btn-group">
-									<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
-									<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
-								</div>
+							<div class="float-right btn-group">
+								<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
+								<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
 							</div>
-							<div id="message" class="card-body scroll code">{{ page_data.message_original }}</div>
 						</div>
+						<div id="message" class="card-body scroll code">{{ page_data.message_original }}</div>
 					</div>
 				</div>
+				{{ '' if page_data.message_format == 'json' else '</div>'|safe }}
 			</div>
         </div>
 		
