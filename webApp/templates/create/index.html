@@ -53,6 +53,7 @@
 								<a class="dropdown-item" href="#" onclick="format('schema')">Format</a>
 								<a class="dropdown-item" href="#" onclick="format('schema')">Verbose</a>
 								<a class="dropdown-item" href="#" onclick="minify('schema')">Minify</a>
+								<a class="dropdown-item" href="#" onclick="loadDecodeTypes()">Load</a>
 								<a class="dropdown-item" href="#" onclick="verifySchema()">Verify</a>
 							</div>
 						</div>
@@ -62,18 +63,18 @@
 			
 			<div class="col-12" style="height: 1.25em;"></div>
 			
-			<div class="card col-12 p-0 mx-auto">
-				<div class="card-header">
-					<h3 class="float-left">Message Creator</h3>					
-				</div>
-				<div class="card-body">
-					<div class="form-group col-md-3 pr-1 pl-1">
-						<select id="message-list" name="message-list" class="form-control">
-							<option value="empty" selected="">Message Type</option>
-						</select>
+			<div class="col-12 mx-auto">
+				<h3>Message Creator</h3>
+				<div class="card col-12 p-0 mx-auto">
+					<div class="card-header">
+						<div class="form-group col-md-3 p-0 m-0 float-left">
+							<select id="message-list" name="message-list" class="form-control">
+								<option value="empty" selected="">Message Type</option>
+							</select>
+						</div>
 					</div>
-					<div class="col-12">
-						<p>THINGS!?!</p>
+					<div id="message-fields" class="card-body">
+						<p>Message Fields will appear here</p>
 					</div>
 				</div>
 			</div>
@@ -84,7 +85,9 @@
 {% block page_script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/openc2.js') }}"></script>
 <script type="text/javascript">
+	var oc2 = new $.OpenC2("#message-list", "#message-fields", function(msg) { alertMsg("#alert-container", msg) })
 	var schema = {}
 	var message = {}
 	
@@ -124,7 +127,7 @@
 					if (type == "schema") {
 						$("#"+type).text(data['data']).val(data['data'])
 						schema = JSON.parse(data['data'])
-						loadDecodeTypes()
+						oc2.initSchema(schema)
 					}
 				} else {
 					alertMsg("#alert-container", "Cannot load data")
@@ -197,25 +200,6 @@
 		})
 	}
 	
-	$("#message-list").change(function(e) {
-        selected = $(e.target).val()
-		
-		msg = schema.types.filter(function(type) {
-			return type[0] == selected
-		})
-		
-		console.log(msg.length)
-		if (msg.length == 1) {
-			msg = msg[0]
-		} else {
-			alertMsg("#alert-container", "{msg_type} could not be found in the schema".format({msg_type: selected}))
-			return
-		}
-		
-		console.log(msg)	
-		console.log(selected)
-	})
-	
 	function verifySchema(id) {
 		data = $("#schema").val() || $("#schema").text()
 		
@@ -234,27 +218,6 @@
 				}
 			}
 		)
-	}
-	
-	function loadDecodeTypes() {
-		data = $("#schema").val() || $("#schema").text()
-		try {
-			schema_records = $.map($.parseJSON(data)['meta']['exports'], function(v, k) {
-				return v
-			})
-		} catch (e) {
-			schema_records = $.parseJSON("{}")
-			opt = $("<option/>").addClass("schema_record").attr("disabled", "").text("Cannot Load, Invalid Schema")
-			$("#message-decode").append(opt)
-		}
-		
-		schema_records.sort();
-		
-		$("#message-list option.schema_record").remove()
-		$.each(schema_records, function(i, v) {
-			opt = $("<option/>").addClass("schema_record").attr("value", v).text(v)
-			$("#message-list").append(opt)
-		})
 	}
 
 </script>
