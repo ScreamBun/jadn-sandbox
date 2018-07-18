@@ -49,7 +49,7 @@ class Validator(object):
         err = random.choice(self.invalidMsgs)
 
         if not v:
-            return False, s
+            return False, s, '', msg
 
         if fmt in OpenC2MessageFormats.values():
             try:
@@ -75,6 +75,6 @@ class Validator(object):
 
             except (ValueError, TypeError) as e:
                 err = str(e)
-                return False, err, json.dumps(message.json_dump()), message.original_dump(),
-
-        return False, err, '', msg
+                return False, err, json.dumps(message.json_dump()), message.original_dump()
+        else:
+            return False, 'Decode Invalid - The decode message type was not found in the schema', '', msg

@@ -6,7 +6,7 @@
 
     <div class="container-fluid mt-3">
         <div class="row">
-            <form class="mx-auto col-12" action="/validate" method="post" onsubmit="return validateForm()">
+            <form id="validate-form" class="mx-auto col-12" action="/validate" method="post" onsubmit="return submitForm();">
                 <fieldset>
                     <legend>JADN Schema</legend>
 					<div class="form-row">
@@ -37,21 +37,20 @@
 					</div>
 
 					<div class="form-row">
-						<div class="form-group col-md-12">
-							<textarea class="form-control border" placeholder="Paste JADN schema here" id="schema" name="schema" rows="10" required=""></textarea>
-						</div>
-					</div>
-					
-					<div class="form-row-fluid">
-						<div class="dropdown float-right">
-							<button class="btn btn-info dropdown-toggle" type="button" id="schema-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Schema Options
-							</button>
-							<div class="dropdown-menu" aria-labelledby="schema-options">
-								<a class="dropdown-item" href="#" onclick="format('schema')">Format</a>
-								<a class="dropdown-item" href="#" onclick="format('schema')">Verbose</a>
-								<a class="dropdown-item" href="#" onclick="minify('schema')">Minify</a>
-								<a class="dropdown-item" href="#" onclick="verifySchema()">Verify</a>
+						<div class="col-md-12 mb-3">
+							<div id="schema-card" class="tab-pane fade active show">
+								<div class="card">
+									<textarea class="form-control border card-body" placeholder="Paste JADN schema here" id="schema" name="schema" rows="10" required=""></textarea>
+											
+									<div class="card-footer">
+										<div class="float-right btn-group">
+											<button type="button" class="btn btn-outline-secondary" onclick="format('schema')">Format</button>
+											<button type="button" class="btn btn-outline-secondary" onclick="format('schema')">Verbose</button>
+											<button type="button" class="btn btn-outline-secondary" onclick="minify('schema')">Minify</button>
+											<button type="button" class="btn btn-outline-secondary" onclick="verifySchema()">Verify</button>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -87,13 +86,51 @@
 					</div>
 					
 					<div class="form-row">
-						<div class="form-group col-md-12">
-							<textarea class="form-control border" placeholder="Paste message to be validated here" id="message" name="message" rows="10" required=""></textarea>
+						<div class="col-md-12 mb-3">
+							<ul class="nav nav-tabs submitted">
+								<li class="nav-item">
+									<a class="nav-link active show" data-toggle="tab" href="#message-card">Original</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#json-card">JSON</a>
+								</li>
+							</ul>
+							<div class="tab-content">
+								
+								<div id="message-card" class="tab-pane fade active show">
+									<div class="card">
+										<textarea class="form-control border card-body" placeholder="Paste message to be validated here" id="message" name="message" rows="10" required=""></textarea>
+										
+										<div class="card-footer">
+											<div class="float-right btn-group">
+												<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Format</button>
+												<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
+												<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							
+								
+								<div id="json-card" class="tab-pane fade">
+									<div class="card">
+										<textarea class="form-control border card-body" id="message-json" rows="10" readonly="readonly"></textarea>
+										
+										<div class="card-footer">
+											<div class="float-right btn-group">
+												<button type="button" class="btn btn-outline-secondary" onclick="format('message-json', indent, 'json')">Verbose</button>
+												<button type="button" class="btn btn-outline-secondary" onclick="minify('message-json', 'json')">Minify</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 						
 					<div class="form-row-fluid">
 						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
+							<label class="control-label" for="message-format">Message Format</label>
 							<select class="form-control" id="message-format" name="message-format" required="">
 								<option value="" selected="">Format</option>
 								<option value="json">json</option>
@@ -104,20 +141,10 @@
 						</div>
 						
 						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
+							<label class="control-label" for="message-decode">Decode Type</label>
 							<select class="form-control" id="message-decode" name="message-decode" required="">
-								<option value="empty" selected="">Decode</option>
+								<option value="" selected="">Decode Type</option>
 							</select>
-						</div>
-						
-						<div class="dropdown float-right">
-							<button class="btn btn-info dropdown-toggle" type="button" id="message-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Message Options
-							</button>
-							<div class="dropdown-menu" aria-labelledby="message-options">
-								<a class="dropdown-item" href="#" onclick="format('message')">Format</a>
-								<a class="dropdown-item" href="#" onclick="format('message')">Verbose</a>
-								<a class="dropdown-item" href="#" onclick="minify('message')">Minify</a>
-							</div>
 						</div>
 					</div>
                 </fieldset>
@@ -135,6 +162,9 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
+	$('.submitted').hide()
+	var decodeTypes = []
+	
     $("#schema-list, #message-list").change(function(e) {
         id = $(e.target).attr("id")
 		type = id.split('-')[0]
@@ -231,6 +261,10 @@
 	
 	function loadURL(id) {
 		url = $('#'+id+'-url').text() || $('#'+id+'-url').val()
+		if ($.inArray(url, [null, '', ' ']) >= 0) {
+			alertMsg("#alert-container", "Invalid url, please check what you typed")
+			return
+		}
 		
 		file = url.substring(url.lastIndexOf("/") + 1)
 		fileName = file.substring(0, file.lastIndexOf("."))
@@ -262,8 +296,6 @@
 				alertMsg("#alert-container", "Cannot load {id} data, improper file type {ext}".format({id: id, ext: fileExt}))
 				return
 		}
-		
-		console.log('PASSED SWITCH')
 
 		$.get(
 			url,
@@ -284,62 +316,103 @@
 	function loadDecodeTypes() {
 		data = $("#schema").val() || $("#schema").text()
 		try {
-			schema_records = $.map($.parseJSON(data)['meta']['exports'], function(v, k) {
+			schemaDecodeTypes = $.map($.parseJSON(data)['meta']['exports'], function(v, k) {
 				return v
 			})
 		} catch (e) {
-			schema_records = $.parseJSON("{}")
+			schemaDecodeTypes = $.parseJSON("{}")
 			opt = $("<option/>").addClass("schema_record").attr("disabled", "").text("Cannot Load, Invalid Schema")
 			$("#message-decode").append(opt)
 		}
 		
-		schema_records.sort();
-		
-		$("#message-decode option.schema_record").remove()
-		$.each(schema_records, function(i, v) {
-			opt = $("<option/>").addClass("schema_record").attr("value", v).text(v)
-			$("#message-decode").append(opt)
-		})
+		schemaDecodeTypes.sort()
+		if (!isEquivalent(schemaDecodeTypes, decodeTypes)) {
+			decodeTypes = schemaDecodeTypes.slice()
+
+			$("#message-decode option.schema_record").remove()
+			$.each(decodeTypes, function(i, v) {
+				opt = $("<option/>").addClass("schema_record").attr("value", v).text(v)
+				$("#message-decode").append(opt)
+			})
+		}
 	}
 
-    function validateForm() {
+    function submitForm() {
+		$('*').removeClass('border-danger')
 		schema = $("#schema").val() || $("#schema").text()
         try {
             $.parseJSON(schema)
         } catch(e) {
-			alertMsg("#alert-container", "Schema Invalid")			
+			alertMsg("#alert-container", "Schema Invalid")
+			$('#schema-card .card').addClass('border-danger')
 			return false
         }
 		
 		message = $("#message").val() || $("#message").text()
 		message_type = $("#message-format").val()
-		console.log(message_type)
-		switch (message_type) {
-			case 'cbor':
-				minify('message')
-				sleep(500)
-				break;
-			case 'json':
-				try {
-					$.parseJSON(message)
-				} catch(e) {
-					alertMsg("#alert-container", "Message Invalid")
+		
+		if ($.inArray(message_type, [null, undefined, "", "empty"]) >= 0) {
+			alertMsg("#alert-container", "Message format not selected")
+			return false
+		} else {
+			switch (message_type) {
+				case 'cbor':
+					minify('message')
+					sleep(500)
+					break;
+				case 'json':
+					try {
+						$.parseJSON(message)
+					} catch(e) {
+						alertMsg("#alert-container", "Message Invalid")
+						$('#massage-card .card').addClass('border-danger')
+						return					
+					}
+					break
+				default:
+					break
+			}
+		}		
+		
+		decode = $("#message-decode option:selected").val()
+		if ($.inArray(decode, [null, undefined, "", "empty"]) >= 0) {
+			alertMsg("#alert-container", "Message Decode Type not selected")
+			return false
+		}
+		
+		form = $("#validate-form")
+		$.ajax({
+			type: form.attr('method'),
+			url: form.attr('action'),
+			data: form.serialize()
+		}).done(function(data) { // Submit success
+			if (data.valid_bool) {
+				$('.nav-tabs a[href="#message-card"]').tab('show')
+				$('.submitted')[data.message_format=='json'?'hide':'show']()
+				
+				alertMsg("#alert-container", data.valid_msg, 4)
+				$("#message-json").text(data.message_json)
+				format('message-json', indent, 'json')
+				
+			} else {
+				alertMsg("#alert-container", data.valid_msg, 5, 0)
+				if (data.valid_msg.match(/^Schema/)) {
+					$('#schema-card .card').addClass('border-danger')
+				} else if (data.valid_msg.match(/^Message/)) {
+					$('#message-card .card').addClass('border-danger')
+				} else if (data.valid_msg.match(/^Decode/)) {
+					$('#message-decode').addClass('border-danger')
+				} else {
+					console.log('umm....')
 				}
-				break
-			default:
-				break
-		}
+			}			
+		}).fail(function(data) {// Submit fail
+			alertMsg("#alert-container", 'Form submit failed, please try again')
+		})
 		
-		decode = $("#decode option:selected").val()
-		if ($.inArray(decode, [null, "", "empty"]) >= 0) {
-			alertMsg("#alert-container", "Message Decode Type Invalid")			
-            return false
-		}
-		
-		sleep(500)
-		
-        return true
-    }
+        return false
+    
+	}
 	
 	function verifySchema(id) {
 		data = $("#schema").val() || $("#schema").text()

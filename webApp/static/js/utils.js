@@ -70,9 +70,11 @@ function alertMsg(c, m, l=5, t=5000) {
     closeBtn = $("<button/>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close").append($("<span/>").attr("aria-hidden", "true").html("&times;"))
     $(c).append($("<div/>").addClass("alert alert-"+alert_levels[l]).attr("role", "alert").attr("id", msg_id).text(m).append(closeBtn))
 
-	setTimeout(function (m_id) {
-		$("#"+m_id).alert('close')
-	}, t, msg_id)
+	if (t != 0) {
+		setTimeout(function (m_id) {
+			$("#"+m_id).alert('close')
+		}, t, msg_id)
+	}
 }
 
 function format(id, s=indent, type=null) {
@@ -265,4 +267,30 @@ function bytes2cbor(b) {
 function sleep(miliseconds) {
 	var currentTime = new Date().getTime();
     while (currentTime + miliseconds >= new Date().getTime()) {}
+}
+
+function isEquivalent(a, b) {
+    // Create arrays of property names
+    var aProps = Object.getOwnPropertyNames(a);
+    var bProps = Object.getOwnPropertyNames(b);
+
+    // If number of properties is different,
+    // objects are not equivalent
+    if (aProps.length != bProps.length) {
+        return false;
+    }
+
+    for (var i = 0; i < aProps.length; i++) {
+        var propName = aProps[i];
+
+        // If values of same property are not equal,
+        // objects are not equivalent
+        if (a[propName] !== b[propName]) {
+            return false;
+        }
+    }
+
+    // If we made it this far, objects
+    // are considered equivalent
+    return true;
 }

@@ -162,11 +162,11 @@
 	-  Optional: `-v` can be usedd to specify a version for the project
 	
 	```bash
-	gcloud app deploy --project g2-oc2-validator
+	gcloud app deploy --project jadn-validator
 	```
 	
 4. View the application as http://[YOUR_PROJECT_ID].appspot.com
-	- http://g2-oc2-validator.appspot.com/
+	- http://jadn-validator.appspot.com/
 
 
 TODO: Fill in info based on [simple flask app](https://cloud.google.com/appengine/docs/standard/python/getting-started/python-standard-env)

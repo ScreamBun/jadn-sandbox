@@ -1,8 +1,10 @@
+import ast
+import json
 import logging
 import os
 import re
 
-from flask import Blueprint, current_app, redirect, render_template, Response
+from flask import Blueprint, current_app, jsonify, redirect, render_template, Response
 from flask_restful import Api, Resource, reqparse
 
 logger = logging.getLogger()
@@ -36,11 +38,16 @@ class Validate(Resource):
     def post(self):
         args = parser.parse_args()
         fmt = args['message-format'] or 'json'
+        try:
+            schema = json.dumps(ast.literal_eval(args['schema']))
+        except (TypeError, ValueError) as e:
+            print(e)
+            schema = args['schema']
 
-        val, valMsg, msgJson, msgOrig = current_app.validator.validateMessage(args['schema'], args['message'], fmt, args['message-decode'])
+        val, valMsg, msgJson, msgOrig = current_app.validator.validateMessage(schema, args['message'], fmt, args['message-decode'])
 
         page_data = {
-            "schema": args['schema'],
+            # "schema": args['schema'],
             "message_original": msgOrig,
             "message_json": msgJson,
             "message_format": args['message-format'],
@@ -49,7 +56,7 @@ class Validate(Resource):
             "valid_msg": valMsg
         }
 
-        return Response(render_template("validate/validate.html", page_title="Message Validation", page_data=page_data))
+        return jsonify(page_data)
 
 
 class ValidateSchema(Resource):
@@ -61,8 +68,13 @@ class ValidateSchema(Resource):
 
     def post(self):
         args = parser.parse_args()
+        try:
+            schema = json.dumps(ast.literal_eval(args['schema']))
+        except (TypeError, ValueError) as e:
+            print(e)
+            schema = args['schema']
 
-        val = current_app.validator.validateSchema(args['schema'])
+        val = current_app.validator.validateSchema(schema)
         data = {
             "valid_bool": val[0],
             "valid_msg": val[1]
