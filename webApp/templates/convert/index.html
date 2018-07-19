@@ -61,7 +61,7 @@
 						
 						<div class="col-12 m-1"></div>
 						
-						<a class="btn btn-sm btn-primary float-right" href="#" id="download-link" onclick="downloadFile()">Download</a>
+						<a class="btn btn-sm btn-primary float-left" href="#" target="_blank" id="download-link" onclick="downloadFile()">Download</a>
 					</fieldset>
 				</div>
 				
@@ -88,14 +88,16 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
-	if ($('#convert-to').val() == 'jadn') {
-		data = $("#convert").val() || $("#convert").text()
-		try {
-			j = formatJADN(data)
-			$("#convert").text(j).val(j)
-		} catch (e) {
-			console.log(e)
-		}
+	switch ($('#convert-to').val()) {
+		case 'jadn':
+			data = $("#convert").val() || $("#convert").text()
+			try {
+				j = formatJADN(data)
+				$("#convert").text(j).val(j)
+			} catch (e) {
+				console.log(e)
+			}
+			break;
 	}
 	
     $("#schema-list").change(function(e) {

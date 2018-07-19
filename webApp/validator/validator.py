@@ -59,8 +59,11 @@ class Validator(object):
                 return False, "Message Invalid - {}".format(e), '', msg
         else:
             return False, err, '', msg
+        try:
+            tc = Codec(s, True, True)
+        except (AssertionError, ):
+            return False, 'Schema Invalid - The schema failed to load', '', msg
 
-        tc = Codec(s, True, True)
         records = [t[0] for t in s['types']]
         err = random.choice(self.invalidMsgs)
 

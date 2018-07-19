@@ -6,45 +6,46 @@
 
     <div class="container-fluid mt-3">
         <div class="row">
-            <form id="validate-form" class="mx-auto col-12" action="/validate" method="post" onsubmit="return submitForm();">
+            <form id="validate-form" class="mx-auto col-12 position-relative" action="/validate" method="post" onsubmit="return submitForm();">
+				<div class="form-group position-absolute" style="right: 1.25em;">
+                    <button type="submit" class="btn btn-outline-primary">Validate</button>
+                    <button type="reset" class="btn btn-outline-danger">Reset</button>
+                </div>
+				
                 <fieldset>
                     <legend>JADN Schema</legend>
-					<div class="form-row">
-						<div class="form-group col-md-3 pr-1 pl-1">
-							<select id="schema-list" name="schema-list" class="form-control">
-								<option value="empty" selected="">Schema</option>
-								{% for opt in options.schemas %}
-									<option value="{{ opt }}">{{ opt }}</option>
-								{% endfor %}
-								<option disabled="">──────────</option>
-								<option value="file">File...</option>
-								<option value="url">URL...</option>
-							</select>
-					   	</div>
-						
-						<div id="schema-file-group" class="form-group col-md-4 d-none pr-1 pl-1">
-							<input type="file" class="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn">
-					  	</div>
-
-						<div id="schema-url-group" class="form-group col-md-4 d-none pr-1 pl-1">
-							<div class="input-group">
-        						<div class="input-group-prepend">
-          							<button type="button" class="btn btn-info" onclick="loadURL('schema')">Load URL</button>
-        						</div>
-        						<input type="text" class="form-control" id="schema-url">
-      						</div>
-					  	</div>
-					</div>
-
 					<div class="form-row">
 						<div class="col-md-12 mb-3">
 							<div id="schema-card" class="tab-pane fade active show">
 								<div class="card">
-									
-									
-									<textarea class="form-control border card-body" placeholder="Paste JADN schema here" id="schema" name="schema" rows="10" required=""></textarea>
-											
-									<div class="card-footer">
+									<div class="card-header">										
+										<div class="row float-left col-sm-6 pl-0">
+											<div class="form-group col-md-6 pr-0 pl-1">
+												<select id="schema-list" name="schema-list" class="form-control">
+													<option value="empty" selected="">Schema</option>
+													{% for opt in options.schemas %}
+														<option value="{{ opt }}">{{ opt }}</option>
+													{% endfor %}
+													<option disabled="">──────────</option>
+													<option value="file">File...</option>
+													<option value="url">URL...</option>
+												</select>
+											</div>
+
+											<div id="schema-file-group" class="form-group col-md-6 d-none px-1">
+												<input type="file" class="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn">
+											</div>
+
+											<div id="schema-url-group" class="form-group col-md-6 d-none px-1">
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<button type="button" class="btn btn-info" onclick="loadURL('schema')">Load URL</button>
+													</div>
+													<input type="text" class="form-control" id="schema-url">
+												</div>
+											</div>
+										</div>
+										
 										<div class="float-right btn-group">
 											<button type="button" class="btn btn-outline-secondary" onclick="format('schema')">Format</button>
 											<button type="button" class="btn btn-outline-secondary" onclick="format('schema')">Verbose</button>
@@ -52,6 +53,8 @@
 											<button type="button" class="btn btn-outline-secondary" onclick="verifySchema()">Verify</button>
 										</div>
 									</div>
+									
+									<textarea class="form-control border card-body p-2" placeholder="Paste JADN schema here" id="schema" name="schema" rows="10" required=""></textarea>
 								</div>
 							</div>
 						</div>
@@ -59,34 +62,7 @@
                 </fieldset>
 
                 <fieldset>
-                    <legend>Message</legend>
-					<div class="form-row">
-						<div class="form-group col-md-3 pr-1 pl-1">
-							<select id="message-list" name="message-list" class="form-control">
-								<option value="empty" selected="">Message</option>
-								{% for opt in options.messages %}
-									<option value="{{ opt }}">{{ opt }}</option>
-								{% endfor %}
-								<option disabled="">──────────</option>
-								<option value="file">File...</option>
-								<option value="url">URL...</option>
-							</select>
-						</div>
-						
-						<div id="message-file-group" class="form-group col-md-4 d-none pr-1 pl-1">
-							<input type="file" class="btn btn-light form-control-file" id="message-file" name="message-file" accept=".json,.xml,.cbor">
-					  	</div>
-
-						<div id="message-url-group" class="form-group col-md-4 d-none pr-1 pl-1">
-							<div class="input-group">
-        						<div class="input-group-prepend">
-          							<button type="button" class="btn btn-info" onclick="loadURL('message')">Load URL</button>
-        						</div>
-        						<input type="text" class="form-control" id="message-url">
-      						</div>
-					  	</div>
-					</div>
-					
+                    <legend>Message</legend>					
 					<div class="form-row">
 						<div class="col-md-12 mb-3">
 							<ul class="nav nav-tabs submitted">
@@ -98,32 +74,58 @@
 								</li>
 							</ul>
 							<div class="tab-content">
-								
 								<div id="message-card" class="tab-pane fade active show">
 									<div class="card">
-										<textarea class="form-control border card-body" placeholder="Paste message to be validated here" id="message" name="message" rows="10" required=""></textarea>
-										
-										<div class="card-footer">
+										<div class="card-header">											
+											<div class="row float-left col-sm-6 pl-0">
+												<div class="form-group col-md-6 pr-0 pl-1">
+													<select id="message-list" name="message-list" class="form-control">
+														<option value="empty" selected="">Message</option>
+														{% for opt in options.messages %}
+															<option value="{{ opt.name }}" decode="{{ opt.type }}">{{ opt.name }}</option>
+														{% endfor %}
+														<option disabled="">──────────</option>
+														<option value="file">File...</option>
+														<option value="url">URL...</option>
+													</select>
+												</div>
+
+												<div id="message-file-group" class="form-group col-md-6 d-none px-1">
+													<input type="file" class="btn btn-light form-control-file" id="message-file" name="message-file" accept=".json,.xml,.cbor">
+												</div>
+
+												<div id="message-url-group" class="form-group col-md-6 d-none px-1">
+													<div class="input-group">
+														<div class="input-group-prepend">
+															<button type="button" class="btn btn-info" onclick="loadURL('message')">Load URL</button>
+														</div>
+														<input type="text" class="form-control" id="message-url">
+													</div>
+												</div>
+											</div>
+											
 											<div class="float-right btn-group">
 												<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Format</button>
 												<button type="button" class="btn btn-outline-secondary" onclick="format('message')">Verbose</button>
 												<button type="button" class="btn btn-outline-secondary" onclick="minify('message')">Minify</button>
 											</div>
 										</div>
+										
+										<textarea class="form-control border card-body p-2" placeholder="Paste message to be validated here" id="message" name="message" rows="10" required=""></textarea>
 									</div>
 								</div>
 							
 								
 								<div id="json-card" class="tab-pane fade">
 									<div class="card">
-										<textarea class="form-control border card-body" id="message-json" rows="10" readonly="readonly"></textarea>
-										
-										<div class="card-footer">
+										<div class="card-header">
 											<div class="float-right btn-group">
 												<button type="button" class="btn btn-outline-secondary" onclick="format('message-json', indent, 'json')">Verbose</button>
 												<button type="button" class="btn btn-outline-secondary" onclick="minify('message-json', 'json')">Minify</button>
 											</div>
 										</div>
+										
+										<textarea class="form-control border card-body" id="message-json" rows="10" readonly="readonly"></textarea>
 									</div>
 								</div>
 							</div>
@@ -134,7 +136,7 @@
 						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
 							<label class="control-label" for="message-format">Message Format</label>
 							<select class="form-control" id="message-format" name="message-format" required="">
-								<option value="" selected="">Format</option>
+								<option value="" selected="">Message Format</option>
 								<option value="json">json</option>
 								<option value="cbor">cbor</option>
 								<!--<option value="protobuf">protobuf</option>-->
@@ -143,18 +145,13 @@
 						</div>
 						
 						<div class="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
-							<label class="control-label" for="message-decode">Decode Type</label>
+							<label class="control-label" for="message-decode">Message Type</label>
 							<select class="form-control" id="message-decode" name="message-decode" required="">
-								<option value="" selected="">Decode Type</option>
+								<option value="" selected="">Message Type</option>
 							</select>
 						</div>
 					</div>
                 </fieldset>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-outline-primary">Validate</button>
-                    <button type="reset" class="btn btn-outline-danger">Reset</button>
-                </div>
             </form>
         </div>
     </div>
@@ -165,12 +162,14 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
 	$('.submitted').hide()
-	var decodeTypes = []
+	var decodeTypes = [],
+		jadnTypes = ['Record', 'Enumerated', 'Choice', 'Map', 'Array', 'ArrayOf']
 	
     $("#schema-list, #message-list").change(function(e) {
         id = $(e.target).attr("id")
 		type = id.split('-')[0]
         selected = $(e.target).val()
+		decodeType = $(e.target).find('option:selected').attr('decode')
 		
 		$("#"+type+"-file-group").addClass("d-none")
 		
@@ -180,6 +179,12 @@
             return
         } else if (selected == "empty") {
 			$("#"+type).text("").val("")
+			$("#"+type+"-file-group").addClass("d-none")
+			$("#"+type+"-url-group").addClass("d-none")
+			if (type == 'message') {
+				$("#message-format").val('')
+				$('#message-decode').val('')
+			}
             return
         } else if (selected == "file") {
 			$("#"+type+"-url-group").addClass("d-none")
@@ -212,6 +217,9 @@
 								d = data['data']
 						}
 						$("#"+type).text(d).val(d)
+						if (decodeType != undefined) {
+							$('#message-decode').val(decodeType)
+						}
 						
 					} else if (type == "schema") {
 						$("#"+type).text(data['data']).val(data['data'])
@@ -318,18 +326,34 @@
 	function loadDecodeTypes() {
 		data = $("#schema").val() || $("#schema").text()
 		try {
-			schemaDecodeTypes = $.map($.parseJSON(data)['meta']['exports'], function(v, k) {
-				return v
-			})
+			schema = $.parseJSON(data)
 		} catch (e) {
-			schemaDecodeTypes = $.parseJSON("{}")
-			opt = $("<option/>").addClass("schema_record").attr("disabled", "").text("Cannot Load, Invalid Schema")
-			$("#message-decode").append(opt)
+			schema = {}
 		}
 		
-		schemaDecodeTypes.sort()
-		if (!isEquivalent(schemaDecodeTypes, decodeTypes)) {
-			decodeTypes = schemaDecodeTypes.slice()
+		if (schema.hasOwnProperty('types')) {
+			schemaTypes = $.map($.parseJSON(data)['types'], function(v) {
+				if ($.inArray(v[1], jadnTypes) >= 0) {
+					return v[0]
+				}
+			})
+		} else {
+			schemaTypes = []
+		}
+		
+		if (schema.hasOwnProperty('meta')) {
+			if (schema['meta'].hasOwnProperty('exports')) {
+				$.each(schema['meta']['exports'], function(k, v) {
+					if ($.inArray(v, schemaTypes) == -1) {
+						schemaTypes.push(v)
+					}
+				})
+			}
+		}
+		
+		schemaTypes.sort()
+		if (!isEquivalent(schemaTypes, decodeTypes)) {
+			decodeTypes = schemaTypes.slice()
 
 			$("#message-decode option.schema_record").remove()
 			$.each(decodeTypes, function(i, v) {

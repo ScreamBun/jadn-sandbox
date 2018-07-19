@@ -57,7 +57,12 @@ class Config(object):
     OPTIONS = None
 
     # OpenC2 Options
-    OPEN_C2_DATA = os.path.join(APP_DATA, "openc2_files")
+    OPEN_C2_DATA = os.path.join(APP_DATA, 'openc2_files')
+
+    try:
+        DEFAULT_MESSAGE_TYPES = json.load(open(os.path.join(APP_DATA, 'openc2_files', 'messages', '_default_types.json')))
+    except Exception:
+        DEFAULT_MESSAGE_TYPES = {}
 
     VALID_SCHEMAS = ['jadn']
 

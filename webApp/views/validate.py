@@ -25,10 +25,18 @@ class Validate(Resource):
     def get(self):
         schemas = re.compile('\.(' + '|'.join(current_app.config.get('VALID_SCHEMAS')) + ')$')
         messages = re.compile('\.(' + '|'.join(current_app.config.get('VALID_MESSAGES')) + ')$')
+        message_files = []
+        for msg in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'messages')):
+            if messages.search(msg) and not msg.startswith('_'):
+                message_files.append(dict(
+                    name=msg,
+                    type=current_app.config.get('DEFAULT_MESSAGE_TYPES').get(msg, '')
+                ))
+                print('MESSAGE: {}'.format(msg))
 
         opts = {
             'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if schemas.search(s)],
-            'messages': [m for m in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'messages')) if messages.search(m)]
+            'messages': message_files
         }
 
         resp = Response(render_template('index.html', page_title="Message Validator", options=opts), mimetype='text/html')
