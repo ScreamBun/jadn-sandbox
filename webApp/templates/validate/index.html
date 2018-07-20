@@ -8,7 +8,7 @@
         <div class="row">
             <form id="validate-form" class="mx-auto col-12 position-relative" action="/validate" method="post" onsubmit="return submitForm();">
 				<div class="form-group position-absolute" style="right: 1.25em;">
-                    <button type="submit" class="btn btn-outline-primary">Validate</button>
+                    <button type="submit" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom" data-original-title="Validate the message against the given schema">Validate</button>
                     <button type="reset" class="btn btn-outline-danger">Reset</button>
                 </div>
 				
@@ -50,7 +50,7 @@
 											<button type="button" class="btn btn-outline-secondary" onclick="format('schema')">Format</button>
 											<button type="button" class="btn btn-outline-secondary" onclick="format('schema')">Verbose</button>
 											<button type="button" class="btn btn-outline-secondary" onclick="minify('schema')">Minify</button>
-											<button type="button" class="btn btn-outline-secondary" onclick="verifySchema()">Verify</button>
+											<button type="button" class="btn btn-outline-secondary" onclick="verifySchema()" data-toggle="tooltip" data-placement="bottom" data-original-title="Validate the schema is valid prior to validating the message">Verify</button>
 										</div>
 									</div>
 									
@@ -162,6 +162,9 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
 	$('.submitted').hide()
+	$('[data-toggle="tooltip"]').tooltip()
+
+	
 	var decodeTypes = [],
 		jadnTypes = ['Record', 'Enumerated', 'Choice', 'Map', 'Array', 'ArrayOf']
 	

@@ -1,0 +1,32 @@
+{% extends "static/base.html" %}
+{% block body %}
+    {% include "static/nav.html" %}
+	
+	<div id="alert-container" class="w-50">
+		{% for err in errors %}
+			<div class="alert alert-warning" role="alert" id="conv_err">
+				<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				{{ err }}
+			</div>
+		{% endfor %}
+	</div>
+	
+	<div class="container-fluid mt-3">
+		<div class="row">
+			<div class="mx-auto col-12">
+				{{ options.schema|safe }}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block page_script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<script type="text/javascript">
+	$('table').each(function(i, elm) {
+		$(elm).addClass('table table-hover mb-5')
+	})
+	
+</script>
+{% endblock %}

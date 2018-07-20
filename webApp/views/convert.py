@@ -86,4 +86,33 @@ class Convert(Resource):
         return resp
 
 
+class ConvertHTML(Resource):
+    """
+    Endpoint for /convert/html
+    """
+
+    def get(self):
+        return redirect(url_for('convert.convert'))
+
+    def post(self):
+        args = parser.parse_args()
+        err = []
+        opts = {}
+
+        val = current_app.validator.validateSchema(args['schema'])
+
+        if val[0]:  # Valid Schema
+            conv = base_dumps(jadn_loads(args['schema']), form='html')
+            opts['schema'] = re.sub(r'^.*?<body>(?P<schema>.*?)</body>.*$', r'\g<schema>', re.sub(r'\n\r?', '', conv))
+            print(conv)
+        else:  # Invalid Schema
+            err.append(val[1])
+            opts['schema'] = 'Fix the base schema errors before converting...'
+
+        resp = Response(render_template('convert/html_page.html', page_title="Schema HTML", options=opts, errors=err), mimetype='text/html')
+        resp.status_code = 200
+        return resp
+
+
 api.add_resource(Convert, '/')
+api.add_resource(ConvertHTML, '/html')

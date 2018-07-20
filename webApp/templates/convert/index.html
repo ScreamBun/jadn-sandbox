@@ -60,8 +60,10 @@
 						<textarea class="form-control border" placeholder="Converted JADN schema" id="convert" name="convert" rows="25">{{ options.schema.convert }}</textarea>
 						
 						<div class="col-12 m-1"></div>
+
+						<a class="btn btn-sm btn-primary float-right" href="#" target="_blank" id="download-link" onclick="downloadFile()">Download</a>
 						
-						<a class="btn btn-sm btn-primary float-left" href="#" target="_blank" id="download-link" onclick="downloadFile()">Download</a>
+						<a class="btn btn-sm btn-secondary float-right d-none mr-2" href="#" target="_blank" id="view-page" onclick="viewPage(); return false;">View Page</a>
 					</fieldset>
 				</div>
 				
@@ -71,12 +73,12 @@
 					<div class="form-group col-md-3 pr-1 pl-1">
 						<select id="convert-to" name="convert-to" class="form-control">
 							<option value="empty" {% if not request.form['convert-to'] %}selected=""{% endif %}>Convert To...</option>
-								{% for conv in options.convs %}
-									<option value="{{ options.convs[conv] }}" {% if request.form['convert-to'] == options.convs[conv] %}selected=""{% endif %}>{{ conv }}</option>
-								{% endfor %}
+							{% for conv in options.convs %}
+								<option value="{{ options.convs[conv] }}" {% if request.form['convert-to'] == options.convs[conv] %}selected=""{% endif %}>{{ conv }}</option>
+							{% endfor %}
 						</select>
 					</div>
-                    <button type="submit" class="btn btn-outline-primary">Convert</button>
+                    <button type="submit" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom" data-original-title="Convert the given JADN schema to the selected format">Convert</button>
                     <button type="reset" class="btn btn-outline-danger">Reset</button>
                 </div>
             </form>
@@ -88,6 +90,15 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/vkbeautify.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script type="text/javascript">
+	$('[data-toggle="tooltip"]').tooltip()
+	var options = $("#convert-to option:not([value='empty'])") 	// Collect options         
+	options.detach().sort(function(a,b) {               		// Detach from select, then Sort
+		var at = $(a).text();
+		var bt = $(b).text();         
+		return (at > bt)?1:((at < bt)?-1:0);            		// Tell the sort function how to order
+	});
+	options.appendTo("#convert-to");    
+	
 	switch ($('#convert-to').val()) {
 		case 'jadn':
 			data = $("#convert").val() || $("#convert").text()
@@ -98,6 +109,8 @@
 				console.log(e)
 			}
 			break;
+		case 'html':
+			$('#view-page').removeClass('d-none')
 	}
 	
     $("#schema-list").change(function(e) {
@@ -190,7 +203,7 @@
 		type = $('#convert-to').val()
 		conv = $("#convert").val() || $("#convert").text()
 		download = $('#download-link')
-		download.attr('download', 'schema.{ext}'.format({ext: type}));
+		download.attr('download', 'schema.{ext}'.format({ext: type}))
 		
 		mime = {
 			proto3: 'text/x-c',
@@ -212,18 +225,39 @@
 			case 'md': //text/plain
 			case 'cddl': //text/plain
 			case 'thrift': //text/plain
-				download.attr('href', "data:{data}};charset=utf-8,{conv}".format({data: mime[type], conv: encodeURIComponent(conv)}));
+				download.attr('href', "data:{data};charset=utf-8,{conv}".format({data: mime[type], conv: encodeURIComponent(conv)}));
 				break;
 			default:
 				download.attr('href', "data:text/plain;charset=utf-8,{conv}".format({conv: encodeURIComponent('Theres some issues....')}));
 				break
 		}
 		
-		console.log(download)
+		// console.log(download)
 		// download.click()
 		// window.location.href = "data:text/plain;charset=UTF-8,Hello World";
 	}
 
+	function viewPage() {
+		schema = $("#schema").val() || $("#schema").text()
+		var form = $('<form/>').attr({
+			id: 'open-page',
+			class: 'd-none',
+			target: '_blank',
+			method: 'post',
+			action: '/convert/html'
+		})
+		form.append($('<input>').attr({
+			name: 'schema',
+			type: 'text'
+		}).val(schema).text(schema))
+		
+		$(document.body).append(form)
+		
+		form.submit()
+		
+		$(document.body).remove('#'+form.attr('id'))
+	}
+	
     function validateForm() {
 		schema = $("#schema").val() || $("#schema").text()
         try {
