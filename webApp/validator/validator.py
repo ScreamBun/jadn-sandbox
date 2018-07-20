@@ -1,5 +1,6 @@
 import json
 import random
+import re
 
 from oc2 import OpenC2MessageFormats
 from oc2.codec import Codec, jadn_loads
@@ -78,6 +79,9 @@ class Validator(object):
 
             except (ValueError, TypeError) as e:
                 err = str(e)
+                if re.match(r'.*?is not <.*?>$', err):
+                    err = '{} is improperly formatted'.format(re.sub(r':.*?$', '', err))
+
                 return False, err, json.dumps(message.json_dump()), message.original_dump()
         else:
             return False, 'Decode Invalid - The decode message type was not found in the schema', '', msg
