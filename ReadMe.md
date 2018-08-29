@@ -5,7 +5,7 @@
 2. Install OpenC2 JADN whl using local install
 
     ```bash
-    pip install -r OpenC2-*.whl
+    pip install OpenC2-*.whl
     ```
 
 ## Flask Server (developement)
