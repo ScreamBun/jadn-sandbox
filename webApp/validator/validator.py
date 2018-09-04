@@ -60,9 +60,11 @@ class Validator(object):
                 return False, "Message Invalid - {}".format(e), '', msg
         else:
             return False, err, '', msg
+
+        tc = Codec(s, True, True)
         try:
             tc = Codec(s, True, True)
-        except (AssertionError, ):
+        except (AssertionError, ) as e:
             return False, 'Schema Invalid - The schema failed to load', '', msg
 
         records = [t[0] for t in s['types']]

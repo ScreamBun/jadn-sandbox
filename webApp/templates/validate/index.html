@@ -320,6 +320,10 @@
 					$('#'+id).text(data).val(data)
 					format(id)
 				}
+				
+				if (id == 'schema') {
+					loadDecodeTypes()
+				}
 			}
 		).fail(function() {
 			alertMsg("#alert-container", "An error has occured loading the {id} data from {file}.Check the URL and try again".format({id: id, file: file}))
