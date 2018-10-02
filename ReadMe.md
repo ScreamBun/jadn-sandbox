@@ -159,7 +159,7 @@
 
 3. Upload the application
 	- This may require permission on Google App Engine
-	-  Optional: `-v` can be usedd to specify a version for the project
+	-  Optional: `-v` can be used to specify a version for the project
 	
 	```bash
 	gcloud app deploy --project jadn-validator
