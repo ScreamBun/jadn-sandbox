@@ -1,0 +1,141 @@
+/* roboto-mono-regular - latin */
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/roboto-mono-v5-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Roboto Mono'), local('RobotoMono-Regular'),
+       url('./fonts/roboto-mono-v5-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./fonts/roboto-mono-v5-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./fonts/roboto-mono-v5-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('./fonts/roboto-mono-v5-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('./fonts/roboto-mono-v5-latin-regular.svg#RobotoMono') format('svg'); /* Legacy iOS */
+}
+/* Custom CSS Styles */
+body {
+	padding-top: 60px;
+}
+.navbar-brand > img {
+    max-height: 2em;
+    width: auto;
+    -moz-padding: 15px; /* firefox bug fix */
+}
+.container-fluid .row > * {
+    max-width: 1200px;
+}
+#alert-container {
+	z-index: 100;
+	position: fixed;
+	bottom: 1em;
+	right: 1em;
+}
+.code, textarea {
+    font-family: 'Roboto Mono', Consolas, monaco, monospace;
+	font-size: 1em;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 18.5714px;
+	white-space: pre-wrap;
+}
+div {
+	&.scroll {
+		max-height: 20em;
+		overflow: scroll;
+	}
+	&.scroll-large {
+		max-height: 40em;
+		overflow: scroll;
+	}
+}
+/* Ribbon CSS */
+@import url(https://fonts.googleapis.com/css?family=Lato:700);
+/* common */
+.ribbon {
+  	width: 100px;
+  	height: 100px;
+  	overflow: hidden;
+  	position: absolute;
+	opacity: 0.75;
+	z-index: 2000;
+	&::before, &::after {
+		position: absolute;
+		z-index: -1;
+		content: '';
+		display: block;
+		border: 5px solid #b92929;
+	}
+	span {
+		position: absolute;
+		display: block;
+		width: 150px;
+		padding: 10px 0;
+		background-color: #b92929;
+		box-shadow: 0 5px 10px rgba(0,0,0,.1);
+		color: #fff;
+		font: 700 16px/1 'Lato', sans-serif;
+		text-shadow: 0 1px 1px rgba(0,0,0,.2);
+		text-transform: uppercase;
+		text-align: center;
+	}
+}
+/* top left */
+.ribbon-top-left {
+  	top: -26px;
+  	left: -26px;
+	&::before, &::after {
+		border-top-color: transparent;
+		border-left-color: transparent;
+	}
+	&::before {
+		top: 0;
+		right: 0;
+	}
+	&::after {
+		bottom: 0;
+		left: 0;
+	}
+	span {
+		right: -25px;
+		top: 30px;
+		transform: rotate(-45deg);
+	}
+}
+
+.modal {
+    text-align: center;
+    padding: 0!important;
+    &:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: -4px;
+    }
+    &-dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+        min-width: 350px;
+    }
+}
+
+// Extra small devices (portrait phones, less than 576px)
+// No media query since this is the default in Bootstrap
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+	
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+}

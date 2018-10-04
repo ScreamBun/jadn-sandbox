@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 
@@ -22,21 +23,22 @@ class LoadFile(Resource):
         filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
 
         if os.path.isfile(filePath):
+            name, ext = os.path.splitext(filename)
             with open(filePath, 'rb') as f:
-                fileStr = ''
+                filedata = ''
 
-                for c in f.read():
-                    asciiNum = c if type(c) is int else ord(c)
-                    asciiChr = c if type(c) is str else chr(c)
-                    if asciiNum > 128:
-                        fileStr += "\\x{:02X}".format(asciiNum)
-                    else:
-                        fileStr += asciiChr
+                if ext in ['.jadn', '.json']:
+                    filedata = json.load(f)
+                else:
+                    for c in f.read():
+                        asciiNum = c if type(c) is int else ord(c)
+                        asciiChr = c if type(c) is str else chr(c)
+                        filedata += asciiChr if asciiNum <= 128 else "\\x{:02X}".format(asciiNum)
 
             return {
                 'file': filename,
                 'type': filetype,
-                'data': fileStr
+                'data': filedata
             }, 200
 
         return '', 404

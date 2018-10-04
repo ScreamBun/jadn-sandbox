@@ -1,8 +1,8 @@
 import logging
+import os
 import re
 
-
-from flask import Blueprint, current_app, url_for, render_template, redirect, Response
+from flask import abort, Blueprint, current_app, jsonify, render_template, redirect, Response, send_file, url_for
 from flask_restful import Api, Resource
 
 logger = logging.getLogger()
@@ -14,12 +14,39 @@ def unquote(url):
     return re.compile('%([0-9a-fA-F]{2})', re.M).sub(lambda m: chr(int(m.group(1), 16)), url)
 
 
-class Info(Resource):
+class Root(Resource):
     """
     Endpoint for /
     """
+    def get(self, content):
+        return render_template('index.html')
+
+
+class StaticFiles(Resource):
+    """
+    Endpoint for /css, /js, /img
+    """
+    def get(self, filetype, filename):
+        print(filename)
+        print(filetype)
+
+        filePath = os.path.join(current_app.config.get("TEMPLATE_FOLDER"), filetype, filename)
+        if os.path.isfile(filePath):
+            return send_file(filePath)
+        else:
+            abort(404)
+
+
+class API(Resource):
+    """
+    Endpoint for /api
+    """
     def get(self):
-        return redirect(url_for('validate.validate'))
+        rsp = dict(
+            title='TITLE',
+            message='MESSAGE'
+        )
+        return jsonify(rsp)
 
 
 class Endpoints(Resource):
@@ -79,6 +106,8 @@ class CatchAll(Resource):
 
 
 # Register resources
-api.add_resource(Info, '/')
+# api.add_resource(Root, '/')
+api.add_resource(StaticFiles, '/<regex("(css|js|img)"):filetype>/<path:filename>')
+api.add_resource(API, '/api')
 api.add_resource(Endpoints, '/endpoints')
-api.add_resource(CatchAll, '/<path:content>')
+api.add_resource(Root, '/<path:content>')

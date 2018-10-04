@@ -4,7 +4,7 @@ import logging
 import os
 import re
 
-from flask import Blueprint, current_app, jsonify, redirect, render_template, Response
+from flask import Blueprint, current_app, jsonify, redirect, render_template, Response, request
 from flask_restful import Api, Resource, reqparse
 
 logger = logging.getLogger()
@@ -12,36 +12,31 @@ validate = Blueprint('validate', __name__)
 api = Api(validate)
 
 parser = reqparse.RequestParser()
-parser.add_argument('schema', type=str)
-parser.add_argument('message', type=str)
+parser.add_argument('schema', type=dict)
+parser.add_argument('message', type=dict)
 parser.add_argument('message-format', type=str)
 parser.add_argument('message-decode', type=str)
 
 
 class Validate(Resource):
     """
-    Endpoint for /validate
+    Endpoint for api/validate
     """
     def get(self):
         schemas = re.compile('\.(' + '|'.join(current_app.config.get('VALID_SCHEMAS')) + ')$')
         messages = re.compile('\.(' + '|'.join(current_app.config.get('VALID_MESSAGES')) + ')$')
-        message_files = []
+        message_files = {}
 
         for msg in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'messages')):
             if messages.search(msg) and not msg.startswith('_'):
-                message_files.append(dict(
-                    name=msg,
-                    type=current_app.config.get('DEFAULT_MESSAGE_TYPES').get(msg, '')
-                ))
+                message_files[msg] = current_app.config.get('DEFAULT_MESSAGE_TYPES').get(msg, '')
 
         opts = {
             'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if schemas.search(s)],
             'messages': message_files
         }
 
-        resp = Response(render_template('index.html', page_title="Message Validator", options=opts), mimetype='text/html')
-        resp.status_code = 200
-        return resp
+        return jsonify(opts)
 
     def post(self):
         args = parser.parse_args()
@@ -68,26 +63,30 @@ class Validate(Resource):
 
 class ValidateSchema(Resource):
     """
-    Endpoint for /validate/schema
+    Endpoint for api//validate/schema
     """
     def get(self):
         return redirect('/')
 
     def post(self):
         args = parser.parse_args()
-        try:
-            schema = json.dumps(ast.literal_eval(args['schema']))
-        except (TypeError, ValueError) as e:
-            print(e)
-            schema = args['schema']
+        schema = args['schema']
+        print(type(schema))
+        if type(schema) is not dict:
+            try:
+                schema = json.dumps(ast.literal_eval(args['schema']))
+            except (TypeError, ValueError) as e:
+                print(e)
+                return {
+                    "valid_bool": False,
+                    "valid_msg": 'Schema invalid'
+                }, 200
 
         val = current_app.validator.validateSchema(schema)
-        data = {
+        return {
             "valid_bool": val[0],
             "valid_msg": val[1]
-        }
-
-        return data, 200
+        }, 200
 
 
 # Register resources
