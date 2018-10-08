@@ -21,10 +21,11 @@ console.log('NODE_ENV: ' + env)
 const BUILD_DIR = path.join(__dirname, 'build')
 
 var config  = {
+    mode: JSON.stringify(env),
     entry: path.join(__dirname, 'src', 'index.js'),
     output: {
         path: BUILD_DIR,
-        publicPath: '/',
+        publicPath: '',
         filename: 'js/[name].bundle.js'
     },
     resolve: {
@@ -45,9 +46,6 @@ var config  = {
             'window.jQuery': 'jquery',
             Popper: ['popper.js', 'default'],
             moment: 'moment'
-        }),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(env)
         }),
         new ExtractTextPlugin("css/[name].bundle.css", {
             allChunks: true
@@ -90,7 +88,7 @@ var config  = {
         }
     },
     devtool: 'inline-source-map',
-    module: {
+    modules: {
         loaders: [
             {
                 test: /\.(js|jsx)$/,
@@ -141,8 +139,8 @@ var config  = {
 
 if (process.env.NODE_ENV === 'production') {
     config.plugins.push(
-        new CleanWebpackPlugin([BUILD_DIR]),
-        new webpack.optimize.UglifyJsPlugin()
+        new CleanWebpackPlugin([BUILD_DIR])//,
+        //new webpack.optimize.UglifyJsPlugin()
     )
 }
 

@@ -19,7 +19,11 @@ class Root(Resource):
     Endpoint for /
     """
     def get(self, content):
-        return render_template('index.html')
+        print('RENDER')
+
+        resp = Response(render_template('index.html'), mimetype='text/html')
+        resp.status_code = 200
+        return resp
 
 
 class StaticFiles(Resource):
@@ -110,4 +114,4 @@ class CatchAll(Resource):
 api.add_resource(StaticFiles, '/<regex("(css|js|img)"):filetype>/<path:filename>')
 api.add_resource(API, '/api')
 api.add_resource(Endpoints, '/endpoints')
-api.add_resource(Root, '/<path:content>')
+api.add_resource(Root, '/<path:content>', defaults={'content': '/'})

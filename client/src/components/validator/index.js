@@ -6,10 +6,21 @@ import {
     Redirect
 } from 'react-router-dom'
 
+import JSONInput from 'react-json-editor-ajrm'
+import locale from 'react-json-editor-ajrm/locale/en'
+
 import { Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Tooltip } from 'reactstrap'
 
-import { FormatJADN } from '../cmd_gen/lib'
+import {
+    cbor2escaped,
+    dehexify,
+    escaped2cbor,
+    FormatJADN,
+    hexify
+} from '../cmd_gen/lib'
+
 import * as ValidateActions from '../../actions/validate'
+import * as UtilActions from '../../actions/util'
 
 const vkbeautify = require('vkbeautify')
 
@@ -23,6 +34,7 @@ class Validator extends Component {
             ver_tooltip: false,
 			message: {
 				message: '',
+				json: '',
 				format: '',
 				decode: '',
 				selected: 'empty',
@@ -30,7 +42,9 @@ class Validator extends Component {
 				url: false,
 			},
 			schema: {
-				schema: '',
+				schema: {
+				    placeholder: 'Paste JADN schema here'
+				},
 				selected: 'empty',
 				decodeTypes: {
 				    all: [],
@@ -40,9 +54,13 @@ class Validator extends Component {
 				url: false
 			}
         }
-		this.props.info()
+
+        this.schema_height = 16+'em'
 		
 		this.selectChange = this.selectChange.bind(this)
+		this.fileChange = this.fileChange.bind(this)
+
+		this.props.info()
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -54,6 +72,24 @@ class Validator extends Component {
 
     submitForm(e) {
         e.preventDefault()
+
+        this.props.validateMessage(
+            this.state.schema.schema,
+            this.state.message.message,
+            this.state.message.format,
+            this.state.message.decode
+        ).then(() => {
+            let valid = this.props.validMessage
+            toast(<p>{ valid.valid_msg }</p>, {type: toast.TYPE[valid.valid_bool ? 'INFO' : 'WARNING']})
+
+            this.setState({
+                message: {
+                    ...this.state.message,
+                    json: valid.message_json
+                }
+            })
+            this.format('message-json', 2)
+        })
 
         return false
     }
@@ -139,131 +175,149 @@ class Validator extends Component {
                 }
             }
 		}
-		
-		/*
-        $.get(
-            "/load/"+type+"s/"+selected,
-            function(data) {
-				if (data['type'] == type+"s" && data['file'] == selected) {
-					$("#"+type).removeClass('minify format')
-					
-					if (type == "message") {
-						t = data['file'].split('.')[1]
-						$("#message-format").val(t)
-						switch(t) {
-							case 'cbor':
-								$("#"+type).addClass('minify')
-								d = cbor2bytes(data['data'])
-								break
-							default:
-								d = data['data']
-						}
-						$("#"+type).text(d).val(d)
-						if (decodeType != undefined) {
-							$('#message-decode').val(decodeType)
-						}
-						
-					} else if (type == "schema") {
-						$("#"+type).text(data['data']).val(data['data'])
-						
-					}
-				} else {
-					alertMsg("#alert-container", "Cannot load data")
-				}
+	}
+
+	fileChange(e) {
+	    let id = $(e.target).attr("id").split('-')[0]
+	    let file = $(e.target).prop('files')[0]
+	    let type = file.name.split('.')[1]
+		let fileReader = new FileReader()
+
+		fileReader.onload = e => {
+			let data = atob(fileReader.result.split(',')[1])
+			try {
+				data = JSON.stringify(JSON.parse(data), null, 2)
+            } catch(e) {
+                switch (type) {
+                    case 'cbor':
+				        data = escaped2cbor(hexify(data))
+				        break;
+                }
             }
-        ).fail(function() {
-			alertMsg("#alert-container", "Cannot load data")
-        })
-		*/
+
+			if (id == "schema") {
+			    try {
+                    this.setState({
+                        schema: {
+                            ...this.state.schema,
+                            schema: JSON.parse(data)
+                        }
+                    })
+                    this.loadDecodeTypes()
+                } catch (e) {
+                    console.log(e.message)
+                    toast(<p>Schema cannot be loaded</p>, {type: toast.TYPE.WARNING})
+                }
+			} else if (id == 'message') {
+			    this.setState({
+			        message: {
+			            ...this.state.message,
+			            format: type == 'jadn' ? 'json' : type,
+			            message: data
+			        }
+			    })
+			}
+    	}
+
+    	fileReader.readAsDataURL(file)
 	}
 
     format(t, ind=2) {
-        if (t == 'message') {
+        if (t == 'message' || t == 'message-json') {
             try {
-                let message = ''
-                switch (this.state.message.format) {
+                let message = t == 'message' ? this.state.message.message : this.state.message.json
+                let fmt = t == 'message' ? this.state.message.format : 'json'
+                switch (fmt) {
                     case "cbor":
-                        message = this.state.message.message
-                         toast(<p>CBOR cannot be formatted</p>, {type: toast.TYPE.INFO})
+                        message = cbor2escaped(message)
                         break
                     case "json":
-                        message = vkbeautify.json(this.state.message.message, ' '.repeat(ind))
+                        message = vkbeautify.json(message, ' '.repeat(ind))
                         break
                     case "xml":
-                        message = vkbeautify.xml(this.state.message.message, ' '.repeat(ind))
+                        message = vkbeautify.xml(message, ' '.repeat(ind))
                         break
                     default:
                         let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format " + this.state.message.format + " message"
-                        console.log(msg)
+                        toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
                 }
-                this.setState({ message: {...this.state.message, message: message }})
+                this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: message }})
             } catch(e) {
                 let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format: " + e.message
-                console.log(msg)
+                toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
             }
         } else if (t == 'schema') {
             try {
                 this.setState({ schema: {...this.state.schema, schema: FormatJADN(this.state.schema.schema) }})
             } catch (e) {
                 let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Invalid, cannot format: " + e.message
-                console.log(msg)
+                toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
             }
         }
     }
 
     minify(t) {
-        console.log(t)
-        if (t == 'message') {
+        if (t == 'message' || t == 'message-json') {
             try {
-                let message = ''
-                switch (this.state.message.format) {
+                 let message = t == 'message' ? this.state.message.message : this.state.message.json
+                let fmt = t == 'message' ? this.state.message.format : 'json'
+                switch (fmt) {
                     case "cbor":
-                        message = this.state.message.message
-                         toast(<p>CBOR cannot be minified</p>, {type: toast.TYPE.INFO})
+                        message = escaped2cbor(message)
                         break
                     case "json":
-                        message = vkbeautify.jsonmin(this.state.message.message, ' '.repeat(ind))
+                        message = vkbeautify.jsonmin(message)
                         break
                     case "xml":
-                        message = vkbeautify.xmlmin(this.state.message.message, ' '.repeat(ind))
+                        message = vkbeautify.xmlmin(message)
                         break
                     default:
                         let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format " + this.state.message.format + " message"
-                        console.log(msg)
+                        toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
                 }
-                this.setState({ message: {...this.state.message, message: message }})
+                this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: message }})
             } catch(e) {
                 let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format: " + e.message
-                console.log(msg)
+                toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
             }
         } else if (t == 'schema') {
 		    try {
                 this.setState({ schema: {...this.state.schema, schema: vkbeautify.jsonmin(this.state.schema.schema) }})
             } catch (e) {
                 let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Invalid, cannot format: " + e.message
-                console.log(msg)
+                toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
             }
         }
     }
 
     verifySchema() {
+        let schema = this.state.schema.schema
         if (typeof(this.state.schema.schema) == 'string') {
             try {
-                let schema = JSON.parse(this.state.schema.schema)
-                this.props.verifySchema(schema)
+                schema = JSON.parse(schema)
             } catch (err) {
                 console.log(err.message)
                 toast(<p>{ err.message }</p>, {type: toast.TYPE.WARNING})
+                return
             }
-        } else {
-            this.props.verifySchema(this.state.schema.schema)
         }
+
+        this.props.validateSchema(schema).then(() => {
+            let valid = this.props.validSchema
+            toast(<p>{ valid.valid_msg }</p>, {type: toast.TYPE[valid.valid_bool ? 'INFO' : 'WARNING']})
+        })
     }
 
-    loadURL(t) {}
+    loadURL(t) {
+        console.log('LOAD URL')
+    }
 	
 	loadDecodeTypes() {
-	    let decodeTypes = {}
+	    let decodeTypes = {
+	        all: [],
+	        exports: []
+	    }
+	    let msg_decode = ''
 
 	    if (this.state.schema.schema.meta != undefined) {
 	        if (this.state.schema.schema.meta.exports != undefined) {
@@ -276,7 +330,21 @@ class Validator extends Component {
 	        decodeTypes.all.sort()
 	    }
 
+        if (this.state.message.decode == "" || decodeTypes.all.indexOf(this.state.message.decode) == -1) {
+            console.log(decodeTypes)
+
+            if (decodeTypes.exports.length >= 1) {
+                msg_decode = decodeTypes.exports[0]
+            } else if (decodeTypes.all.length >= 1) {
+                msg_decode = decodeTypes.all[0]
+            }
+        }
+
 	    this.setState({
+	        message: {
+	            ...this.state.message,
+	            decode: msg_decode
+	        },
 	        schema: {
 	            ...this.state.schema,
 	            decodeTypes: decodeTypes
@@ -285,7 +353,7 @@ class Validator extends Component {
 	}
 
     jadn() {
-		// List of options - <option value="{{ opt }}">{{ opt }}</option>
+		// list of options - <option value="{{ opt }}">{{ opt }}</option>
         let schema_opts = this.props.schemas.map((s, i) => <option key={ i } value={ s }>{ s }</option>)
 
         return (
@@ -301,14 +369,14 @@ class Validator extends Component {
 											<select id="schema-list" name="schema-list" className="form-control" default="empty" onChange={ this.selectChange }>
 												<option value="empty">Schema</option>
 												{ schema_opts }
-												<option disabled="">──────────</option>
+												<option value="">──────────</option>
 												<option value="file">File...</option>
 												<option value="url">URL...</option>
 											</select>
 										</div>
 
 										<div id="schema-file-group" className={ "form-group col-md-6 px-1" + (this.state.schema.file ? '' : ' d-none') } >
-											<input type="file" className="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn" />
+											<input type="file" className="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn" onChange={ this.fileChange } />
 										</div>
 
 										<div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? '' : ' d-none') }>
@@ -322,9 +390,11 @@ class Validator extends Component {
 									</div>
 
 									<ButtonGroup className="float-right">
+										{/*
 										<Button outline color="secondary" onClick={ () => this.format('schema') }>Format</Button>
 										<Button outline color="secondary" onClick={ () => this.format('schema') }>Verbose</Button>
 										<Button outline color="secondary" onClick={ () => this.minify('schema') }>Minify</Button>
+										*/}
 										<Button outline color="secondary" onClick={ () => this.verifySchema() } id="ver_tooltip" >Verify</Button>
 										<Tooltip placement="bottom" isOpen={ this.state.ver_tooltip } target="ver_tooltip" toggle={ () => this.setState({ ver_tooltip: !this.state.ver_tooltip }) }>
                                             Validate the schema is valid prior to validating the message
@@ -332,6 +402,7 @@ class Validator extends Component {
 									</ButtonGroup>
 								</div>
 
+                                {/*
 								<textarea
 									className="form-control border card-body p-2"
 									placeholder="Paste JADN schema here"
@@ -340,6 +411,24 @@ class Validator extends Component {
 									value={ typeof(this.state.schema.schema) == 'string' ? this.state.schema.schema : FormatJADN(this.state.schema.schema) }
 									onChange={ (e) => this.setState({ schema: {...this.state.schema, schema: e.target.value }}) }
 								/>
+								*/}
+
+                                <div className="form-control border card-body p-0" style={{height: this.schema_height}}>
+                                    <JSONInput
+                                        id='jadn_schema'
+                                        placeholder={ this.state.schema.schema }
+                                        onChange={ (val) => {
+                                            if (val.jsObject) {
+                                                this.setState({ schema: {...this.state.schema, schema: val.jsObject }})
+                                            }
+                                        }}
+                                        theme='light_mitsuketa_tribute'
+                                        locale={ locale }
+                                        reset={ false }
+                                        height='100%'
+                                        width='100%'
+                                    />
+                                </div>
 							</div>
 						</div>
 					</div>
@@ -349,7 +438,7 @@ class Validator extends Component {
     }
 
     message() {
-		// lost of options - <option value="{{ opt.name }}" decode="{{ opt.type }}">{{ opt.name }}</option>
+		// list of options - <option value="{{ opt.name }}" decode="{{ opt.type }}">{{ opt.name }}</option>
         let msg_opts = Object.entries(this.props.messages).map(([n, t], i) => <option key={ i } value={ n } decode={ t } >{ n }</option>)
 
         let decodeExports = this.state.schema.decodeTypes.exports.map((dt, i) => <option key={ i } value={ dt } >{ dt }</option>)
@@ -364,7 +453,7 @@ class Validator extends Component {
                 <legend>Message</legend>
                 <div className="form-row">
                     <div className="col-md-12 mb-3">
-						<ul className="nav nav-tabs submitted">
+						<ul className={"nav nav-tabs" + (this.state.message.json ? '' : ' d-none') }>
 							<li className="nav-item">
 								<a className="nav-link active show" data-toggle="tab" href="#message-card">Original</a>
 							</li>
@@ -382,14 +471,14 @@ class Validator extends Component {
 												<select id="message-list" name="message-list" className="form-control" default="empty" onChange={ this.selectChange }>
 													<option value="empty">Message</option>
 													{ msg_opts }
-													<option disabled="">──────────</option>
+													<option value="">──────────</option>
 													<option value="file">File...</option>
 													<option value="url">URL...</option>
 												</select>
 											</div>
 
 											<div id="message-file-group" className={ "form-group col-md-6 px-1" + (this.state.message.file ? '' : ' d-none') }>
-												<input type="file" className="btn btn-light form-control-file" id="message-file" name="message-file" accept=".json,.xml,.cbor" />
+												<input type="file" className="btn btn-light form-control-file" id="message-file" name="message-file" accept=".json,.jadn,.xml,.cbor" onChange={ this.fileChange } />
 											</div>
 
 											<div id="message-url-group" className={ "form-group col-md-6 px-1" + (this.state.message.url ? '' : ' d-none') }>
@@ -409,14 +498,22 @@ class Validator extends Component {
 										</ButtonGroup>
 									</div>
 
-									<textarea
-										className="form-control border card-body p-2"
-										placeholder="Paste message to be validated here"
-										rows="10"
-										required=""
-										value={ this.state.message.message }
-										onChange={ (e) => this.setState({ message: {...this.state.message, message: e.target.value }}) }
-									/>
+                                    <div className="form-control border card-body p-0" style={{height: this.schema_height}}>
+                                        <textarea
+                                            placeholder="Paste message to be validated here"
+                                            style={{
+                                                resize: 'none',
+                                                outline: 'none',
+                                                width: 100+'%',
+                                                padding: 10+'px',
+                                                border: 'none',
+                                                height: 100+'%',
+                                            }}
+                                            required=""
+                                            value={ this.state.message.message }
+                                            onChange={ (e) => this.setState({ message: {...this.state.message, message: e.target.value }}) }
+                                        />
+                                    </div>
 								</div>
 							</div>
 
@@ -424,12 +521,28 @@ class Validator extends Component {
 								<div className="card">
 									<div className="card-header">
 										<ButtonGroup className="float-right">
-											<Button outline color="secondary" onClick={ () => this.format('message-json', indent, 'json') }>Verbose</Button>
-											<Button outline color="secondary" onClick={ () => this.minify('message-json', 'json') }>Minify</Button>
+											<Button outline color="secondary" onClick={ () => this.format('message-json', 2) }>Verbose</Button>
+											<Button outline color="secondary" onClick={ () => this.minify('message-json') }>Minify</Button>
 										</ButtonGroup>
 									</div>
 
-									<textarea className="form-control border card-body" id="message-json" rows="10" readOnly />
+                                    <div className="form-control border card-body p-0" style={{height: this.schema_height}}>
+                                        <textarea
+                                            placeholder="Submit a message for validation to see the json version of the message"
+                                            style={{
+                                                resize: 'none',
+                                                outline: 'none',
+                                                width: 100+'%',
+                                                padding: 10+'px',
+                                                border: 'none',
+                                                height: 100+'%',
+                                            }}
+                                            id="message-json"
+                                            rows="10"
+                                            value={ this.state.message.json }
+                                            readOnly
+									    />
+                                    </div>
 								</div>
 							</div>
 						</div>
@@ -449,7 +562,7 @@ class Validator extends Component {
 
 					<div className="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
 						<label className="control-label" htmlFor="message-decode">Message Type</label>
-						<select className="form-control" id="message-decode" name="message-decode" required="" default="" onChange={ (e) => this.setState({ message: {...this.state.message, decode: e.target.value }}) }>
+						<select className="form-control" id="message-decode" name="message-decode" required="" value={ this.state.message.decode } onChange={ (e) => this.setState({ message: {...this.state.message, decode: e.target.value }}) }>
 						    <optgroup label="Exports">
 						        { decodeExports }
                             </optgroup>
@@ -487,9 +600,12 @@ class Validator extends Component {
 function mapStateToProps(state) {
     return {
 		messages: state.Validate.messages,
-		loadedMessages: state.Validate.loaded.messages || {},
+		loadedMessages: state.Util.loaded.messages || {},
+		validMessage: state.Validate.valid.message || {},
+
 		schemas: state.Validate.schemas,
-		loadedSchemas: state.Validate.loaded.schemas || {},
+		loadedSchemas: state.Util.loaded.schemas || {},
+		validSchema: state.Validate.valid.schema || {}
     }
 }
 
@@ -497,8 +613,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
 		info: () => dispatch(ValidateActions.info()),
-		loadFile: (t, f) => dispatch(ValidateActions.load(t, f)),
-        verifySchema: (s) => dispatch(ValidateActions.validateSchema(s))
+		loadFile: (t, f) => dispatch(UtilActions.load(t, f)),
+        validateSchema: (s) => dispatch(ValidateActions.validateSchema(s)),
+        validateMessage: (s, d, t, f) => dispatch(ValidateActions.validateMessage(s, d, t, f))
     }
 }
 

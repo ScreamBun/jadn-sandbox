@@ -12,8 +12,8 @@ validate = Blueprint('validate', __name__)
 api = Api(validate)
 
 parser = reqparse.RequestParser()
-parser.add_argument('schema', type=dict)
-parser.add_argument('message', type=dict)
+parser.add_argument('schema', type=str)
+parser.add_argument('message', type=str)
 parser.add_argument('message-format', type=str)
 parser.add_argument('message-decode', type=str)
 
@@ -70,23 +70,19 @@ class ValidateSchema(Resource):
 
     def post(self):
         args = parser.parse_args()
-        schema = args['schema']
-        print(type(schema))
-        if type(schema) is not dict:
-            try:
-                schema = json.dumps(ast.literal_eval(args['schema']))
-            except (TypeError, ValueError) as e:
-                print(e)
-                return {
-                    "valid_bool": False,
-                    "valid_msg": 'Schema invalid'
-                }, 200
+
+        try:
+            schema = json.dumps(ast.literal_eval(args['schema']))
+        except (TypeError, ValueError) as e:
+            print(e)
+            schema = args['schema']
 
         val = current_app.validator.validateSchema(schema)
-        return {
+        data = {
             "valid_bool": val[0],
             "valid_msg": val[1]
-        }, 200
+        }
+        return data, 200
 
 
 # Register resources

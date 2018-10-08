@@ -24,12 +24,10 @@ print('Starting OpenC2 Flask Server')
 
 app.validator = Validator()
 
-from .views import *
-register_all(app)
 
-'''
-@app.route("/")
-def index():
+@app.route('/', methods=['GET'])
+@app.route('/<path:path>', methods=['GET'])
+def index(path='/'):
     return render_template('index.html')
 
 
@@ -72,4 +70,7 @@ def static_files(filename):  # self, filetype, filename):
             }, 200
 
     return '', 404
-'''
+
+
+from .views import *
+register_all(app)

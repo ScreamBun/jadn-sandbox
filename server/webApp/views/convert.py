@@ -1,9 +1,10 @@
+import ast
 import json
 import logging
 import os
 import re
 
-from flask import Blueprint, current_app, url_for, render_template, redirect, Response
+from flask import Blueprint, current_app, jsonify, render_template, redirect, Response, url_for
 from flask_restful import Api, Resource, reqparse
 
 from oc2.codec import jadn_loads
@@ -23,7 +24,7 @@ parser.add_argument('convert-to', type=str)
 
 class Convert(Resource):
     """
-    Endpoint for /convert
+    Endpoint for api/convert
     """
     conversions = {
         'cddl': (cddl_dumps,),
@@ -41,13 +42,10 @@ class Convert(Resource):
 
         opts = {
             'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if schemas.search(s)],
-            'convs': current_app.config.get('VALID_SCHEMA_CONV'),
-            'schema': {}
+            'conversions': current_app.config.get('VALID_SCHEMA_CONV')
         }
 
-        resp = Response(render_template('convert/index.html', page_title="Schema Conversion", options=opts), mimetype='text/html')
-        resp.status_code = 200
-        return resp
+        return jsonify(opts)
 
     def post(self):
         args = parser.parse_args()
@@ -55,7 +53,17 @@ class Convert(Resource):
         err = []
         conv = 'Their are some issues....'
 
-        val = current_app.validator.validateSchema(args['schema'])
+        try:
+            schema = json.dumps(ast.literal_eval(args['schema']))
+        except (TypeError, ValueError) as e:
+            print(e)
+            schema = args['schema']
+
+        val = current_app.validator.validateSchema(schema)
+        print('Schema Valid info', {
+            "valid_bool": val[0],
+            "valid_msg": val[1]
+        })
 
         if val[0]:  # Valid Schema
             conv = 'Valid Base Schema'
@@ -66,29 +74,26 @@ class Convert(Resource):
 
             else:
                 opts = {} if len(conv_fun) == 1 else conv_fun[1]
-                conv = conv_fun[0](jadn_loads(args['schema']), **opts)
+                conv = conv_fun[0](jadn_loads(schema), **opts)
 
         else:  # Invalid Schema
             err.append(val[1])
             conv = 'Fix the base schema errors before converting...'
 
         opts = {
-            'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if schemas.search(s)],
-            'convs': current_app.config.get('VALID_SCHEMA_CONV'),
             'schema': {
                 'base': args['schema'],
-                'convert': conv
+                'convert': conv,
+                'fmt': args['convert-to']
             }
         }
 
-        resp = Response(render_template('convert/index.html', page_title="Schema Conversion", options=opts, errors=err), mimetype='text/html')
-        resp.status_code = 200
-        return resp
+        return jsonify(opts)
 
 
 class ConvertHTML(Resource):
     """
-    Endpoint for /convert/html
+    Endpoint for api/convert/html
     """
 
     def get(self):

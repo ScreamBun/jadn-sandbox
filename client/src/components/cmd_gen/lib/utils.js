@@ -126,3 +126,51 @@ export const delMultiKey = (a, k) => {
 	    delete a[k]
 	}
 }
+
+/* CBOR Utils */
+export const cbor2escaped = (c) => {
+    if (!c.match(/^([0-9a-fA-F]{2}\s)+[0-9a-fA-F]{2}$/)) {
+        return c
+    }
+
+	return c.split(' ').map((si, i) => {
+	    let ci = parseInt(si, 16)
+	    return ci > 128 ? "\\x"+si : String.fromCharCode(ci)
+	}).join('').replace(/^\s+/, '')
+}
+
+export const escaped2cbor = (e) => {
+    if (e.match(/^([0-9a-fA-F]{2}\s)+[0-9a-fA-F]{2}$/)) {
+        return e
+    }
+
+	return e.split(/\\x/g).map((bi, i) => {
+	    let tmp = [bi.substr(0, 2)]
+	    return tmp.concat(bi.substr(2).split('').map((s) => s.charCodeAt(0).toString(16))).join(' ')
+	}).join(' ').replace(/^\s+/, '')
+}
+
+export const hexify = (str) => {
+	let rtnStr = ''
+	str = str.toString()
+
+	for (let i in str) {
+		let code = str.charCodeAt(i)
+		let char = str.charAt(i)
+		rtnStr += ((code > 128) ? '\\x' + code.toString(16) : char)
+	}
+	return rtnStr
+}
+
+export const dehexify = (str) => {
+	let rtnStr = ''
+	str = str.toString().split(/\\x/g)
+
+	for (let i in str) {
+		console.log(str[i])
+		// var code = str.charCodeAt(i)
+		// var char = str.charAt(i)
+		// rtnStr += ((code > 128) ? '\\x' + code.toString(16) : char)
+	}
+	return rtnStr
+}

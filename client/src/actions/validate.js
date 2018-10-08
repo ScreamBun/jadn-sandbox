@@ -4,12 +4,12 @@ export const INFO_REQUEST = '@@validate/INFO_REQUEST';
 export const INFO_SUCCESS = '@@validate/INFO_SUCCESS';
 export const INFO_FAILURE = '@@validate/INFO_FAILURE';
 
-export const LOAD_REQUEST = '@@validate/LOAD_REQUEST';
-export const LOAD_SUCCESS = '@@validate/LOAD_SUCCESS';
-export const LOAD_FAILURE = '@@validate/LOAD_FAILURE';
+export const VALIDATE_SCHEMA_REQUEST = '@@validate/VALIDATE_SCHEMA_REQUEST';
+export const VALIDATE_SCHEMA_SUCCESS = '@@validate/VALIDATE_SCHEMA_SUCCESS';
 
-export const VALIDATE_REQUEST = '@@validate/VALIDATE_REQUEST';
-export const VALIDATE_SUCCESS = '@@validate/VALIDATED_SUCCESS';
+export const VALIDATE_MESSAGE_REQUEST = '@@validate/VALIDATE_MESSAGE_REQUEST';
+export const VALIDATE_MESSAGE_SUCCESS = '@@validate/VALIDATE_MESSAGE_SUCCESS';
+
 export const VALIDATE_FAILURE = '@@validate/VALIDATE_FAILURE';
 
 // Helper Functions
@@ -25,16 +25,6 @@ export const info = () => ({
     }
 })
 
-export const load = (t, f) => ({
-    [RSAA]: {
-        endpoint: '/api/load/' + t + '/' + f,
-        method: 'GET',
-        types: [
-            LOAD_REQUEST, LOAD_SUCCESS, LOAD_FAILURE
-        ]
-    }
-})
-
 export const validateSchema = (s) => ({
     [RSAA]: {
         endpoint: '/api/validate/schema',
@@ -46,7 +36,27 @@ export const validateSchema = (s) => ({
             schema: s
         }),
         types: [
-            VALIDATE_REQUEST, VALIDATE_SUCCESS, VALIDATE_FAILURE
+            VALIDATE_SCHEMA_REQUEST, VALIDATE_SCHEMA_SUCCESS, VALIDATE_FAILURE
+        ]
+    }
+})
+
+
+export const validateMessage = (s, m ,f, d) => ({
+    [RSAA]: {
+        endpoint: '/api/validate',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            schema: s,
+            message: m,
+            'message-format': f,
+            'message-decode': d
+        }),
+        types: [
+            VALIDATE_MESSAGE_REQUEST, VALIDATE_MESSAGE_SUCCESS, VALIDATE_FAILURE
         ]
     }
 })

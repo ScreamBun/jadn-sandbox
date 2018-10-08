@@ -5,9 +5,9 @@ const initialState = {
     messages: {},
     schemas: [],
 	error: {},
-	loaded: {
-		messages: {},
-		schemas: {}
+	valid: {
+	    message: {},
+		schema: {}
 	}
 }
 
@@ -20,22 +20,32 @@ export default (state=initialState, action=null) => {
     			schemas: action.payload.schemas || [],
 				error: {}
             }
-		
-		case validate.LOAD_SUCCESS:
-			let tmp_state = { ...state }
-			tmp_state.loaded[action.payload.type][action.payload.file] = action.payload.data
-			return tmp_state
 
-		case validate.VALIDATE_SUCCESS:
-		    console.log(action.payload)
-			return state
+		case validate.VALIDATE_SCHEMA_SUCCESS:
+			return {
+			    ...state,
+			    valid: {
+			        ...state.valid,
+			        schema: action.payload
+			    }
+			}
+
+		case validate.VALIDATE_MESSAGE_SUCCESS:
+			return {
+			    ...state,
+			    valid: {
+			        ...state.valid,
+			        message: action.payload
+			    }
+			}
 			
         case validate.INFO_FAILURE:
 		case validate.SCHEMA_FAILURE:
-		case validate.LOAD_FAILURE:
+		case validate.VALIDATE_FAILURE:
 		    console.log(action.payload)
             return {
-                error: action.payload.error || 'ERROR'
+                ...state,
+                error: action.payload.valid_msg || action.payload.error || 'ERROR'
             }
 
         default:
