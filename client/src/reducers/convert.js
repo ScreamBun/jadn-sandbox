@@ -1,4 +1,3 @@
-import jwtDecode from 'jwt-decode'
 import * as convert from '../actions/convert'
 
 const initialState = {

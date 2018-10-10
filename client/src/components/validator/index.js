@@ -12,17 +12,18 @@ import locale from 'react-json-editor-ajrm/locale/en'
 import { Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Tooltip } from 'reactstrap'
 
 import {
-    cbor2escaped,
-    dehexify,
     escaped2cbor,
-    FormatJADN,
-    hexify
-} from '../cmd_gen/lib'
+    format,
+    hexify,
+    loadURL,
+    minify
+} from '../utils'
 
 import * as ValidateActions from '../../actions/validate'
 import * as UtilActions from '../../actions/util'
 
 const vkbeautify = require('vkbeautify')
+const str_fmt = require('string-format')
 
 
 class Validator extends Component {
@@ -40,6 +41,7 @@ class Validator extends Component {
 				selected: 'empty',
 				file: false,
 				url: false,
+				url_str: ''
 			},
 			schema: {
 				schema: {
@@ -51,7 +53,8 @@ class Validator extends Component {
 				    exports: []
 				},
 				file: false,
-				url: false
+				url: false,
+				url_str: ''
 			}
         }
 
@@ -95,9 +98,8 @@ class Validator extends Component {
     }
 	
 	selectChange(e) {
-		let type = $(e.target).attr("id").split('-')[0]
-        let selected = $(e.target).val()
-		let decodeType = $(e.target).find('option:selected').attr('decode')
+		let type = e.target.id.split('-')[0]
+        let selected = e.target.value
 		let rtn = false
 		let update_arr = {
 			selected: selected
@@ -178,8 +180,8 @@ class Validator extends Component {
 	}
 
 	fileChange(e) {
-	    let id = $(e.target).attr("id").split('-')[0]
-	    let file = $(e.target).prop('files')[0]
+		let id = e.target.id.split('-')[0]
+        let file = e.target.files[0]
 	    let type = file.name.split('.')[1]
 		let fileReader = new FileReader()
 
@@ -222,33 +224,21 @@ class Validator extends Component {
     	fileReader.readAsDataURL(file)
 	}
 
-    format(t, ind=2) {
+    format(t) {
         if (t == 'message' || t == 'message-json') {
-            try {
-                let message = t == 'message' ? this.state.message.message : this.state.message.json
-                let fmt = t == 'message' ? this.state.message.format : 'json'
-                switch (fmt) {
-                    case "cbor":
-                        message = cbor2escaped(message)
-                        break
-                    case "json":
-                        message = vkbeautify.json(message, ' '.repeat(ind))
-                        break
-                    case "xml":
-                        message = vkbeautify.xml(message, ' '.repeat(ind))
-                        break
-                    default:
-                        let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format " + this.state.message.format + " message"
-                        toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
-                }
-                this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: message }})
-            } catch(e) {
-                let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format: " + e.message
-                toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
+            let message = t == 'message' ? this.state.message.message : this.state.message.json
+            let fmt = t == 'message' ? this.state.message.format : 'json'
+            let msg = format(message, fmt, 2)
+
+            if (msg.startsWith('Error')) {
+                toast(<p>{ str_fmt('{type} {err}', {type: t.charAt(0).toUpperCase() + t.slice(1), err: msg}) }</p>, {type: toast.TYPE.WARNING})
+                return
             }
+
+            this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: msg }})
         } else if (t == 'schema') {
             try {
-                this.setState({ schema: {...this.state.schema, schema: FormatJADN(this.state.schema.schema) }})
+                this.setState({ schema: {...this.state.schema, schema: this.state.schema.schema }})
             } catch (e) {
                 let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Invalid, cannot format: " + e.message
                 toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
@@ -258,31 +248,18 @@ class Validator extends Component {
 
     minify(t) {
         if (t == 'message' || t == 'message-json') {
-            try {
-                 let message = t == 'message' ? this.state.message.message : this.state.message.json
-                let fmt = t == 'message' ? this.state.message.format : 'json'
-                switch (fmt) {
-                    case "cbor":
-                        message = escaped2cbor(message)
-                        break
-                    case "json":
-                        message = vkbeautify.jsonmin(message)
-                        break
-                    case "xml":
-                        message = vkbeautify.xmlmin(message)
-                        break
-                    default:
-                        let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format " + this.state.message.format + " message"
-                        toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
-                }
-                this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: message }})
-            } catch(e) {
-                let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format: " + e.message
-                toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
+            let message = t == 'message' ? this.state.message.message : this.state.message.json
+            let fmt = t == 'message' ? this.state.message.format : 'json'
+
+            let msg = minify(message, fmt)
+            if (msg.startsWith('Error')) {
+                toast(<p>{ str_fmt('{type} {err}', {type: t.charAt(0).toUpperCase() + t.slice(1), err: msg}) }</p>, {type: toast.TYPE.WARNING})
+                return
             }
+            this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: msg }})
         } else if (t == 'schema') {
 		    try {
-                this.setState({ schema: {...this.state.schema, schema: vkbeautify.jsonmin(this.state.schema.schema) }})
+                this.setState({ schema: {...this.state.schema, schema: this.state.schema.schema }})
             } catch (e) {
                 let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Invalid, cannot format: " + e.message
                 toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
@@ -309,7 +286,24 @@ class Validator extends Component {
     }
 
     loadURL(t) {
-        console.log('LOAD URL')
+        let url = this.state[t].url_str
+        let file = url.substring(url.lastIndexOf("/") + 1)
+        let fileExt = file.substring(file.lastIndexOf(".") + 1)
+
+        if (['json', 'jadn'].indexOf(fileExt) == -1 && t == 'schema') {
+		    toast(<p>This file cannot be loaded as a schema, only JADN/JSON files are valid</p>, {type: toast.TYPE.WARNING})
+		    return
+		}
+
+        loadURL(url).then((data) => {
+            this.setState({[t]: {...this.state[t], [t]: data.data, format: fileExt == 'jadn' ? 'json' : data.fileExt }})
+            if (t == 'schema') {
+                this.loadDecodeTypes()
+            }
+        }).catch((err) => {
+            console.log("failed to load ", url, err.stack)
+            toast(<p>Invalid url, please check what you typed</p>, {type: toast.TYPE.WARNING})
+        })
     }
 	
 	loadDecodeTypes() {
@@ -331,8 +325,6 @@ class Validator extends Component {
 	    }
 
         if (this.state.message.decode == "" || decodeTypes.all.indexOf(this.state.message.decode) == -1) {
-            console.log(decodeTypes)
-
             if (decodeTypes.exports.length >= 1) {
                 msg_decode = decodeTypes.exports[0]
             } else if (decodeTypes.all.length >= 1) {
@@ -382,36 +374,20 @@ class Validator extends Component {
 										<div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? '' : ' d-none') }>
 											<div className="input-group">
 												<div className="input-group-prepend">
-													<Button color="info" onClick={ () => loadURL('schema') }>Load URL</Button>
+													<Button color="info" onClick={ () => this.loadURL('schema') }>Load URL</Button>
 												</div>
-												<input type="text" className="form-control" id="schema-url" />
+												<input type="text" className="form-control" default='' onChange={ (e) => this.setState({ schema: {...this.state.schema, url_str: e.target.value }}) } />
 											</div>
 										</div>
 									</div>
 
 									<ButtonGroup className="float-right">
-										{/*
-										<Button outline color="secondary" onClick={ () => this.format('schema') }>Format</Button>
-										<Button outline color="secondary" onClick={ () => this.format('schema') }>Verbose</Button>
-										<Button outline color="secondary" onClick={ () => this.minify('schema') }>Minify</Button>
-										*/}
 										<Button outline color="secondary" onClick={ () => this.verifySchema() } id="ver_tooltip" >Verify</Button>
 										<Tooltip placement="bottom" isOpen={ this.state.ver_tooltip } target="ver_tooltip" toggle={ () => this.setState({ ver_tooltip: !this.state.ver_tooltip }) }>
                                             Validate the schema is valid prior to validating the message
                                         </Tooltip>
 									</ButtonGroup>
 								</div>
-
-                                {/*
-								<textarea
-									className="form-control border card-body p-2"
-									placeholder="Paste JADN schema here"
-									rows="10"
-									required=""
-									value={ typeof(this.state.schema.schema) == 'string' ? this.state.schema.schema : FormatJADN(this.state.schema.schema) }
-									onChange={ (e) => this.setState({ schema: {...this.state.schema, schema: e.target.value }}) }
-								/>
-								*/}
 
                                 <div className="form-control border card-body p-0" style={{height: this.schema_height}}>
                                     <JSONInput
@@ -484,9 +460,9 @@ class Validator extends Component {
 											<div id="message-url-group" className={ "form-group col-md-6 px-1" + (this.state.message.url ? '' : ' d-none') }>
 												<div className="input-group">
 													<div className="input-group-prepend">
-														<Button color="info" onClick={ () => loadURL('message') }>Load URL</Button>
+														<Button color="info" onClick={ () => this.loadURL('message') }>Load URL</Button>
 													</div>
-													<input type="text" className="form-control" id="message-url" />
+													<input type="text" className="form-control" default='' onChange={ (e) => this.setState({ message: {...this.state.message, url_str: e.target.value }}) } />
 												</div>
 											</div>
 										</div>
@@ -614,6 +590,7 @@ function mapDispatchToProps(dispatch) {
     return {
 		info: () => dispatch(ValidateActions.info()),
 		loadFile: (t, f) => dispatch(UtilActions.load(t, f)),
+
         validateSchema: (s) => dispatch(ValidateActions.validateSchema(s)),
         validateMessage: (s, d, t, f) => dispatch(ValidateActions.validateMessage(s, d, t, f))
     }

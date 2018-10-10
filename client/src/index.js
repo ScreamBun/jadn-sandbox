@@ -4,8 +4,6 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import registerServiceWorker from './registerServiceWorker'
 
-console.log('App State: ' + process.env.NODE_ENV)
-
 // Styles
 import 'bootstrap'
 import 'react-toastify/dist/ReactToastify.css';

@@ -1,4 +1,3 @@
-import jwtDecode from 'jwt-decode'
 import * as util from '../actions/util'
 
 const initialState = {
@@ -12,6 +11,8 @@ const initialState = {
 }
 
 export default (state=initialState, action=null) => {
+	let tmp_state = { ...state }
+
     switch(action.type) {
         case util.INFO_SUCCESS:
             return {
@@ -21,7 +22,6 @@ export default (state=initialState, action=null) => {
             }
 
         case util.LOAD_SUCCESS:
-			let tmp_state = { ...state }
 			tmp_state.loaded[action.payload.type][action.payload.file] = action.payload.data
 			return tmp_state
 
@@ -29,8 +29,7 @@ export default (state=initialState, action=null) => {
 		case util.LOAD_FAILURE:
             return {
                 ...state,
-                site_title: 'ERROR',
-               error:  action.payload.valid_msg || action.payload.error || 'ERROR'
+                error:  action.payload.valid_msg || action.payload.error || 'ERROR'
             }
 
         default:

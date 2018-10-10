@@ -13,19 +13,19 @@ import locale from 'react-json-editor-ajrm/locale/en'
 import { Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Tooltip, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import {
-    cbor2escaped,
-    dehexify,
     escaped2cbor,
-    FormatJADN,
-    hexify
-} from '../cmd_gen/lib'
+    format,
+    hexify,
+    loadURL,
+    minify
+} from '../utils'
 
 import * as ConvertActions from '../../actions/convert'
 import * as ValidateActions from '../../actions/validate'
 import * as UtilActions from '../../actions/util'
 
 const vkbeautify = require('vkbeautify')
-const format = require('string-format')
+const fmt = require('string-format')
 const parser = require('html-react-parser')
 
 class Converter extends Component {
@@ -41,7 +41,8 @@ class Converter extends Component {
 				},
 				selected: 'empty',
 				file: false,
-				url: false
+				url: false,
+				url_str: ''
 			},
 			convert: {
 			    selected: 'empty',
@@ -107,9 +108,8 @@ class Converter extends Component {
     }
 
    	selectChange(e) {
-		let type = $(e.target).attr("id").split('-')[0]
-        let selected = $(e.target).val()
-		let decodeType = $(e.target).find('option:selected').attr('decode')
+		let type = e.target.id.split('-')[0]
+        let selected = e.target.value
 		let rtn = false
 		let update_arr = {
 			selected: selected
@@ -184,8 +184,8 @@ class Converter extends Component {
 	}
 
 	fileChange(e) {
-	    let id = $(e.target).attr("id").split('-')[0]
-	    let file = $(e.target).prop('files')[0]
+		let id = e.target.id.split('-')[0]
+        let file = e.target.files[0]
 	    let type = file.name.split('.')[1]
 		let fileReader = new FileReader()
 
@@ -203,7 +203,7 @@ class Converter extends Component {
             this.setState({ [id]: {...this.state[id], [id]: data }})
 
 			if (id == "schema") {
-			    this.setState({ schema: {...this.state.schema, schema: FormatJADN(data) }})
+			    this.setState({ schema: {...this.state.schema, schema: data }})
 			} else if (id == 'message') {
 			    this.setState({ message: {...this.state.message, format: type == 'jadn' ? 'json' : type }})
 			}
@@ -214,31 +214,19 @@ class Converter extends Component {
 
     format(t, ind=2) {
         if (t == 'message' || t == 'message-json') {
-            try {
-                let message = t == 'message' ? this.state.message.message : this.state.message.json
-                let fmt = t == 'message' ? this.state.message.format : 'json'
-                switch (fmt) {
-                    case "cbor":
-                        message = cbor2escaped(message)
-                        break
-                    case "json":
-                        message = vkbeautify.json(message, ' '.repeat(ind))
-                        break
-                    case "xml":
-                        message = vkbeautify.xml(message, ' '.repeat(ind))
-                        break
-                    default:
-                        let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format " + this.state.message.format + " message"
-                        toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
-                }
-                this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: message }})
-            } catch(e) {
-                let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format: " + e.message
-                toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
+            let message = t == 'message' ? this.state.message.message : this.state.message.json
+            let fmt = t == 'message' ? this.state.message.format : 'json'
+            let msg = format(message, fmt, 2)
+
+            if (msg.startsWith('Error')) {
+                toast(<p>{ str_fmt('{type} {err}', {type: t.charAt(0).toUpperCase() + t.slice(1), err: msg}) }</p>, {type: toast.TYPE.WARNING})
+                return
             }
+
+            this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: msg }})
         } else if (t == 'schema') {
             try {
-                this.setState({ schema: {...this.state.schema, schema: FormatJADN(this.state.schema.schema) }})
+                this.setState({ schema: {...this.state.schema, schema: this.state.schema.schema }})
             } catch (e) {
                 let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Invalid, cannot format: " + e.message
                 toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
@@ -248,28 +236,15 @@ class Converter extends Component {
 
     minify(t) {
         if (t == 'message' || t == 'message-json') {
-            try {
-                 let message = t == 'message' ? this.state.message.message : this.state.message.json
-                let fmt = t == 'message' ? this.state.message.format : 'json'
-                switch (fmt) {
-                    case "cbor":
-                        message = escaped2cbor(message)
-                        break
-                    case "json":
-                        message = vkbeautify.jsonmin(message)
-                        break
-                    case "xml":
-                        message = vkbeautify.xmlmin(message)
-                        break
-                    default:
-                        let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format " + this.state.message.format + " message"
-                        toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
-                }
-                this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: message }})
-            } catch(e) {
-                let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Error, cannot format: " + e.message
-                toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
+            let message = t == 'message' ? this.state.message.message : this.state.message.json
+            let fmt = t == 'message' ? this.state.message.format : 'json'
+            let msg = minify(message, fmt)
+
+            if (msg.startsWith('Error')) {
+                toast(<p>{ str_fmt('{type} {err}', {type: t.charAt(0).toUpperCase() + t.slice(1), err: msg}) }</p>, {type: toast.TYPE.WARNING})
+                return
             }
+            this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: msg }})
         } else if (t == 'schema') {
 		    try {
                 this.setState({ schema: {...this.state.schema, schema: vkbeautify.jsonmin(this.state.schema.schema) }})
@@ -298,6 +273,24 @@ class Converter extends Component {
         })
     }
 
+    loadURL(t) {
+        let url = this.state[t].url_str
+        let file = url.substring(url.lastIndexOf("/") + 1)
+        let fileExt = file.substring(file.lastIndexOf(".") + 1)
+
+        if (['json', 'jadn'].indexOf(fileExt) == -1 && t == 'schema') {
+		    toast(<p>This file cannot be loaded as a schema, only JADN/JSON files are valid</p>, {type: toast.TYPE.WARNING})
+		    return
+		}
+
+        loadURL(url).then((data) => {
+            this.setState({[t]: {...this.state[t], [t]: data.data, format: fileExt == 'jadn' ? 'json' : data.fileExt }})
+        }).catch((err) => {
+            console.log("failed to load ", url, err.stack)
+            toast(<p>Invalid url, please check what you typed</p>, {type: toast.TYPE.WARNING})
+        })
+    }
+
     downloadConfig() {
         let rtn = {
             content: '',
@@ -312,7 +305,7 @@ class Converter extends Component {
 
             switch (fmt) {
                 case 'jadn': //application/json
-                    rtn.content = format("data:application/json;charset=utf-8,{conv}", {conv: encodeURIComponent(schema)})
+                    rtn.content = fmt("data:application/json;charset=utf-8,{conv}", {conv: encodeURIComponent(schema)})
                     break;
                 case 'proto3': //text/x-c
                 case 'rng': //application/xml
@@ -320,10 +313,10 @@ class Converter extends Component {
                 case 'md': //text/plain
                 case 'cddl': //text/plain
                 case 'thrift': //text/plain
-                    rtn.content = format("data:{data};charset=utf-8,{conv}", {data: this.download_mime[fmt], conv: encodeURIComponent(schema)})
+                    rtn.content = fmt("data:{data};charset=utf-8,{conv}", {data: this.download_mime[fmt], conv: encodeURIComponent(schema)})
                     break;
                 default:
-                    rtn.content = format("data:text/plain;charset=utf-8,{conv}", {conv: encodeURIComponent('Theres some issues....')})
+                    rtn.content = fmt("data:text/plain;charset=utf-8,{conv}", {conv: encodeURIComponent('Theres some issues....')})
                     break
             }
 
@@ -431,7 +424,7 @@ class Converter extends Component {
                                         { schema_opts }
                                         <option disabled="">──────────</option>
                                         <option value="file">File...</option>
-                                        <option value="">URL...</option>
+                                        <option value="url">URL...</option>
                                     </select>
                                 </div>
 
@@ -442,9 +435,9 @@ class Converter extends Component {
 								<div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? '' : ' d-none') }>
 									<div className="input-group">
 										<div className="input-group-prepend">
-											<Button color="info" onClick={ () => loadURL('schema') }>Load URL</Button>
+											<Button color="info" onClick={ () => this.loadURL('schema') }>Load URL</Button>
 										</div>
-										<input type="text" className="form-control" id="schema-url" />
+										<input type="text" className="form-control" default='' onChange={ (e) => this.setState({ schema: {...this.state.schema, url_str: e.target.value }}) } />
 									</div>
 								</div>
                             </div>

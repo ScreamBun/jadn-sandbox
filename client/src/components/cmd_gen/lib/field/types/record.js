@@ -19,7 +19,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        setOpt: (key, val) => dispatch(GenActions.setMessageOpt(key, val))
     }
 }
 

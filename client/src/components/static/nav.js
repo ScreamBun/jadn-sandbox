@@ -107,7 +107,7 @@ class Nav extends Component {
                 <div className="collapse navbar-collapse" id="navMain">
                     <ul className="navbar-nav mr-auto">
 
-                        <NavItem href="/validate" text="Validate" click={ this.navigate.bind(this) }/>
+                        <NavItem href="/" text="Validate" click={ this.navigate.bind(this) }/>
 
                         <NavItem href="/convert" text="Convert" click={ this.navigate.bind(this) }/>
 

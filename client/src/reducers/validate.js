@@ -1,4 +1,3 @@
-import jwtDecode from 'jwt-decode'
 import * as validate from '../actions/validate'
 
 const initialState = {
@@ -40,7 +39,6 @@ export default (state=initialState, action=null) => {
 			}
 			
         case validate.INFO_FAILURE:
-		case validate.SCHEMA_FAILURE:
 		case validate.VALIDATE_FAILURE:
 		    console.log(action.payload)
             return {

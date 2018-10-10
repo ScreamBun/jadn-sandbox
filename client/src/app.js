@@ -27,11 +27,10 @@ class App extends Component {
 
                 <ConnectedRouter history={ this.props.history }>
                     <Switch>
-                        <Route exact path="/" component={ Home } />
-                        <Route exact path="/validate" component={ Validator } />
+                        <Route exact path="/" component={ Validator } />
                         <Route exact path="/convert" component={ Converter } />
                         {/*
-                        // <Route path="/cmd_gen/" component={ CMD_Gen } />
+                        <Route path="/create/" component={ CMD_Gen } />
                         */}
                         <Route component={ Error } /> // This should always be last route
                     </Switch>

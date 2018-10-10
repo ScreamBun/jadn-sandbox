@@ -18,27 +18,10 @@ class Root(Resource):
     """
     Endpoint for /
     """
-    def get(self, content):
-        print('RENDER')
-
+    def get(self, path=''):
         resp = Response(render_template('index.html'), mimetype='text/html')
         resp.status_code = 200
         return resp
-
-
-class StaticFiles(Resource):
-    """
-    Endpoint for /css, /js, /img
-    """
-    def get(self, filetype, filename):
-        print(filename)
-        print(filetype)
-
-        filePath = os.path.join(current_app.config.get("TEMPLATE_FOLDER"), filetype, filename)
-        if os.path.isfile(filePath):
-            return send_file(filePath)
-        else:
-            abort(404)
 
 
 class API(Resource):
@@ -111,7 +94,6 @@ class CatchAll(Resource):
 
 # Register resources
 # api.add_resource(Root, '/')
-api.add_resource(StaticFiles, '/<regex("(css|js|img)"):filetype>/<path:filename>')
 api.add_resource(API, '/api')
 api.add_resource(Endpoints, '/endpoints')
-api.add_resource(Root, '/<path:content>', defaults={'content': '/'})
+api.add_resource(Root, '/', '/<path:path>')
