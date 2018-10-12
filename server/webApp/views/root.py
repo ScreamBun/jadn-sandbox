@@ -1,5 +1,4 @@
 import logging
-import os
 import re
 
 from flask import abort, Blueprint, current_app, jsonify, render_template, redirect, Response, send_file, url_for
@@ -22,18 +21,6 @@ class Root(Resource):
         resp = Response(render_template('index.html'), mimetype='text/html')
         resp.status_code = 200
         return resp
-
-
-class API(Resource):
-    """
-    Endpoint for /api
-    """
-    def get(self):
-        rsp = dict(
-            title='JADN Lint',
-            message='MESSAGE'
-        )
-        return jsonify(rsp)
 
 
 class Endpoints(Resource):
@@ -94,6 +81,5 @@ class CatchAll(Resource):
 
 # Register resources
 # api.add_resource(Root, '/')
-api.add_resource(API, '/api')
 api.add_resource(Endpoints, '/endpoints')
 api.add_resource(Root, '/', '/<path:path>')

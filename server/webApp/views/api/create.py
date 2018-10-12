@@ -2,12 +2,10 @@ import logging
 import os
 import re
 
-from flask import Blueprint, current_app, jsonify, render_template, Response
-from flask_restful import Api, Resource
+from flask import current_app, jsonify, render_template, Response
+from flask_restful import Resource
 
-logger = logging.getLogger()
-create = Blueprint('create', __name__)
-api = Api(create)
+logger = logging.getLogger(__name__)
 
 
 class Create(Resource):
@@ -29,4 +27,12 @@ class Create(Resource):
 
 
 # Register resources
-api.add_resource(Create, '/')
+resources = {
+    Create: {'urls': ('/', )}
+}
+
+
+def add_resources(bp, url_prefix=''):
+    for cls, opts in resources.items():
+        args = ['{}{}'.format(url_prefix, url) for url in opts['urls']] + opts.get('args', [])
+        bp.add_resource(cls, *args, **opts.get('kwargs', {}))

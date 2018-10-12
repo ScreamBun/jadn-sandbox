@@ -86,5 +86,13 @@ class ValidateSchema(Resource):
 
 
 # Register resources
-api.add_resource(Validate, '/')
-api.add_resource(ValidateSchema, '/schema')
+resources = {
+    Validate: {'urls': ('/', )},
+    ValidateSchema: {'urls': ('/schema', )}
+}
+
+
+def add_resources(bp, url_prefix=''):
+    for cls, opts in resources.items():
+        args = ['{}{}'.format(url_prefix, url) for url in opts['urls']] + opts.get('args', [])
+        bp.add_resource(cls, *args, **opts.get('kwargs', {}))

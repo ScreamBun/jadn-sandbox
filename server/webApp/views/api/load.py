@@ -2,12 +2,10 @@ import json
 import logging
 import os
 
-from flask import Blueprint, current_app, send_file
-from flask_restful import Api, Resource
+from flask import current_app, send_file
+from flask_restful import Resource
 
 logger = logging.getLogger()
-load = Blueprint('load', __name__)
-api = Api(load)
 
 
 class LoadFile(Resource):
@@ -45,4 +43,12 @@ class LoadFile(Resource):
 
 
 # Register resources
-api.add_resource(LoadFile, '/<string:filetype>/<path:filename>')
+resources = {
+    LoadFile: {'urls': ('/<string:filetype>/<path:filename>', )}
+}
+
+
+def add_resources(bp, url_prefix=''):
+    for cls, opts in resources.items():
+        args = ['{}{}'.format(url_prefix, url) for url in opts['urls']] + opts.get('args', [])
+        bp.add_resource(cls, *args, **opts.get('kwargs', {}))

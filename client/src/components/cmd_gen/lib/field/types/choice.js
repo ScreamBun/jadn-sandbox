@@ -22,7 +22,6 @@ class ChoiceField extends Component {
         }
 
         this.handleChange = this.handleChange.bind(this)
-        this.optChange = this.optChange.bind(this)
     }
 
     handleChange(e) {
@@ -33,19 +32,6 @@ class ChoiceField extends Component {
                this.props.optChange(this.props.def[1], undefined)
             }
         })
-    }
-
-    optChange(k, v) {
-        let keys = k.split('.')
-
-        if (k.length >= 2 && this.state.selectedBase != keys[1]) {
-            this.setState({
-                selectedBase: keys[1]
-            })
-            this.props.optChange(keys.slice(0, 1).join('.'), undefined)
-        }
-
-        this.props.optChange(k, v)
     }
 
     render() {
@@ -74,7 +60,7 @@ class ChoiceField extends Component {
                     </Input>
                     <div className="col-12 py-2">
                         {
-                            this.state.selected >= 0 ? <Field def={ this.selectedDef } parent={ msgName } optChange={ this.optChange } /> : ''
+                            this.state.selected >= 0 ? <Field def={ this.selectedDef } parent={ msgName } optChange={ this.props.optChange } /> : ''
                         }
                     </div>
                 </div>

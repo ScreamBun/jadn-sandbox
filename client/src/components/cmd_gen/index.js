@@ -18,6 +18,7 @@ import {
     delMultiKey,
     Field,
     FormatJADN,
+    getMultiKey,
     setMultiKey
 } from './lib'
 
@@ -33,7 +34,6 @@ import {
 import * as ValidateActions from '../../actions/validate'
 import * as UtilActions from '../../actions/util'
 import * as GenActions from '../../actions/generate'
-
 
 const str_fmt = require('string-format')
 
@@ -114,16 +114,19 @@ class Command_Generator extends Component {
 	}
 
     optChange(k, v) {
-        console.log(k, v)
+        // console.log(k, v)
 
         this.setState((prevState) => {
             let msg = prevState.message || {}
-            console.log(msg)
+            let keys = k.split('.')
+            if (keys.length > 1 && msg[keys[0]] && !msg[keys[0]][keys[1]]) {
+                delMultiKey(msg, keys[0])
+            }
 
-            if (['', ' ', null, undefined, [], {}].indexOf(v) >= 0) {
-                delMultiKey(msg, k)
-            } else {
+            if (['', ' ', null, undefined, [], {}].indexOf(v) == -1) {
                 setMultiKey(msg, k, v)
+            } else {
+                delMultiKey(msg, k)
             }
 
             return {
