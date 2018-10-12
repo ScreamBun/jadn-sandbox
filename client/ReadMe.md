@@ -5,30 +5,62 @@
 
 ### Resources
 - General
-    - [React](https://reactjs.org/) - Core Framework
+	- [React](https://reactjs.org/) - Core Framework
+		- [DOM](https://www.npmjs.com/package/react-dom)
+    	- [JSON Editor](https://www.npmjs.com/package/react-json-editor-ajrm) - JSON Syntax Editor
+    	- [JSON Pretty](https://www.npmjs.com/package/react-json-pretty)
+    	- [Moment](https://www.npmjs.com/package/react-moment) - Date/Time Formatting
+    	- [New Window](https://www.npmjs.com/package/react-new-window) - Popup Windows
+		- [Redux](https://www.npmjs.com/package/react-redux) - React Redux Bindings
+		- [Router DOM](https://www.npmjs.com/package/react-router-dom)
+		- [Router Redux](https://www.npmjs.com/package/react-router-redux) - Router State Sync
+		- [Base Scripts](https://www.npmjs.com/package/react-scripts)
+		- [React Toastify](https://www.npmjs.com/package/react-toastify) - Notifications
+    	- [Transition Group](https://www.npmjs.com/package/react-transition-group)
+    	- [Document Meta](https://www.npmjs.com/package/react-document-meta)
     - [Redux](https://redux.js.org/) - State container
-    - 
-    - [React Toastify](https://www.npmjs.com/package/react-toastify) - Notifications
+    	- [API Middleware](https://www.npmjs.com/package/redux-api-middleware)
+    	- [Logger](https://www.npmjs.com/package/redux-logger)
+		- [Persistance](https://www.npmjs.com/package/redux-persist)
     - [Bootstrap](https://getbootstrap.com/)
+	    - [jQuery](https://www.npmjs.com/package/jquery) - jQuery for node
+	    - [Moment](https://www.npmjs.com/package/moment) - Moment for node
 	    - [Bootstrap](https://www.npmjs.com/package/bootstrap) - Bootstrap for node
 	    - [Reactstrap](https://www.npmjs.com/package/reactstrap) - Bootstrapv4 components for React
-	    - 
     - [FontAwesome](https://fontawesome.com/)
 	    - [Core SVG Icons](https://www.npmjs.com/package/@fortawesome/fontawesome-svg-core)
 	    - [Solid SVG Icons](https://www.npmjs.com/package/@fortawesome/free-solid-svg-icons)
 	    - [React FontAwesome](https://www.npmjs.com/package/@fortawesome/react-fontawesome)
+	- [HTML Parser](https://www.npmjs.com/package/html-react-parser) - HTML string to React Elements
+	- [History](https://www.npmjs.com/package/history) - History management for single page apps
+	- [String Format](https://www.npmjs.com/package/string-format)
+	- [vkBeautify](https://www.npmjs.com/package/vkbeautify) - JSON, XML, CSS, SQL pretty/minify
 
 - Developement
 	- [WebPack](https://www.npmjs.com/package/webpack) - Module bundler and builder
-		- Multiple plugins added/loaded for minifying and interpreting the scripts and styles
-		- Plugins
-			- [clean-webpack-plugin]()
-			- [copy-webpack-plugin]()
-			- [favicons-webpack-plugin]()
-			- [html-webpack-plugin]()
-			- [mini-css-extract-plugin]()
-			- [optimize-css-assets-webpack-plugin]()
-			- [uglifyjs-webpack-plugin]()
-			- [webpack-bundle-tracker]()
+		- [Plugins](https://webpack.js.org/plugins) - Plugin Info
+			- [Clean](https://www.npmjs.com/package/clean-webpack-plugin)
+			- [Copy](https://www.npmjs.com/package/copy-webpack-plugin)
+			- [Favicons](https://www.npmjs.com/package/favicons-webpack-plugin)
+			- [HTML](https://www.npmjs.com/package/html-webpack-plugin)
+			- [Mini CSS](https://www.npmjs.com/package/mini-css-extract-plugin)
+			- [Optimize CSS Assets](https://www.npmjs.com/package/optimize-css-assets-webpack-plugin)
+			- [UglifyJS](https://www.npmjs.com/package/uglifyjs-webpack-plugin)
+			- [Bundle Tracker](https://www.npmjs.com/package/webpack-bundle-tracker)
+		- [Loaders](https://webpack.js.org/loaders) - Loader Info
+			- [Babel](https://www.npmjs.com/package/babel-loader)
+				- [Babel Core](https://www.npmjs.com/package/@babel/core)
+				- [Proposal Object Rest Spread](https://www.npmjs.com/package/@babel/plugin-proposal-object-rest-spread)
+				- [Preset Env](https://www.npmjs.com/package/@babel/preset-env)
+				- [Preset React](https://www.npmjs.com/package/@babel/preset-react)
+			- [CSS](https://www.npmjs.com/package/css-loader)
+			- [File](https://www.npmjs.com/package/file-loader)
+			- [Less](https://www.npmjs.com/package/less-loader) - Loads Less to CSS
+				- [Less](https://www.npmjs.com/package/less) - Core package
+			- [Style](https://www.npmjs.com/package/style-loader)
+		- [HTTP Proxy Middleware](https://www.npmjs.com/package/http-proxy-middleware)
+		- [WebPack CLI](https://www.npmjs.com/package/webpack-cli)
+		- [WebPack Dev Server](https://www.npmjs.com/package/webpack-dev-server)
+		- [WebPack Merge](https://www.npmjs.com/package/webpack-merge)
 
 #### Interesting Modules

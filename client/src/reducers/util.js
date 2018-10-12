@@ -1,8 +1,8 @@
 import * as util from '../actions/util'
 
 const initialState = {
-    site_title: '',
-    message: '',
+    site_title: 'JADN Lint',
+    site_desc: '',
     error: '',
     loaded: {
 		messages: {},
@@ -17,8 +17,8 @@ export default (state=initialState, action=null) => {
         case util.INFO_SUCCESS:
             return {
                 ...state,
-                site_title: action.payload.title || 'ERROR',
-                message: action.payload.message || 'ERROR MESSAGE'
+                site_title: action.payload.title || 'JADN Lint',
+                site_desc: action.payload.message || 'JADN Schema Lint'
             }
 
         case util.LOAD_SUCCESS:

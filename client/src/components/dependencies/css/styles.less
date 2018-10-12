@@ -48,6 +48,27 @@ div {
 		overflow: scroll;
 	}
 }
+/* Pretty JSON Module theme */
+.json-pretty {
+	font-family: 'Roboto Mono', monaco, monospace;
+	font-size: 0.8zem;
+  	line-height: inherit;
+	color: #D4D4D4;
+	background-color: #FCFDFD;
+	.json {
+		&-key {
+			color: #59A5D8;
+		}
+		&-value, &-boolean {
+			color: #386FA4;
+		}
+		&-string {
+			color: #FA7921;
+		}
+	}
+}
+
+
 /* Ribbon CSS */
 @import (css) url('https://fonts.googleapis.com/css?family=Lato:700');
 /* common */

@@ -30,7 +30,7 @@ class API(Resource):
     """
     def get(self):
         rsp = dict(
-            title='TITLE',
+            title='JADN Lint',
             message='MESSAGE'
         )
         return jsonify(rsp)

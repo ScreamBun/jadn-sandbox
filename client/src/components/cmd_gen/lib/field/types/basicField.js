@@ -9,7 +9,7 @@ import {
     isOptional
 } from '../../'
 
-import * as GenActions from '../../../../../actions/generator'
+import * as GenActions from '../../../../../actions/generate'
 
 
 class BasicField extends Component {
@@ -72,7 +72,7 @@ class BasicField extends Component {
 
 function mapStateToProps(state) {
     return {
-        schema: state.Generator.schema
+        schema: state.Generate.selectedSchema
     }
 }
 

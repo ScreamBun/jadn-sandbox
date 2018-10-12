@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import DocumentMeta from 'react-document-meta'
 import { toast } from 'react-toastify'
 import NewWindow from 'react-new-window'
 
@@ -17,15 +18,15 @@ import {
     format,
     hexify,
     loadURL,
-    minify
+    minify,
+    validURL
 } from '../utils'
 
 import * as ConvertActions from '../../actions/convert'
 import * as ValidateActions from '../../actions/validate'
 import * as UtilActions from '../../actions/util'
 
-const vkbeautify = require('vkbeautify')
-const fmt = require('string-format')
+const str_fmt = require('string-format')
 const parser = require('html-react-parser')
 
 class Converter extends Component {
@@ -60,6 +61,11 @@ class Converter extends Component {
 			thrift: 'text/plain'
 		}
 
+		this.meta = {
+            title: str_fmt('{base} | {page}', {base: this.props.siteTitle, page: 'Converter'}),
+            canonical: str_fmt('{origin}{path}', {origin: window.location.origin, path: window.location.pathname})
+        }
+
 		this.schema_height = 40+'em'
 
 		this.selectChange = this.selectChange.bind(this)
@@ -82,7 +88,6 @@ class Converter extends Component {
             try {
                 schema = JSON.parse(schema)
             } catch (err) {
-                console.log(err.message)
                 toast(<p>{ err.message }</p>, {type: toast.TYPE.WARNING})
                 return
             }
@@ -94,11 +99,7 @@ class Converter extends Component {
                 this.props.convertSchema(
                     this.state.schema.schema,
                     this.state.convert.selected
-                ).then(() => {
-                    // let valid = this.props.validMessage
-                    // toast(<p>{ valid.valid_msg }</p>, {type: toast.TYPE[valid.valid_bool ? 'INFO' : 'WARNING']})
-                    console.log('CONVERT RESPONSE')
-                })
+                )
             } else {
                 toast(<p>{ valid.valid_msg }</p>, {type: toast.TYPE[valid.valid_bool ? 'INFO' : 'WARNING']})
             }
@@ -112,75 +113,56 @@ class Converter extends Component {
         let selected = e.target.value
 		let rtn = false
 		let update_arr = {
-			selected: selected
+			selected: selected,
+			file: selected == 'file',
+			url: selected == 'url'
 		}
 
-		switch(selected) {
-			case '':
-			case null:
-				update_arr.file = false
-				update_arr.url = false
-				rtn = true
-				break;
-			case 'empty':
-				update_arr.file = false
-				update_arr.url = false
-				if (type == 'message') {
-					update_arr.format = ''
-					update_arr.decode = ''
-				}
-				rtn = true
-				break;
-			case 'file':
-				update_arr.file = true
-				update_arr.url = false
-				rtn = true
-				break;
-			case 'url':
-				update_arr.file = false
-				update_arr.url = true
-				rtn = true
-				break;
-			default:
-				update_arr.file = false
-				update_arr.url = false
+		if (selected == 'empty' && type == 'message') {
+		    update_arr.format = ''
+			update_arr.decode = ''
 		}
 
-		this.setState({
-			[type]: {
-				...this.state[type],
-				...update_arr
-			}
-		})
-
-		if (rtn) {
-			return
-		} else {
-		    let format = {}
-            if (type == 'message') {
-                format.format = selected.split('.')[1]
+		this.setState((prevState) => {
+            return {
+                [type]: {
+			        ...prevState[type],
+		            ...update_arr
+			    }
             }
+		}, () => {
+		    let selected = this.state[type].selected
+		    let loaded = this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s']
 
-		    if (Object.keys(this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s']).indexOf(selected) == -1) {
-                this.props.loadFile(type+'s', selected).then(() => {
-                    this.setState({
-                        [type]: {
-                            ...this.state[type],
-                            ...format,
-                            [type]: this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s'][selected]
+		    if (['', 'empty', null, 'file', 'url'].indexOf(selected) == -1) {
+		        let format = {}
+		        if (type == 'message') format.format = selected.split('.')[1]
+
+                if (Object.keys(loaded).indexOf(selected) == -1) {
+                    this.props.loadFile(type+'s', selected).then(() => {
+                        this.setState((prevState) => {
+                            return {
+                                [type]: {
+                                    ...prevState[type],
+                                    ...format,
+                                    [type]: this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s'][selected]
+                                }
+                            }
+                        })
+                    })
+
+                } else {
+                    this.setState((prevState) => {
+                        return {
+                            [type]: {
+                                ...this.state[type],
+                                [type]: this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s'][selected]
+                            }
                         }
                     })
-                })
-            } else {
-                this.setState({
-                    [type]: {
-                        ...this.state[type],
-                        ...format,
-                        [type]: this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s'][selected]
-                    }
-                })
-            }
-		}
+                }
+		    }
+		})
 	}
 
 	fileChange(e) {
@@ -200,12 +182,26 @@ class Converter extends Component {
 				        break;
                 }
             }
-            this.setState({ [id]: {...this.state[id], [id]: data }})
 
 			if (id == "schema") {
-			    this.setState({ schema: {...this.state.schema, schema: data }})
+			    try {
+                    this.setState({
+                        schema: {
+                            ...this.state.schema,
+                            schema: JSON.parse(data)
+                        }
+                    })
+                } catch (e) {
+                    toast(<p>Schema cannot be loaded</p>, {type: toast.TYPE.WARNING})
+                }
 			} else if (id == 'message') {
-			    this.setState({ message: {...this.state.message, format: type == 'jadn' ? 'json' : type }})
+			    this.setState({
+			        message: {
+			            ...this.state.message,
+			            format: type == 'jadn' ? 'json' : type,
+			            message: data
+			        }
+			    })
 			}
     	}
 
@@ -247,7 +243,7 @@ class Converter extends Component {
             this.setState({ message: {...this.state.message, [t == 'message' ? 'message' : 'json']: msg }})
         } else if (t == 'schema') {
 		    try {
-                this.setState({ schema: {...this.state.schema, schema: vkbeautify.jsonmin(this.state.schema.schema) }})
+                this.setState({ schema: {...this.state.schema, schema: this.state.schema.schema }})
             } catch (e) {
                 let msg = t.charAt(0).toUpperCase() + t.slice(1) + " Invalid, cannot format: " + e.message
                 toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING})
@@ -261,7 +257,6 @@ class Converter extends Component {
             try {
                 schema = JSON.parse(schema)
             } catch (err) {
-                console.log(err.message)
                 toast(<p>{ err.message }</p>, {type: toast.TYPE.WARNING})
                 return
             }
@@ -275,6 +270,12 @@ class Converter extends Component {
 
     loadURL(t) {
         let url = this.state[t].url_str
+
+        if (!validURL(url)) {
+            toast(<p>Invalid URL, cannot load from a non valid location</p>, {type: toast.TYPE.WARNING})
+		    return
+        }
+
         let file = url.substring(url.lastIndexOf("/") + 1)
         let fileExt = file.substring(file.lastIndexOf(".") + 1)
 
@@ -286,7 +287,6 @@ class Converter extends Component {
         loadURL(url).then((data) => {
             this.setState({[t]: {...this.state[t], [t]: data.data, format: fileExt == 'jadn' ? 'json' : data.fileExt }})
         }).catch((err) => {
-            console.log("failed to load ", url, err.stack)
             toast(<p>Invalid url, please check what you typed</p>, {type: toast.TYPE.WARNING})
         })
     }
@@ -305,7 +305,7 @@ class Converter extends Component {
 
             switch (fmt) {
                 case 'jadn': //application/json
-                    rtn.content = fmt("data:application/json;charset=utf-8,{conv}", {conv: encodeURIComponent(schema)})
+                    rtn.content = str_fmt("data:application/json;charset=utf-8,{conv}", {conv: encodeURIComponent(schema)})
                     break;
                 case 'proto3': //text/x-c
                 case 'rng': //application/xml
@@ -313,10 +313,10 @@ class Converter extends Component {
                 case 'md': //text/plain
                 case 'cddl': //text/plain
                 case 'thrift': //text/plain
-                    rtn.content = fmt("data:{data};charset=utf-8,{conv}", {data: this.download_mime[fmt], conv: encodeURIComponent(schema)})
+                    rtn.content = str_fmt("data:{data};charset=utf-8,{conv}", {data: this.download_mime[fmt], conv: encodeURIComponent(schema)})
                     break;
                 default:
-                    rtn.content = fmt("data:text/plain;charset=utf-8,{conv}", {conv: encodeURIComponent('Theres some issues....')})
+                    rtn.content = str_fmt("data:text/plain;charset=utf-8,{conv}", {conv: encodeURIComponent('Theres some issues....')})
                     break
             }
 
@@ -342,9 +342,6 @@ class Converter extends Component {
 
     viewPage(e) {
         e.preventDefault()
-        console.log('View schema as page')
-
-
         let schema = parser(this.props.convertedSchema.convert).props.children.filter((c) => c.type === 'body')
         schema = schema.length == 1 ? schema[0].props.children : ''
         schema = schema.filter((elm) => typeof(elm) != 'string')
@@ -358,138 +355,143 @@ class Converter extends Component {
                         center="screen"
                         onUnload={() => this.setState({ convert: { ...this.state.convert, popup: null } }) }
                     >
-                        {
-                            // eslint-disable-next-line
-                            schema
-                        }
+                        { schema }
                     </NewWindow>
                 )
             }
         })
     }
 
-    render() {
-        let download = this.downloadConfig()
-
+    jadn(maxHeight) {
         // <option value="{{ opt }}" {% if request.form['schema-list'] == opt %}selected=""{% endif %}>{{ opt }}</option>
         let schema_opts =  this.props.schemas.map((s, i) => <option key={ i } value={ s } >{ s }</option>)
+
+        return (
+            <fieldset className="col-6 p-0 float-left">
+                <legend>JADN Schema</legend>
+
+                <div className="form-control border card-body p-0" style={{height: this.schema_height}}>
+                    <JSONInput
+                        id='jadn_schema'
+                        placeholder={ this.state.schema.schema }
+                        onChange={ (val) => {
+                            if (val.jsObject) {
+                                this.setState({ schema: {...this.state.schema, schema: val.jsObject }})
+                            }
+                        }}
+                        theme='light_mitsuketa_tribute'
+                        locale={ locale }
+                        reset={ false }
+                        height='100%'
+                        width='100%'
+                    />
+                </div>
+
+                <div className="col-12 m-1"></div>
+
+                <Button color='secondary' onClick={ () => this.verifySchema() } className='float-right'>Verify</Button>
+
+                <div className="form-row">
+                    <div className="form-group col-md-5 pr-1 pl-1">
+                        <select id="schema-list" name="schema-list" className="form-control" default="empty" onChange={ this.selectChange }>
+                            <option value="empty">Schema</option>
+                            <optgroup label="Testers">
+						        { schema_opts }
+                            </optgroup>
+                            <optgroup label="Custom">
+						        <option value="file">File...</option>
+								<option value="url">URL...</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div id="schema-file-group" className={ "form-group col-md-6 px-1" + (this.state.schema.file ? '' : ' d-none') } >
+                        <input type="file" className="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn" onChange={ this.fileChange } />
+                    </div>
+
+                    <div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? '' : ' d-none') }>
+                        <div className="input-group">
+                            <div className="input-group-prepend">
+                                <Button color="info" onClick={ () => this.loadURL('schema') }>Load URL</Button>
+                            </div>
+                            <input type="text" className="form-control" default='' onChange={ (e) => this.setState({ schema: {...this.state.schema, url_str: e.target.value }}) } />
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        )
+    }
+
+    converted(maxHeight) {
+        let download = this.downloadConfig()
 
         // <option value="{{ options.convs[conv] }}" {% if request.form['convert-to'] == options.convs[conv] %}selected=""{% endif %}>{{ conv }}</option>
         let convert_opts =  Object.entries(this.props.conversions).map(([d, c], i) => <option key={ i } value={ c } >{ d }</option>)
 
         return (
-            <div className='row mx-auto'>
-                <Form className="mx-auto col-12" onSubmit={ this.submitForm.bind(this) }>
-                    <div className="form-row">
-                        <fieldset className="col-6 p-0 float-left">
-                            <legend>JADN Schema</legend>
+            <fieldset className="col-6 p-0 float-left">
+                <legend>Converted Schema</legend>
 
-							<div className="form-control border card-body p-0" style={{height: this.schema_height}}>
-                                <JSONInput
-                                    id='jadn_schema'
-                                    placeholder={ this.state.schema.schema }
-                                    onChange={ (val) => {
-                                        if (val.jsObject) {
-                                            this.setState({ schema: {...this.state.schema, schema: val.jsObject }})
-                                        }
-                                    }}
-                                    theme='light_mitsuketa_tribute'
-                                    locale={ locale }
-                                    reset={ false }
-                                    height='100%'
-                                    width='100%'
-                                />
-                            </div>
+                <div className="form-control border p-0" style={{height: this.schema_height}}>
+                    <textarea
+                        placeholder="Converted JADN schema"
+                        style={{
+                            resize: 'none',
+                            outline: 'none',
+                            width: 100+'%',
+                            padding: 10+'px',
+                            border: 'none',
+                            height: 100+'%',
+                        }}
+                        value={ this.props.convertedSchema.convert || '' }
+                        readOnly
+                    />
+                </div>
 
-                            <div className="col-12 m-1"></div>
+                <div className="col-12 m-1"></div>
 
-                            <ButtonDropdown isOpen={ this.state.schema_opts_dropdown } toggle={ () => this.setState({ schema_opts_dropdown: !this.state.schema_opts_dropdown }) } className="float-right">
-                                 <DropdownToggle caret color="info" size="sm">
-                                    Schema Options
-                                </DropdownToggle>
-                                <DropdownMenu>
-                                     {/*
-                                     <DropdownItem onClick={ () => this.format('schema') }>Format</DropdownItem>
-                                     <DropdownItem onClick={ () => this.format('schema') }>Verbose</DropdownItem>
-                                     <DropdownItem onClick={ () => this.minify('schema') }>Minify</DropdownItem>
-                                     */}
-                                     <DropdownItem onClick={ () => this.verifySchema() }>Verify</DropdownItem>
-                                </DropdownMenu>
-                            </ButtonDropdown>
+                <a className="btn btn-sm btn-primary float-right" href={ download.content } download={ download.file } target="_blank">Download</a>
 
-                            <div className="form-row">
-                                <div className="form-group col-md-5 pr-1 pl-1">
-                                    <select id="schema-list" name="schema-list" className="form-control" default="empty" onChange={ this.selectChange }>
-                                        <option value="empty">Schema</option>
-                                        { schema_opts }
-                                        <option disabled="">──────────</option>
-                                        <option value="file">File...</option>
-                                        <option value="url">URL...</option>
-                                    </select>
-                                </div>
+                <a className={ "btn btn-sm btn-secondary float-right mr-2" + (this.state.convert.html ? '' : ' d-none') } href="#" onClick={ this.viewPage.bind(this) }>View Page</a>
 
-                                <div id="schema-file-group" className={ "form-group col-md-6 px-1" + (this.state.schema.file ? '' : ' d-none') } >
-								    <input type="file" className="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn" onChange={ this.fileChange } />
-								</div>
+                { this.state.convert.popup }
+            </fieldset>
+        )
+    }
 
-								<div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? '' : ' d-none') }>
-									<div className="input-group">
-										<div className="input-group-prepend">
-											<Button color="info" onClick={ () => this.loadURL('schema') }>Load URL</Button>
-										</div>
-										<input type="text" className="form-control" default='' onChange={ (e) => this.setState({ schema: {...this.state.schema, url_str: e.target.value }}) } />
-									</div>
-								</div>
-                            </div>
-                        </fieldset>
+    render() {
 
-                        <fieldset className="col-6 p-0 float-left">
-                            <legend>Converted Schema</legend>
+        return (
+            <DocumentMeta { ...this.meta } extend >
+                <div className='row mx-auto'>
+                    <Form className="mx-auto col-12" onSubmit={ this.submitForm.bind(this) }>
+                        <div className="form-row">
+                            { this.jadn() }
 
-                            <div className="form-control border p-0" style={{height: this.schema_height}}>
-                                <textarea
-                                    placeholder="Converted JADN schema"
-                                    style={{
-                                        resize: 'none',
-                                        outline: 'none',
-                                        width: 100+'%',
-                                        padding: 10+'px',
-                                        border: 'none',
-                                        height: 100+'%',
-                                    }}
-                                    value={ this.props.convertedSchema.convert || '' }
-                                    readOnly
-                                />
-                            </div>
-
-                            <div className="col-12 m-1"></div>
-
-                            <a className="btn btn-sm btn-primary float-right" href={ download.content } download={ download.file } target="_blank">Download</a>
-
-                            <a className={ "btn btn-sm btn-secondary float-right mr-2" + (this.state.convert.html ? '' : ' d-none') } href="#" onClick={ this.viewPage.bind(this) }>View Page</a>
-
-                            { this.state.convert.popup }
-                        </fieldset>
-                    </div>
-
-                    <div className="col-12"></div>
-
-                    <div className="form-group">
-                        <div className="form-group col-md-3 pr-1 pl-1">
-                            <select id="convert-to" name="convert-to" className="form-control" default="empty" onChange={ (e) => this.setState({ convert: {...this.state.convert, selected: e.target.value } }) }>
-                                <option value="empty">Convert To...</option>
-                                { convert_opts }
-                            </select>
+                            { this.converted() }
                         </div>
 
-                        <Button outline color="primary" type="submit" id="conv_tooltip">Convert</Button>
-                        <Tooltip placement="bottom" isOpen={ this.state.conv_tooltip } target="conv_tooltip" toggle={ () => this.setState({ conv_tooltip: !this.state.conv_tooltip }) }>
-                            Convert the given JADN schema to the selected format
-                        </Tooltip>
-                        <Button outline color="danger" type="reset" onClick={ () => { this.setState({ schema: {...this.state.schema, schema: '', conv: '' }}) }} >Reset</Button>
-                    </div>
-                </Form>
-            </div>
+                        <div className="col-12"></div>
+
+                        <div className="form-group">
+                            {/*
+                            <div className="form-group col-md-3 pr-1 pl-1">
+                                <select id="convert-to" name="convert-to" className="form-control" default="empty" onChange={ (e) => this.setState({ convert: {...this.state.convert, selected: e.target.value } }) }>
+                                    <option value="empty">Convert To...</option>
+                                    { convert_opts }
+                                </select>
+                            </div>
+                            */}
+
+                            <Button outline color="primary" type="submit" id="conv_tooltip">Convert</Button>
+                            <Tooltip placement="bottom" isOpen={ this.state.conv_tooltip } target="conv_tooltip" toggle={ () => this.setState({ conv_tooltip: !this.state.conv_tooltip }) }>
+                                Convert the given JADN schema to the selected format
+                            </Tooltip>
+                            <Button outline color="danger" type="reset" onClick={ () => { this.setState({ schema: {...this.state.schema, schema: '', conv: '' }}) }} >Reset</Button>
+                        </div>
+                    </Form>
+                </div>
+            </DocumentMeta>
         )
     }
 }
@@ -501,7 +503,9 @@ function mapStateToProps(state) {
 		validSchema: state.Validate.valid.schema || {},
 
         conversions: state.Convert.conversions || {},
-        convertedSchema: state.Convert.converted || {}
+        convertedSchema: state.Convert.converted || {},
+
+		siteTitle: state.Util.site_title
     }
 }
 

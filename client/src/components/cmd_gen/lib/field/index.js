@@ -51,7 +51,7 @@ class Field extends Component {
 
 function mapStateToProps(state) {
     return {
-        schema: state.Generator.schema
+        schema: state.Generate.selectedSchema
     }
 }
 

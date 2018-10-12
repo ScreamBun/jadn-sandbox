@@ -5,7 +5,7 @@ import {
     dehexify,
     escaped2cbor,
     hexify
-} from '../cmd_gen/lib'
+} from '.'
 
 /* Async load of a file from a generic url */
 const readAllChunks = (stream) => {
@@ -34,8 +34,11 @@ const chunk2str = (chunks) => {
     }
 }
 
+export const validURL = (url) => url.match(/^(https?:\/\/)?(www\.)?[0-9a-z]+([\-\.]{1}[0-9a-z]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)
+
+
 const loadURL = (url) => {
-    if (!url.match(/^(https?:\/\/)?(www\.)?[0-9a-z]+([\-\.]{1}[0-9a-z]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
+    if (!validURL(url)) {
 	    return new Promise((resolve, reject) => {
 	        reject({
 	            error: 'invalid url'

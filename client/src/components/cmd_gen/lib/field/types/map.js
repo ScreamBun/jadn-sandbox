@@ -9,32 +9,27 @@ import {
     isOptional
 } from '../../'
 
-import * as GenActions from '../../../../../actions/generator'
+import * as GenActions from '../../../../../actions/generate'
 
 
 class MapField extends Component {
-    constructor(props, context) {
-        super(props, context)
-
-        this.name = this.props.def[1]
-        this.type = this.props.def[2]
-        this.args = this.props.def[3]
-        this.comment = this.props.def[4]
-
-        this.typeDef = this.props.schema.types.filter((type) => { return type[0] == this.type })
-        this.typeDef = this.typeDef.length === 1 ? this.typeDef[0] : []
-
-        this.msgName = (this.props.parent ? [this.props.parent, this.name] : [this.name]).join('.')
-    }
-
     render() {
+        let name = this.props.def[1]
+        let args = this.props.def[3]
+        let comment = this.props.def[4]
+
+        let typeDef = this.props.schema.types.filter(t => t[0] == this.props.def[2])
+        typeDef = typeDef.length === 1 ? typeDef[0] : []
+
+        let msgName = (this.props.parent ? [this.props.parent, name] : [name]).join('.')
+
         return (
             <FormGroup tag="fieldset" className="border border-dark p-2">
-                <legend>{ (isOptional(this.props.def) ? '' : '*') + this.name }</legend>
-                { this.comment != '' ? <FormText color="muted">{ this.comment }</FormText> : '' }
+                <legend>{ (isOptional(this.props.def) ? '' : '*') + name }</legend>
+                { comment != '' ? <FormText color="muted">{ comment }</FormText> : '' }
                 <div className="col-12 my-1 px-0">
                     {
-                        this.typeDef[this.typeDef.length - 1].map((def, i) => <Field key={ i } def={ def } parent={ this.msgName } optChange={ this.props.optChange } />)
+                        typeDef[typeDef.length - 1].map((def, i) => <Field key={ i } def={ def } parent={ msgName } optChange={ this.props.optChange } />)
                     }
                 </div>
             </FormGroup>
@@ -44,7 +39,7 @@ class MapField extends Component {
 
 function mapStateToProps(state) {
     return {
-        schema: state.Generator.schema
+        schema: state.Generate.selectedSchema
     }
 }
 

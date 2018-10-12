@@ -111,9 +111,7 @@ class Nav extends Component {
 
                         <NavItem href="/convert" text="Convert" click={ this.navigate.bind(this) }/>
 
-			            {/*
 			            <NavItem href="/create" text="Create" click={ this.navigate.bind(this) }/>
-                        */}
 
                         <NavItem href="#" text="About" click={ () => this.setState({ about_modal: !this.state.about_modal }) }/>
 

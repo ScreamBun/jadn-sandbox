@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import DocumentMeta from 'react-document-meta'
 import { toast } from 'react-toastify'
 
 import {
     Redirect
 } from 'react-router-dom'
+
+import JSONPretty from 'react-json-pretty'
 
 import JSONInput from 'react-json-editor-ajrm'
 import locale from 'react-json-editor-ajrm/locale/en'
@@ -16,7 +19,8 @@ import {
     format,
     hexify,
     loadURL,
-    minify
+    minify,
+    validURL
 } from '../utils'
 
 import * as ValidateActions from '../../actions/validate'
@@ -35,7 +39,9 @@ class Validator extends Component {
             ver_tooltip: false,
 			message: {
 				message: '',
-				json: '',
+				json: {
+				    placeholder: 'Submit a message for validation to see the json version of the message'
+				},
 				format: '',
 				decode: '',
 				selected: 'empty',
@@ -56,6 +62,11 @@ class Validator extends Component {
 				url: false,
 				url_str: ''
 			}
+        }
+
+        this.meta = {
+            title: str_fmt('{base} | {page}', {base: this.props.siteTitle, page: 'Validator'}),
+            canonical: str_fmt('{origin}{path}', {origin: window.location.origin, path: window.location.pathname})
         }
 
         this.schema_height = 16+'em'
@@ -102,81 +113,60 @@ class Validator extends Component {
         let selected = e.target.value
 		let rtn = false
 		let update_arr = {
-			selected: selected
+			selected: selected,
+			file: selected == 'file',
+			url: selected == 'url'
 		}
 		
-		switch(selected) {
-			case '':
-			case null:
-				update_arr.file = false
-				update_arr.url = false
-				rtn = true
-				break;
-			case 'empty':
-				update_arr.file = false
-				update_arr.url = false
-				if (type == 'message') {
-					update_arr.format = ''
-					update_arr.decode = ''
-				}
-				rtn = true
-				break;
-			case 'file':
-				update_arr.file = true
-				update_arr.url = false
-				rtn = true
-				break;
-			case 'url':
-				update_arr.file = false
-				update_arr.url = true
-				rtn = true
-				break;
-			default:
-				update_arr.file = false
-				update_arr.url = false
+		if (selected == 'empty' && type == 'message') {
+		    update_arr.format = ''
+			update_arr.decode = ''
 		}
-		
-		this.setState({
-			[type]: {
-				...this.state[type],
-				...update_arr
-			}
-		})
-		
-		if (rtn) {
-			return
-		} else {
-		    let format = {}
-            if (type == 'message') {
-                format.format = selected.split('.')[1]
-            }
 
-		    if (Object.keys(this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s']).indexOf(selected) == -1) {
-                this.props.loadFile(type+'s', selected).then(() => {
-                    this.setState({
-                        [type]: {
-                            ...this.state[type],
-                            ...format,
-                            [type]: this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s'][selected]
-                        }
-                    })
-                    if (type == 'schema') {
-                        this.loadDecodeTypes()
-                    }
-                })
-            } else {
-                this.setState({
-                    [type]: {
-                        ...this.state[type],
-                        ...format,
-                        [type]: this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s'][selected]
-                    }
-                })
-                if (type == 'schema') {
-                    this.loadDecodeTypes()
-                }
+		this.setState((prevState) => {
+            return {
+                [type]: {
+			        ...prevState[type],
+		            ...update_arr
+			    }
             }
-		}
+		}, () => {
+		    let selected = this.state[type].selected
+		    let loaded = this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s']
+
+		    if (['', 'empty', null, 'file', 'url'].indexOf(selected) == -1) {
+		        let format = {}
+		        if (type == 'message') format.format = selected.split('.')[1]
+
+                if (Object.keys(loaded).indexOf(selected) == -1) {
+                    this.props.loadFile(type+'s', selected).then(() => {
+                        this.setState((prevState) => {
+                            return {
+                                [type]: {
+                                    ...prevState[type],
+                                    ...format,
+                                    [type]: this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s'][selected]
+                                }
+                            }
+                        }, () => {
+                            if (type == 'schema') this.loadDecodeTypes()
+                        })
+                    })
+
+                } else {
+                    this.setState((prevState) => {
+                        return {
+                            [type]: {
+                                ...this.state[type],
+                                [type]: this.props['loaded'+type[0].toUpperCase()+type.slice(1)+'s'][selected]
+                            }
+                        }
+                    }, () => {
+                        if (type == 'schema') this.loadDecodeTypes()
+                    })
+                }
+		    }
+		})
 	}
 
 	fileChange(e) {
@@ -207,7 +197,6 @@ class Validator extends Component {
                     })
                     this.loadDecodeTypes()
                 } catch (e) {
-                    console.log(e.message)
                     toast(<p>Schema cannot be loaded</p>, {type: toast.TYPE.WARNING})
                 }
 			} else if (id == 'message') {
@@ -273,7 +262,6 @@ class Validator extends Component {
             try {
                 schema = JSON.parse(schema)
             } catch (err) {
-                console.log(err.message)
                 toast(<p>{ err.message }</p>, {type: toast.TYPE.WARNING})
                 return
             }
@@ -287,6 +275,12 @@ class Validator extends Component {
 
     loadURL(t) {
         let url = this.state[t].url_str
+
+        if (!validURL(url)) {
+            toast(<p>Invalid URL, cannot load from a non valid location</p>, {type: toast.TYPE.WARNING})
+		    return
+        }
+
         let file = url.substring(url.lastIndexOf("/") + 1)
         let fileExt = file.substring(file.lastIndexOf(".") + 1)
 
@@ -301,7 +295,6 @@ class Validator extends Component {
                 this.loadDecodeTypes()
             }
         }).catch((err) => {
-            console.log("failed to load ", url, err.stack)
             toast(<p>Invalid url, please check what you typed</p>, {type: toast.TYPE.WARNING})
         })
     }
@@ -347,7 +340,6 @@ class Validator extends Component {
     jadn() {
 		// list of options - <option value="{{ opt }}">{{ opt }}</option>
         let schema_opts = this.props.schemas.map((s, i) => <option key={ i } value={ s }>{ s }</option>)
-
         return (
             <fieldset>
                 <legend>JADN Schema</legend>
@@ -357,13 +349,16 @@ class Validator extends Component {
 						    <div className="card">
 							    <div className="card-header">
 									<div className="row float-left col-sm-6 pl-0">
-										<div className="form-group col-md-6 pr-0 pl-1">
+										<div className="form-group col-md-6 mb-0 pr-0 pl-1">
 											<select id="schema-list" name="schema-list" className="form-control" default="empty" onChange={ this.selectChange }>
 												<option value="empty">Schema</option>
-												{ schema_opts }
-												<option value="">──────────</option>
-												<option value="file">File...</option>
-												<option value="url">URL...</option>
+                                                <optgroup label="Testers">
+						                            { schema_opts }
+                                                </optgroup>
+                                                <optgroup label="Custom">
+						                            <option value="file">File...</option>
+												    <option value="url">URL...</option>
+                                                </optgroup>
 											</select>
 										</div>
 
@@ -429,7 +424,7 @@ class Validator extends Component {
                 <legend>Message</legend>
                 <div className="form-row">
                     <div className="col-md-12 mb-3">
-						<ul className={"nav nav-tabs" + (this.state.message.json ? '' : ' d-none') }>
+						<ul className={"nav nav-tabs" + (this.state.message.json.placeholder ? ' d-none' : '') }>
 							<li className="nav-item">
 								<a className="nav-link active show" data-toggle="tab" href="#message-card">Original</a>
 							</li>
@@ -443,13 +438,16 @@ class Validator extends Component {
 								<div className="card">
 									<div className="card-header">
 										<div className="row float-left col-sm-6 pl-0">
-											<div className="form-group col-md-6 pr-0 pl-1">
+											<div className="form-group col-md-6 mb-0 pr-0 pl-1">
 												<select id="message-list" name="message-list" className="form-control" default="empty" onChange={ this.selectChange }>
-													<option value="empty">Message</option>
-													{ msg_opts }
-													<option value="">──────────</option>
-													<option value="file">File...</option>
-													<option value="url">URL...</option>
+												    <option value="empty">Message</option>
+                                                    <optgroup label="Testers">
+						                                { msg_opts }
+                                                    </optgroup>
+                                                    <optgroup label="Custom">
+						                                <option value="file">File...</option>
+													    <option value="url">URL...</option>
+                                                    </optgroup>
 												</select>
 											</div>
 
@@ -490,6 +488,29 @@ class Validator extends Component {
                                             onChange={ (e) => this.setState({ message: {...this.state.message, message: e.target.value }}) }
                                         />
                                     </div>
+                                    <div className="card-footer">
+                                        <div className="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
+                                            <label className="control-label" htmlFor="message-format">Message Format</label>
+                                            <select className="form-control" id="message-format" name="message-format" required="" value={ this.state.message.format } onChange={ (e) => this.setState({ message: {...this.state.message, format: e.target.value }}) } >
+                                                <option value="">Message Format</option>
+                                                <option value="json">json</option>
+                                                <option value="cbor">cbor</option>
+                                                <option value="xml">xml</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
+                                            <label className="control-label" htmlFor="message-decode">Message Type</label>
+                                            <select className="form-control" id="message-decode" name="message-decode" required="" value={ this.state.message.decode } onChange={ (e) => this.setState({ message: {...this.state.message, decode: e.target.value }}) }>
+                                                <optgroup label="Exports">
+                                                    { decodeExports }
+                                                </optgroup>
+                                                <optgroup label="All">
+                                                    { decodeAll }
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                    </div>
 								</div>
 							</div>
 
@@ -503,8 +524,8 @@ class Validator extends Component {
 									</div>
 
                                     <div className="form-control border card-body p-0" style={{height: this.schema_height}}>
-                                        <textarea
-                                            placeholder="Submit a message for validation to see the json version of the message"
+									    <textarea
+                                            placeholder={ JSON.stringify(this.state.message.json) }
                                             style={{
                                                 resize: 'none',
                                                 outline: 'none',
@@ -524,51 +545,29 @@ class Validator extends Component {
 						</div>
 					</div>
                 </div>
-
-                <div className="form-row-fluid">
-					<div className="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
-						<label className="control-label" htmlFor="message-format">Message Format</label>
-						<select className="form-control" id="message-format" name="message-format" required="" value={ this.state.message.format } onChange={ (e) => this.setState({ message: {...this.state.message, format: e.target.value }}) } >
-							<option value="">Message Format</option>
-							<option value="json">json</option>
-							<option value="cbor">cbor</option>
-							<option value="xml">xml</option>
-						</select>
-					</div>
-
-					<div className="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
-						<label className="control-label" htmlFor="message-decode">Message Type</label>
-						<select className="form-control" id="message-decode" name="message-decode" required="" value={ this.state.message.decode } onChange={ (e) => this.setState({ message: {...this.state.message, decode: e.target.value }}) }>
-						    <optgroup label="Exports">
-						        { decodeExports }
-                            </optgroup>
-                            <optgroup label="All">
-						        { decodeAll }
-                            </optgroup>
-						</select>
-					</div>
-				</div>
             </fieldset>
         )
     }
 
     render() {
         return (
-            <div className='row mx-auto'>
-                <Form className="mx-auto col-12 position-relative" onSubmit={ this.submitForm.bind(this) }>
-                    <div className="form-group position-absolute" style={{ right: 1.25+'em', zIndex: 100 }}>
-                        <Button outline color="primary" id="val_tooltip">Validate</Button>
-                        <Tooltip placement="bottom" isOpen={ this.state.val_tooltip } target="val_tooltip" toggle={ () => this.setState({ val_tooltip: !this.state.val_tooltip }) }>
-                            Validate the message against the given schema
-                        </Tooltip>
-                        <Button outline color="danger" type="reset">Reset</Button>
-                    </div>
+            <DocumentMeta { ...this.meta } extend >
+                <div className='row mx-auto'>
+                    <Form className="mx-auto col-12 position-relative" onSubmit={ this.submitForm.bind(this) }>
+                        <div className="form-group position-absolute" style={{ right: 1.25+'em', zIndex: 100 }}>
+                            <Button outline color="primary" id="val_tooltip">Validate</Button>
+                            <Tooltip placement="bottom" isOpen={ this.state.val_tooltip } target="val_tooltip" toggle={ () => this.setState({ val_tooltip: !this.state.val_tooltip }) }>
+                                Validate the message against the given schema
+                            </Tooltip>
+                            <Button outline color="danger" type="reset">Reset</Button>
+                        </div>
 
-                    { this.jadn() }
+                        { this.jadn() }
 
-                    { this.message() }
-                </Form>
-            </div>
+                        { this.message() }
+                    </Form>
+                </div>
+            </DocumentMeta>
         )
     }
 }
@@ -581,7 +580,9 @@ function mapStateToProps(state) {
 
 		schemas: state.Validate.schemas,
 		loadedSchemas: state.Util.loaded.schemas || {},
-		validSchema: state.Validate.valid.schema || {}
+		validSchema: state.Validate.valid.schema || {},
+
+		siteTitle: state.Util.site_title
     }
 }
 

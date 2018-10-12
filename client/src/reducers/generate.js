@@ -1,7 +1,8 @@
-import * as generator from '../actions/generator'
+import * as generator from '../actions/generate'
 
 const initialState = {
-    schema: {},
+    selectedSchema: {},
+    schemas: [],
     message: {},
     types: {
         schema: ['Record', 'Enumerated', 'Map', 'Choice', 'ArrayOf', 'Array'],
@@ -13,12 +14,19 @@ export default (state=initialState, action=null) => {
     let tmpMsg = {...state.message} || {}
 
     switch(action.type) {
+        case generator.INFO_SUCCESS:
+            return {
+                ...state,
+                schemas: action.payload.schemas || []
+            }
+
         case generator.SCHEMA_DEFINE:
             return {
                 ...state,
-                schema: action.payload.schema
+                selectedSchema: action.payload.schema
             }
 
+        case generator.INFO_FAILURE:
         case generator.SCHEMA_FAILURE:
             return state
 

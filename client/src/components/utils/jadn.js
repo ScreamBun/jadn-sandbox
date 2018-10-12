@@ -26,7 +26,6 @@ export const format = (msg, fmt, ind) => {
                 rtn_msg = "Error, cannot format " + fmt + " message"
         }
     } catch (e) {
-        console.log(e)
         rtn_msg = "Error, cannot format: " + e.message
     }
     return rtn_msg

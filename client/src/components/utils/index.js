@@ -1,5 +1,5 @@
 import InputField from './inputField'
-import loadURL from './loadURL'
+import loadURL, { validURL } from './loadURL'
 
 import {
     cbor2escaped,
@@ -22,5 +22,6 @@ export {
     InputField,
     format,
     loadURL,
-    minify
+    minify,
+    validURL
 }

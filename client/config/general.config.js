@@ -75,14 +75,14 @@ const config  = {
             icons: {
                 android: true,
                 appleIcon: true,
-                appleStartup: false,
+                appleStartup: true,
                 coast: false,
                 favicons: true,
-                firefox: false,
+                firefox: true,
                 opengraph: false,
                 twitter: false,
                 yandex: false,
-                windows: false
+                windows: true
             }
         })
     ],
@@ -161,15 +161,7 @@ const config  = {
                         }
                     },
                 }]
-            }/*,{
-                test: /\.(ttf|eot|woff2?)$/,
-                use: [{
-                    loader: 'file-loader',
-                    options: {
-                        name: 'assets/fonts/[name].[ext]'
-                    }
-                }]
-            }*/
+            }
         ]
     }
 };

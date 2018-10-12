@@ -12,7 +12,7 @@ import {
     isOptional
 } from '../../'
 
-import * as GenActions from '../../../../../actions/generator'
+import * as GenActions from '../../../../../actions/generate'
 
 
 class ArrayOfField extends Component {
@@ -64,53 +64,51 @@ class ArrayOfField extends Component {
 
     addOpt(e) {
         e.preventDefault()
-        console.log('Add Option')
-        let max = this.opts.hasOwnProperty('max') ? this.opts.max : 1000
+        let max = this.opts.hasOwnProperty('max') ? this.opts.max : 20
 
-        if (this.state.count < max)
-            this.setState({
-                count: ++this.state.count,
-                max: false
-            })
-        else {
-            this.setState({ max: true })
-        }
+        this.setState((prevState) => {
+            let max_bool = prevState.count < max
+            return {
+                count: max_bool ? ++prevState.count : prevState.count,
+                max: !max_bool
+            }
+        }, () => {
+            this.props.optChange(this.msgName, Array.from(new Set(Object.values(this.state.opts))))
+        })
     }
 
     removeOpt(e) {
         e.preventDefault()
-        console.log('Remove Option')
         let min = this.opts.hasOwnProperty('min') ? this.opts.min : 0
-        let opts = this.state.opts || {}
 
-        if (this.state.count > min) {
-            delete opts[Math.max.apply(Math, Object.keys(opts))]
+        this.setState((prevState) => {
+            let min_bool = prevState.count > min
+            let opts = prevState.opts
+            if (min_bool) {
+                delete opts[Math.max.apply(Math, Object.keys(opts))]
+            }
 
-            this.setState({
-                count: --this.state.count,
-                min: false,
+            return {
+                count: min_bool ? --prevState.count : prevState.count,
+                min: !min_bool,
                 opts: opts
-            })
-
-            this.props.optChange(this.msgName, Array.from(new Set(Object.values(opts))))
-        } else {
-            this.setState({
-                min: true
-            })
-        }
+            }
+        }, () => {
+            this.props.optChange(this.msgName, Array.from(new Set(Object.values(this.state.opts))))
+        })
     }
 
     optChange(k, v, i) {
-        let opts = {
-            ...this.state.opts,
-            [i]: v
-        }
-
-        this.setState({
-            opts: opts
+        this.setState((prevState) => {
+            return {
+                opts: {
+                    ...prevState.opts,
+                    [i]: v
+                }
+            }
+        }, () => {
+            this.props.optChange(this.msgName, Array.from(new Set(Object.values(this.state.opts))))
         })
-
-        this.props.optChange(this.msgName, Array.from(new Set(Object.values(opts))))
     }
 
     render() {
@@ -158,8 +156,8 @@ class ArrayOfField extends Component {
 
 function mapStateToProps(state) {
     return {
-        schema: state.Generator.schema,
-        baseTypes: state.Generator.types.base
+        schema: state.Generate.selectedSchema,
+        baseTypes: state.Generate.types.base
     }
 }
 
