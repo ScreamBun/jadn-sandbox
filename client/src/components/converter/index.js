@@ -389,10 +389,10 @@ class Converter extends Component {
 
                 <div className="col-12 m-1"></div>
 
-                <Button color='secondary' onClick={ () => this.verifySchema() } className='float-right'>Verify</Button>
+                <Button color='secondary' onClick={ () => this.verifySchema() } className='float-right mr-2'>Verify</Button>
 
                 <div className="form-row">
-                    <div className="form-group col-md-5 pr-1 pl-1">
+                    <div className="form-group col-md-5 px-1">
                         <select id="schema-list" name="schema-list" className="form-control" default="empty" onChange={ this.selectChange }>
                             <option value="empty">Schema</option>
                             <optgroup label="Testers">
@@ -455,6 +455,15 @@ class Converter extends Component {
                 <a className={ "btn btn-sm btn-secondary float-right mr-2" + (this.state.convert.html ? '' : ' d-none') } href="#" onClick={ this.viewPage.bind(this) }>View Page</a>
 
                 { this.state.convert.popup }
+
+                <div className="form-row ml-1">
+                    <div className="form-group col-md-5 px-1">
+                        <select id="convert-to" name="convert-to" className="form-control" default="empty" onChange={ (e) => this.setState({ convert: {...this.state.convert, selected: e.target.value } }) }>
+                            <option value="empty">Convert To...</option>
+                            { convert_opts }
+                        </select>
+                    </div>
+                </div>
             </fieldset>
         )
     }
@@ -475,12 +484,7 @@ class Converter extends Component {
 
                         <div className="form-group">
                             {/*
-                            <div className="form-group col-md-3 pr-1 pl-1">
-                                <select id="convert-to" name="convert-to" className="form-control" default="empty" onChange={ (e) => this.setState({ convert: {...this.state.convert, selected: e.target.value } }) }>
-                                    <option value="empty">Convert To...</option>
-                                    { convert_opts }
-                                </select>
-                            </div>
+
                             */}
 
                             <Button outline color="primary" type="submit" id="conv_tooltip">Convert</Button>
