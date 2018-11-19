@@ -9,9 +9,6 @@ import {
 
 import JSONPretty from 'react-json-pretty'
 
-import JSONInput from 'react-json-editor-ajrm'
-import locale from 'react-json-editor-ajrm/locale/en'
-
 import { Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Tooltip } from 'reactstrap'
 
 import {
@@ -22,6 +19,9 @@ import {
     minify,
     validURL
 } from '../utils'
+
+import JSONInput from '../utils/jadn-editor'
+import locale from '../utils/jadn-editor/locale/en'
 
 import * as ValidateActions from '../../actions/validate'
 import * as UtilActions from '../../actions/util'
@@ -69,7 +69,7 @@ class Validator extends Component {
             canonical: str_fmt('{origin}{path}', {origin: window.location.origin, path: window.location.pathname})
         }
 
-        this.schema_height = 16+'em'
+        this.schema_height = 17+'em'
 		
 		this.selectChange = this.selectChange.bind(this)
 		this.fileChange = this.fileChange.bind(this)
@@ -314,6 +314,7 @@ class Validator extends Component {
 
 	    if (this.state.schema.schema.types != undefined) {
 	        decodeTypes.all = this.state.schema.schema.types.map((def) => def[0])
+	        decodeTypes.all = decodeTypes.all.filter(dt => decodeTypes.exports.indexOf(dt) === -1)
 	        decodeTypes.all.sort()
 	    }
 
@@ -348,8 +349,15 @@ class Validator extends Component {
 				        <div id="schema-card" className="tab-pane fade active show">
 						    <div className="card">
 							    <div className="card-header">
-									<div className="row float-left col-sm-6 pl-0">
-										<div className="form-group col-md-6 mb-0 pr-0 pl-1">
+							        <ButtonGroup className="float-right">
+										<Button outline color="secondary" onClick={ () => this.verifySchema() } id="ver_tooltip" >Verify</Button>
+										<Tooltip placement="bottom" isOpen={ this.state.ver_tooltip } target="ver_tooltip" toggle={ () => this.setState({ ver_tooltip: !this.state.ver_tooltip }) }>
+                                            Validate the schema is valid prior to validating the message
+                                        </Tooltip>
+									</ButtonGroup>
+
+									<div className="col-sm-6 pl-0">
+										<div className="form-group col-md-6 mb-0 pr-0 pl-1 d-inline-block">
 											<select id="schema-list" name="schema-list" className="form-control" default="empty" onChange={ this.selectChange }>
 												<option value="empty">Schema</option>
                                                 <optgroup label="Testers">
@@ -362,11 +370,11 @@ class Validator extends Component {
 											</select>
 										</div>
 
-										<div id="schema-file-group" className={ "form-group col-md-6 px-1" + (this.state.schema.file ? '' : ' d-none') } >
+										<div id="schema-file-group" className={ "form-group col-md-6 px-1" + (this.state.schema.file ? ' d-inline-block' : ' d-none') } >
 											<input type="file" className="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn" onChange={ this.fileChange } />
 										</div>
 
-										<div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? '' : ' d-none') }>
+										<div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? ' d-inline-block' : ' d-none') }>
 											<div className="input-group">
 												<div className="input-group-prepend">
 													<Button color="info" onClick={ () => this.loadURL('schema') }>Load URL</Button>
@@ -375,13 +383,6 @@ class Validator extends Component {
 											</div>
 										</div>
 									</div>
-
-									<ButtonGroup className="float-right">
-										<Button outline color="secondary" onClick={ () => this.verifySchema() } id="ver_tooltip" >Verify</Button>
-										<Tooltip placement="bottom" isOpen={ this.state.ver_tooltip } target="ver_tooltip" toggle={ () => this.setState({ ver_tooltip: !this.state.ver_tooltip }) }>
-                                            Validate the schema is valid prior to validating the message
-                                        </Tooltip>
-									</ButtonGroup>
 								</div>
 
                                 <div className="form-control border card-body p-0" style={{height: this.schema_height}}>
@@ -467,7 +468,6 @@ class Validator extends Component {
 
 										<ButtonGroup className="float-right">
 											<Button outline color="secondary" onClick={ () => this.format('message') }>Format</Button>
-											<Button outline color="secondary" onClick={ () => this.format('message') }>Verbose</Button>
 											<Button outline color="secondary" onClick={ () => this.minify('message') }>Minify</Button>
 										</ButtonGroup>
 									</div>

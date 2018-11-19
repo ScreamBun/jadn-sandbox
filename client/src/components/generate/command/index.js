@@ -9,9 +9,6 @@ import {
 
 import JSONPretty from 'react-json-pretty'
 
-import JSONInput from 'react-json-editor-ajrm'
-import locale from 'react-json-editor-ajrm/locale/en'
-
 import { Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Tooltip } from 'reactstrap';
 
 import {
@@ -29,16 +26,19 @@ import {
     loadURL,
     minify,
     validURL
-} from '../utils'
+} from '../../utils'
 
-import * as ValidateActions from '../../actions/validate'
-import * as UtilActions from '../../actions/util'
-import * as GenActions from '../../actions/generate'
+import JSONInput from '../../utils/jadn-editor'
+import locale from '../../utils/jadn-editor/locale/en'
+
+import * as ValidateActions from '../../../actions/validate'
+import * as UtilActions from '../../../actions/util'
+import * as GenActions from '../../../actions/generate'
 
 const str_fmt = require('string-format')
 
 
-class Command_Generator extends Component {
+class Generate extends Component {
     constructor(props, context) {
         super(props, context)
 
@@ -61,7 +61,7 @@ class Command_Generator extends Component {
 		}
 
 		this.meta = {
-            title: str_fmt('{base} | {page}', {base: this.props.siteTitle, page: 'Creator'}),
+            title: str_fmt('{base} | {page}', {base: this.props.siteTitle, page: 'Creator-Message'}),
             canonical: str_fmt('{origin}{path}', {origin: window.location.origin, path: window.location.pathname})
         }
 
@@ -258,7 +258,7 @@ class Command_Generator extends Component {
         })
     }
 
-     verifySchema() {
+    verifySchema() {
         let schema = this.state.schema.schema
         if (typeof(this.state.schema.schema) == 'string') {
             try {
@@ -298,7 +298,7 @@ class Command_Generator extends Component {
                         <div className='card col-12 p-0 mx-auto'>
                             <div className='card-header'>
                                 <FormGroup className='col-md-6 p-0 m-0 float-left'>
-                                    <Input type='select' name='command-list' id='command-list' className='form-control' default='' onChange={ (e) => { this.setState({'command_record': e.target.value}) }}>
+                                    <Input type='select' name='command-list' id='command-list' className='form-control' default='' onChange={ (e) => { this.setState({'command_record': e.target.value, message: {}}) }}>
                                         <option value=''>Command Type</option>
                                         {
                                             export_records.map((rec, i) => {
@@ -349,8 +349,15 @@ class Command_Generator extends Component {
                 <div id="schema-card" className="tab-pane fade active show">
 				    <div className="card">
 					    <div className="card-header">
-						    <div className="row float-left col-sm-10 pl-0">
-							    <div className="form-group col-md-6 pr-0 pl-1">
+						    <ButtonGroup className="float-right">
+								<Button outline color="secondary" onClick={ () => this.verifySchema() } id="ver_tooltip" >Verify</Button>
+								<Tooltip placement="bottom" isOpen={ this.state.ver_tooltip } target="ver_tooltip" toggle={ () => this.setState({ ver_tooltip: !this.state.ver_tooltip }) }>
+                                    Validate the schema is valid prior to validating the message
+                                </Tooltip>
+						    </ButtonGroup>
+
+						    <div className="col-sm-10 pl-0">
+							    <div className="form-group col-md-6 pr-0 pl-1 d-inline-block">
 								    <select id="schema-list" name="schema-list" className="form-control" default="empty" onChange={ this.selectChange }>
 									    <option value="empty">Schema</option>
                                             <optgroup label="Testers">
@@ -363,11 +370,11 @@ class Command_Generator extends Component {
 								    </select>
 								</div>
 
-								<div id="schema-file-group" className={ "form-group col-md-6 px-1" + (this.state.schema.file ? '' : ' d-none') } >
+								<div id="schema-file-group" className={ "form-group col-md-6 px-1" + (this.state.schema.file ? ' d-inline-block' : ' d-none') } >
 									<input type="file" className="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn" onChange={ this.fileChange } />
 								</div>
 
-								<div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? '' : ' d-none') }>
+								<div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? ' d-inline-block' : ' d-none') }>
 									<div className="input-group">
 								        <div className="input-group-prepend">
 											<Button color="info" onClick={ () => this.loadURL('schema') }>Load URL</Button>
@@ -376,13 +383,6 @@ class Command_Generator extends Component {
 									</div>
 								</div>
 							</div>
-
-							<ButtonGroup className="float-right">
-								<Button outline color="secondary" onClick={ () => this.verifySchema() } id="ver_tooltip" >Verify</Button>
-								<Tooltip placement="bottom" isOpen={ this.state.ver_tooltip } target="ver_tooltip" toggle={ () => this.setState({ ver_tooltip: !this.state.ver_tooltip }) }>
-                                    Validate the schema is valid prior to validating the message
-                                </Tooltip>
-						    </ButtonGroup>
 						</div>
 
                         <div className="form-control border card-body p-0" style={{ height: maxHeight+'px' }}>
@@ -478,4 +478,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Command_Generator)
+export default connect(mapStateToProps, mapDispatchToProps)(Generate)

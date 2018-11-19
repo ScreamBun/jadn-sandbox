@@ -111,7 +111,15 @@ class Nav extends Component {
 
                         <NavItem href="/convert" text="Convert" click={ this.navigate.bind(this) }/>
 
-			            <NavItem href="/create" text="Create" click={ this.navigate.bind(this) }/>
+                        <li className="nav-item dropdown">
+                            <a className="nav-link dropdown-toggle" href="#" id="navMainDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Generate
+                            </a>
+                            <div className="dropdown-menu" aria-labelledby="navMainDropdown1">
+                                <a className="dropdown-item" href="/generate/message" onClick={ this.navigate.bind(this) }>Messages</a>
+                                <a className="dropdown-item" href="/generate/schema" onClick={ this.navigate.bind(this) }>schemas</a>
+                            </div>
+                        </li>
 
                         <NavItem href="#" text="About" click={ () => this.setState({ about_modal: !this.state.about_modal }) }/>
 

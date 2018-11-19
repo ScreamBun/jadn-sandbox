@@ -20,7 +20,7 @@ body {
     width: auto;
     -moz-padding: 15px; /* firefox bug fix */
 }
-.container-fluid .row > * {
+.container-fluid .row {
     max-width: 1200px;
 }
 #alert-container {
@@ -76,9 +76,11 @@ div {
   	width: 100px;
   	height: 100px;
   	overflow: hidden;
-  	position: absolute;
+  	position: fixed;
 	opacity: 0.75;
 	z-index: 2000;
+	pointer-events: none;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='your_transparent.png', sizingMethod='scale');
 	&::before, &::after {
 		position: absolute;
 		z-index: -1;
@@ -138,6 +140,20 @@ div {
         text-align: left;
         vertical-align: middle;
         min-width: 350px;
+    }
+}
+
+.nav-item {
+    cursor: pointer;
+}
+
+//Schema Creator Styles
+#schema-options {
+    .list-group-item {
+        padding: 5px;
+        &-action {
+            cursor: pointer;
+        }
     }
 }
 

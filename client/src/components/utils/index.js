@@ -5,7 +5,7 @@ import {
     cbor2escaped,
     dehexify,
     escaped2cbor,
-    hexify,
+    hexify
 } from './cbor'
 
 import {
@@ -13,14 +13,16 @@ import {
     minify
 } from './jadn'
 
+import JADNEditor from './jadn-editor'
 
 export {
     cbor2escaped,
     dehexify,
     escaped2cbor,
+    format,
     hexify,
     InputField,
-    format,
+    JADNEditor,
     loadURL,
     minify,
     validURL

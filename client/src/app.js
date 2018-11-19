@@ -3,14 +3,17 @@ import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import { ConnectedRouter } from 'react-router-redux'
-import { Router, Route, Switch } from 'react-router';
+import { Redirect, Router, Route, Switch } from 'react-router';
 import { toast, ToastContainer } from 'react-toastify';
 
 import { Error, Home, Nav } from './components/static'
 
-import CMD_Gen from './components/cmd_gen'
 import Converter from './components/converter'
 import Validator from './components/validator'
+import {
+    CommandGenerator,
+    SchemaGenerator
+} from './components/generate'
 
 import * as UtilActions from './actions/util'
 
@@ -39,13 +42,19 @@ class App extends Component {
     render() {
         return (
             <div className="container-fluid mt-3" >
+                <div className="ribbon ribbon-top-left">
+	        		<span>Beta</span>
+		        </div>
+
                 <Nav history={ this.props.history } />
 
                 <ConnectedRouter history={ this.props.history }>
                     <Switch>
                         <Route exact path="/" component={ Validator } />
                         <Route exact path="/convert" component={ Converter } />
-                        <Route path="/create/" component={ CMD_Gen } />
+                        <Route exact path="/generate" render={() => (<Redirect to="/generate/message"/>) } />
+                        <Route path="/generate/message" component={ CommandGenerator } />
+                        <Route path="/generate/schema" component={ SchemaGenerator } />
                         <Route component={ Error } /> // This should always be last route
                     </Switch>
                 </ConnectedRouter>

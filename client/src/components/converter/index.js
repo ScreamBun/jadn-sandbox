@@ -4,12 +4,7 @@ import DocumentMeta from 'react-document-meta'
 import { toast } from 'react-toastify'
 import NewWindow from 'react-new-window'
 
-import {
-    Redirect
-} from 'react-router-dom'
-
-import JSONInput from 'react-json-editor-ajrm'
-import locale from 'react-json-editor-ajrm/locale/en'
+import PopoutWindow from 'react-popout'
 
 import { Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Tooltip, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
@@ -21,6 +16,9 @@ import {
     minify,
     validURL
 } from '../utils'
+
+import JSONInput from '../utils/jadn-editor'
+import locale from '../utils/jadn-editor/locale/en'
 
 import * as ConvertActions from '../../actions/convert'
 import * as ValidateActions from '../../actions/validate'
@@ -342,21 +340,79 @@ class Converter extends Component {
 
     viewPage(e) {
         e.preventDefault()
-        let schema = parser(this.props.convertedSchema.convert).props.children.filter((c) => c.type === 'body')
-        schema = schema.length == 1 ? schema[0].props.children : ''
-        schema = schema.filter((elm) => typeof(elm) != 'string')
+        const nulls = ['', ' ', null, undefined]
+        let tmp_html = parser(this.props.convertedSchema.convert.replace(/^\s+/gm, '').replace(/\s+$/gm, ''))
 
+        // CSS Theme
+        let theme = tmp_html.props.children.filter((c) => c.type === 'head')
+        theme = (theme.length == 1 ? theme[0].props.children : []).filter((e, i) => nulls.indexOf(e) == -1)
+        theme = theme.filter((e, i) => e.type == 'style')
+        theme = theme.length == 1 ? theme[0] : {}
+
+        // HTML Schema
+        let schema = tmp_html.props.children.filter((c) => c.type === 'body')
+        schema = schema.length == 1 ? schema[0].props.children : []
+
+        // Remove whitespace - non objects
+        const filter = (elm) => {
+            if (typeof(elm) == 'string') {
+                return (!elm || elm.match(/^[\r\n\s]*?$/m) ? '' : elm)
+            } else {
+                if (elm.props && elm.props.children) {
+                    if (typeof(elm.props.children) == 'string') {
+                        return elm
+                    } else {
+                        return React.cloneElement(elm, {
+                            children: elm.props.children.map((e, i) => {
+                                if (typeof(e) == 'string') {
+                                    if (!e.match(/^[\r\n\s]*?$/gm)) { return e; }
+                                } else {
+                                    return filter(e)
+                                }
+                            }).filter((e, i) => nulls.indexOf(e) == -1)
+                        })
+                    }
+                } else {
+                    let tmp = elm.map((e, i) => filter(e)).filter((e, i) => nulls.indexOf(e) == -1)
+                    tmp = tmp.map((e, i) => {
+                        let children = filter(e.props.children)
+                        try { children = children.filter((e, i) => nulls.indexOf(e) == -1) } catch (err) {}
+
+                        return React.cloneElement(e,
+                            {
+                                key: i,
+                                children: children
+                            }
+                        )
+                    })
+                    return tmp.length === 1 ? tmp[0] : tmp
+                }
+            }
+        }
+
+        schema = filter(schema)
+
+        let size_divisor = 1.5
         this.setState({
             convert: {
                 ...this.state.convert,
                 popup: (
-                    <NewWindow
+                    <PopoutWindow
                         title="HTML Schema"
                         center="screen"
+                        options={{
+                            width: (opt, win) => win.outerWidth / size_divisor,
+                            height:(opt, win) => win.outerHeight / size_divisor,
+                            top: (opt, win) => (win.innerHeight - opt.height(opt, win)) / size_divisor + win.screenY,
+                            left: (opt, win) => (win.innerWidth - opt.width(opt, win)) / size_divisor + win.screenX
+                        }}
                         onUnload={() => this.setState({ convert: { ...this.state.convert, popup: null } }) }
                     >
-                        { schema }
-                    </NewWindow>
+                        <div>
+                            { theme }
+                            { schema }
+                        </div>
+                    </PopoutWindow>
                 )
             }
         })

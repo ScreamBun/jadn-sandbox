@@ -26,7 +26,7 @@ const config  = {
     entry: path.join(ROOT_DIR, 'src', 'index.js'),
     output: {
         path: BUILD_DIR,
-        publicPath: '',
+        publicPath: '/',
         filename: 'js/[name].bundle.min.js'
     },
     context: ROOT_DIR,

@@ -8,7 +8,7 @@ from flask import current_app, jsonify, render_template, redirect, Response, url
 from flask_restful import Resource, reqparse
 
 from oc2.codec import jadn_loads
-from oc2.convert import base_dumps, cddl_dumps, proto_dumps, relax_dumps, thrift_dumps
+from oc2.convert import cddl_dumps, html_dumps, md_dumps, proto_dumps, relax_dumps, thrift_dumps
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +24,11 @@ class Convert(Resource):
     Endpoint for api/convert
     """
     conversions = {
-        'cddl': (cddl_dumps,),
-        'html': (base_dumps, {'form': 'html'}),
+        'cddl': (cddl_dumps, ),
+        'html': (html_dumps, ),
         'jadn': (lambda x: json.dumps(x), ),
         # 'json': (json_dumps, ),
-        'md': (base_dumps, {'form': 'markdown'}),
+        'md': (md_dumps, ),
         'proto3': (proto_dumps, ),
         'rng': (relax_dumps, ),
         'thrift': (thrift_dumps, ),
