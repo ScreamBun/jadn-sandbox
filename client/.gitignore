@@ -23,5 +23,5 @@ yarn-error.log*
 
 
 # Override exclude
-!/src/components/*/lib/
+!/src/components/**/lib/
 /webpack.stats.json
