@@ -438,8 +438,13 @@ class Validator extends Component {
 							<div id="message-card" className="tab-pane fade active show">
 								<div className="card">
 									<div className="card-header">
-										<div className="row float-left col-sm-6 pl-0">
-											<div className="form-group col-md-6 mb-0 pr-0 pl-1">
+									    <ButtonGroup className="float-right">
+											<Button outline color="secondary" onClick={ () => this.format('message') }>Format</Button>
+											<Button outline color="secondary" onClick={ () => this.minify('message') }>Minify</Button>
+										</ButtonGroup>
+
+										<div className="col-sm-6 pl-0">
+											<div className="form-group col-md-6 mb-0 pr-0 pl-1 d-inline-block">
 												<select id="message-list" name="message-list" className="form-control" default="empty" onChange={ this.selectChange }>
 												    <option value="empty">Message</option>
                                                     <optgroup label="Testers">
@@ -452,11 +457,11 @@ class Validator extends Component {
 												</select>
 											</div>
 
-											<div id="message-file-group" className={ "form-group col-md-6 px-1" + (this.state.message.file ? '' : ' d-none') }>
+											<div id="message-file-group" className={ "form-group col-md-6 px-1" + (this.state.message.file ? ' d-inline-block' : ' d-none') }>
 												<input type="file" className="btn btn-light form-control-file" id="message-file" name="message-file" accept=".json,.jadn,.xml,.cbor" onChange={ this.fileChange } />
 											</div>
 
-											<div id="message-url-group" className={ "form-group col-md-6 px-1" + (this.state.message.url ? '' : ' d-none') }>
+											<div id="message-url-group" className={ "form-group col-md-6 px-1" + (this.state.message.url ? ' d-inline-block' : ' d-none') }>
 												<div className="input-group">
 													<div className="input-group-prepend">
 														<Button color="info" onClick={ () => this.loadURL('message') }>Load URL</Button>
@@ -465,11 +470,6 @@ class Validator extends Component {
 												</div>
 											</div>
 										</div>
-
-										<ButtonGroup className="float-right">
-											<Button outline color="secondary" onClick={ () => this.format('message') }>Format</Button>
-											<Button outline color="secondary" onClick={ () => this.minify('message') }>Minify</Button>
-										</ButtonGroup>
 									</div>
 
                                     <div className="form-control border card-body p-0" style={{height: this.schema_height}}>

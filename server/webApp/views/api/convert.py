@@ -4,11 +4,18 @@ import logging
 import os
 import re
 
-from flask import current_app, jsonify, render_template, redirect, Response, url_for
+from flask import current_app, jsonify, render_template, redirect, request, Response, url_for
 from flask_restful import Resource, reqparse
 
 from oc2.codec import jadn_loads
 from oc2.convert import cddl_dumps, html_dumps, md_dumps, proto_dumps, relax_dumps, thrift_dumps
+
+from xhtml2pdf import pisa
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 logger = logging.getLogger(__name__)
 
@@ -46,21 +53,15 @@ class Convert(Resource):
 
     def post(self):
         args = parser.parse_args()
-        schemas = re.compile('\.(' + '|'.join(current_app.config.get('VALID_SCHEMAS')) + ')$')
         err = []
         conv = 'Their are some issues....'
 
         try:
             schema = json.dumps(ast.literal_eval(args['schema']))
         except (TypeError, ValueError) as e:
-            print(e)
             schema = args['schema']
 
         val = current_app.validator.validateSchema(schema)
-        print('Schema Valid info', {
-            "valid_bool": val[0],
-            "valid_msg": val[1]
-        })
 
         if val[0]:  # Valid Schema
             conv = 'Valid Base Schema'
@@ -88,37 +89,45 @@ class Convert(Resource):
         return jsonify(opts)
 
 
-class ConvertHTML(Resource):
+class ConvertPDF(Resource):
     """
-    Endpoint for api/convert/html
+    Endpoint for api/convert/pdf
     """
-
-    def get(self):
-        return redirect(url_for('convert.convert'))
 
     def post(self):
         args = parser.parse_args()
-        err = []
-        opts = {}
+        pdf = StringIO()
+        html = '<h1>Their are some issues....</h1>'
+        print('convert to pdf')
 
-        val = current_app.validator.validateSchema(args['schema'])
+        try:
+            schema = json.dumps(ast.literal_eval(args['schema']))
+        except (TypeError, ValueError) as e:
+            schema = args['schema']
+
+        val = current_app.validator.validateSchema(schema)
 
         if val[0]:  # Valid Schema
-            conv = base_dumps(jadn_loads(args['schema']), form='html')
-            opts['schema'] = re.sub(r'^.*?<body>(?P<schema>.*?)</body>.*$', r'\g<schema>', re.sub(r'\n\r?', '', conv))
-            print(conv)
-        else:  # Invalid Schema
-            err.append(val[1])
-            opts['schema'] = 'Fix the base schema errors before converting...'
+            html = html_dumps(jadn_loads(schema))
 
-        resp = Response(render_template('convert/html_page.html', page_title="Schema HTML", options=opts, errors=err), mimetype='text/html')
-        resp.status_code = 200
-        return resp
+        else:  # Invalid Schema
+            html = '<h1>Fix the base schema errors before converting...</h1>'
+
+        pisaStatus = pisa.CreatePDF(
+            html,  # the HTML to convert
+            dest=pdf  # file handle to recieve result
+        )
+
+        if pisaStatus.err:
+            raise pisaStatus.err
+
+        pdf.seek(0)
+        return Response(pdf, mimetype="application/pdf")
 
 
 resources = {
     Convert: {'urls': ('/', )},
-    ConvertHTML: {'urls': ('/html', )}
+    ConvertPDF: {'urls': ('/pdf',)}
 }
 
 

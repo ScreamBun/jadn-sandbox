@@ -1,7 +1,8 @@
 flask
 flask_restful
 gunicorn
-multiprocessing_logging
 json-logging-py
 jsonschema
 lxml
+multiprocessing_logging
+xhtml2pdf

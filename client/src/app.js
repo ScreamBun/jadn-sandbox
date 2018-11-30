@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import { ConnectedRouter } from 'react-router-redux'
+import { ConnectedRouter } from 'connected-react-router'
 import { Redirect, Router, Route, Switch } from 'react-router';
 import { toast, ToastContainer } from 'react-toastify';
 

@@ -5,7 +5,20 @@
 
 ### Resources
 - General
+    - [Bootstrap](https://getbootstrap.com/)
+	    - [jQuery](https://www.npmjs.com/package/jquery) - jQuery for node
+	    - [Moment](https://www.npmjs.com/package/moment) - Moment for node
+	    - [Bootstrap](https://www.npmjs.com/package/bootstrap) - Bootstrap for node
+	    - [Reactstrap](https://www.npmjs.com/package/reactstrap) - Bootstrapv4 components for React
+	- [File Saver](https://www.npmjs.com/package/file-saver)
+    - [FontAwesome](https://fontawesome.com/)
+	    - [Core SVG Icons](https://www.npmjs.com/package/@fortawesome/fontawesome-svg-core)
+	    - [Solid SVG Icons](https://www.npmjs.com/package/@fortawesome/free-solid-svg-icons)
+	    - [React FontAwesome](https://www.npmjs.com/package/@fortawesome/react-fontawesome)
+	- [HTML Parser](https://www.npmjs.com/package/html-react-parser) - HTML string to React Elements
+	- [History](https://www.npmjs.com/package/history) - History management for single page apps
 	- [React](https://reactjs.org/) - Core Framework
+	    - [Connected React Router](https://www.npmjs.com/package/connected-react-router) - Router State Sync, replacement for react-router-redux
 		- [DOM](https://www.npmjs.com/package/react-dom)
     	- [JSON Editor](https://www.npmjs.com/package/react-json-editor-ajrm) - JSON Syntax Editor
     	- [JSON Pretty](https://www.npmjs.com/package/react-json-pretty)
@@ -13,7 +26,6 @@
     	- [New Window](https://www.npmjs.com/package/react-new-window) - Popup Windows
 		- [Redux](https://www.npmjs.com/package/react-redux) - React Redux Bindings
 		- [Router DOM](https://www.npmjs.com/package/react-router-dom)
-		- [Router Redux](https://www.npmjs.com/package/react-router-redux) - Router State Sync
 		- [Base Scripts](https://www.npmjs.com/package/react-scripts)
 		- [React Toastify](https://www.npmjs.com/package/react-toastify) - Notifications
     	- [Transition Group](https://www.npmjs.com/package/react-transition-group)
@@ -22,17 +34,6 @@
     	- [API Middleware](https://www.npmjs.com/package/redux-api-middleware)
     	- [Logger](https://www.npmjs.com/package/redux-logger)
 		- [Persistance](https://www.npmjs.com/package/redux-persist)
-    - [Bootstrap](https://getbootstrap.com/)
-	    - [jQuery](https://www.npmjs.com/package/jquery) - jQuery for node
-	    - [Moment](https://www.npmjs.com/package/moment) - Moment for node
-	    - [Bootstrap](https://www.npmjs.com/package/bootstrap) - Bootstrap for node
-	    - [Reactstrap](https://www.npmjs.com/package/reactstrap) - Bootstrapv4 components for React
-    - [FontAwesome](https://fontawesome.com/)
-	    - [Core SVG Icons](https://www.npmjs.com/package/@fortawesome/fontawesome-svg-core)
-	    - [Solid SVG Icons](https://www.npmjs.com/package/@fortawesome/free-solid-svg-icons)
-	    - [React FontAwesome](https://www.npmjs.com/package/@fortawesome/react-fontawesome)
-	- [HTML Parser](https://www.npmjs.com/package/html-react-parser) - HTML string to React Elements
-	- [History](https://www.npmjs.com/package/history) - History management for single page apps
 	- [String Format](https://www.npmjs.com/package/string-format)
 	- [vkBeautify](https://www.npmjs.com/package/vkbeautify) - JSON, XML, CSS, SQL pretty/minify
 

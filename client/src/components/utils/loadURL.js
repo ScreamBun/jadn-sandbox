@@ -53,35 +53,44 @@ const loadURL = (url) => {
     rtn_arr.fileName = rtn_arr.file.substring(0, rtn_arr.file.lastIndexOf("."))
     rtn_arr.fileExt = rtn_arr.file.substring(rtn_arr.file.lastIndexOf(".") + 1)
 
+    const jsonParser = (key, val) => {
+        return typeof(val) === 'string' ? val.replace(/\\/g, "\\\\") : val;
+    }
+
 	return fetch(url).then(
-	    (rsp) => readAllChunks(rsp.body)
-    ).then((chunks) => {
-        let data = chunk2str(chunks)
-        switch (rtn_arr.fileExt) {
-            case 'jadn':
-            case 'json':
-                console.log('JADN/JSON')
-                try {
-                    data = JSON.parse(data)
-                } catch (err) {
-                    data = {error: err.message}
-                }
-                break;
-            case 'cbor':
-                console.log('CBOR')
-                data = escaped2cbor(hexify(data))
-                break;
-            case 'xml':
-                console.log('XML')
-                break;
-            default:
-                console.log('UNKNOWN')
-                break;
-        }
-        rtn_arr.data = data
+	    (rsp) => {
+	        switch (rtn_arr.fileExt) {
+                case 'jadn':
+                case 'json':
+                    console.log('JADN/JSON')
+                    try {
+                        let tmp = rsp.text().then(txt => JSON.parse(txt, jsonParser))
+                        console.log(tmp)
+                        return tmp
+                    } catch (err) {
+                        return {error: err.message}
+                    }
+                case 'cbor':
+                    console.log('CBOR')
+                    return readAllChunks(rsp.body).then(chunks => chunk2str(chunks))
+                case 'xml':
+                    console.log('XML')
+                    return rsp.text()
+                default:
+                    console.log('UNKNOWN')
+                    return rsp.blob()
+            }
+
+	    }
+    ).then(rsp => {
+        console.log(rsp)
+        rtn_arr.data = rsp
         return rtn_arr
     }).catch((err) => {
         console.log("failed to load ", url, err.stack)
+        rtn_arr.data = {
+            error: 'cannot load url'
+        }
         return rtn_arr
     })
 }

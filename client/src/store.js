@@ -2,9 +2,9 @@ import storage from 'redux-persist/es/storage'
 import { apiMiddleware, isRSAA } from 'redux-api-middleware';
 import { applyMiddleware, createStore } from 'redux'
 import { persistReducer, persistStore } from 'redux-persist'
-import { routerMiddleware } from 'react-router-redux'
-import rootReducer from './reducers'
+import { routerMiddleware } from 'connected-react-router'
 
+import createRootReducer from './reducers'
 
 export default (history) => {
     const reducer = persistReducer(
@@ -13,7 +13,7 @@ export default (history) => {
             storage: storage,
             whitelist: []
         },
-        rootReducer
+        createRootReducer(history)
     )
 
     let middleware = [

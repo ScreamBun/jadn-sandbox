@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import NewWindow from 'react-new-window'
 
 import PopoutWindow from 'react-popout'
+import FileSaver from 'file-saver';
 
 import { Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Tooltip, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
@@ -338,6 +339,28 @@ class Converter extends Component {
         return rtn
     }
 
+    downloadPDF(e) {
+        e.preventDefault()
+        console.log('Download PDF')
+
+        fetch('/api/convert/pdf', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                schema: this.state.schema.schema,
+            })
+        }).then(
+            rsp => rsp.blob()
+        ).then(data => {
+	        console.log(data)
+	        FileSaver.saveAs(data, "schema.pdf");
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
     viewPage(e) {
         e.preventDefault()
         const nulls = ['', ' ', null, undefined]
@@ -406,7 +429,7 @@ class Converter extends Component {
                             top: (opt, win) => (win.innerHeight - opt.height(opt, win)) / size_divisor + win.screenY,
                             left: (opt, win) => (win.innerWidth - opt.width(opt, win)) / size_divisor + win.screenX
                         }}
-                        onUnload={() => this.setState({ convert: { ...this.state.convert, popup: null } }) }
+                        onClosing={() => this.setState({ convert: { ...this.state.convert, popup: null } }) }
                     >
                         <div>
                             { theme }
@@ -508,7 +531,10 @@ class Converter extends Component {
 
                 <a className="btn btn-sm btn-primary float-right" href={ download.content } download={ download.file } target="_blank">Download</a>
 
-                <a className={ "btn btn-sm btn-secondary float-right mr-2" + (this.state.convert.html ? '' : ' d-none') } href="#" onClick={ this.viewPage.bind(this) }>View Page</a>
+                <div className={ "btn-group btn-group-sm float-right mr-2" + (this.state.convert.html ? '' : ' d-none') }>
+                    <a className="btn btn-secondary" href="#" onClick={ this.viewPage.bind(this) }>View Page</a>
+                    <a className="btn btn-secondary" href="#" onClick={ this.downloadPDF.bind(this) }>Download PDF</a>
+                </div>
 
                 { this.state.convert.popup }
 
@@ -525,7 +551,6 @@ class Converter extends Component {
     }
 
     render() {
-
         return (
             <DocumentMeta { ...this.meta } extend >
                 <div className='row mx-auto'>
@@ -539,15 +564,11 @@ class Converter extends Component {
                         <div className="col-12"></div>
 
                         <div className="form-group">
-                            {/*
-
-                            */}
-
                             <Button outline color="primary" type="submit" id="conv_tooltip">Convert</Button>
                             <Tooltip placement="bottom" isOpen={ this.state.conv_tooltip } target="conv_tooltip" toggle={ () => this.setState({ conv_tooltip: !this.state.conv_tooltip }) }>
                                 Convert the given JADN schema to the selected format
                             </Tooltip>
-                            <Button outline color="danger" type="reset" onClick={ () => { this.setState({ schema: {...this.state.schema, schema: '', conv: '' }}) }} >Reset</Button>
+                            <Button outline color="danger" type="reset" onClick={ () => { this.setState({ schema: {...this.state.schema, schema: {}, conv: '' }}) }} >Reset</Button>
                         </div>
                     </Form>
                 </div>
