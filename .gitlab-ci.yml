@@ -28,14 +28,14 @@ Build-GUI:
   stage: build
   script:
     - apk add --update nodejs nodejs-npm
-    - cd gui
+    - cd client
     - npm install
     - npm run build
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - gui/node_modules/
-      - gui/build/
+      - client/node_modules/
+      - client/build/
 
 Build-Server:
   stage: deploy
