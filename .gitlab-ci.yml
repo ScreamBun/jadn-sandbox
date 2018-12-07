@@ -40,7 +40,7 @@ Build-GUI:
 Build-Server:
   stage: deploy
   dependencies:
-  - build
+  - Build-GUI
   script:
     - apk add --update rsync
     - rsync -avz --delete ./client/build/* ./server/webApp/static/
