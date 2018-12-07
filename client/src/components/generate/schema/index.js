@@ -3,9 +3,8 @@ import { connect } from 'react-redux'
 import DocumentMeta from 'react-document-meta'
 import { toast } from 'react-toastify'
 
-import {
-    Redirect
-} from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFileDownload, faFileUpload } from '@fortawesome/free-solid-svg-icons'
 
 import JSONPretty from 'react-json-pretty'
 
@@ -21,6 +20,7 @@ import SchemaStructure from './lib/structure'
 import {
     escaped2cbor,
     format,
+    FormatJADN,
     hexify,
     loadURL,
     minify,
@@ -41,9 +41,15 @@ class Generate extends Component {
         super(props, context)
 
 		this.state = {
+		    download_tooltip: false,
+		    upload_tooltip: false,
 		    schema: {},
 		    activeOption: 'meta',
-		    activeView: 'editor'
+		    activeView: 'editor',
+		    download: {
+		        content: str_fmt("data:application/json;charset=utf-8,{conv}", {conv: encodeURIComponent(JSON.stringify({error: 'No Schema Defined'}))}),
+			    file: 'schema.jadn'
+		    }
 		}
 
 		this.meta = {
@@ -52,8 +58,12 @@ class Generate extends Component {
         }
 
         this.keys = SchemaStructure
+        this.schemaInput = null
+        this.schemaDownload = null
 
 		this.onDrop = this.onDrop.bind(this)
+		this.loadSchema = this.loadSchema.bind(this)
+		this.downloadConfig = this.downloadConfig.bind(this)
 
         this.props.info()
     }
@@ -179,12 +189,37 @@ class Generate extends Component {
         )
     }
 
-    downloadConfig() {
-        let formattedJADN = 'TEST' // this.state.schema
-        return {
-            content: str_fmt("data:application/json;charset=utf-8,{conv}", {conv: encodeURIComponent(formattedJADN)}),
-			file: 'schema.jadn'
-	    }
+    downloadConfig(e) {
+        e.preventDefault()
+
+        this.setState(prevState => ({
+            download: {
+                ...prevState.download,
+                content: str_fmt("data:application/json;charset=utf-8,{conv}", {conv: encodeURIComponent(FormatJADN(prevState.schema))})
+            }
+        }), () => {
+            this.schemaDownload.click()
+        })
+    }
+
+	loadSchema(e) {
+	   let file = e.target.files[0]
+	   let fileReader = new FileReader()
+
+		fileReader.onload = e => {
+			let data = atob(fileReader.result.split(',')[1])
+			try {
+		        this.setState({
+                    schema: JSON.parse(data)
+                })
+            } catch(e) {
+                toast(<p>Schema cannot be loaded</p>, {type: toast.TYPE.WARNING})
+                console.log(e)
+                return
+            }
+    	}
+
+    	fileReader.readAsDataURL(file)
 	}
 
     toggleOptions(opt) {
@@ -215,8 +250,6 @@ class Generate extends Component {
                 <ListGroupItem action>{ this.keys.types[k].key }</ListGroupItem>
             </Draggable>
         ))
-
-        let download = this.downloadConfig()
 
         return (
             <DocumentMeta { ...this.meta } extend >
@@ -252,7 +285,37 @@ class Generate extends Component {
 
                         <div className='col-12 m-2' />
 
-                        <a className="btn btn-sm btn-primary " href={ download.content } download={ download.file } target="_blank">Download Schema</a>
+                        <div className='btn-group btn-group-sm'>
+                            <a id='upload_tooltip' className="btn btn-primary" onClick={ () => this.schemaInput.click() }>
+                                <FontAwesomeIcon
+                                    icon={ faFileUpload }
+                                    color="white"
+                                    size='2x'
+                                />
+                                 <input
+	                                type='file'
+	                                className='d-none'
+	                                ref={ input => this.schemaInput = input }
+	                                accept=".jadn"
+	                                onChange={ this.loadSchema }
+	                            />
+                            </a>
+                            <a className='d-none' href={ this.state.download.content } download={this.state.download.file } target="_blank"  ref={ input => this.schemaDownload = input } />
+                            <a id='download_tooltip' className="btn btn-primary" onClick={ this.downloadConfig }>
+                                <FontAwesomeIcon
+                                    icon={ faFileDownload }
+                                    color="white"
+                                    size='2x'
+                                />
+                            </a>
+                        </div>
+                        <Tooltip placement="bottom" isOpen={ this.state.upload_tooltip } target="upload_tooltip" toggle={ () => this.setState({ upload_tooltip: !this.state.upload_tooltip }) }>
+                            Upload JADN Schema
+                        </Tooltip>
+                        <Tooltip placement="bottom" isOpen={ this.state.download_tooltip } target="download_tooltip" toggle={ () => this.setState({ download_tooltip: !this.state.download_tooltip }) }>
+                            Download converted schema
+                        </Tooltip>
+
                     </div>
 
                     <div id='schema-view' className='col-md-10'>
@@ -263,11 +326,12 @@ class Generate extends Component {
                                     onClick={ () => this.toggleViews('editor') }
                                 >Editor</NavLink>
                             </NavItem>
+
                             <NavItem>
                                 <NavLink
-                                    className={ classnames({ active: this.state.activeView === 'code' }) }
-                                    onClick={ () => this.toggleViews('code') }
-                                >Code</NavLink>
+                                    className={ classnames({ active: this.state.activeView === 'jadn' }) }
+                                    onClick={ () => this.toggleViews('jadn') }
+                                >JADN</NavLink>
                             </NavItem>
                         </Nav>
 
@@ -283,7 +347,8 @@ class Generate extends Component {
                                 <TabPane tabId='editor'>
                                    { this.schemaEditor() }
                                 </TabPane>
-                                <TabPane tabId='code'>
+
+                                <TabPane tabId='jadn'>
                                     <div className="form-control m-0 p-0" style={{ minHeight: 20+'em' }}>
                                         <JSONInput
                                             id='jadn_schema'

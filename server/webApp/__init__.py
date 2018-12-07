@@ -1,5 +1,3 @@
-import os
-
 from flask import current_app, Flask, render_template, request, send_file
 
 from werkzeug.routing import BaseConverter

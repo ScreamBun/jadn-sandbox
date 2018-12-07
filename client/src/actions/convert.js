@@ -22,7 +22,7 @@ export const info = () => ({
 })
 
 
-export const convertSchema = (s, t) => ({
+export const convertSchema = (s, t, c) => ({
     [RSAA]: {
         endpoint: '/api/convert',
         method: 'POST',
@@ -31,7 +31,8 @@ export const convertSchema = (s, t) => ({
         },
         body: JSON.stringify({
             schema: s,
-            'convert-to': t
+            'convert-to': t,
+            comments: c
         }),
         types: [
             CONVERT_REQUEST, CONVERT_SUCCESS, CONVERT_FAILURE

@@ -9,6 +9,8 @@ from flask_restful import Resource, reqparse
 
 from oc2.codec import jadn_loads
 from oc2.convert import cddl_dumps, html_dumps, md_dumps, proto_dumps, relax_dumps, thrift_dumps
+from oc2.enums import CommentLevels
+from oc2.utils import Utils
 
 from xhtml2pdf import pisa
 
@@ -24,6 +26,7 @@ parser.add_argument('schema', type=str)
 parser.add_argument('schema-list', type=str)
 parser.add_argument('convert', type=str)
 parser.add_argument('convert-to', type=str)
+parser.add_argument('comments', type=str, default=CommentLevels.ALL, choices=CommentLevels.values())
 
 
 class Convert(Resource):
@@ -31,14 +34,14 @@ class Convert(Resource):
     Endpoint for api/convert
     """
     conversions = {
-        'cddl': (cddl_dumps, ),
-        'html': (html_dumps, ),
-        'jadn': (lambda x: json.dumps(x), ),
-        # 'json': (json_dumps, ),
-        'md': (md_dumps, ),
-        'proto3': (proto_dumps, ),
-        'rng': (relax_dumps, ),
-        'thrift': (thrift_dumps, ),
+        'cddl': cddl_dumps,
+        'html': html_dumps,
+        'jadn': lambda x: Utils.jadnFormat(x, indent=2),
+        # 'json': json_dumps,
+        'md': md_dumps,
+        'proto3': proto_dumps,
+        'rng': relax_dumps,
+        'thrift': thrift_dumps,
     }
 
     def get(self):
@@ -71,8 +74,14 @@ class Convert(Resource):
                 conv = 'Invalid Conversion Type'
 
             else:
-                opts = {} if len(conv_fun) == 1 else conv_fun[1]
-                conv = conv_fun[0](jadn_loads(schema), **opts)
+                kwargs = {}
+                if args['convert-to'] not in ['html', 'jadn', 'md']:
+                    kwargs['comm'] = args.comments
+
+                elif args['convert-to'] == 'html':
+                    kwargs['styles'] = current_app.config.get('OPEN_C2_SCHEMA_THEME', '')
+
+                conv = conv_fun(jadn_loads(schema), **kwargs)
 
         else:  # Invalid Schema
             err.append(val[1])
@@ -108,7 +117,7 @@ class ConvertPDF(Resource):
         val = current_app.validator.validateSchema(schema)
 
         if val[0]:  # Valid Schema
-            html = html_dumps(jadn_loads(schema))
+            html = html_dumps(jadn_loads(schema), styles=current_app.config.get('OPEN_C2_SCHEMA_THEME', ''))
 
         else:  # Invalid Schema
             html = '<h1>Fix the base schema errors before converting...</h1>'
@@ -121,8 +130,8 @@ class ConvertPDF(Resource):
         if pisaStatus.err:
             raise pisaStatus.err
 
-        pdf.seek(0)
-        return Response(pdf, mimetype="application/pdf")
+        # pdf.seek(0)
+        return Response(pdf.getvalue(), mimetype="application/pdf")
 
 
 resources = {

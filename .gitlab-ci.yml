@@ -1,0 +1,49 @@
+image: docker:latest
+
+variables:
+  GIT_SSL_NO_VERIFY: "true"
+  DOCKER_DRIVER: overlay2
+  IMAGE_NAME: $CI_REGISTRY/screamingbunny/webvalidator:v0.7.0
+
+services:
+  - name: docker:dind
+    command:
+      - /bin/sh
+      - -c
+      - |
+          apk update && apk add openssl
+          mkdir -p /etc/docker/certs.d/$CI_REGISTRY
+          wget -O - http://portal.g2-inc.com/sites/default/files/all.crt --no-check-certificate | openssl x509 -inform der > /etc/docker/certs.d/$CI_REGISTRY/ca.crt || exit
+          dockerd-entrypoint.sh || exit
+
+stages:
+  - build
+  - deploy
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+
+Build-GUI:
+  stage: build
+  script:
+    - apk add --update nodejs nodejs-npm
+    - cd gui
+    - npm install
+    - npm run build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - gui/node_modules/
+      - gui/build/
+
+Build-Server:
+  stage: deploy
+  script:
+    - apk add --update rsync
+    - rsync -avz --delete ./client/build/* ./server/webApp/static/
+    - cd server
+    - rm ./webApp/static/index.html
+    - docker build -t $IMAGE_NAME -f Dockerfile .
+    - docker push $IMAGE_NAME
+

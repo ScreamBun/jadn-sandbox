@@ -69,7 +69,7 @@ class Validator extends Component {
             canonical: str_fmt('{origin}{path}', {origin: window.location.origin, path: window.location.pathname})
         }
 
-        this.schema_height = 17+'em'
+        this.schema_height = 40+'em'
 		
 		this.selectChange = this.selectChange.bind(this)
 		this.fileChange = this.fileChange.bind(this)
@@ -342,7 +342,7 @@ class Validator extends Component {
 		// list of options - <option value="{{ opt }}">{{ opt }}</option>
         let schema_opts = this.props.schemas.map((s, i) => <option key={ i } value={ s }>{ s }</option>)
         return (
-            <fieldset>
+            <fieldset className="col-6 p-0 float-left">
                 <legend>JADN Schema</legend>
                 <div className="form-row">
                     <div className="col-md-12 mb-3">
@@ -356,7 +356,7 @@ class Validator extends Component {
                                         </Tooltip>
 									</ButtonGroup>
 
-									<div className="col-sm-6 pl-0">
+									<div className="col-sm-8 pl-0">
 										<div className="form-group col-md-6 mb-0 pr-0 pl-1 d-inline-block">
 											<select id="schema-list" name="schema-list" className="form-control" default="empty" onChange={ this.selectChange }>
 												<option value="empty">Schema</option>
@@ -443,7 +443,7 @@ class Validator extends Component {
 											<Button outline color="secondary" onClick={ () => this.minify('message') }>Minify</Button>
 										</ButtonGroup>
 
-										<div className="col-sm-6 pl-0">
+										<div className="col-sm-8 pl-0">
 											<div className="form-group col-md-6 mb-0 pr-0 pl-1 d-inline-block">
 												<select id="message-list" name="message-list" className="form-control" default="empty" onChange={ this.selectChange }>
 												    <option value="empty">Message</option>
@@ -488,9 +488,10 @@ class Validator extends Component {
                                             onChange={ (e) => this.setState({ message: {...this.state.message, message: e.target.value }}) }
                                         />
                                     </div>
+
                                     <div className="card-footer">
-                                        <div className="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
-                                            <label className="control-label" htmlFor="message-format">Message Format</label>
+                                        <div className="float-left form-group col-md-6 pr-1 pl-1 mb-0">
+                                            <label className="control-label mb-1" htmlFor="message-format">Message Format</label>
                                             <select className="form-control" id="message-format" name="message-format" required="" value={ this.state.message.format } onChange={ (e) => this.setState({ message: {...this.state.message, format: e.target.value }}) } >
                                                 <option value="">Message Format</option>
                                                 <option value="json">json</option>
@@ -499,8 +500,8 @@ class Validator extends Component {
                                             </select>
                                         </div>
 
-                                        <div className="float-left form-group col-md-3 col-sm-6 pr-1 pl-1">
-                                            <label className="control-label" htmlFor="message-decode">Message Type</label>
+                                        <div className="float-left form-group col-md-6 pr-1 pl-1 mb-0">
+                                            <label className="control-label mb-1" htmlFor="message-decode">Message Type</label>
                                             <select className="form-control" id="message-decode" name="message-decode" required="" value={ this.state.message.decode } onChange={ (e) => this.setState({ message: {...this.state.message, decode: e.target.value }}) }>
                                                 <optgroup label="Exports">
                                                     { decodeExports }

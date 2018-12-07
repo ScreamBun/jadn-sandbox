@@ -7,14 +7,9 @@ from oc2.enums import FrozenDict
 class Config(object):
     APP_DIR = os.path.realpath(os.path.dirname(__file__))
 
-    if os.path.isfile('/.dockerenv'):
-        ORIGINAL_DATA = os.path.join(APP_DIR, 'data')
-        VERSION_INFO = json.loads(open(os.path.join(ORIGINAL_DATA, 'version.json'), 'r').read())
-        APP_DATA = os.path.join('/', 'data')
+    APP_DATA = os.path.join(APP_DIR, 'data')
 
-    else:
-        APP_DATA = os.path.join(APP_DIR, 'data')
-        VERSION_INFO = json.loads(open(os.path.join(APP_DATA, 'version.json'), 'r').read())
+    VERSION_INFO = json.loads(open(os.path.join(APP_DATA, 'version.json'), 'r').read())
 
     APPLICATION_ROOT = '/'
 
@@ -58,6 +53,8 @@ class Config(object):
 
     # OpenC2 Options
     OPEN_C2_DATA = os.path.join(APP_DATA, 'openc2_files')
+
+    OPEN_C2_SCHEMA_THEME = os.path.join(OPEN_C2_DATA, 'openc2_schema_theme.css')
 
     try:
         DEFAULT_MESSAGE_TYPES = json.load(open(os.path.join(APP_DATA, 'openc2_files', 'messages', '_default_types.json')))

@@ -33,6 +33,11 @@ export default {
         edit: (val) => metaDef({k: 'version', v: val}),
         editor: ({...props}) => <KeyValueEditor id='Version' {...props} />
     },
+    patch: {
+        key: 'Patch',
+        edit: (val) => metaDef({k: 'patch', v: val}),
+        editor: ({...props}) => <KeyValueEditor id='Patch' {...props} />
+    },
     imports: {
         key: 'Imports',
         edit: (val=[]) => metaDef({k: 'imports', v: val}),

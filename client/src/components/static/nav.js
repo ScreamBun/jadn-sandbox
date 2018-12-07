@@ -10,13 +10,14 @@ class NavItem extends Component {
     constructor(props, context) {
         super(props, context)
         this.external = this.props.external || false
+        this.dropdown = this.props.dropdown || false
     }
 
     render() {
         let active = (this.props.href === this.props.active)
         return (
             <li onClick={ this.external ? () => {} : this.props.click } className={ active ? ' active' : '' } >
-                <a id={ this.props.id || '' } href={ this.props.href } target={ this.props.target } onClick={ this.external ? () => {} : (e) => { e.preventDefault() } } className="nav-link">
+                <a id={ this.props.id || '' } href={ this.props.href } target={ this.props.target } onClick={ this.external ? () => {} : (e) => { e.preventDefault() } } className={ this.dropdown ? 'dropdown-item' : 'nav-link' }>
                     { this.props.icon ? <i className={"fa fa-"+this.props.icon}></i> : '' } { this.props.text }
                 </a>
             </li>
@@ -81,8 +82,8 @@ class Nav extends Component {
                                     <li>ProtoBuf3 Format</li>
                                     <li>Relax-NG Format</li>
                                     <li>CDDL Format</li>
-                                    <li>MarkDown Format</li>
-                                    <li>HTML Format</li>
+                                    <li>MarkDown</li>
+                                    <li>HTML/PDF</li>
                                 </ul>
                             </li>
                         </ul>
@@ -107,18 +108,18 @@ class Nav extends Component {
                 <div className="collapse navbar-collapse" id="navMain">
                     <ul className="navbar-nav mr-auto">
 
-                        <NavItem href="/" text="Validate" click={ this.navigate.bind(this) }/>
+                        <NavItem href="/" text="Validate" active={ this.state.active } click={ this.navigate.bind(this) }/>
 
-                        <NavItem href="/convert" text="Convert" click={ this.navigate.bind(this) }/>
+                        <NavItem href="/convert" text="Convert" active={ this.state.active } click={ this.navigate.bind(this) }/>
 
                         <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="#" id="navMainDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a className={ "nav-link dropdown-toggle" + (this.state.active.startsWith('/generate/') ? ' active' : '') } id="generate-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Generate
                             </a>
-                            <div className="dropdown-menu" aria-labelledby="navMainDropdown1">
-                                <a className="dropdown-item" href="/generate/message" onClick={ this.navigate.bind(this) }>Messages</a>
-                                <a className="dropdown-item" href="/generate/schema" onClick={ this.navigate.bind(this) }>schemas</a>
-                            </div>
+                            <ul className="dropdown-menu" aria-labelledby="generate-dropdown">
+                                <NavItem dropdown href="/generate/message" text='Message' active={ this.state.active } click={ this.navigate.bind(this) } />
+                                <NavItem dropdown href="/generate/schema" text='Schema' active={ this.state.active } click={ this.navigate.bind(this) } />
+                            </ul>
                         </li>
 
                         <NavItem href="#" text="About" click={ () => this.setState({ about_modal: !this.state.about_modal }) }/>

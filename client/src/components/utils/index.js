@@ -10,6 +10,7 @@ import {
 
 import {
     format,
+    FormatJADN,
     minify
 } from './jadn'
 
@@ -20,6 +21,7 @@ export {
     dehexify,
     escaped2cbor,
     format,
+    FormatJADN,
     hexify,
     InputField,
     JADNEditor,

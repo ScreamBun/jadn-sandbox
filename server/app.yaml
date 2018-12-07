@@ -1,6 +1,7 @@
 runtime: python27
 api_version: 1
 threadsafe: true
+version: v0-7-0
 
 libraries:
 - name: ssl

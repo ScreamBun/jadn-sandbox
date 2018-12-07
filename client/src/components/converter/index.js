@@ -5,7 +5,18 @@ import { toast } from 'react-toastify'
 import NewWindow from 'react-new-window'
 
 import PopoutWindow from 'react-popout'
-import FileSaver from 'file-saver';
+import FileSaver from 'file-saver'
+
+import ToggleButton from 'react-toggle-button'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+    faCheck,
+    faFileDownload,
+    faFilePdf,
+    faTimes,
+    faWindowMaximize
+} from '@fortawesome/free-solid-svg-icons'
 
 import { Button, ButtonGroup, Form, FormGroup, Label, Input, FormText, Tooltip, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
@@ -34,12 +45,16 @@ class Converter extends Component {
 
         this.state = {
             conv_tooltip: false,
+            convert_download_tooltip: false,
+            pdf_download_tooltip: false,
+            view_schema_tooltip: false,
             schema_opts_dropdown: false,
             schema: {
 				schema: {
 				    placeholder: 'Paste JADN schema here'
 				},
 				selected: 'empty',
+				comments: true,
 				file: false,
 				url: false,
 				url_str: ''
@@ -61,7 +76,7 @@ class Converter extends Component {
 		}
 
 		this.meta = {
-            title: str_fmt('{base} | {page}', {base: this.props.siteTitle, page: 'Converter'}),
+            title: str_fmt('{base} | {page}', {base: this.props.siteTitle, page: 'Convert'}),
             canonical: str_fmt('{origin}{path}', {origin: window.location.origin, path: window.location.pathname})
         }
 
@@ -94,10 +109,12 @@ class Converter extends Component {
 
         this.props.validateSchema(schema).then(() => {
             let valid = this.props.validSchema
+
             if (valid.valid_bool){
                 this.props.convertSchema(
                     this.state.schema.schema,
-                    this.state.convert.selected
+                    this.state.convert.selected,
+                    this.state.schema.comments ? 'all' : 'none'
                 )
             } else {
                 toast(<p>{ valid.valid_msg }</p>, {type: toast.TYPE[valid.valid_bool ? 'INFO' : 'WARNING']})
@@ -341,7 +358,6 @@ class Converter extends Component {
 
     downloadPDF(e) {
         e.preventDefault()
-        console.log('Download PDF')
 
         fetch('/api/convert/pdf', {
             method: 'post',
@@ -354,7 +370,6 @@ class Converter extends Component {
         }).then(
             rsp => rsp.blob()
         ).then(data => {
-	        console.log(data)
 	        FileSaver.saveAs(data, "schema.pdf");
         }).catch(err => {
             console.log(err)
@@ -441,7 +456,7 @@ class Converter extends Component {
         })
     }
 
-    jadn(maxHeight) {
+    jadn() {
         // <option value="{{ opt }}" {% if request.form['schema-list'] == opt %}selected=""{% endif %}>{{ opt }}</option>
         let schema_opts =  this.props.schemas.map((s, i) => <option key={ i } value={ s } >{ s }</option>)
 
@@ -449,59 +464,61 @@ class Converter extends Component {
             <fieldset className="col-6 p-0 float-left">
                 <legend>JADN Schema</legend>
 
-                <div className="form-control border card-body p-0" style={{height: this.schema_height}}>
-                    <JSONInput
-                        id='jadn_schema'
-                        placeholder={ this.state.schema.schema }
-                        onChange={ (val) => {
-                            if (val.jsObject) {
-                                this.setState({ schema: {...this.state.schema, schema: val.jsObject }})
-                            }
-                        }}
-                        theme='light_mitsuketa_tribute'
-                        locale={ locale }
-                        reset={ false }
-                        height='100%'
-                        width='100%'
-                    />
-                </div>
-
-                <div className="col-12 m-1"></div>
-
-                <Button color='secondary' onClick={ () => this.verifySchema() } className='float-right mr-2'>Verify</Button>
-
-                <div className="form-row">
-                    <div className="form-group col-md-5 px-1">
-                        <select id="schema-list" name="schema-list" className="form-control" default="empty" onChange={ this.selectChange }>
-                            <option value="empty">Schema</option>
-                            <optgroup label="Testers">
-						        { schema_opts }
-                            </optgroup>
-                            <optgroup label="Custom">
-						        <option value="file">File...</option>
-								<option value="url">URL...</option>
-                            </optgroup>
-                        </select>
+                <div className="card">
+                    <div className="form-control border card-body p-0" style={{height: this.schema_height}}>
+                        <JSONInput
+                            id='jadn_schema'
+                            placeholder={ this.state.schema.schema }
+                            onChange={ (val) => {
+                                if (val.jsObject) {
+                                    this.setState({ schema: {...this.state.schema, schema: val.jsObject }})
+                                }
+                            }}
+                            theme='light_mitsuketa_tribute'
+                            locale={ locale }
+                            reset={ false }
+                            height='100%'
+                            width='100%'
+                        />
                     </div>
+                    <div className="card-footer pb-3">
+                        <Button color='secondary' onClick={ () => this.verifySchema() } className='float-right mr-2'>Verify</Button>
 
-                    <div id="schema-file-group" className={ "form-group col-md-6 px-1" + (this.state.schema.file ? '' : ' d-none') } >
-                        <input type="file" className="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn" onChange={ this.fileChange } />
-                    </div>
-
-                    <div id="schema-url-group" className={ "form-group col-md-6 px-1" + (this.state.schema.url ? '' : ' d-none') }>
-                        <div className="input-group">
-                            <div className="input-group-prepend">
-                                <Button color="info" onClick={ () => this.loadURL('schema') }>Load URL</Button>
+                        <div className="form-row">
+                            <div className="form-group col-md-5 px-1 mb-0">
+                                <select id="schema-list" name="schema-list" className="form-control mb-0" default="empty" onChange={ this.selectChange }>
+                                    <option value="empty">Schema</option>
+                                    <optgroup label="Testers">
+                                        { schema_opts }
+                                    </optgroup>
+                                    <optgroup label="Custom">
+                                        <option value="file">File...</option>
+                                        <option value="url">URL...</option>
+                                    </optgroup>
+                                </select>
                             </div>
-                            <input type="text" className="form-control" default='' onChange={ (e) => this.setState({ schema: {...this.state.schema, url_str: e.target.value }}) } />
+
+                            <div id="schema-file-group" className={ "form-group col-md-6 px-1 mb-0" + (this.state.schema.file ? '' : ' d-none') } >
+                                <input type="file" className="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn" onChange={ this.fileChange } />
+                            </div>
+
+                            <div id="schema-url-group" className={ "form-group col-md-6 px-1 mb-0" + (this.state.schema.url ? '' : ' d-none') }>
+                                <div className="input-group">
+                                    <div className="input-group-prepend">
+                                        <Button color="info" onClick={ () => this.loadURL('schema') }>Load URL</Button>
+                                    </div>
+                                    <input type="text" className="form-control" default='' onChange={ (e) => this.setState({ schema: {...this.state.schema, url_str: e.target.value }}) } />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div className="col-12 m-1"></div>
             </fieldset>
         )
     }
 
-    converted(maxHeight) {
+    converted() {
         let download = this.downloadConfig()
 
         // <option value="{{ options.convs[conv] }}" {% if request.form['convert-to'] == options.convs[conv] %}selected=""{% endif %}>{{ conv }}</option>
@@ -511,41 +528,94 @@ class Converter extends Component {
             <fieldset className="col-6 p-0 float-left">
                 <legend>Converted Schema</legend>
 
-                <div className="form-control border p-0" style={{height: this.schema_height}}>
-                    <textarea
-                        placeholder="Converted JADN schema"
-                        style={{
-                            resize: 'none',
-                            outline: 'none',
-                            width: 100+'%',
-                            padding: 10+'px',
-                            border: 'none',
-                            height: 100+'%',
-                        }}
-                        value={ this.props.convertedSchema.convert || '' }
-                        readOnly
-                    />
-                </div>
+                <div className="card">
+                    <div className="form-control card-body p-0" style={{height: this.schema_height}}>
+                        <textarea
+                            placeholder="Converted JADN schema"
+                            style={{
+                                resize: 'none',
+                                outline: 'none',
+                                width: 100+'%',
+                                padding: 10+'px',
+                                border: 'none',
+                                height: 100+'%',
+                            }}
+                            value={ this.props.convertedSchema.convert || '' }
+                            readOnly
+                        />
+                    </div>
+                    <div className='card-footer'>
+                        <a id='convert_download_tooltip' className={ "btn btn-sm btn-primary float-right" + (this.props.convertedSchema.convert ? '' : ' disabled') } href={ download.content } download={ download.file } target="_blank">
+                            <FontAwesomeIcon
+                                icon={ faFileDownload }
+                                size='2x'
+                            />
+                        </a>
+                        <Tooltip placement="bottom" isOpen={ this.state.convert_download_tooltip } target="convert_download_tooltip" toggle={ () => this.setState({ convert_download_tooltip: !this.state.convert_download_tooltip }) }>
+                            Download converted schema
+                        </Tooltip>
 
-                <div className="col-12 m-1"></div>
+                        <div className={ "btn-group btn-group-sm float-right mr-2" + (this.state.convert.html ? '' : ' d-none') }>
+                            <a id="view_schema_tooltip" className="btn btn-info" href="#" onClick={ this.viewPage.bind(this) }>
+                                <FontAwesomeIcon
+                                    icon={ faWindowMaximize }
+                                    size='2x'
+                                />
+                            </a>
+                            <Tooltip placement="bottom" isOpen={ this.state.view_schema_tooltip } target="view_schema_tooltip" toggle={ () => this.setState({ view_schema_tooltip: !this.state.view_schema_tooltip }) }>
+                                View Schema in new window
+                            </Tooltip>
 
-                <a className="btn btn-sm btn-primary float-right" href={ download.content } download={ download.file } target="_blank">Download</a>
+                            <a id="pdf_download_tooltip" className="btn btn-info" href="#" onClick={ this.downloadPDF.bind(this) }>
+                                <FontAwesomeIcon
+                                    icon={ faFilePdf }
+                                    size='2x'
+                                />
+                            </a>
+                            <Tooltip placement="bottom" isOpen={ this.state.pdf_download_tooltip } target="pdf_download_tooltip" toggle={ () => this.setState({ pdf_download_tooltip: !this.state.pdf_download_tooltip }) }>
+                                Download PDF of the schema
+                            </Tooltip>
+                        </div>
 
-                <div className={ "btn-group btn-group-sm float-right mr-2" + (this.state.convert.html ? '' : ' d-none') }>
-                    <a className="btn btn-secondary" href="#" onClick={ this.viewPage.bind(this) }>View Page</a>
-                    <a className="btn btn-secondary" href="#" onClick={ this.downloadPDF.bind(this) }>Download PDF</a>
-                </div>
+                        { this.state.convert.popup }
 
-                { this.state.convert.popup }
-
-                <div className="form-row ml-1">
-                    <div className="form-group col-md-5 px-1">
-                        <select id="convert-to" name="convert-to" className="form-control" default="empty" onChange={ (e) => this.setState({ convert: {...this.state.convert, selected: e.target.value } }) }>
-                            <option value="empty">Convert To...</option>
-                            { convert_opts }
-                        </select>
+                        <div className="form-row ml-1 mb-0">
+                            <div className="form-group col-md-6 px-1 mb-0">
+                                <select id="convert-to" name="convert-to" className="form-control" default="empty" onChange={ (e) => this.setState({ convert: {...this.state.convert, selected: e.target.value } }) }>
+                                    <option value="empty">Convert To...</option>
+                                    { convert_opts }
+                                </select>
+                            </div>
+                            <div className="form-check">
+                                <label className="form-check-label" htmlFor="comments">Comments</label>
+                                <ToggleButton
+                                    id="comments"
+                                    className="form-check-input"
+                                    inactiveLabel={
+                                        <FontAwesomeIcon
+                                            icon={ faTimes }
+                                        />
+                                    }
+                                    activeLabel={
+                                        <FontAwesomeIcon
+                                            icon={ faCheck }
+                                        />
+                                    }
+                                    value={ this.state.schema.comments }
+                                    onToggle={val => {
+                                        this.setState(prevState => ({
+                                            schema: {
+                                                ...prevState.schema,
+                                                comments: !val
+                                            }
+                                        }))
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div className="col-12 m-1"></div>
             </fieldset>
         )
     }
@@ -594,7 +664,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
     	info: () => dispatch(ConvertActions.info()),
-    	convertSchema: (s, t) => dispatch(ConvertActions.convertSchema(s, t)),
+    	convertSchema: (s, t, c) => dispatch(ConvertActions.convertSchema(s, t, c)),
 		loadFile: (t, f) => dispatch(UtilActions.load(t, f)),
         validateSchema: (s) => dispatch(ValidateActions.validateSchema(s)),
     }
