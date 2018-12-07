@@ -3,7 +3,7 @@ image: docker:latest
 variables:
   GIT_SSL_NO_VERIFY: "true"
   DOCKER_DRIVER: overlay2
-  IMAGE_NAME: $CI_REGISTRY/screamingbunny/webvalidator:v0.7.0
+  IMAGE_NAME: $CI_REGISTRY/screamingbunny/webvalidator
 
 services:
   - name: docker:dind
@@ -39,11 +39,14 @@ Build-GUI:
 
 Build-Server:
   stage: deploy
+  dependencies:
+  - build
   script:
     - apk add --update rsync
     - rsync -avz --delete ./client/build/* ./server/webApp/static/
     - cd server
     - rm ./webApp/static/index.html
     - docker build -t $IMAGE_NAME -f Dockerfile .
+    - docker tag $IMAGE_NAME $IMAGE_NAME:v0.7.0
     - docker push $IMAGE_NAME
 
