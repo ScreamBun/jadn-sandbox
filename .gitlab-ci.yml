@@ -31,8 +31,9 @@ Build:
   - cd client
   - npm install
   - npm run build
-  - rsync -avz --delete ./build/* ./server/webApp/static/
-  - rm ./webApp/static/index.html
+  # Sync Built GUI Files
+  - rsync -avz --delete ./build/* ../server/webApp/static/
+  - rm ../server/webApp/static/index.html
   # Server Build
   - cd ../server
   - docker build -t $IMAGE_NAME -f Dockerfile .
