@@ -1,7 +1,7 @@
 import json
 import os
 
-from oc2.enums import FrozenDict
+from jadn.enums import FrozenDict
 
 
 class Config(object):

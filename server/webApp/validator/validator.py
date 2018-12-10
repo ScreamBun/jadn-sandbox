@@ -2,10 +2,10 @@ import json
 import random
 import re
 
-from oc2 import OpenC2MessageFormats
-from oc2.codec import Codec, jadn_loads
-from oc2.message import OpenC2Message
-from oc2.utils import Utils
+from jadn import OpenC2MessageFormats
+from jadn.codec import Codec, jadn_loads
+from jadn.convert.message import OpenC2Message
+from jadn.utils import Utils
 
 
 class Validator(object):

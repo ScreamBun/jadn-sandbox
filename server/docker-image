@@ -9,7 +9,7 @@ version="2.0" \
 description="This is the JADN Lint container"
 
 ADD requirements.txt /tmp/
-ADD OpenC2-*-py2.py3-none-any.whl /tmp/
+ADD JADN-*-py2.py3-none-any.whl /tmp/
 ADD webApp /opt/jadn_lint/webApp
 ADD gunicorn /opt/jadn_lint/gunicorn
 
@@ -37,7 +37,7 @@ mkdir -p /logs/ && \
 #
 # Requirements install
 pip install -r /tmp/requirements.txt && \
-pip install --find-links=/tmp OpenC2 && \
+pip install --find-links=/tmp JADN && \
 # Cleanup
 apk del build-base python-dev && \
 rm -rf /var/cache/apk/* *.tar.gz* /usr/src /root/.gnupg /tmp/*

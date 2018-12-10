@@ -7,10 +7,10 @@ import re
 from flask import current_app, jsonify, render_template, redirect, request, Response, url_for
 from flask_restful import Resource, reqparse
 
-from oc2.codec import jadn_loads
-from oc2.convert import cddl_dumps, html_dumps, md_dumps, proto_dumps, relax_dumps, thrift_dumps
-from oc2.enums import CommentLevels
-from oc2.utils import Utils
+from jadn.codec import jadn_loads
+from jadn.convert import cddl_dumps, html_dumps, md_dumps, proto_dumps, relax_dumps, thrift_dumps
+from jadn.enums import CommentLevels
+from jadn.utils import Utils
 
 from xhtml2pdf import pisa
 

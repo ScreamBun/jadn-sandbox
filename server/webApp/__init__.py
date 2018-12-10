@@ -2,6 +2,7 @@ from flask import current_app, Flask, render_template, request, send_file
 
 from werkzeug.routing import BaseConverter
 
+from .config import DefaultConfig
 from .validator import Validator
 
 
@@ -13,7 +14,7 @@ class RegexConverter(BaseConverter):
 
 # Initialize the app
 app = Flask(__name__, static_url_path='/static')
-app.config.from_object('webApp.config.DevConfig')
+app.config.from_object(DefaultConfig)
 
 app.url_map.converters['regex'] = RegexConverter
 app.url_map.strict_slashes = False
