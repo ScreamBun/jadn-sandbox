@@ -18,35 +18,23 @@ services:
 
 stages:
   - build
-  - deploy
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
 
-Build-GUI:
+Build:
   stage: build
   script:
-    - apk add --update nodejs nodejs-npm
-    - cd client
-    - npm install
-    - npm run build
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - client/node_modules/
-      - client/build/
-
-Build-Server:
-  stage: deploy
-  dependencies:
-  - Build-GUI
-  script:
-    - apk add --update rsync
-    - rsync -avz --delete ./client/build/* ./server/webApp/static/
-    - cd server
-    - rm ./webApp/static/index.html
-    - docker build -t $IMAGE_NAME -f Dockerfile .
-    - docker tag $IMAGE_NAME $IMAGE_NAME:v0.7.0
-    - docker push $IMAGE_NAME
-
+  # GUI Build
+  - apk add --update nodejs nodejs-npm rsync
+  - cd client
+  - npm install
+  - npm run build
+  - rsync -avz --delete ./build/* ./server/webApp/static/
+  - rm ./webApp/static/index.html
+  # Server Build
+  - cd ../server
+  - docker build -t $IMAGE_NAME -f Dockerfile .
+  - docker tag $IMAGE_NAME $IMAGE_NAME:v0.7.0
+  - docker push $IMAGE_NAME
