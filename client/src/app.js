@@ -6,6 +6,8 @@ import { ConnectedRouter } from 'connected-react-router'
 import { Redirect, Router, Route, Switch } from 'react-router';
 import { toast, ToastContainer } from 'react-toastify';
 
+import { ThemeChooser } from './components/utils'
+
 import { Error, Home, Nav } from './components/static'
 
 import Converter from './components/converter'
@@ -28,6 +30,12 @@ class App extends Component {
             title: 'JADN',
             description: 'JADN',
             canonical: str_fmt('{origin}{path}', {origin: window.location.origin, path: window.location.pathname})
+        }
+
+        this.themeOptionStyles = {
+            position: 'fixed',
+            bottom: 5+'px',
+            right: 5+'px'
         }
 
         this.props.info().then(() => {
@@ -58,6 +66,10 @@ class App extends Component {
                         <Route component={ Error } /> // This should always be last route
                     </Switch>
                 </ConnectedRouter>
+
+                <div style={ this.themeOptionStyles }>
+                    <ThemeChooser size='sm' />
+                </div>
 
                 <ToastContainer position={ toast.POSITION.BOTTOM_CENTER } autoClose={ 5000 } />
             </div>

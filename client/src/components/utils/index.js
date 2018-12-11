@@ -16,6 +16,11 @@ import {
 
 import JADNEditor from './jadn-editor'
 
+import {
+    ThemeChooser,
+    ThemeSwitcher
+} from './theme-switcher'
+
 export {
     cbor2escaped,
     dehexify,
@@ -27,5 +32,7 @@ export {
     JADNEditor,
     loadURL,
     minify,
+    ThemeChooser,
+    ThemeSwitcher,
     validURL
 }

@@ -350,7 +350,7 @@ class Validator extends Component {
 						    <div className="card">
 							    <div className="card-header">
 							        <ButtonGroup className="float-right">
-										<Button outline color="secondary" onClick={ () => this.verifySchema() } id="ver_tooltip" >Verify</Button>
+										<Button color="info" size="sm" onClick={ () => this.verifySchema() } id="ver_tooltip" >Verify</Button>
 										<Tooltip placement="bottom" isOpen={ this.state.ver_tooltip } target="ver_tooltip" toggle={ () => this.setState({ ver_tooltip: !this.state.ver_tooltip }) }>
                                             Validate the schema is valid prior to validating the message
                                         </Tooltip>
@@ -438,9 +438,9 @@ class Validator extends Component {
 							<div id="message-card" className="tab-pane fade active show">
 								<div className="card">
 									<div className="card-header">
-									    <ButtonGroup className="float-right">
-											<Button outline color="secondary" onClick={ () => this.format('message') }>Format</Button>
-											<Button outline color="secondary" onClick={ () => this.minify('message') }>Minify</Button>
+									    <ButtonGroup className="float-right" size="sm">
+											<Button color="info" onClick={ () => this.format('message') }>Format</Button>
+											<Button color="info" onClick={ () => this.minify('message') }>Minify</Button>
 										</ButtonGroup>
 
 										<div className="col-sm-8 pl-0">

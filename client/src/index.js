@@ -5,11 +5,11 @@ import { Provider } from 'react-redux'
 import registerServiceWorker from './registerServiceWorker'
 
 // Styles
+import { ThemeSwitcher } from './components/utils'
 import 'bootstrap'
 import 'react-toastify/dist/ReactToastify.css';
-import './components/dependencies/css/themes/sandstone.css'
+// import './components/dependencies/css/themes/sandstone.css'
 import './components/dependencies/css/styles.less'
-
 
 import App from './app'
 
@@ -23,7 +23,9 @@ const store = configureStore(history)
 
 const Root = () => (
     <Provider store={ store } >
-        <App history={ history } />
+        <ThemeSwitcher storeThemeKey="theme" defaultTheme="sandstone" themeOptions={['cyborg', 'darkly', 'sandstone', 'slate']}>
+            <App history={ history } />
+        </ThemeSwitcher>
     </Provider>
 )
 

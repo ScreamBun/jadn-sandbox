@@ -58,8 +58,12 @@ const config  = {
             allChunks: true
         }),
         new CopyWebpackPlugin([
-            {
+            {   // Custom Assets
                 from: path.join(DEPEND_DIR, 'assets'),
+                to: path.join(BUILD_DIR, 'assets'),
+                toType: 'dir'
+            },{ // Theme Assets
+                from: path.join(ROOT_DIR, 'src', 'components', 'utils', 'theme-switcher', 'assets'),
                 to: path.join(BUILD_DIR, 'assets'),
                 toType: 'dir'
             }

@@ -95,9 +95,10 @@ class Nav extends Component {
 
     render() {
         return (
-            <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+            <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top" style={{ paddingLeft: 3+'em'}}>
 	            <div className="navbar-brand">
 		            <img src={ favicon } alt="Logo" />
+		            &nbsp;&nbsp;
 		            <a href="https://github.com/oasis-open/openc2-jadn/" target="_blank">JADN</a>&nbsp;Lint
                 </div>
 
