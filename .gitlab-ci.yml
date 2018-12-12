@@ -37,5 +37,4 @@ Build:
   # Server Build
   - cd ../server
   - docker build -t $IMAGE_NAME -f docker-image .
-  - docker tag $IMAGE_NAME $IMAGE_NAME:v0.7.0
   - docker push $IMAGE_NAME
