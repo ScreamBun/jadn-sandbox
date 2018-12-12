@@ -20,10 +20,12 @@ import configureStore from './store'
 const history = createHistory()
 const store = configureStore(history)
 
+// Them Options
+const validThemes = ['cyborg', 'darkly', 'sandstone', 'slate']
 
 const Root = () => (
     <Provider store={ store } >
-        <ThemeSwitcher storeThemeKey="theme" defaultTheme="sandstone" themeOptions={['cyborg', 'darkly', 'sandstone', 'slate']}>
+        <ThemeSwitcher storeThemeKey="theme" defaultTheme="sandstone" themeOptions={ themeOptions }>
             <App history={ history } />
         </ThemeSwitcher>
     </Provider>

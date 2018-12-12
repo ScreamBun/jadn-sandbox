@@ -91,7 +91,7 @@ class ThemeSwitcher extends React.Component {
     }
 
     loadTheme(name) {
-        name = Object.keys(this.state.themes).indexOf(name) >= 0 ? name : this.state.defaultTheme
+        name = Object.keys(this.state.themes).indexOf(name) >= 0 ? name : this.props.defaultTheme
         removeCurrentTheme()
 
         setItem(this.props.storeThemeKey, name);
@@ -99,8 +99,6 @@ class ThemeSwitcher extends React.Component {
             this.setState({
                 loaded: true,
                 currentTheme: name
-            }, () => {
-                this.props.change(this.state.currentTheme)
             })
         })
     }
@@ -122,6 +120,7 @@ class ThemeSwitcher extends React.Component {
     // pass reference to this down to ThemeChooser component
     getChildContext() {
         return {
+            defaultTheme: this.props.defaultTheme,
             themeSwitcher: this,
             themes: this.props.themeOptions.filter(t => true),
             currentTheme: this.state.currentTheme
@@ -134,6 +133,7 @@ class ThemeSwitcher extends React.Component {
 }
 
 ThemeSwitcher.childContextTypes = {
+    defaultTheme: PropTypes.string,
     themeSwitcher: PropTypes.object,
     themes: PropTypes.array,
     currentTheme: PropTypes.string
@@ -143,16 +143,14 @@ ThemeSwitcher.propTypes = {
     defaultTheme: PropTypes.string,
     storeThemeKey: PropTypes.string,
     themes: PropTypes.object,
-    themeOptions: PropTypes.array,
-    change: PropTypes.func
+    themeOptions: PropTypes.array
 };
 
 ThemeSwitcher.defaultProps = {
     defaultTheme: 'lumen',
     storeThemeKey: null,
     themes: themes,
-    themeOptions: ['cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia', 'minty', 'pulse', 'sandstone', 'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united', 'yeti'],
-    change: (theme) => {}
+    themeOptions: ['cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia', 'minty', 'pulse', 'sandstone', 'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united', 'yeti']
 };
 
 export default ThemeSwitcher;

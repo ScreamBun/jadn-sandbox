@@ -30,13 +30,13 @@ class Nav extends Component {
         super(props, context)
         let act = (this.props.history.location.pathname === this.prefix)
 
+        this.toggle = this.toggle.bind(this);
+
         this.state = {
             active: (act ? '/' : this.props.history.location.pathname),
             about_modal: false,
             features_modal: false
         }
-
-        this.toggle = this.toggle.bind(this);
     }
 
     navigate(e) {
@@ -95,7 +95,7 @@ class Nav extends Component {
 
     render() {
         return (
-            <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top" style={{ paddingLeft: 3+'em'}}>
+            <nav className="navbar navbar-expand-sm navbar-light bg-light py-2 fixed-top" style={{ paddingLeft: 3+'em'}}>
 	            <div className="navbar-brand">
 		            <img src={ favicon } alt="Logo" />
 		            &nbsp;&nbsp;
