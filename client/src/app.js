@@ -8,19 +8,19 @@ import { toast, ToastContainer } from 'react-toastify';
 
 import { ThemeChooser } from './components/utils'
 
-import { Error, Home, Nav } from './components/static'
-
-import Converter from './components/converter'
-import Validator from './components/validator'
 import {
-    CommandGenerator,
-    SchemaGenerator
-} from './components/generate'
+    Error,
+    Nav
+} from './components/static'
+
+import Validator from './components/validator'
+import Converter from './components/converter'
+import CommandGenerator from './components/generate/command'
+import SchemaGenerator from './components/generate/schema'
 
 import * as UtilActions from './actions/util'
 
 const str_fmt = require('string-format')
-
 
 class App extends Component {
     constructor(props, context) {
@@ -58,9 +58,9 @@ class App extends Component {
 
                 <ConnectedRouter history={ this.props.history }>
                     <Switch>
-                        <Route exact path="/" component={ Validator } />
+                        <Route exact path="/" component={ Validator  } />
                         <Route exact path="/convert" component={ Converter } />
-                        <Route exact path="/generate" render={() => (<Redirect to="/generate/message"/>) } />
+                        <Route exact path="/generate" render={ props => <Redirect to="/generate/message" { ...props } /> } />
                         <Route path="/generate/message" component={ CommandGenerator } />
                         <Route path="/generate/schema" component={ SchemaGenerator } />
                         <Route component={ Error } /> // This should always be last route

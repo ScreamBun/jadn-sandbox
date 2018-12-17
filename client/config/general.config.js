@@ -23,7 +23,13 @@ const DEPEND_DIR = path.join(ROOT_DIR, 'src', 'components', 'dependencies')
 const config  = {
     mode: 'none',
     devtool: 'inline-source-map',
-    entry: path.join(ROOT_DIR, 'src', 'index.js'),
+    entry: {
+        home: path.join(ROOT_DIR, 'src', 'index.js'),
+        validator: path.join(ROOT_DIR, 'src', 'components', 'validator', 'index.js'),
+        converter: path.join(ROOT_DIR, 'src', 'components', 'converter', 'index.js'),
+        'command-generator': path.join(ROOT_DIR, 'src', 'components', 'generate', 'command', 'index.js'),
+        'schema-generator': path.join(ROOT_DIR, 'src', 'components', 'generate', 'schema', 'index.js')
+    },
     output: {
         path: BUILD_DIR,
         publicPath: '/',
@@ -132,6 +138,7 @@ const config  = {
                             '@babel/preset-react'
                         ],
                         plugins: [
+                            "@babel/plugin-syntax-dynamic-import",
                             '@babel/plugin-proposal-object-rest-spread'
                         ]
                     }

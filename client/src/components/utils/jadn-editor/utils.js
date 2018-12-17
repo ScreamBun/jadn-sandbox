@@ -66,3 +66,44 @@ export const typeFollowed = (tokens, tokenID) => {
     }
     return false;
 }
+
+export const newSpan = (i, token, depth, colors) => {
+    colors = colors || {};
+    let type = token.type,
+        string = token.string,
+        color = '';
+
+    switch(type){
+        case 'string':
+        case 'number':
+        case 'primitive':
+        case 'error':
+            color = colors[token.type];
+            break;
+        case 'key':
+            color = string===' ' ? colors.keys_whiteSpace : colors.keys
+            break;
+        case 'symbol':
+            color =  string===':' ? colors.colon : colors.default;
+            break;
+        default:
+            color = colors.default;
+            break;
+    }
+
+    if (string.length !== string.replace(/</g,'').replace(/>/g,'').length) {
+        string = '<xmp style=display:inline;>' + string + '</xmp>';
+    }
+
+    return (
+        '<span' +
+        ' type="' + type + '"' +
+        ' value="' + string + '"' +
+        ' depth="' + depth + '"' +
+        ' style="color: '+ color + '"' +
+        '>' + string +
+        '</span>'
+    );
+}
+
+// Test Move functions

@@ -1,17 +1,14 @@
 {
     "plugins": [
-        "@babel/plugin-proposal-object-rest-spread"
+        "plugin-syntax-dynamic-import",
+        "transform-object-rest-spread"
     ],
     "presets": [
         [
-	        "@babel/preset-env",
-		    {
-		        "targets": {
-				    "node": "current",
-				    "uglify": true // <<< this line
-				}
-			}
-		],
-		"@babel/preset-react"
-	],
+            "env",
+            {
+                modules: false
+            }
+        ]
+    ]
 }

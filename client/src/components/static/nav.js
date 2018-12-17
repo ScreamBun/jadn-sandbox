@@ -95,7 +95,7 @@ class Nav extends Component {
 
     render() {
         return (
-            <nav className="navbar navbar-expand-sm navbar-light bg-light py-2 fixed-top" style={{ paddingLeft: 3+'em'}}>
+            <nav className="navbar navbar-expand-sm navbar-light bg-light py-2 fixed-top" style={{ paddingLeft: 3.5+'em'}}>
 	            <div className="navbar-brand">
 		            <img src={ favicon } alt="Logo" />
 		            &nbsp;&nbsp;

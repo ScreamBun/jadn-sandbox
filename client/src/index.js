@@ -25,7 +25,7 @@ const validThemes = ['cyborg', 'darkly', 'sandstone', 'slate']
 
 const Root = () => (
     <Provider store={ store } >
-        <ThemeSwitcher storeThemeKey="theme" defaultTheme="sandstone" themeOptions={ themeOptions }>
+        <ThemeSwitcher storeThemeKey="theme" defaultTheme="sandstone" themeOptions={ validThemes }>
             <App history={ history } />
         </ThemeSwitcher>
     </Provider>
