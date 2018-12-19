@@ -40,7 +40,7 @@ body {
 	right: 1em;
 }
 .code, textarea {
-    font-family: 'Roboto Mono', Consolas, monaco, monospace;
+    font-family: 'Roboto', Consolas, monaco, monospace;
 	font-size: 1em;
 	font-style: normal;
 	font-variant: normal;
@@ -64,7 +64,7 @@ div {
 }
 /* Pretty JSON Module theme */
 .json-pretty {
-	font-family: 'Roboto Mono', monaco, monospace;
+	font-family: 'Roboto', monaco, monospace;
 	font-size: 0.8zem;
   	line-height: inherit;
 	color: #D4D4D4;
@@ -82,9 +82,25 @@ div {
 	}
 }
 
-
 /* Ribbon CSS */
-@import (css) url('https://fonts.googleapis.com/css?family=Lato:700');
+@font-face {
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Lato Italic'), local('Lato-Italic'), url(/assets/fonts/Lato-Italic.ttf) format('truetype')
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(/assets/fonts/Lato-Regular.ttf) format('truetype')
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Lato Bold'), local('Lato-Bold'), url(/assets/fonts/Lato-Bold.ttf) format('truetype')
+}
 /* common */
 .ribbon {
   	width: 100px;
@@ -94,7 +110,6 @@ div {
 	opacity: 0.75;
 	z-index: 2000;
 	pointer-events: none;
-	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='your_transparent.png', sizingMethod='scale');
 	&::before, &::after {
 		position: absolute;
 		z-index: -1;

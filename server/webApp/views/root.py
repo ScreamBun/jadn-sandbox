@@ -61,7 +61,6 @@ class StaticFiles(Resource):
     """
     def get(self, filetype, filename):
         filePath = os.path.join(current_app.config.get("STATIC_FOLDER"), filetype, filename)
-        print(filePath)
 
         if os.path.isfile(filePath):
             return send_file(filePath, as_attachment=False)

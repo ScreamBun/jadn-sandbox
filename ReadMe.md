@@ -11,17 +11,19 @@
 1. Build the client as specified in the client readme
 2. Copy the contents of `client/build/assets` directory to `server/webApp/static`
 	- Merge the folders and replace what is currently in the folders
-	- Note: The following files are used by the routes page and should not be replaced (roboto-mono-v5-latin-regular is also used by the client application)
+	- Note: The following files are used by the endpoints page and should not be replaced (Roboto & Lato fonts are also used by the client application)
 		- `server/webApp/static/css/styles.min.css`
 		- `server/webApp/static/js/scripts.min.js`
-		- `server/webApp/static/assets/fonts/roboto-mono-v5-latin-regular.eot`
-		- `server/webApp/static/assets/fonts/roboto-mono-v5-latin-regular.svg`
-		- `server/webApp/static/assets/fonts/roboto-mono-v5-latin-regular.ttf`
-		- `server/webApp/static/assets/fonts/roboto-mono-v5-latin-regular.woff`
-		- `server/webApp/static/assets/fonts/roboto-mono-v5-latin-regular.woff2`
-3. Verify the index pages contain the correct file names
-	- Client: `client/build/index.html`, Server: `server/webApp/templates/index.html`
-	- The src and href attributes should match with the exceptions of
-		- The server href/src should be `{{ url_for('static', filename='FILENAME') }}`
+		- `server/webApp/static/assets/fonts/Lato-Bold.ttf`
+		- `server/webApp/static/assets/fonts/Lato-Italic.ttf`
+		- `server/webApp/static/assets/fonts/Lato-Light.ttf`
+		- `server/webApp/static/assets/fonts/Lato-Regular.ttf`
+		- `server/webApp/static/assets/fonts/Roboto-Bold.ttf`
+		- `server/webApp/static/assets/fonts/Roboto-Light.ttf`
+		- `server/webApp/static/assets/fonts/Roboto-Medium.ttf`
+		- `server/webApp/static/assets/fonts/Roboto-Regular.ttf`
+        
+3. Move the index file that was copied to the server templates directory
+	- Server: `server/webApp/templates/`
 
-4. Start the server and navigate to the webpbrowser page to verify the client is server correctly
+4. Start the server and navigate to the web browser page to verify the client is server correctly
