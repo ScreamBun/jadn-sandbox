@@ -36,6 +36,6 @@ Build:
   - rsync -avz --delete ./client/build/* ./server/webApp/static/
   - mv ./server/webApp/static/index.html ./server/webApp/templates/index.html
   # Server Build
-  - cd ../server
+  - cd ./server
   - docker build -t $IMAGE_NAME -f docker-image .
   - docker push $IMAGE_NAME
