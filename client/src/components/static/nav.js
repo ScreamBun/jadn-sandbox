@@ -4,6 +4,9 @@ import { connect } from 'react-redux'
 
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faCheckDouble, faTimes } from '@fortawesome/free-solid-svg-icons'
+
 import favicon from '../dependencies/img/jadn-favicon.png'
 
 class NavItem extends Component {
@@ -35,7 +38,8 @@ class Nav extends Component {
         this.state = {
             active: (act ? '/' : this.props.history.location.pathname),
             about_modal: false,
-            features_modal: false
+            features_modal: false,
+            state_modal: false
         }
     }
 
@@ -89,6 +93,58 @@ class Nav extends Component {
                         </ul>
                     </ModalBody>
                 </Modal>
+                <Modal isOpen={ this.state.state_modal } toggle={ () => this.setState({ state_modal: !this.state.state_modal }) }>
+                    <ModalHeader toggle={ () => this.setState({ state_modal: !this.state.state_modal }) }>Components State</ModalHeader>
+                    <ModalBody>
+                        <ul className='fa-ul'>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
+                                <a href="https://github.com/OpenC2-org/jadn" target="_blank">OpenC2 JADN Libs</a>
+                            </li>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
+                                Message Converter
+                            </li>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
+                                Message Validator
+                            </li>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
+                                Message Creator
+                            </li>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
+                                Schema Converter
+                            </li>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
+                                Schema Validator
+                            </li>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faTimes }/></span>
+                                Schema Creator
+                            </li>
+                        </ul>
+                        <div>
+                            <p className='pb-0 mb-1'>Key:</p>
+                            <ul className='fa-ul'>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faTimes } /></span>
+                                Untested/Alpha
+                            </li>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
+                                Stable/Functional
+                            </li>
+                            <li>
+                                <span className='fa-li'><FontAwesomeIcon icon={ faCheckDouble }/></span>
+                                Public Ready
+                            </li>
+                        </ul>
+                        </div>
+                    </ModalBody>
+                </Modal>
             </div>
         )
     }
@@ -126,6 +182,8 @@ class Nav extends Component {
                         <NavItem href="#" text="About" click={ () => this.setState({ about_modal: !this.state.about_modal }) }/>
 
                         <NavItem href="#" text="Features" click={ () => this.setState({ features_modal: !this.state.features_modal }) }/>
+
+                        <NavItem href="#" text="State" click={ () => this.setState({ state_modal: !this.state.state_modal }) }/>
                     </ul>
                 </div>
                 { this.modals() }

@@ -37,7 +37,7 @@ const chunk2str = (chunks) => {
 export const validURL = (url) => url.match(/^(https?:\/\/)?(www\.)?[0-9a-z]+([\-\.]{1}[0-9a-z]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)
 
 
-const loadURL = (url) => {
+export const loadURL = (url) => {
     if (!validURL(url)) {
 	    return new Promise((resolve, reject) => {
 	        reject({
@@ -94,5 +94,3 @@ const loadURL = (url) => {
         return rtn_arr
     })
 }
-
-export default loadURL

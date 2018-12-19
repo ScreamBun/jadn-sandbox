@@ -13,6 +13,8 @@ class Config(object):
 
     APPLICATION_ROOT = '/'
 
+    STATIC_FOLDER = os.path.join(APP_DIR, "static")
+
     TEMPLATE_FOLDER = os.path.join(APP_DIR, "templates")
 
     SECRET_KEY = 'openc2openc2'

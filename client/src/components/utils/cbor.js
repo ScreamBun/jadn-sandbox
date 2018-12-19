@@ -37,14 +37,3 @@ export const hexify = (str) => {
 	}
 	return rtnStr
 }
-
-export const dehexify = (str) => {
-	let rtnStr = ''
-	str = str.toString().split(/\\x/g)
-
-	for (let i in str) {
-		let code = parseInt(str[i].substr(0, 2), 16)
-		rtnStr += String.fromCharCode(code) + str[i].substr(2)
-	}
-	return rtnStr
-}

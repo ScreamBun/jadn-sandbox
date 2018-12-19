@@ -1,11 +1,11 @@
-const generalConfig = require('./general.config');
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const path = require('path');
+const generalConfig = require('./general.config')
+const webpack = require('webpack')
+const merge = require('webpack-merge')
+const path = require('path')
 
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 env = 'production'
 console.log('NODE_ENV: ' + env)
@@ -14,7 +14,7 @@ const ROOT_DIR = path.join(__dirname, '..')
 const BUILD_DIR = path.join(ROOT_DIR, 'build')
 
 const config = merge(generalConfig, {
-    mode: 'production',
+    mode: env,
     devtool: 'source-map',
     cache: false,
     plugins: [
@@ -30,14 +30,11 @@ const config = merge(generalConfig, {
                 verbose: true,
                 dry: false
             }
-        ),
-        new UglifyJsPlugin({
-            sourceMap: true
-        }),
+        )
     ],
     optimization: {
         minimizer: [
-            new UglifyJsPlugin({
+            new TerserPlugin({
                 cache: true,
                 parallel: true,
                 sourceMap: false

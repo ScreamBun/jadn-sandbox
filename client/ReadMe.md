@@ -46,7 +46,7 @@
 			- [HTML](https://www.npmjs.com/package/html-webpack-plugin)
 			- [Mini CSS](https://www.npmjs.com/package/mini-css-extract-plugin)
 			- [Optimize CSS Assets](https://www.npmjs.com/package/optimize-css-assets-webpack-plugin)
-			- [UglifyJS](https://www.npmjs.com/package/uglifyjs-webpack-plugin)
+			- [Terser](https://www.npmjs.com/package/terser-webpack-plugin)
 			- [Bundle Tracker](https://www.npmjs.com/package/webpack-bundle-tracker)
 		- [Loaders](https://webpack.js.org/loaders) - Loader Info
 			- [Babel](https://www.npmjs.com/package/babel-loader)

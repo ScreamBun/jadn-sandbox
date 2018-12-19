@@ -1,17 +1,18 @@
 import {
-    delMultiKey,
-    FormatJADN,
-    getMultiKey,
-    isOptional,
-    setMultiKey
+    isOptional
 } from './utils'
 
 import Field from './field'
 
+import {
+    delMultiKey,
+    getMultiKey,
+    setMultiKey
+} from '../../../utils'
+
 export {
     delMultiKey,
     Field,
-    FormatJADN,
     getMultiKey,
     isOptional,
     setMultiKey

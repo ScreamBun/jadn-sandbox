@@ -1,11 +1,3 @@
-/*
-npm install babel-loader babel-core babel-preset-env babel-preset-react --save-dev
-npm install css-loader file-loader less less-loader style-loader svg-inline-loader --save-dev
-npm install react-hot-loader --save-dev
-npm install webpack webpack-dev-server --save-dev
-npm install html-webpack-plugin clean-webpack-plugin --save-dev
-npm install --save-dev html-webpack-externals-plugin
-*/
 const webpack = require('webpack');
 const path = require('path');
 
@@ -18,17 +10,18 @@ const BundleTracker = require('webpack-bundle-tracker');
 
 const ROOT_DIR = path.join(__dirname, '..')
 const BUILD_DIR = path.join(ROOT_DIR, 'build')
-const DEPEND_DIR = path.join(ROOT_DIR, 'src', 'components', 'dependencies')
+const COMPONENTS_DIR = path.join(ROOT_DIR, 'src', 'components')
+const DEPEND_DIR = path.join(COMPONENTS_DIR, 'dependencies')
 
 const config  = {
     mode: 'none',
     devtool: 'inline-source-map',
     entry: {
-        home: path.join(ROOT_DIR, 'src', 'index.js'),
-        validator: path.join(ROOT_DIR, 'src', 'components', 'validator', 'index.js'),
-        converter: path.join(ROOT_DIR, 'src', 'components', 'converter', 'index.js'),
-        'command-generator': path.join(ROOT_DIR, 'src', 'components', 'generate', 'command', 'index.js'),
-        'schema-generator': path.join(ROOT_DIR, 'src', 'components', 'generate', 'schema', 'index.js')
+        main: path.join(ROOT_DIR, 'src', 'index.js'),
+        validator: path.join(COMPONENTS_DIR, 'validator', 'index.js'),
+        converter: path.join(COMPONENTS_DIR, 'converter', 'index.js'),
+        'command-generator': path.join(COMPONENTS_DIR, 'generate', 'command', 'index.js'),
+        'schema-generator': path.join(COMPONENTS_DIR, 'generate', 'schema', 'index.js')
     },
     output: {
         path: BUILD_DIR,
@@ -46,16 +39,12 @@ const config  = {
         new HtmlWebpackPlugin({
             title: 'HtmlWebpackPlugin',
             filename: 'index.html',
-            template: './src/components/dependencies/index.html'
+            template: path.join(DEPEND_DIR, 'index.html')
         }),
         new BundleTracker({
             filename: './webpack.stats.json'
         }),
         new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery',
-            Popper: ['popper.js', 'default'],
             moment: 'moment'
         }),
         new MiniCssExtractPlugin({
@@ -69,7 +58,7 @@ const config  = {
                 to: path.join(BUILD_DIR, 'assets'),
                 toType: 'dir'
             },{ // Theme Assets
-                from: path.join(ROOT_DIR, 'src', 'components', 'utils', 'theme-switcher', 'assets'),
+                from: path.join(COMPONENTS_DIR, 'utils', 'theme-switcher', 'assets'),
                 to: path.join(BUILD_DIR, 'assets'),
                 toType: 'dir'
             }
@@ -83,16 +72,16 @@ const config  = {
             background: '#ffffff',
             title: 'JADN Lint',
             icons: {
-                android: true,
-                appleIcon: true,
-                appleStartup: true,
-                coast: false,
-                favicons: true,
-                firefox: true,
+                android: true,              // Create Android homescreen icon. `boolean` or `{ offset, background, mask, overlayGlow, overlayShadow }`
+                appleIcon: true,            // Create Apple touch icons. `boolean` or `{ offset, background, mask, overlayGlow, overlayShadow }`
+                appleStartup: true,         // Create Apple startup images. `boolean` or `{ offset, background, mask, overlayGlow, overlayShadow }`
+                coast: false,               // Create Opera Coast icon. `boolean` or `{ offset, background, mask, overlayGlow, overlayShadow }`
+                favicons: true,             // Create regular favicons. `boolean` or `{ offset, background, mask, overlayGlow, overlayShadow }`
+                firefox: true,              // Create Firefox OS icons. `boolean` or `{ offset, background, mask, overlayGlow, overlayShadow }`
                 opengraph: false,
                 twitter: false,
-                yandex: false,
-                windows: true
+                windows: true,              // Create Windows 8 tile icons. `boolean` or `{ offset, background, mask, overlayGlow, overlayShadow }`
+                yandex: false               // Create Yandex browser icon. `boolean` or `{ offset, background, mask, overlayGlow, overlayShadow }`
             }
         })
     ],
@@ -112,6 +101,7 @@ const config  = {
         }
     },
     optimization: {
+        mergeDuplicateChunks: true,
         runtimeChunk: false,
         splitChunks: {
             cacheGroups: {
@@ -138,7 +128,7 @@ const config  = {
                             '@babel/preset-react'
                         ],
                         plugins: [
-                            "@babel/plugin-syntax-dynamic-import",
+                            '@babel/plugin-syntax-dynamic-import',
                             '@babel/plugin-proposal-object-rest-spread'
                         ]
                     }
@@ -150,10 +140,7 @@ const config  = {
                     {
                         loader: 'css-loader',
                         options: {
-                            url: false,
-                            alias: {
-                                './fonts': path.resolve(DEPEND_DIR, 'css', 'fonts')
-                            }
+                            url: false
                         }
                     },
                     'less-loader'
@@ -171,6 +158,14 @@ const config  = {
                             }
                         }
                     },
+                }]
+            },{
+                test: /\.(ttf|eot|woff|woff2)$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: 'css/fonts/[name].[ext]'
+                    }
                 }]
             }
         ]

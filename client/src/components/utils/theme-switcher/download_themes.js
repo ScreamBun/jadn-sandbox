@@ -49,7 +49,6 @@ for (let theme of themes['themes']) {
         }
     }
 
-    // set imports to local & download files
     for (let line of pre_css_lines) {
         if (line.match(/\s*?src:.*url\([\"\']?https?:\/\/.*/) && !line.startsWith('/*')) {
             let src = FILE_URL_IMPORT.exec(line)['groups']
@@ -72,6 +71,7 @@ for (let theme of themes['themes']) {
         line = line.replace(/\\[^\\]/g, '\\\\')
         line = line.replace(/^\s+\*/, '*')
         line = line.replace(/^\s+/, '\t')
+        // css_file.write(line + '\n')
         post_css_lines.push(line)
     }
 
@@ -81,16 +81,14 @@ for (let theme of themes['themes']) {
     css_file.write('export default `\n')
 
     css_file.write(csso.minify(post_css_lines.join(''), {
-        comments: false,
-        restructure: true,
-        sourceMap: false
+        restructure: false  // don't change CSS structure, i.e. don't merge declarations, rulesets etc
     }).css)
 
     css_file.write('\n`')
     css_file.end();
 }
 
-// make theme index file
+
 let theme_index_file = fs.createWriteStream(path.join(ROOT_DIR, 'themes', 'index.js'), {
     flags: 'w'
 });

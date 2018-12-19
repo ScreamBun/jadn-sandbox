@@ -1,23 +1,23 @@
-import { RSAA } from 'redux-api-middleware';;
+import { RSAA } from 'redux-api-middleware'
 
-export const INFO_REQUEST = '@@validate/INFO_REQUEST';
-export const INFO_SUCCESS = '@@validate/INFO_SUCCESS';
-export const INFO_FAILURE = '@@validate/INFO_FAILURE';
+const str_fmt = require('string-format')
 
-export const VALIDATE_SCHEMA_REQUEST = '@@validate/VALIDATE_SCHEMA_REQUEST';
-export const VALIDATE_SCHEMA_SUCCESS = '@@validate/VALIDATE_SCHEMA_SUCCESS';
+// General Actions
+export const VALIDATE_FAILURE = '@@validate/VALIDATE_FAILURE'
 
-export const VALIDATE_MESSAGE_REQUEST = '@@validate/VALIDATE_MESSAGE_REQUEST';
-export const VALIDATE_MESSAGE_SUCCESS = '@@validate/VALIDATE_MESSAGE_SUCCESS';
-
-export const VALIDATE_FAILURE = '@@validate/VALIDATE_FAILURE';
+// API Base URL
+const baseAPI = '/api/validate'
 
 // Helper Functions
 
 // API Calls
+// GET - /api/validate/ - get basic validate info
+const INFO_REQUEST = '@@validate/INFO_REQUEST'
+export const INFO_SUCCESS = '@@validate/INFO_SUCCESS'
+export const INFO_FAILURE = '@@validate/INFO_FAILURE'
 export const info = () => ({
     [RSAA]: {
-        endpoint: '/api/validate',
+        endpoint: str_fmt('{base}/', {base: baseAPI}),
         method: 'GET',
         types: [
             INFO_REQUEST, INFO_SUCCESS, INFO_FAILURE
@@ -25,9 +25,12 @@ export const info = () => ({
     }
 })
 
+// POST - /api/validate/schema - validate the given schema
+const VALIDATE_SCHEMA_REQUEST = '@@validate/VALIDATE_SCHEMA_REQUEST'
+export const VALIDATE_SCHEMA_SUCCESS = '@@validate/VALIDATE_SCHEMA_SUCCESS'
 export const validateSchema = (s) => ({
     [RSAA]: {
-        endpoint: '/api/validate/schema',
+        endpoint: str_fmt('{base}/schema', {base: baseAPI}),
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -41,10 +44,12 @@ export const validateSchema = (s) => ({
     }
 })
 
-
+// POST - /api/validate - validate teh given message against the given schema
+const VALIDATE_MESSAGE_REQUEST = '@@validate/VALIDATE_MESSAGE_REQUEST'
+export const VALIDATE_MESSAGE_SUCCESS = '@@validate/VALIDATE_MESSAGE_SUCCESS'
 export const validateMessage = (s, m ,f, d) => ({
     [RSAA]: {
-        endpoint: '/api/validate',
+        endpoint: str_fmt('{base}/', {base: baseAPI}),
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

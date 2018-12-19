@@ -1,9 +1,10 @@
-import InputField from './inputField'
-import loadURL, { validURL } from './loadURL'
+import {
+    loadURL,
+    validURL
+} from './loadURL'
 
 import {
     cbor2escaped,
-    dehexify,
     escaped2cbor,
     hexify
 } from './cbor'
@@ -14,7 +15,12 @@ import {
     minify
 } from './jadn'
 
-import JADNEditor from './jadn-editor'
+
+import {
+    delMultiKey,
+    getMultiKey,
+    setMultiKey
+} from './multiKey'
 
 import {
     ThemeChooser,
@@ -23,15 +29,15 @@ import {
 
 export {
     cbor2escaped,
-    dehexify,
+    delMultiKey,
     escaped2cbor,
     format,
     FormatJADN,
+    getMultiKey,
     hexify,
-    InputField,
-    JADNEditor,
     loadURL,
     minify,
+    setMultiKey,
     ThemeChooser,
     ThemeSwitcher,
     validURL

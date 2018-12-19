@@ -58,7 +58,8 @@ class App extends Component {
 
                 <ConnectedRouter history={ this.props.history }>
                     <Switch>
-                        <Route exact path="/" component={ Validator  } />
+                        <Route exact path="/" component={ props => <Redirect to="/validate" { ...props } />  } />
+                        <Route exact path="/validate" component={ Validator  } />
                         <Route exact path="/convert" component={ Converter } />
                         <Route exact path="/generate" render={ props => <Redirect to="/generate/message" { ...props } /> } />
                         <Route path="/generate/message" component={ CommandGenerator } />

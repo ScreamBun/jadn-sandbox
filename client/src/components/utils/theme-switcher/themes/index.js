@@ -42,5 +42,5 @@ export {
 	spacelab,
 	superhero,
 	united,
-	yeti,
+	yeti
 }

@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 
 from flask import abort, Blueprint, current_app, jsonify, render_template, redirect, Response, send_file, url_for
@@ -54,6 +55,20 @@ class Endpoints(Resource):
         return resp
 
 
+class StaticFiles(Resource):
+    """
+    endpoint for /(js|css|img|assets)/*
+    """
+    def get(self, filetype, filename):
+        filePath = os.path.join(current_app.config.get("STATIC_FOLDER"), filetype, filename)
+        print(filePath)
+
+        if os.path.isfile(filePath):
+            return send_file(filePath, as_attachment=False)
+
+        return '', 404
+
+
 class CatchAll(Resource):
     """
     Endpoint for /[:content]
@@ -82,4 +97,5 @@ class CatchAll(Resource):
 # Register resources
 # api.add_resource(Root, '/')
 api.add_resource(Endpoints, '/endpoints')
+api.add_resource(StaticFiles, '/<regex("(js|css|img|assets)"):filetype>/<path:filename>')
 api.add_resource(Root, '/', '/<path:path>')
