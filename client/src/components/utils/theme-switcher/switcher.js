@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react'
 import PropTypes from 'prop-types'
+import './assets/css/loader.css'
 
 const setItem = (key, obj) => {
     if (!key) return null;
@@ -146,7 +147,28 @@ class ThemeSwitcher extends React.Component {
     }
 
     render() {
-        return Object.keys(this.state.themes).length === 0 ? <div><p>Loading...</p></div> : (this.props.children || <span />)
+        if (Object.keys(this.state.themes).length === 0) {
+            return (
+                <div style={{
+                    display: 'table',
+                    position: 'fixed',
+                    top: 0,
+                    height: '100%',
+                    width: '100%'
+                }}>
+                    <div style={{
+                        display: 'table-cell',
+                        textAlign: 'center',
+                        verticalAlign: 'middle'
+                    }}>
+                        <div className="loader" />
+                        <p className='pt-0 mt-0'>Loading...</p>
+                    </div>
+                </div>
+            )
+        } else {
+            return this.props.children || <span />
+        }
     }
 }
 

@@ -131,7 +131,7 @@ class Nav extends Component {
                             <ul className='fa-ul'>
                             <li>
                                 <span className='fa-li'><FontAwesomeIcon icon={ faTimes } /></span>
-                                Untested/Alpha
+                                Untested/Known Bugs
                             </li>
                             <li>
                                 <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
