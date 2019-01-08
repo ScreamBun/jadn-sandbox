@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faCheckDouble, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faCheckDouble, faExclamation, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 import favicon from '../dependencies/img/jadn-favicon.png'
 
@@ -101,10 +101,12 @@ class Nav extends Component {
                                 <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
                                 <a href="https://github.com/OpenC2-org/jadn" target="_blank">OpenC2 JADN Libs</a>
                             </li>
+                            {/*
                             <li>
                                 <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
                                 Message Converter
                             </li>
+                            */}
                             <li>
                                 <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
                                 Message Validator
@@ -115,7 +117,37 @@ class Nav extends Component {
                             </li>
                             <li>
                                 <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
-                                Schema Converter
+                                Schema Conversions
+                                <ul className='fa-ul'>
+                                    <li>
+                                        <span className='fa-li'><FontAwesomeIcon icon={ faCheckDouble }/></span>
+                                        JADN
+                                    </li>
+                                    <li>
+                                        <span className='fa-li'><FontAwesomeIcon icon={ faCheckDouble }/></span>
+                                        ProtoBuf3 Format
+                                    </li>
+                                    <li>
+                                        <span className='fa-li'><FontAwesomeIcon icon={ faCheckDouble }/></span>
+                                        Relax-NG Format
+                                    </li>
+                                    <li>
+                                        <span className='fa-li'><FontAwesomeIcon icon={ faCheckDouble }/></span>
+                                        CDDL Format
+                                    </li>
+                                    <li>
+                                        <span className='fa-li'><FontAwesomeIcon icon={ faCheckDouble }/></span>
+                                        MarkDown
+                                    </li>
+                                    <li>
+                                        <span className='fa-li'><FontAwesomeIcon icon={ faCheckDouble }/></span>
+                                        HTML
+                                    </li>
+                                    <li>
+                                        <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
+                                        PDF
+                                    </li>
+                                </ul>
                             </li>
                             <li>
                                 <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
@@ -131,11 +163,11 @@ class Nav extends Component {
                             <ul className='fa-ul'>
                             <li>
                                 <span className='fa-li'><FontAwesomeIcon icon={ faTimes } /></span>
-                                Untested/Known Bugs
+                                Untested
                             </li>
                             <li>
                                 <span className='fa-li'><FontAwesomeIcon icon={ faCheck }/></span>
-                                Stable/Functional
+                                Stable/Known Bugs
                             </li>
                             <li>
                                 <span className='fa-li'><FontAwesomeIcon icon={ faCheckDouble }/></span>

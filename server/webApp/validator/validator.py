@@ -2,8 +2,8 @@ import json
 import random
 import re
 
-from jadn import OpenC2MessageFormats
-from jadn.codec import Codec, jadn_loads
+from jadn import jadn_loads, OpenC2MessageFormats
+from jadn.codec import Codec
 from jadn.convert.message import OpenC2Message
 from jadn.utils import Utils
 

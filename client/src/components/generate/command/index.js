@@ -308,7 +308,7 @@ class Generate extends Component {
                                     </Input>
                                 </FormGroup>
 
-                                <Button color='primary' className='float-right' onClick={ () => this.makeID() }>Generate ID</Button>
+                                {/* <Button color='primary' className='float-right' onClick={ () => this.makeID() }>Generate ID</Button> */}
                             </div>
 
                             <Form id='command-fields' className='card-body' onSubmit={ () => { return false; } } style={{ height: maxHeight-25+'px', overflowY: 'scroll' }}>

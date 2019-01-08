@@ -871,7 +871,7 @@ export const DomNode_Update = (obj, locale=defaultLocale, colors) => {
 					break;
 				case 'symbol':
 					const islastToken = i === lastIndex;
-					switch(token.string){
+					switch(token.string) {
 						case '{':
 							buffer.markup += newSpan(i, token, _depth, colors);
 							_depth++;
@@ -898,7 +898,6 @@ export const DomNode_Update = (obj, locale=defaultLocale, colors) => {
 									if (followedBySymbol(buffer.tokens_merge, i+1, [','])) {
 										_depth = _depth >= 1 ? _depth - 1 : _depth;
 										ind_bool = true;
-										tmp_token.string += ']';
 										i++;
 									} else if (followedBySymbol(buffer.tokens_merge, i+1, [']'])) {
 										_depth = _depth >= 1 ? _depth - 1 : _depth;
@@ -921,9 +920,8 @@ export const DomNode_Update = (obj, locale=defaultLocale, colors) => {
 						default:
 							buffer.markup += newSpan(i, token, _depth, colors);
 							break;
-							
-                            	}
-                            break;
+                    }
+                    break;
 			}
 		}
  	}
@@ -955,6 +953,7 @@ const stringHasQuotes = (str) => str.match(/^[\'\"].*[\'\"]$/) ? true : false;
 
 const stringMayRemoveQuotes = (nonAlphaNumeric, text) => {
 	let numberAndLetter = false;
+	
 	for (var i = 0; i < text.length; i++) {
 		if (i === 0) if (isNaN(text.charAt(i))) break;
 		if (isNaN(text.charAt(i))){
@@ -1271,7 +1270,6 @@ export const JSON_Placeholder = (obj, colors) => {
 								if (followedBySymbol(buffer2.tokens, i+1, [','])) {
 									_depth = _depth >= 1 ? _depth - 1 : _depth;
 									ind_bool = true;
-									tmp_token.string += ']';
 									i++;
 								} else if (followedBySymbol(buffer2.tokens, i+1, [']'])) {
 									_depth = _depth >= 1 ? _depth - 1 : _depth;

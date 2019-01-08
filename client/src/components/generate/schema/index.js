@@ -292,7 +292,7 @@ class Generate extends Component {
                                     color="white"
                                     size='2x'
                                 />
-                                 <input
+                                <input
 	                                type='file'
 	                                className='d-none'
 	                                ref={ input => this.schemaInput = input }
