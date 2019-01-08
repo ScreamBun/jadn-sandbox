@@ -21,7 +21,7 @@
 - Linux
 
     ```bash
-	start.sh
+    start.sh
 	```
 	
 - Windows
