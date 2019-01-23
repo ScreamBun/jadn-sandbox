@@ -13,10 +13,11 @@ import {
     Nav
 } from './components/static'
 
-import Validator from './components/validator'
-import Converter from './components/converter'
 import CommandGenerator from './components/generate/command'
+import Converter from './components/converter'
+import Docs from './components/docs'
 import SchemaGenerator from './components/generate/schema'
+import Validator from './components/validator'
 
 import * as UtilActions from './actions/util'
 
@@ -59,8 +60,9 @@ class App extends Component {
                 <ConnectedRouter history={ this.props.history }>
                     <Switch>
                         <Route exact path="/" component={ props => <Redirect to="/validate" { ...props } />  } />
-                        <Route exact path="/validate" component={ Validator  } />
+                        <Route exact path="/validate" component={ Validator } />
                         <Route exact path="/convert" component={ Converter } />
+                        <Route exact path="/docs" component={ Docs } />
                         <Route exact path="/generate" render={ props => <Redirect to="/generate/message" { ...props } /> } />
                         <Route path="/generate/message" component={ CommandGenerator } />
                         <Route path="/generate/schema" component={ SchemaGenerator } />

@@ -211,11 +211,13 @@ class Nav extends Component {
                             </ul>
                         </li>
 
-                        <NavItem href="#" text="About" click={ () => this.setState({ about_modal: !this.state.about_modal }) }/>
+                        <NavItem href="/docs" text="API Docs" active={ this.state.active } click={ this.navigate.bind(this) } />
 
-                        <NavItem href="#" text="Features" click={ () => this.setState({ features_modal: !this.state.features_modal }) }/>
+                        <NavItem href="#" text="About" click={ () => this.setState({ about_modal: !this.state.about_modal }) } />
 
-                        <NavItem href="#" text="State" click={ () => this.setState({ state_modal: !this.state.state_modal }) }/>
+                        <NavItem href="#" text="Features" click={ () => this.setState({ features_modal: !this.state.features_modal }) } />
+
+                        <NavItem href="#" text="State" click={ () => this.setState({ state_modal: !this.state.state_modal }) } />
                     </ul>
                 </div>
                 { this.modals() }
