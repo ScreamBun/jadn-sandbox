@@ -32,13 +32,13 @@ args=(sys.stdout, )
 class=logging.handlers.RotatingFileHandler
 formatter=generic
 args=('/logs/gunicorn.error.log', )
-kwargs={'maxBytes': 1024*20, backupCount=5 }
+kwargs={'maxBytes': 1024*20 }
 
 [handler_access_file]
 class=logging.handlers.RotatingFileHandler
 formatter=access
 args=('/logs/gunicorn.access.log', )
-kwargs={'maxBytes': 1024*20, backupCount=5 }
+kwargs={'maxBytes': 1024*20 }
 
 [formatter_generic]
 format=%(asctime)s [%(process)d] [%(levelname)s] %(message)s
