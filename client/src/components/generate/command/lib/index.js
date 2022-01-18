@@ -1,19 +1,11 @@
-import {
-    isOptional
-} from './utils'
-
-import Field from './field'
-
-import {
-    delMultiKey,
-    getMultiKey,
-    setMultiKey
-} from '../../../utils'
+import Field from './field';
+import { isOptional } from './utils';
+import { delMultiKey, getMultiKey, setMultiKey } from '../../../utils';
 
 export {
-    delMultiKey,
-    Field,
-    getMultiKey,
-    isOptional,
-    setMultiKey
-}
+  Field,
+  delMultiKey,
+  getMultiKey,
+  isOptional,
+  setMultiKey
+};

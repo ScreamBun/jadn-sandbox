@@ -6,20 +6,20 @@ from flask import abort, Blueprint, current_app, jsonify, render_template, redir
 from flask_restful import Api, Resource
 
 logger = logging.getLogger()
-root = Blueprint('index', __name__)
+root = Blueprint("index", __name__)
 api = Api(root)
 
 
 def unquote(url):
-    return re.compile('%([0-9a-fA-F]{2})', re.M).sub(lambda m: chr(int(m.group(1), 16)), url)
+    return re.compile("%([0-9a-fA-F]{2})", re.M).sub(lambda m: chr(int(m.group(1), 16)), url)
 
 
 class Root(Resource):
     """
     Endpoint for /
     """
-    def get(self, path=''):
-        resp = Response(render_template('index.html'), mimetype='text/html')
+    def get(self, path=""):
+        resp = Response(render_template("index.html"), mimetype="text/html")
         resp.status_code = 200
         return resp
 
@@ -40,17 +40,17 @@ class Endpoints(Resource):
 
             url = url_for(rule.endpoint, **options)
 
-            if not re.match(r'^\/admin\/admin_', unquote(url)):
+            if not re.match(r"^\/admin\/admin_", unquote(url)):
                 if url_app not in routes_by_app:
                     routes_by_app[url_app] = []
 
                 routes_by_app[url_app].append({
-                    'url': unquote(url),
-                    'endpoint': rule.endpoint,
-                    'methods': ", ".join(rule.methods)
+                    "url": unquote(url),
+                    "endpoint": rule.endpoint,
+                    "methods": ", ".join(rule.methods)
                 })
 
-        resp = Response(render_template('routes/routes.html', routes=routes_by_app, page_title="App Routes"), mimetype='text/html')
+        resp = Response(render_template("routes/routes.html", routes=routes_by_app, page_title="App Routes"), mimetype="text/html")
         resp.status_code = 200
         return resp
 
@@ -65,7 +65,7 @@ class StaticFiles(Resource):
         if os.path.isfile(filePath):
             return send_file(filePath, as_attachment=False)
 
-        return '', 404
+        return "", 404
 
 
 class CatchAll(Resource):
@@ -82,19 +82,19 @@ class CatchAll(Resource):
         current_app.logger.warning("Endpoint Does Not Exist: %s", content)
 
         err = {
-            'message': [
-                'The requested URL /{} was not found on the server.'.format(content),
-                'If you entered the URL manually please check your spelling and try again.',
+            "message": [
+                "The requested URL /{} was not found on the server.".format(content),
+                "If you entered the URL manually please check your spelling and try again.",
             ]
         }
 
-        resp = Response(render_template('error/error.html', error=err, page_title="Error"), mimetype='text/html')
+        resp = Response(render_template("error/error.html", error=err, page_title="Error"), mimetype="text/html")
         resp.status_code = 200
         return resp
 
 
 # Register resources
-# api.add_resource(Root, '/')
-api.add_resource(Endpoints, '/endpoints')
-api.add_resource(StaticFiles, '/<regex("(js|css|img|assets)"):filetype>/<path:filename>')
-api.add_resource(Root, '/', '/<path:path>')
+# api.add_resource(Root, "/")
+api.add_resource(Endpoints, "/endpoints")
+api.add_resource(StaticFiles, "/<regex('(js|css|img|assets)'):filetype>/<path:filename>")
+api.add_resource(Root, "/", "/<path:path>")

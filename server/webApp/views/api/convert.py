@@ -6,11 +6,8 @@ import re
 
 from flask import current_app, jsonify, render_template, redirect, request, Response, url_for
 from flask_restful import Resource, reqparse
-
-from jadn import jadn_loads
-from jadn.convert import cddl_dumps, html_dumps, md_dumps, proto_dumps, relax_dumps, thrift_dumps
-from jadn.enums import CommentLevels
-from jadn.utils import jadnFormat, Utils
+from jadnschema import CommentLevels, jadn
+from jadnschema.convert import cddl_dumps, html_dumps, jadn_dumps, md_dumps, proto_dumps, relax_dumps, thrift_dumps
 
 from xhtml2pdf import pisa
 
@@ -22,11 +19,11 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 parser = reqparse.RequestParser()
-parser.add_argument('schema', type=str)
-parser.add_argument('schema-list', type=str)
-parser.add_argument('convert', type=str)
-parser.add_argument('convert-to', type=str)
-parser.add_argument('comments', type=str, default=CommentLevels.ALL, choices=CommentLevels.values())
+parser.add_argument("schema", type=str)
+parser.add_argument("schema-list", type=str)
+parser.add_argument("convert", type=str)
+parser.add_argument("convert-to", type=str)
+parser.add_argument("comments", type=str, default=CommentLevels.ALL, choices=CommentLevels)
 
 
 class Convert(Resource):
@@ -34,22 +31,22 @@ class Convert(Resource):
     Endpoint for api/convert
     """
     conversions = {
-        'cddl': cddl_dumps,
-        'html': html_dumps,
-        'jadn': lambda x: jadnFormat(x, indent=2),
-        # 'json': json_dumps,
-        'md': md_dumps,
-        'proto3': proto_dumps,
-        'rng': relax_dumps,
-        'thrift': thrift_dumps,
+        "cddl": cddl_dumps,
+        "html": html_dumps,
+        "jadn": lambda x: jadn_dumps(x, indent=2),
+        # "json": json_dumps,
+        "md": md_dumps,
+        "proto3": proto_dumps,
+        "rng": relax_dumps,
+        "thrift": thrift_dumps,
     }
 
     def get(self):
-        schemas = re.compile('\.(' + '|'.join(current_app.config.get('VALID_SCHEMAS')) + ')$')
+        schemas = re.compile(f"\.({'|'.join(current_app.config.get('VALID_SCHEMAS'))})$")
 
         opts = {
-            'schemas': [s for s in os.listdir(os.path.join(current_app.config.get('OPEN_C2_DATA'), 'schemas')) if schemas.search(s)],
-            'conversions': current_app.config.get('VALID_SCHEMA_CONV')
+            "schemas": [s for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "schemas")) if schemas.search(s)],
+            "conversions": current_app.config.get("VALID_SCHEMA_CONV")
         }
 
         return jsonify(opts)
@@ -57,41 +54,41 @@ class Convert(Resource):
     def post(self):
         args = parser.parse_args()
         err = []
-        conv = 'Their are some issues....'
+        conv = "Their are some issues...."
 
         try:
-            schema = json.dumps(ast.literal_eval(args['schema']))
+            schema = json.dumps(ast.literal_eval(args["schema"]))
         except (TypeError, ValueError) as e:
-            schema = args['schema']
+            schema = args["schema"]
 
         val = current_app.validator.validateSchema(schema)
 
         if val[0]:  # Valid Schema
-            conv = 'Valid Base Schema'
-            conv_fun = self.conversions.get(args['convert-to'])
+            conv = "Valid Base Schema"
+            conv_fun = self.conversions.get(args["convert-to"])
 
             if conv_fun is None:
-                conv = 'Invalid Conversion Type'
+                conv = "Invalid Conversion Type"
 
             else:
                 kwargs = {}
-                if args['convert-to'] not in ['html', 'jadn', 'md']:
-                    kwargs['comm'] = args.comments
+                if args["convert-to"] not in ["html", "jadn", "md"]:
+                    kwargs["comm"] = args.comments
 
-                elif args['convert-to'] == 'html':
-                    kwargs['styles'] = current_app.config.get('OPEN_C2_SCHEMA_THEME', '')
+                elif args["convert-to"] == "html":
+                    kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
 
-                conv = conv_fun(jadn_loads(schema), **kwargs)
+                conv = conv_fun(jadn.loads(schema), **kwargs)
 
         else:  # Invalid Schema
             err.append(val[1])
-            conv = 'Fix the base schema errors before converting...'
+            conv = "Fix the base schema errors before converting..."
 
         opts = {
-            'schema': {
-                'base': args['schema'],
-                'convert': conv,
-                'fmt': args['convert-to']
+            "schema": {
+                "base": args["schema"],
+                "convert": conv,
+                "fmt": args["convert-to"]
             }
         }
 
@@ -106,21 +103,21 @@ class ConvertPDF(Resource):
     def post(self):
         args = parser.parse_args()
         pdf = StringIO()
-        html = '<h1>Their are some issues....</h1>'
-        print('convert to pdf')
+        html = "<h1>Their are some issues....</h1>"
+        print("convert to pdf")
 
         try:
-            schema = json.dumps(ast.literal_eval(args['schema']))
+            schema = json.dumps(ast.literal_eval(args["schema"]))
         except (TypeError, ValueError) as e:
-            schema = args['schema']
+            schema = args["schema"]
 
         val = current_app.validator.validateSchema(schema)
 
         if val[0]:  # Valid Schema
-            html = html_dumps(jadn_loads(schema), styles=current_app.config.get('OPEN_C2_SCHEMA_THEME', ''))
+            html = html_dumps(jadn.loads(schema), styles=current_app.config.get("OPEN_C2_SCHEMA_THEME", ""))
 
         else:  # Invalid Schema
-            html = '<h1>Fix the base schema errors before converting...</h1>'
+            html = "<h1>Fix the base schema errors before converting...</h1>"
 
         pisaStatus = pisa.CreatePDF(
             html,  # the HTML to convert
@@ -135,12 +132,12 @@ class ConvertPDF(Resource):
 
 
 resources = {
-    Convert: {'urls': ('/', )},
-    ConvertPDF: {'urls': ('/pdf',)}
+    Convert: {"urls": ("/", )},
+    ConvertPDF: {"urls": ("/pdf",)}
 }
 
 
-def add_resources(bp, url_prefix=''):
+def add_resources(bp, url_prefix=""):
     for cls, opts in resources.items():
-        args = ['{}{}'.format(url_prefix, url) for url in opts['urls']] + opts.get('args', [])
-        bp.add_resource(cls, *args, **opts.get('kwargs', {}))
+        args = ["{}{}".format(url_prefix, url) for url in opts["urls"]] + opts.get("args", [])
+        bp.add_resource(cls, *args, **opts.get("kwargs", {}))

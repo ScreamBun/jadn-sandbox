@@ -21,7 +21,13 @@ yarn-debug.log*
 yarn-error.log*
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-
 # Override exclude
 !/src/components/**/lib/
-/webpack.stats.json
+
+### Custom Ignore
+build/*
+analyzer.stats.*
+webpack.stats.*
+lint_errors.txt
+*.sqlite
+*.sqlite3

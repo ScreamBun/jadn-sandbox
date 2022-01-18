@@ -13,13 +13,13 @@ class RegexConverter(BaseConverter):
 
 
 # Initialize the app
-app = Flask(__name__, static_url_path='/static')
+app = Flask(__name__, static_url_path="/static")
 app.config.from_object(DefaultConfig)
 
-app.url_map.converters['regex'] = RegexConverter
+app.url_map.converters["regex"] = RegexConverter
 app.url_map.strict_slashes = False
 
-print('Starting OpenC2 Flask Server')
+print("Starting OpenC2 Flask Server")
 
 app.validator = Validator()
 

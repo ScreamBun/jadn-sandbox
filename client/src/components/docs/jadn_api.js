@@ -1,4 +1,4 @@
-export const jadn_api = {
+const jadnApi = {
 	jadn: {
 		title: 'JADN Base',
 		text: [
@@ -16,7 +16,8 @@ export const jadn_api = {
 									'Show all comment for conversion'
 								]
 							}
-						},{
+						},
+						{
 							name: 'NONE',
 							info: {
 								info: [
@@ -41,7 +42,8 @@ export const jadn_api = {
 							'SET ME'
 						]
 					}
-				},{
+				},
+				{
 					return: {
 						type: 'dict',
 						info: [
@@ -56,7 +58,8 @@ export const jadn_api = {
     						'Perform additional checks on type definitions'
 						]
 					}
-				},{
+				},
+				{
 					return: {
 						type: 'void'
 					},
@@ -67,7 +70,8 @@ export const jadn_api = {
 							'Write string to the given file'
 						]
 					}
-				},{
+				},
+				{
 					return: {
 						type: 'str',
 						info: [
@@ -80,7 +84,8 @@ export const jadn_api = {
 							'Convert a JADN schema to a JADN formatted string'
 						]
 					}
-				},{
+				},
+				{
 					return: {
 						type: 'str',
 						info: [
@@ -93,7 +98,8 @@ export const jadn_api = {
 							'Convert a JADN schema to a JADN formatted string'
 						]
 					}
-				},{
+				},
+				{
 					return: {
 						type: 'dict',
 						info: [
@@ -106,7 +112,8 @@ export const jadn_api = {
 							'Load and check a jadn schema from a JADN file'
 						]
 					}
-				},{
+				},
+				{
 					return: {
 						type: 'dict',
 						info: [
@@ -119,7 +126,8 @@ export const jadn_api = {
 							'Load and check a jadn schema from a JADN string'
 						]
 					}
-				},{
+				},
+				{
 					return: {
 						type: 'dict',
 						info: [
@@ -132,7 +140,8 @@ export const jadn_api = {
 							'Merge an imported schema into a base schema'
 						]
 					}
-				},{
+				},
+				{
 					return: {
 						type: 'dict',
 						info: [
@@ -183,7 +192,8 @@ export const jadn_api = {
 									'Decode serialized value into API value'
 								]
 							}
-						},{
+						},
+						{
 							return: {
 								type: 'SET ME',
 								info: [
@@ -196,7 +206,8 @@ export const jadn_api = {
 									'Encode API value into serialized value'
 								]
 							}
-						},{
+						},
+						{
 							return: {
 								type: 'SET ME',
 								info: [
@@ -209,7 +220,7 @@ export const jadn_api = {
 									'Encode API value into serialized value'
 								]
 							}
-						},
+						}
 					]
 				}
 			]
@@ -245,7 +256,8 @@ export const jadn_api = {
 										'styles - file location of styles to use for HTML/PDF conversion (optional)'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -260,7 +272,8 @@ export const jadn_api = {
 										'styles - file location of styles to use for HTML/PDF conversion (optional)'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -270,7 +283,8 @@ export const jadn_api = {
 										'Convert the given JADN to MarkDown and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -283,7 +297,8 @@ export const jadn_api = {
 										'Convert the given JADN to MarkDown'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -293,7 +308,8 @@ export const jadn_api = {
 										'Convert the given JADN to CDDL and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -306,7 +322,8 @@ export const jadn_api = {
 										'Convert the given JADN to CDDL'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -316,7 +333,8 @@ export const jadn_api = {
 										'Convert the given CDDL to JADN and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -329,7 +347,8 @@ export const jadn_api = {
 										'Convert the given CDDL to JADN'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -339,7 +358,8 @@ export const jadn_api = {
 										'Convert the given JADN to JAS and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -352,7 +372,8 @@ export const jadn_api = {
 										'Convert the given JADN to JAS'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -362,7 +383,8 @@ export const jadn_api = {
 										'Convert the given JAS to JADN and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -375,7 +397,8 @@ export const jadn_api = {
 										'Convert the given JAS to JADN'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -385,7 +408,8 @@ export const jadn_api = {
 										'Convert the given JADN to ProtoBuf3 and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -398,7 +422,8 @@ export const jadn_api = {
 										'Convert the given JADN to ProtoBuf3'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -408,7 +433,8 @@ export const jadn_api = {
 										'Convert the given ProtoBuf3 to JADN and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -421,7 +447,8 @@ export const jadn_api = {
 										'Convert the given ProtoBuf3 to JADN'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -431,7 +458,8 @@ export const jadn_api = {
 										'Convert the given JADN to Relax-NG and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -444,7 +472,8 @@ export const jadn_api = {
 										'Convert the given JADN to Relax-NG'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -454,7 +483,8 @@ export const jadn_api = {
 										'Convert the given Relax-NG to JADN and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -467,7 +497,8 @@ export const jadn_api = {
 										'Convert the given Relax-NG to JADN<'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -477,7 +508,8 @@ export const jadn_api = {
 										'Convert the given JADN to Thrift and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -490,7 +522,8 @@ export const jadn_api = {
 										'Convert the given JADN to Thrift'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'void'
 								},
@@ -500,7 +533,8 @@ export const jadn_api = {
 										'Convert the given Thrift to JADN and write output to the specified file'
 									]
 								}
-							},{
+							},
+							{
 								return: {
 									type: 'str',
 									info: [
@@ -513,11 +547,13 @@ export const jadn_api = {
 										'Convert the given Thrift to JADN'
 									]
 								}
-							}							
+							}
 						]
 					}
 				}
 			}
 		}
 	}
-}
+};
+
+export default jadnApi;

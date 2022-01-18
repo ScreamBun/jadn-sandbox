@@ -1,4 +1,7 @@
-import Error from './error'
-import Nav from './nav'
+import Error from './error';
+import Nav from './nav';
 
-export { Error, Nav }
+export {
+  Error,
+  Nav
+};

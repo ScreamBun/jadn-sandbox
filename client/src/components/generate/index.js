@@ -1,7 +1,7 @@
-import CommandGenerator from './command'
-import SchemaGenerator from './schema'
+import CommandGenerator from './command';
+import SchemaGenerator from './schema';
 
 export {
-    CommandGenerator,
-    SchemaGenerator
-}
+  CommandGenerator,
+  SchemaGenerator
+};

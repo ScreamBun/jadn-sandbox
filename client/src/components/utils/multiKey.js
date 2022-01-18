@@ -1,31 +1,30 @@
 export const setMultiKey = (a, k, v) => {
-    k = k.replace(/\[\]$/, '')
-	let keys = k.split('.')
+  const keys = k.replace(/\[\]$/, '').split('.');
 
 	if (keys.length > 1) {
-	    if (!a.hasOwnProperty(keys[0])) {
-			a[keys[0]] = {}
+	  if (!Object.hasOwnProperty(a, keys[0])) {
+			a[keys[0]] = {};
 		}
-		setMultiKey(a[keys[0]], keys.slice(1).join('.'), v)
+		setMultiKey(a[keys[0]], keys.slice(1).join('.'), v);
 	} else {
-	    a[k] = v
+	  a[k] = v;
 	}
-}
+};
 
 export const getMultiKey = (a, k) => {
-    k = k.replace(/\[\]$/, '')
-    let keys = k.split('.')
-
-    return keys.length > 1 ? (a.hasOwnProperty(keys[0]) ? getMultiKey(a[keys[0]], keys.slice(1).join('.')) : '') : (a.hasOwnProperty(k) ? a[k] : '')
-}
+  const keys = k.replace(/\[\]$/, '').split('.');
+	if (keys.length > 1) {
+  	return Object.hasOwnProperty(a, keys[0]) ? getMultiKey(a[keys[0]], keys.slice(1).join('.')) : '';
+	}
+	return Object.hasOwnProperty(a, k) ? a[k] : '';
+};
 
 export const delMultiKey = (a, k) => {
-    k = k.replace(/\[\]$/, '')
-	let keys = k.split('.')
+	const keys = k.replace(/\[\]$/, '').split('.');
 
 	if (keys.length > 1) {
-		delMultiKey(a[keys[0]], keys.slice(1).join('.'), null)
-	} else if (a && a.hasOwnProperty(keys[0])) {
-	    delete a[keys[0]]
+		delMultiKey(a[keys[0]], keys.slice(1).join('.'), null);
+	} else if (a && Object.hasOwnProperty(a, keys[0])) {
+	  delete a[keys[0]];
 	}
-}
+};

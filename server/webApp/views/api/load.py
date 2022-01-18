@@ -22,10 +22,10 @@ class LoadFile(Resource):
 
         if os.path.isfile(filePath):
             name, ext = os.path.splitext(filename)
-            with open(filePath, 'rb') as f:
-                filedata = ''
+            with open(filePath, "rb") as f:
+                filedata = ""
 
-                if ext in ['.jadn', '.json']:
+                if ext in [".jadn", ".json"]:
                     filedata = json.load(f)
                 else:
                     for c in f.read():
@@ -34,21 +34,21 @@ class LoadFile(Resource):
                         filedata += asciiChr if asciiNum <= 128 else "\\x{:02X}".format(asciiNum)
 
             return {
-                'file': filename,
-                'type': filetype,
-                'data': filedata
+                "file": filename,
+                "type": filetype,
+                "data": filedata
             }, 200
 
-        return '', 404
+        return "", 404
 
 
 # Register resources
 resources = {
-    LoadFile: {'urls': ('/<string:filetype>/<path:filename>', )}
+    LoadFile: {"urls": ("/<string:filetype>/<path:filename>", )}
 }
 
 
-def add_resources(bp, url_prefix=''):
+def add_resources(bp, url_prefix=""):
     for cls, opts in resources.items():
-        args = ['{}{}'.format(url_prefix, url) for url in opts['urls']] + opts.get('args', [])
-        bp.add_resource(cls, *args, **opts.get('kwargs', {}))
+        args = ["{}{}".format(url_prefix, url) for url in opts["urls"]] + opts.get("args", [])
+        bp.add_resource(cls, *args, **opts.get("kwargs", {}))

@@ -1,1 +1,1 @@
-gunicorn --config gunicorn/gunicorn.conf --log-config gunicorn/logging.conf webApp:app
+gunicorn --config gunicorn/gunicorn.conf.py --log-config gunicorn/logging.conf webApp:app
