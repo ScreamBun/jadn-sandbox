@@ -1,22 +1,25 @@
 import * as generator from '../actions/generate';
+import { SchemaJADN } from '../components/generate/schema/interface';
 
 export interface GenerateState {
-  selectedSchema: Record<string, any>;
-  schemas: Array<any>;
+  selectedSchema: SchemaJADN;
+  schemas: Array<string>;
   message: Record<string, any>;
   types: {
-    schema: Array<string>;
 	  base: Array<string>;
+    schema: Record<string, any>;
   }
 }
 
 const initialState: GenerateState = {
-  selectedSchema: {},
+  selectedSchema: {
+    types: []
+  },
   schemas: [],
   message: {},
   types: {
-    schema: ['Record', 'Enumerated', 'Map', 'Choice', 'ArrayOf', 'Array'],
-		base: ['String']
+		base: ['Binary', 'Boolean', 'Integer', 'Number', 'Null', 'String', 'Enumerated', 'Choice', 'Array', 'ArrayOf', 'Map', 'MapOf', 'Record'],
+    schema: {}
   }
 };
 
@@ -31,7 +34,7 @@ export default (state=initialState, action: generator.GenerateActions) => {
     case generator.SCHEMA_DEFINE:
       return {
         ...state,
-        selectedSchema: action.payload.schema
+        selectedSchema: action.payload.schema || {}
       };
 
     case generator.INFO_FAILURE:

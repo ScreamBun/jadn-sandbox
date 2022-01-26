@@ -2,7 +2,7 @@ import logging
 import os
 import re
 
-from flask import abort, Blueprint, current_app, jsonify, render_template, redirect, Response, send_file, url_for
+from flask import Blueprint, current_app, render_template, Response, send_file, url_for
 from flask_restful import Api, Resource
 
 logger = logging.getLogger()

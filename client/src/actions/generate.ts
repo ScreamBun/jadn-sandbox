@@ -1,6 +1,7 @@
 // Actions for generate API
 import { createAction } from 'redux-api-middleware';
 import { ActionFailureResult, ActionRequestResult, ActionSuccessResult } from './interfaces';
+import { SchemaJADN } from '../components/generate/schema/interface';
 
 // API Base URL
 const baseAPI = '/api';
@@ -10,7 +11,7 @@ const baseAPI = '/api';
 export const SCHEMA_DEFINE = '@@generate/SCHEMA_DEFINE';
 export const SCHEMA_SUCCESS = '@@generate/SCHEMA_SUCCESS';
 export const SCHEMA_FAILURE = '@@generate/SCHEMA_FAILURE';
-export const setSchema = (schema: Record<string, any>) => createAction({
+export const setSchema = (schema: SchemaJADN) => createAction({
   endpoint: '',
   method: 'OPTIONS',
   types: [
@@ -24,7 +25,7 @@ export const setSchema = (schema: Record<string, any>) => createAction({
 export interface SetSchemaSuccessAction extends ActionSuccessResult {
   type: typeof SCHEMA_SUCCESS;
   payload: {
-    schema: Record<string, any>;
+    schema: SchemaJADN;
   };
 }
 
@@ -44,7 +45,7 @@ export const info = () => createAction({
 export interface InfoSuccessAction extends ActionSuccessResult {
   type: typeof INFO_SUCCESS;
   payload: {
-    schemas: Array<any>;
+    schemas: Array<string>;
   };
 }
 

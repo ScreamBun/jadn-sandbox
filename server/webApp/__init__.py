@@ -1,9 +1,7 @@
-from flask import current_app, Flask, render_template, request, send_file
-
-from werkzeug.routing import BaseConverter
-
 from .config import DefaultConfig
 from .validator import Validator
+from flask import Flask
+from werkzeug.routing import BaseConverter
 
 
 class RegexConverter(BaseConverter):

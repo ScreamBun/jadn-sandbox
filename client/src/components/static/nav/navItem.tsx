@@ -1,14 +1,16 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, MouseEvent } from 'react';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { DropdownItem, NavItem, NavLink } from 'reactstrap';
 
 // Interfaces
+type MouseEventFun = (e: MouseEvent<HTMLElement>) => void;
+
 interface NavElmProps {
-  active: string;
+  active?: string;
   href: string;
-  click?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  click?: MouseEventFun;
   dropdown?: boolean;
   external?: boolean;
   icon?: IconProp;
@@ -18,11 +20,12 @@ interface NavElmProps {
   text?: string;
 }
 
+
 const DefaultProps = {
   // active: '',
   // href: '#',
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  click: (_e: React.MouseEvent<HTMLElement, MouseEvent>) => {},
+  click: (_e: MouseEvent<HTMLElement>) => {},
   dropdown: false,
   external: false,
   icon: undefined,
@@ -37,12 +40,12 @@ const NavElm: FunctionComponent<NavElmProps> = (props) => {
   const {
     active, click, dropdown, external, href, icon, itemClasses, linkClasses, target, text
   } = props;
-  const classSet = new Set<string>(itemClasses.split(' '));
+  const classSet = new Set<string>((itemClasses || '').split(' '));
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const itemClick: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void = external ? _e => {} : click;
+  const itemClick: MouseEventFun = (external ? _e => {} : click) || (_e => {});
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const linkClick: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void = external ? _e => {} : e => { e.preventDefault(); };
+  const linkClick: MouseEventFun = external ? _e => {} : e => { e.preventDefault(); };
   const linkHref = (href || '').endsWith('/') ? href : `${href}/`;
   if (linkHref === active) {
     classSet.add('active');

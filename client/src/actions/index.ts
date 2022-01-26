@@ -19,8 +19,8 @@ export {
     // Interfaces
     Interface,
     // Actions
-    Convert,
-    Generate,
-    Validate,
-    Util
+    Convert as ConvertActions,
+    Generate as GenerateActions,
+    Validate as ValidateActions,
+    Util as UtilActions
 };

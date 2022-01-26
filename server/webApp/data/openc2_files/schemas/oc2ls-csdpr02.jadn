@@ -1,5 +1,5 @@
 {
- "meta": {
+ "info": {
   "module": "oasis-open.org/openc2/oc2ls/v1.0",
   "patch": "0-csdpr02",
   "title": "OpenC2 Language Objects",

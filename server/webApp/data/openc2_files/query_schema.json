@@ -1,5 +1,8 @@
-{ "action": "query",
-  "target": [{
-    "openc2": {"schema": ""}
-  }]
+{
+  "action": "query",
+  "target": {
+    "query": [
+      "schema"
+    ]
+  }
 }

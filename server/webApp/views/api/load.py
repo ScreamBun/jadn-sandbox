@@ -2,7 +2,7 @@ import json
 import logging
 import os
 
-from flask import current_app, send_file
+from flask import current_app
 from flask_restful import Resource
 
 logger = logging.getLogger()
@@ -19,6 +19,7 @@ class LoadFile(Resource):
         :return: file or 404
         """
         filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
+        print(f'Load: {filePath}', flush=True)
 
         if os.path.isfile(filePath):
             name, ext = os.path.splitext(filename)

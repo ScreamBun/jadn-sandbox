@@ -18,11 +18,11 @@ const DEPEND_DIR = path.join(COMPONENTS_DIR, 'dependencies');
 export default {
   devtool: 'inline-source-map',
   entry: {
-    main: path.join(ROOT_DIR, 'src', 'index.jsx'),
-    validator: path.join(COMPONENTS_DIR, 'validator', 'index.js'),
-    converter: path.join(COMPONENTS_DIR, 'converter', 'index.js'),
-    'command-generator': path.join(COMPONENTS_DIR, 'generate', 'command', 'index.js'),
-    'schema-generator': path.join(COMPONENTS_DIR, 'generate', 'schema', 'index.js')
+    main: path.join(ROOT_DIR, 'src', 'index'),
+    validator: path.join(COMPONENTS_DIR, 'validator', 'index'),
+    converter: path.join(COMPONENTS_DIR, 'converter', 'index'),
+    'message-generator': path.join(COMPONENTS_DIR, 'generate', 'message', 'index'),
+    'schema-generator': path.join(COMPONENTS_DIR, 'generate', 'schema', 'index')
   },
   output: {
     path: BUILD_DIR,

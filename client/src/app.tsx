@@ -11,15 +11,14 @@ import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { Error, Nav } from './components/static';
 
 // Pages
-import CommandGenerator from './components/generate/command';
+import { MessageGenerator, SchemaGenerator } from './components/generate';
 import Converter from './components/converter';
 import Docs from './components/docs';
-import SchemaGenerator from './components/generate/schema';
 import Validator from './components/validator';
 
 // Reducers & Actions
 import { RootState } from './reducers';
-import { Util } from './actions';
+import { UtilActions } from './actions';
 
 // Interfaces
 interface AppProps {
@@ -33,7 +32,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  info: () => dispatch(Util.info())
+  info: () => dispatch(UtilActions.info())
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -83,7 +82,7 @@ class App extends Component<AppConnectedProps> {
             <Route exact path="/convert" component={ Converter } />
             <Route exact path="/docs" component={ Docs } />
             <Route exact path="/generate" render={ props => <Redirect to="/generate/message" { ...props } /> } />
-            <Route path="/generate/message" component={ CommandGenerator } />
+            <Route path="/generate/message" component={ MessageGenerator } />
             <Route path="/generate/schema" component={ SchemaGenerator } />
             {/* Error should always be last route */}
             <Route component={ Error } />

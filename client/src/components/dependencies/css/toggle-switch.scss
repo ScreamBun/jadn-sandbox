@@ -1,0 +1,115 @@
+// ToggleSwitch Styles
+$root: '.wrg-toggle';
+$sizes: ('md': 1.5, 'lg': 2, 'xl': 3);
+$base-height: 25px;
+$base-width: $base-height*2;
+$base-icon: 15px;
+
+#{$root} {
+  touch-action: pan-x;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  border-radius: $base-height;
+  border: 0;
+  padding: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent;
+  &--checked {
+    #{$root}-check{
+      opacity: 1;
+    }
+    #{$root}-uncheck {
+      opacity: 0;
+    }
+    #{$root}-circle {
+      left: $base-height + 2;
+    }
+  }
+  &-container {
+    height: $base-height;
+    width: $base-width;
+    padding: 0;
+    transition: all .2s ease;
+  }
+  &-check, &-uncheck {
+    position: absolute;
+    width: $base-icon;
+    height: $base-icon;
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    line-height: 0;
+    opacity: 0;
+    transition: opacity .25s ease;
+    :first-child {
+      align-items: center;
+      display: flex;
+      height: $base-icon;
+      justify-content: center;
+      position: relative;
+      width: $base-icon;
+    }
+  }
+  &-check {
+    left: 8px;
+  }
+  &-uncheck {
+    opacity: 1;
+    right: 8px;
+  }
+  &-circle {
+    transition: all .5s cubic-bezier(.23,1,.32,1) 0ms;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: $base-height - 2;
+    height: $base-height - 2;
+    border: 1px solid #4d4d4d;
+    border-radius: 50%;
+    background-color: #fafafa;
+    box-sizing: border-box;
+    transition: all .25s ease;
+  }
+  &-input {
+    display: none;
+  }
+}
+
+
+// TODO: Finish variable sizes
+// @each $name, $factor in $sizes {
+//   $fac-height: $base-height * $factor;
+//   $fac-width: $base-width * $factor;
+//   $fac-icon: $base-icon * $factor;
+
+//   #{$root}-#{$name} {
+//     border-radius: $fac-height;
+//     #{$root}--checked {
+//       #{$root}-circle {
+//         left: $fac-height + 2;
+//       }
+//     }
+//     #{$root}-container {
+//       height: $fac-height;
+//       width: $fac-width;
+//     }
+//     #{$root}-check, #{$root}-uncheck {
+//       width: $fac-icon;
+//       height: $fac-icon;
+//       :first-child {
+//         height: $fac-icon;
+//         width: $fac-icon;
+//       }
+//     }
+//     #{$root}-circle {
+//       width: $fac-height - 2;
+//       height: $fac-height - 2;
+//     }
+//   }
+// }

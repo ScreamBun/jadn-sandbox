@@ -2,7 +2,7 @@ import logging
 import os
 import re
 
-from flask import current_app, jsonify, render_template, Response
+from flask import current_app, jsonify
 from flask_restful import Resource
 
 logger = logging.getLogger(__name__)

@@ -2,13 +2,19 @@ import * as convert from '../actions/convert';
 
 export interface ConvertState {
   conversions: Record<string, any>;
-  converted: Record<string, any>;
+  converted: {
+    convert: string;
+    fmt: string;
+  }
   schemas: Array<any>;
 }
 
 const initialState: ConvertState = {
   conversions: {},
-  converted: {},
+  converted: {
+    convert: '',
+    fmt: ''
+  },
   schemas: []
 };
 

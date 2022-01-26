@@ -20,10 +20,11 @@ import configureStore, { history } from './store';
 const store = configureStore(history);
 
 // Them Options
+const themeRoot = `${window.location.origin}/assets`;
 const validThemes = ['cyborg', 'darkly', 'sandstone', 'slate'];
 
 const Root = () => (
-  <ThemeSwitcher storeThemeKey="theme" defaultTheme="sandstone" themeOptions={ validThemes }>
+  <ThemeSwitcher storeThemeKey="theme" defaultTheme="sandstone" themeRoot={ themeRoot } themeOptions={ validThemes }>
     <Provider store={ store } >
       <HelmetProvider>
         <App history={ history } />

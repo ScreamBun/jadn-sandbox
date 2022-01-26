@@ -1,7 +1,7 @@
 import logging
 
-from flask import Blueprint, current_app, jsonify
-from flask_restful import Api, Resource, fields
+from flask import Blueprint, jsonify
+from flask_restful import Api, Resource
 
 from .convert import add_resources as add_convert
 from .create import add_resources as add_create

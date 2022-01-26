@@ -2,7 +2,7 @@
    "id": "017b53ed-0a59-4026-b071-092083315645",
    "action": "query",
    "target": {
-      "openc2": [
+      "features": [
          "versions"
       ]
    },

@@ -1,5 +1,5 @@
 {
-  "meta": {
+  "info": {
     "module": "oasis-open.org/openc2/v1.0/openc2-lang",
     "patch": "wd08",
     "title": "OpenC2 Language Objects",

@@ -51,8 +51,8 @@ httpd
 internals
 
 # Assorted
+.eslintcache
 .eslintrc.js
 babel.config.js
-analyzer.stats.html
-analyzer.stats.json
+analyzer.stats.*
 src/registerServiceWorker.js

@@ -18,7 +18,9 @@ export default (his: History = history) => {
   const reducer = persistReducer(
     {
       key: 'jadn_lint',
-      storage
+      storage,
+      whitelist: [],
+      blacklist: ['router']
     },
     createRootReducer(his)
   );

@@ -209,9 +209,7 @@ module.exports = {
     after: 'always',
     before: 'always'
   }],
-  'lines-between-class-members': [2, 'always', {
-    exceptAfterSingleLine: true
-  }],
+  'lines-between-class-members': 0,
   'max-classes-per-file': [2, 1],
   'max-depth': [0, 4],
   'max-len': [1, 128, 2, {
@@ -603,7 +601,8 @@ module.exports = {
     args: 'after-used',
     argsIgnorePattern: '^_[^_]',
     ignoreRestSiblings: true,
-    vars: 'all'
+    vars: 'all',
+    varsIgnorePattern: '^_[^_]'
   }],
   'no-use-before-define': [0, {
     classes: true,

@@ -4,7 +4,7 @@ import logging
 import os
 import re
 
-from flask import Blueprint, current_app, jsonify, redirect, render_template, Response, request
+from flask import Blueprint, current_app, jsonify, redirect
 from flask_restful import Api, Resource, reqparse
 
 logger = logging.getLogger()

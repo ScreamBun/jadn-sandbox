@@ -1,4 +1,3 @@
-import React from 'react';
 import JSONInput from 'react-json-editor';
 import { format } from 'react-json-editor/dist/locale';
 import defaultLocale from 'react-json-editor/dist/locale/en';
@@ -38,7 +37,7 @@ class JADNInput extends JSONInput {
     const setChildToken = (child: ChildNode): void => {
       switch (child.nodeName) {
         case 'SPAN':
-          const dataset = (child as HTMLDivElement).dataset;
+          const { dataset } = (child as HTMLDivElement);
           buffer.tokens_unknown.push({
             string: child.textContent || '',
             type: dataset.type || 'unknown'  // child.attributes.type.textContent
@@ -682,7 +681,7 @@ class JADNInput extends JSONInput {
           case 'number':
           case 'primitive':
           case 'error':
-            //buffer.markup += Tokens.followsSymbol(buffer.tokens_merge, i, [',', '[']) ? newLineBreakAndIndent() : '';
+            // buffer.markup += Tokens.followsSymbol(buffer.tokens_merge, i, [',', '[']) ? newLineBreakAndIndent() : '';
             buffer.markup += this.newSpan(i, token, depth);
             break;
           case 'key':
@@ -699,9 +698,8 @@ class JADNInput extends JSONInput {
                 break;
               case '}':
                 depth = depth > 0 ? depth - 1 : depth;
-                const _adjustment = i > 0 ? Tokens.followsSymbol(buffer.tokens_merge, i, ['[', '{'])  ? '' : newLineBreakAndIndent(islastToken) : '';
-                
-                buffer.markup += `${_adjustment}${this.newSpan(i, token, depth)}`;
+                const adjust = i > 0 ? (Tokens.followsSymbol(buffer.tokens_merge, i, ['[', '{']) ? '' : newLineBreakAndIndent(islastToken)) : '';
+                buffer.markup += `${adjust}${this.newSpan(i, token, depth)}`;
                 break;
               case '[':
                 if (Tokens.followsSymbol(buffer.tokens_merge, i, ['['])) {
@@ -711,25 +709,23 @@ class JADNInput extends JSONInput {
                 buffer.markup += this.newSpan(i, token, depth);
                 break;
               case ']':
-                let ind_bool = false;
-                
+                let indBool = false;
                 if (Tokens.followsSymbol(buffer.tokens_merge, i, [']'])) {
                   if (Tokens.followedBySymbol(buffer.tokens_merge, i, [']'])) {
                     if (Tokens.followedBySymbol(buffer.tokens_merge, i+1, [','])) {
                       depth = depth >= 1 ? depth - 1 : depth;
-                      ind_bool = true;
-                      i++;
+                      indBool = true;
+                      i += 1;
                     } else if (Tokens.followedBySymbol(buffer.tokens_merge, i+1, [']'])) {
                       depth = depth >= 1 ? depth - 1 : depth;
-                      ind_bool = true;
+                      indBool = true;
                     }
                   } else if (Tokens.followedBySymbol(buffer.tokens_merge, i, ['}'])) {
                     depth = depth >= 1 ? depth - 1 : depth;
-                    ind_bool = true;
+                    indBool = true;
                   }
                 }
-                
-                buffer.markup += `${ind_bool ? newLineBreakAndIndent() : ''}${this.newSpan(i, token, depth)}`;
+                buffer.markup += `${indBool ? newLineBreakAndIndent() : ''}${this.newSpan(i, token, depth)}`;
                 break;
               case ',':
                 buffer.markup += this.newSpan(i, token, depth);
@@ -742,6 +738,7 @@ class JADNInput extends JSONInput {
                 break;
             }
             break;
+          // no default
         }
       });
       buffer.markup += '</div>';
@@ -828,7 +825,7 @@ class JADNInput extends JSONInput {
         }
       }
     });
-    
+
     const buffer2: Placeholder.SecondaryBuffer = {
       brackets: [],
       isValue: false,
@@ -933,14 +930,14 @@ class JADNInput extends JSONInput {
       lines += num > 0 ? 1 : 0;
       return `${(num > 0 || byPass) ? '</div><div>' : ''}${Array(num * 2).fill('&nbsp;').join('')}`;
     };
-    
+
     // Format by Token
-    let depth = 0
+    let depth = 0;
     buffer2.tokens.forEach((token, i) => {
       const { string, type } = token;
-			const islastToken = i === lastIndex
+			const islastToken = i === lastIndex;
 
-      switch(type) {
+      switch (type) {
         case 'string':
         case 'number':
           indentation += string;
@@ -951,11 +948,11 @@ class JADNInput extends JSONInput {
           markup += `${indentII(depth)}${this.newSpan(i, token, depth)}`;
           break;
         case 'symbol':
-          switch(token.string) {
+          switch (token.string) {
             case '{':
-              indentation += string
-              markup += this.newSpan(i, token, depth)
-              depth++;
+              indentation += string;
+              markup += this.newSpan(i, token, depth);
+              depth += 1;
               if (Tokens.followedBySymbol(buffer2.tokens, i, ['}'])) {
                 indentation += indent(depth);
                 markup += indentII(depth);
@@ -963,15 +960,14 @@ class JADNInput extends JSONInput {
               break;
             case '}':
               depth = depth >= 1 ? depth - 1 : depth;
-              const _adjustment = i > 0 ? Tokens.followsSymbol(buffer2.tokens, i, ['[', '{']) ? '' : indent(depth, islastToken) : '';
-              const _adjustmentII = i > 0 ? Tokens.followsSymbol(buffer2.tokens, i, ['[', '{']) ? '' : indentII(depth, islastToken) : '';
-              
-              indentation += `${_adjustment}${string}`;
-              markup += `${_adjustmentII}${this.newSpan(i, token, depth)}`;
+              const adjust = i > 0 ? (Tokens.followsSymbol(buffer2.tokens, i, ['[', '{']) ? '' : indent(depth, islastToken)) : '';
+              const adjustII = i > 0 ? (Tokens.followsSymbol(buffer2.tokens, i, ['[', '{']) ? '' : indentII(depth, islastToken)) : '';
+              indentation += `${adjust}${string}`;
+              markup += `${adjustII}${this.newSpan(i, token, depth)}`;
               break;
             case '[':
               if (Tokens.followsSymbol(buffer2.tokens, i, ['['])) {
-                depth++;
+                depth += 1;
                 indentation += indent(depth);
                 markup += indentII(depth);
               }
@@ -979,27 +975,27 @@ class JADNInput extends JSONInput {
               markup += this.newSpan(i, token, depth);
               break;
             case ']':
-              let ind_bool = false;
+              let indBool = false;
               if (Tokens.followsSymbol(buffer2.tokens, i, [']'])) {
                 if (Tokens.followedBySymbol(buffer2.tokens, i, [']'])) {
                   if (Tokens.followedBySymbol(buffer2.tokens, i+1, [','])) {
                     depth = depth >= 1 ? depth - 1 : depth;
-                    ind_bool = true;
-                    i++;
+                    indBool = true;
+                    i += 1;
                   } else if (Tokens.followedBySymbol(buffer2.tokens, i+1, [']'])) {
                     depth = depth >= 1 ? depth - 1 : depth;
-                    ind_bool = true;
+                    indBool = true;
                   }
                 } else if (Tokens.followedBySymbol(buffer2.tokens, i, ['}'])) {
                   depth = depth >= 1 ? depth - 1 : depth;
-                  ind_bool = true;
+                  indBool = true;
                 }
               }
-              indentation += `${ind_bool ? indent(depth) : ''}${string}`;
-              markup += `${ind_bool ? indentII(depth) : ''}${this.newSpan(i, token, depth)}`;
+              indentation += `${indBool ? indent(depth) : ''}${string}`;
+              markup += `${indBool ? indentII(depth) : ''}${this.newSpan(i, token, depth)}`;
               break;
             case ':':
-              indentation += token.string + ' ';
+              indentation += `${token.string} `;
               markup += `${this.newSpan(i, token, depth)}&nbsp;`;
               break;
             case ',':
@@ -1016,6 +1012,7 @@ class JADNInput extends JSONInput {
               break;
           }
           break;
+        // no default
       }
     });
     lines += 2;
@@ -1029,7 +1026,7 @@ class JADNInput extends JSONInput {
       indented: indentation,
       json: JSON.stringify(obj),
       jsObject: obj,
-      markup: markup,
+      markup,
       lines
     };
   }
