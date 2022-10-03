@@ -2,7 +2,7 @@
 
 ## Running Server
 ### Config/General
-1. Install Python2.7 and pip
+1. Install Python3.10 and pip
 	- Install varies based on the system...
 	
 2. Install OpenC2 JADN whl using local install
