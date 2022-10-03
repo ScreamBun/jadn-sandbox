@@ -17,7 +17,7 @@
     pip install -r requirements.txt
     ```
  
-## Flask Server (developement)
+## Flask Server (development)
 - Linux
 
     ```bash
@@ -31,11 +31,11 @@
 	```
 	
 #### Notes
-- Recomended use of virtualenv, if not currently, while on a delvelopement system
+- Recommended use of virtualenv, if not currently, while on a development system
 - Not validated for use with python3
 
 		
-## Google App Engine (developement & production)
+## Google App Engine (development & production)
 ### Config/Install
 1. Download and install Python 2.7 on system on in virtual env
 	- Note: MUST USE PYTHON 2.7
