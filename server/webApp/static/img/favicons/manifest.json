@@ -1,13 +1,13 @@
 {
   "name": "JADN Lint",
   "short_name": "JADN Lint",
-  "description": null,
   "dir": "auto",
   "lang": "en-US",
   "display": "standalone",
   "orientation": "any",
   "start_url": "/?homescreen=1",
   "background_color": "#ffffff",
+  "theme_color": "#333",
   "icons": [
     {
       "src": "android-chrome-36x36.png",

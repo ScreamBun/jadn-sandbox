@@ -1,4 +1,4 @@
-FROM harbor.olympus.mtn/screamingbunny/docker/alpine-python3
+FROM screambunn/alpine-python3
 
 LABEL name="JADN Lint" \
 vendor="OpenC2" \
