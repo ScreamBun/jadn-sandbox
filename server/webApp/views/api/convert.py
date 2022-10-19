@@ -6,8 +6,10 @@ import re
 
 from flask import current_app, jsonify, Response
 from flask_restful import Resource, reqparse
-from jadnschema import CommentLevels, jadn
-from jadnschema.convert import cddl_dumps, html_dumps, jadn_dumps, md_dumps, proto_dumps, relax_dumps, thrift_dumps
+# from jadnschema import CommentLevels
+from jadnschema import jadn
+# from jadnschema.convert import cddl_dumps, proto_dumps, thrift_dumps
+from jadnschema.convert import html_dumps, jadn_dumps, md_dumps, relax_dumps
 
 from xhtml2pdf import pisa
 
@@ -23,7 +25,8 @@ parser.add_argument("schema", type=str)
 parser.add_argument("schema-list", type=str)
 parser.add_argument("convert", type=str)
 parser.add_argument("convert-to", type=str)
-parser.add_argument("comments", type=str, default=CommentLevels.ALL, choices=CommentLevels)
+parser.add_argument("comments", type=str, default=any, choices=any)
+# parser.add_argument("comments", type=str, default=CommentLevels.ALL, choices=CommentLevels)
 
 
 class Convert(Resource):
@@ -31,14 +34,14 @@ class Convert(Resource):
     Endpoint for api/convert
     """
     conversions = {
-        "cddl": cddl_dumps,
+        "cddl": any,
         "html": html_dumps,
         "jadn": lambda x: jadn_dumps(x, indent=2),
         # "json": json_dumps,
         "md": md_dumps,
-        "proto3": proto_dumps,
+        "proto3": any,
         "rng": relax_dumps,
-        "thrift": thrift_dumps,
+        "thrift": any,
     }
 
     def get(self):
