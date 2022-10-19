@@ -1,10 +1,10 @@
-# JADN Lint/WebValidate
-#### See readme in each folder for specific details
-
 <a href="https://openc2.org/" target="_blank">![OpenC2](https://github.com/ScreamBun/SB_Utils/blob/master/assets/images/openc2.png?raw=true)</a>
+# JADN Lint
 
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/release/python-3100/)
 [![Open2C Lang Spec WD 17](https://img.shields.io/badge/Open2C%20Lang%20Spec-WD17-brightgreen)](https://github.com/dlemire60/openc2-oc2ls)
+
+#### See readme in each folder for specific details
 
 ## Client
 - React single page application
