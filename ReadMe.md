@@ -6,6 +6,20 @@
 
 #### See readme in each folder for specific details
 
+## Quick Start
+
+1. Server Side
+   1. Under WebValidator/server run: 
+      1. pip install -r requirements.txt
+      2. ./start.sh
+2. Client Side
+   1. Under WebValidator/client run: 
+      1. yarn install
+      2. yarn run start
+3. In your browser go to: http://localhost:3000/
+
+<i>Note: Docker run coming soon</i>
+
 ## Client
 - React single page application
 
