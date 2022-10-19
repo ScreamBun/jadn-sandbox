@@ -18,7 +18,9 @@
       2. yarn run start
 3. In your browser go to: http://localhost:3000/
 
-<i>Note: Docker run coming soon</i>
+<i>Notes: </i>
+* The jadnschema*.whl was generated from the [Schema/jadnchema](tbd) git repo. 
+* Docker run coming soon
 
 ## Client
 - React single page application
