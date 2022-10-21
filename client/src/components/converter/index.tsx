@@ -8,16 +8,14 @@ import { toast } from 'react-toastify';
 import PopoutWindow from 'react-popout';
 import FileSaver from 'file-saver';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCheck, faFileDownload, faFilePdf, faTimes, faWindowMaximize
-} from '@fortawesome/free-solid-svg-icons';
+import { faFileDownload, faFilePdf, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import { Button, Form, Tooltip } from 'reactstrap';
 import HTMLParser from 'html-react-parser';
 import locale from 'react-json-editor/dist/locale/en';
 
 import { SchemaJADN } from '../generate/schema/interface';
 import {
-  ToggleSwitch, escaped2cbor, format, hexify, loadURL, minify, validURL
+  escaped2cbor, format, hexify, loadURL, minify, validURL
 } from '../utils';
 import JSONInput from '../utils/jadn-editor';
 import { ConvertActions, UtilActions, ValidateActions } from '../../actions';
@@ -650,27 +648,6 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
                   <option value="empty">Convert To...</option>
                   { convertOpts }
                 </select>
-              </div>
-              <div className="form-check">
-                <label className="form-check-label" htmlFor="comments">Comments</label>
-                <ToggleSwitch
-                  className="form-check-input"
-                  icons={{
-                    checked: <FontAwesomeIcon icon={ faCheck } />,
-                    unchecked: <FontAwesomeIcon icon={ faTimes } />
-                  }}
-                  defaultChecked={ schema.comments }
-                  onToggle={
-                    val => {
-                      this.setState(prevState => ({
-                        schema: {
-                          ...prevState.schema,
-                          comments: val
-                        }
-                      }));
-                    }
-                  }
-                />
               </div>
             </div>
           </div>

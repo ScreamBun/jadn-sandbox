@@ -24,6 +24,19 @@ yarn-error.log*
 # Override exclude
 !/src/components/**/lib/
 
+# Yarn
+.pnp.*
+.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Yarn Custom cache
+!.yarn/cache/react-bootswatch-theme-switcher-*
+!.yarn/cache/react-json-generator-*
+
 ### Custom Ignore
 build/*
 analyzer.stats.*

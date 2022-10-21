@@ -2,7 +2,8 @@
 
 # GUI Build
 cd client
-yarn && yarn build
+npm install
+npm run build
 
 # Sync Built GUI Files
 cd ../
@@ -11,5 +12,6 @@ cp ./server/webApp/static/index.html ./server/webApp/templates/index.html
 
 # Server Build
 cd ./server
-clear
-source ./start.sh
+docker build -t jadn_webapp -f Dockerfile .
+
+docker run --name jadn_webapp -p 8080:8080 jadn_webapp

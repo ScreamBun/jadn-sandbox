@@ -226,3 +226,4 @@ pip-selfcheck.json
 .idea/*
 *.sqlite
 *.sqlite3
+server/webApp/static/*

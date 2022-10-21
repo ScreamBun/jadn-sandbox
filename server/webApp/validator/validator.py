@@ -5,7 +5,7 @@ import re
 from typing import Tuple, Union
 from jadnschema import jadn
 from jadnschema.schema import Schema
-# from jadnschema.convert.message import Message, MessageFormats
+from jadnschema.convert.message import Message, SerialFormats
 
 
 class Validator:
@@ -44,34 +44,34 @@ class Validator:
         :return: valid/invalid bool, message
         """
         v, s = self.validateSchema(schema, False)
-        #
-        # if not v:
-        #     return False, s, "", msg
-        #
-        # if fmt in MessageFormats.values():
-        #     try:
-        #         message = Message(msg, fmt)
-        #     except Exception as e:
-        #         return False, f"Message Invalid - {e}", "", msg
-        # else:
-        #     return False, random.choice(self.invalidMsgs), "", msg
-        #
-        # if isinstance(s, str):
-        #     return False, "Schema Invalid - The schema failed to load", "", msg
-        #
-        # records = list(s.types.keys())
-        #
-        # if decode in records:
-        #     val = s.validate_as(decode, message.dict())
-        #     if len(val) == 0:
-        #         msgOrig = message.dumps(fmt)
-        #         msgOrig = json.dumps(msgOrig) if type(msgOrig) is dict else msgOrig
-        #         return True, random.choice(self.validMsgs), json.dumps(message.dict()), msgOrig
-        #
-        #     else:
-        #         err = str(val[0])
-        #         if re.match(r".*?is not <.*?>$", err):
-        #             err = f"{re.sub(r':.*?$', '', err)} is improperly formatted"
-        #         return False, err, json.dumps(message.dict()), message.dumps(fmt)
-        # else:
-        #     return False, "Decode Invalid - The decode message type was not found in the schema", "", msg
+
+        if not v:
+            return False, s, "", msg
+
+        if fmt in SerialFormats:
+            try:
+                message = Message(content_type=SerialFormats(fmt), content=msg)
+            except Exception as e:
+                return False, f"Message Invalid - {e}", "", msg
+        else:
+            return False, random.choice(self.invalidMsgs), "", msg
+
+        if isinstance(s, str):
+            return False, "Schema Invalid - The schema failed to load", "", msg
+
+        records = list(s.types.keys())
+
+        if decode in records:
+            try:
+                val = s.validate_as(decode, message.oc2_message())
+                msgOrig = message.dumps(fmt)
+                msgOrig = json.dumps(msgOrig) if type(msgOrig) is dict else msgOrig
+                return True, random.choice(self.validMsgs), json.dumps(message.dict()), msgOrig
+
+            except Exception as err:
+                err = str(val[0])
+                if re.match(r".*?is not <.*?>$", err):
+                    err = f"{re.sub(r':.*?$', '', err)} is improperly formatted"
+                return False, err, json.dumps(message.oc2_body), message.serialize()
+        else:
+            return False, "Decode Invalid - The decode message type was not found in the schema", "", msg

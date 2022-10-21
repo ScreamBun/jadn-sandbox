@@ -6,8 +6,8 @@ import re
 
 from flask import current_app, jsonify, Response
 from flask_restful import Resource, reqparse
-# from jadnschema import CommentLevels
 from jadnschema import jadn
+from jadnschema.convert import CommentLevels, SchemaFormats, dumps
 # from jadnschema.convert import cddl_dumps, proto_dumps, thrift_dumps
 from jadnschema.convert import html_dumps, jadn_dumps, md_dumps, relax_dumps
 
@@ -25,8 +25,8 @@ parser.add_argument("schema", type=str)
 parser.add_argument("schema-list", type=str)
 parser.add_argument("convert", type=str)
 parser.add_argument("convert-to", type=str)
-parser.add_argument("comments", type=str, default=any, choices=any)
-# parser.add_argument("comments", type=str, default=CommentLevels.ALL, choices=CommentLevels)
+# parser.add_argument("comments", type=str, default=any, choices=any)
+parser.add_argument("comments", type=str, default=CommentLevels.ALL, choices=CommentLevels)
 
 
 class Convert(Resource):
@@ -56,7 +56,6 @@ class Convert(Resource):
 
     def post(self):
         args = parser.parse_args()
-        err = []
         conv = "Their are some issues...."
 
         try:
@@ -64,27 +63,26 @@ class Convert(Resource):
         except (TypeError, ValueError) as e:
             schema = args["schema"]
 
-        val = current_app.validator.validateSchema(schema)
+        val, _ = current_app.validator.validateSchema(schema)
 
-        if val[0]:  # Valid Schema
+        if val:  # Valid Schema
             conv = "Valid Base Schema"
-            conv_fun = self.conversions.get(args["convert-to"])
-
-            if conv_fun is None:
+            try:
+                conv_fmt = SchemaFormats(args["convert-to"])
+            except Exception:
                 conv = "Invalid Conversion Type"
-
             else:
-                kwargs = {}
+                kwargs = {
+                    "fmt": conv_fmt
+                }
                 if args["convert-to"] not in ["html", "jadn", "md"]:
                     kwargs["comm"] = args.comments
-
                 elif args["convert-to"] == "html":
                     kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
 
-                conv = conv_fun(jadn.loads(schema), **kwargs)
+                conv = dumps(jadn.loads(schema), **kwargs)
 
         else:  # Invalid Schema
-            err.append(val[1])
             conv = "Fix the base schema errors before converting..."
 
         opts = {

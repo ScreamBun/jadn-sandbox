@@ -2,7 +2,7 @@ import logging
 import os
 import re
 
-from flask import Blueprint, current_app, render_template, Response, send_file, url_for
+from flask import Blueprint, Response, current_app, render_template, request, send_file, url_for
 from flask_restful import Api, Resource
 
 logger = logging.getLogger()
@@ -59,7 +59,8 @@ class StaticFiles(Resource):
     """
     endpoint for /(js|css|img|assets)/*
     """
-    def get(self, filetype, filename):
+    def get(self, filename):
+        filetype = re.match(r"/(js|css|img|assets)/.*", request.path).groups()[0]
         filePath = os.path.join(current_app.config.get("STATIC_FOLDER"), filetype, filename)
 
         if os.path.isfile(filePath):
@@ -96,5 +97,5 @@ class CatchAll(Resource):
 # Register resources
 # api.add_resource(Root, "/")
 api.add_resource(Endpoints, "/endpoints")
-api.add_resource(StaticFiles, "/<regex('(js|css|img|assets)'):filetype>/<path:filename>")
+api.add_resource(StaticFiles, *[f"/{type_}/<path:filename>" for type_ in ("js", "css", "img", "assets")])
 api.add_resource(Root, "/", "/<path:path>")
