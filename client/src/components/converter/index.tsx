@@ -14,9 +14,7 @@ import HTMLParser from 'html-react-parser';
 import locale from 'react-json-editor/dist/locale/en';
 
 import { SchemaJADN } from '../generate/schema/interface';
-import {
-  escaped2cbor, format, hexify, loadURL, minify, validURL
-} from '../utils';
+import { escaped2cbor, hexify, loadURL, validURL } from '../utils';
 import JSONInput from '../utils/jadn-editor';
 import { ConvertActions, UtilActions, ValidateActions } from '../../actions';
 import { RootState } from '../../reducers';
@@ -56,29 +54,24 @@ interface ConverterState {
   };
 }
 
-type StateTypes = 'message'|'message-json'|'schema'
 type MimeType = 'cddl'|'html'|'jadn'|'json'|'md'|'proto3'|'rng'|'thrift';
 
 // Redux Connector
-function mapStateToProps(state: RootState) {
-  return {
-    schemas: state.Convert.schemas || [],
-    loadedSchemas: state.Util.loaded.schemas || [],
-    validSchema: state.Validate.valid.schema || {},
-    conversions: state.Convert.conversions || {},
-    convertedSchema: state.Convert.converted || {},
-    siteTitle: state.Util.site_title
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  schemas: state.Convert.schemas || [],
+  loadedSchemas: state.Util.loaded.schemas || [],
+  validSchema: state.Validate.valid.schema || {},
+  conversions: state.Convert.conversions || {},
+  convertedSchema: state.Convert.converted || {},
+  siteTitle: state.Util.site_title
+});
 
-function mapDispatchToProps(dispatch: Dispatch) {
-  return {
-    info: () => dispatch(ConvertActions.info()),
-    convertSchema: (s: Record<string, any>, t: string, c: boolean) => dispatch(ConvertActions.convertSchema(s, t, c)),
-    loadFile: (t: string, f: string) => dispatch(UtilActions.load(t, f)),
-    validateSchema: (s: Record<string, any>) => dispatch(ValidateActions.validateSchema(s))
-  };
-}
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  info: () => dispatch(ConvertActions.info()),
+  convertSchema: (s: Record<string, any>, t: string, c: boolean) => dispatch(ConvertActions.convertSchema(s, t, c)),
+  loadFile: (t: string, f: string) => dispatch(UtilActions.load(t, f)),
+  validateSchema: (s: Record<string, any>) => dispatch(ValidateActions.validateSchema(s))
+});
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;
@@ -89,7 +82,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
   meta: {
     title: string;
     canonical: string;
-  }
+  };
 
   schemaHeight = '40em';
   downloadMime: Record<MimeType, string> = {
@@ -101,7 +94,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
     proto3: 'text/x-c',
     rng: 'application/xml',
     thrift: 'text/plain'
-  }
+  };
 
   constructor(props: ConverterConnectedProps) {
     super(props);
@@ -181,7 +174,8 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
       } else {
         toast(<p>{ validSchema.valid_msg }</p>, {type: toast.TYPE[validSchema.valid_bool ? 'INFO' : 'WARNING']});
       }
-    });
+      return '';
+    }).catch(_err => {});
 
     return false;
   }
@@ -230,7 +224,8 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
                 [type]: loaded[selected]
               }
             }));
-          });
+            return '';
+          }).catch(_err => {});
         } else {
           this.setState(prevState => ({
             ...prevState,
@@ -288,51 +283,6 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
     fileReader.readAsDataURL(file);
   }
 
-  format(t: StateTypes, i = 2) {
-    const { message } = this.state;
-    if (t === 'message' || t === 'message-json') {
-      const fmt = t === 'message' ? message.format : 'json';
-      let msg = t === 'message' ? message.message : JSON.stringify(message.json);
-      msg = format(msg, fmt, i);
-
-      if (msg.startsWith('Error')) {
-        toast(<p>{ `${t.charAt(0).toUpperCase() + t.slice(1)} ${msg}` }</p>, {type: toast.TYPE.WARNING});
-        return;
-      }
-
-      this.setState(prevState => ({ message: { ...prevState.message, [t === 'message' ? 'message' : 'json']: msg }}));
-    } else if (t === 'schema') {
-      try {
-        this.setState(prevState => ({ schema: {...prevState.schema, schema: prevState.schema.schema }}));
-      } catch (e) {
-        const msg = `${t.charAt(0).toUpperCase()}${t.slice(1)} Invalid, cannot format: ${(e as Error).message}`;
-        toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING});
-      }
-    }
-  }
-
-  minify(t: StateTypes) {
-    const { message } = this.state;
-    if (t === 'message' || t === 'message-json') {
-      const fmt = t === 'message' ? message.format : 'json';
-      let msg = t === 'message' ? message.message : JSON.stringify(message.json);
-      msg = minify(msg, fmt);
-
-      if (msg.startsWith('Error')) {
-        toast(<p>{ `${t.charAt(0).toUpperCase() + t.slice(1)} {msg}` }</p>, {type: toast.TYPE.WARNING});
-        return;
-      }
-      this.setState(prevState => ({ message: {...prevState.message, [t === 'message' ? 'message' : 'json']: msg }}));
-    } else if (t === 'schema') {
-      try {
-        this.setState(prevState => ({ schema: {...prevState.schema, schema: prevState.schema.schema }}));
-      } catch (e) {
-        const msg = `${t.charAt(0).toUpperCase() + t.slice(1)} Invalid, cannot format: ${(e as Error).message}`;
-        toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING});
-      }
-    }
-  }
-
   verifySchema() {
     const { validSchema, validateSchema } = this.props;
     const { schema } = this.state;
@@ -348,8 +298,8 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
 
     validateSchema(schemaObj).then(() => {
       const { valid_bool, valid_msg } = validSchema;
-      toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
-    });
+      return toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
+    }).catch(_err => {});
   }
 
   loadURL(t: 'message'|'schema') {
@@ -379,6 +329,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
           format: fileExt === 'jadn' ? 'json' : d.fileExt
         }
       }));
+      return '';
     }).catch(_err => {
       toast(<p>Invalid url, please check what you typed</p>, {type: toast.TYPE.WARNING});
     });
@@ -426,6 +377,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
     const { schema } = this.state;
     e.preventDefault();
 
+    // eslint-disable-next-line compat/compat
     fetch('/api/convert/pdf', {
       method: 'post',
       headers: {
@@ -437,7 +389,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
     }).then(
       rsp => rsp.blob()
     ).then(data => {
-      FileSaver.saveAs(data, 'schema.pdf');
+      return FileSaver.saveAs(data, 'schema.pdf');
     }).catch(err => {
       console.log(err);
     });
@@ -591,12 +543,12 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
   converted() {
     const { conversions, convertedSchema } = this.props;
     const {
-      convert, convertDownloadTooltip, pdfDownloadTooltip, schema, viewSchemaTooltip
+      convert, convertDownloadTooltip, pdfDownloadTooltip, viewSchemaTooltip
     } = this.state;
     const download = this.downloadConfig();
 
     // <option value="{{ options.convs[conv] }}" {% if request.form['convert-to'] === options.convs[conv] %}selected=""{% endif %}>{{ conv }}</option>
-    const convertOpts =  Object.entries(conversions).map(([d, c], i) => <option key={ i } value={ c } >{ d }</option>);
+    const convertOpts =  Object.entries(conversions).map(([d, c]) => <option key={ d } value={ c } >{ d }</option>);
 
     return (
       <fieldset className="col-6 p-0 float-left">

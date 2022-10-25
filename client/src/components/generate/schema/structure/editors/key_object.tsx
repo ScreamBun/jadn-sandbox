@@ -7,7 +7,7 @@ import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-so
 
 // Interface
 interface KeyObjectEditorProps {
-  id: string;
+  name: string;
   description: string;
   placeholder?: string;
   value: Record<string, any>;
@@ -22,6 +22,7 @@ interface KeyObjectEditorState {
 
 // Key Object Editor
 class KeyObjectEditor extends Component<KeyObjectEditorProps, KeyObjectEditorState> {
+  // eslint-disable-next-line react/static-property-placement
   static defaultProps = {
     placeholder: 'KeyObjectEditor'
   };
@@ -76,8 +77,8 @@ class KeyObjectEditor extends Component<KeyObjectEditorProps, KeyObjectEditorSta
   }
 
   removeAll() {
-    const { id, remove } = this.props;
-    remove(id.toLowerCase());
+    const { name, remove } = this.props;
+    remove(name.toLowerCase());
   }
 
   removeIndex(e: MouseEvent<HTMLButtonElement>) {
@@ -113,7 +114,7 @@ class KeyObjectEditor extends Component<KeyObjectEditorProps, KeyObjectEditorSta
   }
 
   render() {
-    const { description, id, placeholder } = this.props;
+    const { description, name, placeholder } = this.props;
     const { value } = this.state;
 
     const indices = value.map((obj, i) => (
@@ -158,7 +159,7 @@ class KeyObjectEditor extends Component<KeyObjectEditorProps, KeyObjectEditorSta
           </Button>
         </ButtonGroup>
         <div className="border-bottom mb-2">
-          <p className="col-sm-4 my-1"><strong>{ id }</strong></p>
+          <p className="col-sm-4 my-1"><strong>{ name }</strong></p>
           { description ? <FormText color='muted' className='ml-3'>{ description }</FormText> : '' }
         </div>
         <div className="row m-0 indices">

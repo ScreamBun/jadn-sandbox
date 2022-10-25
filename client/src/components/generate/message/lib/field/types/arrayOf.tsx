@@ -27,12 +27,10 @@ interface ArrayOfFieldState {
 }
 
 // Redux Connector
-function mapStateToProps(state: RootState) {
-  return {
-    schema: state.Generate.selectedSchema as SchemaJADN,
-    baseTypes: state.Generate.types.base
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  schema: state.Generate.selectedSchema as SchemaJADN,
+  baseTypes: state.Generate.types.base
+});
 
 const connector = connect(mapStateToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;
@@ -91,6 +89,7 @@ class ArrayOfField extends Component<ArrayOfFieldConnectedProps, ArrayOfFieldSta
       const { count, opts } = prevState;
       const minBool = count > min;
       if (minBool) {
+        // eslint-disable-next-line prefer-spread
         delete opts[Math.max.apply(Math, Object.keys(opts))];
       }
 
@@ -129,6 +128,7 @@ class ArrayOfField extends Component<ArrayOfFieldConnectedProps, ArrayOfFieldSta
 
     let arrDef = schema.types.filter(t => t[0] === this.opts.rtype);
     if (arrDef.length === 1) {
+      // eslint-disable-next-line prefer-destructuring
       arrDef = arrDef[0];
       arrDef = [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length-2]];
     } else {

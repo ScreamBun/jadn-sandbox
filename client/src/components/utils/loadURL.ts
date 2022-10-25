@@ -35,9 +35,9 @@ export const validURL = (url: string) => url.match(/^(https?:\/\/)?(www\.)?[0-9a
 
 export const loadURL = (url: string)  => {
   if (!validURL(url)) {
-	  return new Promise((resolve, reject) => {
-	    reject(new Error('invalid url'));
-	  });
+    return new Promise((resolve, reject) => {
+      reject(new Error('invalid url'));
+    });
   }
 
   const rtnArr = {
@@ -53,9 +53,9 @@ export const loadURL = (url: string)  => {
     return typeof(val) === 'string' ? val.replace(/\\/g, '\\\\') : val;
   };
 
-	return fetch(url).then(
-	  rsp => {
-	    switch (rtnArr.fileExt) {
+  return fetch(url).then(
+    rsp => {
+      switch (rtnArr.fileExt) {
         case 'jadn':
         case 'json':
           console.log('JADN/JSON');

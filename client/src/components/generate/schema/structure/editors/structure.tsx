@@ -14,7 +14,7 @@ import {
 } from '../../interface';
 import { zip } from '../../../../utils';
 
-// Interfaces
+// Interface
 interface StructureEditorProps {
   dataIndex: number;
   value: TypeArray;
@@ -29,25 +29,13 @@ interface StructureEditorState {
     type: string;
     options: Array<string>;
     comment: string;
-    fields: FieldArray
+    fields: Array<FieldArray>
   };
   modal: boolean;
 }
 
 // Structure Editor
 class StructureEditor extends Component<StructureEditorProps, StructureEditorState> {
-  static defaultProps = {
-    dataIndex: -1,
-    value: [],
-    change: (_v: any, _i: number) => null,
-    remove: (_i: number) => null
-  };
-
-  fieldStyles = {
-    maxHeight: '20em',
-    overflowY: 'scroll'
-  };
-
   constructor(props: StructureEditorProps) {
     super(props);
     this.addField = this.addField.bind(this);
@@ -110,27 +98,28 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
   addField() {
     const { value } = this.state;
     const { fields } = value;
-    let field: EnumeratedFieldArray|StandardFieldArray;
-    if (value.type.toLowerCase() === 'enumerated') {
-      field = [fields.length+1, 'name', 'comment'] as EnumeratedFieldArray;
-    } else {
-      field = [fields.length+1, 'name', 'type', [], 'comment'] as StandardFieldArray;
-    }
+    if (fields.some(f => f[1] !== 'name') || fields.length === 0) {
+      let field: EnumeratedFieldArray|StandardFieldArray;
+      if (value.type.toLowerCase() === 'enumerated') {
+        field = [fields.length+1, 'name', 'comment'] as EnumeratedFieldArray;
+      } else {
+        field = [fields.length+1, 'name', 'type', [], 'comment'] as StandardFieldArray;
+      }
 
-    this.setState(prevState => {
-      const tmpFields = [ ...prevState.value.fields, field ];
-      return {
-        fieldCollapse: true,
-        value: {
-          ...prevState.value,
-          fields: tmpFields
-        }
-      };
-    }, () => {
-      const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(this.state.value, dataIndex);
-    });
+      this.setState(prevState => {
+        return {
+          fieldCollapse: true,
+          value: {
+            ...prevState.value,
+            fields: [ ...prevState.value.fields, field ]
+          }
+        };
+      }, () => {
+        const { change, dataIndex } = this.props;
+        // eslint-disable-next-line react/destructuring-assignment
+        change(this.state.value, dataIndex);
+      });
+    }
   }
 
   toggleFields() {
@@ -145,7 +134,7 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
     }));
   }
 
-  saveModal(data: string[]) {
+  saveModal(data: Array<string>) {
     this.toggleModal();
 
     this.setState(prevState => ({
@@ -161,7 +150,7 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
   }
 
   makeFields() {
-    const fieldChange = (val: boolean|number|string, idx: number) => this.setState(prevState => {
+    const fieldChange = (val: FieldArray, idx: number) => this.setState(prevState => {
       const tmpFields = [ ...prevState.value.fields ];
       tmpFields[idx] = val;
       return {
@@ -172,6 +161,7 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
       };
     }, () => {
       const { change, dataIndex } = this.props;
+      console.log('Field change', this.state.value); // eslint-disable-line react/destructuring-assignment
       change(this.state.value, dataIndex);  // eslint-disable-line react/destructuring-assignment
     });
 
@@ -195,16 +185,18 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
 
     // eslint-disable-next-line react/destructuring-assignment
     const { fields, name, type } = this.state.value;
-    return (fields || []).map((f, i) => (
-      <FieldEditor
-        key={ `${name}.${f[1]}` }
-        dataIndex={ i }
-        enumerated={ type.toLowerCase() === 'enumerated' }
-        value={ f }
-        change={ fieldChange }
-        remove={ fieldRemove }
-      />
-    ));
+    return fields?.map((f, i) => {
+      return (
+        <FieldEditor
+          key={ `${name}.${f[1]}` }
+          dataIndex={ i }
+          enumerated={ type.toLowerCase() === 'enumerated' }
+          value={ f }
+          change={ fieldChange }
+          remove={ fieldRemove }
+        />
+      );
+    });
   }
 
   render() {

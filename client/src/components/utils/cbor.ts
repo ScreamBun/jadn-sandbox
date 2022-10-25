@@ -24,8 +24,8 @@ export const escaped2cbor = (e: string): string => {
   }
 
 	return e.split(/\\x/g).map(bi => {
-	  const tmp = [bi.substring(0, 2)];
-	  return tmp.concat(bi.substring(2).split('').map((s) => s.charCodeAt(0).toString(16))).join(' ');
+		const tmp = [bi.substring(0, 2)];
+		return tmp.concat(bi.substring(2).split('').map((s) => s.charCodeAt(0).toString(16))).join(' ');
 	}).join(' ').replace(/^\s+/, '');
 };
 

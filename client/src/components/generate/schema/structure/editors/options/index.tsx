@@ -10,7 +10,7 @@ import TypeOptionsEditor from './type_opts';
 import FieldOptionsEditor from './field_opts';
 import { objectFromTuple } from '../../../../../utils';
 
-// Interfaces
+// Interface
 interface OptionsModalProps {
   toggleModal: (e: MouseEvent<HTMLButtonElement>) => void;
   saveModal: (_v: Array<string>) => void;
@@ -25,16 +25,14 @@ interface OptionsModalState {
   type: Record<string|number, string|number|boolean>;
 }
 
-const defaultProps: OptionsModalProps = {
-  toggleModal: (_e: MouseEvent<HTMLButtonElement>) => null,
-  saveModal: (_v: Array<string>) => null,
-  isOpen: false,
-  optionType: '',
-  optionValues: [],
-  fieldOptions: false
-};
-
+// Component
 class OptionsModal extends Component<OptionsModalProps, OptionsModalState> {
+  // eslint-disable-next-line react/static-property-placement
+  static defaultProps = {
+    fieldOptions: false,
+    optionType: ''
+  };
+
   constructor(props: OptionsModalProps) {
     super(props);
     this.saveModal = this.saveModal.bind(this);
@@ -113,7 +111,5 @@ class OptionsModal extends Component<OptionsModalProps, OptionsModalState> {
     );
   }
 }
-
-OptionsModal.defaultProps = defaultProps;
 
 export default OptionsModal;

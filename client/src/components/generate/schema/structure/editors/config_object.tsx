@@ -29,8 +29,10 @@ interface ConfigEditorProps {
 
 // Config Editor
 class ConfigEditor extends Component<ConfigEditorProps, ConfigEditorState> {
+  // eslint-disable-next-line react/static-property-placement
   static defaultProps = {
-    placeholder: 'ConfigObjectEditor'
+    placeholder: 'ConfigObjectEditor',
+    description: ''
   };
 
   constructor(props: ConfigEditorProps) {
@@ -74,15 +76,16 @@ class ConfigEditor extends Component<ConfigEditorProps, ConfigEditorState> {
   render() {
     const { description, name } = this.props;
     const keys = Object.keys(ConfigOptions).map(k => {
+      const key = k as keyof typeof ConfigOptions;
       const keyProps = {
-        ...ConfigOptions[k],
+        ...ConfigOptions[key],
         placeholder: k,
         change: (v: any) => this.onChange(k, v),
         removable: false
       };
       if (k in this.state) {
         // eslint-disable-next-line react/destructuring-assignment
-        keyProps.value = this.state[k];
+        keyProps.value = this.state[key];
       }
       return <KeyValueEditor key={ k } name={ k } { ...keyProps } />;
     });

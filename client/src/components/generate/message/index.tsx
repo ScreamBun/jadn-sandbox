@@ -44,25 +44,21 @@ interface GenerateCommandState {
 }
 
 // Redux Connector
-function mapStateToProps(state: RootState) {
-  return {
-    schemas: state.Generate.schemas,
-    loadedSchemas: state.Util.loaded.schemas || {},
-    validSchema: state.Validate.valid.schema || {},
-    selectedSchema: state.Generate.selectedSchema,
-    message: state.Generate.message,
-    siteTitle: state.Util.site_title
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  schemas: state.Generate.schemas,
+  loadedSchemas: state.Util.loaded.schemas || {},
+  validSchema: state.Validate.valid.schema || {},
+  selectedSchema: state.Generate.selectedSchema,
+  message: state.Generate.message,
+  siteTitle: state.Util.site_title
+});
 
-function mapDispatchToProps(dispatch: Dispatch) {
-  return {
-    info: () => dispatch(GenerateActions.info()),
-    loadFile: (t: string, f: string) => dispatch(UtilActions.load(t, f)),
-    validateSchema: (s: Record<string, any>) => dispatch(ValidateActions.validateSchema(s)),
-    setSchema: (s: Record<string, any>) => dispatch(GenerateActions.setSchema(s as SchemaJADN))
-  };
-}
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  info: () => dispatch(GenerateActions.info()),
+  loadFile: (t: string, f: string) => dispatch(UtilActions.load(t, f)),
+  validateSchema: (s: Record<string, any>) => dispatch(ValidateActions.validateSchema(s)),
+  setSchema: (s: Record<string, any>) => dispatch(GenerateActions.setSchema(s as SchemaJADN))
+});
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;
@@ -73,7 +69,7 @@ class GenerateCommand extends Component<GenerateCommandConnectedProps, GenerateC
   meta: {
     title: string;
     canonical: string;
-  }
+  };
 
   constructor(props: GenerateCommandConnectedProps) {
     super(props);
@@ -208,11 +204,11 @@ class GenerateCommand extends Component<GenerateCommandConnectedProps, GenerateC
           const { loadFile } = this.props;
           console.log('load schema');
           loadFile(`${type}s`, selected).then(() => {
-            setType(type, {
+            return setType(type, {
               ...format,
               [type]: loaded[selected]
             });
-          });
+          }).catch(_err => {});
         } else {
           setType(type, {
             ...format,
@@ -270,7 +266,7 @@ class GenerateCommand extends Component<GenerateCommandConnectedProps, GenerateC
   }
 
   loadURL(t: 'message'|'schema') {
-    // eslint-disable-next-line prefer-destructuring
+    // eslint-disable-next-line react/destructuring-assignment, prefer-destructuring
     const { urlStr } = this.state[t];
 
     if (!validURL(urlStr)) {
@@ -295,6 +291,7 @@ class GenerateCommand extends Component<GenerateCommandConnectedProps, GenerateC
           format: fileExt === 'jadn' ? 'json' : data.fileExt
         }
       }));
+      return '';
     }).catch(_err => {
       toast(<p>Invalid url, please check what you typed</p>, {type: toast.TYPE.WARNING});
     });
@@ -323,8 +320,8 @@ class GenerateCommand extends Component<GenerateCommandConnectedProps, GenerateC
     const { validSchema, validateSchema } = this.props;
     validateSchema(schemaObj).then(() => {
       const { valid_bool, valid_msg } = validSchema;
-      toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
-    });
+      return toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
+    }).catch(_err => {});
   }
 
   cmdCreator(maxHeight: number) {

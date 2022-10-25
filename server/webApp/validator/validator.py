@@ -1,6 +1,7 @@
 import json
 import random
 import re
+import trace
 
 from typing import Tuple, Union
 from jadnschema import jadn
@@ -49,8 +50,9 @@ class Validator:
             return False, s, "", msg
 
         if fmt in SerialFormats:
+            serial = SerialFormats(fmt)
             try:
-                message = Message(content_type=SerialFormats(fmt), content=msg)
+                message = Message.oc2_loads(msg, serial)
             except Exception as e:
                 return False, f"Message Invalid - {e}", "", msg
         else:

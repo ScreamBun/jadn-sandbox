@@ -4,19 +4,14 @@ import logging
 import os
 import re
 
+from io import BytesIO
 from flask import current_app, jsonify, Response
 from flask_restful import Resource, reqparse
 from jadnschema import jadn
 from jadnschema.convert import CommentLevels, SchemaFormats, dumps
 # from jadnschema.convert import cddl_dumps, proto_dumps, thrift_dumps
 from jadnschema.convert import html_dumps, jadn_dumps, md_dumps, relax_dumps
-
-from xhtml2pdf import pisa
-
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+from weasyprint import HTML
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +98,7 @@ class ConvertPDF(Resource):
 
     def post(self):
         args = parser.parse_args()
-        pdf = StringIO()
+        pdf = BytesIO()
         html = "<h1>Their are some issues....</h1>"
         print("convert to pdf")
 
@@ -120,15 +115,8 @@ class ConvertPDF(Resource):
         else:  # Invalid Schema
             html = "<h1>Fix the base schema errors before converting...</h1>"
 
-        pisaStatus = pisa.CreatePDF(
-            html,  # the HTML to convert
-            dest=pdf  # file handle to recieve result
-        )
-
-        if pisaStatus.err:
-            raise pisaStatus.err
-
-        # pdf.seek(0)
+        pdf_obj = HTML(string=html)  # the HTML to convert
+        pdf_obj.write_pdf(target=pdf)  # file handle to recieve result
         return Response(pdf.getvalue(), mimetype="application/pdf")
 
 

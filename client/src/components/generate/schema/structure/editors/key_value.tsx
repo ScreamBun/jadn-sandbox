@@ -6,12 +6,12 @@ import { InputType } from 'reactstrap/es/Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 
-// interface
+// Interface
 interface KeyValueEditorProps {
   name: string;
   value: boolean|number|string;
   description?: string;
-  options?: Array<string>;
+  options?: Array<string>; // only for type='select'
   placeholder?: string;
   type?: InputType;
   change: (_v: boolean|number|string) => void;
@@ -20,22 +20,19 @@ interface KeyValueEditorProps {
 
 const defaultProps = {
   description: '',
+  options: [],
   placeholder: 'KeyValueEditor',
-  type: 'text'
+  type: 'text' as InputType
 };
 
 // Key Value Editor
 const KeyValueEditor: FunctionComponent<KeyValueEditorProps> = props => {
   const {
     name, value, description, options, placeholder, type, change, remove
-  } = props;
+  } = {...defaultProps, ...props};
 
-  const shadowless = [
-    'checkbox',
-    'file',
-    'hidden',
-    'image',
-    'radio'
+  const shadowless: Array<InputType> = [
+    'checkbox', 'file', 'hidden', 'image', 'radio'
   ];
 
   const inputArgs: Record<string, any> = {
@@ -68,7 +65,7 @@ const KeyValueEditor: FunctionComponent<KeyValueEditorProps> = props => {
       <Label htmlFor={ `editor-${name}` } sm={ 2 } ><strong>{ name }</strong></Label>
       <div className="input-group col-sm-10">
         <Input
-          type={ type || 'text' }
+          type={ type }
           id={ `editor-${name}` }
           className={ `form-control ${shadowless.includes(type) ? ' shadow-none' : ''}` }
           placeholder={ placeholder }

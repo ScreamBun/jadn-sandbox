@@ -56,7 +56,7 @@ export interface ValidateSchemaSuccessAction extends ActionSuccessResult {
 // POST - /api/validate - validate teh given message against the given schema
 const VALIDATE_MESSAGE_REQUEST = '@@validate/VALIDATE_MESSAGE_REQUEST';
 export const VALIDATE_MESSAGE_SUCCESS = '@@validate/VALIDATE_MESSAGE_SUCCESS';
-export const validateMessage = (schema: Record<string, any>, message: Record<string, any>, format: string, decode: string) => createAction({
+export const validateMessage = (schema: Record<string, any>, message: any, format: string, decode: string) => createAction({
   endpoint: `${baseAPI}/`,
   method: 'POST',
   headers: {

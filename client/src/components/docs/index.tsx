@@ -13,11 +13,9 @@ import { RootState } from '../../reducers';
 interface DocsProps {}
 
 // Redux Connector
-function mapStateToProps(state: RootState) {
-  return {
-    siteTitle: state.Util.site_title
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  siteTitle: state.Util.site_title
+});
 
 const connector = connect(mapStateToProps, {});
 type ConnectorProps = ConnectedProps<typeof connector>;

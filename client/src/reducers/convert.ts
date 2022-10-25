@@ -35,7 +35,7 @@ export default (state=initialState, action: convert.ConvertActions) => {
 
     case convert.INFO_FAILURE:
     case convert.CONVERT_FAILURE:
-		  console.log(action.payload);
+      console.log(action.payload);
       return {
         ...state,
         error: action.payload.error || 'ERROR'

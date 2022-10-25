@@ -124,7 +124,6 @@ export const ValidOptions: Record<string, Array<string>> = {
   Record: ['minv', 'maxv', 'extend']
 };
 
-
 export const FieldOptions = {
   minc: {
     type: 'number',

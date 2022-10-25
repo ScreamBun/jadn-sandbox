@@ -5,8 +5,8 @@ import { StandardTypeArray } from '../interface';
 
 interface EditorProps {
   key?: number|string|undefined;  // eslint-disable-line react/require-default-props
-  dataIndex: number,
-  value: StandardTypeArray,
+  dataIndex: number;
+  value: StandardTypeArray;
   change?: (v: string|Record<string, any>, i: number) => void;  // eslint-disable-line react/require-default-props
   remove?: (i: number) => void;  // eslint-disable-line react/require-default-props
 }

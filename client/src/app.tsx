@@ -14,7 +14,7 @@ import { Error, Nav } from './components/static';
 import { MessageGenerator, SchemaGenerator } from './components/generate';
 import Converter from './components/converter';
 import Docs from './components/docs';
-import Validator from './components/validator';
+// import Validator from './components/validator';
 
 // Reducers & Actions
 import { RootState } from './reducers';
@@ -45,13 +45,13 @@ class App extends Component<AppConnectedProps> {
     title: 'JADN',
     description: 'JADN',
     canonical: `${window.location.origin}${window.location.pathname}`
-  }
+  };
 
   themeOptionStyles: CSSProperties = {
     position: 'fixed',
     bottom: '5px',
     right: '5px'
-  }
+  };
 
   constructor(props: AppConnectedProps) {
     super(props);
@@ -63,7 +63,8 @@ class App extends Component<AppConnectedProps> {
         title: siteTitle,
         description: siteDesc
       };
-    });
+      return this.meta;
+    }).catch(_err => {});
   }
 
   render() {
@@ -77,8 +78,9 @@ class App extends Component<AppConnectedProps> {
         <Nav history={ history } />
         <ConnectedRouter history={ history }>
           <Switch>
-            <Route exact path="/" component={ props => <Redirect to="/validate" { ...props } />  } />
-            <Route exact path="/validate" component={ Validator } />
+            <Route exact path="/" render={ props => <Redirect to="/generate/schema" { ...props } /> } />
+            {/* <Route exact path="/" component={ props => <Redirect to="/validate" { ...props } />  } />
+            <Route exact path="/validate" component={ Validator } /> */}
             <Route exact path="/convert" component={ Converter } />
             <Route exact path="/docs" component={ Docs } />
             <Route exact path="/generate" render={ props => <Redirect to="/generate/message" { ...props } /> } />

@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import { OptionChange, TypeOptions, ValidOptions  } from './consts';
-
 import KeyValueEditor from '../key_value';
 import { safeGet } from '../../../../../utils';
 import { RootState } from '../../../../../../reducers';
@@ -15,12 +14,11 @@ interface TypeOptionsEditorProps {
   deserializedState: Record<string, any>;
   optionType?: string;
 }
+
 // Redux Connector
-function mapStateToProps(state: RootState) {
-  return {
-    schemaTypes: [...state.Generate.types.base, ...Object.keys(state.Generate.types.schema)]
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  schemaTypes: [...state.Generate.types.base, ...Object.keys(state.Generate.types.schema)]
+});
 
 const connector = connect(mapStateToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;

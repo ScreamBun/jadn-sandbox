@@ -26,11 +26,9 @@ interface NavState {
 }
 
 // Redux Connector
-function mapStateToProps(state: RootState) {
-  return {
-    site_title: state.Util.site_title
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  site_title: state.Util.site_title
+});
 
 const connector = connect(mapStateToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;
@@ -40,7 +38,8 @@ type NavConnectedProps = NavProp & ConnectorProps;
 class Nav extends Component<NavConnectedProps, NavState> {
   modalProps = {
     centered: true
-  }
+  };
+
   constructor(props: NavConnectedProps) {
     super(props);
     this.navigate = this.navigate.bind(this);
@@ -227,7 +226,7 @@ class Nav extends Component<NavConnectedProps, NavState> {
         </button>
         <div className="collapse navbar-collapse" id="navMain">
           <ul className="navbar-nav mr-auto">
-            <NavItem href="/" text="Validate" active={ active } click={ this.navigate } />
+            <NavItem href="/" text="Create Schema" active={ active } click={ this.navigate } />
             <NavItem href="/convert" text="Convert" active={ active } click={ this.navigate } />
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>Generate</DropdownToggle>

@@ -39,17 +39,13 @@ interface GenerateState {
 }
 
 // Redx Connector
-function mapStateToProps(state: RootState) {
-  return {
-    siteTitle: state.Util.site_title
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  siteTitle: state.Util.site_title
+});
 
-function mapDispatchToProps(dispatch: Dispatch) {
-  return {
-    info: () => dispatch(GenActions.info())
-  };
-}
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  info: () => dispatch(GenActions.info())
+});
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;
@@ -60,7 +56,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
   meta: {
     title: string;
     canonical: string;
-  }
+  };
   schemaInput?: HTMLInputElement;
 
   constructor(props: GenerateConnectedProps) {
@@ -117,7 +113,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
         const tmpTypes = prevState.schema.types || [];
         const tmpDef = Types[data.types].edit();
         if ((tmpTypes.filter(d => d[0] === tmpDef[0]) || []).length === 0) {
-            tmpTypes.push(tmpDef);
+          tmpTypes.push(tmpDef);
         }
         return {
           schema: {
@@ -133,39 +129,45 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
 
   schemaEditor() {
     const { schema } = this.state;
-    const infoEditors = Object.keys(schema.info || {}).map((k, i) => {
-      return Info[k].editor({
-        key: i,
-        value: schema.info[k],
-        placeholder: k,
-        change: (val) => this.setState(prevState => ({
-          schema: {
-            ...prevState.schema,
-            info: {
-              ...prevState.schema.info,
-              ...Info[k].edit(val)
+    const infoEditors = Object.keys(Info).map((k, i) => {
+      const key = k as keyof typeof Info;
+      const { editor } = Info[key];
+      if (schema.info && k in schema.info) {
+        return editor({
+          key: i,
+          value: schema.info[key],
+          placeholder: k,
+          change: val => this.setState(prevState => ({
+            schema: {
+              ...prevState.schema,
+              info: {
+                ...prevState.schema.info,
+                ...Info[key].edit(val)
+              }
+            }
+          })),
+          remove: (id: string) => {
+            if (schema.info && id in schema.info) {
+              this.setState(prevState => {
+                const tmpInfo = { ...prevState.schema.info };
+                delete tmpInfo[id];
+                return {
+                  schema: {
+                    ...prevState.schema,
+                    info: tmpInfo
+                  }
+                };
+              });
             }
           }
-        })),
-        remove: (id: string) => {
-          if (id in schema.info) {
-            this.setState(prevState => {
-              const tmpInfo = { ...prevState.schema.info };
-              delete tmpInfo[id];
-              return {
-                schema: {
-                  ...prevState.schema,
-                  info: tmpInfo
-                }
-              };
-            });
-          }
-        }
-      });
-    });
+        });
+      }
+      // eslint-disable-next-line no-useless-return
+      return null;
+    }).filter(Boolean);
 
     const typesEditors = (schema.types || []).map((def, i) => {
-      const type = def[1].toLowerCase();
+      const type = def[1].toLowerCase() as keyof typeof Types;
       return Types[type].editor({
         key: i,
         value: def,
@@ -199,15 +201,87 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
 
     return (
       <div>
-        <div className='col-12'>
+        <div className="col-12 pt-2">
           <h2>Info</h2>
           { infoEditors }
         </div>
         <hr />
-        <div className='col-12'>
+        <div className="col-12">
           <h2>Types</h2>
           { typesEditors }
         </div>
+      </div>
+    );
+  }
+
+  schemaOptions() {
+    const {
+      activeOption, download, downloadTooltip, uploadTooltip
+    } = this.state;
+    const infoKeys = Object.keys(Info).map(k => (
+      <Draggable type="info" data={ k } key={ Info[k].key }>
+        <ListGroupItem action>{ Info[k].key }</ListGroupItem>
+      </Draggable>
+    ));
+    const typesKeys = Object.keys(Types).map(k => (
+      <Draggable type="types" data={ k } key={ Types[k].key }>
+        <ListGroupItem action>{ Types[k].key }</ListGroupItem>
+      </Draggable>
+    ));
+    return (
+      <div id='schema-options' className='col-md-2'>
+        <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={ classnames({ active: activeOption === 'info' }) }
+              onClick={ () => this.toggleOptions('info') }
+            >
+              Info
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={ classnames({ active: activeOption === 'types' }) }
+              onClick={ () => this.toggleOptions('types') }
+            >
+              Types
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={ activeOption }>
+          <TabPane tabId='info'>
+            <ListGroup>
+              { infoKeys }
+            </ListGroup>
+          </TabPane>
+          <TabPane tabId='types'>
+            <ListGroup>
+              { typesKeys }
+            </ListGroup>
+          </TabPane>
+        </TabContent>
+        <div className='col-12 m-2' />
+        <div className='btn-group btn-group-sm'>
+          <Button id='uploadTooltip' color="primary" onClick={ () => this.schemaInput && this.schemaInput.click() }>
+            <FontAwesomeIcon icon={ faFileUpload } color="white" size='2x' />
+            <input
+              type='file'
+              className='d-none'
+              ref={ input => { this.schemaInput = input || undefined; } }
+              accept=".jadn"
+              onChange={ this.loadSchema }
+            />
+          </Button>
+          <Button id="downloadTooltip" color="primary" onClick={ this.downloadConfig } href={ download.content } download={ download.file } target="_blank" rel="noreferrer" >
+            <FontAwesomeIcon icon={ faFileDownload } color="white" size='2x' />
+          </Button>
+        </div>
+        <Tooltip placement="bottom" isOpen={ uploadTooltip } target="uploadTooltip" toggle={ () => this.setState(prevState => ({ uploadTooltip: !prevState.uploadTooltip })) }>
+          Upload JADN Schema
+        </Tooltip>
+        <Tooltip placement="bottom" isOpen={ downloadTooltip } target="downloadTooltip" toggle={ () => this.setState(prevState => ({ downloadTooltip: !prevState.downloadTooltip })) }>
+          Download converted schema
+        </Tooltip>
       </div>
     );
   }
@@ -260,20 +334,8 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
   }
 
   render() {
-    const {
-      activeOption, activeView, download, downloadTooltip, schema, uploadTooltip
-    } = this.state;
+    const { activeView, schema } = this.state;
     const { canonical, title } = this.meta;
-    const infoKeys = Object.keys(Info).map(k => (
-      <Draggable type="info" data={ k } key={ Info[k].key }>
-        <ListGroupItem action>{ Info[k].key }</ListGroupItem>
-      </Draggable>
-    ));
-    const typesKeys = Object.keys(Types).map(k => (
-      <Draggable type="types" data={ k } key={ Types[k].key }>
-        <ListGroupItem action>{ Types[k].key }</ListGroupItem>
-      </Draggable>
-    ));
 
     return (
       <div className='row mx-auto'>
@@ -281,60 +343,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
           <title>{ title }</title>
           <link rel="canonical" href={ canonical } />
         </Helmet>
-        <div id='schema-options' className='col-md-2'>
-          <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={ classnames({ active: activeOption === 'info' }) }
-                onClick={ () => this.toggleOptions('info') }
-              >
-                Info
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={ classnames({ active: activeOption === 'types' }) }
-                onClick={ () => this.toggleOptions('types') }
-              >
-                Types
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <TabContent activeTab={ activeOption }>
-            <TabPane tabId='info'>
-              <ListGroup>
-                { infoKeys }
-              </ListGroup>
-            </TabPane>
-            <TabPane tabId='types'>
-              <ListGroup>
-                { typesKeys }
-              </ListGroup>
-            </TabPane>
-          </TabContent>
-          <div className='col-12 m-2' />
-          <div className='btn-group btn-group-sm'>
-            <Button id='uploadTooltip' color="primary" onClick={ () => this.schemaInput && this.schemaInput.click() }>
-              <FontAwesomeIcon icon={ faFileUpload } color="white" size='2x' />
-              <input
-                type='file'
-                className='d-none'
-                ref={ input => { this.schemaInput = input || undefined; } }
-                accept=".jadn"
-                onChange={ this.loadSchema }
-              />
-            </Button>
-            <Button id="downloadTooltip" color="primary" onClick={ this.downloadConfig } href={ download.content } download={ download.file } target="_blank" rel="noreferrer" >
-              <FontAwesomeIcon icon={ faFileDownload } color="white" size='2x' />
-            </Button>
-          </div>
-          <Tooltip placement="bottom" isOpen={ uploadTooltip } target="uploadTooltip" toggle={ () => this.setState(prevState => ({ uploadTooltip: !prevState.uploadTooltip })) }>
-            Upload JADN Schema
-          </Tooltip>
-          <Tooltip placement="bottom" isOpen={ downloadTooltip } target="downloadTooltip" toggle={ () => this.setState(prevState => ({ downloadTooltip: !prevState.downloadTooltip })) }>
-            Download converted schema
-          </Tooltip>
-        </div>
+        { this.schemaOptions() }
         <div id='schema-view' className='col-md-10'>
           <Nav tabs>
             <NavItem>

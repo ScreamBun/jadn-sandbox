@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  ConfigObjectEditor, KeyArrayEditor, KeyValueEditor
+  ConfigObjectEditor, KeyArrayEditor, KeyObjectEditor, KeyValueEditor
 } from './editors';
 import { InfoDef } from './interfaces';
 
 interface EditorProps {
-  key: number|string|undefined;  // eslint-disable-line react/require-default-props
+  key?: number|string|undefined;  // eslint-disable-line react/require-default-props
   name: string;
   description?: string;  // eslint-disable-line react/require-default-props
   placeholder: string;
@@ -58,6 +58,17 @@ export default {
     key: 'License',
     edit: (val: string) => metaDef({ k: 'license', v: val }),
     editor: (props: EditorProps) => <KeyValueEditor { ...props } name="License" />
+  },
+  namespaces: {
+    key: 'Namespaces',
+    edit: (val: Record<string, string> = {}) => metaDef({ k: 'namespaces', v: val }),
+    editor: (props: EditorProps) => (
+      <KeyObjectEditor
+        { ...props }
+        name="Namespaces"
+        description="Referenced packages"
+      />
+    )
   },
   exports: {
     key: 'Exports',

@@ -25,13 +25,6 @@ interface PrimitiveEditorState {
 
 // Primitive Editor
 class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorState> {
-  static  defaultProps = {
-    dataIndex: -1,
-    value: [],
-    change: (_v: any, _i: number) => null,  // eslint-disable-line no-unused-vars
-    remove: (_i: number) => null  // eslint-disable-line no-unused-vars
-  };
-
   constructor(props: PrimitiveEditorProps) {
     super(props);
     this.onChange = this.onChange.bind(this);

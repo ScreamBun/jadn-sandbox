@@ -49,26 +49,22 @@ interface ValidatorState {
 type StateTypes = 'message'|'message-json'|'schema'
 
 // Redux Connector
-function mapStateToProps(state: RootState) {
-  return {
-    messages: state.Validate.messages,
-    loadedMessages: state.Util.loaded.messages || {},
-    validMessage: state.Validate.valid.message || {},
-    schemas: state.Validate.schemas,
-    loadedSchemas: state.Util.loaded.schemas || {},
-    validSchema: state.Validate.valid.schema || {},
-    siteTitle: state.Util.site_title
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  messages: state.Validate.messages,
+  loadedMessages: state.Util.loaded.messages || {},
+  validMessage: state.Validate.valid.message || {},
+  schemas: state.Validate.schemas,
+  loadedSchemas: state.Util.loaded.schemas || {},
+  validSchema: state.Validate.valid.schema || {},
+  siteTitle: state.Util.site_title
+});
 
-function mapDispatchToProps(dispatch: Dispatch) {
-  return {
-    info: () => dispatch(ValidateActions.info()),
-    loadFile: (t: string, f: string) => dispatch(UtilActions.load(t, f)),
-    validateSchema: (s: Record<string, any>) => dispatch(ValidateActions.validateSchema(s)),
-    validateMessage: (s: Record<string, any>, m: Record<string, any>, t: string, f: string) => dispatch(ValidateActions.validateMessage(s, m, t, f))
-  };
-}
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  info: () => dispatch(ValidateActions.info()),
+  loadFile: (t: string, f: string) => dispatch(UtilActions.load(t, f)),
+  validateSchema: (s: Record<string, any>) => dispatch(ValidateActions.validateSchema(s)),
+  validateMessage: (s: Record<string, any>, m: any, t: string, f: string) => dispatch(ValidateActions.validateMessage(s, m, t, f))
+});
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;
@@ -134,16 +130,19 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
   }
 
   submitForm(e: FormEvent<HTMLFormElement>) {
-    const { validMessage, validateMessage } = this.props;
+    const { validateMessage } = this.props;
     const { message, schema} = this.state;
     e.preventDefault();
+    console.log('Message', message);
 
     validateMessage(
       schema.schema,
-      message.json,
+      message.message,
       message.format,
       message.decode
     ).then(() => {
+      const { validMessage } = this.props;
+      console.log('validMessage', validMessage);
       const { valid_bool, message_json, valid_msg } = validMessage;
       toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
 
@@ -153,8 +152,8 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
           json: message_json
         }
       }));
-      this.format('message-json', 2);
-    });
+      return this.format('message-json', 2);
+    }).catch(_err => {});
 
     return false;
   }
@@ -192,7 +191,9 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
           fmt.format = selected.split('.')[1];
         }
         if (!Object.keys(loaded).includes(selected)) {
+          console.log('Load file', type, selected);
           const { loadFile } = this.props;
+          // eslint-disable-next-line promise/catch-or-return, promise/always-return
           loadFile(`${type}s`, selected).then(() => {
             this.setState(prevState => ({
               ...prevState,
@@ -208,6 +209,7 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
             });
           });
         } else {
+          console.log('Loaded', type, selected);
           this.setState(prevState => ({
             ...prevState,
             [type]: {
@@ -334,8 +336,8 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
     const { validateSchema, validSchema } = this.props;
     validateSchema(schema).then(() => {
       const { valid_bool, valid_msg } = validSchema;
-      toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
-    });
+      return toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
+    }).catch(_err => {});
   }
 
   loadURL(t: 'message'|'schema') {
@@ -368,6 +370,7 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
       if (t === 'schema') {
         this.loadDecodeTypes();
       }
+      return '';
     }).catch(_err => {
       toast(<p>Invalid url, please check what you typed</p>, {type: toast.TYPE.WARNING});
     });
@@ -506,6 +509,7 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
     const msgOpts = Object.entries(messages).map(([n, t]) => <option key={ n } value={ n } data-decode={ t } >{ n }</option>);
     const decodeExports = schema.decodeTypes.exports.map(dt => <option key={ dt } value={ dt } >{ dt }</option>);
     const decodeAll = schema.decodeTypes.all.map(dt => <option key={ dt } value={ dt } >{ dt }</option>);
+    const placeholder = (message.json && message.json.placeholder) ? message.json.placeholder : '';
 
     if (typeof(message.message) !== 'string') {
       setTimeout(() => this.format('message'), 5);
@@ -516,7 +520,7 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
         <legend>Message</legend>
         <div className="form-row">
           <div className="col-md-12 mb-3">
-            <ul className={ `nav nav-tabs${message.json.placeholder ? ' d-none' : ''}` }>
+            <ul className={ `nav nav-tabs${placeholder ? ' d-none' : ''}` }>
               <li className="nav-item">
                 <a className="nav-link active show" data-toggle="tab" href="#message-card">Original</a>
               </li>

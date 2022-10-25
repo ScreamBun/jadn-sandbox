@@ -17,11 +17,9 @@ interface BasicFieldProps {
 }
 
 // Redux Connector
-function mapStateToProps(state: RootState) {
-  return {
-    schema: state.Generate.selectedSchema as SchemaJADN
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  schema: state.Generate.selectedSchema as SchemaJADN
+});
 
 const connector = connect(mapStateToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;

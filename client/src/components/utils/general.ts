@@ -6,9 +6,7 @@ import { objectFromTuple } from './object';
   * @param {string} str - camelcase string to split
   * @returns {string} - split and spaced string
   */
-  export function splitCamel(str: string): string {
-    return str.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
-  }
+  export const splitCamel = (str: string): string => str.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
 
 /**
  * Create an object using the given arrays
@@ -18,7 +16,7 @@ import { objectFromTuple } from './object';
  * @public
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function zip(keys: Array<string>, values: Array<any>): Record<string, any> {
+export const zip = (keys: Array<string>, values: Array<any>): Record<string, any> => {
   if (keys.length < values.length) {
     // console.log('Zip', keys, values);
     throw new RangeError('The keys arrays should have the same or more values than the value array');
@@ -27,4 +25,4 @@ export function zip(keys: Array<string>, values: Array<any>): Record<string, any
   return objectFromTuple(
     ...values.map<[string, any]>((v: any, i: number) => [keys[i], v] )
   );
-}
+};

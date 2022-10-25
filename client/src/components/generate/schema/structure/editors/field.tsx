@@ -18,26 +18,24 @@ import { RootState } from '../../../../../reducers';
 interface FieldEditorProps {
   enumerated?: boolean;
   dataIndex: number;
-  value: Array<any>;
+  value: EnumeratedFieldArray|StandardFieldArray;
   change: (_v: EnumeratedFieldArray|StandardFieldArray, _i: number) => void;
   remove: (_i: number) => void;
 }
 
 interface FieldEditorState {
   modal: boolean;
-  value: FieldObject
+  value: FieldObject;
 }
 
 // Redux Connector
-function mapStateToProps(state: RootState) {
-  return {
-    allTypes: [...state.Generate.types.base, ...Object.keys(state.Generate.types.schema)],
-    types: {
-      base: state.Generate.types.base,
-      schema: Object.keys(state.Generate.types.schema)
-    }
-  };
-}
+const mapStateToProps = (state: RootState) => ({
+  allTypes: [...state.Generate.types.base, ...Object.keys(state.Generate.types.schema)],
+  types: {
+    base: state.Generate.types.base,
+    schema: Object.keys(state.Generate.types.schema)
+  }
+});
 
 const connector = connect(mapStateToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;
@@ -45,6 +43,7 @@ type FieldEditorConnectedProps = FieldEditorProps & ConnectorProps;
 
 // Field Editor
 class FieldEditor extends Component<FieldEditorConnectedProps, FieldEditorState> {
+  // eslint-disable-next-line react/static-property-placement
   static defaultProps = {
     enumerated: false
   };
@@ -83,8 +82,7 @@ class FieldEditor extends Component<FieldEditorConnectedProps, FieldEditorState>
       }
     }), () => {
       const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(objectValues(this.state.value as Record<string, any>) as FieldArray, dataIndex);
+      change(objectValues(this.state.value as Record<string, any>) as FieldArray, dataIndex);  // eslint-disable-line react/destructuring-assignment
     });
   }
 
@@ -248,4 +246,4 @@ class FieldEditor extends Component<FieldEditorConnectedProps, FieldEditorState>
   }
 }
 
-export default connect(mapStateToProps)(FieldEditor);
+export default connector(FieldEditor);

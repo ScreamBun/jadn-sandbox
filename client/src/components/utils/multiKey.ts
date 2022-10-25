@@ -30,7 +30,7 @@ export const setMultiKey = (obj: Record<string, any>, key: string, val: any): vo
  * @returns {V|undefined} Value of the property
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getMultiKey<V>(obj: Record<string, any>, key: string): V | undefined {
+export const getMultiKey = <V>(obj: Record<string, any>, key: string): V | undefined => {
   const k = key.replace(/\[\]$/, '');
   const keys = k.split('.');
 
@@ -38,7 +38,7 @@ export function getMultiKey<V>(obj: Record<string, any>, key: string): V | undef
     return keys[0] in obj ? getMultiKey(obj[keys[0]], keys.slice(1).join('.')) : undefined;
   }
   return k in obj ? obj[k] : undefined;
-}
+};
 
 /**
  * Delete the nested value within an object

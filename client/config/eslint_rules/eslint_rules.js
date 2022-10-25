@@ -209,7 +209,9 @@ module.exports = {
     after: 'always',
     before: 'always'
   }],
-  'lines-between-class-members': 0,
+  'lines-between-class-members': [2, 'always', {
+    exceptAfterSingleLine: true
+  }],
   'max-classes-per-file': [2, 1],
   'max-depth': [0, 4],
   'max-len': [1, 128, 2, {

@@ -6,4 +6,4 @@ json-logging-py
 jsonschema
 lxml  # Use version form JADNSchema
 multiprocessing_logging
-xhtml2pdf==0.2.8
+weasyprint==57.0

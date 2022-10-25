@@ -31,10 +31,14 @@ interface ToggleSwitchState {
 
 // Component
 class ToggleSwitch extends Component<ToggleSwitchProps, ToggleSwitchState> {
+  // eslint-disable-next-line react/static-property-placement
   static defaultProps = {
-    disabled: false,
-    defaultChecked: false,
-    onToggle: (_t: boolean) => {},
+    className: '',
+    size: 'md',
+    colors: {
+      checked: 'primary',
+      unchecked: 'secondary'
+    },
     icons: true
   };
 
