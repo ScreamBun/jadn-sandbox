@@ -1,10 +1,11 @@
 import React, { ChangeEvent, Component, FormEvent } from 'react';
 import { Dispatch } from 'redux';
 import { ConnectedProps, connect } from 'react-redux';
+import classNames from 'classnames';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import {
-  Button, ButtonGroup, Form, Tooltip
+  Button, ButtonGroup, Form, Nav, NavItem, NavLink, TabContent, TabPane, Tooltip
 } from 'reactstrap';
 import locale from 'react-json-editor/dist/locale/en';
 
@@ -17,10 +18,12 @@ import { UtilActions, ValidateActions } from '../../actions';
 import { RootState } from '../../reducers';
 
 // Interface
+type ValidTabs = 'original' | 'json';
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ValidatorProps {}
 
 interface ValidatorState {
+  active_tab: ValidTabs;
   valTooltip: boolean;
   verTooltip: boolean;
   message: {
@@ -86,6 +89,7 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
     this.submitForm = this.submitForm.bind(this);
 
     this.state = {
+      active_tab: 'original',
       valTooltip: false,
       verTooltip: false,
       message: {
@@ -320,6 +324,12 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
     }
   }
 
+  toggleTab(tab: ValidTabs) {
+    this.setState({
+      active_tab: tab
+    });
+  }
+
   verifySchema() {
     // eslint-disable-next-line react/destructuring-assignment
     const { schema } = this.state.schema;
@@ -333,11 +343,12 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
       }
     }
 
-    const { validateSchema, validSchema } = this.props;
-    validateSchema(schema).then(() => {
+    const { validateSchema } = this.props;
+    validateSchema(schema).then(() => setTimeout(() => {
+      const { validSchema } = this.props;
       const { valid_bool, valid_msg } = validSchema;
-      return toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
-    }).catch(_err => {});
+      toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
+    }, 500)).catch(_err => {});
   }
 
   loadURL(t: 'message'|'schema') {
@@ -504,7 +515,8 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
 
   message() {
     const { messages } = this.props;
-    const { message, schema } = this.state;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { active_tab, message, schema } = this.state;
     // list of options - <option value="{{ opt.name }}" decode="{{ opt.type }}">{{ opt.name }}</option>
     const msgOpts = Object.entries(messages).map(([n, t]) => <option key={ n } value={ n } data-decode={ t } >{ n }</option>);
     const decodeExports = schema.decodeTypes.exports.map(dt => <option key={ dt } value={ dt } >{ dt }</option>);
@@ -520,17 +532,17 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
         <legend>Message</legend>
         <div className="form-row">
           <div className="col-md-12 mb-3">
-            <ul className={ `nav nav-tabs${placeholder ? ' d-none' : ''}` }>
-              <li className="nav-item">
-                <a className="nav-link active show" data-toggle="tab" href="#message-card">Original</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" data-toggle="tab" href="#json-card">JSON</a>
-              </li>
-            </ul>
+            <Nav tabs className={ placeholder ? ' d-none' : '' }>
+              <NavItem>
+                <NavLink className={ classNames({ 'active': active_tab === 'original' }) } onClick={ () => this.toggleTab('original') }>Original</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink className={ classNames({ 'active': active_tab === 'json' }) } onClick={ () => this.toggleTab('json') }>JSON</NavLink>
+              </NavItem>
+            </Nav>
 
-            <div className="tab-content">
-              <div id="message-card" className="tab-pane fade active show">
+            <TabContent activeTab={ active_tab }>
+              <TabPane tabId='original'>
                 <div className="card">
                   <div className="card-header">
                     <ButtonGroup className="float-right" size="sm">
@@ -608,9 +620,9 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
                     </div>
                   </div>
                 </div>
-              </div>
+              </TabPane>
 
-              <div id="json-card" className="tab-pane fade">
+              <TabPane tabId="json">
                 <div className="card">
                   <div className="card-header">
                     <ButtonGroup className="float-right">
@@ -637,8 +649,8 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
                     />
                   </div>
                 </div>
-              </div>
-            </div>
+              </TabPane>
+            </TabContent>
           </div>
         </div>
       </fieldset>

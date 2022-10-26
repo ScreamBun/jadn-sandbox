@@ -226,7 +226,7 @@ class Nav extends Component<NavConnectedProps, NavState> {
         </button>
         <div className="collapse navbar-collapse" id="navMain">
           <ul className="navbar-nav mr-auto">
-            <NavItem href="/" text="Create Schema" active={ active } click={ this.navigate } />
+            <NavItem href="/" text="Validate" active={ active } click={ this.navigate } />
             <NavItem href="/convert" text="Convert" active={ active } click={ this.navigate } />
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>Generate</DropdownToggle>
@@ -235,7 +235,7 @@ class Nav extends Component<NavConnectedProps, NavState> {
                 <NavItem dropdown href="/generate/schema" text='Schema' active={ active } click={ this.navigate } />
               </DropdownMenu>
             </UncontrolledDropdown>
-            <NavItem href="/docs" text="API Docs" active={ active } click={ this.navigate } />
+            {/* <NavItem href="/docs" text="API Docs" active={ active } click={ this.navigate } /> */}
             <NavItem href="#" text="About" click={ () => this.setState(prevState => ({ aboutModal: !prevState.aboutModal })) } />
             <NavItem href="#" text="Features" click={ () => this.setState(prevState => ({ featuresModal: !prevState.featuresModal })) } />
             <NavItem href="#" text="State" click={ () => this.setState(prevState => ({ statusModal: !prevState.statusModal })) } />

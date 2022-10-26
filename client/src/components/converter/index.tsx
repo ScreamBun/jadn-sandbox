@@ -150,7 +150,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
   }
 
   submitForm(e: FormEvent<HTMLFormElement>) {
-    const { convertSchema, validSchema,  validateSchema} = this.props;
+    const { validateSchema } = this.props;
     const { convert, schema } = this.state;
     e.preventDefault();
 
@@ -164,7 +164,8 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
       }
     }
 
-    validateSchema(schemaObj).then(() => {
+    validateSchema(schemaObj).then(() => setTimeout(() => {
+      const { convertSchema, validSchema } = this.props;
       if (validSchema.valid_bool) {
         convertSchema(
           schema.schema,
@@ -174,8 +175,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
       } else {
         toast(<p>{ validSchema.valid_msg }</p>, {type: toast.TYPE[validSchema.valid_bool ? 'INFO' : 'WARNING']});
       }
-      return '';
-    }).catch(_err => {});
+    }, 500)).catch(_err => {});
 
     return false;
   }
@@ -296,10 +296,10 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
       }
     }
 
-    validateSchema(schemaObj).then(() => {
+    validateSchema(schemaObj).then(() => setTimeout(() => {
       const { valid_bool, valid_msg } = validSchema;
-      return toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
-    }).catch(_err => {});
+      toast(<p>{ valid_msg }</p>, {type: toast.TYPE[valid_bool ? 'INFO' : 'WARNING']});
+    }, 500)).catch(_err => {});
   }
 
   loadURL(t: 'message'|'schema') {
@@ -505,7 +505,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
           </div>
 
           <div className="card-footer pb-3">
-            <Button color='secondary' onClick={ () => this.verifySchema() } className='float-right mr-2'>Verify</Button>
+            <Button color='info' onClick={ () => this.verifySchema() } className='float-right mr-2'>Verify</Button>
             <div className="form-row">
               <div className="form-group col-md-5 px-1 mb-0">
                 <select id="schema-list" name="schema-list" className="form-control mb-0" defaultValue="empty" onChange={ this.selectChange }>

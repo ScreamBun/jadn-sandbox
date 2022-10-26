@@ -14,7 +14,7 @@ import createRootReducer, { RootState } from './reducers';
 type LintStore = Store<RootState, DispatchAction>;
 export const history = createBrowserHistory();
 
-export default (his: History = history) => {
+export default (his: History = history): LintStore => {
   const reducer = persistReducer(
     {
       key: 'jadn_lint',

@@ -51,7 +51,6 @@ class Config:
 
     VALID_SCHEMAS = ["jadn", ]
     VALID_SCHEMA_CONV = FrozenDict({fmt.name: fmt.value for fmt in SchemaFormats})
-
     VALID_MESSAGES = ["json", "cbor", "xml"]
 
 

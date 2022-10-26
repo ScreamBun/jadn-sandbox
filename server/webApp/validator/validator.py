@@ -1,7 +1,6 @@
 import json
 import random
 import re
-import trace
 
 from typing import Tuple, Union
 from jadnschema import jadn

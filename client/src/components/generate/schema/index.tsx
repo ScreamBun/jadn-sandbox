@@ -9,6 +9,7 @@ import { faFileDownload, faFileUpload } from '@fortawesome/free-solid-svg-icons'
 import {
   Button, ListGroup, ListGroupItem, Nav, NavItem, NavLink, TabContent, TabPane, Tooltip
 } from 'reactstrap';
+import { Buffer } from 'buffer';
 import classnames from 'classnames';
 import { Draggable, Droppable } from 'react-drag-and-drop';
 import locale from 'react-json-editor/dist/locale/en';
@@ -301,14 +302,16 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
     const fileReader = new FileReader();
 
     fileReader.onload = (_rf: FileReader, _ev: ProgressEvent<FileReader>) => {
-      const data = atob(fileReader.result.split(',')[1]);
-      try {
-        this.setState({
-          schema: JSON.parse(data)
-        });
-      } catch (err) {
-        toast(<p>Schema cannot be loaded</p>, {type: toast.TYPE.WARNING});
-        console.log(err);
+      if (fileReader.result) {
+        const data = Buffer.from(fileReader.result.split(',')[1], 'base64').toString();
+        try {
+          this.setState({
+            schema: JSON.parse(data)
+          });
+        } catch (err) {
+          toast(<p>Schema cannot be loaded</p>, {type: toast.TYPE.WARNING});
+          console.log(err);
+        }
       }
     };
 
@@ -376,26 +379,24 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                 { this.schemaEditor() }
               </TabPane>
               <TabPane tabId='jadn'>
-                <div className="form-control m-0 p-0" style={{ minHeight: '20em' }}>
-                  <JADNInput
-                    id='jadn_schema'
-                    placeholder={ schema }
-                    onChange={
-                      val => {
-                        if (val.jsObject) {
-                          this.setState({ schema: val.jsObject as SchemaJADN });
-                        }
+                <JADNInput
+                  id='jadn_schema'
+                  placeholder={ schema }
+                  onChange={
+                    val => {
+                      if (val.jsObject) {
+                        this.setState({ schema: val.jsObject as SchemaJADN });
                       }
                     }
-                    theme='light_mitsuketa_tribute'
-                    locale={ locale }
-                    // reset
-                    height='100%'
-                    width='100%'
-                    viewOnly
-                    // waitAfterKeyPress={ 500 }
-                  />
-                </div>
+                  }
+                  theme='light_mitsuketa_tribute'
+                  locale={ locale }
+                  // reset
+                  height='100%'
+                  width='100%'
+                  viewOnly
+                  // waitAfterKeyPress={ 500 }
+                />
               </TabPane>
             </TabContent>
           </Droppable>

@@ -39,17 +39,15 @@ class OptionsModal extends Component<OptionsModalProps, OptionsModalState> {
     this.saveOptions = this.saveOptions.bind(this);
 
     const { optionValues } = this.props;
-    this.state = {
-      ...this.deserializeOptions(optionValues)
-    };
+    this.state = this.deserializeOptions(optionValues);
   }
 
   // convert array into options data state object
   // eslint-disable-next-line class-methods-use-this
   deserializeOptions(options: Array<string>) {
     const opts = opts2obj(options);
-    const fieldOpts: Array<[string, string|number|boolean]> = OptionTypes.field.filter(opt => opt in opts).map(opt => [opt, opts[opt]]);
-    const typeOpts: Array<[string, string|number|boolean]> = OptionTypes.type.filter(opt => opt in opts).map(opt => [opt, opts[opt]]);
+    const fieldOpts = OptionTypes.field.filter(opt => opt in opts).map<[string, string|number|boolean]>(opt => [opt, opts[opt]]);
+    const typeOpts = OptionTypes.type.filter(opt => opt in opts).map<[string, string|number|boolean]>(opt => [opt, opts[opt]]);
     return {
       field: objectFromTuple(...fieldOpts),
       type: objectFromTuple(...typeOpts)

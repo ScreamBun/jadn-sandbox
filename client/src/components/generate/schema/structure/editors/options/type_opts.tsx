@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
-import { OptionChange, TypeOptions, ValidOptions  } from './consts';
+import { OptionChange, TypeOptionInputArgs, ValidOptions  } from './consts';
 import KeyValueEditor from '../key_value';
 import { safeGet } from '../../../../../utils';
 import { RootState } from '../../../../../../reducers';
@@ -52,7 +52,7 @@ const TypeOptionsEditor: FunctionComponent<TypeOptionsEditorConnectedProps> = pr
         <KeyValueEditor
           key={ key }
           id={ key }
-          { ...TypeOptions[key] }
+          { ...TypeOptionInputArgs[key] }
           placeholder={ key }
           removable={ false }
           options={ getOptions(key) }

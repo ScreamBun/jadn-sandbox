@@ -5,69 +5,46 @@ export type Val = [k: string, v: any];
 export type OptionChange = (v: Val, t: 'field'|'type') => void;
 
 // Consts
-export const OptionTypes: Record<string, Array<string>> = {
-  field: [
-    'minc',
-    'maxc',
-    'tagid',
-    'dir',
-    'key',
-    'link'
-  ],
-  type: [
-    'id',
-    'ktype',
-    'vtype',
-    'enum',
-    'pointer',
-    'format',
-    'pattern',
-    'minv',
-    'maxv',
-    'minf',
-    'maxf',
-    'unique',
-    'set',
-    'unordered',
-    'extend',
-    'default'
-  ]
+export const TypeOptions = {
+  'id': '=',         // Enumerated type and Choice/Map/Record keys are ID not Name
+  'vtype': '*',      // Value type for ArrayOf and MapOf
+  'ktype': '+',      // Key type for MapOf
+  'enum': '#',       // enumeration derived from Array/Choice/Map/Record type
+  'pointer': '>',    // enumeration of pointers derived from Array/Choice/Map/Record type
+  'format': '/',     // semantic validation keyword, may affect serialization
+  'pattern': '%',    // regular expression that a string must match
+  'minf': 'y',       // minimum Number value
+  'maxf': 'z',       // maximum Number value
+  'minv': '{',       // minimum byte or text string length, Integer value, element count
+  'maxv': '}',       // maximum byte or text string length, Integer value, element count
+  'unique': 'q',     // ArrayOf instance must not contain duplicates
+  'set': 's',        // ArrayOf instance is unordered and unique
+  'unordered': 'b',  // ArrayOf instance is unordered and not unique (bag)
+  'extend': 'X',     // Type has an extension point where fields may be appended
+  'default': '!'     // Default value
 };
 
-export const OptionIds: Record<string, string> = {
-  // Field Structural
-  '[': 'minc',        // Minimum cardinality
-  ']': 'maxc',        // Maximum cardinality
-  '&': 'tagid',       // Field containing an explicit tag for this Choice type
-  '<': 'dir',         // Use FieldName as a qualifier for fields in FieldType
-  'K': 'key',         // Field is a primary key for this type
-  'L': 'link',        // Field is a relationship or link to a type instance (Extension: Section 3.3.6)
-  // Type
-  '=': 'id',          // Optional-Enumerated values and fields of compound types denoted by FieldID rather than FieldName
-  '+': 'ktype',       // Key type for MapOf
-  '*': 'vtype',       // Value type for ArrayOf and MapOf
-  '#': 'enum',        // Extension: Enumerated type derived from a specified type
-  '>': 'pointer',     // Extension: Enumerated type containing pointers derived from a specified type
-  '/': 'format',      // Semantic validation keyword
-  '%': 'pattern',     // Regular expression used to validate a String type
-  '{': 'minv',        // Minimum numeric value, octet or character count, or element count
-  '}': 'maxv',        // Maximum numeric value, octet or character count, or element count
-  'y': 'minf',        // Minimum real number value
-  'z': 'maxf',        // Maximum real number value
-  'q': 'unique',      // If present, an ArrayOf instance must not contain duplicate values
-  's': 'set',         // ArrayOf instance is unordered and unique
-  'b': 'unordered',   // ArrayOf instance is unordered
-  'X': 'extend',      // Type has an extension point where fields may be added in the future
-  '!': 'default'      // Default value
+export const FieldOptions = {
+  'minc': '[',   // minimum cardinality, default = 1, 0 = field is optional
+  'maxc': ']',   // maximum cardinality, default = 1, 0 = inherited max, not 1 = array
+  'tagid': '&',  // field that specifies the type of this field
+  'dir': '<',    // pointer enumeration treats field as a collection
+  'key': 'K',    // field is a primary key for this type
+  'link': 'L'    // field is a link (foreign key) to an instance of FieldType
 };
 
-export const BoolOpts: Array<string> = ['dir', 'extend', 'id', 'key', 'link', 'set', 'unique', 'unordered'];
-export const IntegerOpts: Array<string> = ['minc', 'maxc', 'minv', 'maxv'];
-export const FloatOpts: Array<string> = ['minf', 'maxf'];
-export const StringOpts: Array<string> = ['default', 'enum', 'format', 'ktype', 'pattern', 'pointer', 'tagid', 'vtype'];
-export const InvertedOptions = invertObject(OptionIds);
-export const EnumId = InvertedOptions.enum;
-export const PointerId = InvertedOptions.pointer;
+export const OptionTypes = {
+  field: Object.keys(FieldOptions),
+  type: Object.keys(TypeOptions)
+};
+
+export const OptionIds = invertObject({...FieldOptions, ...TypeOptions});
+export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend'];
+export const IntegerOpts = ['minc', 'maxc', 'tagid', 'minv', 'maxv'];
+export const FloatOpts = ['minf', 'maxf'];
+export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern', 'pointer', 'tagid', 'vtype'];
+export const EnumId = TypeOptions.enum;
+export const PointerId = TypeOptions.pointer;
 
 export const ValidFormats: Array<string> = [
   // JSON Formats
@@ -78,8 +55,8 @@ export const ValidFormats: Array<string> = [
   'idn-email',              // RFC 6531, or email
   'hostname',               // RFC 1034 § 3.1
   'idn-hostname',           // RFC 5890 § 2.3.2.3, or hostname
-  'ipv4',                   // RFC 2673 § 3.2 "dotted-quad"
-  'ipv6',                   // RFC 4291 § 2.2 "IPv6 address"
+  'ipv4',                   // RFC 2673 § 3.2 'dotted-quad'
+  'ipv6',                   // RFC 4291 § 2.2 'IPv6 address'
   'uri',                    // RFC 3986
   'uri-reference',          // RFC 3986, or uri
   'iri',                    // RFC 3987
@@ -100,31 +77,47 @@ export const ValidFormats: Array<string> = [
   'u\\d+',       // Unsigned integer or bit field of <n> bits, value must be between 0 and 2^<n> - 1
   // Serialization
   'x',          // Binary-JSON string containing Base16 (hex) encoding of a binary value as defined in RFC 4648 § 8
-  'ipv4-addr',  // Binary-JSON string containing a "dotted-quad" as specified in RFC 2673 § 3.2.
+  'ipv4-addr',  // Binary-JSON string containing a 'dotted-quad' as specified in RFC 2673 § 3.2.
   'ipv6-addr',  // Binary-JSON string containing text representation of IPv6 address specified in RFC 4291 § 2.2
   'ipv4-net',   // Array-JSON string containing text representation of IPv4 address range specified in RFC 4632 § 3.1
   'ipv6-net'    // Array-JSON string containing text representation of IPv6 address range specified in RFC 4291 § 2.3
 ];
 
-export const ValidOptions: Record<string, Array<string>> = {
+export const RequiredOptions: Record<string, Array<string>> = {
   // Primitives
-  Binary: ['format', 'minv', 'maxv'],
+  Binary: [],
   Boolean: [],
-  Integer: ['format', 'minv', 'maxv'],
-  Number: ['format', 'minf', 'maxf'],
-  Null: [],
-  String: ['format', 'pattern', 'maxv', 'minv'],
+  Integer: [],
+  Number: [],
+  String: [],
   // Structures
-  Array: ['format', 'minv', 'maxv', 'extend'],
-  ArrayOf: ['vtype', 'minv', 'maxv', 'set', 'unique', 'unordered'],
-  Choice: ['id', 'extend'],
-  Enumerated: ['id', 'enum', 'pointer', 'extend'],
-  Map: ['id', 'minv', 'maxv', 'extend'],
-  MapOf: ['ktype', 'vtype', 'minv', 'maxv'],
-  Record: ['minv', 'maxv', 'extend']
+  Array: [],
+  ArrayOf: ['vtype'],
+  Choice: [],
+  Enumerated:[],
+  Map: [],
+  MapOf: ['ktype', 'vtype'],
+  Record: []
 };
 
-export const FieldOptions = {
+export const ValidOptions: Record<string, Array<string>> = {
+  // Primitives
+  Binary: ['minv', 'maxv', 'format'],
+  Boolean: [],
+  Integer: ['minv', 'maxv', 'format'],
+  Number: ['minf', 'maxf', 'format'],
+  String: ['minv', 'maxv', 'format', 'pattern'],
+  // Structures
+  Array: ['extend', 'format', 'minv', 'maxv'],
+  ArrayOf: ['vtype', 'minv', 'maxv', 'unique', 'set', 'unordered'],
+  Choice: ['id', 'extend'],
+  Enumerated: ['id', 'enum', 'pointer', 'extend'],
+  Map: ['id', 'extend', 'minv', 'maxv'],
+  MapOf: ['ktype', 'vtype', 'minv', 'maxv'],
+  Record: ['extend', 'minv', 'maxv']
+};
+
+export const FieldOptionInputArgs = {
   minc: {
     type: 'number',
     description: 'Minimum cardinality'
@@ -151,7 +144,7 @@ export const FieldOptions = {
   }
 };
 
-export const TypeOptions = {
+export const TypeOptionInputArgs = {
   id: {
     type: 'checkbox',
     description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName'

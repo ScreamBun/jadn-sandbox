@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { FieldOptions, OptionChange } from './consts';
+import { FieldOptionInputArgs, OptionChange } from './consts';
 import KeyValueEditor from '../key_value';
 
 // Interfaces
@@ -23,12 +23,12 @@ const FieldOptionsEditor: FunctionComponent<FieldOptionsEditorProps> = props => 
   } = props;
 
   const validOptions = () => {
-    return Object.keys(FieldOptions).map(key => {
+    return Object.keys(FieldOptionInputArgs).map(key => {
       return (
         <KeyValueEditor
           key={ key }
           id={ key }
-          { ...FieldOptions[key] }
+          { ...FieldOptionInputArgs[key] }
           placeholder={ key }
           removable={ false }
           change={ val => change([key, val], 'field') }

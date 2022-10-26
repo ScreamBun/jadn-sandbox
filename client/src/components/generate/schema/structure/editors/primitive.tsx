@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
-import { StandardFieldKeys, StandardFieldObject } from './consts';
+import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options';
 import { zip } from '../../../../utils';
 
@@ -20,7 +20,7 @@ interface PrimitiveEditorProps {
 
 interface PrimitiveEditorState {
   modal: boolean;
-  value: StandardFieldObject;
+  value: StandardFieldObject|PrimitiveTypeObject;
 }
 
 // Primitive Editor
@@ -33,8 +33,15 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
     this.toggleModal = this.toggleModal.bind(this);
 
     const { value } = this.props;
+    let valueObj: StandardFieldObject|PrimitiveTypeObject;
+    if (Number.isInteger(value[0])) {
+      valueObj = zip(StandardFieldKeys, value) as StandardFieldObject;
+    } else {
+      valueObj = zip(TypeKeys, value) as PrimitiveTypeObject;
+    }
+
     this.state = {
-      value: zip(StandardFieldKeys, value) as StandardFieldObject,
+      value: valueObj,
       modal: false
     };
   }
