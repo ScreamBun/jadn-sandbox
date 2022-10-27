@@ -1,13 +1,13 @@
 import * as generator from '../actions/generate';
-import { SchemaJADN } from '../components/generate/schema/interface';
+import { SchemaJADN, TypeArray } from '../components/generate/schema/interface';
 
 export interface GenerateState {
   selectedSchema: SchemaJADN;
   schemas: Array<string>;
   message: Record<string, any>;
   types: {
-	  base: Array<string>;
-    schema: Record<string, any>;
+    base: Array<string>;
+    schema: Record<string, TypeArray>;
   }
 }
 
@@ -31,10 +31,14 @@ export default (state=initialState, action: generator.GenerateActions) => {
         schemas: action.payload.schemas || []
       };
 
-    case generator.SCHEMA_DEFINE:
+    case generator.SCHEMA_SUCCESS:
       return {
         ...state,
-        selectedSchema: action.payload.schema || {}
+        selectedSchema: action.payload.schema || {},
+        types: {
+          ...state.types,
+          schema: action.payload.schema.types.map(t => ({ [t[0]]: t })).reduce((prev, curr) => Object.assign(prev, curr), {})
+        }
       };
 
     case generator.INFO_FAILURE:

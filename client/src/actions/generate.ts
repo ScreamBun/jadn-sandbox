@@ -15,10 +15,11 @@ export const setSchema = (schema: SchemaJADN) => createAction({
   endpoint: '',
   method: 'OPTIONS',
   types: [
+    SCHEMA_DEFINE,
     {
-      type: SCHEMA_DEFINE,
+      type: SCHEMA_SUCCESS,
       payload: (_action, _state) => ({ schema })
-      }, SCHEMA_SUCCESS, SCHEMA_FAILURE
+      }, SCHEMA_FAILURE
     ]
 });
 

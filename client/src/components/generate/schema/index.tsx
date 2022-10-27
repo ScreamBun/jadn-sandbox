@@ -45,7 +45,8 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  info: () => dispatch(GenActions.info())
+  info: () => dispatch(GenActions.info()),
+  setSchema: (s: SchemaJADN) => dispatch(GenActions.setSchema(s))
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -92,6 +93,11 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
   shouldComponentUpdate(nextProps: GenerateConnectedProps, nextState: GenerateState) {
     const propsUpdate = this.props !== nextProps;
     const stateUpdate = this.state !== nextState;
+    // eslint-disable-next-line react/destructuring-assignment
+    if (this.state.schema !== nextState.schema) {
+      const { setSchema } = nextProps;
+      setSchema(nextState.schema);
+    }
     return propsUpdate || stateUpdate;
   }
 
