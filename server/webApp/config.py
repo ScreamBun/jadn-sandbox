@@ -8,7 +8,8 @@ from jadnschema.convert import SchemaFormats
 class Config:
     APP_DIR = os.path.realpath(os.path.dirname(__file__))
     APP_DATA = os.path.join(APP_DIR, "data")
-    VERSION_INFO = json.loads(open(os.path.join(APP_DATA, "version.json"), "r").read())
+    with open(os.path.join(APP_DATA, "version.json"), "r", encoding="utf-8") as f:
+        VERSION_INFO = json.load(f)
     APPLICATION_ROOT = "/"
     STATIC_FOLDER = os.path.join(APP_DIR, "static")
     TEMPLATE_FOLDER = os.path.join(APP_DIR, "templates")
@@ -42,11 +43,13 @@ class Config:
     # OpenC2 Options
     OPEN_C2_DATA = os.path.join(APP_DATA, "openc2_files")
     OPEN_C2_SCHEMA_THEME = os.path.join(OPEN_C2_DATA, "openc2_schema_theme.css")
+    PROFILE_TEST_DATA = os.path.join(APP_DATA, "test_messages")
 
     try:
-        with open(os.path.join(APP_DATA, "openc2_files", "messages", "_default_types.json")) as f:
+        with open(os.path.join(APP_DATA, "openc2_files", "messages", "_default_types.json"), "r", encoding="utf-8") as f:
             DEFAULT_MESSAGE_TYPES = json.load(f)
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
+        # TODO: pick better exception
         DEFAULT_MESSAGE_TYPES = {}
 
     VALID_SCHEMAS = ["jadn", ]
@@ -56,11 +59,9 @@ class Config:
 
 class DefaultConfig(Config):
     DEBUG = False
-
     LOG_LEVEL = "INFO"
 
 
 class DevConfig(Config):
     DEBUG = True
-
     LOG_LEVEL = "DEBUG"

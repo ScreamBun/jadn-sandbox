@@ -9,8 +9,7 @@ app.config.from_object(DefaultConfig)
 app.url_map.strict_slashes = False
 
 print("Starting OpenC2 Flask Server")
-
 app.validator = Validator()
 
-from .views import *
+from .views import *  # pylint: disable=wrong-import-position
 register_all(app)

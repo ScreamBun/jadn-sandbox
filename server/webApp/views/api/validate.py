@@ -23,8 +23,8 @@ class Validate(Resource):
     Endpoint for api/validate
     """
     def get(self):
-        schemas = re.compile(f"\.({'|'.join(current_app.config.get('VALID_SCHEMAS'))})$")
-        messages = re.compile(f"\.({'|'.join(current_app.config.get('VALID_MESSAGES'))})$")
+        schemas = re.compile(fr"\.({'|'.join(current_app.config.get('VALID_SCHEMAS'))})$")
+        messages = re.compile(fr"\.({'|'.join(current_app.config.get('VALID_MESSAGES'))})$")
         message_files = {}
 
         for msg in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "messages")):
@@ -43,7 +43,7 @@ class Validate(Resource):
         fmt = args["message-format"] or "json"
         try:
             schema = json.dumps(ast.literal_eval(args["schema"]))
-        except (TypeError, ValueError) as e:
+        except (TypeError, ValueError):
             schema = args["schema"]
 
         val, valMsg, msgJson, msgOrig = current_app.validator.validateMessage(schema, args["message"], fmt, args["message-decode"])
@@ -95,5 +95,5 @@ resources = {
 
 def add_resources(bp, url_prefix=""):
     for cls, opts in resources.items():
-        args = ["{}{}".format(url_prefix, url) for url in opts["urls"]] + opts.get("args", [])
+        args = [f"{url_prefix}{url}" for url in opts["urls"]] + opts.get("args", [])
         bp.add_resource(cls, *args, **opts.get("kwargs", {}))

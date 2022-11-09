@@ -30,7 +30,7 @@ class Convert(Resource):
     """
 
     def get(self):
-        schemas = re.compile(f"\.({'|'.join(current_app.config.get('VALID_SCHEMAS'))})$")
+        schemas = re.compile(fr"\.({'|'.join(current_app.config.get('VALID_SCHEMAS'))})$")
 
         return jsonify({
             "schemas": [s for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "schemas")) if schemas.search(s)],
@@ -45,7 +45,8 @@ class Convert(Resource):
             conv = "Valid Base Schema"
             try:
                 conv_fmt = SchemaFormats(args["convert-to"])
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
+                # TODO: pick better exception
                 conv = "Invalid Conversion Type"
             else:
                 kwargs = {
@@ -98,5 +99,5 @@ resources = {
 
 def add_resources(bp, url_prefix=""):
     for cls, opts in resources.items():
-        args = ["{}{}".format(url_prefix, url) for url in opts["urls"]] + opts.get("args", [])
+        args = [f"{url_prefix}{url}" for url in opts["urls"]] + opts.get("args", [])
         bp.add_resource(cls, *args, **opts.get("kwargs", {}))

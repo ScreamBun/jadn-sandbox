@@ -15,14 +15,15 @@ class LoadFile(Resource):
     def get(self, filetype, filename):
         """
         check if the requested file exists, load and send to client if available
-        :param content: path that was navigated to
+        :param filetype: path that was navigated to
+        :param filename: name of the file to attempt to load
         :return: file or 404
         """
         filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
         print(f'Load: {filePath}', flush=True)
 
         if os.path.isfile(filePath):
-            name, ext = os.path.splitext(filename)
+            _, ext = os.path.splitext(filename)
             with open(filePath, "rb") as f:
                 filedata = ""
 
@@ -30,9 +31,9 @@ class LoadFile(Resource):
                     filedata = json.load(f)
                 else:
                     for c in f.read():
-                        asciiNum = c if type(c) is int else ord(c)
-                        asciiChr = c if type(c) is str else chr(c)
-                        filedata += asciiChr if asciiNum <= 128 else "\\x{:02X}".format(asciiNum)
+                        asciiNum = c if isinstance(c, int) else ord(c)
+                        asciiChr = c if isinstance(c, str) else chr(c)
+                        filedata += asciiChr if asciiNum <= 128 else f"\\x{asciiNum:02X}"
 
             return {
                 "file": filename,
@@ -51,5 +52,5 @@ resources = {
 
 def add_resources(bp, url_prefix=""):
     for cls, opts in resources.items():
-        args = ["{}{}".format(url_prefix, url) for url in opts["urls"]] + opts.get("args", [])
+        args = [f"{url_prefix}{url}" for url in opts["urls"]] + opts.get("args", [])
         bp.add_resource(cls, *args, **opts.get("kwargs", {}))

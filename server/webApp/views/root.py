@@ -36,7 +36,7 @@ class Endpoints(Resource):
 
             options = {}
             for arg in rule.arguments:
-                options[arg] = "[{0}]".format(arg)
+                options[arg] = f"[{arg}]"
 
             url = url_for(rule.endpoint, **options)
 
@@ -84,7 +84,7 @@ class CatchAll(Resource):
 
         err = {
             "message": [
-                "The requested URL /{} was not found on the server.".format(content),
+                f"The requested URL /{content} was not found on the server.",
                 "If you entered the URL manually please check your spelling and try again.",
             ]
         }
