@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+clear
+
 # GUI Build
 cd client
 yarn && yarn build
@@ -11,5 +13,5 @@ cp ./server/webApp/static/index.html ./server/webApp/templates/index.html
 
 # Server Build
 cd ./server
-clear
+#clear
 source ./start.sh

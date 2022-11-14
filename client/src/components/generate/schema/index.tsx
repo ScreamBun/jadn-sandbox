@@ -20,6 +20,7 @@ import { FormatJADN, JADNInput } from '../../utils';
 
 import { RootState } from '../../../reducers';
 import * as GenActions from '../../../actions/generate';
+import {faMicroscope} from "@fortawesome/free-solid-svg-icons/faMicroscope";
 
 // Interface
 type Options = 'info' | 'types';
@@ -30,6 +31,7 @@ interface GenerateProps {}
 interface GenerateState {
   downloadTooltip: boolean;
   uploadTooltip: boolean;
+  isRunTests: boolean;
   schema: SchemaJADN;
   activeOption: Options;
   activeView: Tabs;
@@ -70,6 +72,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
     this.state = {
       downloadTooltip: false,
       uploadTooltip: false,
+      isRunTests: false,
       schema: {
         types: []
       },
@@ -223,7 +226,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
 
   schemaOptions() {
     const {
-      activeOption, download, downloadTooltip, uploadTooltip
+      activeOption, download, downloadTooltip, uploadTooltip, isRunTests
     } = this.state;
     const infoKeys = Object.keys(Info).map(k => (
       <Draggable type="info" data={ k } key={ Info[k].key }>
@@ -282,11 +285,17 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
           <Button id="downloadTooltip" color="primary" onClick={ this.downloadConfig } href={ download.content } download={ download.file } target="_blank" rel="noreferrer" >
             <FontAwesomeIcon icon={ faFileDownload } color="white" size='2x' />
           </Button>
+          <Button id="runTests" color="success" onClick={ this.runTests } >
+            <FontAwesomeIcon icon={ faMicroscope} color="white" size='2x' />
+          </Button>
         </div>
         <Tooltip placement="bottom" isOpen={ uploadTooltip } target="uploadTooltip" toggle={ () => this.setState(prevState => ({ uploadTooltip: !prevState.uploadTooltip })) }>
           Upload JADN Schema
         </Tooltip>
         <Tooltip placement="bottom" isOpen={ downloadTooltip } target="downloadTooltip" toggle={ () => this.setState(prevState => ({ downloadTooltip: !prevState.downloadTooltip })) }>
+          Download converted schema
+        </Tooltip>
+        <Tooltip placement="bottom" isOpen={ isRunTests } target="runTests" toggle={ () => this.setState(prevState => ({ isRunTests: !prevState.isRunTests })) }>
           Download converted schema
         </Tooltip>
       </div>
@@ -342,6 +351,10 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
     }
   }
 
+  runTests() {
+    alert('hit');
+  }
+
   render() {
     const { activeView, schema } = this.state;
     const { canonical, title } = this.meta;
@@ -369,6 +382,14 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                 onClick={ () => this.toggleViews('jadn') }
               >
                 JADN
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                  className={ classnames({ active: activeView === 'test-results' }) }
+                  onClick={ () => this.toggleViews('test-results') }
+              >
+                Test Results
               </NavLink>
             </NavItem>
           </Nav>
@@ -403,6 +424,9 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                   viewOnly
                   // waitAfterKeyPress={ 500 }
                 />
+              </TabPane>
+              <TabPane tabId='test-results'>
+                <div className='m-2 alert alert-info'>Coming soon</div>
               </TabPane>
             </TabContent>
           </Droppable>
