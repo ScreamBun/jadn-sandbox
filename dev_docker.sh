@@ -2,8 +2,11 @@
 
 # GUI Build
 cd client
-npm install
-npm run build
+yarn
+yarn build
+
+# Container
+IMG="jadn_webapp"
 
 # Sync Built GUI Files
 cd ../
@@ -12,6 +15,14 @@ cp ./server/webApp/static/index.html ./server/webApp/templates/index.html
 
 # Server Build
 cd ./server
-docker build -t jadn_webapp -f Dockerfile .
+if [ "$(docker ps -aq --filter "name=$IMG")" != "" ]; then
+  docker stop $IMG && docker rm -fv $IMG
+fi
 
-docker run --name jadn_webapp -p 8080:8080 jadn_webapp
+docker images -q $IMG 2>&1 >/dev/null
+if [ $? -eq 0 ]; then
+  docker rmi $IMG
+fi
+
+docker build -t $IMG -f Dockerfile .
+docker run --name $IMG -p 8080:8080 $IMG
