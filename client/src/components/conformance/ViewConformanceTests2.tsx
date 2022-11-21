@@ -7,19 +7,17 @@ import {faRefresh} from "@fortawesome/free-solid-svg-icons/faRefresh";
 
 const ViewConformanceTests2 = () => {
 
-    const [search, setSearch] = useState("");
-    const [filterlist, setFilterlist] = useState([]);
-    const [origlist, setOriglist] = useState([]);
-
     const [languageTestTitle, setLanguageTestTitle] = useState('')
     const [languageTestProfiles, setLanguageTestProfiles] = useState([])
+    const [languageTests, setLanguageTests] = useState([])
     const [languageTestSearch, setLanguageTestSearch] = useState("");
     const [filteredLanguageTests, setFilteredLanguageTests] = useState([])
-    const [languageTests, setLanguageTests] = useState([])
 
     const [slpfTestTitle, setSlpfTestTitle] = useState('')
     const [slpfTestProfiles, setSlpfTestProfiles] = useState([])
-    const [slpfTests, setSlpfTests] = useState({})
+    const [slpfTests, setSlpfTests] = useState([])
+    const [slpfTestSearch, setSlpfTestSearch,] = useState("");
+    const [filteredSlpfTests, setFilteredSlpfTests] = useState([])
 
 
     useEffect(() => {
@@ -34,37 +32,27 @@ const ViewConformanceTests2 = () => {
     }, [])
 
     useEffect(() => {
-        console.log("useEffect");
-        fetchData();
-    }, [""]);
+        const filteredLangList = languageTests.filter((item) => {
+            let all_str = `${item}`.toLowerCase();
+            return all_str.indexOf(languageTestSearch) > -1;
+        });
+        setFilteredLanguageTests(filteredLangList);
+    }, [languageTestSearch]);
 
     useEffect(() => {
-
-        // TODO: Let off here, need to convert object into array
-
-        const filteredList = origlist.filter((item) => {
-            console.log('useEffect / filterlist: ' + search);
-            let all_str = `${item.id} ${item.title}`.toLowerCase();
-            // let all_str = `${item}`.toLowerCase();
-            return all_str.indexOf(search) > -1; // View All When Search Empty
-            // return all_str.indexOf(search) > -1 && search;
+        const filteredSlpfList = slpfTests.filter((item) => {
+            let all_str = `${item}`.toLowerCase();
+            return all_str.indexOf(slpfTestSearch) > -1;
         });
-        setFilterlist(filteredList);
-    }, [search]);
+        setFilteredSlpfTests(filteredSlpfList);
+    }, [slpfTestSearch]);
 
-    const onKeyUpHandler = (e:any) => {
-        console.log('onKeyUp: ' + e.target.value.toLowerCase());
-        setSearch(e.target.value.toLowerCase());
+    const onLangTestKeyUpHandler = (e:any) => {
+        setLanguageTestSearch(e.target.value.toLowerCase());
     }
 
-    const fetchData = () => {
-        fetch("https://jsonplaceholder.typicode.com/todos")
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                setOriglist(data);
-                setFilterlist(data);
-            });
+    const onSlpfTestKeyUpHandler = (e:any) => {
+        setSlpfTestSearch(e.target.value.toLowerCase());
     }
 
     const setTestState = (data: any) => {
@@ -77,9 +65,10 @@ const ViewConformanceTests2 = () => {
                 setFilteredLanguageTests(data.Language_UnitTests.profiles);
             }
             if(data.Language_UnitTests.tests){
-                const tests = data.Language_UnitTests.tests;
-                let result = Object.keys(tests).map((key) => key + " : " + tests[key]);
-                setLanguageTests(result);
+                const langTests = data.Language_UnitTests.tests;
+                let langResult = Object.keys(langTests).map((key) => key + " : " + langTests[key]);
+                setLanguageTests(langResult);
+                setFilteredLanguageTests(langResult);
             }
         }
 
@@ -91,7 +80,10 @@ const ViewConformanceTests2 = () => {
                 setSlpfTestProfiles(data.SLPF_UnitTests.profiles);
             }
             if(data.SLPF_UnitTests.tests){
-                setSlpfTests(data.SLPF_UnitTests.tests);
+                const slpfTests = data.SLPF_UnitTests.tests;
+                let slpfResult = Object.keys(slpfTests).map((key) => key + " : " + slpfTests[key]);
+                setSlpfTests(slpfResult);
+                setFilteredSlpfTests(slpfResult);
             }
         }
 
@@ -111,33 +103,6 @@ const ViewConformanceTests2 = () => {
     return(
 
       <div className='p-2'>
-
-          <div className='row mb-2'>
-              <div className='col'>
-                  <div className="mb-3">
-                      <h1>Filter List Example - FreakyJolly.com</h1>
-                      <label className="form-label">Filter List</label>
-                      <input
-                          id="searchFilter"
-                          type="text"
-                          className="form-control"
-                          defaultValue={search}
-                          placeholder="Enter ID or Name"
-                          onKeyUp={onKeyUpHandler}
-                      />
-                  </div>
-                  <ul className="list-group">
-                      {filterlist.map((item, key) => (
-                          <li className="list-group-item"
-                              key={key}
-                              value={item.id}>
-                              {item.id}) {item.title}
-                          </li>
-                      ))}
-                  </ul>
-              </div>
-          </div>
-
           <div className='row mb-2'>
               <div className='col'>
                   <Button
@@ -154,28 +119,52 @@ const ViewConformanceTests2 = () => {
                           {languageTestTitle}
                       </div>
                       <div className='card-body'>
-                          <ul className="list-group mb-2">
-                              <li className="list-group-item active">Valid Profiles
+                          <div className='card mb-2'>
+                              <div className='card-header bg-primary'>
+                                  Valid Profiles
                                   <span className="ml-2 badge bg-light rounded-pill">
                                       {Object.keys(languageTestProfiles).length}</span>
-                              </li>
-                              {Object.keys(languageTestProfiles).map(lpKey => {
-                                  return (
-                                      <li className="list-group-item">{languageTestProfiles[lpKey]}</li>
-                                  )
-                              })}
-                          </ul>
-                          <ul className="list-group">
-                              <li className="list-group-item active">Tests (Name and Description)
-                                  <span className="ml-2 badge bg-light rounded-pill">
-                                      {Object.keys(languageTests).length}</span>
-                              </li>
-                              {Object.keys(languageTests).map(lKey => {
-                                  return (
-                                      <li className="list-group-item">{lKey} : {languageTests[lKey]}</li>
-                                  )
-                              })}
-                          </ul>
+                              </div>
+                              <div className='card-body p-0'>
+                                  <ul className="list-group list-group-flush">
+                                      {Object.keys(languageTestProfiles).map(lpKey => {
+                                          return (
+                                              <li className="list-group-item">{languageTestProfiles[lpKey]}</li>
+                                          )
+                                      })}
+                                  </ul>
+                              </div>
+                          </div>
+                          <div className='card mb-2'>
+                              <div className='card-header bg-primary'>
+                                  <div className='row'>
+                                      <div className='col pt-2'>
+                                          Tests (Name and Description)
+                                          <span className="ml-2 badge bg-light rounded-pill">
+                                      {Object.keys(filteredLanguageTests).length}</span>
+                                      </div>
+                                      <div className='col float-right'>
+                                          <input
+                                              id="langTestSearchFilter"
+                                              type="text"
+                                              className="form-control"
+                                              defaultValue={languageTestSearch}
+                                              placeholder="Filter Tests"
+                                              onKeyUp={onLangTestKeyUpHandler}
+                                          />
+                                      </div>
+                                  </div>
+                              </div>
+                              <div className='card-body p-0'>
+                                  <ul className="list-group list-group-flush">
+                                      {Object.keys(filteredLanguageTests).map(lKey => {
+                                          return (
+                                              <li className="list-group-item">{lKey} : {filteredLanguageTests[lKey]}</li>
+                                          )
+                                      })}
+                                  </ul>
+                              </div>
+                          </div>
                       </div>
                   </div>
               </div>
@@ -187,28 +176,52 @@ const ViewConformanceTests2 = () => {
                           {slpfTestTitle}
                       </div>
                       <div className='card-body'>
-                          <ul className="list-group mb-2">
-                              <li className="list-group-item active">Valid Profiles
-                                  <span className="ml-2 badge bg-dark rounded-pill">
+                          <div className='card mb-2'>
+                              <div className='card-header bg-primary'>
+                                  Valid Profiles
+                                  <span className="ml-2 badge bg-light rounded-pill">
                                       {Object.keys(slpfTestProfiles).length}</span>
-                              </li>
-                              {Object.keys(slpfTestProfiles).map(spKey => {
-                                  return (
-                                      <li className="list-group-item">{slpfTestProfiles[spKey]}</li>
-                                  );
-                              })}
-                          </ul>
-                          <ul className="list-group">
-                              <li className="list-group-item active">Tests (Name and Description)
-                                  <span className="ml-2 badge bg-dark rounded-pill">
-                                      {Object.keys(slpfTests).length}</span>
-                              </li>
-                              {Object.keys(slpfTests).map(sKey => {
-                                  return (
-                                      <li className="list-group-item">{sKey} : {slpfTests[sKey]}</li>
-                                  );
-                              })}
-                          </ul>
+                              </div>
+                              <div className='card-body p-0'>
+                                  <ul className="list-group list-group-flush">
+                                      {Object.keys(slpfTestProfiles).map(lpKey => {
+                                          return (
+                                              <li className="list-group-item">{slpfTestProfiles[lpKey]}</li>
+                                          )
+                                      })}
+                                  </ul>
+                              </div>
+                          </div>
+                          <div className='card mb-2'>
+                              <div className='card-header bg-primary'>
+                                  <div className='row'>
+                                      <div className='col pt-2'>
+                                          Tests (Name and Description)
+                                          <span className="ml-2 badge bg-light rounded-pill">
+                                      {Object.keys(filteredSlpfTests).length}</span>
+                                      </div>
+                                      <div className='col float-right'>
+                                          <input
+                                              id="slpfTestSearch"
+                                              type="text"
+                                              className="form-control"
+                                              defaultValue={slpfTestSearch}
+                                              placeholder="Filter Tests"
+                                              onKeyUp={onSlpfTestKeyUpHandler}
+                                          />
+                                      </div>
+                                  </div>
+                              </div>
+                              <div className='card-body p-0'>
+                                  <ul className="list-group list-group-flush">
+                                      {Object.keys(filteredSlpfTests).map(sKey => {
+                                          return (
+                                              <li className="list-group-item">{sKey} : {filteredSlpfTests[sKey]}</li>
+                                          )
+                                      })}
+                                  </ul>
+                              </div>
+                          </div>
                       </div>
                   </div>
               </div>
