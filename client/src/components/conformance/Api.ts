@@ -14,9 +14,9 @@ export async function runConformanceTest(profileType: string, schema: any) {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: schema })
+            body: JSON.stringify({ schema })
         };
-        const response = await fetch('/api/conformance?profile=' + profileType, requestOptions);
+        const response = await fetch('/api/conformance/' + profileType, requestOptions);
         return await response.json();
     }catch(error) {
         return [];
