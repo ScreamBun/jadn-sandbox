@@ -8,3 +8,17 @@ export async function getAllConformanceTests() {
     }
 
 }
+
+export async function runConformanceTest(profileType: string, schema: any) {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: schema })
+        };
+        const response = await fetch('/api/conformance?profile=' + profileType, requestOptions);
+        return await response.json();
+    }catch(error) {
+        return [];
+    }
+}

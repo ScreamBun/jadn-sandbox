@@ -21,8 +21,9 @@ import * as GenActions from '../../../actions/generate';
 import * as ConformanceActions from "../../../actions/conformance";
 
 // Module requires
-import { ViewConformanceTests2 } from "../../conformance/ViewConformanceTests2";
+import { ViewConformanceTests } from "../../conformance/ViewConformanceTests";
 import {getConformanceTests} from "../../../actions/conformance";
+import RunConformanceTests from "../../conformance/RunConformanceTests";
 
 // Interface
 type Options = 'info' | 'types';
@@ -439,12 +440,13 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                                 />
                             </TabPane>
                             <TabPane tabId='tests'>
-                                {/*<ViewConformanceTests getConformanceTests={this.props.getConformanceTests} />*/}
-                                <ViewConformanceTests2 conformanceTests={this.props.getConformanceTests} />
+                                <div className='m-2'>
+                                    <ViewConformanceTests conformanceTests={this.props.getConformanceTests} />
+                                </div>
                             </TabPane>
                             <TabPane tabId='test-results'>
                                 <div className='m-2'>
-                                    <div className='alert alert-info'>Test results will eventually live here</div>
+                                    <RunConformanceTests schemaToTest={this.state.schema} />
                                 </div>
                             </TabPane>
                         </TabContent>
