@@ -22,7 +22,6 @@ import * as ConformanceActions from "../../../actions/conformance";
 
 // Module requires
 import { ViewConformanceTests } from "../../conformance/ViewConformanceTests";
-import {getConformanceTests} from "../../../actions/conformance";
 import RunConformanceTests from "../../conformance/RunConformanceTests";
 
 // Interface
