@@ -2,6 +2,11 @@
 
 #### Notes:
 - React based single page application
+- To update dependencies install the yarn upgrade-interactive, the following its onscreen instructions.  
+  - It is preferred to start with the min upgrades, then test the app.  
+  - Major upgrades should be researched and tested one at a time. 
+  - After install, to run enter this in a command window under the client:
+    - yarn upgrade-interactive
 
 ### Resources
 - General
