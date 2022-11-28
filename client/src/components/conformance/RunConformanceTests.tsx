@@ -13,9 +13,69 @@ import React, { useEffect, useMemo, useState } from 'react';
 // Module Specific
 import { getAllConformanceTests, runConformanceTest } from './Api';
 
+interface StatsInterface {
+  stats : {
+    overall: {
+      total: 0,
+      error: 0,
+      failure: 0,
+      success: 0,
+      expected_failure: 0,
+      skipped: 0,
+      unexpected_success: 0
+    }
+  },
+  language : {
+    success: { [key: string]: string },
+    expected_failure: { [key: string]: string },
+    skipped: { [key: string]: string },
+    unexpected_success: { [key: string]: string },
+    failure: { [key: string]: string },
+    error: { [key: string]: string }
+  },
+  slpf : {
+    success: { [key: string]: string },
+    expected_failure: { [key: string]: string },
+    skipped: { [key: string]: string },
+    unexpected_success: { [key: string]: string },
+    failure: { [key: string]: string },
+    error: { [key: string]: string }
+  }
+}
 
-const PrettyPrintJson = ({data}: any) => {
-    return (<div><pre>{ JSON.stringify(data, null, 2) }</pre></div>);
+const StatsObj = {
+  stats : {
+    overall: {
+      total: 0,
+      error: 0,
+      failure: 0,
+      success: 0,
+      expected_failure: 0,
+      skipped: 0,
+      unexpected_success: 0
+    }
+  },
+  language : {
+    success: {},
+    expected_failure: {},
+    skipped: {},
+    unexpected_success: {},
+    failure: {},
+    error: {}
+  },
+  slpf : {
+    success: {},
+    expected_failure: {},
+    skipped: {},
+    unexpected_success: {},
+    failure: {},
+    error: {}
+  }
+};
+
+const PrettyPrintJson = (props: any) => {
+  const { data } = props;
+  return (<div><pre>{ JSON.stringify(data, null, 2) }</pre></div>);
 };
 
 const ListItemWithBadge = (props: any) => {
@@ -37,24 +97,17 @@ const RunConformanceTests = (props: any) => {
   const [profilesOptions, setProfilesOptions] = useState([] as string[]);
   const [profileSelection, setProfileSelection] = useState('');
   const [schemaToTest, setSchemaToTest] = useState({});
-  const [testResults, setTestResults] = useState({});
-  const [statsTotal, setStatsTotal] = useState(0);
-  const [statsSuccess, setStatsSuccess] = useState(0);
-  const [statsExpectedFailure, setStatsExpectedFailure] = useState(0);
-  const [statsSkipped, setStatsSkipped] = useState(0);
-  const [statsUnexpectedSuccess, setStatsUnexpectedSuccess] = useState(0);
-  const [statsFailure, setStatsFailure] = useState(0);
-  const [statsError, setStatsError] = useState(0);
+  const [testResults, setTestResults] = useState(StatsObj);
 
   const { schema = emptyObj } = props;
 
-  useEffect(() => {
-    console.log('RunConformanceTests init');
-  }, []);
+  // useEffect(() => {
+  //   console.log('RunConformanceTests init');
+  // }, []);
 
   useMemo( () => {
     // console.log(`useMemo props.schema : ${JSON.stringify(schema, null, 2)}`);
-    console.log(`RunConformance / useMemo / props.schema updated`);
+    // console.log(`RunConformance / useMemo / props.schema updated`);
     setSchemaToTest(schema);
   }, [schema]);
 
@@ -85,36 +138,11 @@ const RunConformanceTests = (props: any) => {
           });
   }, []);
 
-  const calcStats = (returnData: any) => {
+  const calcStats = (returnData: StatsInterface) => {
     setTestResults(returnData);
-    if (returnData.stats && returnData.stats.overall) {
-      if (returnData.stats.overall) {
-        if (returnData.stats.overall.total) {
-          setStatsTotal(returnData.stats.overall.total);
-        }
-        if (returnData.stats.overall.success) {
-          setStatsSuccess(returnData.stats.overall.success);
-        }
-        if (returnData.stats.overall.expected_failure) {
-          setStatsExpectedFailure(returnData.stats.overall.expected_failure);
-        }
-        if (returnData.stats.overall.skipped) {
-          setStatsSkipped(returnData.stats.overall.skipped);
-        }
-        if (returnData.stats.overall.unexpected_success) {
-          setStatsUnexpectedSuccess(returnData.stats.overall.unexpected_success);
-        }
-        if (returnData.stats.overall.failure) {
-          setStatsFailure(returnData.stats.overall.failure);
-        }
-        if (returnData.stats.overall.error) {
-          setStatsError(returnData.stats.overall.error);
-        }
-      }
-    }
   };
 
-  const onRunTests = (e:any) => {
+  const onRunTests = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
       let isValid = true;
@@ -145,7 +173,7 @@ const RunConformanceTests = (props: any) => {
           });
     };
 
-    const onProfileTypeChange = (e:any) => {
+    const onProfileTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setProfileSelection(e.target.value);
     };
 
@@ -177,22 +205,22 @@ const RunConformanceTests = (props: any) => {
               <div className='card-header'>
                 Results Summary
                 <span className='badge badge-info badge-pill ml-2'>
-                  { statsTotal }
+                  { testResults.stats.overall.total }
                 </span>
               </div>
               <div className='card-body'>
                 <div className='row'>
                   <div className='col-6'>
                     <ul className="list-group">
-                      <ListItemWithBadge itemLabel='Success' itemValue={ statsSuccess } bsBadgeType='badge-success' />
-                      <ListItemWithBadge itemLabel='Expected Failure' itemValue={ statsExpectedFailure } bsBadgeType='badge-success' />
-                      <ListItemWithBadge itemLabel='Skipped' itemValue={ statsSkipped } bsBadgeType='badge-secondary' />
+                      <ListItemWithBadge itemLabel='Success' itemValue={ testResults.stats.overall.success } bsBadgeType='badge-success' />
+                      <ListItemWithBadge itemLabel='Expected Failure' itemValue={ testResults.stats.overall.failure } bsBadgeType='badge-success' />
+                      <ListItemWithBadge itemLabel='Skipped' itemValue={ testResults.stats.overall.skipped } bsBadgeType='badge-secondary' />
                     </ul>
                   </div>
                   <div className='col-6'>
-                    <ListItemWithBadge itemLabel='Unexpected Success' itemValue={ statsUnexpectedSuccess } bsBadgeType='badge-warning' />
-                    <ListItemWithBadge itemLabel='Failure' itemValue={ statsFailure } bsBadgeType='badge-danger' />
-                    <ListItemWithBadge itemLabel='Error' itemValue={ statsError } bsBadgeType='badge-danger' />
+                    <ListItemWithBadge itemLabel='Unexpected Success' itemValue={ testResults.stats.overall.unexpected_success } bsBadgeType='badge-warning' />
+                    <ListItemWithBadge itemLabel='Failure' itemValue={ testResults.stats.overall.failure } bsBadgeType='badge-danger' />
+                    <ListItemWithBadge itemLabel='Error' itemValue={ testResults.stats.overall.error } bsBadgeType='badge-danger' />
                   </div>
                 </div>
               </div>
@@ -201,7 +229,33 @@ const RunConformanceTests = (props: any) => {
         </div>
         <div className='row mt-2'>
           <div className='col'>
-            <PrettyPrintJson data={ testResults } />
+            <div className='card'>
+              <div className='card-header'>
+                Tests that Passed
+              </div>
+              <div className='card-body'>
+                <ul className='list-group list-group-flush'>
+                  {/* Left off here, need to pull this into a function and change depending on lang or slpf, then show errors */}
+                  { Object.keys(testResults.language.success).map((key) => {
+                    return (
+                      <li key={ key } className='list-group-item'>{ key }</li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='row mt-2'>
+          <div className='col'>
+            <div className='card'>
+              <div className='card-header'>
+                JSON Data
+              </div>
+              <div className='card-body'>
+                <PrettyPrintJson data={ testResults } />
+              </div>
+            </div>
           </div>
         </div>
       </div>
