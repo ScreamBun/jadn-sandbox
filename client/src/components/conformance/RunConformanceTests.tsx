@@ -4,9 +4,11 @@ import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from 'reactstrap';
 import React, { useEffect, useMemo, useState } from 'react';
-import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-import cloneDeep from 'lodash/cloneDeep';
+// import {
+//  BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip
+// } from 'chart.js';
+// import { Bar } from 'react-chartjs-2';
+// import cloneDeep from 'lodash/cloneDeep';
 
 // Module Specific
 import { getAllConformanceTests, runConformanceTest } from './Api';
@@ -16,82 +18,35 @@ const PrettyPrintJson = ({data}: any) => {
     return (<div><pre>{ JSON.stringify(data, null, 2) }</pre></div>);
 };
 
+const ListItemWithBadge = (props: any) => {
+  const { itemLabel, itemValue, bsBadgeType } = props;
+  const badgeClasses = `badge ${  bsBadgeType  } badge-pill`;
+  return (
+    <li className="list-group-item d-flex justify-content-between align-items-center">
+      { itemLabel }
+      <span className={ badgeClasses }>
+        { itemValue }
+      </span>
+    </li>
+  );
+};
+
 const emptyObj: [] = [];
 const RunConformanceTests = (props: any) => {
 
-  let initialChartState = {
-    options : {
-      indexAxis: 'y' as const,
-      elements: {
-        bar: {
-          borderWidth: 2
-        }
-      },
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'right' as const
-        },
-        title: {
-          display: true,
-          text: 'Overall Stats'
-        }
-      }
-    },
-    data : {
-      labels: ['Results'],
-      datasets: [
-        {
-          label: 'Error',
-          data: [0],
-          backgroundColor: 'rgb(241,55,55)'
-        },
-        {
-          label: 'Failure',
-          data: [0],
-          backgroundColor: 'rgba(252,231,4,0.73)'
-        },
-        {
-          label: 'Success',
-          data: [0],
-          backgroundColor: 'rgba(88,243,124,0.5)'
-        },
-        {
-          label: 'Expected Failure',
-          data: [0],
-          backgroundColor: 'rgba(241,139,255,0.5)'
-        },
-        {
-          label: 'Skipped',
-          data: [0],
-          backgroundColor: 'rgba(101,97,97,0.5)'
-        },
-        {
-          label: 'Unexpected Success',
-          data: [0],
-          backgroundColor: 'rgba(53,162,235,0.5)'
-        }
-      ]
-    }
-  };
-
   const [profilesOptions, setProfilesOptions] = useState([] as string[]);
   const [profileSelection, setProfileSelection] = useState('');
-  const [testResults, setTestResults] = useState({});
   const [schemaToTest, setSchemaToTest] = useState({});
-
-  const [chartData, setChartData] = useState(initialChartState);
+  const [testResults, setTestResults] = useState({});
+  const [statsTotal, setStatsTotal] = useState(0);
+  const [statsSuccess, setStatsSuccess] = useState(0);
+  const [statsExpectedFailure, setStatsExpectedFailure] = useState(0);
+  const [statsSkipped, setStatsSkipped] = useState(0);
+  const [statsUnexpectedSuccess, setStatsUnexpectedSuccess] = useState(0);
+  const [statsFailure, setStatsFailure] = useState(0);
+  const [statsError, setStatsError] = useState(0);
 
   const { schema = emptyObj } = props;
-
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-  );
 
   useEffect(() => {
     console.log('RunConformanceTests init');
@@ -130,16 +85,34 @@ const RunConformanceTests = (props: any) => {
           });
   }, []);
 
-  function updateChartData(testData: any) {
-    const chartDataCopy = cloneDeep(chartData);
-    if (testData && testData.stats && testData.stats.overall) {
-      // TODO: Left off here, chart's data is not loading correctly
-      chartDataCopy.data.datasets[0].data = [testData.stats.overall.error];
-      chartDataCopy.data.datasets[1].data = [testData.stats.overall.failure];
-      chartDataCopy.data.datasets[2].data = [testData.stats.overall.success];
+  const calcStats = (returnData: any) => {
+    setTestResults(returnData);
+    if (returnData.stats && returnData.stats.overall) {
+      if (returnData.stats.overall) {
+        if (returnData.stats.overall.total) {
+          setStatsTotal(returnData.stats.overall.total);
+        }
+        if (returnData.stats.overall.success) {
+          setStatsSuccess(returnData.stats.overall.success);
+        }
+        if (returnData.stats.overall.expected_failure) {
+          setStatsExpectedFailure(returnData.stats.overall.expected_failure);
+        }
+        if (returnData.stats.overall.skipped) {
+          setStatsSkipped(returnData.stats.overall.skipped);
+        }
+        if (returnData.stats.overall.unexpected_success) {
+          setStatsUnexpectedSuccess(returnData.stats.overall.unexpected_success);
+        }
+        if (returnData.stats.overall.failure) {
+          setStatsFailure(returnData.stats.overall.failure);
+        }
+        if (returnData.stats.overall.error) {
+          setStatsError(returnData.stats.overall.error);
+        }
+      }
     }
-    setChartData(chartDataCopy);
-  }
+  };
 
   const onRunTests = (e:any) => {
       e.preventDefault();
@@ -162,8 +135,9 @@ const RunConformanceTests = (props: any) => {
       runConformanceTest(profileSelection, schemaToTest)
           .then(returnData => {
               if (returnData) {
-                  setTestResults(returnData);
-                  updateChartData(testResults);
+                calcStats(returnData);
+                  // setTestResults(returnData);
+                  // updateChartData(testResults);
               }
               return true;
           }).catch((_err:any) => {
@@ -199,7 +173,30 @@ const RunConformanceTests = (props: any) => {
         </div>
         <div className='row mt-2'>
           <div className='col'>
-            <Bar options={ chartData.options } data={ chartData.data } />
+            <div className='card'>
+              <div className='card-header'>
+                Results Summary
+                <span className='badge badge-info badge-pill ml-2'>
+                  { statsTotal }
+                </span>
+              </div>
+              <div className='card-body'>
+                <div className='row'>
+                  <div className='col-6'>
+                    <ul className="list-group">
+                      <ListItemWithBadge itemLabel='Success' itemValue={ statsSuccess } bsBadgeType='badge-success' />
+                      <ListItemWithBadge itemLabel='Expected Failure' itemValue={ statsExpectedFailure } bsBadgeType='badge-success' />
+                      <ListItemWithBadge itemLabel='Skipped' itemValue={ statsSkipped } bsBadgeType='badge-secondary' />
+                    </ul>
+                  </div>
+                  <div className='col-6'>
+                    <ListItemWithBadge itemLabel='Unexpected Success' itemValue={ statsUnexpectedSuccess } bsBadgeType='badge-warning' />
+                    <ListItemWithBadge itemLabel='Failure' itemValue={ statsFailure } bsBadgeType='badge-danger' />
+                    <ListItemWithBadge itemLabel='Error' itemValue={ statsError } bsBadgeType='badge-danger' />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className='row mt-2'>

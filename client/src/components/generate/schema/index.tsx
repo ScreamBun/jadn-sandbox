@@ -21,7 +21,7 @@ import * as GenActions from '../../../actions/generate';
 import * as ConformanceActions from "../../../actions/conformance";
 
 // Module requires
-import { ViewConformanceTests } from "../../conformance/ViewConformanceTests";
+import ViewConformanceTests from "../../conformance/ViewConformanceTests";
 import RunConformanceTests from "../../conformance/RunConformanceTests";
 
 // Interface

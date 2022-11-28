@@ -5,6 +5,7 @@ clear
 # GUI Build
 cd client
 yarn && yarn build
+#yarn && yarn start
 
 # Sync Built GUI Files
 cd ../

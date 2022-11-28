@@ -1,25 +1,22 @@
 export async function getAllConformanceTests() {
-
-    try{
+    try {
         const response = await fetch('/api/conformance');
         return await response.json();
-    }catch(error) {
+    } catch (error) {
         return [];
     }
-
 }
 
 export async function runConformanceTest(profileType: string, schema: any) {
-    try{
+    try {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            // body: schema
             body: JSON.stringify({ schema })
         };
-        const response = await fetch('/api/conformance/' + profileType, requestOptions);
+        const response = await fetch(`/api/conformance/${  profileType}`, requestOptions);
         return await response.json();
-    }catch(error) {
+    } catch (error) {
         return [];
     }
 }
