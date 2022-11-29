@@ -33,6 +33,7 @@
 #### Notes
 - Recommended use of virtualenv, if not currently, while on a development system
 - Not validated for use with python3
+- Gunicorn is the prod server like Apache, Flask is only for development purposes
 
 		
 ## Google App Engine (development & production)

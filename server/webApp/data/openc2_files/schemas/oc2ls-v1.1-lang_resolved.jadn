@@ -152,9 +152,9 @@
       [5, "args", "List of supported Command Argumemnts"]
     ]],
     ["Hashes", "Map", ["{1"], "Cryptographic hash values", [
-      [1, "md5", "Binary", ["/x", "{16", "}16"], "MD5 hash as defined in [RFC1321]"],
-      [2, "sha1", "Binary", ["/x", "{20", "}20"], "SHA1 hash as defined in [RFC6234]"],
-      [3, "sha256", "Binary", ["/x", "{32", "}32"], "SHA256 hash as defined in [RFC6234]"]
+      [1, "md5", "Binary", ["/x", "{16", "}16", "[0"], "MD5 hash as defined in [RFC1321]"],
+      [2, "sha1", "Binary", ["/x", "{20", "}20", "[0"], "SHA1 hash as defined in [RFC6234]"],
+      [3, "sha256", "Binary", ["/x", "{32", "}32", "[0"], "SHA256 hash as defined in [RFC6234]"]
     ]],
     ["Hostname", "String", ["/hostname"], "Internet host name as specified in [RFC1123]"],
     ["IDN-Hostname", "String", ["/idn-hostname"], "Internationalized Internet host name as specified in [RFC5890], Section 2.3.2.3"],

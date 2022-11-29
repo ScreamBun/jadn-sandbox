@@ -1,5 +1,5 @@
 <a href="https://openc2.org/" target="_blank">![OpenC2](https://github.com/ScreamBun/SB_Utils/blob/master/assets/images/openc2.png?raw=true)</a>
-# JADN Lint
+# JADN Sandbox
 
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-blue)](https://www.python.org/downloads/release/python-3100/)
 [![Open2C Lang Spec WD 17](https://img.shields.io/badge/Open2C%20Lang%20Spec-WD17-brightgreen)](https://github.com/dlemire60/openc2-oc2ls)
@@ -15,11 +15,33 @@
 2. Client Side
    1. Under WebValidator/client run: 
       1. yarn install
-      2. yarn run start
+      2. yarn build
+      2. yarn start or watch
 3. In your browser go to: http://localhost:3000/
 
-<i>Notes: </i>
-* The jadnschema*.whl was generated from the [Schema/jadnchema](tbd) git repo. 
+## How To
+### Create a jadnschema wheel
+* See readme under the jadnschema repo
+### Develop and Test JADN Schema on the Fly</i>
+* When developing and testing JADN Schema, you can link it directly to your virtual environment to avoid recreating wheels.
+  * Within your virtual environment view the python dependencies 
+    * pip freeze
+  * Remove the jadnschema wheel
+    * pip uninstall jadnschema
+  * Add the jadnschema git repo source to the python dependencies
+    * cd to jadnschema
+    * python setup.py develop
+    * pip freeze
+    * You should see this something similar to this
+      * -e git+ssh://git@ccoe-gitlab.hii-tsd.com/screamingbunny/schema/jadnschema.git@16ac517baa1499014ba221b7d1b7ffb3cef20ebe#egg=jadnschema
+  * Go back to the Web Validator and start the server
+    * ./start.sh
+  * Remember when you are finished, make sure to 
+    * recreate the jadnschema wheel, which contains the updated code
+    * uninstall the direct link, simple pip uninstall jadnschema
+    * install the updated jadnschema wheel
+
+## Notes
 * Docker run coming soon
 
 ## Client

@@ -2,13 +2,11 @@
 import { faClipboardCheck } from '@fortawesome/free-solid-svg-icons/faClipboardCheck';
 import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button } from 'reactstrap';
+import {
+Button, Nav, NavItem, NavLink, TabContent, TabPane
+} from 'reactstrap';
 import React, { useEffect, useMemo, useState } from 'react';
-// import {
-//  BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip
-// } from 'chart.js';
-// import { Bar } from 'react-chartjs-2';
-// import cloneDeep from 'lodash/cloneDeep';
+import classnames from 'classnames';
 
 // Module Specific
 import { getAllConformanceTests, runConformanceTest } from './Api';
@@ -42,6 +40,13 @@ interface StatsInterface {
     error: { [key: string]: string }
   }
 }
+
+const SUCCESS = 'success';
+const EXPECTED_FAILURE = 'expected_failure';
+const SKIPPED = 'skipped';
+const UNEXPECTED_SUCCESS = 'unexpected_success';
+const FAILURE = 'failure';
+const ERROR = 'error';
 
 const StatsObj = {
   stats : {
@@ -91,6 +96,40 @@ const ListItemWithBadge = (props: any) => {
   );
 };
 
+const TestsPassedContent = (props: any) => {
+  const { profileType, results } = props;
+  let resultsData = StatsObj.language;
+
+  if (results.language && (profileType === 'language' || profileType === 'language-any')) {
+    resultsData = results.language;
+  } else if (results.slpf && (profileType === 'slpf' || profileType === 'slpf-any')) {
+    resultsData = results.slpf;
+  }
+
+  // let testData: string[] = [];
+  // // eslint-disable-next-line no-restricted-syntax
+  // for (const [k, v] of Object.entries(resultsData.success)) {
+  //   const stringData = `${k  } ${  v}`;
+  //   testData.push(stringData);
+    // return (
+    //   <li key={ k } className='list-group-item'>
+    //     <span className='mr-2'>{ k }</span>
+    //     <span>{ v }</span>
+    //   </li>
+    // );
+  // }
+
+  return (
+    <ul className='list-group list-group-flush'>
+      { Object.keys(resultsData.success).map((key) => {
+        return (
+          <li key={ key } className='list-group-item'>{ key }</li>
+        );
+      })}
+    </ul>
+  );
+};
+
 const emptyObj: [] = [];
 const RunConformanceTests = (props: any) => {
 
@@ -98,16 +137,11 @@ const RunConformanceTests = (props: any) => {
   const [profileSelection, setProfileSelection] = useState('');
   const [schemaToTest, setSchemaToTest] = useState({});
   const [testResults, setTestResults] = useState(StatsObj);
+  const [activeTab, setActiveTab] = useState(SUCCESS);
 
   const { schema = emptyObj } = props;
 
-  // useEffect(() => {
-  //   console.log('RunConformanceTests init');
-  // }, []);
-
   useMemo( () => {
-    // console.log(`useMemo props.schema : ${JSON.stringify(schema, null, 2)}`);
-    // console.log(`RunConformance / useMemo / props.schema updated`);
     setSchemaToTest(schema);
   }, [schema]);
 
@@ -164,8 +198,6 @@ const RunConformanceTests = (props: any) => {
           .then(returnData => {
               if (returnData) {
                 calcStats(returnData);
-                  // setTestResults(returnData);
-                  // updateChartData(testResults);
               }
               return true;
           }).catch((_err:any) => {
@@ -177,88 +209,176 @@ const RunConformanceTests = (props: any) => {
         setProfileSelection(e.target.value);
     };
 
-    return (
-      <div>
-        <div className='row'>
-          <div className='col'>
-            <form onSubmit={ onRunTests }>
-              <div className='btn-group' role='group'>
-                <select required value={ profileSelection } onChange={ onProfileTypeChange }>
-                  <option value=''>Select a Profile Type</option>
-                  { profilesOptions.map((option) => (
-                    <option key={ option } value={ option }>{ option }</option>
-                    ))}
-                </select>
-                <div className='btn-group'>
-                  <Button id='runTests' type='submit' color='success'>
-                    <FontAwesomeIcon className='mr-2' icon={ faClipboardCheck } color='white' />
-                    Run Tests
-                  </Button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div className='row mt-2'>
-          <div className='col'>
-            <div className='card'>
-              <div className='card-header'>
-                Results Summary
-                <span className='badge badge-info badge-pill ml-2'>
-                  { testResults.stats.overall.total }
-                </span>
-              </div>
-              <div className='card-body'>
-                <div className='row'>
-                  <div className='col-6'>
-                    <ul className="list-group">
-                      <ListItemWithBadge itemLabel='Success' itemValue={ testResults.stats.overall.success } bsBadgeType='badge-success' />
-                      <ListItemWithBadge itemLabel='Expected Failure' itemValue={ testResults.stats.overall.failure } bsBadgeType='badge-success' />
-                      <ListItemWithBadge itemLabel='Skipped' itemValue={ testResults.stats.overall.skipped } bsBadgeType='badge-secondary' />
-                    </ul>
-                  </div>
-                  <div className='col-6'>
-                    <ListItemWithBadge itemLabel='Unexpected Success' itemValue={ testResults.stats.overall.unexpected_success } bsBadgeType='badge-warning' />
-                    <ListItemWithBadge itemLabel='Failure' itemValue={ testResults.stats.overall.failure } bsBadgeType='badge-danger' />
-                    <ListItemWithBadge itemLabel='Error' itemValue={ testResults.stats.overall.error } bsBadgeType='badge-danger' />
-                  </div>
-                </div>
+  const onToggleTabs = (view: string) => {
+    if (activeTab !== view) {
+      setActiveTab(view);
+    }
+  };
+
+  return (
+    <div>
+      <div className='row'>
+        <div className='col'>
+          <form onSubmit={ onRunTests }>
+            <div className='btn-group' role='group'>
+              <select required value={ profileSelection } onChange={ onProfileTypeChange }>
+                <option value=''>Select a Profile Type</option>
+                { profilesOptions.map((option) => (
+                  <option key={ option } value={ option }>{ option }</option>
+                  ))}
+              </select>
+              <div className='btn-group'>
+                <Button id='runTests' type='submit' color={ SUCCESS }>
+                  <FontAwesomeIcon className='mr-2' icon={ faClipboardCheck } color='white' />
+                  Run Tests
+                </Button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
-        <div className='row mt-2'>
-          <div className='col'>
-            <div className='card'>
-              <div className='card-header'>
-                Tests that Passed
-              </div>
-              <div className='card-body'>
-                <ul className='list-group list-group-flush'>
-                  {/* Left off here, need to pull this into a function and change depending on lang or slpf, then show errors */}
-                  { Object.keys(testResults.language.success).map((key) => {
-                    return (
-                      <li key={ key } className='list-group-item'>{ key }</li>
-                    );
-                  })}
-                </ul>
-              </div>
+      </div>
+      <div className='row mt-2'>
+        <div className='col'>
+          <div className='card'>
+            <div className='card-header'>
+              Results Summary
+              <span className='badge badge-info badge-pill ml-2'>
+                { testResults.stats.overall.total }
+              </span>
             </div>
-          </div>
-        </div>
-        <div className='row mt-2'>
-          <div className='col'>
-            <div className='card'>
-              <div className='card-header'>
-                JSON Data
-              </div>
-              <div className='card-body'>
-                <PrettyPrintJson data={ testResults } />
+            <div className='card-body'>
+              <div className='row'>
+                <div className='col-6'>
+                  <ul className="list-group">
+                    <ListItemWithBadge itemLabel='Success' itemValue={ testResults.stats.overall.success } bsBadgeType='badge-success' />
+                    <ListItemWithBadge itemLabel='Expected Failure' itemValue={ testResults.stats.overall.failure } bsBadgeType='badge-success' />
+                    <ListItemWithBadge itemLabel='Skipped' itemValue={ testResults.stats.overall.skipped } bsBadgeType='badge-secondary' />
+                  </ul>
+                </div>
+                <div className='col-6'>
+                  <ListItemWithBadge itemLabel='Unexpected Success' itemValue={ testResults.stats.overall.unexpected_success } bsBadgeType='badge-warning' />
+                  <ListItemWithBadge itemLabel='Failure' itemValue={ testResults.stats.overall.failure } bsBadgeType='badge-danger' />
+                  <ListItemWithBadge itemLabel='Error' itemValue={ testResults.stats.overall.error } bsBadgeType='badge-danger' />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div className='row mt-2'>
+        <div className='col'>
+          <Nav tabs>
+            <NavItem>
+              <NavLink
+                className={ classnames({active: activeTab === SUCCESS}) }
+                onClick={ () => onToggleTabs(SUCCESS) }
+              >
+                Success
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={ classnames({active: activeTab === EXPECTED_FAILURE}) }
+                onClick={ () => onToggleTabs(EXPECTED_FAILURE) }
+              >
+                Expected Failure
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={ classnames({active: activeTab === SKIPPED}) }
+                onClick={ () => onToggleTabs(SKIPPED) }
+              >
+                Skipped
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={ classnames({active: activeTab === UNEXPECTED_SUCCESS}) }
+                onClick={ () => onToggleTabs(UNEXPECTED_SUCCESS) }
+              >
+                Unexpected Success
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={ classnames({active: activeTab === FAILURE}) }
+                onClick={ () => onToggleTabs(FAILURE) }
+              >
+                Failure
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={ classnames({active: activeTab === ERROR}) }
+                onClick={ () => onToggleTabs(ERROR) }
+              >
+                Error
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                className={ classnames({active: activeTab === 'json'}) }
+                onClick={ () => onToggleTabs('json') }
+              >
+                JSON
+              </NavLink>
+            </NavItem>
+          </Nav>
+          <TabContent activeTab={ activeTab }>
+            <TabPane tabId={ SUCCESS }>
+              <div className='card'>
+                <div className='card-body'>
+                  <TestsPassedContent profileType={ profileSelection } results={ testResults } />
+                </div>
+              </div>
+            </TabPane>
+            <TabPane tabId={ EXPECTED_FAILURE }>
+              <div className='card'>
+                <div className='card-body'>
+                  expected_failure Content goes here....
+                </div>
+              </div>
+            </TabPane>
+            <TabPane tabId={ SKIPPED }>
+              <div className='card'>
+                <div className='card-body'>
+                  skipped Content goes here....
+                </div>
+              </div>
+            </TabPane>
+            <TabPane tabId={ UNEXPECTED_SUCCESS }>
+              <div className='card'>
+                <div className='card-body'>
+                  unexpected_success Content goes here....
+                </div>
+              </div>
+            </TabPane>
+            <TabPane tabId={ FAILURE }>
+              <div className='card'>
+                <div className='card-body'>
+                  failure Content goes here....
+                </div>
+              </div>
+            </TabPane>
+            <TabPane tabId={ ERROR }>
+              <div className='card'>
+                <div className='card-body'>
+                  error Content goes here....
+                </div>
+              </div>
+            </TabPane>
+            <TabPane tabId='json'>
+              <div className='card'>
+                <div className='card-body'>
+                  <PrettyPrintJson data={ testResults } />
+                </div>
+              </div>
+            </TabPane>
+          </TabContent>
+        </div>
+      </div>
+    </div>
     );
 };
 

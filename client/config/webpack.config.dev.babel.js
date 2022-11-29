@@ -30,12 +30,12 @@ export default merge(baseConfig, {
         DEPEND_DIR
       ]
     }),
-    new CircularDependencyPlugin({
-      exclude: /node_modules/,
-      failOnError: false,
-      allowAsyncCycles: false,
-      cwd: ROOT_DIR
-    }),
+    // new CircularDependencyPlugin({
+    //   exclude: /node_modules/,
+    //   failOnError: false,
+    //   allowAsyncCycles: false,
+    //   cwd: ROOT_DIR
+    // }),
     new webpack.NoEmitOnErrorsPlugin()
   ],
   devServer: {
