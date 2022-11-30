@@ -96,6 +96,19 @@ const ListItemWithBadge = (props: any) => {
   );
 };
 
+const TabTitleWithBadge = (props: any) => {
+  const { tabTitle, badgeValue, badgeType } = props;
+  const badgeClasses = `badge ${  badgeType  } badge-pill ml-2`;
+  return (
+    <span className="d-flex justify-content-between align-items-center">
+      { tabTitle }
+      <span className={ badgeClasses }>
+        { badgeValue }
+      </span>
+    </span>
+  );
+};
+
 const TestsPassedContent = (props: any) => {
   const { profileType, results } = props;
   let resultsData = StatsObj.language;
@@ -123,7 +136,7 @@ const TestsPassedContent = (props: any) => {
     <ul className='list-group list-group-flush'>
       { Object.keys(resultsData.success).map((key) => {
         return (
-          <li key={ key } className='list-group-item'>{ key }</li>
+          <li key={ key } className='list-group-item p-1'>{ key }</li>
         );
       })}
     </ul>
@@ -177,37 +190,37 @@ const RunConformanceTests = (props: any) => {
   };
 
   const onRunTests = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      let isValid = true;
-      if (!profileSelection) {
-          toast('A Profile Type is required', {type: toast.TYPE.ERROR});
-          isValid = false;
-      }
+    let isValid = true;
+    if (!profileSelection) {
+        toast('A Profile Type is required', {type: toast.TYPE.ERROR});
+        isValid = false;
+    }
 
-      if (!schemaToTest) {
-          toast('A Schema is required', {type: toast.TYPE.ERROR});
-          isValid = false;
-      }
+    if (!schemaToTest) {
+        toast('A Schema is required', {type: toast.TYPE.ERROR});
+        isValid = false;
+    }
 
-      if (!isValid) {
-          return;
-      }
+    if (!isValid) {
+        return;
+    }
 
-      runConformanceTest(profileSelection, schemaToTest)
-          .then(returnData => {
-              if (returnData) {
-                calcStats(returnData);
-              }
-              return true;
-          }).catch((_err:any) => {
-              console.log(_err);
-          });
-    };
+    runConformanceTest(profileSelection, schemaToTest)
+      .then(returnData => {
+          if (returnData) {
+            calcStats(returnData);
+          }
+          return true;
+      }).catch((_err:any) => {
+          console.log(_err);
+      });
+  };
 
-    const onProfileTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setProfileSelection(e.target.value);
-    };
+  const onProfileTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setProfileSelection(e.target.value);
+  };
 
   const onToggleTabs = (view: string) => {
     if (activeTab !== view) {
@@ -234,35 +247,11 @@ const RunConformanceTests = (props: any) => {
                 </Button>
               </div>
             </div>
+            <span className='badge badge-info badge-pill ml-2 p-2'>
+              <span className='mr-2'>Total Test Results</span>
+              { testResults.stats.overall.total }
+            </span>
           </form>
-        </div>
-      </div>
-      <div className='row mt-2'>
-        <div className='col'>
-          <div className='card'>
-            <div className='card-header'>
-              Results Summary
-              <span className='badge badge-info badge-pill ml-2'>
-                { testResults.stats.overall.total }
-              </span>
-            </div>
-            <div className='card-body'>
-              <div className='row'>
-                <div className='col-6'>
-                  <ul className="list-group">
-                    <ListItemWithBadge itemLabel='Success' itemValue={ testResults.stats.overall.success } bsBadgeType='badge-success' />
-                    <ListItemWithBadge itemLabel='Expected Failure' itemValue={ testResults.stats.overall.failure } bsBadgeType='badge-success' />
-                    <ListItemWithBadge itemLabel='Skipped' itemValue={ testResults.stats.overall.skipped } bsBadgeType='badge-secondary' />
-                  </ul>
-                </div>
-                <div className='col-6'>
-                  <ListItemWithBadge itemLabel='Unexpected Success' itemValue={ testResults.stats.overall.unexpected_success } bsBadgeType='badge-warning' />
-                  <ListItemWithBadge itemLabel='Failure' itemValue={ testResults.stats.overall.failure } bsBadgeType='badge-danger' />
-                  <ListItemWithBadge itemLabel='Error' itemValue={ testResults.stats.overall.error } bsBadgeType='badge-danger' />
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div className='row mt-2'>
@@ -273,7 +262,7 @@ const RunConformanceTests = (props: any) => {
                 className={ classnames({active: activeTab === SUCCESS}) }
                 onClick={ () => onToggleTabs(SUCCESS) }
               >
-                Success
+                <TabTitleWithBadge tabTitle='Success' badgeValue={ testResults.stats.overall.success } badgeType='badge-success' />
               </NavLink>
             </NavItem>
             <NavItem>
@@ -281,7 +270,7 @@ const RunConformanceTests = (props: any) => {
                 className={ classnames({active: activeTab === EXPECTED_FAILURE}) }
                 onClick={ () => onToggleTabs(EXPECTED_FAILURE) }
               >
-                Expected Failure
+                <TabTitleWithBadge tabTitle='Expected Failure' badgeValue={ testResults.stats.overall.failure } badgeType='badge-success' />
               </NavLink>
             </NavItem>
             <NavItem>
@@ -289,7 +278,7 @@ const RunConformanceTests = (props: any) => {
                 className={ classnames({active: activeTab === SKIPPED}) }
                 onClick={ () => onToggleTabs(SKIPPED) }
               >
-                Skipped
+                <TabTitleWithBadge tabTitle='Skipped' badgeValue={ testResults.stats.overall.skipped } badgeType='badge-secondary' />
               </NavLink>
             </NavItem>
             <NavItem>
@@ -297,7 +286,7 @@ const RunConformanceTests = (props: any) => {
                 className={ classnames({active: activeTab === UNEXPECTED_SUCCESS}) }
                 onClick={ () => onToggleTabs(UNEXPECTED_SUCCESS) }
               >
-                Unexpected Success
+                <TabTitleWithBadge tabTitle='Unexpected Success' badgeValue={ testResults.stats.overall.unexpected_success } badgeType='badge-warning' />
               </NavLink>
             </NavItem>
             <NavItem>
@@ -305,7 +294,7 @@ const RunConformanceTests = (props: any) => {
                 className={ classnames({active: activeTab === FAILURE}) }
                 onClick={ () => onToggleTabs(FAILURE) }
               >
-                Failure
+                <TabTitleWithBadge tabTitle='Failure' badgeValue={ testResults.stats.overall.failure } badgeType='badge-danger' />
               </NavLink>
             </NavItem>
             <NavItem>
@@ -313,7 +302,7 @@ const RunConformanceTests = (props: any) => {
                 className={ classnames({active: activeTab === ERROR}) }
                 onClick={ () => onToggleTabs(ERROR) }
               >
-                Error
+                <TabTitleWithBadge tabTitle='Error' badgeValue={ testResults.stats.overall.error } badgeType='badge-danger' />
               </NavLink>
             </NavItem>
             <NavItem>
