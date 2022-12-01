@@ -7,40 +7,18 @@ Button, Nav, NavItem, NavLink, TabContent, TabPane
 } from 'reactstrap';
 import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import map from 'lodash/map';
 
 // Module Specific
 import { getAllConformanceTests, runConformanceTest } from './Api';
 
-interface StatsInterface {
-  stats : {
-    overall: {
-      total: 0,
-      error: 0,
-      failure: 0,
-      success: 0,
-      expected_failure: 0,
-      skipped: 0,
-      unexpected_success: 0
-    }
-  },
-  language : {
-    success: { [key: string]: string },
-    expected_failure: { [key: string]: string },
-    skipped: { [key: string]: string },
-    unexpected_success: { [key: string]: string },
-    failure: { [key: string]: string },
-    error: { [key: string]: string }
-  },
-  slpf : {
-    success: { [key: string]: string },
-    expected_failure: { [key: string]: string },
-    skipped: { [key: string]: string },
-    unexpected_success: { [key: string]: string },
-    failure: { [key: string]: string },
-    error: { [key: string]: string }
-  }
-}
 
+const LANGUAGE = 'language';
+const LANGUAGE_ANYTHING = 'language-anything';
+const SLPF = 'slpf';
+const SLPF_ANYTHING = 'slpf-anything';
 const SUCCESS = 'success';
 const EXPECTED_FAILURE = 'expected_failure';
 const SKIPPED = 'skipped';
@@ -78,22 +56,10 @@ const StatsObj = {
   }
 };
 
+// TODO: Move to a utils class
 const PrettyPrintJson = (props: any) => {
   const { data } = props;
   return (<div><pre>{ JSON.stringify(data, null, 2) }</pre></div>);
-};
-
-const ListItemWithBadge = (props: any) => {
-  const { itemLabel, itemValue, bsBadgeType } = props;
-  const badgeClasses = `badge ${  bsBadgeType  } badge-pill`;
-  return (
-    <li className="list-group-item d-flex justify-content-between align-items-center">
-      { itemLabel }
-      <span className={ badgeClasses }>
-        { itemValue }
-      </span>
-    </li>
-  );
 };
 
 const TabTitleWithBadge = (props: any) => {
@@ -109,34 +75,51 @@ const TabTitleWithBadge = (props: any) => {
   );
 };
 
-const TestsPassedContent = (props: any) => {
-  const { profileType, results } = props;
-  let resultsData = StatsObj.language;
-
-  if (results.language && (profileType === 'language' || profileType === 'language-any')) {
-    resultsData = results.language;
-  } else if (results.slpf && (profileType === 'slpf' || profileType === 'slpf-any')) {
-    resultsData = results.slpf;
+const getDataFromNestedObject = (data: any, path: string) => {
+  if (!data || isEmpty(data) || !path) {
+    return null;
   }
 
-  // let testData: string[] = [];
-  // // eslint-disable-next-line no-restricted-syntax
-  // for (const [k, v] of Object.entries(resultsData.success)) {
-  //   const stringData = `${k  } ${  v}`;
-  //   testData.push(stringData);
-    // return (
-    //   <li key={ k } className='list-group-item'>
-    //     <span className='mr-2'>{ k }</span>
-    //     <span>{ v }</span>
-    //   </li>
-    // );
-  // }
+  const returnVal = get(data, path);
+  if (!returnVal || isEmpty(returnVal)) {
+    return null;
+  }
+
+  return returnVal;
+};
+
+const TestContent = (props: any) => {
+  const { profileType, allResults, resultType } = props;
+
+  if (!resultType || isEmpty(allResults) || (isEmpty(allResults.language) && isEmpty(allResults.slpf))) {
+    return (
+      <span>No results</span>
+    );
+  }
+
+  let path = '';
+  if (allResults.language && (profileType === LANGUAGE || profileType === LANGUAGE_ANYTHING)) {
+    path = `${LANGUAGE}.${resultType}`;
+  } else if (allResults.slpf && (profileType === SLPF || profileType === SLPF_ANYTHING)) {
+    path = `${SLPF}.${resultType}`;
+  }
+
+  const specificResults = getDataFromNestedObject(allResults, path);
+  if (!specificResults || isEmpty(specificResults)) {
+    return (
+      <span>No results</span>
+    );
+  }
 
   return (
     <ul className='list-group list-group-flush'>
-      { Object.keys(resultsData.success).map((key) => {
+      { map(specificResults, (value, key) => {
         return (
-          <li key={ key } className='list-group-item p-1'>{ key }</li>
+          <li key={ key } className='list-group-item p-1'>
+            <span>{ key }</span>
+            <span className='pr-2 pl-2'>:</span>
+            <span>{ value }</span>
+          </li>
         );
       })}
     </ul>
@@ -171,7 +154,7 @@ const RunConformanceTests = (props: any) => {
       getAllConformanceTests()
           .then((confTestData: any) => {
               if (confTestData) {
-                // TODO: May need a loop here to dynamically grab more tests
+                // TODO: May need a loop here to dynamically grab different schema types
                 if (confTestData.Language_UnitTests && confTestData.Language_UnitTests.profiles) {
                   setProfileTypes(confTestData.Language_UnitTests.profiles);
                 }
@@ -184,10 +167,6 @@ const RunConformanceTests = (props: any) => {
               console.log(_err);
           });
   }, []);
-
-  const calcStats = (returnData: StatsInterface) => {
-    setTestResults(returnData);
-  };
 
   const onRunTests = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -207,14 +186,17 @@ const RunConformanceTests = (props: any) => {
         return;
     }
 
+    setTestResults(StatsObj);
     runConformanceTest(profileSelection, schemaToTest)
       .then(returnData => {
           if (returnData) {
-            calcStats(returnData);
+            setTestResults(returnData);
           }
           return true;
       }).catch((_err:any) => {
-          console.log(_err);
+        setTestResults(StatsObj);
+        toast('An error occurred while running tests', {type: toast.TYPE.ERROR});
+        console.log(_err);
       });
   };
 
@@ -318,42 +300,42 @@ const RunConformanceTests = (props: any) => {
             <TabPane tabId={ SUCCESS }>
               <div className='card'>
                 <div className='card-body'>
-                  <TestsPassedContent profileType={ profileSelection } results={ testResults } />
+                  <TestContent profileType={ profileSelection } allResults={ testResults } resultType={ SUCCESS } />
                 </div>
               </div>
             </TabPane>
             <TabPane tabId={ EXPECTED_FAILURE }>
               <div className='card'>
                 <div className='card-body'>
-                  expected_failure Content goes here....
+                  <TestContent profileType={ profileSelection } allResults={ testResults } resultType={ EXPECTED_FAILURE } />
                 </div>
               </div>
             </TabPane>
             <TabPane tabId={ SKIPPED }>
               <div className='card'>
                 <div className='card-body'>
-                  skipped Content goes here....
+                  <TestContent profileType={ profileSelection } allResults={ testResults } resultType={ SKIPPED } />
                 </div>
               </div>
             </TabPane>
             <TabPane tabId={ UNEXPECTED_SUCCESS }>
               <div className='card'>
                 <div className='card-body'>
-                  unexpected_success Content goes here....
+                  <TestContent profileType={ profileSelection } allResults={ testResults } resultType={ UNEXPECTED_SUCCESS } />
                 </div>
               </div>
             </TabPane>
             <TabPane tabId={ FAILURE }>
               <div className='card'>
                 <div className='card-body'>
-                  failure Content goes here....
+                  <TestContent profileType={ profileSelection } allResults={ testResults } resultType={ FAILURE } />
                 </div>
               </div>
             </TabPane>
             <TabPane tabId={ ERROR }>
               <div className='card'>
                 <div className='card-body'>
-                  error Content goes here....
+                  <TestContent profileType={ profileSelection } allResults={ testResults } resultType={ ERROR } />
                 </div>
               </div>
             </TabPane>
