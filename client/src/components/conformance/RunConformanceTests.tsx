@@ -26,6 +26,7 @@ const SKIPPED = 'skipped';
 const UNEXPECTED_SUCCESS = 'unexpected_success';
 const FAILURE = 'failure';
 const ERROR = 'error';
+const TEST_RESULT_DELIMITER = '->';
 
 const StatsObj = {
   stats : {
@@ -95,28 +96,21 @@ const convertAndFormat = (data: any) => {
     return null;
   }
 
-  /*
-test_json_allow_ipv4net : ValidationError: 1 validation error for OpenC2__Command target -> ipv4_net value is not a valid dict (type=type_error.dict)
-
-test_json_ls_example_deny_ipv4connection :
-ValidationError: 3 validation errors for OpenC2__Command target
--> ipv4_connection
--> src_addr value is not a valid dict (type=type_error.dict) target
--> ipv4_connection
--> dst_addr value is not a valid dict (type=type_error.dict) actuator
--> slpf extra fields not permitted (type=value_error.extra)
-   */
-
   const dataToFormat = data;
   const testResults: TestResult[] = [];
   map(dataToFormat, (value, key) => {
     const testResult = new TestResult();
 
     if (key && value) {
-      testResult.title = key;
-      let resultTest : string[] = [];
-      resultTest = split(value, '->');
-      testResult.details = resultTest;
+      const resultsArray = split(value, TEST_RESULT_DELIMITER);
+      // eslint-disable-next-line prefer-destructuring
+      testResult.title = resultsArray[0];
+      map(resultsArray, (rValue, rKey) => {
+        if (rKey !== 0) {
+          testResult.details.push(rValue);
+        }
+      });
+
     } else {
       testResult.title = key;
     }

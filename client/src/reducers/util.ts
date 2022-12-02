@@ -11,7 +11,7 @@ export interface UtilState {
 }
 
 const initialState: UtilState = {
-  site_title: 'JADN Lint',
+  site_title: 'JADN Sandbox',
   site_desc: '',
   error: '',
   loaded: {
