@@ -10,6 +10,7 @@ import classnames from 'classnames';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
+import split from 'lodash/split';
 
 // Module Specific
 import { getAllConformanceTests, runConformanceTest } from './Api';
@@ -75,6 +76,57 @@ const TabTitleWithBadge = (props: any) => {
   );
 };
 
+class TestResult {
+  title = '';
+  details: string[] = [''];
+
+  constructor(title?: string, details?: string[]) {
+    if (title) {
+      this.title= title;
+    }
+    if (details) {
+      this.details = details;
+    }
+  }
+}
+
+const convertAndFormat = (data: any) => {
+  if (!data || isEmpty(data)) {
+    return null;
+  }
+
+  /*
+test_json_allow_ipv4net : ValidationError: 1 validation error for OpenC2__Command target -> ipv4_net value is not a valid dict (type=type_error.dict)
+
+test_json_ls_example_deny_ipv4connection :
+ValidationError: 3 validation errors for OpenC2__Command target
+-> ipv4_connection
+-> src_addr value is not a valid dict (type=type_error.dict) target
+-> ipv4_connection
+-> dst_addr value is not a valid dict (type=type_error.dict) actuator
+-> slpf extra fields not permitted (type=value_error.extra)
+   */
+
+  const dataToFormat = data;
+  const testResults: TestResult[] = [];
+  map(dataToFormat, (value, key) => {
+    const testResult = new TestResult();
+
+    if (key && value) {
+      testResult.title = key;
+      let resultTest : string[] = [];
+      resultTest = split(value, '->');
+      testResult.details = resultTest;
+    } else {
+      testResult.title = key;
+    }
+
+    testResults.push(testResult);
+  });
+
+  return testResults;
+};
+
 const getDataFromNestedObject = (data: any, path: string) => {
   if (!data || isEmpty(data) || !path) {
     return null;
@@ -105,7 +157,8 @@ const TestContent = (props: any) => {
   }
 
   const specificResults = getDataFromNestedObject(allResults, path);
-  if (!specificResults || isEmpty(specificResults)) {
+  const formattedTestResults = convertAndFormat(specificResults);
+  if (!formattedTestResults || isEmpty(formattedTestResults)) {
     return (
       <span>No results</span>
     );
@@ -113,12 +166,23 @@ const TestContent = (props: any) => {
 
   return (
     <ul className='list-group list-group-flush'>
-      { map(specificResults, (value, key) => {
+      { map(formattedTestResults, (testResult, z) => {
         return (
-          <li key={ key } className='list-group-item p-1'>
-            <span>{ key }</span>
-            <span className='pr-2 pl-2'>:</span>
-            <span>{ value }</span>
+          <li key={ z } className='list-group-item p-1'>
+            <span className='font-weight-bold'>
+              { testResult.title }
+            </span>
+            <ul className='list-group list-group-flush'>
+              { map(testResult.details, (detail, x) => {
+                return (
+                  <li key={ x } className='list-group-item p-1'>
+                    <span>
+                      { detail }
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
           </li>
         );
       })}
