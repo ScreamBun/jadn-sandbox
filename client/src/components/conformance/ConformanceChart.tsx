@@ -2,13 +2,19 @@ import {
   Chart as ChartJS, ArcElement, Legend, Tooltip
 } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { isEmpty, omitBy, startsWith, values } from 'lodash';
 
-
-const initState = {
-  labels: [''],
-  datasets: [{}]
-};
+// TODO: Move into an exteranl class
+class Stats {
+  total = 0;
+  error = 0;
+  failure = 0;
+  success = 0;
+  expected_failure = 0;
+  skipped = 0;
+  unexpected_success = 0;
+}
 
 const options = {
   maintainAspectRatio : false,
@@ -19,45 +25,74 @@ const options = {
   }
 };
 
-const data = {
-  labels: ['Success', 'Expected Failure', 'Skipped', 'Unexpected Success', 'Failure', 'Error'],
-  datasets: [
-    {
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
-      backgroundColor: [
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(255, 99, 132, 0.2)'
-      ],
-      borderColor: [
-        'rgba(75, 192, 192, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(255, 99, 132, 1)',
-        'rgba(255, 99, 132, 1)'
-      ],
-      borderWidth: 1
-    }
-  ]
+// TODO: Need a test result class
+const gatherStats = (testStats: any) => {
+  let statsArray: number[] = [1, 1, 1, 1, 1, 1];
+  if (testStats && !isEmpty(testStats)) {
+
+    // TODO: Move to a util?
+    const filteredObject = omitBy(testStats.overall, (_value, key) => {
+      return !startsWith(key, 'total');
+    });
+
+    statsArray = values(filteredObject);
+  }
+  // setDailyData(statsArray);
+  return statsArray;
 };
+
 
 const ConformanceChart = (props: any) => {
   ChartJS.register(ArcElement, Tooltip, Legend);
 
-  const [chartData, setChartData]  = useState(initState);
+  const { testStats } = props;
 
-     useEffect(() => {
-        setChartData(data);
-      }, []);
+  const [dailyData, setDailyData] = useState([0]);
 
-      return (
-        <Pie data={ chartData } options={ options } />
-      );
+  // const gatherStats = () => {
+  //   let statsArray: number[] = [0, 0, 0, 0, 0, 0];
+  //   if (testStats && !isEmpty(testStats)) {
+  //     // TODO: Replace 1s with actual values
+  //     statsArray = values(testStats);
+  //   }
+  //   setDailyData(statsArray);
+  // };
+
+  useEffect(() => {
+    setDailyData(gatherStats(testStats));
+  }, [testStats]);
+
+  return (
+    <Pie
+      data={{
+      labels: ['Success', 'Expected Failure', 'Skipped', 'Unexpected Success', 'Failure', 'Error'],
+      datasets: [
+        {
+          label: 'Results',
+          data: dailyData.map((data) => data),
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 99, 132, 0.2)'
+          ],
+          borderColor: [
+            'rgba(75, 192, 192, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 1
+        }
+      ]
+    }}
+      options={ options }
+    />
+  );
 
 };
 

@@ -34,16 +34,18 @@ const ERROR = 'error';
 const TEST_RESULT_DELIMITER = '->';
 
 const StatsObj = {
+  total: 0,
+  error: 0,
+  failure: 0,
+  success: 0,
+  expected_failure: 0,
+  skipped: 0,
+  unexpected_success: 0
+};
+
+const ResultsObj = {
   stats : {
-    overall: {
-      total: 0,
-      error: 0,
-      failure: 0,
-      success: 0,
-      expected_failure: 0,
-      skipped: 0,
-      unexpected_success: 0
-    }
+    overall: StatsObj
   },
   language : {
     success: {},
@@ -61,33 +63,6 @@ const StatsObj = {
     failure: {},
     error: {}
   }
-};
-
-const initChartData = {
-  labels: ['Success', 'expected_failure', 'skipped', 'unexpected_success', 'failure', 'error'],
-  datasets: [
-    {
-      label: 'Test Results',
-      data: [],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)'
-      ],
-      borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
-      ],
-      borderWidth: 1
-    }
-  ]
 };
 
 // TODO: Move to a utils class
@@ -175,8 +150,6 @@ const TestContent = (props: any) => {
     );
   }
 
-  ChartJS.register(ArcElement, Tooltip, Legend);
-
   let path = '';
   if (allResults.language && (profileType === LANGUAGE || profileType === LANGUAGE_ANYTHING)) {
     path = `${LANGUAGE}.${resultType}`;
@@ -218,17 +191,16 @@ const TestContent = (props: any) => {
   );
 };
 
-const emptyObj: [] = [];
+const emptyArray: [] = [];
 const RunConformanceTests = (props: any) => {
 
   const [profilesOptions, setProfilesOptions] = useState([] as string[]);
   const [profileSelection, setProfileSelection] = useState('');
   const [schemaToTest, setSchemaToTest] = useState({});
-  const [testResults, setTestResults] = useState(StatsObj);
+  const [testResults, setTestResults] = useState(ResultsObj);
   const [activeTab, setActiveTab] = useState(SUCCESS);
-  const [chartData, setChartData] = useState(initChartData);
 
-  const { schema = emptyObj } = props;
+  const { schema = emptyArray } = props;
 
   useMemo( () => {
     setSchemaToTest(schema);
@@ -279,52 +251,22 @@ const RunConformanceTests = (props: any) => {
         return;
     }
 
-    setTestResults(StatsObj);
+    setTestResults(ResultsObj);
     runConformanceTest(profileSelection, schemaToTest)
       .then(returnData => {
           if (returnData) {
             setTestResults(returnData);
 
             const statsData = [];
-            const labelData = ['Success', 'expected_failure', 'skipped', 'unexpected_success', 'failure', 'error'];
             // eslint-disable-next-line no-restricted-syntax
             for (const dataObj of returnData.stats.overall) {
               statsData.push(dataObj);
             }
 
-            // TODO: Left off trying to show a chart
-
-            setChartData({
-                labels: labelData,
-                datasets: [
-                  {
-                    label: 'Test Results',
-                    data: statsData,
-                    backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                      'rgba(255, 99, 132, 1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                  }
-                ]
-              });
-
           }
           return true;
       }).catch((_err:any) => {
-        setTestResults(StatsObj);
+        setTestResults(ResultsObj);
 
         toast('An error occurred while running tests', {type: toast.TYPE.ERROR});
         console.log(_err);
@@ -367,7 +309,7 @@ const RunConformanceTests = (props: any) => {
           </form>
         </div>
         <div className='w-25 float-right'>
-          <ConformanceChart />
+          <ConformanceChart testStats={ testResults?.stats } />
         </div>
       </div>
       <div className='row mt-2'>
