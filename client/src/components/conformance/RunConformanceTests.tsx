@@ -256,13 +256,6 @@ const RunConformanceTests = (props: any) => {
       .then(returnData => {
           if (returnData) {
             setTestResults(returnData);
-
-            const statsData = [];
-            // eslint-disable-next-line no-restricted-syntax
-            for (const dataObj of returnData.stats.overall) {
-              statsData.push(dataObj);
-            }
-
           }
           return true;
       }).catch((_err:any) => {
