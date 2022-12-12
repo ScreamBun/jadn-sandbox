@@ -32,7 +32,7 @@
     "react-drag-and-drop": "^3.0.0",
     "react-helmet-async": "^1.3.0",
     "react-hot-loader": "^4.13.1",
-    "react-json-editor": "https://github.com/czack425/react-json-editor.git#commit=291f3afa2d63e3730cd3ebcbffef17a1e20d7555",
+    "react-json-editor": "https://github.com/ScreamBun/react-json-editor",
     "react-json-pretty": "^2.2.0",
     "react-markdown": "^8.0.3",
     "react-new-window": "^0.2.2",
