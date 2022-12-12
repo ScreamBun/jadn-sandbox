@@ -3,10 +3,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeSwitcher } from 'react-bootswatch-theme-switcher';
-import registerServiceWorker from './registerServiceWorker';
 
 // Styles
-// import 'bootstrap'
 import 'react-toastify/dist/ReactToastify.css';
 import './components/dependencies/css/ribbon.scss';
 import './components/dependencies/css/styles.scss';
@@ -19,12 +17,12 @@ import configureStore, { history } from './store';
 
 const store = configureStore(history);
 
-// Them Options
+// Theme Options
 const themeRoot = `${window.location.origin}/assets`;
-const validThemes = ['cyborg', 'darkly', 'sandstone', 'slate'];
+const validThemes = ['superhero', 'darkly', 'yeti'];
 
 const Root = () => (
-  <ThemeSwitcher storeThemeKey="theme" defaultTheme="sandstone" themeRoot={ themeRoot } themeOptions={ validThemes }>
+  <ThemeSwitcher storeThemeKey="theme" defaultTheme="darkly" themeRoot={ themeRoot } themeOptions={ validThemes }>
     <Provider store={ store } >
       <HelmetProvider>
         <App history={ history } />
@@ -34,4 +32,4 @@ const Root = () => (
 );
 
 ReactDOM.render(<Root />, document.getElementById('root'));
-registerServiceWorker();
+// registerServiceWorker();

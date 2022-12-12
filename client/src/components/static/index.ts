@@ -1,7 +1,7 @@
 import Error from './error';
-import Nav from './nav';
+import AppNav from './nav';
 
 export {
   Error,
-  Nav
+  AppNav as Nav
 };

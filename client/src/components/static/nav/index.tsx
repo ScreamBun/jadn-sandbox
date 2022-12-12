@@ -1,14 +1,20 @@
-/* eslint @typescript-eslint/lines-between-class-members: 0 */
 import React, { Component } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import { History } from 'history';
 import {
-  DropdownMenu, DropdownToggle, Modal, ModalHeader, ModalBody, UncontrolledDropdown
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Nav,
+  Navbar,
+  NavbarBrand,
+  NavbarToggler,
+  NavItem,
+  Collapse,
+  NavLink
 } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faCheckDouble, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-import NavItem from './navItem';
+// import NavItem from './navItem';
 import { safeGet } from '../../utils';
 import favicon from '../../dependencies/img/jadn-favicon.png';
 import { RootState } from '../../../reducers';
@@ -19,8 +25,9 @@ interface NavProp {
 }
 
 interface NavState {
-  active: string;
-  aboutModal: boolean;
+  activePath: string;
+  isNavCollapsed: boolean;
+  isAboutOpen: boolean;
 }
 
 // Redux Connector
@@ -33,10 +40,7 @@ type ConnectorProps = ConnectedProps<typeof connector>;
 type NavConnectedProps = NavProp & ConnectorProps;
 
 // Component
-class Nav extends Component<NavConnectedProps, NavState> {
-  modalProps = {
-    centered: true
-  };
+class AppNav extends Component<NavConnectedProps, NavState> {
 
   constructor(props: NavConnectedProps) {
     super(props);
@@ -44,8 +48,9 @@ class Nav extends Component<NavConnectedProps, NavState> {
 
     const { history } = this.props;
     this.state = {
-      active: history.location.pathname,
-      aboutModal: false
+      activePath: history.location.pathname,
+      isAboutOpen: false,
+      isNavCollapsed: false
     };
   }
 
@@ -62,19 +67,18 @@ class Nav extends Component<NavConnectedProps, NavState> {
       pathname: path
     });
 
-    this.setState({ active: path });
+    this.setState({ activePath: path });
   }
 
   aboutModal() {
-    const { aboutModal } = this.state;
+    const { isAboutOpen } = this.state;
     return (
       <Modal
-        isOpen={ aboutModal }
+        isOpen={ isAboutOpen }
         toggle={ () => this.setState(
-        prevState => ({ aboutModal: !prevState.aboutModal })) }
-        { ...this.modalProps }
+        prevState => ({ isAboutOpen: !prevState.isAboutOpen })) }
       >
-        <ModalHeader toggle={ () => this.setState(prevState => ({ aboutModal: !prevState.aboutModal })) }>About</ModalHeader>
+        <ModalHeader toggle={ () => this.setState(prevState => ({ isAboutOpen: !prevState.isAboutOpen })) }>About</ModalHeader>
         <ModalBody>
           <p>
             OpenC2 is defined using JSON Abstract Schema Notation (JADN).
@@ -117,40 +121,43 @@ class Nav extends Component<NavConnectedProps, NavState> {
     );
   }
 
+  // TODO: Page refreshing an each nav click for some reason
+
   render() {
-    const { active } = this.state;
+    const { activePath, isNavCollapsed } = this.state;
     return (
       <div>
-        <nav className="navbar navbar-expand-sm navbar-dark bg-dark py-1 fixed-top container-fluid">
-          <div className="navbar-brand">
+        <Navbar color="dark" dark expand='md' container='fluid' fixed='top' className='py-1'>
+          <NavbarBrand href="https://github.com/oasis-open/openc2-jadn/" title='JSON Abstract Data Notation Sandbox' target="_blank">
             <img src={ favicon } alt="Logo" />
-            <a href="https://github.com/oasis-open/openc2-jadn/" title='JSON Abstract Data Notation' className='font-weight-bold' target="_blank" rel="noreferrer">
-              JADN Sandbox
-            </a>
-          </div>
-          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon" />
-          </button>
-          <div className="collapse navbar-collapse" id="navMain">
-            <ul className="navbar-nav mr-auto">
-              <NavItem href="/" text="Validate" active={ active } click={ this.navigate } />
-              <NavItem href="/convert" text="Convert" active={ active } click={ this.navigate } />
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>Generate</DropdownToggle>
-                <DropdownMenu right>
-                  <NavItem dropdown href="/generate/message" text='Message' active={ active } click={ this.navigate } />
-                  <NavItem dropdown href="/generate/schema" text='Schema' active={ active } click={ this.navigate } />
-                </DropdownMenu>
-              </UncontrolledDropdown>
-              {/* <NavItem href="/docs" text="API Docs" active={ active } click={ this.navigate } /> */}
-              <NavItem href="#" text="About" click={ () => this.setState(prevState => ({ aboutModal: !prevState.aboutModal })) } />
-            </ul>
-          </div>
-        </nav>
+            <span className='font-weight-bold font-italic mx-2'>JADN Sandbox</span>
+          </NavbarBrand>
+          <NavbarToggler onClick={ () => this.setState(prevState => ({ isNavCollapsed: !prevState.isNavCollapsed })) } />
+          <Collapse isOpen={ isNavCollapsed } navbar>
+            <Nav className='container-fluid' navbar>
+              <NavItem>
+                <NavLink href="/" text='validate' active={ activePath === '/' || activePath === '/validate' } click={ this.navigate }>Validate</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/convert" text='convert' active={ activePath === '/convert' } click={ this.navigate }>Convert</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/generate/message" text='message' active={ activePath === '/generate/message' } click={ this.navigate }>Generate Message</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/generate/schema" text='schema' active={ activePath === '/generate/schema' } click={ this.navigate }>Generate Schema</NavLink>
+              </NavItem>
+              <NavItem className="ml-auto">
+                <NavLink href="#" text='about' onClick={ () => this.setState(prevState => ({ isAboutOpen: !prevState.isAboutOpen })) }>About</NavLink>
+                {/* <NavItem href="/docs" text="API Docs" active={ active } click={ this.navigate } /> */}
+              </NavItem>
+            </Nav>
+          </Collapse>
+        </Navbar>
         { this.aboutModal() }
       </div>
     );
   }
 }
 
-export default connector(Nav);
+export default connector(AppNav);

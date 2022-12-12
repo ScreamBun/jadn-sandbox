@@ -70,7 +70,7 @@ class App extends Component<AppConnectedProps> {
   render() {
     const { history } = this.props;
     return (
-      <div className="container-fluid mt-3" >
+      <div className="container-fluid" >
 
         <Nav history={ history } />
         <ConnectedRouter history={ history }>
