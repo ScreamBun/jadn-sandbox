@@ -106,7 +106,6 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
             setSchema(nextState.schema);
         }
         const shouldUpdate = propsUpdate || stateUpdate;
-        console.log(`index / shouldComponentUpdate / shouldUpdate: ${shouldUpdate}`);
         return shouldUpdate;
     }
 

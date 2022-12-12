@@ -5,7 +5,7 @@ import path from 'path';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-//import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+// import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
@@ -88,7 +88,7 @@ export default merge(baseConfig, {
       new TerserPlugin({
         extractComments: false,
         parallel: true
-      }),
+      })
 //      new OptimizeCSSAssetsPlugin({
 //        cssProcessorPluginOptions: {
 //          preset: [

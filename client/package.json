@@ -26,7 +26,7 @@
     "lodash": "^4.17.21",
     "named-regexp-groups": "^1.0.6",
     "react": "^17.0.2",
-    "react-bootswatch-theme-switcher": "https://github.com/screambun/react-bootswatch-theme-switcher.git#commit=816571b419787a39e92eaa0091c0b0b376da1994",
+    "react-bootswatch-theme-switcher": "https://github.com/screambun/react-bootswatch-theme-switcher.git",
     "react-chartjs-2": "^5.0.1",
     "react-dom": "^17.0.2",
     "react-drag-and-drop": "^3.0.0",

@@ -71,9 +71,6 @@ class App extends Component<AppConnectedProps> {
     const { history } = this.props;
     return (
       <div className="container-fluid mt-3" >
-        <div className="ribbon ribbon-top-left">
-          <span>Beta</span>
-        </div>
 
         <Nav history={ history } />
         <ConnectedRouter history={ history }>

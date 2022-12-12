@@ -11,7 +11,7 @@ const file_loader = {
       if (commonImages.test(ext)) {
         return 'img/[name].[ext]';
       }
-      return 'assets/[ext]/[name].[ext]'
+      return 'assets/[ext]/[name].[ext]';
     }
   }
 };
