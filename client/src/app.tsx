@@ -1,99 +1,35 @@
-import React, { Component, CSSProperties } from 'react';
-import { Dispatch } from 'redux';
-import { ConnectedProps, connect } from 'react-redux';
-import { History } from 'history';
-import { ConnectedRouter } from 'connected-react-router';
-import { Redirect, Route, Switch } from 'react-router';
-import { toast, ToastContainer } from 'react-toastify';
-import { ThemeChooser } from 'react-bootswatch-theme-switcher';
+import React from 'react';
 
-// Static components
-import { Error, Nav } from './components/static';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Pages
+import Home from 'components/home/home';
+import AppLayout from './components/static/appLayout';
+
 import { MessageGenerator, SchemaGenerator } from './components/generate';
 import Converter from './components/converter';
-import Docs from './components/docs';
 import Validator from './components/validator';
 
-// Reducers & Actions
-import { RootState } from './reducers';
-import { UtilActions } from './actions';
 
-// Interfaces
-interface AppProps {
-  history: History;
-}
-
-// Redux Connector
-const mapStateToProps = (state: RootState) => ({
-  siteTitle: state.Util.site_title,
-  siteDesc: state.Util.site_desc
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  info: () => dispatch(UtilActions.info())
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type ConnectorProps = ConnectedProps<typeof connector>;
-type AppConnectedProps = AppProps & ConnectorProps;
-
-// Component
-class App extends Component<AppConnectedProps> {
-  meta = {
-    title: 'JADN',
-    description: 'JADN',
-    canonical: `${window.location.origin}${window.location.pathname}`
-  };
-
-  themeOptionStyles: CSSProperties = {
-    position: 'fixed',
-    bottom: '5px',
-    right: '5px'
-  };
-
-  constructor(props: AppConnectedProps) {
-    super(props);
-    const { info, siteDesc, siteTitle } = this.props;
-
-    info().then(() => {
-      this.meta = {
-        ...this.meta,
-        title: siteTitle,
-        description: siteDesc
-      };
-      return this.meta;
-    }).catch(_err => {});
-  }
-
-  render() {
-    const { history } = this.props;
+export const App = () => {
     return (
       <div className="container-fluid" >
 
-        <Nav history={ history } />
-        <ConnectedRouter history={ history }>
-          <Switch>
-            <Route exact path="/" component={ props => <Redirect to="/validate" { ...props } />  } />
-            <Route exact path="/validate" component={ Validator } />
-            <Route exact path="/convert" component={ Converter } />
-            <Route exact path="/docs" component={ Docs } />
-            <Route exact path="/generate-message" component={ MessageGenerator } />
-            <Route exact path="/generate-schema" component={ SchemaGenerator } />
-            {/* Error should always be last route */}
-            <Route component={ Error } />
-          </Switch>
-        </ConnectedRouter>
+        <Router>
+          <Routes>
+            <Route path="/" element={ <AppLayout /> }>
+              <Route index element={ <Home /> } />
+              <Route path="home" element={ <Home /> } />
+              <Route path="validate" element={ <Validator /> } />
+              <Route path="convert" element={ <Converter /> } />
+              <Route path="generate-message" element={ <MessageGenerator /> } />
+              <Route path="generate-schema" element={ <SchemaGenerator /> } />
+              <Route path="*" element={ <Home /> } />
+            </Route>
+          </Routes>
+        </Router>
 
-        <div style={ this.themeOptionStyles }>
-          <ThemeChooser size='sm' />
-        </div>
-
-        <ToastContainer position={ toast.POSITION.BOTTOM_CENTER } autoClose={ 5000 } />
       </div>
     );
-  }
-}
+};
 
-export default connector(App);
+export default App;
