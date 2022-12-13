@@ -79,9 +79,8 @@ class App extends Component<AppConnectedProps> {
             <Route exact path="/validate" component={ Validator } />
             <Route exact path="/convert" component={ Converter } />
             <Route exact path="/docs" component={ Docs } />
-            <Route exact path="/generate" render={ props => <Redirect to="/generate/message" { ...props } /> } />
-            <Route path="/generate/message" component={ MessageGenerator } />
-            <Route path="/generate/schema" component={ SchemaGenerator } />
+            <Route exact path="/generate-message" component={ MessageGenerator } />
+            <Route exact path="/generate-schema" component={ SchemaGenerator } />
             {/* Error should always be last route */}
             <Route component={ Error } />
           </Switch>

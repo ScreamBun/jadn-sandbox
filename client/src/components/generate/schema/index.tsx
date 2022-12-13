@@ -28,9 +28,6 @@ import RunConformanceTests from "../../conformance/RunConformanceTests";
 type Options = 'info' | 'types';
 type Tabs = 'editor' | 'jadn' | 'tests' | 'test-results';
 
-interface GenerateProps {
-}
-
 interface GenerateState {
     downloadTooltip: boolean;
     uploadTooltip: boolean;
@@ -56,7 +53,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;
-type GenerateConnectedProps = GenerateProps & ConnectorProps;
+type GenerateConnectedProps = ConnectorProps;
 
 // Component
 class Generate extends Component<GenerateConnectedProps, GenerateState> {

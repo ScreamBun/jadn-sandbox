@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
-import { History } from 'history';
 import {
   Modal,
   ModalHeader,
@@ -10,22 +9,15 @@ import {
   NavbarBrand,
   NavbarToggler,
   NavItem,
-  Collapse,
-  NavLink
+  Collapse
 } from 'reactstrap';
 
-// import NavItem from './navItem';
-import { safeGet } from '../../utils';
+import { NavLink } from 'react-router-dom';
+
 import favicon from '../../dependencies/img/jadn-favicon.png';
 import { RootState } from '../../../reducers';
 
-// Interfaces
-interface NavProp {
-  history: History;
-}
-
 interface NavState {
-  activePath: string;
   isNavCollapsed: boolean;
   isAboutOpen: boolean;
 }
@@ -37,37 +29,18 @@ const mapStateToProps = (state: RootState) => ({
 
 const connector = connect(mapStateToProps);
 type ConnectorProps = ConnectedProps<typeof connector>;
-type NavConnectedProps = NavProp & ConnectorProps;
+type NavConnectedProps = ConnectorProps;
 
 // Component
 class AppNav extends Component<NavConnectedProps, NavState> {
 
   constructor(props: NavConnectedProps) {
     super(props);
-    this.navigate = this.navigate.bind(this);
 
-    const { history } = this.props;
     this.state = {
-      activePath: history.location.pathname,
       isAboutOpen: false,
       isNavCollapsed: false
     };
-  }
-
-  navigate(e: React.MouseEvent<HTMLElement, MouseEvent>) {
-    const { history } = this.props;
-    const href = safeGet(e.target as Record<string, any>, 'href', null);
-    e.preventDefault();
-    if (href === null || href === undefined ) {
-      return;
-    }
-    const path = href.replace(window.location.origin, '');
-
-    history.push({
-      pathname: path
-    });
-
-    this.setState({ activePath: path });
   }
 
   aboutModal() {
@@ -121,10 +94,8 @@ class AppNav extends Component<NavConnectedProps, NavState> {
     );
   }
 
-  // TODO: Page refreshing an each nav click for some reason
-
   render() {
-    const { activePath, isNavCollapsed } = this.state;
+    const { isNavCollapsed } = this.state;
     return (
       <div>
         <Navbar color="dark" dark expand='md' container='fluid' fixed='top' className='py-1'>
@@ -136,19 +107,19 @@ class AppNav extends Component<NavConnectedProps, NavState> {
           <Collapse isOpen={ isNavCollapsed } navbar>
             <Nav className='container-fluid' navbar>
               <NavItem>
-                <NavLink href="/" text='validate' active={ activePath === '/' || activePath === '/validate' } click={ this.navigate }>Validate</NavLink>
+                <NavLink href="/validate" active className={ ({ isActive }) => (isActive ? 'active' : 'inactive') }>Validate</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/convert" text='convert' active={ activePath === '/convert' } click={ this.navigate }>Convert</NavLink>
+                <NavLink to="/convert">Convert</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/generate/message" text='message' active={ activePath === '/generate/message' } click={ this.navigate }>Generate Message</NavLink>
+                <NavLink to="/generate-message">Generate Message</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/generate/schema" text='schema' active={ activePath === '/generate/schema' } click={ this.navigate }>Generate Schema</NavLink>
+                <NavLink to="/generate-schema">Generate Schema</NavLink>
               </NavItem>
               <NavItem className="ml-auto">
-                <NavLink href="#" text='about' onClick={ () => this.setState(prevState => ({ isAboutOpen: !prevState.isAboutOpen })) }>About</NavLink>
+                <NavLink to="#" text='about' onClick={ () => this.setState(prevState => ({ isAboutOpen: !prevState.isAboutOpen })) }>About</NavLink>
                 {/* <NavItem href="/docs" text="API Docs" active={ active } click={ this.navigate } /> */}
               </NavItem>
             </Nav>
