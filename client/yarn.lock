@@ -4880,6 +4880,10 @@ __metadata:
     react-drag-and-drop: ^3.0.0
     react-helmet-async: ^1.3.0
     react-hot-loader: ^4.13.1
+<<<<<<< HEAD
+=======
+    react-json-editor: "git+https://git@github.com/screambun/react-json-editor.git"
+>>>>>>> develop
     react-json-pretty: ^2.2.0
     react-markdown: ^8.0.3
     react-new-window: ^0.2.2
@@ -12007,6 +12011,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
+=======
+"react-json-editor@git+https://git@github.com/screambun/react-json-editor.git":
+  version: 2.5.12
+  resolution: "react-json-editor@https://git@github.com/screambun/react-json-editor.git#commit=291f3afa2d63e3730cd3ebcbffef17a1e20d7555"
+  dependencies:
+    "@babel/runtime": ^7.16.7
+    "@emotion/css": ^11.7.1
+  peerDependencies:
+    react: ">=17.0.2"
+    react-dom: ">=17.0.2"
+  checksum: b8c2389ea4622c61c69eb1c149ef4eb4cf6fd9ba445f6c23adfafe09ee4bed81067079620b96450ec4d1908317130156751dcfcb13db259cd4b38095872065a2
+  languageName: node
+  linkType: hard
+
+>>>>>>> develop
 "react-json-pretty@npm:^2.2.0":
   version: 2.2.0
   resolution: "react-json-pretty@npm:2.2.0"
