@@ -4976,13 +4976,13 @@ __metadata:
     optimize-css-assets-webpack-plugin: 6.0.1
     prettier: ^2.8.0
     react: ^17.0.2
-    react-bootswatch-theme-switcher: "https://github.com/screambun/react-bootswatch-theme-switcher.git"
+    react-bootswatch-theme-switcher: "git+https://git@github.com/screambun/react-bootswatch-theme-switcher.git"
     react-chartjs-2: ^5.0.1
     react-dom: ^17.0.2
     react-drag-and-drop: ^3.0.0
     react-helmet-async: ^1.3.0
     react-hot-loader: ^4.13.1
-    react-json-editor: "https://github.com/czack425/react-json-editor.git#commit=291f3afa2d63e3730cd3ebcbffef17a1e20d7555"
+    react-json-editor: "git+https://git@github.com/screambun/react-json-editor.git"
     react-json-pretty: ^2.2.0
     react-markdown: ^8.0.3
     react-new-window: ^0.2.2
@@ -12016,9 +12016,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-bootswatch-theme-switcher@https://github.com/screambun/react-bootswatch-theme-switcher.git":
+"react-bootswatch-theme-switcher@git+https://git@github.com/screambun/react-bootswatch-theme-switcher.git":
   version: 1.1.6
-  resolution: "react-bootswatch-theme-switcher@https://github.com/screambun/react-bootswatch-theme-switcher.git#commit=713310e33b62c09ff17dd4b745573a6d0bc9ce0a"
+  resolution: "react-bootswatch-theme-switcher@https://git@github.com/screambun/react-bootswatch-theme-switcher.git#commit=47dc1224224d16008c358c87dfa089c9e3ee0596"
   dependencies:
     "@babel/runtime": ^7.18.3
     axios: ^0.27.2
@@ -12026,7 +12026,7 @@ __metadata:
     react: ">=17.0.2"
     react-dom: ">=17.0.2"
     reactstrap: ">=8.10.0"
-  checksum: 05b403963ef9aef220036ea1f4a1331f760a07f8e05f73960269bc8b105809263e960a91764064b8d4751a29b77db79dddb279f225ed17140067044ec964ad55
+  checksum: eeb604d4691cfc2a4f0b5d68c12ff104d6dfe333edf4b1fefcd16589c3d037410ce888e6a90ba463b2f1d71593c2c3c3f81980294f576eef33bf9db39dbcfdf7
   languageName: node
   linkType: hard
 
@@ -12139,9 +12139,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-json-editor@https://github.com/czack425/react-json-editor.git#commit=291f3afa2d63e3730cd3ebcbffef17a1e20d7555":
+"react-json-editor@git+https://git@github.com/screambun/react-json-editor.git":
   version: 2.5.12
-  resolution: "react-json-editor@https://github.com/czack425/react-json-editor.git#commit=291f3afa2d63e3730cd3ebcbffef17a1e20d7555"
+  resolution: "react-json-editor@https://git@github.com/screambun/react-json-editor.git#commit=291f3afa2d63e3730cd3ebcbffef17a1e20d7555"
   dependencies:
     "@babel/runtime": ^7.16.7
     "@emotion/css": ^11.7.1
