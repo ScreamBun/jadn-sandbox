@@ -56,7 +56,7 @@ const AppLayout = () => {
         <ThemeChooser size='sm' />
       </nav>
 
-      <ToastContainer position={ toast.POSITION.BOTTOM_CENTER } autoClose={ 5000 } />
+      <ToastContainer position={ toast.POSITION.BOTTOM_CENTER } autoClose={ 5000 } theme='colored' />
 
     </div>
   );

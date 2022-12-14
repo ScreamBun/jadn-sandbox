@@ -3,7 +3,6 @@ import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 
 import DeadCodePlugin from 'webpack-deadcode-plugin';
-// import CircularDependencyPlugin from 'circular-dependency-plugin';
 
 import baseConfig from './webpack.config.base';
 
