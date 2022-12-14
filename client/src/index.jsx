@@ -6,7 +6,7 @@ import { ThemeSwitcher } from 'react-bootswatch-theme-switcher';
 
 // Styles
 import 'react-toastify/dist/ReactToastify.css';
-import './components/dependencies/css/styles.scss';
+import './components/dependencies/assets/css/styles.scss';
 
 // Application
 import App from './app';

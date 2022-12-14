@@ -6,9 +6,11 @@ import { NavLink, Outlet } from 'react-router-dom';
 
 import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { toast, ToastContainer } from 'react-toastify';
-import favicon from '../dependencies/img/jadn-favicon.png';
+import {
+  NAV_CONVERT, NAV_EXTERNAL_OPENC2_JADN, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_HOME, NAV_VALIDATE
+} from 'components/utils/constants';
+import favicon from '../dependencies/assets/img/jadn-favicon.png';
 import { RootState } from '../../reducers';
-import { NAV_CONVERT, NAV_EXTERNAL_OPENC2_JADN, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_HOME, NAV_VALIDATE } from 'components/utils/constants';
 
 interface NavState {
   isNavCollapsed: boolean;

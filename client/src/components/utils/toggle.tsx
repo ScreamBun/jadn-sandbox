@@ -4,7 +4,7 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import classname from 'classnames';
 
 // Styles
-import '../dependencies/css/toggle-switch.scss';
+import '../dependencies/assets/css/toggle-switch.scss';
 
 // Interface
 type BootstrapColor = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark' | 'muted' | 'white';

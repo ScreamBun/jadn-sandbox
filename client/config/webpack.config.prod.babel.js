@@ -45,11 +45,6 @@ export default merge(baseConfig, {
           to: path.join(BUILD_DIR, 'assets'),
           toType: 'dir'
         },
-        { // Custom Images
-          from: path.join(DEPEND_DIR, 'img'),
-          to: path.join(BUILD_DIR, 'img'),
-          toType: 'dir'
-        },
         { // Theme Assets
           from: path.resolve('node_modules', 'react-bootswatch-theme-switcher', 'assets'),
           to: path.join(BUILD_DIR, 'assets'),
