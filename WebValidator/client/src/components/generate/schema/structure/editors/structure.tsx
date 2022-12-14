@@ -108,7 +108,7 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
     if (value.type.toLowerCase() === 'enumerated') {
       field = [fields.length + 1, '', ''] as EnumeratedFieldArray;
     } else {
-      field = [fields.length + 1, 'field name', 'type', [], ''] as StandardFieldArray;
+      field = [fields.length + 1, 'field name', 'Null', [], ''] as StandardFieldArray;
     }
 
     this.setState(prevState => {
