@@ -26,7 +26,7 @@ const Home = () => {
           <h5>Features</h5>
 
           <div className='row'>
-            <div className='col-3'>
+            <div className='col-md-3'>
               <ul className="list-group my-2">
                 <Link className="list-group-item list-group-item-action active" to={ NAV_VALIDATE }>JADN validation of messages in</Link>
                 <li className="list-group-item">JSON</li>
@@ -34,7 +34,7 @@ const Home = () => {
                 <li className="list-group-item">XML</li>
               </ul>
             </div>
-            <div className='col-3'>
+            <div className='col-md-3'>
               <ul className="list-group my-2">
                 <Link className="list-group-item list-group-item-action active" to={ NAV_CONVERT }>JADN Schema conversion to</Link>
                 <li className="list-group-item">GraphViz</li>
@@ -45,13 +45,13 @@ const Home = () => {
                 <li className="list-group-item">XML</li>
               </ul>
             </div>
-            <div className='col-3'>
+            <div className='col-md-3'>
               <ul className="list-group my-2">
                 <Link className="list-group-item list-group-item-action active" to={ NAV_GENERATE_MESSAGE }>Generate OpenC2 Messages</Link>
                 <Link className="list-group-item list-group-item-action active" to={ NAV_GENERATE_SCHEMA }>Generate OpenC2 Schemas (Profiles)</Link>
               </ul>
             </div>
-            <div className='col-3'>
+            <div className='col-md-3'>
               <ul className="list-group my-2">
                 <li className="list-group-item list-group-item-warning">Coming Soon!</li>
                 <li className="list-group-item">More testing tools</li>

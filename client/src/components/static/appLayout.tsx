@@ -40,7 +40,7 @@ class AppLayout extends Component<NavConnectedProps, NavState> {
     const { isNavCollapsed } = this.state;
     return (
       <div>
-        <nav className='navbar navbar-expand-md navbar-dark bg-dark fixed-top py-1'>
+        <nav className='navbar navbar-expand-md navbar-dark bg-primary fixed-top py-1'>
           <button className='navbar-toggler collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#jadn-sandbox-nav-toggle' aria-controls='jadn-sandbox-nav-toggle' aria-expanded='false' aria-label='Toggle navigation'>
             <span className='navbar-toggler-icon' />
           </button>

@@ -18,7 +18,7 @@ const store = configureStore(history);
 
 // Theme Options
 const themeRoot = `${window.location.origin}/assets`;
-const validThemes = ['superhero', 'darkly', 'yeti'];
+const validThemes = ['superhero', 'darkly', 'sandstone'];
 
 const Root = () => (
   <ThemeSwitcher storeThemeKey="theme" defaultTheme="darkly" themeRoot={ themeRoot } themeOptions={ validThemes }>
