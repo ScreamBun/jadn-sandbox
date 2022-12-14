@@ -11,10 +11,6 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import split from 'lodash/split';
-import {
- Chart as ChartJS, ArcElement, Tooltip, Legend
-} from 'chart.js';
-import { Pie } from 'react-chartjs-2';
 
 // Module Specific
 import { getAllConformanceTests, runConformanceTest } from './Api';

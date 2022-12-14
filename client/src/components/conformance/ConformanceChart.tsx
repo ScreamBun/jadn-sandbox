@@ -1,10 +1,10 @@
 import {
-  Chart as ChartJS, ArcElement, Legend, Tooltip
+ Chart as ChartJS, ArcElement, Legend, Tooltip
 } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import React, { useState, useEffect } from 'react';
 import {
-  isEmpty, omitBy, startsWith, values
+ isEmpty, omitBy, startsWith, values
 } from 'lodash';
 
 
@@ -20,12 +20,10 @@ const options = {
   }
 };
 
-// TODO: Need a test result class
 const gatherStats = (testStats: any) => {
   let statsArray: number[] = initStats;
   if (testStats && !isEmpty(testStats) && !isEmpty(testStats.overall)) {
 
-    // TODO: Move to a util?
     const filteredObject = omitBy(testStats.overall, (_value, key) => {
       return startsWith(key, OMIT_STAT_TOTAL);
     });
@@ -41,11 +39,11 @@ const ConformanceChart = (props: any) => {
 
   const { testStats } = props;
 
-  const [dailyData, setDailyData] = useState(initStats);
+  const [statData, setStatData] = useState(initStats);
 
   useEffect(() => {
     const arr: number[] = gatherStats(testStats);
-    setDailyData(arr);
+    setStatData(arr);
   }, [testStats]);
 
   return (
@@ -57,7 +55,7 @@ const ConformanceChart = (props: any) => {
         datasets: [
           {
             label: 'Results',
-            data: dailyData.map((data) => data ),
+            data: statData.map((data) => data ),
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
               'rgba(255, 99, 132, 0.2)',

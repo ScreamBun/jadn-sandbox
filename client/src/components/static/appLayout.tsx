@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { ConnectedProps, connect } from 'react-redux';
+import React, { useState } from 'react';
 import { NavItem } from 'reactstrap';
 
 import { NavLink, Outlet } from 'react-router-dom';
@@ -10,76 +9,57 @@ import {
   NAV_CONVERT, NAV_EXTERNAL_OPENC2_JADN, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_HOME, NAV_VALIDATE
 } from 'components/utils/constants';
 import favicon from '../dependencies/assets/img/jadn-favicon.png';
-import { RootState } from '../../reducers';
-
-interface NavState {
-  isNavCollapsed: boolean;
-}
-
-// Redux Connector
-const mapStateToProps = (state: RootState) => ({
-  site_title: state.Util.site_title
-});
-
-const connector = connect(mapStateToProps);
-type ConnectorProps = ConnectedProps<typeof connector>;
-type NavConnectedProps = ConnectorProps;
 
 
-class AppLayout extends Component<NavConnectedProps, NavState> {
+const AppLayout = () => {
 
-  constructor(props: NavConnectedProps) {
-    super(props);
+  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
-    this.state = {
-      isNavCollapsed: false
-    };
-  }
+  const onToggleNav = () => {
+    setIsNavCollapsed(!isNavCollapsed);
+  };
 
-  render() {
-    const { isNavCollapsed } = this.state;
-    return (
-      <div>
-        <nav className='navbar navbar-expand-md navbar-dark bg-primary fixed-top py-1'>
-          <button className='navbar-toggler collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#jadn-sandbox-nav-toggle' aria-controls='jadn-sandbox-nav-toggle' aria-expanded='false' aria-label='Toggle navigation'>
-            <span className='navbar-toggler-icon' />
-          </button>
-          <a className='navbar-brand' href={ NAV_EXTERNAL_OPENC2_JADN } target='_blank' title='JSON Abstract Data Notation Sandbox' rel="noreferrer">
-            <img src={ favicon } alt='Logo' />
-            <span className='font-weight-bold font-italic mx-2'>JADN Sandbox</span>
-          </a>
-          <div className='navbar-collapse collapse' id='jadn-sandbox-nav-toggle'>
-            <ul className='nav navbar-nav mr-auto mt-2 mt-lg-0'>
-              <NavItem>
-                <NavLink className='nav-link' to={ NAV_HOME }>Home</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className='nav-link' to={ NAV_VALIDATE }>Validate</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className='nav-link' to={ NAV_CONVERT }>Convert</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className='nav-link' to={ NAV_GENERATE_MESSAGE }>Generate Message</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className='nav-link' to={ NAV_GENERATE_SCHEMA }>Generate Schema</NavLink>
-              </NavItem>
-            </ul>
-          </div>
-        </nav>
+  return (
+    <div>
+      <nav className='navbar navbar-expand-md navbar-dark bg-primary fixed-top py-1'>
+        <button className='navbar-toggler collapsed' type='button' onClick={ onToggleNav } data-toggle='collapse' data-target='#navToggle' aria-controls='navToggle' aria-expanded='false' aria-label='Toggle navigation'>
+          <span className='navbar-toggler-icon' />
+        </button>
+        <a className='navbar-brand' href={ NAV_EXTERNAL_OPENC2_JADN } target='_blank' title='JSON Abstract Data Notation Sandbox' rel="noreferrer">
+          <img src={ favicon } alt='Logo' />
+          <span className='font-weight-bold font-italic mx-2'>JADN Sandbox</span>
+        </a>
+        <div className={ `${isNavCollapsed ? 'collapse' : ''  } navbar-collapse` } id='navToggle'>
+          <ul className='nav navbar-nav mr-auto mt-2 mt-lg-0'>
+            <NavItem>
+              <NavLink className='nav-link' to={ NAV_HOME }>Home</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link' to={ NAV_VALIDATE }>Validate</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link' to={ NAV_CONVERT }>Convert</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link' to={ NAV_GENERATE_MESSAGE }>Generate Message</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link' to={ NAV_GENERATE_SCHEMA }>Generate Schema</NavLink>
+            </NavItem>
+          </ul>
+        </div>
+      </nav>
 
-        <Outlet />
+      <Outlet />
 
-        <nav className='navbar navbar-dark bg-dark fixed-bottom py-1'>
-          <ThemeChooser size='sm' />
-        </nav>
+      <nav className='navbar navbar-dark bg-dark fixed-bottom py-1'>
+        <ThemeChooser size='sm' />
+      </nav>
 
-        <ToastContainer position={ toast.POSITION.BOTTOM_CENTER } autoClose={ 5000 } />
+      <ToastContainer position={ toast.POSITION.BOTTOM_CENTER } autoClose={ 5000 } />
 
-      </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default connector(AppLayout);
+export default AppLayout;
