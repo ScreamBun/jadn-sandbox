@@ -13,10 +13,12 @@ import {
   EnumeratedFieldArray, FieldArray, StandardFieldArray, TypeArray
 } from '../../interface';
 import { zip } from '../../../../utils';
+const _ = require("lodash");
+
 
 // Interface
 interface StructureEditorProps {
-  dataIndex: number;
+  dataIndex: number; //index changes based on obj in arr (tracks the parent index)
   value: TypeArray;
   change: (v: PrimitiveTypeObject, i: number) => void;
   remove: (i: number) => void;
@@ -102,13 +104,12 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
 
   addField() {
     const { value } = this.state;
-    const { fields } = value;
     let field: EnumeratedFieldArray | StandardFieldArray;
-    //*****************************************************************************create unique keys here
+    let uid = _.uniqueId();
     if (value.type.toLowerCase() === 'enumerated') {
-      field = [fields.length + 1, '', ''] as EnumeratedFieldArray;
+      field = [uid, '', ''] as EnumeratedFieldArray;
     } else {
-      field = [fields.length + 1, 'field name', 'Null', [], ''] as StandardFieldArray;
+      field = [uid, 'field name', 'Null', [], ''] as StandardFieldArray;
     }
 
     this.setState(prevState => {
@@ -160,7 +161,7 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
   makeField(field: FieldArray, field_idx: number) {
     const fieldChange = (val: FieldArray, idx: number) => this.setState(prevState => {
       const tmpFields = [...prevState.value.fields];
-      tmpFields[idx] = val;
+      tmpFields[idx] = val; //add field to end of arr
       return {
         value: {
           ...prevState.value,
@@ -173,27 +174,20 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
     });
 
     const fieldRemove = (idx: number) => {
-      console.log("len " + this.state.value.fields.length)
-      console.log("idx " + idx)
-
-      if (this.state.value.fields.length >= idx) {  // eslint-disable-line react/destructuring-assignment
+      if (this.state.value.fields.length >= idx) {
+        // eslint-disable-line react/destructuring-assignment
         this.setState(prevState => {
           const tmpFieldValues = [...prevState.value.fields];
           const tmpFields = [...prevState.fields];
 
-          //*****************************************************************************find key and remove that field?
-          if (idx == this.state.value.fields.length) {
+          if (idx + 1 == this.state.value.fields.length) {
             tmpFieldValues.pop();
-            tmpFields.pop();
-
-          } else if (idx == 0) {
-            tmpFieldValues.shift();
-            tmpFields.shift();
-
           } else {
             tmpFieldValues.splice(idx, 1);
-            tmpFields.splice(idx, 1);
           }
+
+          //remove at dataindex instead if index of array 
+          tmpFields.filter((field) => field.props.dataIndex != idx)
 
           return {
             value: {
@@ -211,10 +205,11 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
 
     // eslint-disable-next-line react/destructuring-assignment
     const { value } = this.state;
-    const { name, type } = value;
+    const { type } = value;
+
     return (
       <FieldEditor
-        key={`${name}.${field_idx}`}
+        key={field[0]}
         dataIndex={field_idx}
         enumerated={type.toLowerCase() === 'enumerated'}
         value={field}
