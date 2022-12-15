@@ -6,6 +6,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
+import uniqueId from 'lodash/uniqueId';
 import { PrimitiveTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options';
 import FieldEditor from './field';
@@ -13,7 +14,6 @@ import {
   EnumeratedFieldArray, FieldArray, StandardFieldArray, TypeArray
 } from '../../interface';
 import { zip } from '../../../../utils';
-const _ = require("lodash");
 
 
 // Interface
@@ -105,7 +105,7 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
   addField() {
     const { value } = this.state;
     let field: EnumeratedFieldArray | StandardFieldArray;
-    let uid = _.uniqueId();
+    const uid = uniqueId();
     if (value.type.toLowerCase() === 'enumerated') {
       field = [uid, '', ''] as EnumeratedFieldArray;
     } else {
