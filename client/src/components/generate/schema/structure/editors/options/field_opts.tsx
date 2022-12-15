@@ -26,13 +26,13 @@ const FieldOptionsEditor: FunctionComponent<FieldOptionsEditorProps> = props => 
     return Object.keys(FieldOptionInputArgs).map(key => {
       return (
         <KeyValueEditor
-          key={ key }
-          id={ key }
-          { ...FieldOptionInputArgs[key] }
-          placeholder={ key }
-          removable={ false }
-          change={ val => change([key, val], 'field') }
-          value={ deserializedState[key] }
+          key={key}
+          id={key}
+          {...FieldOptionInputArgs[key]}
+          placeholder={key}
+          removable={false}
+          change={val => change([key, val], 'field')}
+          value={deserializedState[key]}
         />
       );
     });
@@ -41,11 +41,9 @@ const FieldOptionsEditor: FunctionComponent<FieldOptionsEditorProps> = props => 
   if (fieldOptions) {
     return (
       <div className="border m-1 p-1">
-        <div className="border-bottom mb-2">
-          <p className="col-sm-4 my-1"><strong>{ id }</strong></p>
-        </div>
+        <p className="col-sm-4 my-1"><strong>{id}</strong></p>
         <div className="col-12 m-0">
-          { validOptions() }
+          {validOptions()}
         </div>
       </div>
     );

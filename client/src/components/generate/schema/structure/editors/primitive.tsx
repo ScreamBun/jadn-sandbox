@@ -19,8 +19,8 @@ interface PrimitiveEditorProps {
 }
 
 interface PrimitiveEditorState {
+  value: StandardFieldObject | PrimitiveTypeObject;
   modal: boolean;
-  value: StandardFieldObject|PrimitiveTypeObject;
 }
 
 // Primitive Editor
@@ -33,7 +33,7 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
     this.toggleModal = this.toggleModal.bind(this);
 
     const { value } = this.props;
-    let valueObj: StandardFieldObject|PrimitiveTypeObject;
+    let valueObj: StandardFieldObject | PrimitiveTypeObject;
     if (Number.isInteger(value[0])) {
       valueObj = zip(StandardFieldKeys, value) as StandardFieldObject;
     } else {
@@ -69,7 +69,7 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
   initState() {
     const { value } = this.props;
     if (value && Array.isArray(value)) {
-      const updatevalue = zip(StandardFieldKeys, value);
+      const updatevalue = zip(TypeKeys, value);
 
       // eslint-disable-next-line react/destructuring-assignment
       if (!equal(updatevalue, this.state.value)) {
@@ -111,34 +111,35 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
 
   render() {
     const { modal, value } = this.state;
+
     return (
       <div className="border m-1 p-1">
         <ButtonGroup size="sm" className="float-right">
-          <Button color="danger" onClick={ this.removeAll } >
-            <FontAwesomeIcon icon={ faMinusCircle } />
+          <Button color="danger" onClick={this.removeAll} >
+            <FontAwesomeIcon icon={faMinusCircle} />
           </Button>
         </ButtonGroup>
 
         <div className="border-bottom mb-2">
-          <h3 className="col-sm-10 my-1">{ `${value.name}(${value.type})` }</h3>
+          <h3 className="col-sm-10 my-1">{`${value.name}(${value.type})`}</h3>
         </div>
 
         <div className="row m-0">
           <FormGroup className="col-md-4">
             <Label>Name</Label>
-            <Input type="text" placeholder="Name" value={ value.name } onChange={ this.onChange } />
+            <Input type="text" placeholder="Name" value={value.name} onChange={this.onChange} />
           </FormGroup>
 
           <FormGroup className="col-md-2">
             <Label>&nbsp;</Label>
             <InputGroup>
-              <Button outline color="info" onClick={ this.toggleModal }>Type Options</Button>
+              <Button outline color="info" onClick={this.toggleModal}>Type Options</Button>
               <OptionsModal
-                optionValues={ value.options }
-                isOpen={ modal }
-                optionType={ value.type }
-                toggleModal={ this.toggleModal }
-                saveModal={ this.saveModal }
+                optionValues={value.options}
+                isOpen={modal}
+                optionType={value.type}
+                toggleModal={this.toggleModal}
+                saveModal={this.saveModal}
               />
             </InputGroup>
           </FormGroup>
@@ -148,9 +149,9 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
             <Input
               type="textarea"
               placeholder="Comment"
-              rows={ 1 }
-              value={ value.comment }
-              onChange={ this.onChange }
+              rows={1}
+              value={value.comment}
+              onChange={this.onChange}
             />
           </FormGroup>
         </div>
