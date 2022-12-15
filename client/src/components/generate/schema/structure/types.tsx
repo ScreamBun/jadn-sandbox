@@ -13,8 +13,8 @@ interface EditorProps {
 
 const typeDef = (props: StructureDef) => {
   const {
-    name = 'name',
-    type = 'type',
+    name = '',
+    type = '',
     options = [],
     comment = '',
     fields = []
@@ -24,8 +24,8 @@ const typeDef = (props: StructureDef) => {
 
 const primDef = (props: PrimitiveDef) => {
   const {
-    name = 'name',
-    type = 'type',
+    name = '',
+    type = '',
     options = [],
     comment = ''
   } = props;
@@ -62,7 +62,7 @@ export default {
   mapof: {
     key: 'MapOf',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'MapOf' }),
-    editor: (props: EditorProps) => <PrimitiveEditor { ...props } />,
+    editor: (props: EditorProps) => <StructureEditor { ...props } />,
     type: 'structure'
   },
   array: {
@@ -74,7 +74,7 @@ export default {
   arrayof: {
     key: 'ArrayOf',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'ArrayOf' }),
-    editor: (props: EditorProps) => <PrimitiveEditor { ...props } />,
+    editor: (props: EditorProps) => <StructureEditor { ...props } />,
     type: 'structure'
   },
   // Primitive Types

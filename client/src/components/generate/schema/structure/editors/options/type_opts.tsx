@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
-import { OptionChange, TypeOptionInputArgs, ValidOptions  } from './consts';
+import { OptionChange, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../key_value';
 import { safeGet } from '../../../../../utils';
 import { RootState } from '../../../../../../reducers';
@@ -50,29 +50,35 @@ const TypeOptionsEditor: FunctionComponent<TypeOptionsEditorConnectedProps> = pr
     return safeGet(ValidOptions, optionType, []).map(key => {
       return (
         <KeyValueEditor
-          key={ key }
-          id={ key }
-          { ...TypeOptionInputArgs[key] }
-          placeholder={ key }
-          removable={ false }
-          options={ getOptions(key) }
-          change={ val => change([key, val], 'type') }
-          value={ deserializedState[key] }
+          key={key}
+          id={key}
+          {...TypeOptionInputArgs[key]}
+          placeholder={key}
+          removable={false}
+          options={getOptions(key)}
+          change={val => change([key, val], 'type')}
+          value={deserializedState[key]}
         />
       );
     });
   };
 
-  return (
-    <div className="border m-1 p-1">
-      <div className="border-bottom mb-2">
-        <p className="col-sm-4 my-1"><strong>{ id }</strong></p>
+  console.log(validOptions())
+  if (validOptions().length != 0) {
+    return (
+      <div className="border m-1 p-1">
+        <p className="col-sm-4 my-1"><strong>{id}</strong></p>
+        <div className="col-12 m-0">
+          {validOptions()}
+        </div>
       </div>
-      <div className="col-12 m-0">
-        { validOptions() }
-      </div>
-    </div>
-  );
+    );
+  } else if (optionType == "Boolean") {
+    return (<div className="border m-1 p-1">
+      <div className="col-12 m-0"> No type options available </div>
+    </div>);
+  }
+  return '';
 };
 
 TypeOptionsEditor.defaultProps = defaultProps;
