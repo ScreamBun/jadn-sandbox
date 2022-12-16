@@ -1,7 +1,5 @@
 import React, { FunctionComponent } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
-import { FormGroup, FormText } from 'reactstrap';
-
 import Field from '..';
 import { isOptional } from '../..';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
@@ -36,13 +34,20 @@ const RecordField: FunctionComponent<RecordFieldConnectedProps> = props => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
   return (
-    <FormGroup tag="fieldset" className="border border-dark p-2">
-      <legend>{ `${isOptional(def) ? '' : '*'}${name}` }</legend>
-      { comment && <FormText color="muted">{ comment }</FormText> }
-      <div className="col-12 my-1 px-0">
-        { typeDef[typeDef.length - 1].map(d => <Field key={ d[0] } def={ d } parent={ msgName } optChange={ optChange } />) }
+    <div className='form-group'>
+      <div className='card'>
+        <div className='card-header p-2'>
+          <h4 className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</h4>
+          {comment ? <small className='card-subtitle text-muted'>{comment}</small>: ''}
+        </div>
+
+        <div className='card-body mx-3'>
+          <div className="col-12 my-1 px-0">
+            {typeDef[typeDef.length - 1].map(d => <Field key={d[0]} def={d} parent={msgName} optChange={optChange} />)}
+          </div>
+        </div>
       </div>
-    </FormGroup>
+    </div>
   );
 };
 

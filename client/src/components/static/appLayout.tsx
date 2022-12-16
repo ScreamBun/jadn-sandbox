@@ -52,6 +52,10 @@ const AppLayout = () => {
 
       <Outlet />
 
+      <br />
+      <br />
+      <br />
+
       <nav className='navbar navbar-dark bg-dark fixed-bottom py-1'>
         <ThemeChooser size='sm' />
       </nav>
