@@ -1,8 +1,9 @@
 import React, { FunctionComponent } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import { Input } from 'reactstrap';
-import { InputType } from 'reactstrap/es/Input';
+import { InputType } from 'reactstrap/types/lib/Input';
 import dayjs from 'dayjs'
+
 import Field from '..';
 import { isOptional } from '../..';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
