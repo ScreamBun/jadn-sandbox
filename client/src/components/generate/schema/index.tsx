@@ -123,11 +123,11 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
             }
         } else if (data.types) {
             this.setState(prevState => {
-                const tmpTypes = prevState.schema.types || [];
+                const tmpTypes = [...prevState.schema.types] || [];
                 const tmpDef = Types[data.types].edit();
-                if ((tmpTypes.filter(d => d[0] === tmpDef[0]) || []).length === 0) {
-                    tmpTypes.push(tmpDef);
-                }
+
+                tmpTypes.push(tmpDef);
+
                 return {
                     schema: {
                         ...prevState.schema,
@@ -136,7 +136,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                 };
             });
         } else {
-            console.log('oops...');
+            console.log('Error: OnDrop() in client/src/components/generate/schema/index.tsx');
         }
     }
 
