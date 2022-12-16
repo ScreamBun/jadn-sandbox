@@ -1,12 +1,11 @@
 /**
  * Base webpack config used across other specific configs
  */
-import path from 'path';
-import webpack from 'webpack';
-import { merge } from 'webpack-merge';
+const path = require('path');
+const webpack = require('webpack');
 
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import Loaders, { commonImages } from './webpack.loaders';
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const NODE_ENV = 'production';
 
@@ -15,14 +14,51 @@ const BUILD_DIR = path.join(ROOT_DIR, 'build');
 const COMPONENTS_DIR = path.join(ROOT_DIR, 'src', 'components');
 const DEPEND_DIR = path.join(COMPONENTS_DIR, 'dependencies');
 
-export default {
+const commonImages = /\.(?:bmp|ico|gif|png|jpe?g|tiff|webp)$/;
+
+const file_loader = {
+  loader: 'file-loader',
+  options: {
+    name: (rPath, rQuery) => {
+      const ext = path.extname(rPath);
+      if (commonImages.test(ext)) {
+        return 'img/[name].[ext]';
+      }
+      return 'assets/[ext]/[name].[ext]';
+    }
+  }
+};
+
+const loader = {
+  css: {
+    loader: 'css-loader',
+    options: {
+      url: true,
+      import: true
+    }
+  },
+  file: file_loader,
+  less: {
+    loader: 'less-loader',
+    options: {
+      lessOptions: {
+        strictMath: true
+      }
+    }
+  },
+  url: {
+    loader: 'url-loader',
+    options: {
+      limit: 10 * 1024,
+      fallback: file_loader
+    }
+  }
+};
+
+module.exports = {
   devtool: 'inline-source-map',
   entry: {
-    main: path.join(ROOT_DIR, 'src', 'index'),
-    validator: path.join(COMPONENTS_DIR, 'validator', 'index'),
-    converter: path.join(COMPONENTS_DIR, 'converter', 'index'),
-    'message-generator': path.join(COMPONENTS_DIR, 'generate', 'message', 'index'),
-    'schema-generator': path.join(COMPONENTS_DIR, 'generate', 'schema', 'index')
+    main: './src/index.jsx'
   },
   output: {
     path: BUILD_DIR,
@@ -42,9 +78,7 @@ export default {
       filename: 'index.html',
       template: path.join(DEPEND_DIR, 'index.html')
     }),
-    new webpack.ProvidePlugin({
-      moment: 'moment'
-    })
+    new MiniCssExtractPlugin()
   ],
   optimization: {
     mergeDuplicateChunks: true,
@@ -79,60 +113,17 @@ export default {
         }
       },
       {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          Loaders.css
-        ]
-      },
-      {
-        test: /\.s[ac]ss$/,
-        use: [
-          'style-loader',
-          Loaders.css,
-          'sass-loader'
-        ]
-      },
-      {  // WOFF Font
-        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        use: merge(Loaders.url, {
-          options: {
-            mimetype: 'application/font-woff'
-          }
-        })
-      },
-      {  // WOFF2 Font
-        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        use: merge(Loaders.url, {
-          options: {
-            mimetype: 'application/font-woff'
-          }
-        })
-      },
-      {  // TTF Font
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: merge(Loaders.url, {
-          options: {
-            mimetype: 'application/octet-stream'
-          }
-        })
-      },
-      {  // EOT Font
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'file-loader'
-      },
-      {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'svg-url-loader',
         options: {
           limit: 10 * 1024,
           noquotes: true,
-          fallback: Loaders.file
+          fallback: loader.file
         }
       },
-      {  // Common Image Formats
+      { 
         test: commonImages,
-        use: Loaders.url
+        use: loader.url
       }
     ]
   }

@@ -55,10 +55,8 @@
     - [Plugins](https://webpack.js.org/plugins) - Plugin Info
       - [Clean](https://www.npmjs.com/package/clean-webpack-plugin)
       - [Copy](https://www.npmjs.com/package/copy-webpack-plugin)
-      - [Favicons](https://www.npmjs.com/package/favicons-webpack-plugin)
       - [HTML](https://www.npmjs.com/package/html-webpack-plugin)
       - [Mini CSS](https://www.npmjs.com/package/mini-css-extract-plugin)
-      - [Optimize CSS Assets](https://www.npmjs.com/package/optimize-css-assets-webpack-plugin)
       - [Terser](https://www.npmjs.com/package/terser-webpack-plugin)
       - [Bundle Tracker](https://www.npmjs.com/package/webpack-bundle-tracker)
     - [Loaders](https://webpack.js.org/loaders) - Loader Info
@@ -72,7 +70,6 @@
       - [Less](https://www.npmjs.com/package/less-loader) - Loads Less to CSS
         - [Less](https://www.npmjs.com/package/less) - Core package
       - [Style](https://www.npmjs.com/package/style-loader)
-    - [HTTP Proxy Middleware](https://www.npmjs.com/package/http-proxy-middleware)
     - [WebPack CLI](https://www.npmjs.com/package/webpack-cli)
     - [WebPack Dev Server](https://www.npmjs.com/package/webpack-dev-server)
     - [WebPack Merge](https://www.npmjs.com/package/webpack-merge)

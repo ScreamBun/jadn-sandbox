@@ -1,15 +1,14 @@
-import webpack from 'webpack';
-import { merge } from 'webpack-merge';
-import path from 'path';
+const path = require('path');
+const webpack = require('webpack');
+const { merge } = require('webpack-merge');
 
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import TerserPlugin from 'terser-webpack-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-import baseConfig from './webpack.config.base';
-import Loaders from './webpack.loaders';
+const baseConfig = require('./webpack.config.base');
 
 const NODE_ENV = 'production';
 
@@ -18,7 +17,7 @@ const BUILD_DIR = path.join(ROOT_DIR, 'build');
 const COMPONENTS_DIR = path.join(ROOT_DIR, 'src', 'components');
 const DEPEND_DIR = path.join(COMPONENTS_DIR, 'dependencies');
 
-export default merge(baseConfig, {
+module.exports = merge(baseConfig, {
   mode: NODE_ENV,
   devtool: 'source-map',
   plugins: [
@@ -60,25 +59,6 @@ export default merge(baseConfig, {
         extractComments: false,
         parallel: true
       })
-    ]
-  },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          Loaders.css
-        ]
-      },
-      {
-        test: /\.s[ac]ss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          Loaders.css,
-          'sass-loader'
-        ]
-      }
     ]
   }
 });

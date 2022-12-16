@@ -228,3 +228,8 @@ pip-selfcheck.json
 *.sqlite3
 server/webApp/static/*
 lint.html
+
+# Yarn related
+install-state.gz
+.yarn/install-state.gz
+.yarn.lock

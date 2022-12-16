@@ -1,10 +1,10 @@
-import path from 'path';
-import webpack from 'webpack';
-import { merge } from 'webpack-merge';
+const path = require('path');
+const webpack = require('webpack');
+const { merge } = require('webpack-merge');
 
-import DeadCodePlugin from 'webpack-deadcode-plugin';
+const DeadCodePlugin = require('webpack-deadcode-plugin');
 
-import baseConfig from './webpack.config.base';
+const baseConfig = require('./webpack.config.base');
 
 const NODE_ENV = 'development';
 
@@ -13,7 +13,8 @@ const BUILD_DIR = path.join(ROOT_DIR, 'build');
 const COMPONENTS_DIR = path.join(ROOT_DIR, 'src', 'components');
 const DEPEND_DIR = path.join(COMPONENTS_DIR, 'dependencies');
 
-export default merge(baseConfig, {
+
+module.exports = merge(baseConfig, {
   mode: NODE_ENV,
   devtool: 'eval',
   plugins: [
@@ -29,12 +30,6 @@ export default merge(baseConfig, {
         DEPEND_DIR
       ]
     }),
-    // new CircularDependencyPlugin({
-    //   exclude: /node_modules/,
-    //   failOnError: false,
-    //   allowAsyncCycles: false,
-    //   cwd: ROOT_DIR
-    // }),
     new webpack.NoEmitOnErrorsPlugin()
   ],
   devServer: {
