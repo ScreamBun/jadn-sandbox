@@ -2,20 +2,22 @@ import React, { ChangeEvent, FunctionComponent } from 'react';
 import {
   Button, FormGroup, FormText, Input, Label
 } from 'reactstrap';
-import { InputType } from 'reactstrap/es/Input';
+import { InputType } from 'reactstrap/types/lib/Input'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 
-// Interface
+
 interface KeyValueEditorProps {
+  key?: number|string|undefined; 
   name: string;
   value: boolean|number|string;
   description?: string;
-  options?: Array<string>; // only for type='select'
+  options?: Array<string>;
   placeholder?: string;
   type?: InputType;
-  change: (_v: boolean|number|string) => void;
-  remove: (_id: string) => void;
+  removable?: boolean;
+  change?: (_a: boolean|number|string) => void;
+  remove?: (_id: string) => void;
 }
 
 const defaultProps = {
@@ -25,24 +27,28 @@ const defaultProps = {
   type: 'text' as InputType
 };
 
-// Key Value Editor
+
 const KeyValueEditor: FunctionComponent<KeyValueEditorProps> = props => {
   const {
     name, value, description, options, placeholder, type, change, remove
   } = {...defaultProps, ...props};
 
-  const shadowless: Array<InputType> = [
-    'checkbox', 'file', 'hidden', 'image', 'radio'
-  ];
-
   const inputArgs: Record<string, any> = {
     value,
     checked: type && value,
-    onChange: (e: ChangeEvent<HTMLInputElement>) => change(e.target.value)
+    onChange: (e: ChangeEvent<HTMLInputElement>) => {
+      if(change){
+        change(e.target.value)
+      }
+    }
   };
 
   if (['checkbox', 'radio'].includes(type)) {
-    inputArgs.onChange = (e: ChangeEvent<HTMLInputElement>) => change(e.target.checked);
+    inputArgs.onChange = (e: ChangeEvent<HTMLInputElement>) => {
+      if(change){
+        change(e.target.checked)
+      }      
+    };
   }
 
   if (type === 'select' && options) {
@@ -67,7 +73,7 @@ const KeyValueEditor: FunctionComponent<KeyValueEditorProps> = props => {
         <Input
           type={ type }
           id={ `editor-${name}` }
-          className={ `form-control ${shadowless.includes(type) ? ' shadow-none' : ''}` }
+          className={ `form-control` }
           placeholder={ placeholder }
           { ...inputArgs }
         />

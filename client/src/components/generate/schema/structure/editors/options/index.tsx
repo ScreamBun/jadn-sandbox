@@ -64,12 +64,13 @@ class OptionsModal extends Component<OptionsModalProps, OptionsModalState> {
   }
 
   saveOptions(state: Val, type: 'field'|'type') {
-    this.setState(prevState => ({
-      [type]: {
-        ...prevState[type],
-        [state[0]]: state[1]
-      }
-    }));
+    // TODO: Needs fixed
+    // this.setState(prevState => ({
+    //   [type]: {
+    //     ...prevState[type],
+    //     [state[0]]: state[1]
+    //   }
+    // }));
   }
 
   saveModal() {
@@ -91,11 +92,13 @@ class OptionsModal extends Component<OptionsModalProps, OptionsModalState> {
         </ModalHeader>
         <ModalBody>
           <FieldOptionsEditor
+            id='fieldOptionsEditor1'
             deserializedState={ field }
             change={ this.saveOptions }
             fieldOptions={ fieldOptions }
           />
           <TypeOptionsEditor
+            id='typeOptionsEditor1'
             deserializedState={ type }
             change={ this.saveOptions }
             optionType={ optionType }

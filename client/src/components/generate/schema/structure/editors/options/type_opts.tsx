@@ -2,10 +2,9 @@ import React, { FunctionComponent } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
 import { OptionChange, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../key_value';
-import { safeGet } from '../../../../../utils';
 import { RootState } from '../../../../../../reducers';
 
-// Interfaces
+
 interface TypeOptionsEditorProps {
   schemaTypes: Array<string>;
   id: string;
@@ -15,7 +14,7 @@ interface TypeOptionsEditorProps {
   optionType?: string;
 }
 
-// Redux Connector
+
 const mapStateToProps = (state: RootState) => ({
   schemaTypes: [...state.Generate.types.base, ...Object.keys(state.Generate.types.schema)]
 });
@@ -29,7 +28,7 @@ const defaultProps = {
   optionType: ''
 };
 
-// Type Options Editor
+
 const TypeOptionsEditor: FunctionComponent<TypeOptionsEditorConnectedProps> = props => {
   const {
     change, deserializedState, id, optionType, schemaTypes
@@ -47,7 +46,7 @@ const TypeOptionsEditor: FunctionComponent<TypeOptionsEditorConnectedProps> = pr
   };
 
   const validOptions = () => {
-    return safeGet(ValidOptions, optionType, []).map(key => {
+    return Object.keys(ValidOptions).map((key: string) => {
       return (
         <KeyValueEditor
           key={key}
@@ -63,7 +62,6 @@ const TypeOptionsEditor: FunctionComponent<TypeOptionsEditorConnectedProps> = pr
     });
   };
 
-  console.log(validOptions())
   if (validOptions().length != 0) {
     return (
       <div className="border m-1 p-1">

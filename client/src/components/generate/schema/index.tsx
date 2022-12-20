@@ -9,7 +9,7 @@ import {faFileDownload, faFileUpload} from '@fortawesome/free-solid-svg-icons';
 import {Button, ListGroup, ListGroupItem, Nav, NavItem, NavLink, TabContent, TabPane, Tooltip} from 'reactstrap';
 import {Buffer} from 'buffer';
 import classnames from 'classnames';
-import {Draggable, Droppable} from 'react-drag-and-drop';
+// import {Draggable, Droppable} from 'react-drag-and-drop';
 import locale from 'react-json-editor/dist/locale/en';
 
 import {SchemaJADN} from './interface';
@@ -110,23 +110,25 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
         const {schema} = this.state;
         if (data.info) {
             if (!(data.info in (schema.info || {}))) {
-                this.setState(prevState => ({
-                    schema: {
-                        ...prevState.schema,
-                        info: {
-                            ...prevState.schema.info || {},
-                            ...Info[data.info].edit()
-                        }
-                    }
-                }));
+                // TODO: Fix
+                // this.setState(prevState => ({
+                //     schema: {
+                //         ...prevState.schema,
+                //         info: {
+                //             ...prevState.schema.info || {},
+                //             ...Info[data.info].edit()
+                //         }
+                //     }
+                // }));
             }
         } else if (data.types) {
             this.setState(prevState => {
                 const tmpTypes = prevState.schema.types || [];
-                const tmpDef = Types[data.types].edit();
-                if ((tmpTypes.filter(d => d[0] === tmpDef[0]) || []).length === 0) {
-                    tmpTypes.push(tmpDef);
-                }
+                // TODO: Fix
+                // const tmpDef = Types[data.types].edit();
+                // if ((tmpTypes.filter(d => d[0] === tmpDef[0]) || []).length === 0) {
+                    // tmpTypes.push(tmpDef);
+                // }
                 return {
                     schema: {
                         ...prevState.schema,
@@ -140,6 +142,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
     }
 
     schemaEditor() {
+        /*
         const { schema } = this.state;
         const infoEditors = Object.keys(Info).map((k, i) => {
             const key = k as keyof typeof Info;
@@ -147,6 +150,8 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
             if (schema.info && k in schema.info) {
                 return editor({
                     key: i,
+                    name: '',
+                    description: '',
                     value: schema.info[key],
                     placeholder: k,
                     change: val => this.setState(prevState => ({
@@ -186,7 +191,8 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                 dataIndex: i,
                 change: (val, idx: number) => this.setState(prevState => {
                     const tmpTypes = [...prevState.schema.types];
-                    tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
+                    // TODO: Fix
+                    // tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
                     return {
                         schema: {
                             ...prevState.schema,
@@ -210,20 +216,21 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                 }
             });
         });
-
+        */
         return (
           <div>
             <div className="col pt-2">
               <h2>Info</h2>
-              {infoEditors}
+              {/* {infoEditors} */}
             </div>
             <hr />
             <div className="col">
               <h2>Types</h2>
-              {typesEditors}
+              {/* {typesEditors} */}
             </div>
           </div>
         );
+
     }
 
     schemaOptions() {
@@ -231,14 +238,16 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
             activeOption, download, downloadTooltip, uploadTooltip
         } = this.state;
         const infoKeys = Object.keys(Info).map(k => (
-          <Draggable type="info" data={ k } key={ Info[k].key }>
-            <ListGroupItem action>{ Info[k].key }</ListGroupItem>
-          </Draggable>
+            <p></p>
+        //   <Draggable type="info" data={ k } key={ Info[k].key }>
+        //     <ListGroupItem action>{ Info[k].key }</ListGroupItem>
+        //   </Draggable>
         ));
         const typesKeys = Object.keys(Types).map(k => (
-          <Draggable type="types" data={ k } key={ Types[k].key }>
-            <ListGroupItem action>{ Types[k].key }</ListGroupItem>
-          </Draggable>
+            <p></p>
+        //   <Draggable type="types" data={ k } key={ Types[k].key }>
+        //     <ListGroupItem action>{ Types[k].key }</ListGroupItem>
+        //   </Draggable>
         ));
         return (
           <div id='schema-options' className='col-md-2'>
@@ -322,19 +331,20 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
             const file = files[0];
             const fileReader = new FileReader();
 
-            fileReader.onload = (_rf: FileReader, _ev: ProgressEvent<FileReader>) => {
-                if (fileReader.result) {
-                    const data = Buffer.from(fileReader.result.split(',')[1], 'base64').toString();
-                    try {
-                        this.setState({
-                            schema: JSON.parse(data)
-                        });
-                    } catch (err) {
-                        toast(<p>Schema cannot be loaded</p>, {type: toast.TYPE.ERROR});
-                        console.log(err);
-                    }
-                }
-            };
+            // TODO: Fix
+            // fileReader.onload = (_rf: FileReader, _ev: ProgressEvent<FileReader>) => {
+            //     if (fileReader.result) {
+            //         const data = Buffer.from(fileReader.result.split(',')[1], 'base64').toString();
+            //         try {
+            //             this.setState({
+            //                 schema: JSON.parse(data)
+            //             });
+            //         } catch (err) {
+            //             toast(<p>Schema cannot be loaded</p>, {type: toast.TYPE.ERROR});
+            //             console.log(err);
+            //         }
+            //     }
+            // };
 
             fileReader.readAsDataURL(file);
         }
@@ -405,14 +415,14 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                             </NavLink>
                         </NavItem>
                     </Nav>
-                    <Droppable
+                    {/* <Droppable
                         types={['info', 'types']} // <= allowed drop types
                         onDrop={this.onDrop}
                         className='border col-12 p-0 pt-1'
                         style={{
                             minHeight: '20em'
                         }}
-                    >
+                    > */}
                         <TabContent activeTab={activeView}>
                             <TabPane tabId='editor'>
                                 {this.schemaEditor()}
@@ -449,7 +459,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                                 </div>
                             </TabPane>
                         </TabContent>
-                    </Droppable>
+                    {/* </Droppable> */}
                 </div>
             </div>
         );

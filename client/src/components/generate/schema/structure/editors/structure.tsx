@@ -6,8 +6,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
-import uniqueId from 'lodash/uniqueId';
-import { PrimitiveTypeObject, TypeKeys } from './consts';
+import { TypeKeys } from './consts';
 import OptionsModal from './options';
 import FieldEditor from './field';
 import {
@@ -16,12 +15,12 @@ import {
 import { zip } from '../../../../utils';
 
 
-// Interface
 interface StructureEditorProps {
-  dataIndex: number; //index changes based on obj in arr (tracks the parent index)
+  key?: number|string;
+  dataIndex: number;
   value: TypeArray;
-  change: (v: PrimitiveTypeObject, i: number) => void;
-  remove: (i: number) => void;
+  change?: (v: string|Record<string, any>, i: number) => void; 
+  remove?: (i: number) => void; 
 }
 
 interface StructureEditorState {
@@ -65,6 +64,10 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
 
+    if(!e.target.value && !key){
+      return false;
+    }
+
     this.setState(prevState => ({
       value: {
         ...prevState.value,
@@ -72,8 +75,9 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
       }
     }), () => {
       const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(this.state.value, dataIndex);
+      if(change && dataIndex){
+        change(this.state.value, dataIndex);
+      }
     });
   }
 
@@ -82,7 +86,6 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
     if (value && Array.isArray(value)) {
       const updatevalue = zip(TypeKeys, value);
 
-      // eslint-disable-next-line react/destructuring-assignment
       if (!equal(updatevalue, this.state.value)) {
         this.setState(prevState => ({
           value: {
@@ -99,17 +102,19 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
 
   removeAll() {
     const { dataIndex, remove } = this.props;
-    remove(dataIndex);
+    if(remove){
+      remove(dataIndex);
+    }
   }
 
   addField() {
     const { value } = this.state;
     let field: EnumeratedFieldArray | StandardFieldArray;
-    const uid = uniqueId();
+    const id = new Date().getTime();
     if (value.type.toLowerCase() === 'enumerated') {
-      field = [uid, '', ''] as EnumeratedFieldArray;
+      field = [id, '', ''] as EnumeratedFieldArray;
     } else {
-      field = [uid, 'field name', 'Null', [], ''] as StandardFieldArray;
+      field = [id, 'field name', 'Null', [], ''] as StandardFieldArray;
     }
 
     this.setState(prevState => {
@@ -126,8 +131,9 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
       };
     }, () => {
       const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(this.state.value, dataIndex);
+      if(change && dataIndex){
+        change(this.state.value, dataIndex);
+      }
     });
   }
 
@@ -153,15 +159,16 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
       }
     }), () => {
       const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(this.state.value, dataIndex);
+      if(change && dataIndex){
+        change(this.state.value, dataIndex);
+      }
     });
   }
 
   makeField(field: FieldArray, field_idx: number) {
     const fieldChange = (val: FieldArray, idx: number) => this.setState(prevState => {
       const tmpFields = [...prevState.value.fields];
-      tmpFields[idx] = val; //add field to end of arr
+      tmpFields[idx] = val;
       return {
         value: {
           ...prevState.value,
@@ -170,11 +177,14 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
       };
     }, () => {
       const { change, dataIndex } = this.props;
-      change(this.state.value, dataIndex);  // eslint-disable-line react/destructuring-assignment
+      if(change && dataIndex){
+        change(this.state.value, dataIndex);
+      }
     });
 
     const fieldRemove = (idx: number) => {
-      if (this.state.value.fields.length >= idx) {
+      const { value } = this.state;
+      if (value.fields.length >= idx) {
         // eslint-disable-line react/destructuring-assignment
         this.setState(prevState => {
           const tmpFieldValues = [...prevState.value.fields];
@@ -186,8 +196,7 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
             tmpFieldValues.splice(idx, 1);
           }
 
-          //remove at dataindex instead if index of array 
-          tmpFields.filter((field) => field.props.dataIndex != idx)
+          tmpFields.filter((field) => field.props.dataIndex !== idx);
 
           return {
             value: {
@@ -198,23 +207,24 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
           };
         }, () => {
           const { change, dataIndex } = this.props;
-          change(this.state.value, dataIndex);  // eslint-disable-line react/destructuring-assignment
+          if(change && dataIndex){
+            change(this.state.value, dataIndex);
+          }
         });
-      }
+      } 
     };
 
-    // eslint-disable-next-line react/destructuring-assignment
     const { value } = this.state;
     const { type } = value;
 
     return (
       <FieldEditor
-        key={field[0]}
-        dataIndex={field_idx}
-        enumerated={type.toLowerCase() === 'enumerated'}
-        value={field}
-        change={fieldChange}
-        remove={fieldRemove}
+        key = { field[0] }
+        dataIndex = { field_idx }
+        enumerated = { type.toLowerCase() === 'enumerated' }
+        value = { field }
+        change = { fieldChange }
+        remove = { fieldRemove }
       />
     );
   }
@@ -235,8 +245,8 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
     return (
       <div className="border m-1 p-1">
         <ButtonGroup size="sm" className="float-right">
-          <Button color="danger" onClick={this.removeAll} >
-            <FontAwesomeIcon icon={faMinusCircle} />
+          <Button color="danger" onClick={ this.removeAll } >
+            <FontAwesomeIcon icon={ faMinusCircle } />
           </Button>
         </ButtonGroup>
 
@@ -247,46 +257,46 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
         <div className="row m-0">
           <FormGroup className="col-md-4">
             <Label>Name</Label>
-            <Input type="text" placeholder="Name" value={value.name} onChange={this.onChange} />
+            <Input type="text" placeholder="Name" value={ value.name } onChange={ this.onChange } />
           </FormGroup>
 
           <FormGroup className="col-md-2">
             <Label>&nbsp;</Label>
             <InputGroup>
-              <Button outline color="info" onClick={this.toggleModal}>Type Options</Button>
+              <Button outline color="info" onClick={ this.toggleModal }>Type Options</Button>
               <OptionsModal
-                optionValues={value.options}
-                isOpen={modal}
-                optionType={value.type}
-                toggleModal={this.toggleModal}
-                saveModal={this.saveModal}
+                optionValues={ value.options }
+                isOpen={ modal }
+                optionType={ value.type }
+                toggleModal={ this.toggleModal }
+                saveModal={ this.saveModal }
               />
             </InputGroup>
           </FormGroup>
 
           <FormGroup className="col-md-6">
             <Label>Comment</Label>
-            <Input type="textarea" placeholder="Comment" rows={1} value={value.comment} onChange={this.onChange} />
+            <Input type="textarea" placeholder="Comment" rows={ 1 } value={ value.comment } onChange={ this.onChange } />
           </FormGroup>
 
           <FormGroup tag="fieldset" className="col-12 border">
             <legend>
               Fields
               <ButtonGroup className="float-right">
-                <Button color={fieldCollapse ? 'warning' : 'success'} onClick={this.toggleFields} >
-                  <FontAwesomeIcon icon={fieldCollapse ? faMinusCircle : faPlusCircle} />
+                <Button color={ fieldCollapse ? 'warning' : 'success' } onClick={ this.toggleFields } >
+                  <FontAwesomeIcon icon={ fieldCollapse ? faMinusCircle : faPlusCircle } />
                   &nbsp;
                   {fieldCollapse ? ' Hide' : ' Show'}
                 </Button>
-                <Button color="primary" onClick={this.addField} >
-                  <FontAwesomeIcon icon={faPlusSquare} />
+                <Button color="primary" onClick={ this.addField } >
+                  <FontAwesomeIcon icon={ faPlusSquare } />
                   &nbsp;
                   Add
                 </Button>
               </ButtonGroup>
             </legend>
 
-            <Collapse isOpen={fieldCollapse}>
+            <Collapse isOpen={ fieldCollapse }>
               {fields}
             </Collapse>
             {!fieldCollapse && fields.length > 0 ? <p>Expand to view/edit fields</p> : ''}

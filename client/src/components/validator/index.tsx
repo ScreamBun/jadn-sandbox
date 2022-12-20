@@ -19,7 +19,6 @@ import { RootState } from '../../reducers';
 
 // Interface
 type ValidTabs = 'original' | 'json';
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ValidatorProps {}
 
 interface ValidatorState {
@@ -106,7 +105,7 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
       },
       schema: {
         schema: {
-          placeholder: 'Paste JADN schema here'
+          types: []
         },
         selected: 'empty',
         decodeTypes: {
@@ -183,10 +182,12 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
         ...updateArr
       }
     }), () => {
-      // eslint-disable-next-line react/destructuring-assignment
       const { selected } = this.state[type];
-      // eslint-disable-next-line react/destructuring-assignment
-      const loaded = this.props[`loaded${type[0].toUpperCase()}${type.slice(1)}s`];
+      const stringVal: string = `loaded${type[0].toUpperCase()}${type.slice(1)}s`;
+
+      // TODO: Fix?
+      // const loaded = this.props[stringVal];
+      const loaded: { [key: string]: string } = {stringVal : ''};
 
       if (!['', 'empty', null, 'file', 'url'].includes(selected)) {
         const fmt: Record<string, any> = {};
@@ -231,6 +232,8 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
   }
 
   fileChange(e: ChangeEvent<HTMLInputElement>) {
+    // TODO: Rewrite....
+    /*
     const { files, id } = e.target;
     const prefix = id.split('-')[0] as 'message'|'schema';
     const file = files[0];
@@ -273,6 +276,7 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
       }
     };
     fileReader.readAsDataURL(file);
+    */
   }
 
   format(t: StateTypes, i = 2) {
@@ -317,7 +321,7 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
     } else if (t === 'schema') {
       try {
         this.setState(prevState => ({ schema: {...prevState.schema, schema: prevState.schema.schema }}));
-      } catch (e) {
+      } catch (e: any) {
         const msg = `${t.charAt(0).toUpperCase()}${t.slice(1)} Invalid, cannot format: ${e.message}`;
         toast(<p>{ msg }</p>, {type: toast.TYPE.WARNING});
       }
@@ -492,7 +496,7 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
                           this.setState(prevState => ({
                             schema: {
                               ...prevState.schema,
-                              schema: val.jsObject
+                              schema: val.jsObject as SchemaJADN
                             }
                           }));
                         }

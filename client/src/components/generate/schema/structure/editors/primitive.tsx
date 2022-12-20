@@ -10,12 +10,13 @@ import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys }
 import OptionsModal from './options';
 import { zip } from '../../../../utils';
 
-// Interface
+
 interface PrimitiveEditorProps {
+  key?: number|string;
   dataIndex: number;
   value: Array<any>;
-  change: (v: any, i: number) => void;
-  remove: (i: number) => void;
+  change?: (v: string|Record<string, any>, i: number) => void; 
+  remove?: (i: number) => void; 
 }
 
 interface PrimitiveEditorState {
@@ -23,7 +24,7 @@ interface PrimitiveEditorState {
   modal: boolean;
 }
 
-// Primitive Editor
+
 class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorState> {
   constructor(props: PrimitiveEditorProps) {
     super(props);
@@ -61,8 +62,9 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
       }
     }), () => {
       const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(this.state.value, dataIndex);
+      if(change){
+        change(this.state.value, dataIndex);
+      }
     });
   }
 
@@ -71,7 +73,6 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
     if (value && Array.isArray(value)) {
       const updatevalue = zip(TypeKeys, value);
 
-      // eslint-disable-next-line react/destructuring-assignment
       if (!equal(updatevalue, this.state.value)) {
         this.setState(prevState => ({
           value: {
@@ -85,7 +86,9 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
 
   removeAll() {
     const { dataIndex, remove } = this.props;
-    remove(dataIndex);
+    if(remove){
+      remove(dataIndex);
+    }
   }
 
   toggleModal() {
@@ -104,8 +107,9 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
       }
     }), () => {
       const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(this.state.value, dataIndex);
+      if(change){
+        change(this.state.value, dataIndex);
+      }
     });
   }
 

@@ -18,7 +18,7 @@ export const hasProperty = (obj: Record<string, any>, prop: string): boolean => 
  * @returns {Array<ValType>} values of the given object
  * @public
  */
- export const objectValues = <ValType>(obj: Record<string, ValType>): Array<ValType> => {
+ export const objectValues = <ValType>(obj: Record<string, ValType>): Array<ValType>|[] => {
   return Object.keys(obj).map(k => obj[k]);
 };
 

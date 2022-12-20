@@ -19,7 +19,7 @@ interface FieldEditorProps {
   enumerated?: boolean;
   dataIndex: number;
   value: EnumeratedFieldArray|StandardFieldArray;
-  change: (_v: EnumeratedFieldArray|StandardFieldArray, _i: number) => void;
+  change: (_v: EnumeratedFieldArray|StandardFieldArray|FieldArray, _i: number) => void;
   remove: (_i: number) => void;
 }
 
@@ -90,7 +90,7 @@ class FieldEditor extends Component<FieldEditorConnectedProps, FieldEditorState>
     const { target } = e.nativeEvent;
     if (target) {
       const { value } = e.target;
-      const key = target.name.toLowerCase();
+      const key = e.target.name.toLowerCase();
 
       this.setState(prevState => ({
         value: {
@@ -144,8 +144,9 @@ class FieldEditor extends Component<FieldEditorConnectedProps, FieldEditorState>
     }), () => {
       const { change, dataIndex } = this.props;
       const { value } = this.state;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(objectValues(value as Record<string, any>), dataIndex);
+
+      // TODO: Needs fixed
+      // change(objectValues(value), dataIndex);
     });
   }
 

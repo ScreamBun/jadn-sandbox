@@ -1,13 +1,13 @@
 /* eslint compat/compat: 0 */
 
 /* Async load of a file from a generic url */
-const readAllChunks = (stream: ReadableStream<Uint8Array>|null): Promise<Array<Uint8Array | undefined>> => {
+const readAllChunks = (stream: ReadableStream<Uint8Array>|null): Promise<Array<Uint8Array>> => {
   if (stream) {
     const reader = stream.getReader();
-    const chunks: Array<Uint8Array|undefined> = [];
+    const chunks: Array<Uint8Array> = [];
 
-    const pump = (): Promise<Array<Uint8Array|undefined>> => {
-      return reader.read().then<Array<Uint8Array|undefined>>(({ value, done }) => {
+    const pump = (): Promise<Array<Uint8Array>> => {
+      return reader.read().then<Array<Uint8Array>>(({ value, done }) => {
         if (done) {
           return chunks;
         }
@@ -22,7 +22,7 @@ const readAllChunks = (stream: ReadableStream<Uint8Array>|null): Promise<Array<U
   });
 };
 
-const chunk2str = (chunks: Array<Uint8Array|undefined>) => {
+const chunk2str = (chunks: Array<Uint8Array>) => {
   if (chunks && chunks.length === 1) {
     const rtnArr = Array.from(chunks[0]);
     return rtnArr.map(c => c > 128 ? `\\x${c.toString(16)}` : String.fromCharCode(c)).join('');

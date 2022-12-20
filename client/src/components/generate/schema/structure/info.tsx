@@ -5,13 +5,53 @@ import {
 import { InfoDef } from './interfaces';
 
 interface EditorProps {
-  key?: number|string|undefined;  // eslint-disable-line react/require-default-props
+  key?: number|string; 
   name: string;
-  description?: string;  // eslint-disable-line react/require-default-props
-  placeholder: string;
+  description: string;
+  placeholder?: string;
   value: any;
-  change?: (val: string|Record<string, any>, idx: number) => void;  // eslint-disable-line react/require-default-props
-  remove?: (idx: number) => void;  // eslint-disable-line react/require-default-props
+  change: (_a: boolean|number|string) => void;
+  remove: (_id: string) => void;
+}
+
+interface ObjectEditorProps {
+  key?: number|string; 
+  name: string;
+  description: string;
+  placeholder?: string;
+  value: Record<string, any>;
+  change: (_v: Record<string, any>) => void;
+  remove: (_id: string) => void;
+}
+
+interface ArrayEditorProps {
+  key?: number|string; 
+  name: string;
+  description: string;
+  placeholder?: string;
+  value: Array<any>;
+  change: (_v: Record<string, any>) => void;
+  remove: (_id: string) => void;
+}
+
+interface ConfigEditorState {
+  $MaxBinary: number;
+  $MaxString: number;
+  $MaxElements: number;
+  $FS: string;
+  $Sys: string;
+  $TypeName: string;
+  $FieldName: string;
+  $NSID: string;
+}
+
+interface ConfigEditorProps {
+  name: string;
+  placeholder?: string;
+  description?: string;
+  value: ConfigEditorState;
+  change: (_a: boolean|number|string) => void;
+  remove: (_id: string) => void;
 }
 
 const metaDef = ({ k='key', v='' }: InfoDef) => ({ [k]: v } as Record<string, any>);
@@ -32,27 +72,57 @@ export default {
   version: {
     key: 'Version',
     edit: (val: string) => metaDef({ k: 'version', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor { ...props } name="Version" />
+    editor: (props: EditorProps) => (
+      <KeyValueEditor 
+        { ...props } 
+        name="Version" 
+        description="Version"
+      />
+    )     
   },
   title: {
     key: 'Title',
     edit: (val: string) => metaDef({ k: 'title', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor { ...props } name="Title" />
+    editor: (props: EditorProps) => (
+      <KeyValueEditor 
+        { ...props } 
+        name="Title" 
+        description="Title"
+      />
+    )    
   },
   description: {
     key: 'Description',
     edit: (val: string) => metaDef({ k: 'description', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor { ...props } name="Description" />
+    editor: (props: EditorProps) => (
+      <KeyValueEditor 
+        { ...props } 
+        name="Description" 
+        description="Description"
+      />
+    )     
   },
   comment: {
     key: 'Comment',
     edit: (val: string) => metaDef({ k: 'comment', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor { ...props } name="Comment" />
+    editor: (props: EditorProps) => (
+      <KeyValueEditor 
+        { ...props } 
+        name="Comment" 
+        description="Comment"
+      />
+    )    
   },
   copyright: {
     key: 'Copyright',
     edit: (val: string) => metaDef({ k: 'copyright', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor { ...props } name="Copyright" />
+    editor: (props: EditorProps) => (
+        <KeyValueEditor 
+          { ...props } 
+          name="Copyright" 
+          description="Copyright"
+        />
+      )
   },
   license: {
     key: 'License',
@@ -62,7 +132,7 @@ export default {
   namespaces: {
     key: 'Namespaces',
     edit: (val: Record<string, string> = {}) => metaDef({ k: 'namespaces', v: val }),
-    editor: (props: EditorProps) => (
+    editor: (props: ArrayEditorProps) => (
       <KeyObjectEditor
         { ...props }
         name="Namespaces"
@@ -73,7 +143,7 @@ export default {
   exports: {
     key: 'Exports',
     edit: (val: Array<string> = []) => metaDef({ k: 'exports', v: val }),
-    editor: (props: EditorProps) => (
+    editor: (props: ArrayEditorProps) => (
       <KeyArrayEditor
         { ...props }
         name="Exports"
@@ -84,7 +154,7 @@ export default {
   config: {
     key: 'Config',
     edit: (val: Record<string, string> = {}) => metaDef({ k: 'config', v: val }),
-    editor: (props: EditorProps) => (
+    editor: (props: ConfigEditorProps) => (
       <ConfigObjectEditor
         { ...props }
         name="Config"

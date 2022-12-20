@@ -4,11 +4,11 @@ import { PrimitiveDef, StructureDef } from './interfaces';
 import { StandardTypeArray } from '../interface';
 
 interface EditorProps {
-  key?: number|string|undefined;  // eslint-disable-line react/require-default-props
+  key?: number|string;  
   dataIndex: number;
   value: StandardTypeArray;
-  change?: (v: string|Record<string, any>, i: number) => void;  // eslint-disable-line react/require-default-props
-  remove?: (i: number) => void;  // eslint-disable-line react/require-default-props
+  change?: (v: string|Record<string, any>, i: number) => void; 
+  remove?: (i: number) => void; 
 }
 
 const typeDef = (props: StructureDef) => {

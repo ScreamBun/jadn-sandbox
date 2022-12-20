@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
-import { ThemeSwitcher } from 'react-bootswatch-theme-switcher';
+
 
 // Styles
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +13,7 @@ import App from './app';
 
 // Config
 import configureStore, { history } from './store';
+import { ThemeSwitcher } from 'react-bootswatch-theme-switcher';
 
 const store = configureStore(history);
 
@@ -24,15 +25,18 @@ const Root = () => (
   <ThemeSwitcher storeThemeKey="theme" defaultTheme="darkly" themeRoot={ themeRoot } themeOptions={ validThemes }>
     <Provider store={ store } >
       <HelmetProvider>
-        <App history={ history } />
+        <App />
       </HelmetProvider>
     </Provider>
   </ThemeSwitcher>
 );
 
-ReactDOM.createRoot(document.getElementById('root')).
-render(
-  <React.StrictMode>
-    <Root />
-  </React.StrictMode>
-);
+const container = document.getElementById('root')!;
+const root = ReactDOM.createRoot(container);
+root.render(<Root />);
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js");
+  });
+}

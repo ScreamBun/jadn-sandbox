@@ -1,8 +1,7 @@
-import {
-    NAV_EXTERNAL_OPENC2_JADN, NAV_VALIDATE, NAV_CONVERT, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA
-} from 'components/utils/constants';
+
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { NAV_CONVERT, NAV_EXTERNAL_OPENC2_JADN, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_VALIDATE } from '../utils/constants';
 
 const Home = () => {
     return (

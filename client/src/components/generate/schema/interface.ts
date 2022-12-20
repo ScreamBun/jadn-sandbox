@@ -19,9 +19,10 @@ export interface Info {
   description?: string;
   comment?: string;
   copyright?:string;
-  license?: string;
+  license?: Record<string, string>;
   exports?: Array<string>;
   config?: InfoConfig;
+  namespaces?: Record<string, string>;
 }
 
 // Fields

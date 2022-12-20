@@ -5,8 +5,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
-// Interface
+
 interface KeyArrayEditorProps {
+  key?: number|string; 
   name: string;
   description: string;
   placeholder?: string;

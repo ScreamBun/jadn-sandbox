@@ -22,14 +22,13 @@ interface ConfigEditorProps {
   name: string;
   placeholder?: string;
   description?: string;
-  value: ConfigEditorState;
-  change: (_v: ConfigEditorState) => void;
+  value: any;
+  change: (_v: any) => void;
   remove: (_id: string) => void;
 }
 
 // Config Editor
 class ConfigEditor extends Component<ConfigEditorProps, ConfigEditorState> {
-  // eslint-disable-next-line react/static-property-placement
   static defaultProps = {
     placeholder: 'ConfigObjectEditor',
     description: ''
@@ -56,16 +55,26 @@ class ConfigEditor extends Component<ConfigEditorProps, ConfigEditorState> {
     return propsChange || stateChange;
   }
 
-  onChange(k: string, v: any) {
+  onChange(k: string, v: string) {
+
+    this.setState((prevState) => ({
+      ...prevState, 
+      k : v
+    }));
+
+    // TODO: Update logic to delete/filter a state
+
+    /*
     this.setState(prevState => {
       const ps = { ...prevState };
-      if (v === '') {
+      if (!v) {
         delete ps[k];
       } else {
         ps[k] = v;
       }
       return ps;
     });
+    */
   }
 
   removeAll() {
@@ -77,17 +86,21 @@ class ConfigEditor extends Component<ConfigEditorProps, ConfigEditorState> {
     const { description, name } = this.props;
     const keys = Object.keys(ConfigOptions).map(k => {
       const key = k as keyof typeof ConfigOptions;
+      
       const keyProps = {
         ...ConfigOptions[key],
         placeholder: k,
-        change: (v: any) => this.onChange(k, v),
+        value: '',  // TODO: Add value?
+        change: (v: string) => this.onChange(k, v),
         removable: false
       };
-      if (k in this.state) {
-        // eslint-disable-next-line react/destructuring-assignment
-        keyProps.value = this.state[key];
-      }
-      return <KeyValueEditor key={ k } name={ k } { ...keyProps } />;
+      // TODO: Not sure what this is doing.... 
+      // if (k in this.state) {
+      //   keyProps.type = this.state[key];
+      // }
+      // TODO: Fix
+      // return <KeyValueEditor key={ k } name={ k } { ...keyProps } />;
+      return <p></p>;
     });
 
     return (

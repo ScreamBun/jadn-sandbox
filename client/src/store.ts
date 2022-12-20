@@ -1,7 +1,8 @@
 import storage from 'redux-persist/es/storage';
 import {
-    Store, StoreEnhancer, applyMiddleware, createStore, compose
+    Store, StoreEnhancer, applyMiddleware, compose
  } from 'redux';
+import { configureStore } from '@reduxjs/toolkit'
 import { apiMiddleware } from 'redux-api-middleware';
 import { History, createBrowserHistory } from 'history';
 import reduxThunk from 'redux-thunk';
@@ -14,7 +15,7 @@ import createRootReducer, { RootState } from './reducers';
 type LintStore = Store<RootState, DispatchAction>;
 export const history = createBrowserHistory();
 
-export default (his: History = history): LintStore => {
+export default (his: History = history): any => {
   const reducer = persistReducer(
     {
       key: 'jadn_lint',
@@ -46,16 +47,17 @@ export default (his: History = history): LintStore => {
     // extraEnhancers.push(window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
   }
 
+  // TODO: May need to tie this into the store....
   const enhancers: StoreEnhancer = compose(
     applyMiddleware(...middleware),
     ...extraEnhancers
   );
 
-  const store = createStore(
-    reducer,
-    {},
-    enhancers
-  ) as LintStore;
+  const store = configureStore({
+    reducer: {},
+  });
+
   persistStore(store);
+
   return store;
 };
