@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import { ConnectedProps, connect } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
-import PopoutWindow from 'react-popout';
+import Popout from 'react-popout';
 import FileSaver from 'file-saver';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileDownload, faFilePdf, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
@@ -50,7 +50,7 @@ interface ConverterState {
   convert: {
     selected: string;
     html: boolean;
-    popup?: PopoutWindow
+    popup?: Popout
   };
 }
 
@@ -149,6 +149,21 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
     return propsUpdate || stateUpdate;
   }
 
+  reset = () => {
+    const { convertedSchema } = this.props
+    convertedSchema.convert = '';
+
+    this.setState(prevState => ({ convert: { ...prevState.convert, selected: 'empty', html: false } }));
+    this.setState(prevState => ({ schema: { ...prevState.schema, schema: {}, selected: 'empty', conv: '' } }));
+  }
+
+  selectChangeConversion(conversion: string) {
+    const { convertedSchema } = this.props
+    convertedSchema.convert = '';
+    this.setState(prevState => ({ convert: { ...prevState.convert, selected: conversion } }))
+
+  }
+
   submitForm(e: FormEvent<HTMLFormElement>) {
     const { validateSchema } = this.props;
     const { convert, schema } = this.state;
@@ -181,9 +196,11 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
   }
 
   selectChange(e: ChangeEvent<HTMLSelectElement>) {
+    //clear conversions
     const { convertedSchema } = this.props
-
     convertedSchema.convert = '';
+    document.getElementById("convert-to").selectedIndex = 0;
+    this.setState(prevState => ({ convert: { ...prevState.convert, selected: 'empty', html: false } }));
 
     const { id, value } = e.target;
     const type = id.split('-')[0];
@@ -218,6 +235,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
         }
 
         if (!Object.keys(loaded).includes(selected)) {
+
           const { loadFile } = this.props;
           loadFile(`${type}s`, selected).then(() => {
             this.setState(prevState => ({
@@ -239,6 +257,9 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
             }
           }));
         }
+      } else {
+        //not a loaded file, jadn schema and value is empty
+        this.setState(prevState => ({ schema: { ...prevState.schema, schema: {}, selected: 'empty' } }));
       }
     });
   }
@@ -456,7 +477,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
       convert: {
         ...prevState.convert,
         popup: (
-          <PopoutWindow
+          <Popout
             title="HTML Schema"
             center="screen"
             options={
@@ -467,13 +488,13 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
                 left: (opt: Record<string, any>, win: Window) => (win.innerWidth - opt.width(opt, win)) / sizeDivisor + win.screenX
               }
             }
-            onClosing={() => this.setState(prevState1 => ({ convert: { ...prevState1.convert, popup: null } }))}
+            onClosing={() => this.setState(prevState => ({ convert: { ...prevState.convert, popup: null } }))}
           >
             <div>
               {theme}
               {schema}
             </div>
-          </PopoutWindow>
+          </Popout>
         )
       }
     }));
@@ -509,9 +530,9 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
           </div>
 
           <div className="card-footer pb-3">
-            <Button color='info' onClick={() => this.verifySchema()} className='float-right mr-2'>Verify</Button>
+            <Button color='info' className='float-right' onClick={() => this.verifySchema()}>Verify</Button>
             <div className="form-row">
-              <div className="form-group col-md-5 px-1 mb-0">
+              <div className="input-group col-md-5 px-1 mb-0">
                 <select id="schema-list" name="schema-list" className="form-control mb-0" defaultValue="empty" onChange={this.selectChange}>
                   <option value="empty">Schema</option>
                   <optgroup label="Testers">
@@ -524,14 +545,17 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
                 </select>
               </div>
 
-              <div id="schema-file-group" className={`form-group col-md-6 px-1 mb-0${schema.file ? '' : ' d-none'}`} >
-                <input type="file" className="btn btn-light form-control-file" id="schema-file" name="schema-file" accept=".jadn" onChange={this.fileChange} />
+              <div id="schema-file-group" className={`input-group col-md-6 px-1 mb-0${schema.file ? '' : ' d-none'}`} >
+                <div className="custom-file">
+                  <input type="file" className="custom-file-input" id="schema-file" name="schema-file" accept=".jadn" onChange={this.fileChange} />
+                  <label className="custom-file-label" htmlFor="schema-file">Choose file</label>
+                </div>
               </div>
 
               <div id="schema-url-group" className={`form-group col-md-6 px-1 mb-0${schema.url ? '' : ' d-none'}`}>
                 <div className="input-group">
                   <div className="input-group-prepend">
-                    <Button color="info" onClick={() => this.loadURL('schema')}>Load URL</Button>
+                    <Button outline color="secondary" onClick={() => this.loadURL('schema')}>Load URL</Button>
                   </div>
                   <input type="text" className="form-control" defaultValue='' onChange={(e) => this.setState(prevState => ({ schema: { ...prevState.schema, urlStr: e.target.value } }))} />
                 </div>
@@ -547,7 +571,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
   converted() {
     const { conversions, convertedSchema } = this.props;
     const {
-      convert, convertDownloadTooltip, pdfDownloadTooltip, viewSchemaTooltip
+      convert, convertDownloadTooltip, pdfDownloadTooltip, viewSchemaTooltip, convTooltip, schema
     } = this.state;
     const download = this.downloadConfig();
 
@@ -574,7 +598,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
             />
           </div>
 
-          <div className='card-footer'>
+          <div className='card-footer pb-3'>
             <a id='convertDownloadTooltip' className={`btn btn-sm btn-primary float-right${convertedSchema.convert ? '' : ' disabled'}`} href={download.content} download={download.file} target="_blank" rel="noreferrer">
               <FontAwesomeIcon icon={faFileDownload} size='2x' />
             </a>
@@ -599,11 +623,20 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
             </div>
             {convert.popup}
             <div className="form-row ml-1 mb-0">
-              <div className="form-group col-md-6 px-1 mb-0">
-                <select id="convert-to" name="convert-to" className="form-control" defaultValue="empty" onChange={e => this.setState(prevState => ({ convert: { ...prevState.convert, selected: e.target.value } }))}>
+              <div className="input-group col-md-6 px-1 mb-0">
+                <select id="convert-to" name="convert-to" className="form-control" defaultValue="empty" onChange={e => this.selectChangeConversion(e.target.value)}>
                   <option value="empty">Convert To...</option>
                   {convertOpts}
                 </select>
+
+                <div className="input-group-append">
+                  <span className="d-inline-block" data-toggle="tooltip" title="Please select schema and conversion">
+                    <Button color="success" type="submit" id="convTooltip" disabled={schema.selected != 'empty' && convert.selected != 'empty' ? false : true}>Convert</Button>
+                  </span>
+                  <Tooltip placement="bottom" isOpen={convTooltip} target="convTooltip" toggle={() => this.setState(prevState => ({ convTooltip: !prevState.convTooltip }))}>
+                    Convert the given JADN schema to the selected format
+                  </Tooltip>
+                </div>
               </div>
             </div>
           </div>
@@ -614,7 +647,6 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
   }
 
   render() {
-    const { convTooltip } = this.state;
     const { canonical, title } = this.meta;
     return (
       <div className='row mx-auto'>
@@ -627,14 +659,8 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
             {this.jadn()}
             {this.converted()}
           </div>
+          <Button color="danger" className='float-right' type="reset" onClick={this.reset} >Reset</Button>
           <div className="col-12" />
-          <div className="form-group">
-            <Button outline color="primary" type="submit" id="convTooltip">Convert</Button>
-            <Tooltip placement="bottom" isOpen={convTooltip} target="convTooltip" toggle={() => this.setState(prevState => ({ convTooltip: !prevState.convTooltip }))}>
-              Convert the given JADN schema to the selected format
-            </Tooltip>
-            <Button outline color="danger" type="reset" onClick={() => { this.setState(prevState => ({ schema: { ...prevState.schema, schema: {}, conv: '' } })); }} >Reset</Button>
-          </div>
         </Form>
       </div>
     );
