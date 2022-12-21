@@ -1,6 +1,6 @@
 import React, { Component, MouseEvent } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
-import { Button, FormGroup, FormText } from 'reactstrap';
+import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -23,7 +23,7 @@ interface ArrayOfFieldState {
   min: boolean;
   max: boolean;
   count: number;
-  opts: Record<string, boolean|number|string>
+  opts: Record<string, boolean | number | string>
 }
 
 // Redux Connector
@@ -49,7 +49,7 @@ class ArrayOfField extends Component<ArrayOfFieldConnectedProps, ArrayOfFieldSta
     this.removeOpt = this.removeOpt.bind(this);
     const { def, parent, schema } = this.props;
 
-    const [ _idx, name, type, _args, _comment ] = def;
+    const [_idx, name, type, _args, _comment] = def;
     this.opts = {};
 
     const typeDef = schema.types.filter(t => { return t[0] === type; });
@@ -71,7 +71,7 @@ class ArrayOfField extends Component<ArrayOfFieldConnectedProps, ArrayOfFieldSta
     this.setState(prevState => {
       const maxBool = prevState.count < max;
       return {
-        count: maxBool ? prevState.count+1 : prevState.count,
+        count: maxBool ? prevState.count + 1 : prevState.count,
         max: !maxBool
       };
     }, () => {
@@ -94,7 +94,7 @@ class ArrayOfField extends Component<ArrayOfFieldConnectedProps, ArrayOfFieldSta
       }
 
       return {
-        count: minBool ? count-1 : count,
+        count: minBool ? count - 1 : count,
         min: !minBool,
         opts
       };
@@ -121,7 +121,7 @@ class ArrayOfField extends Component<ArrayOfFieldConnectedProps, ArrayOfFieldSta
   render() {
     const { def, schema } = this.props;
     const { count, max, min } = this.state;
-    const [ _idx, name, _type, _args, comment ] = def;
+    const [_idx, name, _type, _args, comment] = def;
     if (this.typeDef) {
       this.opts = opts2obj(this.typeDef[2]);
     }
@@ -130,38 +130,45 @@ class ArrayOfField extends Component<ArrayOfFieldConnectedProps, ArrayOfFieldSta
     if (arrDef.length === 1) {
       // eslint-disable-next-line prefer-destructuring
       arrDef = arrDef[0];
-      arrDef = [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length-2]];
+      arrDef = [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]];
     } else {
       arrDef = [0, arrDef[1], 'String', [], ''];
     }
 
     const fields = [];
-    for (let i=0; i < count; ++i) {
-        fields.push(<Field key={ i } def={ arrDef } parent={ this.msgName } optChange={ this.optChange } idx={ i } />);
+    for (let i = 0; i < count; ++i) {
+      fields.push(<Field key={i} def={arrDef} parent={this.msgName} optChange={this.optChange} idx={i} />);
     }
 
     return (
-      <FormGroup tag="fieldset" className="border border-dark p-2">
-        <legend>
-          { `${isOptional(def) ? '' : '*'}${name}` }
-          <Button
-            color="danger"
-            className={ `float-right p-1${min ? ' disabled' : ''}` }
-            onClick={ this.removeOpt }
-          >
-            <FontAwesomeIcon icon={ faMinusSquare } size="lg" />
-          </Button>
-          <Button
-            color="primary"
-            className={ `float-right p-1${max ? ' disabled' : ''}` }
-            onClick={ this.addOpt }
-          >
-            <FontAwesomeIcon icon={ faPlusSquare } size="lg" />
-          </Button>
-        </legend>
-        { comment && <FormText color="muted">{ comment }</FormText> }
-        { fields }
-      </FormGroup>
+      <div className='form-group'>
+        <div className='card'>
+          <div className='card-header p-2'>
+            <h4 className='card-title m-0'>
+              {`${name}${isOptional(def) ? '' : '*'}`}
+            </h4>
+            <Button
+              color="danger"
+              className={`float-right p-1${min ? ' disabled' : ''}`}
+              onClick={this.removeOpt}
+            >
+              <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+            </Button>
+            <Button
+              color="primary"
+              className={`float-right p-1${max ? ' disabled' : ''}`}
+              onClick={this.addOpt}
+            >
+              <FontAwesomeIcon icon={faPlusSquare} size="lg" />
+            </Button>
+            {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
+          </div>
+
+          <div className='card-body mx-3'>
+            {fields}
+          </div>
+        </div>
+      </div>
     );
   }
 }

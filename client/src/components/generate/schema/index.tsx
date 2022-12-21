@@ -1,22 +1,22 @@
 /* eslint @typescript-eslint/lines-between-class-members: 0, lines-between-class-members: 0 */
-import React, {ChangeEvent, Component, MouseEvent} from 'react';
-import {Dispatch} from 'redux';
-import {connect, ConnectedProps} from 'react-redux';
-import {Helmet} from 'react-helmet-async';
-import {toast} from 'react-toastify';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faFileDownload, faFileUpload} from '@fortawesome/free-solid-svg-icons';
-import {Button, ListGroup, ListGroupItem, Nav, NavItem, NavLink, TabContent, TabPane, Tooltip} from 'reactstrap';
-import {Buffer} from 'buffer';
+import React, { ChangeEvent, Component, MouseEvent } from 'react';
+import { Dispatch } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Helmet } from 'react-helmet-async';
+import { toast } from 'react-toastify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileDownload, faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { Button, ListGroup, ListGroupItem, Nav, NavItem, NavLink, TabContent, TabPane, Tooltip } from 'reactstrap';
+import { Buffer } from 'buffer';
 import classnames from 'classnames';
-import {Draggable, Droppable} from 'react-drag-and-drop';
+import { Draggable, Droppable } from 'react-drag-and-drop';
 import locale from 'react-json-editor/dist/locale/en';
 
-import {SchemaJADN} from './interface';
-import {Info, Types} from './structure';
-import {FormatJADN, JADNInput} from '../../utils';
+import { SchemaJADN } from './interface';
+import { Info, Types } from './structure';
+import { FormatJADN, JADNInput } from '../../utils';
 
-import {RootState} from '../../../reducers';
+import { RootState } from '../../../reducers';
 import * as GenActions from '../../../actions/generate';
 import * as ConformanceActions from "../../../actions/conformance";
 
@@ -66,6 +66,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
     constructor(props: GenerateConnectedProps) {
         super(props);
         this.downloadConfig = this.downloadConfig.bind(this);
+        this.clearSchema = this.clearSchema.bind(this);
         this.loadSchema = this.loadSchema.bind(this);
         this.onDrop = this.onDrop.bind(this);
 
@@ -78,12 +79,12 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
             activeOption: 'info',
             activeView: 'editor',
             download: {
-                content: `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify({error: 'No Schema Defined'}))}`,
+                content: `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify({ error: 'No Schema Defined' }))}`,
                 file: 'schema.jadn'
             }
         };
 
-        const {info, siteTitle, getConformanceTests} = this.props;
+        const { info, siteTitle, getConformanceTests } = this.props;
         this.meta = {
             title: `${siteTitle} | Creator-Schema`,
             canonical: `${window.location.origin}${window.location.pathname}`
@@ -99,7 +100,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
         const { schema } = this.state;
 
         if (schema !== nextState.schema) {
-            const {setSchema} = nextProps;
+            const { setSchema } = nextProps;
             setSchema(nextState.schema);
         }
         const shouldUpdate = propsUpdate || stateUpdate;
@@ -107,7 +108,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
     }
 
     onDrop(data: any) {
-        const {schema} = this.state;
+        const { schema } = this.state;
         if (data.info) {
             if (!(data.info in (schema.info || {}))) {
                 this.setState(prevState => ({
@@ -122,11 +123,11 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
             }
         } else if (data.types) {
             this.setState(prevState => {
-                const tmpTypes = prevState.schema.types || [];
+                const tmpTypes = [...prevState.schema.types] || [];
                 const tmpDef = Types[data.types].edit();
-                if ((tmpTypes.filter(d => d[0] === tmpDef[0]) || []).length === 0) {
-                    tmpTypes.push(tmpDef);
-                }
+
+                tmpTypes.push(tmpDef);
+
                 return {
                     schema: {
                         ...prevState.schema,
@@ -135,7 +136,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                 };
             });
         } else {
-            console.log('oops...');
+            console.log('Error: OnDrop() in client/src/components/generate/schema/index.tsx');
         }
     }
 
@@ -143,7 +144,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
         const { schema } = this.state;
         const infoEditors = Object.keys(Info).map((k, i) => {
             const key = k as keyof typeof Info;
-            const {editor} = Info[key];
+            const { editor } = Info[key];
             if (schema.info && k in schema.info) {
                 return editor({
                     key: i,
@@ -161,7 +162,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                     remove: (id: string) => {
                         if (schema.info && id in schema.info) {
                             this.setState(prevState => {
-                                const tmpInfo = {...prevState.schema.info};
+                                const tmpInfo = { ...prevState.schema.info };
                                 delete tmpInfo[id];
                                 return {
                                     schema: {
@@ -212,17 +213,17 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
         });
 
         return (
-          <div>
-            <div className="col pt-2">
-              <h2>Info</h2>
-              {infoEditors}
+            <div>
+                <div className="col pt-2">
+                    <h2>Info</h2>
+                    {infoEditors}
+                </div>
+                <hr />
+                <div className="col">
+                    <h2>Types</h2>
+                    {typesEditors}
+                </div>
             </div>
-            <hr />
-            <div className="col">
-              <h2>Types</h2>
-              {typesEditors}
-            </div>
-          </div>
         );
     }
 
@@ -231,35 +232,35 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
             activeOption, download, downloadTooltip, uploadTooltip
         } = this.state;
         const infoKeys = Object.keys(Info).map(k => (
-          <Draggable type="info" data={ k } key={ Info[k].key }>
-            <ListGroupItem action>{ Info[k].key }</ListGroupItem>
-          </Draggable>
+            <Draggable type="info" data={k} key={Info[k].key}>
+                <ListGroupItem action>{Info[k].key}</ListGroupItem>
+            </Draggable>
         ));
         const typesKeys = Object.keys(Types).map(k => (
-          <Draggable type="types" data={ k } key={ Types[k].key }>
-            <ListGroupItem action>{ Types[k].key }</ListGroupItem>
-          </Draggable>
+            <Draggable type="types" data={k} key={Types[k].key}>
+                <ListGroupItem action>{Types[k].key}</ListGroupItem>
+            </Draggable>
         ));
         return (
-          <div id='schema-options' className='col-md-2'>
-            <Nav tabs>
-              <NavItem>
-                <NavLink
-                  className={ classnames({active: activeOption === 'info'}) }
-                  onClick={ () => this.toggleOptions('info') }
-                >
-                  Info
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className={ classnames({active: activeOption === 'types'}) }
-                  onClick={ () => this.toggleOptions('types') }
-                >
-                  Types
-                </NavLink>
-              </NavItem>
-            </Nav>
+            <div id='schema-options' className='col-md-2'>
+                <Nav tabs>
+                    <NavItem>
+                        <NavLink
+                            className={classnames({ active: activeOption === 'info' })}
+                            onClick={() => this.toggleOptions('info')}
+                        >
+                            Info
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            className={classnames({ active: activeOption === 'types' })}
+                            onClick={() => this.toggleOptions('types')}
+                        >
+                            Types
+                        </NavLink>
+                    </NavItem>
+                </Nav>
                 <TabContent activeTab={activeOption}>
                     <TabPane tabId='info'>
                         <ListGroup>
@@ -272,11 +273,11 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                         </ListGroup>
                     </TabPane>
                 </TabContent>
-                <div className='col-12 m-2'/>
+                <div className='col-12 m-2' />
                 <div className='btn-group btn-group-sm'>
                     <Button id='uploadTooltip' color="primary"
-                            onClick={() => this.schemaInput && this.schemaInput.click()}>
-                        <FontAwesomeIcon icon={faFileUpload} color="white" size='2x'/>
+                        onClick={() => this.schemaInput && this.schemaInput.click()}>
+                        <FontAwesomeIcon icon={faFileUpload} color="white" size='2x' />
                         <input
                             type='file'
                             className='d-none'
@@ -288,16 +289,19 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                         />
                     </Button>
                     <Button id="downloadTooltip" color="primary" onClick={this.downloadConfig} href={download.content}
-                            download={download.file} target="_blank" rel="noreferrer">
-                        <FontAwesomeIcon icon={faFileDownload} color="white" size='2x'/>
+                        download={download.file} target="_blank" rel="noreferrer">
+                        <FontAwesomeIcon icon={faFileDownload} color="white" size='2x' />
                     </Button>
                 </div>
+                <div className='mt-2'>
+                    <Button color='danger' onClick={this.clearSchema}> Clear Schema </Button>
+                </div>
                 <Tooltip placement="bottom" isOpen={uploadTooltip} target="uploadTooltip"
-                         toggle={() => this.setState(prevState => ({uploadTooltip: !prevState.uploadTooltip}))}>
+                    toggle={() => this.setState(prevState => ({ uploadTooltip: !prevState.uploadTooltip }))}>
                     Upload JADN Schema
                 </Tooltip>
                 <Tooltip placement="bottom" isOpen={downloadTooltip} target="downloadTooltip"
-                         toggle={() => this.setState(prevState => ({downloadTooltip: !prevState.downloadTooltip}))}>
+                    toggle={() => this.setState(prevState => ({ downloadTooltip: !prevState.downloadTooltip }))}>
                     Download converted schema
                 </Tooltip>
             </div>
@@ -313,8 +317,19 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
         }));
     }
 
+    clearSchema(_e: MouseEvent<HTMLButtonElement>) {
+        let confirmation = confirm("Are you sure you want to clear schema?");
+        if (confirmation) {
+            this.setState({
+                schema: { types: [] }
+            });
+        } else {
+            return;
+        }
+    }
+
     loadSchema(e: ChangeEvent<HTMLInputElement>) {
-        const {files} = e.target;
+        const { files } = e.target;
 
         if (files && files.length > 0) {
             // toast(<p>Unable to load file</p>, {type: toast.TYPE.WARNING});
@@ -330,12 +345,11 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                             schema: JSON.parse(data)
                         });
                     } catch (err) {
-                        toast(<p>Schema cannot be loaded</p>, {type: toast.TYPE.ERROR});
+                        toast(<p>Schema cannot be loaded</p>, { type: toast.TYPE.ERROR });
                         console.log(err);
                     }
                 }
             };
-
             fileReader.readAsDataURL(file);
         }
     }
@@ -350,7 +364,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
     }
 
     toggleViews(view: Tabs) {
-        const {activeView} = this.state;
+        const { activeView } = this.state;
         if (activeView !== view) {
             this.setState({
                 activeView: view
@@ -359,22 +373,22 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
     }
 
     render() {
-        const {activeView, schema} = this.state;
-        const {canonical, title} = this.meta;
+        const { activeView, schema } = this.state;
+        const { canonical, title } = this.meta;
 
         // @ts-ignore
         return (
             <div className='row mx-auto'>
                 <Helmet>
                     <title>{title}</title>
-                    <link rel="canonical" href={canonical}/>
+                    <link rel="canonical" href={canonical} />
                 </Helmet>
                 {this.schemaOptions()}
                 <div id='schema-view' className='col-md-10'>
                     <Nav tabs>
                         <NavItem>
                             <NavLink
-                                className={classnames({active: activeView === 'editor'})}
+                                className={classnames({ active: activeView === 'editor' })}
                                 onClick={() => this.toggleViews('editor')}
                             >
                                 Editor
@@ -382,7 +396,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                         </NavItem>
                         <NavItem>
                             <NavLink
-                                className={classnames({active: activeView === 'jadn'})}
+                                className={classnames({ active: activeView === 'jadn' })}
                                 onClick={() => this.toggleViews('jadn')}
                             >
                                 JADN
@@ -390,7 +404,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                         </NavItem>
                         <NavItem>
                             <NavLink
-                                className={classnames({active: activeView === 'tests'})}
+                                className={classnames({ active: activeView === 'tests' })}
                                 onClick={() => this.toggleViews('tests')}
                             >
                                 View Tests
@@ -398,7 +412,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                         </NavItem>
                         <NavItem>
                             <NavLink
-                                className={classnames({active: activeView === 'test-results'})}
+                                className={classnames({ active: activeView === 'test-results' })}
                                 onClick={() => this.toggleViews('test-results')}
                             >
                                 Run Tests
@@ -425,7 +439,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                                         val => {
                                             if (val.jsObject) {
                                                 console.log("JADN Input onChange: " + val.jsObject);
-                                                this.setState({schema: val.jsObject as SchemaJADN});
+                                                this.setState({ schema: val.jsObject as SchemaJADN });
                                             }
                                         }
                                     }
@@ -435,7 +449,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                                     height='100%'
                                     width='100%'
                                     viewOnly
-                                    // waitAfterKeyPress={ 500 }
+                                // waitAfterKeyPress={ 500 }
                                 />
                             </TabPane>
                             <TabPane tabId='tests'>
@@ -445,7 +459,7 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                             </TabPane>
                             <TabPane tabId='test-results'>
                                 <div className='m-2'>
-                                    <RunConformanceTests schema={ schema } />
+                                    <RunConformanceTests schema={schema} />
                                 </div>
                             </TabPane>
                         </TabContent>
