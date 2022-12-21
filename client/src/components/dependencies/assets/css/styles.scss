@@ -3,19 +3,19 @@
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
-    src: local('Roboto'), local('Roboto-Regular'), url('/assets/fonts/Roboto-Regular.ttf') format('truetype');
+    src: local('Roboto'), local('Roboto-Regular'), url('../../assets/fonts/Roboto-Regular.ttf') format('truetype');
 }
 @font-face {
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 500;
-    src: local('Roboto Medium'), local('Roboto-Medium'), url('/assets/fonts/Roboto-Medium.ttf') format('truetype');
+    src: local('Roboto Medium'), local('Roboto-Medium'), url('../../assets/fonts/Roboto-Medium.ttf') format('truetype');
 }
 @font-face {
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 700;
-    src: local('Roboto Bold'), local('Roboto-Bold'), url('/assets/fonts/Roboto-Bold.ttf') format('truetype');
+    src: local('Roboto Bold'), local('Roboto-Bold'), url('../../assets/fonts/Roboto-Bold.ttf') format('truetype');
 }
 
 $max-width: 1400px;
