@@ -71,6 +71,9 @@ module.exports = {
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
     modules: ['node_modules', path.join(ROOT_DIR, 'src')]
   },
+  performance: {
+    hints: process.env.NODE_ENV === 'production' ? "warning" : false
+  },
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV
