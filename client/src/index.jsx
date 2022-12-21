@@ -32,9 +32,9 @@ const Root = () => (
 
 ReactDOM.createRoot(document.getElementById('root')).
 render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Root />
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // TODO: Include a service worker
