@@ -233,3 +233,6 @@ lint.html
 install-state.gz
 .yarn/install-state.gz
 .yarn.lock
+yarn.lock
+/client/yarn-lock
+/client/install-state.gz

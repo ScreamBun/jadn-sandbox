@@ -36,3 +36,10 @@ render(
     <Root />
   </React.StrictMode>
 );
+
+// TODO: Include a service worker
+// if ("serviceWorker" in navigator) {
+//   window.addEventListener("load", () => {
+//     navigator.serviceWorker.register("/service-worker.js");
+//   });
+// }

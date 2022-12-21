@@ -6,6 +6,7 @@ const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const WorkboxPlugin = require("workbox-webpack-plugin");
 
 const NODE_ENV = 'production';
 
@@ -78,7 +79,12 @@ module.exports = {
       filename: 'index.html',
       template: path.join(DEPEND_DIR, 'index.html')
     }),
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin(),
+    new WorkboxPlugin.GenerateSW({
+      swDest: "service-worker.js",
+      clientsClaim: true,
+      skipWaiting: true
+    })
   ],
   optimization: {
     mergeDuplicateChunks: true,
