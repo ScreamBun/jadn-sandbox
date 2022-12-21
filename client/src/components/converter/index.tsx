@@ -272,9 +272,14 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
 
     fileReader.onload = (ev: ProgressEvent<FileReader>) => {
       let data = ev.target.result;
-      //data = JSON.parse(data);
+
       try {
-        //data = JSON.stringify(data, null, 2);
+        data = JSON.parse(data);
+      } catch (err) {
+        toast(<p>File Parsing Error</p>, { type: toast.TYPE.WARNING });
+      }
+
+      try {
         data = JSON.stringify(data, null, 2); //must turn str into obj before str
       } catch (err) {
         switch (type) {
@@ -285,7 +290,6 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
             toast(<p>File cannot be loaded</p>, { type: toast.TYPE.WARNING });
         }
       }
-      console.log(data)
 
       if (prefix === 'schema') {
         try {
