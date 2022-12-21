@@ -9,7 +9,7 @@ import Popout from 'react-popout';
 import FileSaver from 'file-saver';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileDownload, faFilePdf, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
-import { Button, Form, Tooltip } from 'reactstrap';
+import { Button, Form, Input, Tooltip } from 'reactstrap';
 import HTMLParser from 'html-react-parser';
 import locale from 'react-json-editor/dist/locale/en';
 
@@ -18,7 +18,6 @@ import { escaped2cbor, hexify, loadURL, validURL } from '../utils';
 import JSONInput from '../utils/jadn-editor';
 import { ConvertActions, UtilActions, ValidateActions } from '../../actions';
 import { RootState } from '../../reducers';
-
 
 // Interface
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -172,9 +171,9 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
     let schemaObj = schema.schema;
     if (typeof (schema.schema) === 'string') {
       try {
-        schemaObj = JSON.parse(schema);
+        schemaObj = JSON.parse(schema.schema);
       } catch (err) {
-        toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+        toast(<p>{err}</p>, { type: toast.TYPE.WARNING });
         return false;
       }
     }
@@ -185,7 +184,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
         convertSchema(
           schema.schema,
           convert.selected,
-          schema.comments ? 'all' : 'none'
+          schema.comments ? true : false
         );
       } else {
         toast(<p>{validSchema.valid_msg}</p>, { type: toast.TYPE[validSchema.valid_bool ? 'INFO' : 'WARNING'] });
@@ -265,36 +264,41 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
   }
 
   fileChange(e: ChangeEvent<HTMLInputElement>) {
-    const { files, id } = e.target;
-    const [file] = files;
+    const { id } = e.target;
+    const file = e.target.files[0];
     const prefix = id.split('-')[0];
     const type = file.name.split('.')[1];
     const fileReader = new FileReader();
 
-    fileReader.onload = (fr: FileReader, _ev: ProgressEvent<FileReader>) => {
-      let data = atob(fr.result.split(',')[1]);
+    fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+      let data = ev.target.result;
+      //data = JSON.parse(data);
       try {
-        data = JSON.stringify(JSON.parse(data), null, 2);
+        //data = JSON.stringify(data, null, 2);
+        data = JSON.stringify(data, null, 2); //must turn str into obj before str
       } catch (err) {
         switch (type) {
           case 'cbor':
             data = escaped2cbor(hexify(data));
             break;
-          // no default
+          default:
+            toast(<p>File cannot be loaded</p>, { type: toast.TYPE.WARNING });
         }
       }
+      console.log(data)
 
       if (prefix === 'schema') {
         try {
           this.setState(prevState => ({
             schema: {
               ...prevState.schema,
-              schema: JSON.parse(data)
+              schema: { data },
             }
           }));
         } catch (err) {
           toast(<p>Schema cannot be loaded</p>, { type: toast.TYPE.WARNING });
         }
+
       } else if (prefix === 'message') {
         this.setState(prevState => ({
           message: {
@@ -305,7 +309,8 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
         }));
       }
     };
-    fileReader.readAsDataURL(file);
+
+    fileReader.readAsText(file);
   }
 
   verifySchema() {
@@ -314,9 +319,9 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
     let schemaObj = schema.schema;
     if (typeof (schema.schema) === 'string') {
       try {
-        schemaObj = JSON.parse(schema);
+        schemaObj = JSON.parse(schema.schema);
       } catch (err) {
-        toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+        toast(<p>{err}</p>, { type: toast.TYPE.WARNING });
         return;
       }
     }
@@ -545,11 +550,8 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
                 </select>
               </div>
 
-              <div id="schema-file-group" className={`input-group col-md-6 px-1 mb-0${schema.file ? '' : ' d-none'}`} >
-                <div className="custom-file">
-                  <input type="file" className="custom-file-input" id="schema-file" name="schema-file" accept=".jadn" onChange={this.fileChange} />
-                  <label className="custom-file-label" htmlFor="schema-file">Choose file</label>
-                </div>
+              <div id="schema-file-group" className={`form-group col-md-6 px-1 mb-0${schema.file ? '' : ' d-none'}`} >
+                <Input type="file" id="schema-file" name="schema-file" accept=".jadn" onChange={this.fileChange} />
               </div>
 
               <div id="schema-url-group" className={`form-group col-md-6 px-1 mb-0${schema.url ? '' : ' d-none'}`}>
