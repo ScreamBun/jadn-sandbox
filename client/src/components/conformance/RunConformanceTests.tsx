@@ -203,12 +203,11 @@ const RunConformanceTests = (props: any) => {
   }, [schema]);
 
   const setProfileTypes = (profilesTypes: string[]) => {
-      if (profilesTypes && profilesTypes.length > 0) {
-        profilesTypes.map((langProfile: string) => {
-            setProfilesOptions(current => [...current, langProfile]);
-            return langProfile;
-        });
-      }
+      profilesTypes.map((profileType: string) => {
+        if (!profilesOptions.includes(profileType)) {
+          profilesOptions.push(profileType);
+        }
+      });
   };
 
   useEffect(() => {
