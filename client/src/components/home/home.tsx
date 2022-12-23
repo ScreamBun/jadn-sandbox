@@ -1,3 +1,5 @@
+import { faCoffee, faCubes, faCubesStacked, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     NAV_EXTERNAL_OPENC2_JADN, NAV_VALIDATE, NAV_CONVERT, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA
 } from 'components/utils/constants';
@@ -23,44 +25,70 @@ const Home = () => {
             repo.
           </p>
           <hr />
-          <h5>Features</h5>
-
           <div className='row'>
+          <div className='col-md-3'>
+              <div className='card'>
+                <div className='card-header text-center'>
+                  <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faCubes} /></h4>
+                </div>
+                <div className='card-body p-0'>
+                  <ul className="list-group">
+                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={ NAV_GENERATE_SCHEMA }>Generate</Link>
+                    <Link className="list-group-item" to={ NAV_GENERATE_MESSAGE }>Messages</Link>
+                    <Link className="list-group-item" to={ NAV_GENERATE_SCHEMA }>Schemas (Profiles)</Link>
+                  </ul>
+                </div>           
+              </div>
+            </div>            
             <div className='col-md-3'>
-              <ul className="list-group my-2">
-                <Link className="list-group-item list-group-item-action active" to={ NAV_VALIDATE }>JADN validation of messages in</Link>
-                <li className="list-group-item">JSON</li>
-                <li className="list-group-item">CBOR</li>
-                <li className="list-group-item">XML</li>
-              </ul>
+              <div className='card'>
+                <div className='card-header text-center'>
+                  <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faShuffle } /></h4>
+                </div>
+                <div className='card-body p-0'>
+                  <ul className="list-group">
+                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={ NAV_CONVERT }>Convert</Link>
+                    <li className="list-group-item">GraphViz</li>
+                    <li className="list-group-item">HTML</li>
+                    <li className="list-group-item">JADN</li>
+                    <li className="list-group-item">JIDL</li>
+                    <li className="list-group-item">MarkDown</li>
+                    <li className="list-group-item">XML</li>
+                  </ul>
+                </div>           
+              </div>
             </div>
             <div className='col-md-3'>
-              <ul className="list-group my-2">
-                <Link className="list-group-item list-group-item-action active" to={ NAV_CONVERT }>JADN Schema conversion to</Link>
-                <li className="list-group-item">GraphViz</li>
-                <li className="list-group-item">HTML</li>
-                <li className="list-group-item">JADN</li>
-                <li className="list-group-item">JIDL</li>
-                <li className="list-group-item">MarkDown</li>
-                <li className="list-group-item">XML</li>
-              </ul>
-            </div>
+              <div className='card'>
+                <div className='card-header text-center'>
+                  <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faMicroscope } /></h4>
+                </div>
+                <div className='card-body p-0'>
+                  <ul className="list-group">
+                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={ NAV_VALIDATE }>Validate</Link>
+                    <li className="list-group-item">JSON</li>
+                    <li className="list-group-item">CBOR</li>
+                    <li className="list-group-item">XML</li>
+                  </ul>
+                </div>           
+              </div>
+            </div>            
             <div className='col-md-3'>
-              <ul className="list-group my-2">
-                <Link className="list-group-item list-group-item-action active" to={ NAV_GENERATE_MESSAGE }>Generate OpenC2 Messages</Link>
-                <Link className="list-group-item list-group-item-action active" to={ NAV_GENERATE_SCHEMA }>Generate OpenC2 Schemas (Profiles)</Link>
-              </ul>
-            </div>
-            <div className='col-md-3'>
-              <ul className="list-group my-2">
-                <li className="list-group-item list-group-item-warning">Coming Soon!</li>
-                <li className="list-group-item">More testing tools</li>
-                <li className="list-group-item">Docs</li>
-                <li className="list-group-item">APIs</li>
-              </ul>
-            </div>
+              <div className='card'>
+                <div className='card-header text-center'>
+                  <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faCoffee } /></h4>
+                </div>
+                <div className='card-body p-0'>
+                  <ul className="list-group">
+                    <li className="list-group-item list-group-item-warning">Coming Soon!</li>
+                    <li className="list-group-item">More validation</li>
+                    <li className="list-group-item">Docs</li>
+                    <li className="list-group-item">APIs</li>
+                  </ul>
+                </div>
+              </div> 
+            </div>           
           </div>
-
         </div>
       </div>
     );
