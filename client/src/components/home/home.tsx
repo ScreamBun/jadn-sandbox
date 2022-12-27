@@ -27,7 +27,7 @@ const Home = () => {
           <hr />
           <div className='row'>
           <div className='col-md-3'>
-              <div className='card'>
+              <div className='card pb-2'>
                 <div className='card-header text-center'>
                   <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faCubes} /></h4>
                 </div>
@@ -41,7 +41,7 @@ const Home = () => {
               </div>
             </div>            
             <div className='col-md-3'>
-              <div className='card'>
+              <div className='card pb-2'>
                 <div className='card-header text-center'>
                   <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faShuffle } /></h4>
                 </div>
@@ -59,7 +59,7 @@ const Home = () => {
               </div>
             </div>
             <div className='col-md-3'>
-              <div className='card'>
+              <div className='card pb-2'>
                 <div className='card-header text-center'>
                   <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faMicroscope } /></h4>
                 </div>
@@ -72,22 +72,7 @@ const Home = () => {
                   </ul>
                 </div>           
               </div>
-            </div>            
-            <div className='col-md-3'>
-              <div className='card'>
-                <div className='card-header text-center'>
-                  <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faCoffee } /></h4>
-                </div>
-                <div className='card-body p-0'>
-                  <ul className="list-group">
-                    <li className="list-group-item list-group-item-warning">Coming Soon!</li>
-                    <li className="list-group-item">More validation</li>
-                    <li className="list-group-item">Docs</li>
-                    <li className="list-group-item">APIs</li>
-                  </ul>
-                </div>
-              </div> 
-            </div>           
+            </div>                       
           </div>
         </div>
       </div>
