@@ -60,13 +60,13 @@ const Converter = () => {
                                             toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.INFO });
                                         })
                                         .catch((_convertSchemaErr) => {
-                                            setConvertedSchema("ERROR: file cannot be converted");
+                                            setConvertedSchema("ERROR: File conversion failed");
                                             toast(<p>ERROR: Schema conversion to {conversion} failed</p>, { type: toast.TYPE.WARNING });
                                         })
 
                                 } catch (err) {
                                     if (err instanceof Error) {
-                                        setConvertedSchema("ERROR: file cannot be converted");
+                                        setConvertedSchema("ERROR: File conversion failed");
                                         toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
                                     }
                                 }
