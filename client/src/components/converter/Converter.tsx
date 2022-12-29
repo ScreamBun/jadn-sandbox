@@ -26,11 +26,8 @@ const Converter = () => {
     }, [selectedFile])
 
     const reset = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        setSelectedFile('');
         setLoadedSchema({ placeholder: 'Paste JADN schema here' });
         setConvertedSchema('');
-        setConversion('');
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
