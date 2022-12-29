@@ -126,7 +126,7 @@ class ArrayOfField extends Component<ArrayOfFieldConnectedProps, ArrayOfFieldSta
       this.opts = opts2obj(this.typeDef[2]);
     }
 
-    let arrDef = schema.types.filter(t => t[0] === this.opts.rtype);
+    let arrDef = schema.types.filter(t => t[0] === this.opts.vtype);
     if (arrDef.length === 1) {
       // eslint-disable-next-line prefer-destructuring
       arrDef = arrDef[0];
