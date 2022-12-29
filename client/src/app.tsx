@@ -6,7 +6,7 @@ import Home from 'components/home/home';
 import AppLayout from './components/static/appLayout';
 
 import { MessageGenerator, SchemaGenerator } from './components/generate';
-import Converter from './components/converter';
+import Converter from './components/converter/Converter'
 import Validator from './components/validator';
 
 

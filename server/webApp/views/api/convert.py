@@ -84,10 +84,10 @@ class ConvertPDF(Resource):
         if val:  # Valid Schema
             html = html_dumps(schema, styles=current_app.config.get("OPEN_C2_SCHEMA_THEME", ""))
         else:  # Invalid Schema
-            html = "<h1>Fix the base schema errors before converting...</h1>"
-
+            html = "<h1>ERROR: Invalid Schema. Fix the base schema errors before converting...</h1>"
+            
         pdf_obj = HTML(string=html)  # the HTML to convert
-        pdf_obj.write_pdf(target=pdf)  # file handle to recieve result
+        pdf_obj.write_pdf(target=pdf)  # file handle to receive result
         return Response(pdf.getvalue(), mimetype="application/pdf")
 
 

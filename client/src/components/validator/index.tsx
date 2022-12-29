@@ -64,7 +64,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   info: () => dispatch(ValidateActions.info()),
-  loadFile: (t: string, f: string) => dispatch(UtilActions.load(t, f)),
+  loadFile: (t: string, f: string) => dispatch(UtilActions.loadFile(t, f)),
   validateSchema: (s: Record<string, any>) => dispatch(ValidateActions.validateSchema(s)),
   validateMessage: (s: Record<string, any>, m: any, t: string, f: string) => dispatch(ValidateActions.validateMessage(s, m, t, f))
 });

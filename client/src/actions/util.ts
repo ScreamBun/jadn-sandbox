@@ -33,7 +33,7 @@ export interface InfoSuccessAction extends ActionSuccessResult {
 const LOAD_REQUEST = '@@util/LOAD_REQUEST';
 export const LOAD_SUCCESS = '@@util/LOAD_SUCCESS';
 export const LOAD_FAILURE = '@@util/LOAD_FAILURE';
-export const load = (type: string, file: string) => createAction({
+export const loadFile = (type: string, file: string) => createAction({
   endpoint: `${baseAPI}/load/${type}/${file}`,
   method: 'GET',
   types: [

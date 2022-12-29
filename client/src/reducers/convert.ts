@@ -35,7 +35,6 @@ export default (state=initialState, action: convert.ConvertActions) => {
 
     case convert.INFO_FAILURE:
     case convert.CONVERT_FAILURE:
-      console.log(action.payload);
       return {
         ...state,
         error: action.payload.error || 'ERROR'
@@ -45,3 +44,7 @@ export default (state=initialState, action: convert.ConvertActions) => {
       return state;
   }
 };
+
+//selectors
+export const getFiles = (state: { Convert: { schemas: any; }; }) => state.Convert.schemas;
+export const getConversions = (state: { Convert: { conversions: any; }; }) => state.Convert.conversions;
