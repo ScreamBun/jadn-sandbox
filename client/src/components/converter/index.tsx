@@ -184,7 +184,7 @@ class Converter extends Component<ConverterConnectedProps, ConverterState> {
         convertSchema(
           schema.schema,
           convert.selected,
-          schema.comments ? true : false
+          schema.comments ? 'all' : 'none'
         );
       } else {
         toast(<p>{validSchema.valid_msg}</p>, { type: toast.TYPE[validSchema.valid_bool ? 'INFO' : 'WARNING'] });
