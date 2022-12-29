@@ -57,11 +57,11 @@ const Converter = () => {
                                     dispatch(convertSchema(schemaObj, conversion, 'all')) //TODO: see usage of comments in converter.py
                                         .then((convertSchemaVal) => {
                                             setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                                            toast(<p>Schema converted successfully</p>, { type: toast.TYPE.INFO });
+                                            toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.INFO });
                                         })
                                         .catch((_convertSchemaErr) => {
                                             setConvertedSchema("ERROR: file cannot be converted");
-                                            toast(<p>ERROR: Unable to Convert</p>, { type: toast.TYPE.WARNING });
+                                            toast(<p>ERROR: Schema conversion to {conversion} failed</p>, { type: toast.TYPE.WARNING });
                                         })
 
                                 } catch (err) {

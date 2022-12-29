@@ -91,7 +91,7 @@ const ConvertedSchema = (props: any) => {
 
     const popOut = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const blob = new Blob([convertedSchema], { type: "application/json" });
+        const blob = new Blob([convertedSchema], { type: "text/html" });
         const data = URL.createObjectURL(blob);
         window.open(data);
     }
@@ -121,15 +121,15 @@ const ConvertedSchema = (props: any) => {
                         <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={schemaDownload}>
                             <FontAwesomeIcon icon={faFileDownload} size='2x' />
                         </Button>
-
-                        <Button id="popOut" title="View Schema in new window" color="info" onClick={popOut}>
-                            <FontAwesomeIcon icon={faWindowMaximize} size='2x' />
-                        </Button>
                     </div>
 
                     <div className={`btn-group btn-group-sm float-right mr-2${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
                         <Button id="pdfDownload" title="Download PDF of the schema" color="info" onClick={pdfDownload}>
                             <FontAwesomeIcon icon={faFilePdf} size='2x' />
+                        </Button>
+
+                        <Button id="popOut" title="View Schema in new window" color="info" onClick={popOut}>
+                            <FontAwesomeIcon icon={faWindowMaximize} size='2x' />
                         </Button>
                     </div>
 
