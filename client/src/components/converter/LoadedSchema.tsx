@@ -18,70 +18,78 @@ const LoadedSchema = (props: any) => {
 
     useEffect(() => {
         if (selectedFile == "") {
-            setLoadedSchema({ placeholder: 'Paste JADN schema here' })
+            setLoadedSchema({ placeholder: 'Paste JADN schema here' });
         } else if (selectedFile == "file") {
-            setLoadedSchema({ placeholder: 'Paste JADN schema here' })
+            setLoadedSchema({ placeholder: 'Paste JADN schema here' });
             setUploadedFile('');
         } else if (selectedFile == "url") {
-            setLoadedSchema({ placeholder: 'Paste JADN schema here' })
+            setLoadedSchema({ placeholder: 'Paste JADN schema here' });
             setURLString('');
         } else {
             try {
                 dispatch(loadFile('schemas', selectedFile))
-                    .then((onLoadFileSuccess) => { setLoadedSchema(onLoadFileSuccess.payload.data) })
-                    .catch((onLoadFileFail) => { setLoadedSchema(onLoadFileFail.payload.data) })
+                    .then((loadFileVal) => { setLoadedSchema(loadFileVal.payload.data) })
+                    .catch((loadFileErr) => { setLoadedSchema(loadFileErr.payload.data) })
             } catch (err) {
-                setLoadedSchema({ placeholder: 'ERROR: file not found' })
+                setLoadedSchema({ placeholder: 'ERROR: file not found' });
             }
         }
     }, [selectedFile]);
 
-    const handleValidationOnClick = (e: any) => {
+    const handleValidationOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         let schemaObj = loadedSchema;
         if (typeof schemaObj == 'string') {
             try {
                 schemaObj = JSON.parse(loadedSchema);
             } catch (err) {
-                toast(<p>{err}</p>, { type: toast.TYPE.WARNING });
-                return;
+                if (err instanceof Error) {
+                    toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                    return;
+                }
             }
         }
 
         try {
             dispatch(validateSchema(schemaObj))
-                .then((onValidateSuccess) => { toast(<p>{onValidateSuccess.payload.valid_msg}</p>, { type: toast.TYPE[onValidateSuccess.payload.valid_bool ? 'INFO' : 'WARNING'] }) })
-                .catch((onValidateFail) => { toast(<p>{onValidateFail.payload.valid_msg}</p>, { type: toast.TYPE.WARNING }) })
+                .then((validateSchemaVal) => { toast(<p>{validateSchemaVal.payload.valid_msg}</p>, { type: toast.TYPE[validateSchemaVal.payload.valid_bool ? 'INFO' : 'WARNING'] }) })
+                .catch((validateSchemaErr) => { toast(<p>{validateSchemaErr.payload.valid_msg}</p>, { type: toast.TYPE.WARNING }) })
         } catch (err) {
-            toast(<p>{err}</p>, { type: toast.TYPE.WARNING });
-            return;
+            if (err instanceof Error) {
+                toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                return;
+            }
         }
     }
 
-    const handleFileChange = (e: any) => {
-        const file = e.target.files[0];
-        setUploadedFile(file.name);
-        //read file
-        const fileReader = new FileReader();
-        fileReader.onload = (ev: ProgressEvent<FileReader>) => {
-            let data = ev.target.result;
-            try {
-                //data = JSON.parse(data);
-                data = JSON.stringify(data, null, 2); //must turn str into obj before str
-            } catch (err) {
-                toast(<p>File cannot be loaded</p>, { type: toast.TYPE.WARNING });
-            }
-            setLoadedSchema({ data });
-        };
-        fileReader.readAsText(file);
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const file = e.target.files[0];
+            setUploadedFile(file.name);
+            //read file
+            const fileReader = new FileReader();
+            fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+                if (ev.target) {
+                    let data = ev.target.result;
+                    try {
+                        //data = JSON.parse(data);
+                        data = JSON.stringify(data, null, 2); //must turn str into obj before str
+                    } catch (err) {
+                        toast(<p>File cannot be loaded</p>, { type: toast.TYPE.WARNING });
+                    }
+                    setLoadedSchema({ data });
+                }
+            };
+            fileReader.readAsText(file);
+        }
     }
 
-    const handleURLonChange = (e: any) => {
+    const handleURLonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLoadedSchema({ placeholder: 'Please input URL' });
         setURLString(e.target.value);
     }
 
-    const handleURLonClick = (e: any) => {
+    const handleURLonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
         //validate URL
@@ -102,7 +110,7 @@ const LoadedSchema = (props: any) => {
         loadURL(urlString)
             .then((data) => {
                 const d = data as Record<string, any>;
-                setLoadedSchema(d.data)
+                setLoadedSchema(d.data);
             })
             .catch(_err => {
                 toast(<p>ERROR: Invalid URL</p>, { type: toast.TYPE.WARNING });

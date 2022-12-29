@@ -1,6 +1,6 @@
 import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Form, Button } from 'reactstrap'
@@ -25,7 +25,7 @@ const Converter = () => {
         setConvertedSchema('');
     }, [selectedFile])
 
-    const reset = (e: any) => {
+    const reset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedFile('');
         setLoadedSchema({ placeholder: 'Paste JADN schema here' });
@@ -33,7 +33,7 @@ const Converter = () => {
         setConversion('');
     }
 
-    const submitForm = (e: FormEvent<HTMLFormElement>) => {
+    const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (conversion) {
@@ -44,38 +44,49 @@ const Converter = () => {
                 try {
                     schemaObj = JSON.parse(loadedSchema);
                 } catch (err) {
-                    toast(<p>{err}</p>, { type: toast.TYPE.WARNING });
+                    if (err instanceof Error) {
+                        toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                    }
                 }
             }
 
             try {
                 dispatch(validateSchema(schemaObj))
                     .then(
-                        (onValidateSuccess) => {
+                        (validateSchemaVal) => {
                             //if valid schema and conversion is set, convert schema
-                            if (onValidateSuccess.payload.valid_bool == true && conversion) {
+                            if (validateSchemaVal.payload.valid_bool == true && conversion) {
                                 try {
                                     dispatch(convertSchema(schemaObj, conversion, 'all')) //TODO: see usage of comments in converter.py
-                                        .then((onConvertSuccess) => { setConvertedSchema(onConvertSuccess.payload.schema.convert) })
-                                        .catch((onConvertFail) => {
-                                            setConvertedSchema("ERROR: file cannot be converted")
-                                            toast(<p>ERROR: Unable to Convert</p>, { type: toast.TYPE.WARNING })
+                                        .then((convertSchemaVal) => {
+                                            setConvertedSchema(convertSchemaVal.payload.schema.convert);
+                                            toast(<p>Schema converted successfully</p>, { type: toast.TYPE.INFO });
+                                        })
+                                        .catch((_convertSchemaErr) => {
+                                            setConvertedSchema("ERROR: file cannot be converted");
+                                            toast(<p>ERROR: Unable to Convert</p>, { type: toast.TYPE.WARNING });
                                         })
 
                                 } catch (err) {
-                                    setConvertedSchema("ERROR: file cannot be converted")
-                                    toast(<p>{err}</p>, { type: toast.TYPE.WARNING })
+                                    if (err instanceof Error) {
+                                        setConvertedSchema("ERROR: file cannot be converted");
+                                        toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                                    }
                                 }
-                            } else if (onValidateSuccess.payload.valid_bool == false) {
-                                toast(<p>ERROR: Invalid Schema</p>, { type: toast.TYPE.WARNING })
+                            } else if (validateSchemaVal.payload.valid_bool == false) {
+                                toast(<p>ERROR: Invalid Schema</p>, { type: toast.TYPE.WARNING });
+                            } else if (conversion == ''){
+                                toast(<p>ERROR: No Conversion Selected</p>, { type: toast.TYPE.WARNING });
                             }
                         })
-                    .catch((onValidateFail) => {
-                        toast(<p>{onValidateFail}</p>, { type: toast.TYPE.WARNING })
+                    .catch((validateSchemaErr) => {
+                        toast(<p>{validateSchemaErr}</p>, { type: toast.TYPE.WARNING });
                     })
 
             } catch (err) {
-                toast(<p>{err}</p>, { type: toast.TYPE.WARNING });
+                if (err instanceof Error) {
+                    toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                }
             }
         } else {
             toast(<p>ERROR: No language selected for conversion</p>, { type: toast.TYPE.WARNING })

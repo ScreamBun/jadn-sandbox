@@ -10,8 +10,8 @@ const ConvertedSchema = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
     const convertOpts = useSelector(getConversions);
 
-    const handleConversion = (e: { target: { value: any; }; }) => {
-        setConversion(e.target.value)
+    const handleConversion = (e: { target: { value: string; }; }) => {
+        setConversion(e.target.value);
         setConvertedSchema('');
     }
 
@@ -27,7 +27,7 @@ const ConvertedSchema = (props: any) => {
             thrift: 'text/plain'
         }; */
 
-    const schemaDownload = (e: any) => {
+    const schemaDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (convertedSchema != '') {
             try {
@@ -53,7 +53,7 @@ const ConvertedSchema = (props: any) => {
         }
     }
 
-    const pdfDownload = (e: any) => {
+    const pdfDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (convertedSchema != '') {
             try {
@@ -89,7 +89,7 @@ const ConvertedSchema = (props: any) => {
         }
     }
 
-    const popOut = (e: any) => {
+    const popOut = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const blob = new Blob([convertedSchema], { type: "application/json" });
         const data = URL.createObjectURL(blob);
