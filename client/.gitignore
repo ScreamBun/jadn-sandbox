@@ -1,0 +1,47 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.eslintcache
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# Override exclude
+!/src/components/**/lib/
+
+# Yarn
+.pnp.*
+.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Yarn Custom cache
+!.yarn/cache/react-bootswatch-theme-switcher-*
+!.yarn/cache/react-json-generator-*
+
+### Custom Ignore
+build/*
+analyzer.stats.*
+webpack.stats.*
+lint_errors.txt
+*.sqlite
+*.sqlite3

@@ -225,3 +225,18 @@ pip-selfcheck.json
 # Custom Ignore
 .idea/*
 *.sqlite
+*.sqlite3
+server/webApp/static/*
+lint.html
+
+# Yarn Related
+install-state.gz
+.yarn/install-state.gz
+.yarn.lock
+yarn.lock
+/client/yarn-lock
+/client/install-state.gz
+
+#VS Code Related
+.vscode
+.vscode/

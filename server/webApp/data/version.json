@@ -1,0 +1,11 @@
+{
+  "name" : "JADN Lint",
+  "version" : {
+    "number" : "0.0.1",
+    "build" : {
+      "number" : "0",
+      "hash" : "",
+      "date" : ""
+    }
+  }
+}

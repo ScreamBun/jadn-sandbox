@@ -1,0 +1,10 @@
+{
+  "deny_ip_invalid.json": "OpenC2-Command",
+  "deny_ip.cbor": "OpenC2-Command",
+  "deny_ip.json": "OpenC2-Command",
+  "deny_ip_a.xml": "OpenC2-Command",
+  "deny_ip_b.xml": "OpenC2-Command",
+  "query_pairs.json": "OpenC2-Command",
+  "query_openc2.json": "OpenC2-Command",
+  "query_openc2_response.json": "OpenC2-Response"
+}

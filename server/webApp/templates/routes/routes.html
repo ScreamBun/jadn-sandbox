@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>OpenC2 | {{ page_title if page_title else "SET TITLE"}}</title>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon/favicon.ico') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.min.css') }}">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/scripts.min.js') }}"></script>
+        {% block page_header %}{% endblock %}
+    </head>
+
+    <body>
+		<div class="ribbon ribbon-top-left">
+			<span>Beta</span>
+		</div>
+
+        <div class="container-fluid">
+            {% for app in routes %}
+                <div class="row justify-content-center">
+                    <h3 class="text-center col-12">{{ app }}</h3>
+                    <div class="col-lg-offset-2 col-lg-8 col-md-offset-2 col-md-8 col-sm-6 col-xs-12">
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <th>URL</th>
+                                <th>Endpoint</th>
+                                <th>Methods</th>
+                            </tr>
+                            {% for route in routes[app] %}
+                                <tr>
+                                    <td>{{ route.url }}</td>
+                                    <td>{{ route.endpoint }}</td>
+                                    <td>{{ route.methods }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </body>
+</html>
