@@ -35,7 +35,7 @@ const SchemaConverter = () => {
         setConvertedSchema('');
     }, [selectedFile])
 
-    const reset = () => {
+    const onReset = () => {
         setLoadedSchema({ placeholder: 'Paste JADN schema here' });
         setConvertedSchema('');
     }
@@ -101,21 +101,37 @@ const SchemaConverter = () => {
     }
 
     return (
-        <div className='row mx-auto'>
+        <div>
             <Helmet>
                 <title>{meta_title}</title>
                 <link rel="canonical" href={meta_canonical} />
             </Helmet>
-
-            <Form className="mx-auto col-12" onSubmit={submitForm}>
-                <div className="form-row">
-                    <LoadedSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                    <ConvertedSchema convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema} conversion={conversion} setConversion={setConversion} loadedSchema={loadedSchema} />
+            <div className='row'>
+                <div className='col-md-12'>
+                    <div className='card'>
+                        <div className='card-header p-2'>
+                            <h5 className='m-0'>Convert Schema</h5>
+                        </div>
+                        <div className='card-body p-2'>
+                            <Form onSubmit={submitForm}>
+                                <div className='row'>
+                                    <div className='col-md-6 pr-1'>
+                                        <LoadedSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                    </div>
+                                    <div className='col-md-6' pl-1>
+                                        <ConvertedSchema convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema} conversion={conversion} setConversion={setConversion} loadedSchema={loadedSchema} />
+                                    </div>
+                                </div>
+                            </Form>
+                        </div>
+                        <div className='card-footer p-2'>
+                            <Button color="danger" className='float-right' type="reset" onClick={onReset}>Reset</Button>
+                        </div>                                
+                    </div>
                 </div>
-                <Button color="danger" className='float-right' type="reset" onClick={reset}>Reset</Button>
-                <div className="col-12" />
-            </Form>
+            </div>            
         </div>
+        
     );
 }
 

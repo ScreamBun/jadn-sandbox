@@ -6,7 +6,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { toast, ToastContainer } from 'react-toastify';
 import {
-  NAV_CONVERT, NAV_EXTERNAL_OPENC2_JADN, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_HOME, NAV_VALIDATE
+  NAV_CONVERT_SCHEMA, NAV_EXTERNAL_OPENC2_JADN, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_HOME, NAV_VALIDATE
 } from 'components/utils/constants';
 import favicon from '../dependencies/assets/img/jadn-favicon.png';
 
@@ -41,7 +41,7 @@ const AppLayout = () => {
               <NavLink className='nav-link' to={ NAV_GENERATE_SCHEMA }>Generate Schema</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link' to={ NAV_CONVERT }>Convert</NavLink>
+              <NavLink className='nav-link' to={ NAV_CONVERT_SCHEMA }>Convert Schema</NavLink>
             </NavItem>                        
             <NavItem>
               <NavLink className='nav-link' to={ NAV_VALIDATE }>Validate</NavLink>

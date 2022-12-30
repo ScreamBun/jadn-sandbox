@@ -97,13 +97,14 @@ const ConvertedSchema = (props: any) => {
     }
 
     return (
-        <fieldset className="col-md-6 p-0 float-left">
+        <fieldset className="p-0">
             <legend>Converted Schema</legend>
             <div className="card">
-                <div className="form-control card-body p-0" style={{ height: '40em' }}>
+                <div className="card-body p-0" style={{ height: '40em' }}>
                     <textarea
                         value={convertedSchema}
-                        placeholder='Converted JADN schema'
+                        className='form-control'
+                        placeholder='Converted schema'
                         style={{
                             resize: 'none',
                             outline: 'none',
@@ -116,7 +117,7 @@ const ConvertedSchema = (props: any) => {
                     />
                 </div>
 
-                <div className='card-footer pb-3'>
+                <div className='card-footer p-2'>
                     <div className={`btn-group btn-group-sm float-right mr-2${convertedSchema ? '' : ' d-none'}`}>
                         <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={schemaDownload}>
                             <FontAwesomeIcon icon={faFileDownload} size='2x' />
