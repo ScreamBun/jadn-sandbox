@@ -14,8 +14,9 @@ const Home = () => {
         </div>
         <div className='card-body p-2'>
           <p>
-            OpenC2 is defined using JSON Abstract Schema Notation (JADN).
-            The JADN validator can check messages against any schema.
+          OpenC2 is defined using JSON Abstract Schema Notation (JADN). 
+          The JADN Sandbox provides the ability generate OpenC2 messages and schemas, as well as , 
+          convert to other data formats and provide JADN validation. 
           </p>
           <p>
             Source is available from the
