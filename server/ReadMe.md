@@ -1,4 +1,4 @@
-# JADN Lint/WebValidate - Server
+# JADN Sandbox - Server
 
 ## Running Server
 ### Config/General

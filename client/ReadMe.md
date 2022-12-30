@@ -1,4 +1,4 @@
-# JADN Lint/WebValidate - Client/GUI
+# JADN Sandbox - Client/GUI
 
 ## Notes
 

@@ -1,10 +1,10 @@
 FROM screambunn/alpine-python3
 
-LABEL name="JADN Lint" \
+LABEL name="JADN Sandbox" \
 vendor="OpenC2" \
 license="BSD" \
 version="2.0" \
-description="This is the JADN Lint container"
+description="This is the JADN Sandbox container"
 
 ADD requirements.txt /tmp/
 ADD jadnschema-*-py2.py3-none-any.whl /tmp/
