@@ -55,7 +55,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   info: () => dispatch(GenerateActions.info()),
-  loadFile: (t: string, f: string) => dispatch(UtilActions.load(t, f)),
+  loadFile: (t: string, f: string) => dispatch(UtilActions.loadFile(t, f)),
   validateSchema: (s: Record<string, any>) => dispatch(ValidateActions.validateSchema(s)),
   setSchema: (s: Record<string, any>) => dispatch(GenerateActions.setSchema(s as SchemaJADN))
 });

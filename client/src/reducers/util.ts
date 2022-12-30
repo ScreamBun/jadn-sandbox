@@ -27,8 +27,8 @@ export default (state=initialState, action: util.UtilActions) => {
     case util.INFO_SUCCESS:
       return {
         ...state,
-        site_title: action.payload.title || 'JADN Lint',
-        site_desc: action.payload.message || 'JADN Schema Lint'
+        site_title: action.payload.title,
+        site_desc: action.payload.message
       };
 
     case util.LOAD_SUCCESS:
@@ -46,3 +46,6 @@ export default (state=initialState, action: util.UtilActions) => {
       return state;
   }
 };
+
+//selectors
+export const getPageTitle = (state: { Util: { site_title: any; }; }) => state.Util.site_title;
