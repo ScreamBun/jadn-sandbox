@@ -46,10 +46,10 @@ const ConvertedSchema = (props: any) => {
                 URL.revokeObjectURL(elem.href);
             } catch (err) {
                 console.log(err);
-                toast(<p>Error: File cannot be downloaded</p>, { type: toast.TYPE.WARNING });
+                toast(`File cannot be downloaded`, { type: toast.TYPE.WARNING });
             }
         } else {
-            toast(<p>Error: No Converted Schema Exists</p>, { type: toast.TYPE.WARNING });
+            toast(`No Converted Schema Exists`, { type: toast.TYPE.WARNING });
         }
     }
 
@@ -82,10 +82,10 @@ const ConvertedSchema = (props: any) => {
 
             } catch (err) {
                 console.log(err);
-                toast(<p>Error: PDF cannot be downloaded</p>, { type: toast.TYPE.WARNING });
+                toast(`PDF cannot be downloaded`, { type: toast.TYPE.WARNING });
             }
         } else {
-            toast(<p>Error: No Converted Schema Exists</p>, { type: toast.TYPE.WARNING });
+            toast(`No Converted Schema Exists`, { type: toast.TYPE.WARNING });
         }
     }
 
@@ -97,7 +97,7 @@ const ConvertedSchema = (props: any) => {
     }
 
     return (
-        <fieldset className="col-6 p-0 float-left">
+        <fieldset className="col-md-6 p-0 float-left">
             <legend>Converted Schema</legend>
             <div className="card">
                 <div className="form-control card-body p-0" style={{ height: '40em' }}>
@@ -139,19 +139,14 @@ const ConvertedSchema = (props: any) => {
                                 <option value="empty"> Convert To... </option>
                                 {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
                             </select>
-
                             <div className="input-group-append">
-                                <span className="d-inline-block" data-toggle="tooltip" title="Please select schema and conversion">
-                                    <Button color="success" type="submit" id="convertSchema" title="Convert the given JADN schema to the selected format">Convert</Button>
-                                </span>
+                                <Button color="success" type="submit" id="convertSchema" title="Convert the given JADN schema to the selected format">Convert</Button>
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-            <div className="col-12 m-1" />
         </fieldset>)
-
 }
 export default ConvertedSchema;

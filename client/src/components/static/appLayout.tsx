@@ -35,16 +35,16 @@ const AppLayout = () => {
               <NavLink className='nav-link' to={ NAV_HOME }>Home</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link' to={ NAV_VALIDATE }>Validate</NavLink>
+              <NavLink className='nav-link' to={ NAV_GENERATE_MESSAGE }>Generate Message</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link' to={ NAV_GENERATE_SCHEMA }>Generate Schema</NavLink>
             </NavItem>
             <NavItem>
               <NavLink className='nav-link' to={ NAV_CONVERT }>Convert</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link' to={ NAV_GENERATE_MESSAGE }>Generate Message</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink className='nav-link' to={ NAV_GENERATE_SCHEMA }>Generate Schema</NavLink>
+              <NavLink className='nav-link' to={ NAV_VALIDATE }>Validate</NavLink>
             </NavItem>
           </ul>
         </div>

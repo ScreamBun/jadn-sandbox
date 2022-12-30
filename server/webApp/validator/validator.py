@@ -17,11 +17,11 @@ class Validator:
     """
     validMsgs = [
         "Success",
-        "Whoot! It works"
+        "Validation passed"
     ]
     invalidMsgs = [
         "Fail",
-        "That\'s not right"
+        "Validation failed"
     ]
     # Schema Test suites
     _unittest_suite = load_test_suite()
