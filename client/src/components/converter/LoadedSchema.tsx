@@ -31,7 +31,7 @@ const LoadedSchema = (props: any) => {
                     .then((loadFileVal) => { setLoadedSchema(loadFileVal.payload.data) })
                     .catch((loadFileErr) => { setLoadedSchema(loadFileErr.payload.data) })
             } catch (err) {
-                setLoadedSchema({ placeholder: 'ERROR: file not found' });
+                setLoadedSchema({ placeholder: 'File not found' });
             }
         }
     }, [selectedFile]);
@@ -44,7 +44,7 @@ const LoadedSchema = (props: any) => {
                 schemaObj = JSON.parse(loadedSchema);
             } catch (err) {
                 if (err instanceof Error) {
-                    toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                    toast(`${err.message}`, { type: toast.TYPE.WARNING });
                     return;
                 }
             }
@@ -52,11 +52,11 @@ const LoadedSchema = (props: any) => {
 
         try {
             dispatch(validateSchema(schemaObj))
-                .then((validateSchemaVal) => { toast(<p>{validateSchemaVal.payload.valid_msg}</p>, { type: toast.TYPE[validateSchemaVal.payload.valid_bool ? 'INFO' : 'WARNING'] }) })
-                .catch((validateSchemaErr) => { toast(<p>{validateSchemaErr.payload.valid_msg}</p>, { type: toast.TYPE.WARNING }) })
+                .then((validateSchemaVal) => { toast(`${validateSchemaVal.payload.valid_msg}`, { type: toast.TYPE[validateSchemaVal.payload.valid_bool ? 'INFO' : 'WARNING'] }) })
+                .catch((validateSchemaErr) => { toast(`${validateSchemaErr.payload.valid_msg}`, { type: toast.TYPE.WARNING }) })
         } catch (err) {
             if (err instanceof Error) {
-                toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                toast(`${err.message}`, { type: toast.TYPE.WARNING });
                 return;
             }
         }
@@ -72,10 +72,9 @@ const LoadedSchema = (props: any) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        //data = JSON.parse(data);
-                        data = JSON.stringify(data, null, 2); //must turn str into obj before str
+                        data = JSON.stringify(data, null, 2); // must turn str into obj before str
                     } catch (err) {
-                        toast(<p>File cannot be loaded</p>, { type: toast.TYPE.WARNING });
+                        toast(`File cannot be loaded`, { type: toast.TYPE.WARNING });
                     }
                     setLoadedSchema({ data });
                 }
@@ -92,9 +91,9 @@ const LoadedSchema = (props: any) => {
     const handleURLonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        //validate URL
+        // validate URL
         if (!validURL(urlString)) {
-            toast(<p>ERROR: Invalid URL, cannot load from a non valid location</p>, { type: toast.TYPE.WARNING });
+            toast(`Invalid URL, cannot load from a non valid location`, { type: toast.TYPE.WARNING });
             return;
         }
 
@@ -102,23 +101,23 @@ const LoadedSchema = (props: any) => {
         const fileExt = file.substring(file.lastIndexOf('.') + 1);
 
         if (!['json', 'jadn'].includes(fileExt)) {
-            toast(<p>This file cannot be loaded as a schema, only JADN/JSON files are valid</p>, { type: toast.TYPE.WARNING });
+            toast(`This file cannot be loaded as a schema, only JADN/JSON files are valid`, { type: toast.TYPE.WARNING });
             return;
         }
 
-        //load URL
+        // load URL
         loadURL(urlString)
             .then((data) => {
                 const d = data as Record<string, any>;
                 setLoadedSchema(d.data);
             })
             .catch(_err => {
-                toast(<p>ERROR: Invalid URL</p>, { type: toast.TYPE.WARNING });
+                toast(`Invalid URL`, { type: toast.TYPE.WARNING });
             });
     }
 
     return (
-        <fieldset className="col-6 p-0 float-left">
+        <fieldset className="col-md-6 p-0">
             <legend>JADN Schema</legend>
             <div className="card">
                 <div className="form-control border card-body p-0" style={{ height: '40em' }}>
@@ -150,7 +149,7 @@ const LoadedSchema = (props: any) => {
                         </div>
 
                         <div id="schema-file-group" className={`form-group col-md-6 px-1 mb-0${selectedFile == 'file' ? '' : ' d-none'}`} >
-                            <Input type="file" id="schema-file" name="schema-file" accept=".jadn" defaultValue={uploadedFile} onChange={handleFileChange} />
+                            <Input type="file" id="schema-file" name="schema-file" className="px-1 py-1" accept=".jadn" defaultValue={uploadedFile} onChange={handleFileChange} />
                         </div>
 
                         <div id="schema-url-group" className={`form-group col-md-6 px-1 mb-0${selectedFile == 'url' ? '' : ' d-none'}`}>
@@ -165,7 +164,6 @@ const LoadedSchema = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className="col-12 m-1" />
         </fieldset>)
 }
 export default LoadedSchema;

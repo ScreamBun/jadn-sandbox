@@ -14,13 +14,13 @@ const Converter = () => {
     const [convertedSchema, setConvertedSchema] = useState('');
     const [conversion, setConversion] = useState('');
 
-    //populate schema and conversions from server
+    // Populate schema and conversions from server
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
 
-    //if selected file is changed, remove converted schema
+    // If selected file is changed, remove converted schema
     useEffect(() => {
         setConvertedSchema('');
     }, [selectedFile])
@@ -36,7 +36,7 @@ const Converter = () => {
         if (conversion) {
             let schemaObj = loadedSchema;
 
-            //validate schema
+            // validate schema
             if (typeof schemaObj == 'string') {
                 try {
                     schemaObj = JSON.parse(loadedSchema);
@@ -51,42 +51,42 @@ const Converter = () => {
                 dispatch(validateSchema(schemaObj))
                     .then(
                         (validateSchemaVal) => {
-                            //if valid schema and conversion is set, convert schema
+                            // If valid schema and conversion is set, convert schema
                             if (validateSchemaVal.payload.valid_bool == true && conversion) {
                                 try {
-                                    dispatch(convertSchema(schemaObj, conversion, 'all')) //TODO: see usage of comments in converter.py
+                                    dispatch(convertSchema(schemaObj, conversion, 'all')) // TODO: see usage of comments in converter.py
                                         .then((convertSchemaVal) => {
                                             setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                                            toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.INFO });
+                                            toast(`Schema converted to ${conversion} successfully`, { type: toast.TYPE.INFO });
                                         })
                                         .catch((_convertSchemaErr) => {
-                                            setConvertedSchema("ERROR: File conversion failed");
-                                            toast(<p>ERROR: Schema conversion to {conversion} failed</p>, { type: toast.TYPE.WARNING });
+                                            setConvertedSchema("File conversion failed");
+                                            toast(`Schema conversion to ${conversion} failed`, { type: toast.TYPE.WARNING });
                                         })
 
                                 } catch (err) {
                                     if (err instanceof Error) {
-                                        setConvertedSchema("ERROR: File conversion failed");
-                                        toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                                        setConvertedSchema(`File conversion failed`);
+                                        toast(`${err.message}`, { type: toast.TYPE.WARNING });
                                     }
                                 }
                             } else if (validateSchemaVal.payload.valid_bool == false) {
-                                toast(<p>ERROR: Invalid Schema</p>, { type: toast.TYPE.WARNING });
+                                toast(`Invalid Schema`, { type: toast.TYPE.WARNING });
                             } else if (conversion == ''){
-                                toast(<p>ERROR: No Conversion Selected</p>, { type: toast.TYPE.WARNING });
+                                toast(`No Conversion Selected`, { type: toast.TYPE.WARNING });
                             }
                         })
                     .catch((validateSchemaErr) => {
-                        toast(<p>{validateSchemaErr}</p>, { type: toast.TYPE.WARNING });
+                        toast(`${validateSchemaErr}`, { type: toast.TYPE.WARNING });
                     })
 
             } catch (err) {
                 if (err instanceof Error) {
-                    toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                    toast(`${err.message}`, { type: toast.TYPE.WARNING });
                 }
             }
         } else {
-            toast(<p>ERROR: No language selected for conversion</p>, { type: toast.TYPE.WARNING })
+            toast(`No language selected for conversion`, { type: toast.TYPE.WARNING })
         }
     }
 
@@ -97,8 +97,7 @@ const Converter = () => {
                     <LoadedSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                     <ConvertedSchema convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema} conversion={conversion} setConversion={setConversion} loadedSchema={loadedSchema} />
                 </div>
-                <Button color="danger" className='float-right' type="reset" onClick={reset}>Reset</Button>
-                <div className="col-12" />
+                <Button color="danger" className='float-right mt-2' type="reset" onClick={reset}>Reset</Button>
             </Form>
         </div>
     );

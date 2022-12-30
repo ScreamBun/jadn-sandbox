@@ -229,10 +229,14 @@ pip-selfcheck.json
 server/webApp/static/*
 lint.html
 
-# Yarn related
+# Yarn Related
 install-state.gz
 .yarn/install-state.gz
 .yarn.lock
 yarn.lock
 /client/yarn-lock
 /client/install-state.gz
+
+#VS Code Related
+.vscode
+.vscode/
