@@ -118,7 +118,7 @@ const SchemaConverter = () => {
                                     <div className='col-md-6 pr-1'>
                                         <LoadedSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
-                                    <div className='col-md-6' pl-1>
+                                    <div className='col-md-6 pl-1'>
                                         <ConvertedSchema convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema} conversion={conversion} setConversion={setConversion} loadedSchema={loadedSchema} />
                                     </div>
                                 </div>
