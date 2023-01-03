@@ -49,3 +49,6 @@ export default (state=initialState, action: generator.GenerateActions) => {
       return state;
   }
 };
+
+//selectors
+export const getAllSchemas = (state: { Generate: { schemas: any; }; }) => state.Generate.schemas;

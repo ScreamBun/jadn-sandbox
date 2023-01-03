@@ -3,7 +3,7 @@ import { ConnectedProps, connect } from 'react-redux';
 import { FormText } from 'reactstrap';
 
 import {
-  BasicField, EnumeratedField, ChoiceField, RecordField, MapField, ArrayOfField
+  BasicField, EnumeratedField, ChoiceField, RecordField, MapField, ArrayOfField, ArrayField
 } from './types';
 import {
   SchemaJADN, StandardFieldArray
@@ -19,7 +19,7 @@ interface FieldProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface FieldState {}
+interface FieldState { }
 
 // Redux Connector
 const mapStateToProps = (state: RootState) => ({
@@ -43,7 +43,7 @@ class Field extends Component<FieldConnectedProps> {
       def, idx, optChange, parent, schema
     } = this.props;
     const parentName = parent || '';
-    const typeDefs = schema.types.filter(t => t[0] === def[2] );
+    const typeDefs = schema.types.filter(t => t[0] === def[2]);
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
 
     // console.log(parentName, def);
@@ -56,21 +56,23 @@ class Field extends Component<FieldConnectedProps> {
 
     switch (typeDef[1]) {
       case 'Enumerated':
-			  return <EnumeratedField { ...args } />;
+        return <EnumeratedField {...args} />;
       case 'Choice':
-			  return <ChoiceField { ...args } />;
+        return <ChoiceField {...args} />;
       case 'Record':
-			  return <RecordField { ...args } />;
-			case 'Map':
-			    return <MapField { ...args } />;
-			case 'ArrayOf':
-			    return <ArrayOfField { ...args } />;
-			case 'Array':
-          const [ arr ] = def;
-          // eslint-disable-next-line react/jsx-one-expression-per-line
-			    return <FormText>Array: { arr }</FormText>;
-			default:
-			    return <BasicField { ...args } />;
+        return <RecordField {...args} />;
+      case 'Map':
+        return <MapField {...args} />;
+      case 'MapOf':
+        const [arr] = def;
+        // eslint-disable-next-line react/jsx-one-expression-per-line
+        return <FormText>MapOf: {arr}</FormText>;
+      case 'ArrayOf':
+        return <ArrayOfField {...args} />;
+      case 'Array':
+        return <ArrayField {...args} />;
+      default:
+        return <BasicField {...args} />;
     }
   }
 }

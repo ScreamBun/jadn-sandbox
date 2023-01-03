@@ -1,17 +1,18 @@
-import { convertSchema, info } from 'actions/convert'
-import { info as getMeta } from 'actions/util'
-import { validateSchema } from 'actions/validate'
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Form, Button } from 'reactstrap'
-import { getPageTitle } from 'reducers/util'
 import ConvertedSchema from './ConvertedSchema'
 import LoadedSchema from './LoadedSchema'
+import { getPageTitle } from 'reducers/util'
+import { convertSchema, info } from 'actions/convert'
+import { validateSchema } from 'actions/validate'
 
 const SchemaConverter = () => {
+    const dispatch = useDispatch();
+
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState({ placeholder: 'Paste JADN schema here' });
     const [convertedSchema, setConvertedSchema] = useState('');
@@ -20,12 +21,8 @@ const SchemaConverter = () => {
     //add meta data for page
     const meta_title = useSelector(getPageTitle) + ' | Convert Schema'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-    useEffect(() => {
-        dispatch(getMeta());
-    }, [meta_title])
 
-    //populate schema and conversions from server
-    const dispatch = useDispatch();
+    //populate meta, schema and conversions from server
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
