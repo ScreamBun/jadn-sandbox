@@ -133,7 +133,7 @@ const MessageSchema = (props: any) => {
     }
 
     return (
-        <fieldset className="col-md-6 p-0">
+        <fieldset className="p-0">
             <legend>JADN Schema</legend>
             <div className="card">
                 <div className="form-control border card-body p-0" style={{ height: '40em' }}>

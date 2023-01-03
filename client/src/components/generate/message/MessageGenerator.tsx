@@ -24,15 +24,31 @@ const MessageGenerator = () => {
     }, [dispatch])
 
     return (
-        <div className='row mx-auto'>
+        <div>
             <Helmet>
                 <title>{meta_title}</title>
                 <link rel="canonical" href={meta_canonical} />
             </Helmet>
-            <MessageSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-            <MessageCreator selectedSchema={loadedSchema} />
+            <div className='row'>
+                <div className='col-md-12'>
+                    <div className='card'>
+                        <div className='card-header p-2'>
+                            <h5 className='m-0'> Generate Mesage</h5>
+                        </div>
+                        <div className='card-body p-2'>
+                            <div className='row'>
+                                <div className='col-md-6 pr-1'>
+                                    <MessageSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                </div>
+                                <div className='col-md-6 pl-1'>
+                                    <MessageCreator selectedSchema={loadedSchema} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
-
 }
 export default MessageGenerator 

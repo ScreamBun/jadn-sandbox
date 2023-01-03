@@ -65,7 +65,7 @@ const MessageCreator = (props: any) => {
     }
 
     return (
-        <fieldset className="col-md-6 p-0 float-right">
+        <fieldset className="p-0">
             <legend>Message Creator</legend>
             <TabContent activeTab={activeView}>
                 <TabPane tabId='creator'>
