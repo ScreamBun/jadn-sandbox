@@ -19,7 +19,7 @@ class API(Resource):
     """
     def get(self):
         rsp = dict(
-            title="JADN Lint",
+            title="JADN Sandbox",
             message="MESSAGE"
         )
         return jsonify(rsp)

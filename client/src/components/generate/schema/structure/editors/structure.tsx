@@ -223,7 +223,7 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
       fieldCollapse, fields, modal, value
     } = this.state;
 
-    if (fields.length !== value.fields.length) {
+    if (value.fields && fields.length !== value.fields.length) {
       setTimeout(() => {
         this.setState(prevState => ({
           fields: prevState.value.fields.map((f, i) => this.makeField(f, i))

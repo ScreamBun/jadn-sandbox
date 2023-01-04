@@ -240,3 +240,4 @@ yarn.lock
 #VS Code Related
 .vscode
 .vscode/
+client/.yarn/install-state.gz

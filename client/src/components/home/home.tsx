@@ -1,7 +1,7 @@
-import { faCoffee, faCubes, faCubesStacked, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { faCubes, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    NAV_EXTERNAL_OPENC2_JADN, NAV_VALIDATE, NAV_CONVERT, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA
+    NAV_EXTERNAL_OPENC2_JADN, NAV_VALIDATE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA
 } from 'components/utils/constants';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -10,12 +10,13 @@ const Home = () => {
     return (
       <div className='card'>
         <div className='card-header p-2'>
-          <h4 className='m-0'>Home</h4>
+          <h5 className='m-0'>Home</h5>
         </div>
         <div className='card-body p-2'>
           <p>
-            OpenC2 is defined using JSON Abstract Schema Notation (JADN).
-            The JADN validator can check messages against any schema.
+          OpenC2 is defined using JSON Abstract Schema Notation (JADN). 
+          The JADN Sandbox provides the ability generate OpenC2 messages and schemas, as well as , 
+          convert to other data formats and provide JADN validation. 
           </p>
           <p>
             Source is available from the
@@ -47,11 +48,11 @@ const Home = () => {
                 </div>
                 <div className='card-body p-0'>
                   <ul className="list-group">
-                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={ NAV_CONVERT }>Convert</Link>
+                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={ NAV_CONVERT_SCHEMA }>Convert Schema</Link>
                     <li className="list-group-item">GraphViz</li>
                     <li className="list-group-item">HTML</li>
                     <li className="list-group-item">JADN</li>
-                    <li className="list-group-item">JIDL</li>
+                    <li className="list-group-item">JIDL (Coming Soon)</li>
                     <li className="list-group-item">MarkDown</li>
                     <li className="list-group-item">XML</li>
                   </ul>

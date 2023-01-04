@@ -117,7 +117,7 @@ const LoadedSchema = (props: any) => {
     }
 
     return (
-        <fieldset className="col-md-6 p-0">
+        <fieldset className="p-0">
             <legend>JADN Schema</legend>
             <div className="card">
                 <div className="form-control border card-body p-0" style={{ height: '40em' }}>
@@ -131,7 +131,7 @@ const LoadedSchema = (props: any) => {
                     />
                 </div>
 
-                <div className="card-footer pb-3">
+                <div className="card-footer p-2">
                     <Button color='info' className='float-right' onClick={handleValidationOnClick}>Verify</Button>
                     <div className="form-row">
 

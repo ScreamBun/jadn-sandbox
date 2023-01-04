@@ -33,7 +33,7 @@ const MessageGenerator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header p-2'>
-                            <h5 className='m-0'> Generate Mesage</h5>
+                            <h5 className='m-0'> Generate Message</h5>
                         </div>
                         <div className='card-body p-2'>
                             <div className='row'>

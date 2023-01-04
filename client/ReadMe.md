@@ -1,4 +1,8 @@
-# JADN Sandbox/WebValidate - Client/GUI
+<<<<<<< HEAD
+# JADN Sandbox - Client/GUI
+=======
+# JADN Sandbox - Client/GUI
+>>>>>>> develop
 
 ## Notes
 
