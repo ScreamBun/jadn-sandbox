@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { getPageTitle } from 'reducers/util'
 import MessageCreator from './MessageCreator'
-import { info } from 'actions/generate'
 import MessageSchema from './MessageSchema'
+import { getPageTitle } from 'reducers/util'
+import { info } from 'actions/generate'
+
 
 const MessageGenerator = () => {
     const dispatch = useDispatch()
@@ -38,10 +38,13 @@ const MessageGenerator = () => {
                         <div className='card-body p-2'>
                             <div className='row'>
                                 <div className='col-md-6 pr-1'>
-                                    <MessageSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                    <MessageSchema
+                                        selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                        loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                 </div>
                                 <div className='col-md-6 pl-1'>
-                                    <MessageCreator selectedSchema={loadedSchema} />
+                                    <MessageCreator
+                                        selectedSchema={loadedSchema} />
                                 </div>
                             </div>
                         </div>

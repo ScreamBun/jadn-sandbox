@@ -30,9 +30,7 @@ body {
     width: auto;
     -moz-padding: 15px; /* firefox bug fix */
 }
-.container-fluid .row {
-    max-width: $max-width;
-}
+
 #alert-container {
 	z-index: 100;
 	position: fixed;

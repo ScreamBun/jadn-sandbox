@@ -10,7 +10,7 @@ const ConvertedSchema = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
     const convertOpts = useSelector(getConversions);
 
-    const handleConversion = (e: { target: { value: string; }; }) => {
+    const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);
         setConvertedSchema('');
     }
@@ -136,8 +136,8 @@ const ConvertedSchema = (props: any) => {
 
                     <div className="form-row ml-1 mb-0">
                         <div className="input-group col-md-6 px-1 mb-0">
-                            <select id="convert-to" name="convert-to" className="form-control" defaultValue={conversion} onChange={handleConversion}>
-                                <option value="empty"> Convert To... </option>
+                            <select id="convert-to" name="convert-to" className="form-control" value={conversion} onChange={handleConversion}>
+                                <option value=""> Convert To... </option>
                                 {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
                             </select>
                             <div className="input-group-append">

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import JSONInput from "react-json-editor";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Button, Input } from "reactstrap";
-import { getFiles } from "reducers/convert";
 import { loadFile } from "actions/util";
+import { getSchemaFiles } from "reducers/validate";
 import { validateSchema } from "actions/validate";
 
-const LoadedSchema = (props: any) => {
-    const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema } = props;
+const LoadValidSchema = (props: any) => {
+    const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [uploadedFile, setUploadedFile] = useState('');
-    const schemaOpts = useSelector(getFiles);
+    const schemaOpts = useSelector(getSchemaFiles);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -21,9 +22,57 @@ const LoadedSchema = (props: any) => {
             setUploadedFile('');
         } else {
             try {
-                dispatch(loadFile('schemas', selectedFile))
-                    .then((loadFileVal) => { setLoadedSchema(loadFileVal.payload.data) })
-                    .catch((loadFileErr) => { setLoadedSchema(loadFileErr.payload.data) })
+                dispatch(loadFile('schemas', selectedFile)) //load schema file
+                    .then((loadFileVal) => {
+                        let schemaObj = loadFileVal.payload.data;
+                        dispatch(validateSchema(schemaObj)) //validate schema before displaying
+                            .then((validateSchemaVal) => {
+                                if (validateSchemaVal.payload.valid_bool) {
+                                    setLoadedSchema(schemaObj);
+
+                                    //getDecodeTypes
+                                    let decodeTypes = {
+                                        all: [],
+                                        exports: []
+                                    };
+                                    let msgDecode = '';
+
+                                    if (schemaObj.info !== undefined) {
+                                        if (schemaObj.info.exports !== undefined) {
+                                            decodeTypes.exports = schemaObj.info.exports;
+                                        }
+                                    }
+                                    if (schemaObj.types !== undefined) {
+                                        decodeTypes.all = schemaObj.types.map((def: any[]) => def[0]);
+                                        decodeTypes.all = decodeTypes.all.filter(dt => !decodeTypes.exports.includes(dt));
+                                        decodeTypes.all.sort();
+                                    }
+
+                                    if (decodeMsg === '' || !decodeTypes.all.includes(decodeMsg)) {
+                                        if (decodeTypes.exports.length >= 1) {
+                                            msgDecode = decodeTypes.exports[0];
+                                        } else if (decodeTypes.all.length >= 1) {
+                                            msgDecode = decodeTypes.all[0];
+                                        }
+                                    }
+
+                                    setDecodeSchemaTypes(decodeTypes);
+                                    setDecodeMsg(msgDecode);
+
+                                } else {
+                                    toast(`${validateSchemaVal.payload.valid_msg}`, { type: toast.TYPE.WARNING });
+                                    setSelectedFile('');
+                                }
+                            })
+                            .catch((validateSchemaErr) => {
+                                toast(`${validateSchemaErr.payload.valid_msg}`, { type: toast.TYPE.WARNING });
+                                setSelectedFile('');
+                            })
+                    })
+                    .catch((loadFileErr) => {
+                        setSelectedFile('');
+                        setLoadedSchema(loadFileErr.payload.data);
+                    })
             } catch (err) {
                 setLoadedSchema({ placeholder: 'File not found' });
             }
@@ -67,10 +116,19 @@ const LoadedSchema = (props: any) => {
                     let data = ev.target.result;
                     try {
                         data = JSON.stringify(data, null, 2); // must turn str into obj before str
+                        dispatch(validateSchema(data))//validate data before displaying
+                            .then((validateSchemaVal) => {
+                                if (validateSchemaVal.payload.valid_bool) {
+                                    setLoadedSchema(data);
+                                } else {
+                                    toast(`${validateSchemaVal.payload.valid_msg}`, { type: toast.TYPE.WARNING });
+                                    setUploadedFile('');
+                                }
+                            })
+                            .catch((validateSchemaErr) => { toast(`${validateSchemaErr.payload.valid_msg}`, { type: toast.TYPE.WARNING }) })
                     } catch (err) {
                         toast(`File cannot be loaded`, { type: toast.TYPE.WARNING });
                     }
-                    setLoadedSchema({ data });
                 }
             };
             fileReader.readAsText(file);
@@ -93,7 +151,7 @@ const LoadedSchema = (props: any) => {
                 </div>
 
                 <div className="card-footer p-2">
-                    <Button color='info' className='float-right' onClick={handleValidationOnClick}>Verify JADN</Button>
+                    <Button color='info' className='float-right' onClick={handleValidationOnClick} title="Validate the schema is valid prior to validating the message">Verify JADN</Button>
                     <div className="form-row">
 
                         <div className="input-group col-md-5 px-1 mb-0">
@@ -117,4 +175,5 @@ const LoadedSchema = (props: any) => {
             </div>
         </fieldset>)
 }
-export default LoadedSchema;
+
+export default LoadValidSchema

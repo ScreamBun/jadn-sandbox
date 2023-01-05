@@ -682,4 +682,4 @@ class Validator extends Component<ValidatorConnectedProps, ValidatorState> {
   }
 }
 
-export default connector(Validator);
+

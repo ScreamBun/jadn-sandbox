@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Form, Button } from 'reactstrap'
 import ConvertedSchema from './ConvertedSchema'
@@ -33,7 +32,9 @@ const SchemaConverter = () => {
     }, [selectedFile])
 
     const onReset = () => {
+        setSelectedFile('');
         setLoadedSchema({ placeholder: 'Paste JADN schema here' });
+        setConversion('');
         setConvertedSchema('');
     }
 
@@ -113,22 +114,26 @@ const SchemaConverter = () => {
                             <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <LoadedSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                        <LoadedSchema
+                                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <ConvertedSchema convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema} conversion={conversion} setConversion={setConversion} loadedSchema={loadedSchema} />
+                                        <ConvertedSchema
+                                            convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
+                                            conversion={conversion} setConversion={setConversion}
+                                            loadedSchema={loadedSchema} />
                                     </div>
                                 </div>
                             </Form>
                         </div>
                         <div className='card-footer p-2'>
                             <Button color="danger" className='float-right' type="reset" onClick={onReset}>Reset</Button>
-                        </div>                                
+                        </div>
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
-        
     );
 }
 

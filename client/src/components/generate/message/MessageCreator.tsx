@@ -15,7 +15,7 @@ const MessageCreator = (props: any) => {
     const exportRecords = selectedSchema.info ? selectedSchema.info && selectedSchema.info.exports : [];
     const recordDefs = selectedSchema.types ? selectedSchema.types.filter(t => t[0] === commandType) : [];
 
-    const handleSelection = (e: any) => {
+    const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCommandType(e.target.value)
         setMessage({})
     }
@@ -32,11 +32,7 @@ const MessageCreator = (props: any) => {
         }
 
         setMessage(message);
-        return {
-            message: message
-        };
     }
-
 
     const recordDef = recordDefs.length === 1 ? recordDefs[0] : [];
     let commandFields: null | JSX.Element = null;
@@ -70,17 +66,17 @@ const MessageCreator = (props: any) => {
             <TabContent activeTab={activeView}>
                 <TabPane tabId='creator'>
                     <div className='card'>
-                        <div className='card-body p-0' style={{ height: '40em' }}>
-                            <Form id='command-fields' className='card-body' onSubmit={() => { return false; }} style={{ height: '40em', overflow: 'scroll' }}>
+                        <div className='card-body p-0"' style={{ height: '40em' }}>
+                            <div id='command-fields' style={{ height: '38em', overflow: 'scroll' }}>
                                 {commandFields}
                                 <div id="fieldDefs">
                                     {fieldDefs}
                                 </div>
-                            </Form>
+                            </div>
                         </div>
-                        <div className='card-footer pb-3'>
+                        <div className='card-footer p-2'>
                             <div className='col-md-6 p-0 m-0 float-left'>
-                                <select id='command-list' name='command-list' className='form-control' onChange={handleSelection}>
+                                <select id='command-list' name='command-list' className='form-control' value={commandType} onChange={handleSelection}>
                                     <option value=''>Command Type</option>
                                     {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
                                 </select>
@@ -99,7 +95,7 @@ const MessageCreator = (props: any) => {
                                 json={message}
                             />
                         </div>
-                        <div className='card-footer pb-3'>
+                        <div className='card-footer p-2'>
                             <Button onClick={() => setActiveView('creator')} className="float-right"> See Message Creator </Button>
                         </div>
                     </div>
