@@ -38,7 +38,7 @@ const Validator = () => {
         setLoadedMsg('');
     }
 
-    const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
+    const submitForm = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
             dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
@@ -93,7 +93,7 @@ const Validator = () => {
                         </div>
                         <div className='card-footer p-2'>
                             <Button color="danger" className='float-right ml-1' type="reset" onClick={onReset}>Reset</Button>
-                            <Button color="success" className='float-right mr-1' type="submit" title="Validate the message against the given schema">Validate Message</Button>
+                            <Button color="success" className='float-right mr-1' type="submit" onClick={submitForm} title="Validate the message against the given schema">Validate Message</Button>
                         </div>
                     </div>
                 </div>

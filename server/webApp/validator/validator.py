@@ -51,7 +51,6 @@ class Validator:
         :return: valid/invalid bool, message
         """
         v, s = self.validateSchema(schema, False)
-
         if not v:
             return False, s, "", msg
 
