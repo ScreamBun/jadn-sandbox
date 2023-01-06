@@ -67,7 +67,13 @@ const SchemaConverter = () => {
                                     dispatch(convertSchema(schemaObj, conversion, 'all')) //TODO: see usage of comments in converter.py
                                         .then((convertSchemaVal) => {
                                             setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                                            toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.SUCCESS });
+
+                                            const conversionCheck = convertSchemaVal.payload.schema.convert;
+                                            if(conversionCheck.startsWith('Error')){
+                                                toast(<p>ERROR: {conversionCheck}</p>, { type: toast.TYPE.ERROR });
+                                            } else { 
+                                                toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.SUCCESS });
+                                            }
                                         })
                                         .catch((_convertSchemaErr) => {
                                             setConvertedSchema("ERROR: File conversion failed");
