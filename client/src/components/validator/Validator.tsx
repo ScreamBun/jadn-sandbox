@@ -69,7 +69,7 @@ const Validator = () => {
                             <h5 className='m-0'> Validate Message </h5>
                         </div>
                         <div className='card-body p-2'>
-                            <Form onSubmit={submitForm}>
+                            <Form>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
                                         <LoadValidSchema

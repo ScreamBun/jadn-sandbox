@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import JSONPretty from 'react-json-pretty'
-import { TabContent, TabPane, Form, Button, FormText } from 'reactstrap'
+import { TabContent, TabPane, Button, FormText } from 'reactstrap'
 import { StandardFieldArray } from '../schema/interface'
 import { Field, delMultiKey, setMultiKey } from './lib'
 
