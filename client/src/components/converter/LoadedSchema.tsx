@@ -43,7 +43,7 @@ const LoadedSchema = (props: any) => {
         }
 
         jsonToFormat = jsonToFormat.trim();
-        jsonToFormat = jsonToFormat.replace(/'/g, '"');
+        // jsonToFormat = jsonToFormat.replace(/'/g, '"');
         jsonToFormat = validateJSON(jsonToFormat, false, true);
         if(jsonToFormat){
             try {

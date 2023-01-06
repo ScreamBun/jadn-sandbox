@@ -68,35 +68,34 @@ class Convert(Resource):
                         # Python values allow comments, single quoted strings, None, True, False.
                         schema_test = {     
 
-                            'info': {
-                                'package': 'http://oasis-open.org/openc2/oc2ls/v1.0.1',
-                                'version': '0',
-                                'title': 'Language schema with errata',
-                                'description': 'OpenC2 LS version 1.0 + errata',
-                                'exports': [
-                                'OpenC2-Command',
-                                'OpenC2-Response'
+                            "info": {
+                                "package": "http://oasis-open.org/openc2/oc2ls/v1.0.1",
+                                "version": "0",
+                                "title": "Language schema with errata",
+                                "description": "OpenC2 LS version 1.0 + errata",
+                                "exports": [
+                                "OpenC2-Command",
+                                "OpenC2-Response"
                                 ],
-                                'config': {
-                                '$Sys': ':',
-                                '$TypeName': '^[A-Z][-:A-Za-z0-9]{0,31}$',
-                                '$FieldName': '^[a-z][-_a-z0-9]{0,31}$'
+                                "config": {
+                                "$Sys": ":",
+                                "$TypeName": "^[A-Z][-:A-Za-z0-9]{0,31}$",
+                                "$FieldName": "^[a-z][-_a-z0-9]{0,31}$"
                                 }
                             },
 
-                            'types': [      
+                            "types": [      
                                 ["OpenC2-Command", "Record", [], "", [
                                     [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')."],
                                     [2, "target", "Target", [], "The object of the Action. The Action is performed on the Target."],
                                     [3, "args", "Args", ["[0"], "Additional information that applies to the Command."],
-                                    [4, "actuator", "Actuator", ["[0"], "The subject of the Action. The Actuator executes the Action on the Target."],
                                     [5, "command_id", "String", ["[0"], "An identifier of this Command."]
                                 ]],
                                 ["OpenC2-Response", "Map", [], "", [
                                     [1, "status", "Status-Code", [], "An integer status code"],
                                     [2, "status_text", "String", ["[0"], "A free-form human-readable description of the Response status"],
                                     [3, "results", "Results", ["[0"], "Map of key:value pairs that contain additional results based on the invoking Command."]
-                                ]],      
+                                ]], 
                                 ["Action", "Enumerated", [], "", [
                                     [1, "scan", "Systematic examination of some aspect of the entity or its environment."],
                                     [2, "locate", "Find an object physically, logically, functionally, or by organization."],
@@ -118,7 +117,7 @@ class Convert(Resource):
                                     [28, "copy", "Duplicate an object, file, data flow, or artifact."],
                                     [30, "investigate", "Task the recipient to aggregate and report information as it pertains to a security event or incident."],
                                     [32, "remediate", "Task the recipient to eliminate a vulnerability or attack point."]
-                                ]],     
+                                ]],
                                 ["Target", "Choice", [], "OpenC2 Target datatypes", [
                                     [1, "artifact", "Artifact", [], "An array of bytes representing a file-like object or a link to that object."],
                                     [2, "command", "String", [], "A reference to a previously issued Command."],
@@ -138,7 +137,7 @@ class Convert(Resource):
                                     [18, "process", "Process", [], "Common properties of an instance of a computer program as executed on an operating system."],
                                     [25, "properties", "Properties", [], "Data attribute associated with an Actuator"],
                                     [19, "uri", "URI", [], "A uniform resource identifier (URI)."]
-                                ]],      
+                                ]],
                                 ["Args", "Map", ["{1"], "", [
                                     [1, "start_time", "Date-Time", ["[0"], "The specific date/time to initiate the Command"],
                                     [2, "stop_time", "Date-Time", ["[0"], "The specific date/time to terminate the Command"],
@@ -150,7 +149,7 @@ class Convert(Resource):
                                     [2, "profiles", "ArrayOf", ["[0", "*Nsid"], "List of profiles supported by this Actuator"],
                                     [3, "pairs", "Action-Targets", ["[0"], "List of targets applicable to each supported Action"],
                                     [4, "rate_limit", "Number", ["[0"], "Maximum number of requests per minute supported by design or policy"]
-                                ]],       
+                                ]],
                                 ["Action-Targets", "MapOf", ["{1", "+Action", "*Targets"], "Map of each action supported by this actuator to the list of targets applicable to that action"],
                                 ["Targets", "ArrayOf", ["*Target", "{0", "}0", "q"], "List of JSON Pointers to Target types"],
                                 ["Status-Code", "Enumerated", ["="], "", [
@@ -163,13 +162,13 @@ class Convert(Resource):
                                     [500, "InternalError", "the Consumer encountered an unexpected condition that prevented it from performing the Command."],
                                     [501, "NotImplemented", "the Consumer does not support the functionality required to perform the Command."],
                                     [503, "ServiceUnavailable", "the Consumer is currently unable to perform the Command due to a temporary overloading or maintenance of the Consumer."]
-                                ]],         
+                                ]],
                                 ["Artifact", "Record", ["{1"], "", [
                                     [1, "mime_type", "String", ["[0"], "Permitted values specified in the IANA Media Types registry, [[RFC6838]](#rfc6838)"],
                                     [2, "payload", "Payload", ["[0"], "Choice of literal content or URL"],
                                     [3, "hashes", "Hashes", ["[0"], "Hashes of the payload content"]
                                 ]],
-                                ["Device", "Map", ["{1"], "", [
+["Device", "Map", ["{1"], "", [
                                     [1, "hostname", "Hostname", ["[0"], "A hostname that can be used to connect to this device over a network"],
                                     [2, "idn_hostname", "IDN-Hostname", ["[0"], "An internationalized hostname that can be used to connect to this device over a network"],
                                     [3, "device_id", "String", ["[0"], "An identifier that refers to this device within an inventory or management system"]
@@ -253,7 +252,7 @@ class Convert(Resource):
                                     [2, "status", "Respond with progress toward Command completion"],
                                     [3, "complete", "Respond when all aspects of Command completed"]
                                 ]],
-                                ["Version", "String", [], "Major.Minor version number"]                                                                                                                                                                                                                  
+                                ["Version", "String", [], "Major.Minor version number"]                                                                                             
                             ]
                         }
 
