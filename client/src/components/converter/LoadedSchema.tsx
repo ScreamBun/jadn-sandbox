@@ -1,15 +1,13 @@
-import { loadFile } from "actions/util";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { Button, Input } from "reactstrap";
+import { loadFile } from "actions/util";
 import { getFiles } from "reducers/convert";
 import { validateSchema } from "actions/validate";
 import { loadURL, validURL } from "components/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { format } from '../utils';
 
 const LoadedSchema = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema } = props;
@@ -24,29 +22,36 @@ const LoadedSchema = (props: any) => {
     useEffect(() => {
         if (selectedFile == "" || selectedFile == "file" || selectedFile == "url") {
             setLoadedSchema('');
+            setIsValidJSON(false);
+            setIsValidJADN(false);
         } else {
             try {
                 dispatch(loadFile('schemas', selectedFile))
-                    .then((loadFileVal) => { setLoadedSchema(JSON.stringify(loadFileVal.payload.data)) })
+                    .then((loadFileVal) => {
+                        setLoadedSchema(JSON.stringify(loadFileVal.payload.data, null, 2));
+                        validateJSON(JSON.stringify(loadFileVal.payload.data));
+                        validateJADN(JSON.stringify(loadFileVal.payload.data));
+                    })
+
                     .catch((_loadFileErr) => { setLoadedSchema(JSON.stringify(loadFileVal.payload.data)) })
             } catch (err) {
                 setLoadedSchema(null);
                 setIsValidJADN(false);
             }
         }
-    }, [selectedFile]);   
+    }, [selectedFile]);
 
     const formatJSON = (jsonToFormat: string) => {
-        if(!jsonToFormat){
+        if (!jsonToFormat) {
             toast(`Nothing to format`, { type: toast.TYPE.ERROR });
             return;
         }
 
         jsonToFormat = jsonToFormat.trim();
         jsonToFormat = validateJSON(jsonToFormat, false, true);
-        if(jsonToFormat){
+        if (jsonToFormat) {
             try {
-                jsonToFormat = JSON.stringify(jsonToFormat, undefined, 2);  
+                jsonToFormat = JSON.stringify(jsonToFormat, undefined, 2);
                 setLoadedSchema(jsonToFormat);
                 toast(`Data Formatted`, { type: toast.TYPE.SUCCESS });
             } catch (err: any) {
@@ -55,12 +60,12 @@ const LoadedSchema = (props: any) => {
         } else {
             toast(`Unable to Format`, { type: toast.TYPE.ERROR });
         }
-    }    
+    }
 
     const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
         let jsonObj = null;
 
-        if(!jsonToValidate){
+        if (!jsonToValidate) {
             setIsValidJSON(false);
             setIsValidJADN(false);
             toast(`No data found`, { type: toast.TYPE.ERROR });
@@ -68,31 +73,31 @@ const LoadedSchema = (props: any) => {
         }
 
         try {
-            jsonObj = JSON.parse(jsonToValidate); 
+            jsonObj = JSON.parse(jsonToValidate);
             setIsValidJSON(true);
         } catch (err: any) {
             setIsValidJSON(false);
             setIsValidJADN(false);
-            if(showErrorPopup){
+            if (showErrorPopup) {
                 toast(`Invalid Format: ${err.message}`, { type: toast.TYPE.ERROR });
             }
         }
 
-        if(onErrorReturnOrig && !jsonObj){
+        if (onErrorReturnOrig && !jsonObj) {
             jsonObj = jsonToValidate
         }
 
         return jsonObj;
-    }    
+    }
 
     const validateJADN = (jsonToValidate: any) => {
         setIsValidJADN(false);
         try {
             dispatch(validateSchema(jsonToValidate))
-                .then((validateSchemaVal) => { 
+                .then((validateSchemaVal) => {
                     toast(`${validateSchemaVal.payload.valid_msg}`, { type: toast.TYPE[validateSchemaVal.payload.valid_bool ? 'SUCCESS' : 'ERROR'] })
-                    if(validateSchemaVal.payload.valid_bool){
-                        setIsValidJADN(true); 
+                    if (validateSchemaVal.payload.valid_bool) {
+                        setIsValidJADN(true);
                     }
                 })
                 .catch((validateSchemaErr) => { toast(`${validateSchemaErr.payload.valid_msg}`, { type: toast.TYPE.ERROR }) })
@@ -101,7 +106,7 @@ const LoadedSchema = (props: any) => {
                 toast(`${err.message}`, { type: toast.TYPE.ERROR });
             }
         }
-    }    
+    }
 
     const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         formatJSON(loadedSchema);
@@ -110,11 +115,11 @@ const LoadedSchema = (props: any) => {
     const onSchemaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLoadedSchema(e.target.value);
         validateJSON(e.target.value);
-    }    
+    }
 
     const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         let jsonObj = validateJSON(loadedSchema);
-        if(!jsonObj){
+        if (!jsonObj) {
             return;
         }
 
@@ -142,7 +147,7 @@ const LoadedSchema = (props: any) => {
     }
 
     const onURLChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const placeholder = { placeholder : 'Please input URL' }
+        const placeholder = { placeholder: 'Please input URL' }
         setLoadedSchema(JSON.stringify(placeholder, undefined, 2));
         setURLString(e.target.value);
     }
@@ -171,18 +176,17 @@ const LoadedSchema = (props: any) => {
             .catch(_err => {
                 toast(`Invalid URL`, { type: toast.TYPE.WARNING });
             });
-    }    
+    }
 
     return (
         <fieldset className="p-0">
             <legend>JADN Schema</legend>
             <div className="card">
                 <div className="form-control border card-body p-0" style={{ height: '40em' }}>
-                    <Input 
-                        type="textarea" 
-                        onChange={onSchemaChange} 
-                        defaultValue={loadedSchema} 
-                        value={loadedSchema} 
+                    <Input
+                        type="textarea"
+                        onChange={onSchemaChange}
+                        value={loadedSchema}
                         className='form-control'
                         placeholder='Schema to be converted'
                         style={{
@@ -192,21 +196,21 @@ const LoadedSchema = (props: any) => {
                             padding: '10px',
                             border: 'none',
                             height: '100%'
-                        }}                        
-                    />     
+                        }}
+                    />
                 </div>
 
                 <div className="card-footer p-2">
-                    <Button 
+                    <Button
                         id='validateJADNButton'
-                        className="float-right" 
-                        color='success' 
+                        className="float-right"
+                        color='success'
                         onClick={onValidateJADNClick}>Validate JADN</Button>
-                    <Button 
+                    <Button
                         id='formatButton'
-                        className="float-right mr-2" 
-                        color='info' 
-                        onClick={onFormatClick} 
+                        className="float-right mr-2"
+                        color='info'
+                        onClick={onFormatClick}
                         title='Converts quotes to double quotes, adds curly brackets if missing, removes orphaned commas and formats.'>Format</Button>
                     <div className="form-row">
 
@@ -242,25 +246,25 @@ const LoadedSchema = (props: any) => {
                             <div className="float-right">
                                 <span className="badge badge-light mx-1">Valid JSON {isValidJSON ? (
                                     <span className="badge badge-success">
-                                        <FontAwesomeIcon icon={ faCheck } /> 
+                                        <FontAwesomeIcon icon={faCheck} />
                                     </span>
                                 ) : (
                                     <span className="badge badge-danger">
-                                        <FontAwesomeIcon icon={ faXmark } /> 
-                                    </span> 
-                                )}</span>                    
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </span>
+                                )}</span>
                                 <span className="badge badge-light">Valid JADN {isValidJADN ? (
                                     <span className="badge badge-success">
-                                        <FontAwesomeIcon icon={ faCheck } /> 
+                                        <FontAwesomeIcon icon={faCheck} />
                                     </span>
                                 ) : (
                                     <span className="badge badge-danger">
-                                        <FontAwesomeIcon icon={ faXmark } /> 
-                                    </span>                        
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </span>
                                 )}</span>
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
             </div>
         </fieldset>)

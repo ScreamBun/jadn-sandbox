@@ -1,30 +1,26 @@
-import { convertSchema, info } from 'actions/convert'
-import { info as getMeta } from 'actions/util'
-import { validateSchema } from 'actions/validate'
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Form, Button } from 'reactstrap'
+import { convertSchema, info } from 'actions/convert'
+import { validateSchema } from 'actions/validate'
 import { getPageTitle } from 'reducers/util'
 import ConvertedSchema from './ConvertedSchema'
 import LoadedSchema from './LoadedSchema'
 
+
 const SchemaConverter = () => {
     const [selectedFile, setSelectedFile] = useState('');
-    const [loadedSchema, setLoadedSchema] = useState({ placeholder: 'Paste JADN schema here' });
+    const [loadedSchema, setLoadedSchema] = useState('');
     const [convertedSchema, setConvertedSchema] = useState('');
     const [conversion, setConversion] = useState('');
 
     //add meta data for page
     const meta_title = useSelector(getPageTitle) + ' | Convert Schema'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-    useEffect(() => {
-        dispatch(getMeta());
-    }, [meta_title])
 
-    //populate schema and conversions from server
+    //populate meta, schema and conversions from server
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(info());
@@ -36,7 +32,8 @@ const SchemaConverter = () => {
     }, [selectedFile])
 
     const onReset = () => {
-        setLoadedSchema({ placeholder: 'Paste JADN schema here' });
+        setSelectedFile('');
+        setLoadedSchema('');
         setConvertedSchema('');
     }
 
@@ -69,9 +66,9 @@ const SchemaConverter = () => {
                                             setConvertedSchema(convertSchemaVal.payload.schema.convert);
 
                                             const conversionCheck = convertSchemaVal.payload.schema.convert;
-                                            if(conversionCheck.startsWith('Error')){
+                                            if (conversionCheck.startsWith('Error')) {
                                                 toast(<p>ERROR: {conversionCheck}</p>, { type: toast.TYPE.ERROR });
-                                            } else { 
+                                            } else {
                                                 toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.SUCCESS });
                                             }
                                         })
@@ -122,22 +119,27 @@ const SchemaConverter = () => {
                             <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <LoadedSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                        <LoadedSchema
+                                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <ConvertedSchema convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema} conversion={conversion} setConversion={setConversion} loadedSchema={loadedSchema} />
+                                        <ConvertedSchema
+                                            convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
+                                            conversion={conversion} setConversion={setConversion}
+                                            loadedSchema={loadedSchema} />
                                     </div>
                                 </div>
                             </Form>
                         </div>
                         <div className='card-footer p-2'>
                             <Button color="danger" className='float-right' type="reset" onClick={onReset}>Reset</Button>
-                        </div>                                
+                        </div>
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
-        
+
     );
 }
 
