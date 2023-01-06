@@ -9,6 +9,7 @@ import { validateSchema } from "actions/validate";
 import { loadURL, validURL } from "components/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { format } from '../utils';
 
 const LoadedSchema = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema } = props;
@@ -42,24 +43,6 @@ const LoadedSchema = (props: any) => {
         }
 
         jsonToFormat = jsonToFormat.trim();
-        // Remove leading and ending whitespace and carriage returns
-        // jsonToFormat = jsonToFormat.replace(/\s+/g, ' ').trim();
-
-        const firstChar = Array.from(jsonToFormat)[0];
-        if(firstChar !== '{'){
-            jsonToFormat = '{ ' + jsonToFormat;
-        }
-
-        const lastCharComma = Array.from(jsonToFormat)[jsonToFormat.length];
-        if(lastCharComma === ','){
-            jsonToFormat = jsonToFormat.replace(/.$/,"")
-        } 
-
-        const lastCharMissingBracket = Array.from(jsonToFormat)[jsonToFormat.length];
-        if(lastCharMissingBracket !== '}'){
-            jsonToFormat = jsonToFormat + ' }';
-        }
- 
         jsonToFormat = jsonToFormat.replace(/'/g, '"');
         jsonToFormat = validateJSON(jsonToFormat, false, true);
         if(jsonToFormat){

@@ -257,11 +257,12 @@ class Convert(Resource):
                             ]
                         }
 
-                        schema_json = json.dumps(raw_schema, ensure_ascii=False)
+                        test = request_json['schema']
+                        schema_json = json.dumps(test, ensure_ascii=False)
                         print('schema_json: ' + schema_json)
                         # schema = jadn.check(schema) 
                         # schema_json = json.load(schema)
-                        schema_jidl = jadn.convert.jidl_dumps(request_json)
+                        schema_jidl = jadn.convert.jidl_dumps(test)
                         print('schema_test: ' + schema_jidl)
                         print(schema_jidl)
                         conv = schema_jidl
