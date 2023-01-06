@@ -3,8 +3,8 @@ import JSONInput from "react-json-editor";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Button, Input } from "reactstrap";
-import { loadFile } from "actions/util";
 import { getAllSchemas } from "reducers/generate";
+import { loadFile } from "actions/util";
 import { validateSchema } from "actions/validate";
 import { setSchema } from "actions/generate";
 

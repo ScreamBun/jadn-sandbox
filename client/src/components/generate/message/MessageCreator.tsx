@@ -5,11 +5,10 @@ import { StandardFieldArray } from '../schema/interface'
 import { Field, delMultiKey, setMultiKey } from './lib'
 
 const MessageCreator = (props: any) => {
-    const { selectedSchema } = props
+    const { selectedSchema, message, setMessage } = props
 
     //state 
     const [activeView, setActiveView] = useState('creator');
-    const [message, setMessage] = useState({});
     const [commandType, setCommandType] = useState('');
 
     const exportRecords = selectedSchema.info ? selectedSchema.info && selectedSchema.info.exports : [];

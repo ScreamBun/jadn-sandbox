@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
+import { Button } from 'reactstrap'
 import MessageCreator from './MessageCreator'
 import MessageSchema from './MessageSchema'
 import { getPageTitle } from 'reducers/util'
@@ -13,6 +14,7 @@ const MessageGenerator = () => {
     //state 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState({ placeholder: 'Paste JADN schema here' });
+    const [message, setMessage] = useState({});
 
     //add meta data for page 
     const meta_title = useSelector(getPageTitle) + ' | Generate Message'
@@ -22,6 +24,13 @@ const MessageGenerator = () => {
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
+
+    const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setSelectedFile('');
+        setLoadedSchema({ placeholder: 'Paste JADN schema here' });
+        setMessage({});
+    }
 
     return (
         <div>
@@ -44,9 +53,13 @@ const MessageGenerator = () => {
                                 </div>
                                 <div className='col-md-6 pl-1'>
                                     <MessageCreator
-                                        selectedSchema={loadedSchema} />
+                                        selectedSchema={loadedSchema}
+                                        message={message} setMessage={setMessage} />
                                 </div>
                             </div>
+                        </div>
+                        <div className='card-footer p-2'>
+                            <Button color="danger" className='float-right ml-1' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>
