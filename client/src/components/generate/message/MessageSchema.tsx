@@ -109,7 +109,7 @@ const MessageSchema = (props: any) => {
                 </div>
 
                 <div className="card-footer p-2">
-                    <Button color='info' className='float-right' onClick={handleValidationOnClick}>Verify</Button>
+                    <Button color='info' className='float-right' onClick={handleValidationOnClick}>Verify JADN</Button>
                     <div className="form-row">
 
                         <div className="input-group col-md-5 px-1 mb-0">
