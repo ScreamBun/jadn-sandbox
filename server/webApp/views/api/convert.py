@@ -1,5 +1,3 @@
-import ast
-import json
 import logging
 import os
 import re
@@ -8,14 +6,8 @@ from io import BytesIO
 import traceback
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource, reqparse
-import jadn
-from jadnschema.convert import SchemaFormats, dumps
-# from jadnschema.convert import cddl_dumps, proto_dumps, thrift_dumps
-from jadnschema.convert import html_dumps, jadn_dumps, md_dumps, relax_dumps
+from jadnschema.convert import SchemaFormats, dumps, html_dumps
 from weasyprint import HTML
-
-from webApp.conversion.conversionLogic import ConversionLogic
-
 
 
 logger = logging.getLogger(__name__)
@@ -53,36 +45,20 @@ class Convert(Resource):
                 conv = "Error: Invalid Conversion Type"
             else:
 
-                cl = ConversionLogic()
-                match conv_fmt:
-                    case "html":
-                        conv = cl.convertToHTML(request_json['schema'])
+                kwargs = {
+                    "fmt": conv_fmt,
+                }
 
-                    case "gv":
-                        conv = cl.convertToGraphViz(request_json['schema'])                  
+                if conv_fmt == "html":
+                    kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
+                
 
-                    case "jadn":
-                        conv = cl.convertToJADN(request_json['schema'])
-
-                    case "jidl":
-                        conv = cl.convertToJIDL(request_json['schema'])
-
-                    case "md":
-                        conv = cl.convertToMarkDown(request_json['schema'])
-
-                    case "rng":
-                        conv = cl.convertToRelax(request_json['schema'])                                                                      
-
-                    case _:
-                        conv = "Error: Unknown Conversion Type " + conv_fmt
-
-
-                # if args["convert-to"] not in ["html", "jadn", "md"]:
-                #     kwargs["comm"] = args.comments
-                # elif args["convert-to"] == "html":
-                #     kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
-
-                # conv = dumps(schema, **kwargs)
+                try:
+                    conv = dumps(schema, **kwargs)
+                except:
+                    tb = traceback.format_exc()
+                    print(tb)
+                    conv = "Error: " + tb
 
         else:
             conv = "Error: Fix the base schema errors before converting..."
