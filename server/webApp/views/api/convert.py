@@ -14,7 +14,7 @@ from jadnschema.convert import SchemaFormats, dumps
 from jadnschema.convert import html_dumps, jadn_dumps, md_dumps, relax_dumps
 from weasyprint import HTML
 
-from server.webApp.conversion.conversionLogic import ConversionLogic
+from webApp.conversion.conversionLogic import ConversionLogic
 
 
 

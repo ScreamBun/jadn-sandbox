@@ -1,8 +1,8 @@
-# ./jadnschema-0.2.0-py2.py3-none-any.whl
+./jadnschema-0.2.0-py2.py3-none-any.whl
 # -e /home/matt/.virtualenvs/jadnsandbox/lib/python3.10/site-packages/jadnschema-0.2.1-py3.10.egg
 # -e /home/matt/.virtualenvs/jadnsandbox/lib/python3.10/site-packages/jadnschema.egg-link
 #-e /home/matt/screamingbunny/Schema/jadnschema
--e /home/kaitlyn_hsu/ScreamingBunnyRepo/Schema/jadnschema
+#-e /home/kaitlyn_hsu/ScreamingBunnyRepo/Schema/jadnschema
 # -e git+ssh://git@ccoe-gitlab.hii-tsd.com/screamingbunny/schema/jadnschema.git@67a5335de3769864ff1cbb892c78d499d346414f#egg=jadnschema
 # jadnschema
 flask==2.2.2
