@@ -58,13 +58,11 @@ const SchemaConverter = () => {
                 dispatch(validateSchema(schemaObj))
                     .then(
                         (validateSchemaVal) => {
-                            //if valid schema and conversion is set, convert schema
                             if (validateSchemaVal.payload.valid_bool == true && conversion) {
                                 try {
-                                    dispatch(convertSchema(schemaObj, conversion, 'all')) //TODO: see usage of comments in converter.py
+                                    dispatch(convertSchema(schemaObj, conversion))
                                         .then((convertSchemaVal) => {
                                             setConvertedSchema(convertSchemaVal.payload.schema.convert);
-
                                             const conversionCheck = convertSchemaVal.payload.schema.convert;
                                             if (conversionCheck.startsWith('Error')) {
                                                 toast(<p>ERROR: {conversionCheck}</p>, { type: toast.TYPE.ERROR });
@@ -73,20 +71,18 @@ const SchemaConverter = () => {
                                             }
                                         })
                                         .catch((_convertSchemaErr) => {
-                                            setConvertedSchema("ERROR: File conversion failed");
                                             toast(<p>ERROR: Schema conversion to {conversion} failed</p>, { type: toast.TYPE.ERROR });
                                         })
 
                                 } catch (err) {
                                     if (err instanceof Error) {
-                                        setConvertedSchema("ERROR: File conversion failed");
                                         toast(<p>{err.message}</p>, { type: toast.TYPE.ERROR });
                                     }
                                 }
                             } else if (validateSchemaVal.payload.valid_bool == false) {
                                 toast(<p>ERROR: Invalid Schema</p>, { type: toast.TYPE.ERROR });
                             } else if (conversion == '') {
-                                toast(<p>ERROR: No Conversion Selected</p>, { type: toast.TYPE.ERROR });
+                                toast(<p>ERROR: No conversion selected</p>, { type: toast.TYPE.ERROR });
                             }
                         })
                     .catch((validateSchemaErr) => {

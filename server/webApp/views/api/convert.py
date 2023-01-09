@@ -9,7 +9,7 @@ import traceback
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource, reqparse
 import jadn
-from jadnschema.convert import CommentLevels, SchemaFormats, dumps
+from jadnschema.convert import SchemaFormats, dumps
 # from jadnschema.convert import cddl_dumps, proto_dumps, thrift_dumps
 from jadnschema.convert import html_dumps, jadn_dumps, md_dumps, relax_dumps
 from weasyprint import HTML
@@ -25,8 +25,6 @@ parser.add_argument("schema", type=dict)
 parser.add_argument("schema-list", type=str)
 parser.add_argument("convert", type=str)
 parser.add_argument("convert-to", type=str)
-# parser.add_argument("comments", type=str, default=any, choices=any)
-parser.add_argument("comments", type=str, default=CommentLevels.ALL, choices=CommentLevels)
 
 
 class Convert(Resource):

@@ -7,7 +7,7 @@ class ConversionLogic(object):
         conv = ''
 
         try:
-            conv = jadn.convert.html_load(schema)
+            conv = jadn.convert.html_dumps(schema)
         except:
             tb = traceback.format_exc()
             print(tb)
