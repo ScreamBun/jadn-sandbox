@@ -4,7 +4,7 @@ import { ActionFailureResult, ActionRequestResult, ActionSuccessResult } from '.
 import { SchemaJADN } from '../components/generate/schema/interface';
 
 // API Base URL
-const baseAPI = '/api';
+const baseAPI = '/api/create';
 
 // Helper Functions
 // OPTIONS - set schema locally for generating messages
@@ -36,7 +36,7 @@ const INFO_REQUEST = '@@generate/INFO_REQUEST';
 export const INFO_SUCCESS = '@@generate/INFO_SUCCESS';
 export const INFO_FAILURE = '@@generate/INFO_FAILURE';
 export const info = () => createAction({
-  endpoint: `${baseAPI}/create`,
+  endpoint: `${baseAPI}/`,
   method: 'GET',
   types: [
     INFO_REQUEST, INFO_SUCCESS, INFO_FAILURE

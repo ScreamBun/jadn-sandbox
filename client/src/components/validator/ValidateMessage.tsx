@@ -18,11 +18,7 @@ const ValidateMessage = (props: any) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (selectedFile == "") {
-            setLoadedMsg('');
-            setDecodeMsg('');
-            setMsgFormat('');
-        } else if (selectedFile == "file") {
+        if (selectedFile == "" || selectedFile == "file") {
             setLoadedMsg('');
             setDecodeMsg('');
             setMsgFormat('');
