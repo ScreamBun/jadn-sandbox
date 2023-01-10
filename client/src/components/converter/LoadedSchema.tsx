@@ -180,10 +180,10 @@ const LoadedSchema = (props: any) => {
                                         <option value="file">File...</option>
                                     </optgroup>
                                 </select>
-                                <Input type="file" id="schema-file" name="schema-file" className={`form-control px-1 py-1 ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={handleFileChange} />                                                                 
+                                <Input type="file" id="schema-file" name="schema-file" className={`form-control px-1 py-1 ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={handleFileChange} />
                                 <Button id='formatButton' className="mx-2" color='info' onClick={onFormatClick}
-                                title='Converts quotes to double quotes, adds curly brackets if missing, removes orphaned commas and formats.'>Format</Button>                                                                
-                                <Button id='validateJADNButton' color='success'onClick={onValidateJADNClick}>Validate JADN</Button>
+                                    title='Converts quotes to double quotes, adds curly brackets if missing, removes orphaned commas and formats.'>Format</Button>
+                                <Button id='validateJADNButton' color='success' onClick={onValidateJADNClick}>Validate JADN</Button>
                                 <div className="card ml-2 p-2 form-control">
                                     <span className="badge badge-light float-right">Valid JADN {isValidJADN ? (
                                         <span className="badge badge-success">
@@ -193,7 +193,7 @@ const LoadedSchema = (props: any) => {
                                         <span className="badge badge-danger">
                                             <FontAwesomeIcon icon={faXmark} />
                                         </span>
-                                    )}</span>                            
+                                    )}</span>
                                     <span className="badge badge-light mx-1 float-right">Valid JSON {isValidJSON ? (
                                         <span className="badge badge-success">
                                             <FontAwesomeIcon icon={faCheck} />
@@ -204,7 +204,7 @@ const LoadedSchema = (props: any) => {
                                         </span>
                                     )}</span>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                     </div>
 

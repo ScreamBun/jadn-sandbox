@@ -105,7 +105,7 @@ const ValidateMessage = (props: any) => {
                     />
                 </div>
 
-                <div className="card-footer p-2" style={{ height: '5em' }}>
+                <div className="card-footer p-2">
                     <div className="form-row">
 
                         <div className="input-group col px-1 mb-0">

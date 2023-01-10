@@ -76,7 +76,7 @@ const MessageCreator = (props: any) => {
                                 </div>
                             </div>
                         </div>
-                        <div className='card-footer p-2' style={{ height: '5em' }}>
+                        <div className='card-footer p-2'>
                             <div className='col-md-6 p-0 m-0 float-left'>
                                 <select id='command-list' name='command-list' className='form-control' value={commandType} onChange={handleSelection}>
                                     <option value=''>Command Type</option>
