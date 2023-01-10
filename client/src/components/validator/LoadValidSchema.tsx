@@ -27,7 +27,7 @@ const LoadValidSchema = (props: any) => {
                 dispatch(loadFile('schemas', selectedFile)) //load schema file
                     .then((loadFileVal) => {
                         let schemaObj = loadFileVal.payload.data;
-                        setLoadedSchema(JSON.stringify(schemaObj));
+                        setLoadedSchema(JSON.stringify(schemaObj, null, 2));
                         validateJSON(JSON.stringify(schemaObj));
                         validateJADN(JSON.stringify(schemaObj));
 
