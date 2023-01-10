@@ -11,7 +11,6 @@ import { validateSchema } from "actions/validate";
 
 const MessageSchema = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema } = props;
-    const [uploadedFile, setUploadedFile] = useState('');
     const [isValidJSON, setIsValidJSON] = useState(false);
     const [isValidJADN, setIsValidJADN] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
@@ -20,7 +19,6 @@ const MessageSchema = (props: any) => {
     useEffect(() => {
         if (selectedFile == "" || selectedFile == "file") {
             setLoadedSchema('');
-            setUploadedFile('');
             setIsValidJSON(false);
             setIsValidJADN(false);
         } else {
@@ -132,6 +130,7 @@ const MessageSchema = (props: any) => {
     const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         let jsonObj = validateJSON(loadedSchema);
         if (!jsonObj) {
+            toast('Invalid JSON. Cannot validate JADN', { type: toast.TYPE.ERROR });
             return;
         }
 
@@ -141,14 +140,13 @@ const MessageSchema = (props: any) => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0];
-            setUploadedFile(file.name);
             //read file
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        setLoadedSchema(JSON.stringify(data, null, 2)); // must turn str into obj before str
+                        setLoadedSchema(data); // must turn str into obj before str
                     } catch (err) {
                         toast(`File cannot be loaded`, { type: toast.TYPE.WARNING });
                     }
@@ -207,7 +205,7 @@ const MessageSchema = (props: any) => {
                         </div>
 
                         <div id="schema-file-group" className={`form-group col-md-6 px-1 mb-0${selectedFile == 'file' ? '' : ' d-none'}`} >
-                            <Input type="file" id="schema-file" name="schema-file" className="px-1 py-1" accept=".jadn" value={uploadedFile} onChange={handleFileChange} />
+                            <Input type="file" id="schema-file" name="schema-file" className="px-1 py-1" accept=".jadn" onChange={handleFileChange} />
                         </div>
                     </div>
 

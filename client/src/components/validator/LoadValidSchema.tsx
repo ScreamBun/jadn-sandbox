@@ -11,7 +11,6 @@ import { validateSchema } from "actions/validate";
 
 const LoadValidSchema = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
-    const [uploadedFile, setUploadedFile] = useState('');
     const [isValidJSON, setIsValidJSON] = useState(false);
     const [isValidJADN, setIsValidJADN] = useState(false);
     const schemaOpts = useSelector(getSchemaFiles);
@@ -20,7 +19,6 @@ const LoadValidSchema = (props: any) => {
     useEffect(() => {
         if (selectedFile == "" || selectedFile == "file") {
             setLoadedSchema('');
-            setUploadedFile('');
             setIsValidJSON(false);
             setIsValidJADN(false);
 
@@ -92,7 +90,7 @@ const LoadValidSchema = (props: any) => {
         }
     }
 
-    const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
+    const validateJSON = (jsonToValidate: string, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
         let jsonObj = null;
 
         if (!jsonToValidate) {
@@ -150,6 +148,7 @@ const LoadValidSchema = (props: any) => {
     const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         let jsonObj = validateJSON(loadedSchema);
         if (!jsonObj) {
+            toast('Invalid JSON. Cannot validate JADN', { type: toast.TYPE.ERROR });
             return;
         }
 
@@ -159,14 +158,13 @@ const LoadValidSchema = (props: any) => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0];
-            setUploadedFile(file.name);
             //read file
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        setLoadedSchema(JSON.stringify(data, null, 2)); // must turn str into obj before str
+                        setLoadedSchema(data); // must turn str into obj before str
                     } catch (err) {
                         toast(`File cannot be loaded`, { type: toast.TYPE.WARNING });
                     }
@@ -225,7 +223,7 @@ const LoadValidSchema = (props: any) => {
                         </div>
 
                         <div id="schema-file-group" className={`form - group col - md - 6 px - 1 mb - 0${selectedFile == 'file' ? '' : ' d-none'}`} >
-                            <Input type="file" id="schema-file" name="schema-file" className="px-1 py-1" accept=".jadn" value={uploadedFile} onChange={handleFileChange} />
+                            <Input type="file" id="schema-file" name="schema-file" className="px-1 py-1" accept=".jadn" onChange={handleFileChange} />
                         </div>
                     </div>
                     <div className="form-row">
