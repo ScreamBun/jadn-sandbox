@@ -22,7 +22,7 @@
 ## How To
 ### Create a jadnschema wheel
 * See readme under the jadnschema repo
-### Develop and Test JADN Schema on the Fly</i>
+### Develop and Test JADN Schema on the Fly
 * When developing and testing JADN Schema, you can link it directly to your virtual environment to avoid recreating wheels.
   * Within your virtual environment view the python dependencies 
     * pip freeze
