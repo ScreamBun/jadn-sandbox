@@ -126,7 +126,7 @@ const LoadedSchema = (props: any) => {
         validateJADN(jsonObj);
     }
 
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0];
             //read file
@@ -194,11 +194,7 @@ const LoadedSchema = (props: any) => {
                         </div>
 
                         <div id="schema-file-group" className={`form-group col-md-6 px-1 mb-0${selectedFile == 'file' ? '' : ' d-none'}`} >
-<<<<<<< HEAD
                             <Input type="file" id="schema-file" name="schema-file" className="px-1 py-1" accept=".jadn" onChange={handleFileChange} />
-=======
-                            <Input type="file" id="schema-file" name="schema-file" className="px-1 py-1" accept=".jadn" value={uploadedFile} onChange={onFileChange} />
->>>>>>> 5b59c1febb89b75d5247ee4a64c528e870557da4
                         </div>
                     </div>
 
