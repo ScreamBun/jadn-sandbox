@@ -50,7 +50,7 @@ const SchemaConverter = () => {
                     schemaObj = JSON.parse(loadedSchema);
                 } catch (err) {
                     if (err instanceof Error) {
-                        toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                        toast(<p>{err.message}</p>, { type: toast.TYPE.ERROR });
                     }
                 }
             }
@@ -59,42 +59,44 @@ const SchemaConverter = () => {
                 dispatch(validateSchema(schemaObj))
                     .then(
                         (validateSchemaVal) => {
-                            //if valid schema and conversion is set, convert schema
                             if (validateSchemaVal.payload.valid_bool == true && conversion) {
                                 try {
-                                    dispatch(convertSchema(schemaObj, conversion, 'all')) //TODO: see usage of comments in converter.py
+                                    dispatch(convertSchema(schemaObj, conversion))
                                         .then((convertSchemaVal) => {
                                             setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                                            toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.INFO });
+                                            const conversionCheck = convertSchemaVal.payload.schema.convert;
+                                            if (conversionCheck.startsWith('Error')) {
+                                                toast(<p>ERROR: {conversionCheck}</p>, { type: toast.TYPE.ERROR });
+                                            } else {
+                                                toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.SUCCESS });
+                                            }
                                         })
                                         .catch((_convertSchemaErr) => {
-                                            setConvertedSchema("ERROR: File conversion failed");
-                                            toast(<p>ERROR: Schema conversion to {conversion} failed</p>, { type: toast.TYPE.WARNING });
+                                            toast(<p>ERROR: Schema conversion to {conversion} failed</p>, { type: toast.TYPE.ERROR });
                                         })
 
                                 } catch (err) {
                                     if (err instanceof Error) {
-                                        setConvertedSchema("ERROR: File conversion failed");
-                                        toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                                        toast(<p>{err.message}</p>, { type: toast.TYPE.ERROR });
                                     }
                                 }
                             } else if (validateSchemaVal.payload.valid_bool == false) {
-                                toast(<p>ERROR: Invalid Schema</p>, { type: toast.TYPE.WARNING });
+                                toast(<p>ERROR: Invalid Schema</p>, { type: toast.TYPE.ERROR });
                             } else if (conversion == '') {
-                                toast(<p>ERROR: No Conversion Selected</p>, { type: toast.TYPE.WARNING });
+                                toast(<p>ERROR: No conversion selected</p>, { type: toast.TYPE.ERROR });
                             }
                         })
                     .catch((validateSchemaErr) => {
-                        toast(<p>{validateSchemaErr}</p>, { type: toast.TYPE.WARNING });
+                        toast(<p>{validateSchemaErr}</p>, { type: toast.TYPE.ERROR });
                     })
 
             } catch (err) {
                 if (err instanceof Error) {
-                    toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                    toast(<p>{err.message}</p>, { type: toast.TYPE.ERROR });
                 }
             }
         } else {
-            toast(<p>ERROR: No language selected for conversion</p>, { type: toast.TYPE.WARNING })
+            toast(<p>ERROR: No language selected for conversion</p>, { type: toast.TYPE.ERROR })
         }
     }
 

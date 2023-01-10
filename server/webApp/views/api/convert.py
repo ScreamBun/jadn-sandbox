@@ -1,17 +1,14 @@
-import ast
-import json
 import logging
 import os
 import re
 
 from io import BytesIO
-from flask import current_app, jsonify, Response
+import traceback
+from flask import current_app, jsonify, Response, request
 from flask_restful import Resource, reqparse
-from jadnschema import jadn
-from jadnschema.convert import CommentLevels, SchemaFormats, dumps
-# from jadnschema.convert import cddl_dumps, proto_dumps, thrift_dumps
-from jadnschema.convert import html_dumps, jadn_dumps, md_dumps, relax_dumps
+from jadnschema.convert import SchemaFormats, dumps, html_dumps
 from weasyprint import HTML
+
 
 logger = logging.getLogger(__name__)
 
@@ -20,8 +17,6 @@ parser.add_argument("schema", type=dict)
 parser.add_argument("schema-list", type=str)
 parser.add_argument("convert", type=str)
 parser.add_argument("convert-to", type=str)
-# parser.add_argument("comments", type=str, default=any, choices=any)
-parser.add_argument("comments", type=str, default=CommentLevels.ALL, choices=CommentLevels)
 
 
 class Convert(Resource):
@@ -39,28 +34,34 @@ class Convert(Resource):
 
     def post(self):
         args = parser.parse_args()
-        conv = "Their are some issues...."
-        val, schema = current_app.validator.validateSchema(args["schema"], False)
-        if val:  # Valid Schema
-            conv = "Valid Base Schema"
+        conv = "Valid Base Schema"
+        request_json = request.json
+
+        is_valid, schema = current_app.validator.validateSchema(request_json["schema"], False)
+        if is_valid:
             try:
                 conv_fmt = SchemaFormats(args["convert-to"])
-            except Exception:  # pylint: disable=broad-except
-                # TODO: pick better exception
-                conv = "Invalid Conversion Type"
+            except Exception:  
+                conv = "Error: Invalid Conversion Type"
             else:
+
                 kwargs = {
-                    "fmt": conv_fmt
+                    "fmt": conv_fmt,
                 }
-                if args["convert-to"] not in ["html", "jadn", "md"]:
-                    kwargs["comm"] = args.comments
-                elif args["convert-to"] == "html":
+
+                if conv_fmt == "html":
                     kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
+                
 
-                conv = dumps(schema, **kwargs)
+                try:
+                    conv = dumps(schema, **kwargs)
+                except:
+                    tb = traceback.format_exc()
+                    print(tb)
+                    conv = "Error: " + tb
 
-        else:  # Invalid Schema
-            conv = "Fix the base schema errors before converting..."
+        else:
+            conv = "Error: Fix the base schema errors before converting..."
 
         return jsonify({
             "schema": {
