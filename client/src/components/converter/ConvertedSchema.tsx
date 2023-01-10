@@ -1,9 +1,9 @@
-import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Button } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
 
 const ConvertedSchema = (props: any) => {
@@ -55,6 +55,7 @@ const ConvertedSchema = (props: any) => {
 
     const pdfDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        const data = JSON.parse(loadedSchema)
         if (convertedSchema != '') {
             try {
                 fetch('/api/convert/pdf', {
@@ -63,7 +64,7 @@ const ConvertedSchema = (props: any) => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        schema: loadedSchema
+                        schema: data
                     })
                 }).then(
                     rsp => rsp.blob()
@@ -120,7 +121,7 @@ const ConvertedSchema = (props: any) => {
                     />
                 </div>
 
-                <div className='card-footer p-2'>
+                <div className='card-footer p-2' style={{ height: '5em' }}>
                     <div className={`btn-group btn-group-sm float-right mr-2${convertedSchema ? '' : ' d-none'}`}>
                         <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={schemaDownload}>
                             <FontAwesomeIcon icon={faFileDownload} size='2x' />

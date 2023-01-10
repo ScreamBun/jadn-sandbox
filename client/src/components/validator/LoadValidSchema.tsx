@@ -1,108 +1,159 @@
 import React, { useEffect, useState } from "react";
-import JSONInput from "react-json-editor";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Button, Input } from "reactstrap";
-import { loadFile } from "actions/util";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { getSchemaFiles } from "reducers/validate";
+import { loadFile } from "actions/util";
 import { validateSchema } from "actions/validate";
+
 
 const LoadValidSchema = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [uploadedFile, setUploadedFile] = useState('');
+    const [isValidJSON, setIsValidJSON] = useState(false);
+    const [isValidJADN, setIsValidJADN] = useState(false);
     const schemaOpts = useSelector(getSchemaFiles);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (selectedFile == "") {
-            setLoadedSchema({ placeholder: 'Paste JADN schema here' });
-        } else if (selectedFile == "file") {
-            setLoadedSchema({ placeholder: 'Paste JADN schema here' });
+        if (selectedFile == "" || selectedFile == "file") {
+            setLoadedSchema('');
             setUploadedFile('');
+            setIsValidJSON(false);
+            setIsValidJADN(false);
+
         } else {
             try {
                 dispatch(loadFile('schemas', selectedFile)) //load schema file
                     .then((loadFileVal) => {
                         let schemaObj = loadFileVal.payload.data;
-                        dispatch(validateSchema(schemaObj)) //validate schema before displaying
-                            .then((validateSchemaVal) => {
-                                if (validateSchemaVal.payload.valid_bool) {
-                                    setLoadedSchema(schemaObj);
+                        setLoadedSchema(JSON.stringify(schemaObj));
+                        validateJSON(JSON.stringify(schemaObj));
+                        validateJADN(JSON.stringify(schemaObj));
 
-                                    //getDecodeTypes
-                                    let decodeTypes = {
-                                        all: [],
-                                        exports: []
-                                    };
-                                    let msgDecode = '';
+                        //getDecodeTypes
+                        let decodeTypes = {
+                            all: [],
+                            exports: []
+                        };
+                        let msgDecode = '';
 
-                                    if (schemaObj.info !== undefined) {
-                                        if (schemaObj.info.exports !== undefined) {
-                                            decodeTypes.exports = schemaObj.info.exports;
-                                        }
-                                    }
-                                    if (schemaObj.types !== undefined) {
-                                        decodeTypes.all = schemaObj.types.map((def: any[]) => def[0]);
-                                        decodeTypes.all = decodeTypes.all.filter(dt => !decodeTypes.exports.includes(dt));
-                                        decodeTypes.all.sort();
-                                    }
-
-                                    if (decodeMsg === '' || !decodeTypes.all.includes(decodeMsg)) {
-                                        if (decodeTypes.exports.length >= 1) {
-                                            msgDecode = decodeTypes.exports[0];
-                                        } else if (decodeTypes.all.length >= 1) {
-                                            msgDecode = decodeTypes.all[0];
-                                        }
-                                    }
-
-                                    setDecodeSchemaTypes(decodeTypes);
-                                    setDecodeMsg(msgDecode);
-
-                                } else {
-                                    toast(`${validateSchemaVal.payload.valid_msg}`, { type: toast.TYPE.WARNING });
-                                    setSelectedFile('');
-                                }
-                            })
-                            .catch((validateSchemaErr) => {
-                                toast(`${validateSchemaErr.payload.valid_msg}`, { type: toast.TYPE.WARNING });
-                                setSelectedFile('');
-                            })
+                        if (schemaObj.info !== undefined) {
+                            if (schemaObj.info.exports !== undefined) {
+                                decodeTypes.exports = schemaObj.info.exports;
+                            }
+                        }
+                        if (schemaObj.types !== undefined) {
+                            decodeTypes.all = schemaObj.types.map((def: any[]) => def[0]);
+                            decodeTypes.all = decodeTypes.all.filter(dt => !decodeTypes.exports.includes(dt));
+                            decodeTypes.all.sort();
+                        }
+                        if (decodeMsg === '' || !decodeTypes.all.includes(decodeMsg)) {
+                            if (decodeTypes.exports.length >= 1) {
+                                msgDecode = decodeTypes.exports[0];
+                            } else if (decodeTypes.all.length >= 1) {
+                                msgDecode = decodeTypes.all[0];
+                            }
+                        }
+                        setDecodeSchemaTypes(decodeTypes);
+                        setDecodeMsg(msgDecode);
                     })
                     .catch((loadFileErr) => {
                         setSelectedFile('');
-                        setLoadedSchema(loadFileErr.payload.data);
+                        setLoadedSchema(JSON.stringify(loadFileErr.payload.data));
                     })
             } catch (err) {
-                setLoadedSchema({ placeholder: 'File not found' });
+                setLoadedSchema(null);
+                setIsValidJSON(false);
             }
         }
     }, [selectedFile]);
 
-    const handleValidationOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        let schemaObj = loadedSchema;
-        if (typeof schemaObj == 'string') {
+    const formatJSON = (jsonToFormat: string) => {
+        if (!jsonToFormat) {
+            toast(`Nothing to format`, { type: toast.TYPE.ERROR });
+            return;
+        }
+
+        jsonToFormat = jsonToFormat.trim();
+        jsonToFormat = validateJSON(jsonToFormat, false, true);
+        if (jsonToFormat) {
             try {
-                schemaObj = JSON.parse(loadedSchema);
-            } catch (err) {
-                if (err instanceof Error) {
-                    toast(`${err.message}`, { type: toast.TYPE.WARNING });
-                    return;
-                }
+                jsonToFormat = JSON.stringify(jsonToFormat, undefined, 2);
+                setLoadedSchema(jsonToFormat);
+                toast(`Data Formatted`, { type: toast.TYPE.SUCCESS });
+            } catch (err: any) {
+                toast(`Unable to Format: ${err.message}`, { type: toast.TYPE.ERROR });
             }
+        } else {
+            toast(`Unable to Format`, { type: toast.TYPE.ERROR });
+        }
+    }
+
+    const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
+        let jsonObj = null;
+
+        if (!jsonToValidate) {
+            setIsValidJSON(false);
+            setIsValidJADN(false);
+            toast(`No data found`, { type: toast.TYPE.ERROR });
+            return jsonObj;
         }
 
         try {
-            dispatch(validateSchema(schemaObj))
-                .then((validateSchemaVal) => { toast(`${validateSchemaVal.payload.valid_msg}`, { type: toast.TYPE[validateSchemaVal.payload.valid_bool ? 'INFO' : 'WARNING'] }) })
-                .catch((validateSchemaErr) => { toast(`${validateSchemaErr.payload.valid_msg}`, { type: toast.TYPE.WARNING }) })
-        } catch (err) {
-            if (err instanceof Error) {
-                toast(`${err.message}`, { type: toast.TYPE.WARNING });
-                return;
+            jsonObj = JSON.parse(jsonToValidate);
+            setIsValidJSON(true);
+        } catch (err: any) {
+            setIsValidJSON(false);
+            setIsValidJADN(false);
+            if (showErrorPopup) {
+                toast(`Invalid Format: ${err.message}`, { type: toast.TYPE.ERROR });
             }
         }
+
+        if (onErrorReturnOrig && !jsonObj) {
+            jsonObj = jsonToValidate
+        }
+
+        return jsonObj;
+    }
+
+    const validateJADN = (jsonToValidate: any) => {
+        setIsValidJADN(false);
+        try {
+            dispatch(validateSchema(jsonToValidate))
+                .then((validateSchemaVal) => {
+                    toast(`${validateSchemaVal.payload.valid_msg}`, { type: toast.TYPE[validateSchemaVal.payload.valid_bool ? 'SUCCESS' : 'ERROR'] })
+                    if (validateSchemaVal.payload.valid_bool) {
+                        setIsValidJADN(true);
+                    }
+                })
+                .catch((validateSchemaErr) => { toast(`${validateSchemaErr.payload.valid_msg}`, { type: toast.TYPE.ERROR }) })
+        } catch (err) {
+            if (err instanceof Error) {
+                toast(`${err.message}`, { type: toast.TYPE.ERROR });
+            }
+        }
+    }
+
+    const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
+        formatJSON(loadedSchema);
+    }
+
+    const onSchemaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLoadedSchema(e.target.value);
+        validateJSON(e.target.value);
+    }
+
+    const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
+        let jsonObj = validateJSON(loadedSchema);
+        if (!jsonObj) {
+            return;
+        }
+
+        validateJADN(jsonObj);
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,17 +166,7 @@ const LoadValidSchema = (props: any) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        data = JSON.stringify(data, null, 2); // must turn str into obj before str
-                        dispatch(validateSchema(data))//validate data before displaying
-                            .then((validateSchemaVal) => {
-                                if (validateSchemaVal.payload.valid_bool) {
-                                    setLoadedSchema(data);
-                                } else {
-                                    toast(`${validateSchemaVal.payload.valid_msg}`, { type: toast.TYPE.WARNING });
-                                    setUploadedFile('');
-                                }
-                            })
-                            .catch((validateSchemaErr) => { toast(`${validateSchemaErr.payload.valid_msg}`, { type: toast.TYPE.WARNING }) })
+                        setLoadedSchema(JSON.stringify(data, null, 2)); // must turn str into obj before str
                     } catch (err) {
                         toast(`File cannot be loaded`, { type: toast.TYPE.WARNING });
                     }
@@ -140,20 +181,37 @@ const LoadValidSchema = (props: any) => {
             <legend>JADN Schema</legend>
             <div className="card">
                 <div className="card-body p-0" style={{ height: '40em' }}>
-                    <JSONInput
-                        id='jadn_schema'
-                        placeholder={loadedSchema}
-                        theme='light_mitsuketa_tribute'
-                        reset={false}
-                        height='100%'
-                        width='100%'
+                    <Input
+                        type="textarea"
+                        onChange={onSchemaChange}
+                        value={loadedSchema}
+                        className='form-control'
+                        placeholder='Schema to be converted'
+                        style={{
+                            resize: 'none',
+                            outline: 'none',
+                            width: '100%',
+                            padding: '10px',
+                            border: 'none',
+                            height: '100%'
+                        }}
                     />
                 </div>
 
-                <div className="card-footer p-2">
-                    <Button color='info' className='float-right' onClick={handleValidationOnClick} title="Validate the schema is valid prior to validating the message">Verify JADN</Button>
-                    <div className="form-row">
+                <div className="card-footer p-2" style={{ height: '5em' }}>
+                    <Button
+                        id='validateJADNButton'
+                        className="float-right"
+                        color='success'
+                        onClick={onValidateJADNClick}>Validate JADN</Button>
+                    <Button
+                        id='formatButton'
+                        className="float-right mr-2"
+                        color='info'
+                        onClick={onFormatClick}
+                        title='Converts quotes to double quotes, adds curly brackets if missing, removes orphaned commas and formats.'>Format</Button>
 
+                    <div className="form-row">
                         <div className="input-group col-md-5 px-1 mb-0">
                             <select id="schema-list" name="schema-list" className="form-control mb-0" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
                                 <option value="">Schema</option>
@@ -166,10 +224,31 @@ const LoadValidSchema = (props: any) => {
                             </select>
                         </div>
 
-                        <div id="schema-file-group" className={`form-group col-md-6 px-1 mb-0${selectedFile == 'file' ? '' : ' d-none'}`} >
+                        <div id="schema-file-group" className={`form - group col - md - 6 px - 1 mb - 0${selectedFile == 'file' ? '' : ' d-none'}`} >
                             <Input type="file" id="schema-file" name="schema-file" className="px-1 py-1" accept=".jadn" value={uploadedFile} onChange={handleFileChange} />
                         </div>
-
+                    </div>
+                    <div className="form-row">
+                        <div className="form-col">
+                            <span className="badge badge-light mx-1">Valid JSON {isValidJSON ? (
+                                <span className="badge badge-success">
+                                    <FontAwesomeIcon icon={faCheck} />
+                                </span>
+                            ) : (
+                                <span className="badge badge-danger">
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </span>
+                            )}</span>
+                            <span className="badge badge-light">Valid JADN {isValidJADN ? (
+                                <span className="badge badge-success">
+                                    <FontAwesomeIcon icon={faCheck} />
+                                </span>
+                            ) : (
+                                <span className="badge badge-danger">
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </span>
+                            )}</span>
+                        </div>
                     </div>
                 </div>
             </div>

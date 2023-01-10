@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { Form, Button } from 'reactstrap'
 import { toast } from 'react-toastify'
-import { info, validateMessage } from 'actions/validate'
-import { getPageTitle } from 'reducers/util'
 import LoadValidSchema from './LoadValidSchema'
 import ValidateMessage from './ValidateMessage'
+import { info, validateMessage } from 'actions/validate'
+import { getPageTitle } from 'reducers/util'
+
 
 const Validator = () => {
     const dispatch = useDispatch();
 
     //state 
     const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
-    const [loadedSchema, setLoadedSchema] = useState({ placeholder: 'Paste JADN schema here' });
+    const [loadedSchema, setLoadedSchema] = useState('');
     const [selectedMsgFile, setSelectedMsgFile] = useState('');
     const [loadedMsg, setLoadedMsg] = useState('');
     const [msgFormat, setMsgFormat] = useState('');
@@ -28,12 +29,12 @@ const Validator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
-    }, [meta_title])
+    }, [dispatch])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedSchemaFile('');
-        setLoadedSchema({ placeholder: 'Paste JADN schema here' });
+        setLoadedSchema('');
         setSelectedMsgFile('');
         setLoadedMsg('');
     }

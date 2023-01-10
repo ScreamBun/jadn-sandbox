@@ -43,7 +43,7 @@ const ValidateMessage = (props: any) => {
                     })
                     .catch((loadFileErr) => { setLoadedMsg(loadFileErr.payload.data) })
             } catch (err) {
-                setLoadedMsg({ placeholder: 'File not found' });
+                setLoadedMsg('');
             }
         }
     }, [selectedFile]);
@@ -105,7 +105,7 @@ const ValidateMessage = (props: any) => {
                     />
                 </div>
 
-                <div className="card-footer p-2">
+                <div className="card-footer p-2" style={{ height: '5em' }}>
                     <div className="form-row">
 
                         <div className="input-group col px-1 mb-0">

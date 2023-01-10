@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Form, Button } from 'reactstrap'
 import ConvertedSchema from './ConvertedSchema'
@@ -13,7 +13,7 @@ const SchemaConverter = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
-    const [loadedSchema, setLoadedSchema] = useState({ placeholder: 'Paste JADN schema here' });
+    const [loadedSchema, setLoadedSchema] = useState('');
     const [convertedSchema, setConvertedSchema] = useState('');
     const [conversion, setConversion] = useState('');
 
@@ -33,7 +33,7 @@ const SchemaConverter = () => {
 
     const onReset = () => {
         setSelectedFile('');
-        setLoadedSchema({ placeholder: 'Paste JADN schema here' });
+        setLoadedSchema('');
         setConversion('');
         setConvertedSchema('');
     }

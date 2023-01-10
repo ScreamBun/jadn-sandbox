@@ -1,18 +1,21 @@
 import React, { useState } from 'react'
 import JSONPretty from 'react-json-pretty'
+import { useSelector } from 'react-redux'
 import { TabContent, TabPane, Button, FormText } from 'reactstrap'
-import { StandardFieldArray } from '../schema/interface'
 import { Field, delMultiKey, setMultiKey } from './lib'
+import { getSelectedSchema } from 'reducers/generate'
+import { StandardFieldArray } from '../schema/interface'
 
 const MessageCreator = (props: any) => {
-    const { selectedSchema, message, setMessage } = props
+    const { message, setMessage } = props
+    let schemaObj = useSelector(getSelectedSchema);
 
     //state 
     const [activeView, setActiveView] = useState('creator');
     const [commandType, setCommandType] = useState('');
 
-    const exportRecords = selectedSchema.info ? selectedSchema.info && selectedSchema.info.exports : [];
-    const recordDefs = selectedSchema.types ? selectedSchema.types.filter(t => t[0] === commandType) : [];
+    const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
+    const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType) : [];
 
     const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCommandType(e.target.value)
@@ -73,7 +76,7 @@ const MessageCreator = (props: any) => {
                                 </div>
                             </div>
                         </div>
-                        <div className='card-footer p-2'>
+                        <div className='card-footer p-2' style={{ height: '5em' }}>
                             <div className='col-md-6 p-0 m-0 float-left'>
                                 <select id='command-list' name='command-list' className='form-control' value={commandType} onChange={handleSelection}>
                                     <option value=''>Command Type</option>
@@ -94,7 +97,7 @@ const MessageCreator = (props: any) => {
                                 json={message}
                             />
                         </div>
-                        <div className='card-footer p-2'>
+                        <div className='card-footer p-2' style={{ height: '5em' }}>
                             <Button onClick={() => setActiveView('creator')} className="float-right"> See Message Creator </Button>
                         </div>
                     </div>

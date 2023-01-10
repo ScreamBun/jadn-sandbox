@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { Button } from 'reactstrap'
+import { Button, Form } from 'reactstrap'
 import MessageCreator from './MessageCreator'
 import MessageSchema from './MessageSchema'
 import { getPageTitle } from 'reducers/util'
-import { info } from 'actions/generate'
+import { info, setSchema } from 'actions/generate'
 
 
 const MessageGenerator = () => {
@@ -13,7 +13,7 @@ const MessageGenerator = () => {
 
     //state 
     const [selectedFile, setSelectedFile] = useState('');
-    const [loadedSchema, setLoadedSchema] = useState({ placeholder: 'Paste JADN schema here' });
+    const [loadedSchema, setLoadedSchema] = useState('');
     const [message, setMessage] = useState({});
 
     //add meta data for page 
@@ -28,8 +28,10 @@ const MessageGenerator = () => {
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedFile('');
-        setLoadedSchema({ placeholder: 'Paste JADN schema here' });
+        setLoadedSchema('');
         setMessage({});
+
+        dispatch(setSchema({ types: [] }));
     }
 
     return (
@@ -45,18 +47,19 @@ const MessageGenerator = () => {
                             <h5 className='m-0'> Generate Message</h5>
                         </div>
                         <div className='card-body p-2'>
-                            <div className='row'>
-                                <div className='col-md-6 pr-1'>
-                                    <MessageSchema
-                                        selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                        loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                            <Form>
+                                <div className='row'>
+                                    <div className='col-md-6 pr-1'>
+                                        <MessageSchema
+                                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                    </div>
+                                    <div className='col-md-6 pl-1'>
+                                        <MessageCreator
+                                            message={message} setMessage={setMessage} />
+                                    </div>
                                 </div>
-                                <div className='col-md-6 pl-1'>
-                                    <MessageCreator
-                                        selectedSchema={loadedSchema}
-                                        message={message} setMessage={setMessage} />
-                                </div>
-                            </div>
+                            </Form>
                         </div>
                         <div className='card-footer p-2'>
                             <Button color="danger" className='float-right ml-1' type="reset" onClick={onReset}>Reset</Button>
