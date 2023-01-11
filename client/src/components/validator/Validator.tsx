@@ -93,8 +93,8 @@ const Validator = () => {
                             </Form>
                         </div>
                         <div className='card-footer p-2'>
-                            <Button color="danger" className='float-right ml-1' type="reset" onClick={onReset}>Reset</Button>
-                            <Button color="success" className='float-right mr-1' type="submit" onClick={submitForm} title="Validate the message against the given schema">Validate Message</Button>
+                            <Button color="success" className='float-right ml-1' type="submit" onClick={submitForm} title="Validate the message against the given schema">Validate Message</Button>
+                            <Button color="danger" className='float-right' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>
