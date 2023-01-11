@@ -72,7 +72,7 @@ const Home = () => {
                     <li className="list-group-item">JADN</li>
                     <li className="list-group-item">JIDL (Coming Soon)</li>
                     <li className="list-group-item">MarkDown</li>
-                    <li className="list-group-item">XML</li>
+                    <li className="list-group-item">Relax (XML)</li>
                   </ul>
                 </div>
               </div>
@@ -84,10 +84,10 @@ const Home = () => {
                 </div>
                 <div className='card-body p-0'>
                   <ul className="list-group">
-                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={NAV_VALIDATE}>Validate</Link>
+                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={NAV_VALIDATE}>Validate Messages</Link>
                     <li className="list-group-item">JSON</li>
                     <li className="list-group-item">CBOR</li>
-                    <li className="list-group-item">XML</li>
+                    <li className="list-group-item">Relax (XML)</li>
                   </ul>
                 </div>
               </div>

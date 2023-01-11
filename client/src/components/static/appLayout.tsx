@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavItem } from 'reactstrap';
+import { NavItem, Dropdown, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import { NavLink, Outlet } from 'react-router-dom';
 
@@ -34,18 +34,32 @@ const AppLayout = () => {
             <NavItem>
               <NavLink className='nav-link' to={ NAV_HOME }>Home</NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink className='nav-link' to={ NAV_GENERATE_MESSAGE }>Generate Message</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink className='nav-link' to={ NAV_GENERATE_SCHEMA }>Generate Schema</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink className='nav-link' to={ NAV_CONVERT_SCHEMA }>Convert Schema</NavLink>
-            </NavItem>                        
-            <NavItem>
-              <NavLink className='nav-link' to={ NAV_VALIDATE }>Validate</NavLink>
-            </NavItem>
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret>
+                Schema
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem>
+                  <NavLink className='nav-link' to={ NAV_GENERATE_SCHEMA }>Generate Schema</NavLink>
+                </DropdownItem>
+                <DropdownItem>
+                  <NavLink className='nav-link' to={ NAV_CONVERT_SCHEMA }>Convert Schema</NavLink>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret>
+                Message
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem>
+                  <NavLink className='nav-link' to={ NAV_GENERATE_MESSAGE }>Generate Message</NavLink>
+                </DropdownItem>
+                <DropdownItem>
+                  <NavLink className='nav-link' to={ NAV_VALIDATE }>Validate Message</NavLink>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>                      
           </ul>
         </div>
       </nav>
