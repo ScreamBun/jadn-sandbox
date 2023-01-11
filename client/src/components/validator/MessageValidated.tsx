@@ -8,7 +8,7 @@ import {
 import { loadFile } from "actions/util";
 import { getMsgFiles } from "reducers/validate";
 
-const ValidateMessage = (props: any) => {
+const MessageValidated = (props: any) => {
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg } = props;
     const [uploadedFile, setUploadedFile] = useState('');
 
@@ -151,4 +151,4 @@ const ValidateMessage = (props: any) => {
         </fieldset>)
 }
 
-export default ValidateMessage
+export default MessageValidated

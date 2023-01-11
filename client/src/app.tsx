@@ -7,7 +7,7 @@ import AppLayout from './components/static/appLayout';
 
 import { MessageGenerator, SchemaGenerator } from './components/generate/';
 import SchemaConverter from './components/converter/SchemaConverter'
-import Validator from './components/validator/Validator';
+import MessageValidator from './components/validator/MessageValidator';
 
 
 export const App = () => {
@@ -19,7 +19,7 @@ export const App = () => {
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
-            <Route path="validate" element={<Validator />} />
+            <Route path="validate" element={<MessageValidator />} />
             <Route path="convert-schema" element={<SchemaConverter />} />
             <Route path="generate-message" element={<MessageGenerator />} />
             <Route path="generate-schema" element={<SchemaGenerator />} />

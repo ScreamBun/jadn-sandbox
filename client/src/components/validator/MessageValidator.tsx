@@ -4,12 +4,13 @@ import { Helmet } from 'react-helmet-async'
 import { Form, Button } from 'reactstrap'
 import { toast } from 'react-toastify'
 import LoadValidSchema from './LoadValidSchema'
-import ValidateMessage from './ValidateMessage'
+import MessageValidated from './MessageValidated'
 import { info, validateMessage } from 'actions/validate'
 import { getPageTitle } from 'reducers/util'
+import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 
 
-const Validator = () => {
+const MessageValidator = () => {
     const dispatch = useDispatch();
 
     //state 
@@ -73,14 +74,14 @@ const Validator = () => {
                             <Form>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <LoadValidSchema
+                                        <JADNSchemaLoader
                                             selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes} setDecodeSchemaTypes={setDecodeSchemaTypes} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <ValidateMessage
+                                        <MessageValidated
                                             selectedFile={selectedMsgFile} setSelectedFile={setSelectedMsgFile}
                                             loadedMsg={loadedMsg} setLoadedMsg={setLoadedMsg}
                                             msgFormat={msgFormat} setMsgFormat={setMsgFormat}
@@ -104,4 +105,4 @@ const Validator = () => {
     );
 
 }
-export default Validator
+export default MessageValidator

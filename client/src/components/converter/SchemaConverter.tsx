@@ -3,11 +3,12 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Form, Button } from 'reactstrap'
-import ConvertedSchema from './ConvertedSchema'
+import ConvertedSchema from './SchemaConverted'
 import LoadedSchema from './LoadedSchema'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
+import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 
 const SchemaConverter = () => {
     const dispatch = useDispatch();
@@ -116,7 +117,7 @@ const SchemaConverter = () => {
                             <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <LoadedSchema
+                                        <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
