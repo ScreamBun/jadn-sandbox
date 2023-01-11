@@ -181,7 +181,7 @@ const LoadedSchema = (props: any) => {
                             <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={handleFileChange} />
                         </div>
                         <div className="col-6">
-                        <button id='validateJADNButton' className="btn btn-info float-right" onClick={onValidateJADNClick}>
+                            <Button id='validateJADNButton' className="float-right" color="info" onClick={onValidateJADNClick}>
                                 <span className="mr-1">Validate JADN</span>
                                 {isValidJADN ? (
                                     <span className="badge badge-pill badge-success">
@@ -191,8 +191,8 @@ const LoadedSchema = (props: any) => {
                                         <FontAwesomeIcon icon={faXmark} />
                                     </span> )
                                 } 
-                            </button>                               
-                            <button id='formatButton' className="btn btn-info float-right mx-1" onClick={onFormatClick}
+                            </Button>                               
+                            <Button id='formatButton' className="float-right mx-1" color="info" onClick={onFormatClick}
                                 title='Attempts to Parse and Format.'>
                                 <span className="mr-1">Format JSON</span>
                                 {isValidJSON ? (
@@ -203,10 +203,9 @@ const LoadedSchema = (props: any) => {
                                         <FontAwesomeIcon icon={faXmark} />
                                     </span> )
                                 }                        
-                            </button>                              
+                            </Button>                              
                         </div>                                                                             
                     </div>
-
                 </div>
             </div>
         </fieldset>)

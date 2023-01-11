@@ -180,46 +180,44 @@ const MessageSchema = (props: any) => {
 
                 <div className="card-footer p-2">
                     <div className="row">
-                        <div className="col-md-12">
-
-                            <div className="form-inline">
-                                <select id="schema-list" name="schema-list" className="form-control" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
-                                    <option value="">Schema</option>
-                                    <optgroup label="Testers">
-                                        {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
-                                    </optgroup>
-                                    <optgroup label="Custom">
-                                        <option value="file">File...</option>
-                                    </optgroup>
-                                </select>
-                                <Input type="file" id="schema-file" name="schema-file" className={`form-control px-1 py-1 ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={handleFileChange} />
-                                <Button id='formatButton' className="mx-2" color='info' onClick={onFormatClick}
-                                    title='Converts quotes to double quotes, adds curly brackets if missing, removes orphaned commas and formats.'>Format</Button>
-                                <Button id='validateJADNButton' color='success' onClick={onValidateJADNClick}>Validate JADN</Button>
-                                <div className="card ml-2 p-2 form-control">
-                                    <span className="badge badge-light float-right">Valid JADN {isValidJADN ? (
-                                        <span className="badge badge-success">
-                                            <FontAwesomeIcon icon={faCheck} />
-                                        </span>
-                                    ) : (
-                                        <span className="badge badge-danger">
-                                            <FontAwesomeIcon icon={faXmark} />
-                                        </span>
-                                    )}</span>
-                                    <span className="badge badge-light mx-1 float-right">Valid JSON {isValidJSON ? (
-                                        <span className="badge badge-success">
-                                            <FontAwesomeIcon icon={faCheck} />
-                                        </span>
-                                    ) : (
-                                        <span className="badge badge-danger">
-                                            <FontAwesomeIcon icon={faXmark} />
-                                        </span>
-                                    )}</span>
-                                </div>
-                            </div>
+                        <div className="col-6">
+                            <select id="schema-list" name="schema-list" className="form-control" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
+                                <option value="">Select a Schema...</option>
+                                <optgroup label="Testers">
+                                    {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
+                                </optgroup>
+                                <optgroup label="Custom">
+                                    <option value="file">File...</option>
+                                </optgroup>
+                            </select>
+                            <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={handleFileChange} />
                         </div>
+                        <div className="col-6">
+                            <Button id='validateJADNButton' className="float-right" color="info" onClick={onValidateJADNClick}>
+                                <span className="mr-1">Validate JADN</span>
+                                {isValidJADN ? (
+                                    <span className="badge badge-pill badge-success">
+                                        <FontAwesomeIcon icon={faCheck} />
+                                    </span> ) : (
+                                    <span className="badge badge-pill badge-danger">
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </span> )
+                                } 
+                            </Button>                               
+                            <Button id='formatButton' className="float-right mx-1" color="info" onClick={onFormatClick}
+                                title='Attempts to Parse and Format.'>
+                                <span className="mr-1">Format JSON</span>
+                                {isValidJSON ? (
+                                    <span className="badge badge-pill badge-success">
+                                        <FontAwesomeIcon icon={faCheck} />
+                                    </span> ) : (
+                                    <span className="badge badge-pill badge-danger">
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </span> )
+                                }                        
+                            </Button>                              
+                        </div> 
                     </div>
-
                 </div>
             </div>
         </fieldset>)
