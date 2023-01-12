@@ -1,7 +1,7 @@
 import { faCubes, faInfoCircle, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN
+  NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI
 } from 'components/utils/constants';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -31,6 +31,11 @@ const Home = () => {
         </div>
         <div className='card-body p-2'>
           <p>
+            The JADN Sandbox provides the ability generate or build OpenC2 compliant schemas and messages.  In addtion, the 
+            JADN Sandbox provides the capability to convert schemas to different file formats, as well as,
+            provide schema and message validation.
+          </p>          
+          <p>
             JSON Abstract Data Notation (JADN) is an information modeling language.  It has several 
             purposes including defining data structures, validating data instances, informing user 
             interfaces working with structured data, and facilitating protocol internationalization. 
@@ -40,11 +45,6 @@ const Home = () => {
             serialized and transferred between applications, documented in multiple formats such as text-based 
             interface definition languages, property tables or diagrams, and translated into concrete 
             schemas used to validate specific data formats.            
-          </p>
-          <p>
-            The JADN Sandbox provides the ability generate or build OpenC2 compliant schemas and messages.  In addtion, the 
-            JADN Sandbox provides the capability to convert schemas to different file formats, as well as,
-            provide schema and message validation.
           </p>
           <hr />
           <div className='row'>
@@ -107,6 +107,7 @@ const Home = () => {
                     <li className="list-group-item"><a href={NAV_EXTERNAL_OASIS_OPEN} target='_blank' rel='noreferrer'>OASIS Open</a></li>
                     <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SPEC} target='_blank' rel='noreferrer'>JADN Specification Doc</a></li>
                     <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SRC} target='_blank' rel='noreferrer'>JADN Sandbox Source Code</a></li>
+                    <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_PYPI} target='_blank' rel='noreferrer'>JADN Python Package</a></li>
                 </ul>
               </div>
 
