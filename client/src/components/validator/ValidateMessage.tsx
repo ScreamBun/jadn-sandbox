@@ -30,15 +30,11 @@ const ValidateMessage = (props: any) => {
                     .then((loadFileVal) => {
                         setMsgFormat(fmt);
                         const data = loadFileVal.payload.data;
-                        if (fmt == 'json') {
-                            setLoadedMsg(JSON.stringify(data, null, 2));
+                        const formattedData = format(data, fmt, 2);
+                        if (formattedData.startsWith('Error')) {
+                            setLoadedMsg(data);
                         } else {
-                            const formattedData = format(data, fmt, 2);
-                            if (formattedData.startsWith('Error')) {
-                                setLoadedMsg(data);
-                            } else {
-                                setLoadedMsg(formattedData);
-                            }
+                            setLoadedMsg(formattedData);
                         }
                     })
                     .catch((loadFileErr) => { setLoadedMsg(loadFileErr.payload.data) })
@@ -123,7 +119,6 @@ const ValidateMessage = (props: any) => {
                                 <Input type="file" id="message-file" name="message-file" className="px-1 py-1" accept=".json,.jadn,.xml,.cbor" value={uploadedFile} onChange={handleFileChange} />
                             </div>
                         </div>
-
 
                         <div className="input-group col-md-3 px-1 mb-0">
                             <select className="form-control" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)} >

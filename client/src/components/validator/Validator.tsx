@@ -47,7 +47,7 @@ const Validator = () => {
                     toast(<p>{submitVal.payload.valid_msg}</p>, { type: toast.TYPE[submitVal.payload.valid_bool ? 'INFO' : 'WARNING'] });
                 })
                 .catch((submitErr) => {
-                    toast(<p>{submitErr}</p>, { type: toast.TYPE.WARNING });
+                    toast(<p>{submitErr.payload.message}</p>, { type: toast.TYPE.WARNING });
                     return false;
                 })
         } catch (err) {
