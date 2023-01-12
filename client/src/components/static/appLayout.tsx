@@ -70,8 +70,9 @@ const AppLayout = () => {
       <br />
       <br />
 
-      <nav className='navbar navbar-dark bg-dark fixed-bottom py-1'>
+      <nav className='navbar navbar-dark bg-secondary fixed-bottom py-1'>
         <ThemeChooser size='sm' />
+        <small>v1.0.0</small>
       </nav>
 
       <ToastContainer position={ toast.POSITION.BOTTOM_CENTER } autoClose={ 5000 } theme='colored' />
