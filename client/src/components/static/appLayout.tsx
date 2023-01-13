@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavItem, Dropdown, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
-import { NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 
 import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { toast, ToastContainer } from 'react-toastify';
@@ -35,28 +35,28 @@ const AppLayout = () => {
               <NavLink className='nav-link' to={ NAV_HOME }>Home</NavLink>
             </NavItem>
             <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
+              <DropdownToggle className='nav-link' nav caret size='sm'>
                 Schema
               </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem>
-                  <NavLink className='nav-link' to={ NAV_GENERATE_SCHEMA }>Generate Schema</NavLink>
+              <DropdownMenu className='dropdown-menu'>
+                <DropdownItem className='dropdown-item' tag={Link} to={ NAV_GENERATE_SCHEMA }>
+                  Generate Schema
                 </DropdownItem>
-                <DropdownItem>
-                  <NavLink className='nav-link' to={ NAV_CONVERT_SCHEMA }>Convert Schema</NavLink>
+                <DropdownItem className='dropdown-item' tag={Link} to={ NAV_CONVERT_SCHEMA }>
+                  Convert Schema
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
             <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
+              <DropdownToggle className='nav-link' nav caret size='sm'>
                 Message
               </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem>
-                  <NavLink className='nav-link' to={ NAV_GENERATE_MESSAGE }>Generate Message</NavLink>
+              <DropdownMenu className='dropdown-menu'>
+                <DropdownItem className='dropdown-item' tag={Link} to={ NAV_GENERATE_MESSAGE }>
+                  Generate Message
                 </DropdownItem>
-                <DropdownItem>
-                  <NavLink className='nav-link' to={ NAV_VALIDATE }>Validate Message</NavLink>
+                <DropdownItem className='dropdown-item' tag={Link} to={ NAV_VALIDATE }>
+                  Validate Message
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>                      
