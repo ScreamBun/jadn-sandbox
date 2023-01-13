@@ -18,10 +18,10 @@ const store = configureStore(history);
 
 // Theme Options
 const themeRoot = `${window.location.origin}/assets`;
-const validThemes = ['superhero', 'darkly', 'sandstone'];
+const validThemes = ['dark', 'light'];
 
 const Root = () => (
-  <ThemeSwitcher storeThemeKey="theme" defaultTheme="darkly" themeRoot={ themeRoot } themeOptions={ validThemes }>
+  <ThemeSwitcher storeThemeKey="theme" defaultTheme="dark" themeRoot={ themeRoot } themeOptions={ validThemes }>
     <Provider store={ store } >
       <HelmetProvider>
         <App history={ history } />

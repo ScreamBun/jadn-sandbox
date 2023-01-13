@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { Button, Form } from 'reactstrap'
 import MessageCreator from './MessageCreator'
-import MessageSchema from './MessageSchema'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/generate'
+import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 
 
 const MessageGenerator = () => {
@@ -50,7 +50,7 @@ const MessageGenerator = () => {
                             <Form>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <MessageSchema
+                                        <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>

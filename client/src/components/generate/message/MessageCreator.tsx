@@ -68,8 +68,8 @@ const MessageCreator = (props: any) => {
             <TabContent activeTab={activeView}>
                 <TabPane tabId='creator'>
                     <div className='card'>
-                        <div className='card-body p-0"' style={{ height: '40em' }}>
-                            <div id='command-fields' style={{ height: '38em', overflow: 'scroll' }}>
+                        <div className='card-body p-0' style={{ height: '40em' }}>
+                            <div id='command-fields' className='p-2' style={{ height: '40em', overflow: 'auto' }}>
                                 {commandFields}
                                 <div id="fieldDefs">
                                     {fieldDefs}
@@ -83,8 +83,7 @@ const MessageCreator = (props: any) => {
                                     {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
                                 </select>
                             </div>
-
-                            <Button onClick={() => setActiveView('message')} className="float-right"> See Generated Message </Button>
+                            <Button onClick={() => setActiveView('message')} className="float-right" color="info">See Generated Message</Button>
                         </div>
                     </div>
                 </TabPane>
@@ -97,8 +96,8 @@ const MessageCreator = (props: any) => {
                                 json={message}
                             />
                         </div>
-                        <div className='card-footer p-2' style={{ height: '5em' }}>
-                            <Button onClick={() => setActiveView('creator')} className="float-right"> See Message Creator </Button>
+                        <div className='card-footer p-2'>
+                            <Button onClick={() => setActiveView('creator')} className="float-right" color="info">See Message Creator</Button>
                         </div>
                     </div>
                 </TabPane>

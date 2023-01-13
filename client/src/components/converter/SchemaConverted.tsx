@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
 
-const ConvertedSchema = (props: any) => {
+const SchemaConverted = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
     const convertOpts = useSelector(getConversions);
 
@@ -154,4 +154,4 @@ const ConvertedSchema = (props: any) => {
             </div>
         </fieldset>)
 }
-export default ConvertedSchema;
+export default SchemaConverted;
