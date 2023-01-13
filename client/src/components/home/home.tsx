@@ -30,23 +30,27 @@ const Home = () => {
           <h5 className='m-0'>Home</h5>
         </div>
         <div className='card-body p-2'>
+          <p className='mt-2'>
+            The <b> JADN Sandbox </b> provides the ability to generate, convert, and validate OpenC2 compliant schemas and messages.
+          </p>
           <p>
-            The JADN Sandbox provides the ability generate or build OpenC2 compliant schemas and messages.  In addtion, the 
-            JADN Sandbox provides the capability to convert schemas to different file formats, as well as,
-            provide schema and message validation.
-          </p>          
-          <p>
-            JSON Abstract Data Notation (JADN) is an information modeling language.  It has several 
-            purposes including defining data structures, validating data instances, informing user 
-            interfaces working with structured data, and facilitating protocol internationalization. 
-            JADN specifications consist of two parts: abstract type definitions that are independent 
-            of data format, and serialization rules that define how to represent type instances using 
-            specific data formats. A JADN schema is itself a structured information object that can be 
-            serialized and transferred between applications, documented in multiple formats such as text-based 
-            interface definition languages, property tables or diagrams, and translated into concrete 
-            schemas used to validate specific data formats.            
+            <b> JSON Abstract Data Notation (JADN) </b> is an information modeling language.  It has several
+            purposes including defining data structures, validating data instances, informing user
+            interfaces working with structured data, and facilitating protocol internationalization.
+            JADN specifications consist of two parts:
+            <ul>
+              <li>abstract type definitions that are independent
+                of data format, and </li>
+              <li> serialization rules that define how to represent type instances using
+                specific data formats. </li>
+            </ul>
+            A <b> JADN schema </b> itself is a structured information object that can be
+            serialized and transferred between applications, documented in multiple formats such as text-based
+            interface definition languages, property tables or diagrams, and translated into concrete
+            schemas used to validate specific data formats.
           </p>
           <hr />
+          <br />
           <div className='row'>
             <div className='col-md-3'>
 
@@ -70,12 +74,12 @@ const Home = () => {
                   <h5 className="card-title m-0">Conversion</h5>
                 </div>
                 <ul className="list-group list-group-flush">
-                    <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>GraphViz</Link>
-                    <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>HTML</Link>
-                    <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JADN</Link>
-                    <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JIDL</Link>
-                    <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>MarkDown</Link>
-                    <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>Relax (XML)</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>GraphViz</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>HTML</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JADN</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JIDL</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>MarkDown</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>Relax (XML)</Link>
                 </ul>
               </div>
 
@@ -88,9 +92,9 @@ const Home = () => {
                   <h5 className="card-title m-0">Validation</h5>
                 </div>
                 <ul className="list-group list-group-flush">
-                    <Link className="list-group-item" to={NAV_VALIDATE}>CBOR</Link>
-                    <Link className="list-group-item" to={NAV_VALIDATE}>JSON</Link>
-                    <Link className="list-group-item" to={NAV_VALIDATE}>Relax (XML)</Link>
+                  <Link className="list-group-item" to={NAV_VALIDATE}>CBOR</Link>
+                  <Link className="list-group-item" to={NAV_VALIDATE}>JSON</Link>
+                  <Link className="list-group-item" to={NAV_VALIDATE}>Relax (XML)</Link>
                 </ul>
               </div>
 
@@ -103,15 +107,15 @@ const Home = () => {
                   <h5 className="card-title m-0">Information</h5>
                 </div>
                 <ul className="list-group list-group-flush">
-                    <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2} target='_blank' rel='noreferrer'>OpenC2</a></li>
-                    <li className="list-group-item"><a href={NAV_EXTERNAL_OASIS_OPEN} target='_blank' rel='noreferrer'>OASIS Open</a></li>
-                    <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SPEC} target='_blank' rel='noreferrer'>JADN Specification Doc</a></li>
-                    <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SRC} target='_blank' rel='noreferrer'>JADN Sandbox Source Code</a></li>
-                    <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_PYPI} target='_blank' rel='noreferrer'>JADN Python Package</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2} target='_blank' rel='noreferrer'>OpenC2</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OASIS_OPEN} target='_blank' rel='noreferrer'>OASIS Open</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SPEC} target='_blank' rel='noreferrer'>JADN Specification Doc</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SRC} target='_blank' rel='noreferrer'>JADN Sandbox Source Code</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_PYPI} target='_blank' rel='noreferrer'>JADN Python Package</a></li>
                 </ul>
               </div>
 
-            </div>            
+            </div>
           </div>
         </div>
       </div>
