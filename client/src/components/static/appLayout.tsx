@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavItem, Dropdown, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { NavItem, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import { Link, NavLink, Outlet } from 'react-router-dom';
 
@@ -14,9 +14,14 @@ import favicon from '../dependencies/assets/img/jadn-favicon.png';
 const AppLayout = () => {
 
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+  const [navActive, setNavActive] = useState('home');
 
   const onToggleNav = () => {
     setIsNavCollapsed(!isNavCollapsed);
+  };
+
+  const onNavClick = (navClickEvent: any) => {
+    setNavActive(navClickEvent.currentTarget.textContent);
   };
 
   return (
@@ -32,30 +37,30 @@ const AppLayout = () => {
         <div className={ `${isNavCollapsed ? 'collapse' : ''  } navbar-collapse` } id='navToggle'>
           <ul className='nav navbar-nav mr-auto mt-2 mt-lg-0'>
             <NavItem>
-              <NavLink className='nav-link' to={ NAV_HOME }>Home</NavLink>
+              <NavLink className='nav-link' to={ NAV_HOME } onClick={onNavClick}>Home</NavLink>
             </NavItem>
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle className='nav-link' nav caret size='sm'>
+            <UncontrolledDropdown nav inNavbar setActiveFromChild>
+              <DropdownToggle className="nav-link" nav caret size='sm'>
                 Schema
               </DropdownToggle>
-              <DropdownMenu className='dropdown-menu'>
-                <DropdownItem className='dropdown-item' tag={Link} to={ NAV_GENERATE_SCHEMA }>
+              <DropdownMenu >
+                <DropdownItem tag={Link} to={ NAV_GENERATE_SCHEMA } onClick={onNavClick} active={navActive == 'Generate Schema'}>
                   Generate Schema
                 </DropdownItem>
-                <DropdownItem className='dropdown-item' tag={Link} to={ NAV_CONVERT_SCHEMA }>
+                <DropdownItem tag={Link} to={ NAV_CONVERT_SCHEMA } onClick={onNavClick} active={navActive == 'Convert Schema'}>
                   Convert Schema
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle className='nav-link' nav caret size='sm'>
+            <UncontrolledDropdown nav inNavbar setActiveFromChild>
+              <DropdownToggle className="nav-link" nav caret size='sm'>
                 Message
               </DropdownToggle>
-              <DropdownMenu className='dropdown-menu'>
-                <DropdownItem className='dropdown-item' tag={Link} to={ NAV_GENERATE_MESSAGE }>
+              <DropdownMenu>
+                <DropdownItem tag={Link} to={ NAV_GENERATE_MESSAGE } onClick={onNavClick} active={navActive == 'Generate Message'}>
                   Generate Message
                 </DropdownItem>
-                <DropdownItem className='dropdown-item' tag={Link} to={ NAV_VALIDATE }>
+                <DropdownItem tag={Link} to={ NAV_VALIDATE } onClick={onNavClick} active={navActive == 'Validate Message'}>
                   Validate Message
                 </DropdownItem>
               </DropdownMenu>
