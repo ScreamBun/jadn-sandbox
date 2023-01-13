@@ -44,15 +44,15 @@ const MessageValidator = () => {
         try {
             dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
                 .then((submitVal) => {
-                    toast(<p>{submitVal.payload.valid_msg}</p>, { type: toast.TYPE[submitVal.payload.valid_bool ? 'SUCCESS' : 'ERROR'] });
+                    toast({submitVal.payload.valid_msg}, { type: toast.TYPE[submitVal.payload.valid_bool ? 'SUCCESS' : 'ERROR'] });
                 })
                 .catch((submitErr) => {
-                    toast(<p>{submitErr.payload.message}</p>, { type: toast.TYPE.ERROR });
+                    toast({submitErr.payload.message}, { type: toast.TYPE.ERROR });
                     return false;
                 })
         } catch (err) {
             if (err instanceof Error) {
-                toast(<p>{err.message}</p>, { type: toast.TYPE.ERROR });
+                toast({err.message}, { type: toast.TYPE.ERROR });
             }
         }
     }
