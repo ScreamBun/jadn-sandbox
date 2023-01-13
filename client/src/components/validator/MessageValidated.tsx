@@ -66,7 +66,7 @@ const MessageValidated = (props: any) => {
                                     data = escaped2cbor(hexify(data));
                                     break;
                                 default:
-                                    toast(`File cannot be loaded`, { type: toast.TYPE.WARNING });
+                                    toast(`File cannot be loaded`, { type: toast.TYPE.ERROR });
                             }
                         }
                         type == 'jadn' ? setMsgFormat('json') : setMsgFormat(type);
@@ -75,7 +75,7 @@ const MessageValidated = (props: any) => {
                 };
                 fileReader.readAsText(file);
             } else {
-                toast(<p>Schema cannot be loaded. Please upload a message file.</p>, { type: toast.TYPE.WARNING });
+                toast(<p>Schema cannot be loaded. Please upload a message file.</p>, { type: toast.TYPE.ERROR });
             }
         }
     }

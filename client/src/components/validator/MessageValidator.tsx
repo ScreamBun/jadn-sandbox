@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { Form, Button } from 'reactstrap'
 import { toast } from 'react-toastify'
-import LoadValidSchema from './LoadValidSchema'
 import MessageValidated from './MessageValidated'
 import { info, validateMessage } from 'actions/validate'
 import { getPageTitle } from 'reducers/util'
@@ -45,15 +44,15 @@ const MessageValidator = () => {
         try {
             dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
                 .then((submitVal) => {
-                    toast(<p>{submitVal.payload.valid_msg}</p>, { type: toast.TYPE[submitVal.payload.valid_bool ? 'INFO' : 'WARNING'] });
+                    toast(<p>{submitVal.payload.valid_msg}</p>, { type: toast.TYPE[submitVal.payload.valid_bool ? 'SUCCESS' : 'ERROR'] });
                 })
                 .catch((submitErr) => {
-                    toast(<p>{submitErr.payload.message}</p>, { type: toast.TYPE.WARNING });
+                    toast(<p>{submitErr.payload.message}</p>, { type: toast.TYPE.ERROR });
                     return false;
                 })
         } catch (err) {
             if (err instanceof Error) {
-                toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                toast(<p>{err.message}</p>, { type: toast.TYPE.ERROR });
             }
         }
     }
