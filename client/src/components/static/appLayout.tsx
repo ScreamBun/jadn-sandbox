@@ -35,12 +35,12 @@ const AppLayout = () => {
           <span className='font-weight-bold font-italic mx-2'>JADN Sandbox</span>
         </a>
         <div className={ `${isNavCollapsed ? 'collapse' : ''  } navbar-collapse` } id='navToggle'>
-          <ul className='nav navbar-nav mr-auto mt-2 mt-lg-0'>
+          <ul className='nav navbar-nav mr-auto'>
             <NavItem>
-              <NavLink className='nav-link' to={ NAV_HOME } onClick={onNavClick}>Home</NavLink>
+              <NavLink className='nav-link py-1' to={ NAV_HOME } onClick={onNavClick}>Home</NavLink>
             </NavItem>
             <UncontrolledDropdown nav inNavbar setActiveFromChild>
-              <DropdownToggle className="nav-link" nav caret size='sm'>
+              <DropdownToggle className="nav-link py-1" nav caret size='sm'>
                 Schema
               </DropdownToggle>
               <DropdownMenu >
@@ -53,7 +53,7 @@ const AppLayout = () => {
               </DropdownMenu>
             </UncontrolledDropdown>
             <UncontrolledDropdown nav inNavbar setActiveFromChild>
-              <DropdownToggle className="nav-link" nav caret size='sm'>
+              <DropdownToggle className="nav-link py-1" nav caret size='sm'>
                 Message
               </DropdownToggle>
               <DropdownMenu>
