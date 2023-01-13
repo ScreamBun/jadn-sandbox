@@ -44,7 +44,7 @@ const MessageValidator = () => {
         try {
             dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
                 .then((submitVal: any) => {
-                    if(submitVal & submitVal.payload.valid_bool){
+                    if(submitVal && submitVal.payload.valid_bool){
                         sbToastSuccess(submitVal.payload.valid_msg)
                     }else {
                         sbToastError(submitVal.payload.valid_msg)
