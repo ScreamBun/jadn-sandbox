@@ -80,7 +80,7 @@ const AppLayout = () => {
         <small>v1.0.0</small>
       </nav>
 
-      <ToastContainer position={ toast.POSITION.BOTTOM_CENTER } autoClose={ 5000 } theme='colored' />
+      <ToastContainer position={ toast.POSITION.BOTTOM_CENTER } autoClose={ 4000 } theme='colored' />
 
     </div>
   );
