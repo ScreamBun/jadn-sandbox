@@ -79,7 +79,7 @@ const MessageCreator = (props: any) => {
                         <div className='card-footer p-2'>
                             <div className='col-md-6 p-0 m-0 float-left'>
                                 <select id='command-list' name='command-list' className='form-control' value={commandType} onChange={handleSelection}>
-                                    <option value=''>Command Type</option>
+                                    <option value=''>Message Type</option>
                                     {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
                                 </select>
                             </div>
