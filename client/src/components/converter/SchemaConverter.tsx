@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
 import { Form, Button } from 'reactstrap'
 import ConvertedSchema from './SchemaConverted'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 
 const SchemaConverter = () => {
     const dispatch = useDispatch();
@@ -44,21 +44,19 @@ const SchemaConverter = () => {
         if (conversion) {
             let schemaObj = loadedSchema;
 
-            //validate schema
             if (typeof schemaObj == 'string') {
                 try {
                     schemaObj = JSON.parse(loadedSchema);
                 } catch (err) {
                     if (err instanceof Error) {
-                        toast(<p>{err.message}</p>, { type: toast.TYPE.ERROR });
+                        sbToastError(err.message);
                     }
                 }
             }
 
             try {
                 dispatch(validateSchema(schemaObj))
-                    .then(
-                        (validateSchemaVal) => {
+                    .then((validateSchemaVal) => {
                             if (validateSchemaVal.payload.valid_bool == true && conversion) {
                                 try {
                                     dispatch(convertSchema(schemaObj, conversion))
@@ -66,37 +64,37 @@ const SchemaConverter = () => {
                                             setConvertedSchema(convertSchemaVal.payload.schema.convert);
                                             const conversionCheck = convertSchemaVal.payload.schema.convert;
                                             if (conversionCheck.startsWith('Error')) {
-                                                toast(<p>ERROR: {conversionCheck}</p>, { type: toast.TYPE.ERROR });
+                                                sbToastError(conversionCheck);
                                             } else {
-                                                toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.SUCCESS });
+                                                sbToastSuccess(`Schema conversion to ${conversion} successfully`);
                                             }
                                         })
                                         .catch((_convertSchemaErr) => {
-                                            toast(<p>ERROR: Schema conversion to {conversion} failed</p>, { type: toast.TYPE.ERROR });
+                                            sbToastError(_convertSchemaErr);
                                         })
 
                                 } catch (err) {
                                     if (err instanceof Error) {
-                                        toast(<p>{err.message}</p>, { type: toast.TYPE.ERROR });
+                                        sbToastError(err.message);
                                     }
                                 }
                             } else if (validateSchemaVal.payload.valid_bool == false) {
-                                toast(<p>ERROR: Invalid Schema</p>, { type: toast.TYPE.ERROR });
+                                sbToastError("Invalid Schema");
                             } else if (conversion == '') {
-                                toast(<p>ERROR: No conversion selected</p>, { type: toast.TYPE.ERROR });
+                                sbToastError("No conversion selected");
                             }
                         })
                     .catch((validateSchemaErr) => {
-                        toast(<p>{validateSchemaErr}</p>, { type: toast.TYPE.ERROR });
+                        sbToastError(validateSchemaErr);
                     })
 
             } catch (err) {
                 if (err instanceof Error) {
-                    toast(<p>{err.message}</p>, { type: toast.TYPE.ERROR });
+                    sbToastError(err.message);
                 }
             }
         } else {
-            toast(<p>ERROR: No language selected for conversion</p>, { type: toast.TYPE.ERROR })
+            sbToastError("No language selected for conversion");
         }
     }
 

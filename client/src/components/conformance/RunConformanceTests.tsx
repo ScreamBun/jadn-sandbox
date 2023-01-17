@@ -1,6 +1,5 @@
 // Dependencies
 import { faClipboardCheck } from '@fortawesome/free-solid-svg-icons/faClipboardCheck';
-import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 Button, Nav, NavItem, NavLink, TabContent, TabPane
@@ -15,6 +14,7 @@ import split from 'lodash/split';
 // Module Specific
 import { getAllConformanceTests, runConformanceTest } from './Api';
 import ConformanceChart from './ConformanceChart';
+import { sbToastError } from 'components/common/SBToast';
 
 
 const LANGUAGE = 'language';
@@ -233,12 +233,12 @@ const RunConformanceTests = (props: any) => {
 
     let isValid = true;
     if (!profileSelection) {
-        toast('A Profile Type is required', {type: toast.TYPE.ERROR});
+        sbToastError(`A Profile Type is required`);
         isValid = false;
     }
 
     if (!schemaToTest) {
-        toast('A Schema is required', {type: toast.TYPE.ERROR});
+        sbToastError(`A Schema is required`);
         isValid = false;
     }
 
@@ -255,8 +255,7 @@ const RunConformanceTests = (props: any) => {
           return true;
       }).catch((_err:any) => {
         setTestResults(ResultsObj);
-
-        toast('An error occurred while running tests', {type: toast.TYPE.ERROR});
+        sbToastError(`An error occurred while running tests`);
         console.log(_err);
       });
   };

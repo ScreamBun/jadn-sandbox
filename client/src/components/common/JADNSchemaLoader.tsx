@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { Button, Input } from "reactstrap";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { getAllSchemas } from "../../reducers/generate";
@@ -8,6 +7,7 @@ import { setSchema } from "../../actions/generate";
 import { loadFile } from "../../actions/util";
 import { validateSchema } from "../../actions/validate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { sbToastError, sbToastSuccess } from "./SBToast";
 
 const JADNSchemaLoader = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
@@ -37,7 +37,7 @@ const JADNSchemaLoader = (props: any) => {
                             }
                         } catch (err) {
                             if (err instanceof Error) {
-                                toast(`${err.message}`, { type: toast.TYPE.ERROR });
+                                sbToastError(err.message);
                                 return;
                             }
                         }
@@ -84,7 +84,7 @@ const JADNSchemaLoader = (props: any) => {
 
     const formatJSON = (jsonToFormat: string) => {
         if (!jsonToFormat) {
-            toast(`Nothing to format`, { type: toast.TYPE.ERROR });
+            sbToastError(`Nothing to format`)
             return;
         }
 
@@ -94,12 +94,12 @@ const JADNSchemaLoader = (props: any) => {
             try {
                 jsonToFormat = JSON.stringify(jsonToFormat, undefined, 2);
                 setLoadedSchema(jsonToFormat);
-                toast(`Data Formatted`, { type: toast.TYPE.SUCCESS });
+                sbToastSuccess(`Data Formatted`);
             } catch (err: any) {
-                toast(`Unable to Format: ${err.message}`, { type: toast.TYPE.ERROR });
+                sbToastError(`Unable to format: ${err.message}`)
             }
         } else {
-            toast(`Unable to Format`, { type: toast.TYPE.ERROR });
+            sbToastError(`Unable to format`)
         }
     }
 
@@ -107,16 +107,20 @@ const JADNSchemaLoader = (props: any) => {
         setIsValidJADN(false);
         try {
             dispatch(validateSchema(jsonToValidate))
-                .then((validateSchemaVal) => {
-                    toast(`${validateSchemaVal.payload.valid_msg}`, { type: toast.TYPE[validateSchemaVal.payload.valid_bool ? 'SUCCESS' : 'ERROR'] })
+                .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool) {
                         setIsValidJADN(true);
+                        sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                    } else {
+                        sbToastError(validateSchemaVal.payload.valid_msg);
                     }
                 })
-                .catch((validateSchemaErr) => { toast(`${validateSchemaErr.payload.valid_msg}`, { type: toast.TYPE.ERROR }) })
+                .catch((validateSchemaErr) => { 
+                    sbToastError(validateSchemaErr.payload.valid_msg)
+                })
         } catch (err) {
             if (err instanceof Error) {
-                toast(`${err.message}`, { type: toast.TYPE.ERROR });
+                sbToastError(err.message)
             }
         }
     }
@@ -127,7 +131,7 @@ const JADNSchemaLoader = (props: any) => {
         if (!jsonToValidate) {
             setIsValidJSON(false);
             setIsValidJADN(false);
-            toast(`No data found`, { type: toast.TYPE.ERROR });
+            sbToastError(`No data found`)
             return jsonObj;
         }
 
@@ -138,7 +142,7 @@ const JADNSchemaLoader = (props: any) => {
             setIsValidJSON(false);
             setIsValidJADN(false);
             if (showErrorPopup) {
-                toast(`Invalid Format: ${err.message}`, { type: toast.TYPE.ERROR });
+                sbToastError(`Invalid Format: ${err.message}`)
             }
         }
 
@@ -157,9 +161,9 @@ const JADNSchemaLoader = (props: any) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        setLoadedSchema(data); // must turn str into obj before str
+                        setLoadedSchema(data); 
                     } catch (err) {
-                        toast(`File cannot be loaded`, { type: toast.TYPE.WARNING });
+                        sbToastError(`File cannot be loaded`)
                     }
                 }
             };
@@ -179,7 +183,7 @@ const JADNSchemaLoader = (props: any) => {
     const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         let jsonObj = validateJSON(loadedSchema);
         if (!jsonObj) {
-            toast('Invalid JSON. Cannot validate JADN', { type: toast.TYPE.ERROR });
+            sbToastError(`Invalid JSON. Cannot validate JADN`);
             return;
         }
 

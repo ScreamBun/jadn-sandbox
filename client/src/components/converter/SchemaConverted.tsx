@@ -1,10 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
+import { sbToastError } from "components/common/SBToast";
 
 const SchemaConverted = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
@@ -46,10 +46,10 @@ const SchemaConverted = (props: any) => {
                 URL.revokeObjectURL(elem.href);
             } catch (err) {
                 console.log(err);
-                toast(`File cannot be downloaded`, { type: toast.TYPE.WARNING });
+                sbToastError(`File cannot be downloaded`);
             }
         } else {
-            toast(`No Converted Schema Exists`, { type: toast.TYPE.WARNING });
+            sbToastError(`No Converted Schema Exists`);
         }
     }
 
@@ -83,10 +83,10 @@ const SchemaConverted = (props: any) => {
 
             } catch (err) {
                 console.log(err);
-                toast(`PDF cannot be downloaded`, { type: toast.TYPE.WARNING });
+                sbToastError(`PDF cannot be downloaded`);
             }
         } else {
-            toast(`No Converted Schema Exists`, { type: toast.TYPE.WARNING });
+            sbToastError(`No Converted Schema Exists`);
         }
     }
 
