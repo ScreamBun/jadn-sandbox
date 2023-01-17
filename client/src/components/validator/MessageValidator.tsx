@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { Form, Button } from 'reactstrap'
-import { toast } from 'react-toastify'
 import MessageValidated from './MessageValidated'
 import { info, validateMessage } from 'actions/validate'
 import { getPageTitle } from 'reducers/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 
 
 const MessageValidator = () => {
@@ -43,16 +43,20 @@ const MessageValidator = () => {
         e.preventDefault();
         try {
             dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
-                .then((submitVal) => {
-                    toast(`{submitVal.payload.valid_msg}`, { type: toast.TYPE[submitVal.payload.valid_bool ? 'SUCCESS' : 'ERROR'] });
+                .then((submitVal: any) => {
+                    if(submitVal && submitVal.payload.valid_bool){
+                        sbToastSuccess(submitVal.payload.valid_msg)
+                    }else {
+                        sbToastError(submitVal.payload.valid_msg)
+                    }
                 })
                 .catch((submitErr) => {
-                    toast(`{submitErr.payload.message}`, { type: toast.TYPE.ERROR });
+                    sbToastError(submitErr.message)
                     return false;
                 })
         } catch (err) {
             if (err instanceof Error) {
-                toast(`{err.message}`, { type: toast.TYPE.ERROR });
+                sbToastError(err.message)
             }
         }
     }

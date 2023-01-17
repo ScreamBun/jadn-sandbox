@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { Input } from "reactstrap";
 import {
     escaped2cbor, format, hexify
 } from '../utils';
 import { loadFile } from "actions/util";
 import { getMsgFiles } from "reducers/validate";
+import { sbToastError } from "components/common/SBToast";
 
 const MessageValidated = (props: any) => {
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg } = props;
@@ -53,7 +53,6 @@ const MessageValidated = (props: any) => {
 
             if (prefix == 'message') {
                 setUploadedFile(file.name);
-                //read file
                 const fileReader = new FileReader();
                 fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                     if (ev.target) {
@@ -66,7 +65,7 @@ const MessageValidated = (props: any) => {
                                     data = escaped2cbor(hexify(data));
                                     break;
                                 default:
-                                    toast(`File cannot be loaded`, { type: toast.TYPE.ERROR });
+                                    sbToastError(`File cannot be loaded`);
                             }
                         }
                         type == 'jadn' ? setMsgFormat('json') : setMsgFormat(type);
@@ -75,7 +74,7 @@ const MessageValidated = (props: any) => {
                 };
                 fileReader.readAsText(file);
             } else {
-                toast(<p>Schema cannot be loaded. Please upload a message file.</p>, { type: toast.TYPE.ERROR });
+                sbToastError(`Schema cannot be loaded. Please upload a message file.`);
             }
         }
     }

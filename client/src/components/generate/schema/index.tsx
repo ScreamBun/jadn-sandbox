@@ -3,7 +3,6 @@ import React, { ChangeEvent, Component, MouseEvent } from 'react';
 import { Dispatch } from 'redux';
 import { connect, ConnectedProps } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
-import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileDownload, faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import { Button, ListGroup, ListGroupItem, Nav, NavItem, NavLink, TabContent, TabPane, Tooltip } from 'reactstrap';
@@ -23,6 +22,7 @@ import * as ConformanceActions from "../../../actions/conformance";
 // Module requires
 import ViewConformanceTests from "../../conformance/ViewConformanceTests";
 import RunConformanceTests from "../../conformance/RunConformanceTests";
+import { sbToastError } from 'components/common/SBToast';
 
 // Interface
 type Options = 'info' | 'types';
@@ -332,7 +332,6 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
         const { files } = e.target;
 
         if (files && files.length > 0) {
-            // toast(<p>Unable to load file</p>, {type: toast.TYPE.WARNING});
 
             const file = files[0];
             const fileReader = new FileReader();
@@ -345,8 +344,8 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
                             schema: JSON.parse(data)
                         });
                     } catch (err) {
-                        toast(<p>Schema cannot be loaded</p>, { type: toast.TYPE.ERROR });
                         console.log(err);
+                        sbToastError(`Schema cannot be loaded`);
                     }
                 }
             };

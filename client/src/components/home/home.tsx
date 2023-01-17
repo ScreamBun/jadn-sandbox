@@ -57,7 +57,7 @@ const Home = () => {
             <div className='col-md-3'>
 
               <div className="card">
-                <div className="card-body text-center bg-primary p-2">
+                <div className="card-body text-center bg-primary p-2 text-light">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faCubes} /></p>
                   <h5 className="card-title m-0">Generation</h5>
                 </div>
@@ -71,7 +71,7 @@ const Home = () => {
             <div className='col-md-3'>
 
               <div className="card">
-                <div className="card-body text-center bg-primary p-2">
+                <div className="card-body text-center bg-primary p-2 text-light">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faShuffle} /></p>
                   <h5 className="card-title m-0">Conversion</h5>
                 </div>
@@ -89,7 +89,7 @@ const Home = () => {
             <div className='col-md-3'>
 
               <div className="card">
-                <div className="card-body text-center bg-primary p-2">
+                <div className="card-body text-center bg-primary p-2 text-light">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faShuffle} /></p>
                   <h5 className="card-title m-0">Validation</h5>
                 </div>
@@ -104,7 +104,7 @@ const Home = () => {
             <div className='col-md-3'>
 
               <div className="card">
-                <div className="card-body text-center bg-primary p-2">
+                <div className="card-body text-center bg-primary p-2 text-light">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faInfoCircle} /></p>
                   <h5 className="card-title m-0">Information</h5>
                 </div>
