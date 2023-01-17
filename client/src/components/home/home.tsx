@@ -38,12 +38,14 @@ const Home = () => {
             purposes including defining data structures, validating data instances, informing user
             interfaces working with structured data, and facilitating protocol internationalization.
             JADN specifications consist of two parts:
-            <ul>
-              <li>abstract type definitions that are independent
-                of data format, and </li>
-              <li> serialization rules that define how to represent type instances using
-                specific data formats. </li>
-            </ul>
+          </p>
+          <ul>
+            <li>abstract type definitions that are independent
+              of data format, and </li>
+            <li> serialization rules that define how to represent type instances using
+              specific data formats. </li>
+          </ul>
+          <p>
             A <b> JADN schema </b> itself is a structured information object that can be
             serialized and transferred between applications, documented in multiple formats such as text-based
             interface definition languages, property tables or diagrams, and translated into concrete
