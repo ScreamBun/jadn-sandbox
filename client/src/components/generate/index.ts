@@ -1,4 +1,4 @@
-import MessageGenerator from './message';
+import MessageGenerator from './message/MessageGenerator';
 import SchemaGenerator from './schema';
 
 export {

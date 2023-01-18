@@ -1,31 +1,27 @@
-import { convertSchema, info } from 'actions/convert'
-import { info as getMeta } from 'actions/util'
-import { validateSchema } from 'actions/validate'
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
-import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
+import ConvertedSchema from './SchemaConverted'
 import { getPageTitle } from 'reducers/util'
-import ConvertedSchema from './ConvertedSchema'
-import LoadedSchema from './LoadedSchema'
+import { convertSchema, info } from 'actions/convert'
+import { validateSchema } from 'actions/validate'
+import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 
 const SchemaConverter = () => {
+    const dispatch = useDispatch();
+
     const [selectedFile, setSelectedFile] = useState('');
-    const [loadedSchema, setLoadedSchema] = useState({ placeholder: 'Paste JADN schema here' });
+    const [loadedSchema, setLoadedSchema] = useState('');
     const [convertedSchema, setConvertedSchema] = useState('');
     const [conversion, setConversion] = useState('');
 
     //add meta data for page
     const meta_title = useSelector(getPageTitle) + ' | Convert Schema'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-    useEffect(() => {
-        dispatch(getMeta());
-    }, [meta_title])
 
-    //populate schema and conversions from server
-    const dispatch = useDispatch();
+    //populate meta, schema and conversions from server
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
@@ -35,8 +31,10 @@ const SchemaConverter = () => {
         setConvertedSchema('');
     }, [selectedFile])
 
-    const reset = () => {
-        setLoadedSchema({ placeholder: 'Paste JADN schema here' });
+    const onReset = () => {
+        setSelectedFile('');
+        setLoadedSchema('');
+        setConversion('');
         setConvertedSchema('');
     }
 
@@ -46,75 +44,95 @@ const SchemaConverter = () => {
         if (conversion) {
             let schemaObj = loadedSchema;
 
-            //validate schema
             if (typeof schemaObj == 'string') {
                 try {
                     schemaObj = JSON.parse(loadedSchema);
                 } catch (err) {
                     if (err instanceof Error) {
-                        toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                        sbToastError(err.message);
                     }
                 }
             }
 
             try {
                 dispatch(validateSchema(schemaObj))
-                    .then(
-                        (validateSchemaVal) => {
-                            //if valid schema and conversion is set, convert schema
+                    .then((validateSchemaVal) => {
                             if (validateSchemaVal.payload.valid_bool == true && conversion) {
                                 try {
-                                    dispatch(convertSchema(schemaObj, conversion, 'all')) //TODO: see usage of comments in converter.py
+                                    dispatch(convertSchema(schemaObj, conversion))
                                         .then((convertSchemaVal) => {
                                             setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                                            toast(<p>Schema converted to {conversion} successfully</p>, { type: toast.TYPE.INFO });
+                                            const conversionCheck = convertSchemaVal.payload.schema.convert;
+                                            if (conversionCheck.startsWith('Error')) {
+                                                sbToastError(conversionCheck);
+                                            } else {
+                                                sbToastSuccess(`Schema conversion to ${conversion} successfully`);
+                                            }
                                         })
                                         .catch((_convertSchemaErr) => {
-                                            setConvertedSchema("ERROR: File conversion failed");
-                                            toast(<p>ERROR: Schema conversion to {conversion} failed</p>, { type: toast.TYPE.WARNING });
+                                            sbToastError(_convertSchemaErr);
                                         })
 
                                 } catch (err) {
                                     if (err instanceof Error) {
-                                        setConvertedSchema("ERROR: File conversion failed");
-                                        toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                                        sbToastError(err.message);
                                     }
                                 }
                             } else if (validateSchemaVal.payload.valid_bool == false) {
-                                toast(<p>ERROR: Invalid Schema</p>, { type: toast.TYPE.WARNING });
+                                sbToastError("Invalid Schema");
                             } else if (conversion == '') {
-                                toast(<p>ERROR: No Conversion Selected</p>, { type: toast.TYPE.WARNING });
+                                sbToastError("No conversion selected");
                             }
                         })
                     .catch((validateSchemaErr) => {
-                        toast(<p>{validateSchemaErr}</p>, { type: toast.TYPE.WARNING });
+                        sbToastError(validateSchemaErr);
                     })
 
             } catch (err) {
                 if (err instanceof Error) {
-                    toast(<p>{err.message}</p>, { type: toast.TYPE.WARNING });
+                    sbToastError(err.message);
                 }
             }
         } else {
-            toast(<p>ERROR: No language selected for conversion</p>, { type: toast.TYPE.WARNING })
+            sbToastError("No language selected for conversion");
         }
     }
 
     return (
-        <div className='row mx-auto'>
+        <div>
             <Helmet>
                 <title>{meta_title}</title>
                 <link rel="canonical" href={meta_canonical} />
             </Helmet>
-
-            <Form className="mx-auto col-12" onSubmit={submitForm}>
-                <div className="form-row">
-                    <LoadedSchema selectedFile={selectedFile} setSelectedFile={setSelectedFile} loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                    <ConvertedSchema convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema} conversion={conversion} setConversion={setConversion} loadedSchema={loadedSchema} />
+            <div className='row'>
+                <div className='col-md-12'>
+                    <div className='card'>
+                        <div className='card-header p-2'>
+                            <h5 className='m-0'>Convert Schema</h5>
+                        </div>
+                        <div className='card-body p-2'>
+                            <Form onSubmit={submitForm}>
+                                <div className='row'>
+                                    <div className='col-md-6 pr-1'>
+                                        <JADNSchemaLoader
+                                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                    </div>
+                                    <div className='col-md-6 pl-1'>
+                                        <ConvertedSchema
+                                            convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
+                                            conversion={conversion} setConversion={setConversion}
+                                            loadedSchema={loadedSchema} />
+                                    </div>
+                                </div>
+                            </Form>
+                        </div>
+                        <div className='card-footer p-2'>
+                            <Button color="danger" className='float-right' type="reset" onClick={onReset}>Reset</Button>
+                        </div>
+                    </div>
                 </div>
-                <Button color="danger" className='float-right' type="reset" onClick={reset}>Reset</Button>
-                <div className="col-12" />
-            </Form>
+            </div>
         </div>
     );
 }

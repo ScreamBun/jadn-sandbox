@@ -16,12 +16,14 @@ class Validator:
     Validate messages against a given schema
     """
     validMsgs = [
-        "Success",
-        "Validation passed"
+        "Valid",
+        "Validation passed",
+        "Validation success"
     ]
     invalidMsgs = [
-        "Fail",
-        "Validation failed"
+        "Invalid",
+        "Validation failed",
+        "Validation error"
     ]
     # Schema Test suites
     _unittest_suite = load_test_suite()
@@ -36,7 +38,7 @@ class Validator:
         """
         try:
             j = jadn.loads(schema)
-            return True, random.choice(self.validMsgs) if sm else j
+            return True, "Schema is Valid" if sm else j
         except Exception as e:  # pylint: disable=broad-except
             # TODO: pick better exception
             return False, f"Schema Invalid - {e}"
@@ -51,37 +53,31 @@ class Validator:
         :return: valid/invalid bool, message
         """
         v, s = self.validateSchema(schema, False)
-
         if not v:
             return False, s, "", msg
 
+        if isinstance(s, str):
+            return False, "Schema Invalid - The schema failed to load", "", msg
+                 
         if fmt in SerialFormats:
             serial = SerialFormats(fmt)
             try:
                 message = Message.oc2_loads(msg, serial)
             except Exception as e:  # pylint: disable=broad-except
                 # TODO: pick better exception
-                return False, f"Message Invalid - {e}", "", msg
+                return False, f"OpenC2 Message Invalid - {e}", "", msg
         else:
-            return False, random.choice(self.invalidMsgs), "", msg
-
-        if isinstance(s, str):
-            return False, "Schema Invalid - The schema failed to load", "", msg
-
+            return False, random.choice(self.invalidMsgs), "", msg 
+            
         records = list(s.types.keys())
         if decode in records:
             try:
-                val = s.validate_as(decode, message.oc2_message())
-                msgOrig = message.dumps(fmt)
-                msgOrig = json.dumps(msgOrig) if type(msgOrig) is dict else msgOrig
-                return True, random.choice(self.validMsgs), json.dumps(message.dict()), msgOrig
+                s.validate_as(decode, message.content)
+                return True, random.choice(self.validMsgs), json.dumps(msg), msg
 
             except Exception as err:  # pylint: disable=broad-except
                 # TODO: pick better exception
-                err = str(val[0])
-                if re.match(r".*?is not <.*?>$", err):
-                    err = f"{re.sub(r':.*?$', '', err)} is improperly formatted"
-                return False, err, json.dumps(message.oc2_body), message.serialize()
+                return False, f"Message Invalid - {err}", "", msg
         else:
             return False, "Decode Invalid - The decode message type was not found in the schema", "", msg
 

@@ -1,83 +1,128 @@
-import { faCoffee, faCubes, faCubesStacked, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { faCubes, faInfoCircle, faMicrophone, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    NAV_EXTERNAL_OPENC2_JADN, NAV_VALIDATE, NAV_CONVERT, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA
+  NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI
 } from 'components/utils/constants';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { getPageTitle } from 'reducers/util';
+import { info } from 'actions/util';
 
 const Home = () => {
-    return (
+  const dispatch = useDispatch();
+
+  const meta_title = useSelector(getPageTitle) + ' | Home ';
+  const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+  useEffect(() => {
+    dispatch(info());
+  }, [meta_title])
+
+  return (
+    <div>
+      <Helmet>
+        <title>{meta_title}</title>
+        <link rel="canonical" href={meta_canonical} />
+      </Helmet>
       <div className='card'>
         <div className='card-header p-2'>
-          <h4 className='m-0'>Home</h4>
+          <h5 className='m-0'>Home</h5>
         </div>
         <div className='card-body p-2'>
-          <p>
-          OpenC2 is defined using JSON Abstract Schema Notation (JADN). 
-          The JADN Sandbox provides the ability generate OpenC2 messages and schemas, as well as , 
-          convert to other data formats and provide JADN validation. 
+          <p className='mt-2'>
+            The <b> JADN Sandbox </b> provides the ability to generate, convert, and validate OpenC2 compliant schemas and messages.
           </p>
           <p>
-            Source is available from the
-            &nbsp;
-            <a href={ NAV_EXTERNAL_OPENC2_JADN } target='_blank' rel='noreferrer'>OpenC2 JADN Github</a>
-            &nbsp;
-            repo.
+            <b> JSON Abstract Data Notation (JADN) </b> is an information modeling language.  It has several
+            purposes including defining data structures, validating data instances, informing user
+            interfaces working with structured data, and facilitating protocol internationalization.
+            JADN specifications consist of two parts:
+          </p>
+          <ul>
+            <li>abstract type definitions that are independent
+              of data format, and </li>
+            <li> serialization rules that define how to represent type instances using
+              specific data formats. </li>
+          </ul>
+          <p>
+            A <b> JADN schema </b> itself is a structured information object that can be
+            serialized and transferred between applications, documented in multiple formats such as text-based
+            interface definition languages, property tables or diagrams, and translated into concrete
+            schemas used to validate specific data formats.
           </p>
           <hr />
+          <br />
           <div className='row'>
-          <div className='col-md-3'>
-              <div className='card pb-2'>
-                <div className='card-header text-center'>
-                  <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faCubes} /></h4>
-                </div>
-                <div className='card-body p-0'>
-                  <ul className="list-group">
-                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={ NAV_GENERATE_SCHEMA }>Generate</Link>
-                    <Link className="list-group-item" to={ NAV_GENERATE_MESSAGE }>Messages</Link>
-                    <Link className="list-group-item" to={ NAV_GENERATE_SCHEMA }>Schemas (Profiles)</Link>
-                  </ul>
-                </div>           
-              </div>
-            </div>            
             <div className='col-md-3'>
-              <div className='card pb-2'>
-                <div className='card-header text-center'>
-                  <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faShuffle } /></h4>
+
+              <div className="card">
+                <div className="card-body text-center bg-primary p-2 text-light">
+                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faCubes} /></p>
+                  <h5 className="card-title m-0">Generation</h5>
                 </div>
-                <div className='card-body p-0'>
-                  <ul className="list-group">
-                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={ NAV_CONVERT }>Convert</Link>
-                    <li className="list-group-item">GraphViz</li>
-                    <li className="list-group-item">HTML</li>
-                    <li className="list-group-item">JADN</li>
-                    <li className="list-group-item">JIDL</li>
-                    <li className="list-group-item">MarkDown</li>
-                    <li className="list-group-item">XML</li>
-                  </ul>
-                </div>           
+                <ul className="list-group list-group-flush">
+                  <Link className="list-group-item" to={NAV_GENERATE_MESSAGE}>Messages</Link>
+                  <Link className="list-group-item" to={NAV_GENERATE_SCHEMA}>Schemas</Link>
+                </ul>
               </div>
+
             </div>
             <div className='col-md-3'>
-              <div className='card pb-2'>
-                <div className='card-header text-center'>
-                  <h4 className='m-0'><FontAwesomeIcon className='fa-2xl' icon={ faMicroscope } /></h4>
+
+              <div className="card">
+                <div className="card-body text-center bg-primary p-2 text-light">
+                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faShuffle} /></p>
+                  <h5 className="card-title m-0">Conversion</h5>
                 </div>
-                <div className='card-body p-0'>
-                  <ul className="list-group">
-                    <Link className="list-group-item list-group-item-action active font-weight-bold" to={ NAV_VALIDATE }>Validate</Link>
-                    <li className="list-group-item">JSON</li>
-                    <li className="list-group-item">CBOR</li>
-                    <li className="list-group-item">XML</li>
-                  </ul>
-                </div>           
+                <ul className="list-group list-group-flush">
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>GraphViz</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>HTML</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JADN</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JIDL</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>MarkDown</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>Relax (XML)</Link>
+                </ul>
               </div>
-            </div>                       
+
+            </div>
+            <div className='col-md-3'>
+
+              <div className="card">
+                <div className="card-body text-center bg-primary p-2 text-light">
+                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faMicroscope} /></p>
+                  <h5 className="card-title m-0">Validation</h5>
+                </div>
+                <ul className="list-group list-group-flush">
+                  <Link className="list-group-item" to={NAV_VALIDATE}>CBOR</Link>
+                  <Link className="list-group-item" to={NAV_VALIDATE}>JSON</Link>
+                  <Link className="list-group-item" to={NAV_VALIDATE}>Relax (XML)</Link>
+                </ul>
+              </div>
+
+            </div>
+            <div className='col-md-3'>
+
+              <div className="card">
+                <div className="card-body text-center bg-primary p-2 text-light">
+                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faInfoCircle} /></p>
+                  <h5 className="card-title m-0">Information</h5>
+                </div>
+                <ul className="list-group list-group-flush">
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2} target='_blank' rel='noreferrer'>OpenC2</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OASIS_OPEN} target='_blank' rel='noreferrer'>OASIS Open</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SPEC} target='_blank' rel='noreferrer'>JADN Specification Doc</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SRC} target='_blank' rel='noreferrer'>JADN Sandbox Source Code</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_PYPI} target='_blank' rel='noreferrer'>JADN Python Package</a></li>
+                </ul>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
 export default Home;

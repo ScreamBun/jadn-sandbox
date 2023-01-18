@@ -60,3 +60,7 @@ export default (state = initialState, action: validate.ValidateActions) => {
 			return state;
 	}
 };
+
+//selectors
+export const getSchemaFiles = (state: { Validate: { schemas: any; }; }) => state.Validate.schemas;
+export const getMsgFiles = (state: { Validate: { messages: any; }; }) => state.Validate.messages;

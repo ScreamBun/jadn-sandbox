@@ -1,16 +1,16 @@
-import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { Button } from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
+import { sbToastError } from "components/common/SBToast";
 
-const ConvertedSchema = (props: any) => {
+const SchemaConverted = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
     const convertOpts = useSelector(getConversions);
 
-    const handleConversion = (e: { target: { value: string; }; }) => {
+    const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);
         setConvertedSchema('');
     }
@@ -46,15 +46,16 @@ const ConvertedSchema = (props: any) => {
                 URL.revokeObjectURL(elem.href);
             } catch (err) {
                 console.log(err);
-                toast(`File cannot be downloaded`, { type: toast.TYPE.WARNING });
+                sbToastError(`File cannot be downloaded`);
             }
         } else {
-            toast(`No Converted Schema Exists`, { type: toast.TYPE.WARNING });
+            sbToastError(`No Converted Schema Exists`);
         }
     }
 
     const pdfDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        const data = JSON.parse(loadedSchema)
         if (convertedSchema != '') {
             try {
                 fetch('/api/convert/pdf', {
@@ -63,7 +64,7 @@ const ConvertedSchema = (props: any) => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        schema: loadedSchema
+                        schema: data
                     })
                 }).then(
                     rsp => rsp.blob()
@@ -82,10 +83,10 @@ const ConvertedSchema = (props: any) => {
 
             } catch (err) {
                 console.log(err);
-                toast(`PDF cannot be downloaded`, { type: toast.TYPE.WARNING });
+                sbToastError(`PDF cannot be downloaded`);
             }
         } else {
-            toast(`No Converted Schema Exists`, { type: toast.TYPE.WARNING });
+            sbToastError(`No Converted Schema Exists`);
         }
     }
 
@@ -97,26 +98,30 @@ const ConvertedSchema = (props: any) => {
     }
 
     return (
-        <fieldset className="col-md-6 p-0 float-left">
+        <fieldset className="p-0">
             <legend>Converted Schema</legend>
             <div className="card">
-                <div className="form-control card-body p-0" style={{ height: '40em' }}>
+                <div className="card-body p-0" style={{ height: '40em' }}>
                     <textarea
                         value={convertedSchema}
-                        placeholder='Converted JADN schema'
+                        className='form-control'
+                        placeholder='Converted schema'
                         style={{
                             resize: 'none',
                             outline: 'none',
                             width: '100%',
                             padding: '10px',
                             border: 'none',
-                            height: '100%'
+                            height: '100%',
+                            whiteSpace: 'pre',
+                            overflowWrap: 'normal',
+                            overflowX: 'scroll',
                         }}
                         readOnly
                     />
                 </div>
 
-                <div className='card-footer pb-3'>
+                <div className='card-footer p-2'>
                     <div className={`btn-group btn-group-sm float-right mr-2${convertedSchema ? '' : ' d-none'}`}>
                         <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={schemaDownload}>
                             <FontAwesomeIcon icon={faFileDownload} size='2x' />
@@ -135,8 +140,8 @@ const ConvertedSchema = (props: any) => {
 
                     <div className="form-row ml-1 mb-0">
                         <div className="input-group col-md-6 px-1 mb-0">
-                            <select id="convert-to" name="convert-to" className="form-control" defaultValue={conversion} onChange={handleConversion}>
-                                <option value="empty"> Convert To... </option>
+                            <select id="convert-to" name="convert-to" className="form-control" value={conversion} onChange={handleConversion}>
+                                <option value=""> Convert To... </option>
                                 {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
                             </select>
                             <div className="input-group-append">
@@ -149,4 +154,4 @@ const ConvertedSchema = (props: any) => {
             </div>
         </fieldset>)
 }
-export default ConvertedSchema;
+export default SchemaConverted;

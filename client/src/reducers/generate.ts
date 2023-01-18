@@ -18,12 +18,12 @@ const initialState: GenerateState = {
   schemas: [],
   message: {},
   types: {
-		base: ['Binary', 'Boolean', 'Integer', 'Number', 'Null', 'String', 'Enumerated', 'Choice', 'Array', 'ArrayOf', 'Map', 'MapOf', 'Record'],
+    base: ['Binary', 'Boolean', 'Integer', 'Number', 'Null', 'String', 'Enumerated', 'Choice', 'Array', 'ArrayOf', 'Map', 'MapOf', 'Record'],
     schema: {}
   }
 };
 
-export default (state=initialState, action: generator.GenerateActions) => {
+export default (state = initialState, action: generator.GenerateActions) => {
   switch (action.type) {
     case generator.INFO_SUCCESS:
       return {
@@ -49,3 +49,7 @@ export default (state=initialState, action: generator.GenerateActions) => {
       return state;
   }
 };
+
+//selectors
+export const getAllSchemas = (state: { Generate: { schemas: any; }; }) => state.Generate.schemas;
+export const getSelectedSchema = (state: { Generate: { selectedSchema: any; }; }) => state.Generate.selectedSchema;

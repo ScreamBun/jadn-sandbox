@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faRefresh} from '@fortawesome/free-solid-svg-icons/faRefresh';
 import {Button} from 'reactstrap';
-import { toast } from 'react-toastify';
 
 import {getAllConformanceTests} from './Api';
+import { sbToastError } from 'components/common/SBToast';
 
 
 const ViewConformanceTests = () => {
@@ -64,7 +64,7 @@ const ViewConformanceTests = () => {
             return true;
           }).catch(error => {
             console.log(error);
-            toast.warn('Unable to grab Conformance Tests');
+            sbToastError(`Unable to grab Conformance Tests`);
           });
     }, []);
 
@@ -101,7 +101,7 @@ const ViewConformanceTests = () => {
                 return true;
             }).catch(error => {
             console.log(error);
-            toast.warn('Unable to grab all Conformance Tests');
+            sbToastError(`Unable to grab all Conformance Tests`);
         });
     };
 

@@ -1,8 +1,9 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { ConnectedProps, connect } from 'react-redux';
-import { Input } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 import { InputType } from 'reactstrap/types/lib/Input';
 import dayjs from 'dayjs'
+import { v4 as uuid4 } from 'uuid';
 
 import Field from '..';
 import { isOptional } from '../..';
@@ -28,6 +29,8 @@ type BasicFieldConnectedProps = BasicFieldProps & ConnectorProps;
 
 // Component
 const BasicField: FunctionComponent<BasicFieldConnectedProps> = props => {
+  const [value, setValue] = useState('');
+
   const inputOpts = (type: string) => {
     const opts: {
       type: InputType;
@@ -55,11 +58,38 @@ const BasicField: FunctionComponent<BasicFieldConnectedProps> = props => {
   const [_idx, name, type, _opts, comment] = def;
   const msgName = parent ? [parent, name] : [name];
 
-  if (name >= 0) { // name is type if not field
+  const createID = () => {
+    const randomID = uuid4();
+    setValue(randomID);
+    optChange(msgName.join('.'), randomID, arr);
+  }
+
+  if (name >= 0) { // name is type if not field    
     return <Field def={def} parent={msgName.join('.')} optChange={optChange} />;
   }
   const opts = inputOpts(type);
-  if (opts.type == 'datetime') {
+  if (name == 'command_id') {
+    return (
+      <div className='form-group'>
+        <div className='card'>
+          <div className='card-header p-2'>
+            <Button color='primary' className='float-right' onClick={createID}>Generate ID</Button>
+            <h4 className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</h4>
+            {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
+          </div>
+          <div className='card-body mx-3'>
+            <Input
+              value={value}
+              type={opts.type}
+              placeholder={opts.placeholder}
+              name={name}
+              onChange={e => { setValue(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  } else if (opts.type == 'datetime') {
     return (
       <div className='form-group'>
         <div className='card'>
