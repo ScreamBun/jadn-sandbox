@@ -1,4 +1,4 @@
-import { faCubes, faInfoCircle, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { faCubes, faInfoCircle, faMicrophone, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI
@@ -90,7 +90,7 @@ const Home = () => {
 
               <div className="card">
                 <div className="card-body text-center bg-primary p-2 text-light">
-                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faShuffle} /></p>
+                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faMicroscope} /></p>
                   <h5 className="card-title m-0">Validation</h5>
                 </div>
                 <ul className="list-group list-group-flush">
