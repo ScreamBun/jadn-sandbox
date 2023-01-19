@@ -1,5 +1,5 @@
-./jadnschema-0.2.3-py2.py3-none-any.whl
-# -e /home/matt/screamingbunny/Schema/jadnschema
+#./jadnschema-0.2.3-py2.py3-none-any.whl
+ -e /home/matt/screamingbunny/Schema/jadnschema
 # -e /home/kaitlyn_hsu/ScreamingBunnyRepo/Schema/jadnschema
 flask==2.2.2
 flask_restful==0.3.9
