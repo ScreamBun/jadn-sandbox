@@ -9,7 +9,7 @@ export const format = (msg: string, fmt: string, ind?: number) => {
     switch (fmt) {
       case 'cbor':
         //TODO: FIX  CBOR pretty print
-        rtnMsg = cbor2escaped(msg);
+        rtnMsg = (msg);
         break;
       case 'json':
         rtnMsg = vkbeautify.json(msg, indent);
