@@ -9646,7 +9646,7 @@ __metadata:
 
 "react-bootswatch-theme-switcher@https://git@github.com/screambun/react-bootswatch-theme-switcher.git":
   version: 1.2.0
-  resolution: "react-bootswatch-theme-switcher@https://git@github.com/screambun/react-bootswatch-theme-switcher.git#commit=8bd4228a4b74fbafa023bb72d2b65bd7ee8c154f"
+  resolution: "react-bootswatch-theme-switcher@https://git@github.com/screambun/react-bootswatch-theme-switcher.git#commit=144717cfbc695138a0e858a6a2782f6bd3dc34e5"
   dependencies:
     "@babel/runtime": ^7.18.3
     axios: ^0.27.2
@@ -9654,7 +9654,7 @@ __metadata:
     react: ">=17.0.2"
     react-dom: ">=17.0.2"
     reactstrap: ">=8.10.0"
-  checksum: e6d107b3ecf5b708fa1640251877d7d29891e930b230ba9a6035a7cc0deaaa8e83428b8ee2ead68ce722ef42ec370664c34d925e04167fac3181e4d7273956ba
+  checksum: 1df4e6b12892fd93d8e6af4d241c6df6764d98870a1af2a8c1afd80dc3e52d7df317ad9b0399888de2f0c5e050e2f225aba241937b50067874e541ba8b2f2c9a
   languageName: node
   linkType: hard
 
