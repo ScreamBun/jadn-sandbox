@@ -28,8 +28,8 @@ interface ArrayOfFieldState {
 
 // Redux Connector
 const mapStateToProps = (state: RootState) => ({
-  schema: state.Generate.selectedSchema as SchemaJADN,
-  baseTypes: state.Generate.types.base
+  schema: state.Util.selectedSchema as SchemaJADN,
+  baseTypes: state.Util.types.base
 });
 
 const connector = connect(mapStateToProps);

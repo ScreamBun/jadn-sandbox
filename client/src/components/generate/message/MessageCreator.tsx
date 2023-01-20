@@ -3,7 +3,7 @@ import JSONPretty from 'react-json-pretty'
 import { useSelector } from 'react-redux'
 import { TabContent, TabPane, Button, FormText } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib'
-import { getSelectedSchema } from 'reducers/generate'
+import { getSelectedSchema } from 'reducers/util'
 import { StandardFieldArray } from '../schema/interface'
 
 const MessageCreator = (props: any) => {
@@ -18,8 +18,8 @@ const MessageCreator = (props: any) => {
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType) : [];
 
     const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setCommandType(e.target.value)
-        setMessage({})
+        setCommandType(e.target.value);
+        setMessage({});
     }
 
     const optChange = (k: string, v: any) => {
@@ -79,7 +79,7 @@ const MessageCreator = (props: any) => {
                         <div className='card-footer p-2'>
                             <div className='col-md-6 p-0 m-0 float-left'>
                                 <select id='command-list' name='command-list' className='form-control' value={commandType} onChange={handleSelection}
-                                title="Select message type to create based on valid JADN Schema">
+                                    title="Select message type to create based on valid JADN Schema">
                                     <option value=''>Message Type</option>
                                     {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
                                 </select>

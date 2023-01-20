@@ -25,7 +25,6 @@ export interface InfoSuccessAction extends ActionSuccessResult {
   type: typeof INFO_SUCCESS;
   payload: {
     conversions: Record<string, any>;
-    schemas: Array<any>;
   };
 }
 

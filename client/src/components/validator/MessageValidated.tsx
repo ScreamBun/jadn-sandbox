@@ -5,7 +5,7 @@ import {
     escaped2cbor, format, hexify
 } from '../utils';
 import { loadFile } from "actions/util";
-import { getMsgFiles } from "reducers/validate";
+import { getMsgFiles } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
 
 const MessageValidated = (props: any) => {
