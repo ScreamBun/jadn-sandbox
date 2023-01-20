@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { Form, Button } from 'reactstrap'
 import MessageValidated from './MessageValidated'
-import { info, validateMessage } from 'actions/validate'
+import { validateMessage } from 'actions/validate'
+import { info } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -12,7 +13,6 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 const MessageValidator = () => {
     const dispatch = useDispatch();
 
-    //state 
     const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
     const [selectedMsgFile, setSelectedMsgFile] = useState('');
@@ -24,7 +24,6 @@ const MessageValidator = () => {
         exports: []
     });
 
-    //add meta data for page 
     const meta_title = useSelector(getPageTitle) + ' | Validate ';
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {

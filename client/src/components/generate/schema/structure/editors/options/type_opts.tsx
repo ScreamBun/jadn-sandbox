@@ -17,7 +17,7 @@ interface TypeOptionsEditorProps {
 
 // Redux Connector
 const mapStateToProps = (state: RootState) => ({
-  schemaTypes: [...state.Generate.types.base, ...Object.keys(state.Generate.types.schema)]
+  schemaTypes: [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]
 });
 
 const connector = connect(mapStateToProps);

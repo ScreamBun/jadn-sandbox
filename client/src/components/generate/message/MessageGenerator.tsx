@@ -4,23 +4,19 @@ import { Helmet } from 'react-helmet-async'
 import { Button, Form } from 'reactstrap'
 import MessageCreator from './MessageCreator'
 import { getPageTitle } from 'reducers/util'
-import { info, setSchema } from 'actions/generate'
+import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 
 
 const MessageGenerator = () => {
     const dispatch = useDispatch()
 
-    //state 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
     const [message, setMessage] = useState({});
 
-    //add meta data for page 
     const meta_title = useSelector(getPageTitle) + ' | Generate Message'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-
-    //populate meta and schema from server
     useEffect(() => {
         dispatch(info());
     }, [dispatch])

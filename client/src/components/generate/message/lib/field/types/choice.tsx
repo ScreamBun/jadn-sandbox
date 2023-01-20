@@ -18,7 +18,7 @@ interface ChoiceFieldState {
 
 // Redux Connector
 const mapStateToProps = (state: RootState) => ({
-  schema: state.Generate.selectedSchema as SchemaJADN
+  schema: state.Util.selectedSchema as SchemaJADN
 });
 
 const connector = connect(mapStateToProps);

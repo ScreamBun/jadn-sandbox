@@ -1,4 +1,5 @@
 // Actions for utils API
+import { SchemaJADN } from 'components/generate/schema/interface';
 import { createAction } from 'redux-api-middleware';
 import { ActionFailureResult, ActionRequestResult, ActionSuccessResult } from './interfaces';
 
@@ -6,8 +7,28 @@ import { ActionFailureResult, ActionRequestResult, ActionSuccessResult } from '.
 const baseAPI = '/api';
 
 // Helper Functions
-// None
+// OPTIONS - set schema locally for generating messages
+export const SCHEMA_DEFINE = '@@util/SCHEMA_DEFINE';
+export const SCHEMA_SUCCESS = '@@util/SCHEMA_SUCCESS';
+export const SCHEMA_FAILURE = '@@util/SCHEMA_FAILURE';
+export const setSchema = (schema: SchemaJADN) => createAction({
+  endpoint: '',
+  method: 'OPTIONS',
+  types: [
+    SCHEMA_DEFINE,
+    {
+      type: SCHEMA_SUCCESS,
+      payload: (_action, _state) => ({ schema })
+      }, SCHEMA_FAILURE
+    ]
+});
 
+export interface SetSchemaSuccessAction extends ActionSuccessResult {
+  type: typeof SCHEMA_SUCCESS;
+  payload: {
+    schema: SchemaJADN;
+  };
+}
 // API Calls
 // GET /api/ - basic server info
 const INFO_REQUEST = '@@util/INFO_REQUEST';
@@ -26,6 +47,8 @@ export interface InfoSuccessAction extends ActionSuccessResult {
   payload: {
     title: string;
     message: string;
+    schemas: Array<any>;
+    messages: Record<string, any>;
   };
 }
 
@@ -52,16 +75,16 @@ export interface LoadSuccessAction extends ActionSuccessResult {
 
 // Request Actions
 export interface UtilRequestActions extends ActionRequestResult {
-  type: typeof INFO_REQUEST | typeof LOAD_REQUEST;
+  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE ;
 }
 
 // Failure Actions
 export interface UtilFailureActions extends ActionFailureResult {
-  type: typeof INFO_FAILURE | typeof LOAD_FAILURE;
+  type: typeof INFO_FAILURE | typeof LOAD_FAILURE | typeof SCHEMA_FAILURE;
 }
 
 export type UtilActions = (
   UtilRequestActions | UtilFailureActions |
   // Success Actions
-  InfoSuccessAction | LoadSuccessAction
+  InfoSuccessAction | LoadSuccessAction | SetSchemaSuccessAction
 );
