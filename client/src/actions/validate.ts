@@ -13,8 +13,6 @@ const baseAPI = '/api/validate';
 
 // API Calls
 // GET - /api/validate/ - get basic validate info
-
-
 // POST - /api/validate/schema - validate the given schema
 const VALIDATE_SCHEMA_REQUEST = '@@validate/VALIDATE_SCHEMA_REQUEST';
 export const VALIDATE_SCHEMA_SUCCESS = '@@validate/VALIDATE_SCHEMA_SUCCESS';
