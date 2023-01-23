@@ -131,7 +131,7 @@ const SchemaConverted = (props: any) => {
 
                     <CopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
 
-                    <div className={`btn-group btn-group-sm float-right ${convertedSchema ? '' : ' d-none'}`}>
+                    <div className={`btn-group btn-group-sm mr-1 float-right ${convertedSchema ? '' : ' d-none'}`}>
                         <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
                             <FontAwesomeIcon icon={faFileDownload} />
                         </Button>
