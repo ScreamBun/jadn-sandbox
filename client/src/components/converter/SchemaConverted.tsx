@@ -121,7 +121,7 @@ const SchemaConverted = (props: any) => {
                     />
                 </div>
 
-                <div className='card-footer p-2'>
+                <div className='card-footer p-1'>
                     <div className={`btn-group btn-group-sm float-right mr-2${convertedSchema ? '' : ' d-none'}`}>
                         <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={schemaDownload}>
                             <FontAwesomeIcon icon={faFileDownload} size='2x' />
@@ -138,8 +138,8 @@ const SchemaConverted = (props: any) => {
                         </Button>
                     </div>
 
-                    <div className="form-row ml-1 mb-0">
-                        <div className="input-group col-md-6 px-1 mb-0">
+                    <div className="form-row">
+                        <div className="input-group col-md-6 px-1">
                             <select id="convert-to" name="convert-to" className="form-control" value={conversion} onChange={handleConversion}>
                                 <option value=""> Convert To... </option>
                                 {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}

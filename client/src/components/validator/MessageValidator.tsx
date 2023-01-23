@@ -72,7 +72,7 @@ const MessageValidator = () => {
                         <div className='card-header p-2'>
                             <h5 className='m-0'> Validate Message </h5>
                         </div>
-                        <div className='card-body p-2'>
+                        <div className='card-body p-1'>
                             <Form>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
@@ -96,8 +96,8 @@ const MessageValidator = () => {
                             </Form>
                         </div>
                         <div className='card-footer p-2'>
-                            <Button color="success" className='float-right ml-1' type="submit" onClick={submitForm} title="Validate the message against the given schema">Validate Message</Button>
-                            <Button color="danger" className='float-right' type="reset" onClick={onReset}>Reset</Button>
+                            <Button color="success" className='float-right ml-1 btn-sm' type="submit" onClick={submitForm} title="Validate the message against the given schema">Validate Message</Button>
+                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>

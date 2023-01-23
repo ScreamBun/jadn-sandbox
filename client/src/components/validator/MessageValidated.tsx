@@ -107,7 +107,7 @@ const MessageValidated = (props: any) => {
                     />
                 </div>
 
-                <div className="card-footer p-2">
+                <div className="card-footer p-1">
                     <div className="form-row">
 
                         <div className="input-group col px-1 mb-0">

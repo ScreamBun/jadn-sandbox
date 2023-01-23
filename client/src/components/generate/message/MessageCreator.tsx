@@ -103,15 +103,19 @@ const MessageCreator = (props: any) => {
                                 </div>
                             </div>
                         </div>
-                        <div className='card-footer p-2'>
-                            <div className='col-md-6 p-0 m-0 float-left'>
-                                <select id='command-list' name='command-list' className='form-control' value={commandType} onChange={handleSelection}
-                                    title="Select message type to create based on valid JADN Schema">
-                                    <option value=''>Message Type</option>
-                                    {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
-                                </select>
-                            </div>
-                            <Button onClick={() => setActiveView('message')} className="float-right" color="info">See Generated Message</Button>
+                        <div className='card-footer p-1'>
+                            <div className='row'>
+                                <div className='col-md-6'>
+                                    <select id='command-list' name='command-list' className='form-control' value={commandType} onChange={handleSelection}
+                                        title="Select message type to create based on valid JADN Schema">
+                                        <option value=''>Message Type</option>
+                                        {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
+                                    </select>
+                                </div>
+                                <div className='col-md-6'>
+                                    <Button onClick={() => setActiveView('message')} className="float-right btn-sm mt-1" color="info">See Generated Message</Button>
+                                </div> 
+                            </div>                           
                         </div>
                     </div>
                 </TabPane>

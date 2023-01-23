@@ -213,9 +213,9 @@ const JADNSchemaLoader = (props: any) => {
                     />
                 </div>
 
-                <div className="card-footer p-2">
-                    <div className="row">
-                        <div className="col-6">
+                <div className="card-footer p-1">
+                    <div className="row no-gutters">
+                        <div className="col-md-6">
                             <select id="schema-list" name="schema-list" className="form-control" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
                                 <option value="">Select a Schema...</option>
                                 <optgroup label="Testers">
@@ -227,9 +227,9 @@ const JADNSchemaLoader = (props: any) => {
                             </select>
                             <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                         </div>
-                        <div className="col-6">
-                            <Button id='validateJADNButton' className="float-right" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
-                                <span className="mr-1">Validate JADN</span>
+                        <div className="col-md-6">
+                            <Button id='validateJADNButton' className="float-right btn-sm mt-1" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
+                                <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
                                     <span className="badge badge-pill badge-success">
                                         <FontAwesomeIcon icon={faCheck} />
@@ -239,9 +239,9 @@ const JADNSchemaLoader = (props: any) => {
                                     </span>)
                                 }
                             </Button>
-                            <Button id='formatButton' className="float-right mx-1" color="info" onClick={onFormatClick}
+                            <Button id='formatButton' className="float-right btn-sm mr-1 mt-1" color="info" onClick={onFormatClick}
                                 title='Attempts to Parse and Format.'>
-                                <span className="mr-1">Format JSON</span>
+                                <span className="m-1">Format JSON</span>
                                 {isValidJSON ? (
                                     <span className="badge badge-pill badge-success">
                                         <FontAwesomeIcon icon={faCheck} />
