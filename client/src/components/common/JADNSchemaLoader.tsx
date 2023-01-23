@@ -201,7 +201,7 @@ const JADNSchemaLoader = (props: any) => {
                         onChange={onSchemaChange}
                         value={loadedSchema}
                         className='form-control'
-                        placeholder='Schema to be converted'
+                        placeholder='Please select a schema'
                         style={{
                             resize: 'none',
                             outline: 'none',
@@ -228,7 +228,7 @@ const JADNSchemaLoader = (props: any) => {
                             <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                         </div>
                         <div className="col-6">
-                            <Button id='validateJADNButton' className="float-right" color="info" onClick={onValidateJADNClick}>
+                            <Button id='validateJADNButton' className="float-right" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
                                 <span className="mr-1">Validate JADN</span>
                                 {isValidJADN ? (
                                     <span className="badge badge-pill badge-success">

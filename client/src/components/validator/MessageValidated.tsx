@@ -44,6 +44,13 @@ const MessageValidated = (props: any) => {
         }
     }, [selectedFile]);
 
+    const onMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedFile('empty');
+        setDecodeMsg('');
+        setMsgFormat('');
+        setLoadedMsg(e.target.value);
+
+    }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -96,7 +103,7 @@ const MessageValidated = (props: any) => {
                         required
                         placeholder='Paste message to be validated here'
                         value={loadedMsg}
-                        onChange={e => setLoadedMsg(e.target.value)}
+                        onChange={onMsgChange}
                     />
                 </div>
 
@@ -119,8 +126,8 @@ const MessageValidated = (props: any) => {
                             </div>
                         </div>
 
-                        <div className="input-group col-md-3 px-1 mb-0">
-                            <select className="form-control" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)} >
+                        <div className={`input-group col-md-3 px-1 mb-0 ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
+                            <select className="form-control" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)}>
                                 <option value="">Message Format</option>
                                 <option value="json">json</option>
                                 <option value="cbor">cbor</option>
