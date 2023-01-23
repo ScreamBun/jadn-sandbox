@@ -6,10 +6,16 @@ import { sbToastSuccess } from "./SBToast";
 
 const CopyToClipboard = (props: any) => {
 
-    const { buttonId, data, customClass } = props;
+    const { buttonId, data, customClass, shouldStringify = false } = props;
 
     const onCopyClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
-        navigator.clipboard.writeText(data);
+        let copied_data = data;
+
+        if(shouldStringify == true){
+            copied_data = JSON.stringify(data, null, 4);
+        }
+
+        navigator.clipboard.writeText(copied_data);
         sbToastSuccess(`Copied to clipboard`);
     }    
 
