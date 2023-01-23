@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { getAllSchemas } from "../../reducers/generate";
-import { setSchema } from "../../actions/generate";
-import { loadFile } from "../../actions/util";
+import { getAllSchemas } from "../../reducers/util";
+import { loadFile, setSchema } from "../../actions/util";
 import { validateSchema } from "../../actions/validate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sbToastError, sbToastSuccess } from "./SBToast";
 
 const JADNSchemaLoader = (props: any) => {
+    const dispatch = useDispatch();
+
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJSON, setIsValidJSON] = useState(false);
     const [isValidJADN, setIsValidJADN] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
-    const dispatch = useDispatch();
 
     useEffect(() => {
         if (selectedFile == "" || selectedFile == "file") {
@@ -25,14 +25,14 @@ const JADNSchemaLoader = (props: any) => {
             try {
                 dispatch(loadFile('schemas', selectedFile))
                     .then((loadFileVal) => {
-                        
+
                         try {
                             let schemaObj = loadFileVal.payload.data;
                             dispatch(setSchema(schemaObj))
                             setLoadedSchema(JSON.stringify(schemaObj, null, 2));
                             validateJSON(JSON.stringify(schemaObj));
-                            validateJADN(JSON.stringify(schemaObj));  
-                            if(setDecodeSchemaTypes && setDecodeMsg){
+                            validateJADN(JSON.stringify(schemaObj));
+                            if (setDecodeSchemaTypes && setDecodeMsg) {
                                 loadDecodeTypes(schemaObj); // If statement?                 
                             }
                         } catch (err) {
@@ -54,7 +54,7 @@ const JADNSchemaLoader = (props: any) => {
         }
     }, [selectedFile]);
 
-    const loadDecodeTypes = (schemaObj:any) => {
+    const loadDecodeTypes = (schemaObj: any) => {
         let decodeTypes = {
             all: [],
             exports: []
@@ -110,12 +110,13 @@ const JADNSchemaLoader = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool) {
                         setIsValidJADN(true);
+                        dispatch(setSchema(jsonToValidate));
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
                         sbToastError(validateSchemaVal.payload.valid_msg);
                     }
                 })
-                .catch((validateSchemaErr) => { 
+                .catch((validateSchemaErr) => {
                     sbToastError(validateSchemaErr.payload.valid_msg)
                 })
         } catch (err) {
@@ -151,7 +152,7 @@ const JADNSchemaLoader = (props: any) => {
         }
 
         return jsonObj;
-    }    
+    }
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -161,7 +162,7 @@ const JADNSchemaLoader = (props: any) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        setLoadedSchema(data); 
+                        setLoadedSchema(data);
                     } catch (err) {
                         sbToastError(`File cannot be loaded`)
                     }
@@ -169,7 +170,7 @@ const JADNSchemaLoader = (props: any) => {
             };
             fileReader.readAsText(file);
         }
-    }    
+    }
 
     const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         formatJSON(loadedSchema);
@@ -200,7 +201,7 @@ const JADNSchemaLoader = (props: any) => {
                         onChange={onSchemaChange}
                         value={loadedSchema}
                         className='form-control'
-                        placeholder='Schema to be converted'
+                        placeholder='Please select a schema'
                         style={{
                             resize: 'none',
                             outline: 'none',
@@ -227,30 +228,30 @@ const JADNSchemaLoader = (props: any) => {
                             <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                         </div>
                         <div className="col-6">
-                            <Button id='validateJADNButton' className="float-right" color="info" onClick={onValidateJADNClick}>
+                            <Button id='validateJADNButton' className="float-right" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
                                 <span className="mr-1">Validate JADN</span>
                                 {isValidJADN ? (
                                     <span className="badge badge-pill badge-success">
                                         <FontAwesomeIcon icon={faCheck} />
-                                    </span> ) : (
+                                    </span>) : (
                                     <span className="badge badge-pill badge-danger">
                                         <FontAwesomeIcon icon={faXmark} />
-                                    </span> )
-                                } 
-                            </Button>                               
+                                    </span>)
+                                }
+                            </Button>
                             <Button id='formatButton' className="float-right mx-1" color="info" onClick={onFormatClick}
                                 title='Attempts to Parse and Format.'>
                                 <span className="mr-1">Format JSON</span>
                                 {isValidJSON ? (
                                     <span className="badge badge-pill badge-success">
                                         <FontAwesomeIcon icon={faCheck} />
-                                    </span> ) : (
+                                    </span>) : (
                                     <span className="badge badge-pill badge-danger">
                                         <FontAwesomeIcon icon={faXmark} />
-                                    </span> )
-                                }                        
-                            </Button>                              
-                        </div> 
+                                    </span>)
+                                }
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>

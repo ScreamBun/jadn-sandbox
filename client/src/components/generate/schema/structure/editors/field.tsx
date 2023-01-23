@@ -30,10 +30,10 @@ interface FieldEditorState {
 
 // Redux Connector
 const mapStateToProps = (state: RootState) => ({
-  allTypes: [...state.Generate.types.base, ...Object.keys(state.Generate.types.schema)],
+  allTypes: [...state.Util.types.base, ...Object.keys(state.Util.types.schema)],
   types: {
-    base: state.Generate.types.base,
-    schema: Object.keys(state.Generate.types.schema)
+    base: state.Util.types.base,
+    schema: Object.keys(state.Util.types.schema)
   }
 });
 

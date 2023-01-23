@@ -6,7 +6,6 @@ export interface ConvertState {
     convert: string;
     fmt: string;
   }
-  schemas: Array<any>;
 }
 
 const initialState: ConvertState = {
@@ -15,16 +14,14 @@ const initialState: ConvertState = {
     convert: '',
     fmt: ''
   },
-  schemas: []
 };
 
-export default (state=initialState, action: convert.ConvertActions) => {
+export default (state = initialState, action: convert.ConvertActions) => {
   switch (action.type) {
     case convert.INFO_SUCCESS:
       return {
         ...state,
-        conversions: action.payload.conversions || {},
-        schemas: action.payload.schemas || []
+        conversions: action.payload.conversions || {}
       };
 
     case convert.CONVERT_SUCCESS:
@@ -46,5 +43,4 @@ export default (state=initialState, action: convert.ConvertActions) => {
 };
 
 //selectors
-export const getFiles = (state: { Convert: { schemas: any; }; }) => state.Convert.schemas;
 export const getConversions = (state: { Convert: { conversions: any; }; }) => state.Convert.conversions;

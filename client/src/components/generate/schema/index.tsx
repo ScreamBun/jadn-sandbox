@@ -16,7 +16,7 @@ import { Info, Types } from './structure';
 import { FormatJADN, JADNInput } from '../../utils';
 
 import { RootState } from '../../../reducers';
-import * as GenActions from '../../../actions/generate';
+import * as GenActions from '../../../actions/util';
 import * as ConformanceActions from "../../../actions/conformance";
 
 // Module requires

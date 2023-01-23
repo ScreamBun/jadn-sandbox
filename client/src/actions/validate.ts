@@ -13,25 +13,6 @@ const baseAPI = '/api/validate';
 
 // API Calls
 // GET - /api/validate/ - get basic validate info
-const INFO_REQUEST = '@@validate/INFO_REQUEST';
-export const INFO_SUCCESS = '@@validate/INFO_SUCCESS';
-export const INFO_FAILURE = '@@validate/INFO_FAILURE';
-export const info = () => createAction({
-  endpoint: `${baseAPI}/`,
-  method: 'GET',
-  types: [
-    INFO_REQUEST, INFO_SUCCESS, INFO_FAILURE
-  ]
-});
-
-export interface InfoSuccessAction extends ActionSuccessResult {
-  type: typeof INFO_SUCCESS;
-  payload: {
-    messages: Record<string, any>;
-    schemas: Record<string, any>;
-  };
-}
-
 // POST - /api/validate/schema - validate the given schema
 const VALIDATE_SCHEMA_REQUEST = '@@validate/VALIDATE_SCHEMA_REQUEST';
 export const VALIDATE_SCHEMA_SUCCESS = '@@validate/VALIDATE_SCHEMA_SUCCESS';
@@ -79,16 +60,16 @@ export interface ValidateMessageSuccessAction extends ActionSuccessResult {
 
 // Request Actions
 export interface UtilRequestActions extends ActionRequestResult {
-  type: typeof INFO_REQUEST | typeof VALIDATE_SCHEMA_REQUEST | typeof VALIDATE_MESSAGE_REQUEST;
+  type: typeof VALIDATE_SCHEMA_REQUEST | typeof VALIDATE_MESSAGE_REQUEST;
 }
 
 // Failure Actions
 export interface UtilFailureActions extends ActionFailureResult {
-  type: typeof INFO_FAILURE | typeof VALIDATE_FAILURE;
+  type: typeof VALIDATE_FAILURE;
 }
 
 export type ValidateActions = (
   UtilRequestActions | UtilFailureActions |
   // Success Actions
-  InfoSuccessAction | ValidateSchemaSuccessAction | ValidateMessageSuccessAction
+  ValidateSchemaSuccessAction | ValidateMessageSuccessAction
 );

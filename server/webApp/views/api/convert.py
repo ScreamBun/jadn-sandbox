@@ -25,10 +25,7 @@ class Convert(Resource):
     """
 
     def get(self):
-        schemas = re.compile(fr"\.({'|'.join(current_app.config.get('VALID_SCHEMAS'))})$")
-
         return jsonify({
-            "schemas": [s for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "schemas")) if schemas.search(s)],
             "conversions": current_app.config.get("VALID_SCHEMA_CONV")
         })
 

@@ -4,26 +4,28 @@ import { Helmet } from 'react-helmet-async'
 import { Button, Form } from 'reactstrap'
 import MessageCreator from './MessageCreator'
 import { getPageTitle } from 'reducers/util'
-import { info, setSchema } from 'actions/generate'
+import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 
 
 const MessageGenerator = () => {
     const dispatch = useDispatch()
 
-    //state 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
     const [message, setMessage] = useState({});
+    const [commandType, setCommandType] = useState('');
 
-    //add meta data for page 
     const meta_title = useSelector(getPageTitle) + ' | Generate Message'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-
-    //populate meta and schema from server
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
+
+    useEffect(() => {
+        setMessage({});
+        setCommandType('');
+    }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -56,7 +58,8 @@ const MessageGenerator = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <MessageCreator
-                                            message={message} setMessage={setMessage} />
+                                            message={message} setMessage={setMessage}
+                                            commandType={commandType} setCommandType={setCommandType} />
                                     </div>
                                 </div>
                             </Form>

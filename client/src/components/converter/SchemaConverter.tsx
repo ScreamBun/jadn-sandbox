@@ -17,11 +17,8 @@ const SchemaConverter = () => {
     const [convertedSchema, setConvertedSchema] = useState('');
     const [conversion, setConversion] = useState('');
 
-    //add meta data for page
     const meta_title = useSelector(getPageTitle) + ' | Convert Schema'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-
-    //populate meta, schema and conversions from server
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
@@ -57,33 +54,33 @@ const SchemaConverter = () => {
             try {
                 dispatch(validateSchema(schemaObj))
                     .then((validateSchemaVal) => {
-                            if (validateSchemaVal.payload.valid_bool == true && conversion) {
-                                try {
-                                    dispatch(convertSchema(schemaObj, conversion))
-                                        .then((convertSchemaVal) => {
-                                            setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                                            const conversionCheck = convertSchemaVal.payload.schema.convert;
-                                            if (conversionCheck.startsWith('Error')) {
-                                                sbToastError(conversionCheck);
-                                            } else {
-                                                sbToastSuccess(`Schema conversion to ${conversion} successfully`);
-                                            }
-                                        })
-                                        .catch((_convertSchemaErr) => {
-                                            sbToastError(_convertSchemaErr);
-                                        })
+                        if (validateSchemaVal.payload.valid_bool == true && conversion) {
+                            try {
+                                dispatch(convertSchema(schemaObj, conversion))
+                                    .then((convertSchemaVal) => {
+                                        setConvertedSchema(convertSchemaVal.payload.schema.convert);
+                                        const conversionCheck = convertSchemaVal.payload.schema.convert;
+                                        if (conversionCheck.startsWith('Error')) {
+                                            sbToastError(conversionCheck);
+                                        } else {
+                                            sbToastSuccess(`Schema conversion to ${conversion} successfully`);
+                                        }
+                                    })
+                                    .catch((_convertSchemaErr) => {
+                                        sbToastError(_convertSchemaErr);
+                                    })
 
-                                } catch (err) {
-                                    if (err instanceof Error) {
-                                        sbToastError(err.message);
-                                    }
+                            } catch (err) {
+                                if (err instanceof Error) {
+                                    sbToastError(err.message);
                                 }
-                            } else if (validateSchemaVal.payload.valid_bool == false) {
-                                sbToastError("Invalid Schema");
-                            } else if (conversion == '') {
-                                sbToastError("No conversion selected");
                             }
-                        })
+                        } else if (validateSchemaVal.payload.valid_bool == false) {
+                            sbToastError("Invalid Schema");
+                        } else if (conversion == '') {
+                            sbToastError("No conversion selected");
+                        }
+                    })
                     .catch((validateSchemaErr) => {
                         sbToastError(validateSchemaErr);
                     })

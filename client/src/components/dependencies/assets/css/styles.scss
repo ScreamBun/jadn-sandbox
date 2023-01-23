@@ -5,12 +5,14 @@
     font-weight: 400;
     src: local('Roboto'), local('Roboto-Regular'), url('../../assets/fonts/Roboto-Regular.ttf') format('truetype');
 }
+
 @font-face {
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 500;
     src: local('Roboto Medium'), local('Roboto-Medium'), url('../../assets/fonts/Roboto-Medium.ttf') format('truetype');
 }
+
 @font-face {
     font-family: 'Roboto';
     font-style: normal;
@@ -23,66 +25,79 @@ $max-scroll: 20em;
 
 /* Custom CSS Styles */
 body {
-	padding-top: 75px;
+    padding-top: 75px;
 }
-.navbar-brand > img {
+
+.navbar-brand>img {
     max-height: 2em;
     width: auto;
-    -moz-padding: 15px; /* firefox bug fix */
+    -moz-padding: 15px;
+    /* firefox bug fix */
 }
 
 #alert-container {
-	z-index: 100;
-	position: fixed;
-	bottom: 1em;
-	right: 1em;
+    z-index: 100;
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
 }
-.code, textarea {
-  font-family: 'Roboto', Consolas, monaco, monospace;
-	font-size: 1em;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 400;
-	line-height: 18.5714px;
-	white-space: pre-wrap;
+
+.code,
+textarea {
+    font-family: 'Roboto', Consolas, monaco, monospace;
+    font-size: 1em;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 18.5714px;
+    white-space: pre-wrap;
 }
+
 div {
-	&.scroll {
-		max-height: $max-scroll;
-		overflow: scroll;
-		&-lg {
-			max-height: $max-scroll*2;
-			overflow: scroll;
-		}
-		&-xl {
-			max-height: $max-scroll*3;
-			overflow: scroll;
-		}
-	}
+    &.scroll {
+        max-height: $max-scroll;
+        overflow: scroll;
+
+        &-lg {
+            max-height: $max-scroll*2;
+            overflow: scroll;
+        }
+
+        &-xl {
+            max-height: $max-scroll*3;
+            overflow: scroll;
+        }
+    }
 }
+
 /* Pretty JSON Module theme */
 .json-pretty {
-	font-family: 'Roboto', monaco, monospace;
-	font-size: 0.8zem;
-  line-height: inherit;
-	color: #D4D4D4;
-	background-color: #FCFDFD;
-	.json {
-		&-key {
-			color: #59A5D8;
-		}
-		&-value, &-boolean {
-			color: #386FA4;
-		}
-		&-string {
-			color: #FA7921;
-		}
-	}
+    font-family: 'Roboto', monaco, monospace;
+    font-size: 0.8zem;
+    line-height: inherit;
+    color: #D4D4D4;
+    background-color: #FCFDFD;
+
+    .json {
+        &-key {
+            color: #59A5D8;
+        }
+
+        &-value,
+        &-boolean {
+            color: #386FA4;
+        }
+
+        &-string {
+            color: #FA7921;
+        }
+    }
 }
 
 .modal {
     text-align: center;
-    padding: 0!important;
+    padding: 0 !important;
+
     &:before {
         content: '';
         display: inline-block;
@@ -90,6 +105,7 @@ div {
         vertical-align: middle;
         margin-right: -4px;
     }
+
     &-dialog {
         display: inline-block;
         text-align: left;
@@ -108,6 +124,7 @@ div {
 #schema-options {
     .list-group-item {
         padding: 5px;
+
         &-action {
             cursor: pointer;
         }
@@ -123,18 +140,13 @@ legend {
 // No media query since this is the default in Bootstrap
 
 // Small devices (landscape phones, 576px and up)
-@media (min-width: 576px) {
-}
+@media (min-width: 576px) {}
 
 // Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {
-	
-}
+@media (min-width: 768px) {}
 
 // Large devices (desktops, 992px and up)
-@media (min-width: 992px) {
-}
+@media (min-width: 992px) {}
 
 // Extra large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) {
-}
+@media (min-width: 1200px) {}

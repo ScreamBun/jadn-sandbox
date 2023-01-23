@@ -1,8 +1,6 @@
 import ast
 import json
 import logging
-import os
-import re
 
 from flask import Blueprint, current_app, jsonify, redirect
 from flask_restful import Api, Resource, reqparse
@@ -22,21 +20,6 @@ class Validate(Resource):
     """
     Endpoint for api/validate
     """
-    def get(self):
-        schemas = re.compile(fr"\.({'|'.join(current_app.config.get('VALID_SCHEMAS'))})$")
-        messages = re.compile(fr"\.({'|'.join(current_app.config.get('VALID_MESSAGES'))})$")
-        message_files = {}
-
-        for msg in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "messages")):
-            if messages.search(msg) and not msg.startswith("_"):
-                message_files[msg] = current_app.config.get("DEFAULT_MESSAGE_TYPES").get(msg, "")
-
-        opts = {
-            "schemas": [s for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "schemas")) if schemas.search(s)],
-            "messages": message_files
-        }
-
-        return jsonify(opts)
 
     def post(self):
         args = parser.parse_args()

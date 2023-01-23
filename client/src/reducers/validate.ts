@@ -1,8 +1,6 @@
 import * as validate from '../actions/validate';
 
 export interface ValidateState {
-	messages: Record<string, any>;
-	schemas: Array<any>;
 	error: Record<string, any>;
 	valid: {
 		message: Record<string, any>;
@@ -11,8 +9,6 @@ export interface ValidateState {
 }
 
 const initialState: ValidateState = {
-	messages: {},
-	schemas: [],
 	error: {},
 	valid: {
 		message: {},
@@ -22,14 +18,6 @@ const initialState: ValidateState = {
 
 export default (state = initialState, action: validate.ValidateActions) => {
 	switch (action.type) {
-		case validate.INFO_SUCCESS:
-			return {
-				...state,
-				messages: action.payload.messages || {},
-				schemas: action.payload.schemas || [],
-				error: {}
-			};
-
 		case validate.VALIDATE_SCHEMA_SUCCESS:
 			return {
 				...state,
@@ -48,7 +36,6 @@ export default (state = initialState, action: validate.ValidateActions) => {
 				}
 			};
 
-		case validate.INFO_FAILURE:
 		case validate.VALIDATE_FAILURE:
 			console.log(action.payload);
 			return {
@@ -60,7 +47,3 @@ export default (state = initialState, action: validate.ValidateActions) => {
 			return state;
 	}
 };
-
-//selectors
-export const getSchemaFiles = (state: { Validate: { schemas: any; }; }) => state.Validate.schemas;
-export const getMsgFiles = (state: { Validate: { messages: any; }; }) => state.Validate.messages;
