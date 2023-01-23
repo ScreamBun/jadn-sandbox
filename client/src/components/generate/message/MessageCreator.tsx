@@ -5,14 +5,16 @@ import { TabContent, TabPane, Button, FormText } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib'
 import { getSelectedSchema } from 'reducers/util'
 import { StandardFieldArray } from '../schema/interface'
+import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { sbToastError } from 'components/common/SBToast'
 
 const MessageCreator = (props: any) => {
-    const { message, setMessage } = props
+    const { message, setMessage, commandType, setCommandType } = props
     let schemaObj = useSelector(getSelectedSchema);
 
     //state 
     const [activeView, setActiveView] = useState('creator');
-    const [commandType, setCommandType] = useState('');
 
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType) : [];
@@ -62,6 +64,31 @@ const MessageCreator = (props: any) => {
         );
     }
 
+    const msgDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (message != '{}') {
+            try {
+                const data = JSON.stringify(message, null, 2);
+                const filename = `schema.json`;
+
+                const blob = new Blob([data], { type: "application/json" });
+                const elem = document.createElement('a');
+                elem.href = URL.createObjectURL(blob);
+                elem.download = filename;
+                document.body.appendChild(elem);
+                elem.click();
+
+                elem.remove();
+                URL.revokeObjectURL(elem.href);
+            } catch (err) {
+                console.log(err);
+                sbToastError(`File cannot be downloaded`);
+            }
+        } else {
+            sbToastError(`No Message Generated`);
+        }
+    }
+
     return (
         <fieldset className="p-0">
             <legend>Message Creator</legend>
@@ -98,7 +125,13 @@ const MessageCreator = (props: any) => {
                             />
                         </div>
                         <div className='card-footer p-2'>
-                            <Button onClick={() => setActiveView('creator')} className="float-right" color="info">See Message Creator</Button>
+                            <div className={`btn-group btn-group-sm float-right`}>
+                                <Button onClick={() => setActiveView('creator')} className="float-right" color="info">See Message Creator</Button>
+                                <Button id='msgDownload' title="Download generated message" color="info" className={`btn-sm float-right`} onClick={msgDownload}>
+                                    <FontAwesomeIcon icon={faFileDownload} size='2x' />
+                                </Button>
+                            </div>
+
                         </div>
                     </div>
                 </TabPane>

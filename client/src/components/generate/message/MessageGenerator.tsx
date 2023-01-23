@@ -14,12 +14,18 @@ const MessageGenerator = () => {
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
     const [message, setMessage] = useState({});
+    const [commandType, setCommandType] = useState('');
 
     const meta_title = useSelector(getPageTitle) + ' | Generate Message'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
+
+    useEffect(() => {
+        setMessage({});
+        setCommandType('');
+    }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -52,7 +58,8 @@ const MessageGenerator = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <MessageCreator
-                                            message={message} setMessage={setMessage} />
+                                            message={message} setMessage={setMessage}
+                                            commandType={commandType} setCommandType={setCommandType} />
                                     </div>
                                 </div>
                             </Form>
