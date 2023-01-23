@@ -7,7 +7,7 @@ import {
 import { loadFile } from "actions/util";
 import { getMsgFiles } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
-import CopyToClipboard from "components/common/CopyToClipboard";
+import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 
 const MessageValidated = (props: any) => {
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg } = props;
@@ -153,7 +153,7 @@ const MessageValidated = (props: any) => {
                                     </select>
                                 </div>
                                 <div className="col-4">
-                                    <CopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
+                                    <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                                 </div>
                             </div>
                         </div>
