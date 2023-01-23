@@ -127,7 +127,8 @@ const MessageValidated = (props: any) => {
                         </div>
 
                         <div className={`input-group col-md-3 px-1 mb-0 ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
-                            <select className="form-control" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)}>
+                            <select className="form-control" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)}
+                            title="Select programming language">
                                 <option value="">Message Format</option>
                                 <option value="json">json</option>
                                 <option value="cbor">cbor</option>
@@ -136,7 +137,8 @@ const MessageValidated = (props: any) => {
                         </div>
 
                         <div className="input-group col-md-3 px-1 mb-0">
-                            <select className="form-control" id="message-decode" name="message-decode" required value={decodeMsg} onChange={(e) => setDecodeMsg(e.target.value)}>
+                            <select className="form-control" id="message-decode" name="message-decode" required value={decodeMsg} onChange={(e) => setDecodeMsg(e.target.value)}
+                            title="Select message type to validate against">
                                 <option value="">Message Type</option>
                                 <optgroup label="Exports">
                                     {decodeExports}

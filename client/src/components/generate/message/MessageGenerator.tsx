@@ -7,13 +7,12 @@ import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 
-
 const MessageGenerator = () => {
     const dispatch = useDispatch()
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [message, setMessage] = useState({});
+    const [generatedMessage, setGeneratedMessage] = useState({});
     const [commandType, setCommandType] = useState('');
 
     const meta_title = useSelector(getPageTitle) + ' | Generate Message'
@@ -23,7 +22,7 @@ const MessageGenerator = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setMessage({});
+        setGeneratedMessage({});
         setCommandType('');
     }, [loadedSchema])
 
@@ -31,7 +30,7 @@ const MessageGenerator = () => {
         e.preventDefault();
         setSelectedFile('');
         setLoadedSchema('');
-        setMessage({});
+        setGeneratedMessage({});
 
         dispatch(setSchema({ types: [] }));
     }
@@ -58,7 +57,7 @@ const MessageGenerator = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <MessageCreator
-                                            message={message} setMessage={setMessage}
+                                            message={generatedMessage} setMessage={setGeneratedMessage}
                                             commandType={commandType} setCommandType={setCommandType} />
                                     </div>
                                 </div>

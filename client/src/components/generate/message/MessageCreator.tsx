@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sbToastError } from 'components/common/SBToast'
 
 const MessageCreator = (props: any) => {
-    const { message, setMessage, commandType, setCommandType } = props
+    const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
     let schemaObj = useSelector(getSelectedSchema);
 
     //state 
@@ -21,21 +21,21 @@ const MessageCreator = (props: any) => {
 
     const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCommandType(e.target.value);
-        setMessage({});
+        setGeneratedMessage({});
     }
 
     const optChange = (k: string, v: any) => {
-        if (k.length > 1 && message[k[0]] && !message[k[0]][k[1]]) {
-            delMultiKey(message, k[0].toString());
+        if (k.length > 1 && generatedMessage[k[0]] && !generatedMessage[k[0]][k[1]]) {
+            delMultiKey(generatedMessage, k[0].toString());
         }
 
         if (!['', ' ', null, undefined, [], {}].includes(v)) {
-            setMultiKey(message, k.toString(), v);
+            setMultiKey(generatedMessage, k.toString(), v);
         } else {
-            delMultiKey(message, k.toString());
+            delMultiKey(generatedMessage, k.toString());
         }
 
-        setMessage(message);
+        setGeneratedMessage(generatedMessage);
     }
 
     const recordDef = recordDefs.length === 1 ? recordDefs[0] : [];
@@ -66,9 +66,9 @@ const MessageCreator = (props: any) => {
 
     const msgDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if (message != '{}') {
+        if (generatedMessage != '{}') {
             try {
-                const data = JSON.stringify(message, null, 2);
+                const data = JSON.stringify(generatedMessage, null, 2);
                 const filename = `schema.json`;
 
                 const blob = new Blob([data], { type: "application/json" });
@@ -121,7 +121,7 @@ const MessageCreator = (props: any) => {
                         <div className='card-body' style={{ height: '40em' }}>
                             <JSONPretty
                                 id='message'
-                                json={message}
+                                json={generatedMessage}
                             />
                         </div>
                         <div className='card-footer p-2'>
@@ -131,7 +131,6 @@ const MessageCreator = (props: any) => {
                                     <FontAwesomeIcon icon={faFileDownload} size='2x' />
                                 </Button>
                             </div>
-
                         </div>
                     </div>
                 </TabPane>

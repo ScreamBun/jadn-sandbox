@@ -469,4 +469,3 @@ class Generate extends Component<GenerateConnectedProps, GenerateState> {
     }
 }
 
-export default connector(Generate);
