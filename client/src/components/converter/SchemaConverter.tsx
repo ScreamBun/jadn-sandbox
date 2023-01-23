@@ -125,7 +125,7 @@ const SchemaConverter = () => {
                             </Form>
                         </div>
                         <div className='card-footer p-2'>
-                            <Button color="danger" className='float-right' type="reset" onClick={onReset}>Reset</Button>
+                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>
