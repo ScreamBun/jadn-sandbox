@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCopy, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { getAllSchemas } from "../../reducers/util";
 import { loadFile, setSchema } from "../../actions/util";
 import { validateSchema } from "../../actions/validate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sbToastError, sbToastSuccess } from "./SBToast";
+import CopyToClipboard from "./CopyToClipboard";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -29,11 +30,11 @@ const JADNSchemaLoader = (props: any) => {
                         try {
                             let schemaObj = loadFileVal.payload.data;
                             dispatch(setSchema(schemaObj))
-                            setLoadedSchema(JSON.stringify(schemaObj, null, 2));
+                            setLoadedSchema(JSON.stringify(schemaObj, undefined, 4));
                             validateJSON(JSON.stringify(schemaObj));
                             validateJADN(JSON.stringify(schemaObj));
                             if (setDecodeSchemaTypes && setDecodeMsg) {
-                                loadDecodeTypes(schemaObj); // If statement?                 
+                                loadDecodeTypes(schemaObj);                 
                             }
                         } catch (err) {
                             if (err instanceof Error) {
@@ -92,7 +93,7 @@ const JADNSchemaLoader = (props: any) => {
         jsonToFormat = validateJSON(jsonToFormat, false, true);
         if (jsonToFormat) {
             try {
-                jsonToFormat = JSON.stringify(jsonToFormat, undefined, 2);
+                jsonToFormat = JSON.stringify(jsonToFormat, undefined, '4');
                 setLoadedSchema(jsonToFormat);
                 sbToastSuccess(`Data Formatted`);
             } catch (err: any) {
@@ -172,6 +173,11 @@ const JADNSchemaLoader = (props: any) => {
         }
     }
 
+    // const onCopyToClipboardClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
+    //     navigator.clipboard.writeText(loadedSchema);
+    //     sbToastSuccess(`Copied to clipboard`);
+    // }
+
     const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         formatJSON(loadedSchema);
     }
@@ -189,7 +195,7 @@ const JADNSchemaLoader = (props: any) => {
         }
 
         validateJADN(jsonObj);
-    }
+    }   
 
     return (
         <fieldset className="p-0">
@@ -231,7 +237,8 @@ const JADNSchemaLoader = (props: any) => {
                             <Input type="file" id="schema-file" name="schema-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                         </div>
                         <div className="col-md-6">
-                            <Button id='validateJADNButton' className="float-right btn-sm" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
+                            <CopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right' />
+                            <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
                                     <span className="badge badge-pill badge-success">
@@ -253,7 +260,7 @@ const JADNSchemaLoader = (props: any) => {
                                         <FontAwesomeIcon icon={faXmark} />
                                     </span>)
                                 }
-                            </Button>
+                            </Button>                          
                         </div>
                     </div>
                 </div>

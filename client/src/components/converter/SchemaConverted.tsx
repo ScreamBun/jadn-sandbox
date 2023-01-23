@@ -2,9 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
-import { sbToastError } from "components/common/SBToast";
+import { sbToastError, sbToastSuccess } from "components/common/SBToast";
+import CopyToClipboard from "components/common/CopyToClipboard";
 
 const SchemaConverted = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
@@ -27,7 +28,12 @@ const SchemaConverted = (props: any) => {
             thrift: 'text/plain'
         }; */
 
-    const schemaDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onCopyToClipboardClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
+        navigator.clipboard.writeText(loadedSchema);
+        sbToastSuccess(`Copied to clipboard`);
+    }
+
+    const onDownloadSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (convertedSchema != '') {
             try {
@@ -53,7 +59,7 @@ const SchemaConverted = (props: any) => {
         }
     }
 
-    const pdfDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onDownloadPDFClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const data = JSON.parse(loadedSchema)
         if (convertedSchema != '') {
@@ -90,7 +96,7 @@ const SchemaConverted = (props: any) => {
         }
     }
 
-    const popOut = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const blob = new Blob([convertedSchema], { type: "text/html" });
         const data = URL.createObjectURL(blob);
@@ -122,18 +128,21 @@ const SchemaConverted = (props: any) => {
                 </div>
 
                 <div className='card-footer p-1'>
+
+                    <CopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
+
                     <div className={`btn-group btn-group-sm float-right ${convertedSchema ? '' : ' d-none'}`}>
-                        <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={schemaDownload}>
-                            <FontAwesomeIcon icon={faFileDownload} size='2x' />
+                        <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
+                            <FontAwesomeIcon icon={faFileDownload} />
                         </Button>
                     </div>
 
                     <div className={`${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
-                        <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={pdfDownload}>
-                            <FontAwesomeIcon icon={faFilePdf} size='2x' />
+                        <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
+                            <FontAwesomeIcon icon={faFilePdf} />
                         </Button>
-                        <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={popOut}>
-                            <FontAwesomeIcon icon={faWindowMaximize} size='2x' />
+                        <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick}>
+                            <FontAwesomeIcon icon={faWindowMaximize} />
                         </Button>
                     </div>
 
