@@ -7,6 +7,7 @@ import {
 import { loadFile } from "actions/util";
 import { getMsgFiles } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
+import CopyToClipboard from "components/common/CopyToClipboard";
 
 const MessageValidated = (props: any) => {
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg } = props;
@@ -91,27 +92,33 @@ const MessageValidated = (props: any) => {
             <legend>Message</legend>
             <div className="card">
                 <div className="card-body p-0" style={{ height: '40em' }}>
-                    <textarea
+                    <Input
+                        id="messageInput"
+                        type="textarea"
+                        onChange={onMsgChange}
+                        value={loadedMsg}
+                        className='form-control form-control-sm'
+                        placeholder='Paste or load message here to be validated'
                         style={{
                             resize: 'none',
                             outline: 'none',
                             width: '100%',
                             padding: '10px',
                             border: 'none',
-                            height: '100%'
+                            height: '100%',
+                            whiteSpace: 'pre',
+                            overflowWrap: 'normal',
+                            overflowX: 'auto'  
                         }}
                         required
-                        placeholder='Paste message to be validated here'
-                        value={loadedMsg}
-                        onChange={onMsgChange}
                     />
                 </div>
 
                 <div className="card-footer p-1">
                     <div className="form-row">
 
-                        <div className="input-group col px-1 mb-0">
-                            <select id="message-list" name="message-list" className="form-control mb-0" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)} overflow-y="scroll">
+                        <div className="col px-1 mb-0">
+                            <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)} overflow-y="scroll">
                                 <option value="">Message</option>
                                 <optgroup label="Testers">
                                     {Object.entries(msgOpts).map(([n, t]) => <option key={n} value={n} data-decode={t} >{n}</option>)}
@@ -120,14 +127,11 @@ const MessageValidated = (props: any) => {
                                     <option value="file">File...</option>
                                 </optgroup>
                             </select>
-
-                            <div id="message-file-group" className={`form-group col px-1 mb-0${selectedFile == 'file' ? '' : ' d-none'}`} >
-                                <Input type="file" id="message-file" name="message-file" className="px-1 py-1" accept=".json,.jadn,.xml,.cbor" value={uploadedFile} onChange={handleFileChange} />
-                            </div>
+                            <Input type="file" id="message-file" name="message-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".json,.jadn,.xml,.cbor" onChange={handleFileChange} />
                         </div>
 
-                        <div className={`input-group col-md-3 px-1 mb-0 ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
-                            <select className="form-control" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)}>
+                        <div className={`col ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
+                            <select className="form-control form-control-sm" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)}>
                                 <option value="">Message Format</option>
                                 <option value="json">json</option>
                                 <option value="cbor">cbor</option>
@@ -135,17 +139,25 @@ const MessageValidated = (props: any) => {
                             </select>
                         </div>
 
-                        <div className="input-group col-md-3 px-1 mb-0">
-                            <select className="form-control" id="message-decode" name="message-decode" required value={decodeMsg} onChange={(e) => setDecodeMsg(e.target.value)}>
-                                <option value="">Message Type</option>
-                                <optgroup label="Exports">
-                                    {decodeExports}
-                                </optgroup>
-                                <optgroup label="All">
-                                    {decodeAll}
-                                </optgroup>
-                            </select>
+                        <div className="col">
+                            <div className="row">
+                                <div className="col-8">
+                                    <select className="form-control form-control-sm" id="message-decode" name="message-decode" required value={decodeMsg} onChange={(e) => setDecodeMsg(e.target.value)}>
+                                        <option value="">Message Type</option>
+                                        <optgroup label="Exports">
+                                            {decodeExports}
+                                        </optgroup>
+                                        <optgroup label="All">
+                                            {decodeAll}
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div className="col-4">
+                                    <CopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>

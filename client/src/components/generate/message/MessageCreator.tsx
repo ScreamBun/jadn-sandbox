@@ -8,6 +8,7 @@ import { StandardFieldArray } from '../schema/interface'
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sbToastError } from 'components/common/SBToast'
+import CopyToClipboard from 'components/common/CopyToClipboard'
 
 const MessageCreator = (props: any) => {
     const { message, setMessage, commandType, setCommandType } = props
@@ -104,16 +105,20 @@ const MessageCreator = (props: any) => {
                             </div>
                         </div>
                         <div className='card-footer p-1'>
-                            <div className='row'>
+                            <div className='row no-gutters'>
                                 <div className='col-md-6'>
-                                    <select id='command-list' name='command-list' className='form-control' value={commandType} onChange={handleSelection}
+                                    <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} onChange={handleSelection}
                                         title="Select message type to create based on valid JADN Schema">
                                         <option value=''>Message Type</option>
                                         {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
                                     </select>
                                 </div>
                                 <div className='col-md-6'>
-                                    <Button onClick={() => setActiveView('message')} className="float-right btn-sm mt-1" color="info">See Generated Message</Button>
+                                    <CopyToClipboard buttonId='copyMessage1' data={message} customClass='float-right' />                                    
+                                    <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
+                                        <FontAwesomeIcon icon={faFileDownload} />
+                                    </Button>                                    
+                                    <Button onClick={() => setActiveView('message')} className="float-right btn-sm mr-1" color="info">View JSON</Button>
                                 </div> 
                             </div>                           
                         </div>
@@ -128,14 +133,12 @@ const MessageCreator = (props: any) => {
                                 json={message}
                             />
                         </div>
-                        <div className='card-footer p-2'>
-                            <div className={`btn-group btn-group-sm float-right`}>
-                                <Button onClick={() => setActiveView('creator')} className="float-right" color="info">See Message Creator</Button>
-                                <Button id='msgDownload' title="Download generated message" color="info" className={`btn-sm float-right`} onClick={msgDownload}>
-                                    <FontAwesomeIcon icon={faFileDownload} size='2x' />
-                                </Button>
-                            </div>
-
+                        <div className='card-footer p-1'>
+                            <CopyToClipboard buttonId='copyMessage2' data={message} customClass='float-right' />
+                            <Button id='msgDownload' title="Downloa message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
+                                <FontAwesomeIcon icon={faFileDownload} />
+                            </Button>
+                            <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">View Creator</Button>                            
                         </div>
                     </div>
                 </TabPane>

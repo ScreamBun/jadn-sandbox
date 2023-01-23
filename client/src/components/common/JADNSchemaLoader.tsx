@@ -173,11 +173,6 @@ const JADNSchemaLoader = (props: any) => {
         }
     }
 
-    // const onCopyToClipboardClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
-    //     navigator.clipboard.writeText(loadedSchema);
-    //     sbToastSuccess(`Copied to clipboard`);
-    // }
-
     const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         formatJSON(loadedSchema);
     }
@@ -203,6 +198,7 @@ const JADNSchemaLoader = (props: any) => {
             <div className="card">
                 <div className="card-body p-0" style={{ height: '40em' }}>
                     <Input
+                        id="schemaInput"
                         type="textarea"
                         onChange={onSchemaChange}
                         value={loadedSchema}
