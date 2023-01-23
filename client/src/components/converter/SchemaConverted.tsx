@@ -2,10 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
+import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
-import { sbToastError, sbToastSuccess } from "components/common/SBToast";
-import CopyToClipboard from "components/common/CopyToClipboard";
+import { sbToastError } from "components/common/SBToast";
+import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 
 const SchemaConverted = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
@@ -27,11 +27,6 @@ const SchemaConverted = (props: any) => {
             rng: 'application/xml',
             thrift: 'text/plain'
         }; */
-
-    const onCopyToClipboardClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
-        navigator.clipboard.writeText(loadedSchema);
-        sbToastSuccess(`Copied to clipboard`);
-    }
 
     const onDownloadSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -129,7 +124,7 @@ const SchemaConverted = (props: any) => {
 
                 <div className='card-footer p-1'>
 
-                    <CopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
+                    <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
 
                     <div className={`btn-group btn-group-sm mr-1 float-right ${convertedSchema ? '' : ' d-none'}`}>
                         <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>

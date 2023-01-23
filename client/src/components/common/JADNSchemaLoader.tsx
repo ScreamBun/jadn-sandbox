@@ -7,7 +7,7 @@ import { loadFile, setSchema } from "../../actions/util";
 import { validateSchema } from "../../actions/validate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sbToastError, sbToastSuccess } from "./SBToast";
-import CopyToClipboard from "./CopyToClipboard";
+import SBCopyToClipboard from "./SBCopyToClipboard";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -233,7 +233,7 @@ const JADNSchemaLoader = (props: any) => {
                             <Input type="file" id="schema-file" name="schema-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                         </div>
                         <div className="col-md-6">
-                            <CopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right' />
+                            <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right' />
                             <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (

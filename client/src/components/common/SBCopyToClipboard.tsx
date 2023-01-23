@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "reactstrap";
 import { sbToastSuccess } from "./SBToast";
 
-const CopyToClipboard = (props: any) => {
+const SBCopyToClipboard = (props: any) => {
 
     const { buttonId, data, customClass, shouldStringify = false } = props;
 
@@ -25,4 +25,4 @@ const CopyToClipboard = (props: any) => {
         </Button>                              
     )
 }
-export default CopyToClipboard;
+export default SBCopyToClipboard;

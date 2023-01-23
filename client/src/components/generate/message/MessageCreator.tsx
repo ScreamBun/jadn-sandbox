@@ -8,7 +8,7 @@ import { StandardFieldArray } from '../schema/interface'
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sbToastError } from 'components/common/SBToast'
-import CopyToClipboard from 'components/common/CopyToClipboard'
+import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 
 const MessageCreator = (props: any) => {
     const { message, setMessage, commandType, setCommandType } = props
@@ -114,7 +114,7 @@ const MessageCreator = (props: any) => {
                                     </select>
                                 </div>
                                 <div className='col-md-6'>
-                                    <CopyToClipboard buttonId='copyMessage1' data={message} customClass='float-right' shouldStringify={true} />                                    
+                                    <SBCopyToClipboard buttonId='copyMessage1' data={message} customClass='float-right' shouldStringify={true} />                                    
                                     <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
                                         <FontAwesomeIcon icon={faFileDownload} />
                                     </Button>                                    
