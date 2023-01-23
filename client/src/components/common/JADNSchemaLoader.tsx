@@ -200,7 +200,7 @@ const JADNSchemaLoader = (props: any) => {
                         type="textarea"
                         onChange={onSchemaChange}
                         value={loadedSchema}
-                        className='form-control'
+                        className='form-control form-control-sm'
                         placeholder='Please select a schema'
                         style={{
                             resize: 'none',
@@ -208,7 +208,10 @@ const JADNSchemaLoader = (props: any) => {
                             width: '100%',
                             padding: '10px',
                             border: 'none',
-                            height: '100%'
+                            height: '100%',
+                            whiteSpace: 'pre',
+                            overflowWrap: 'normal',
+                            overflowX: 'auto'                            
                         }}
                     />
                 </div>
@@ -216,7 +219,7 @@ const JADNSchemaLoader = (props: any) => {
                 <div className="card-footer p-1">
                     <div className="row no-gutters">
                         <div className="col-md-6">
-                            <select id="schema-list" name="schema-list" className="form-control" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
+                            <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
                                 <option value="">Select a Schema...</option>
                                 <optgroup label="Testers">
                                     {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
@@ -225,10 +228,10 @@ const JADNSchemaLoader = (props: any) => {
                                     <option value="file">File...</option>
                                 </optgroup>
                             </select>
-                            <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
+                            <Input type="file" id="schema-file" name="schema-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                         </div>
                         <div className="col-md-6">
-                            <Button id='validateJADNButton' className="float-right btn-sm mt-1" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
+                            <Button id='validateJADNButton' className="float-right btn-sm" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
                                     <span className="badge badge-pill badge-success">
@@ -239,7 +242,7 @@ const JADNSchemaLoader = (props: any) => {
                                     </span>)
                                 }
                             </Button>
-                            <Button id='formatButton' className="float-right btn-sm mr-1 mt-1" color="info" onClick={onFormatClick}
+                            <Button id='formatButton' className="float-right btn-sm mr-1" color="info" onClick={onFormatClick}
                                 title='Attempts to Parse and Format.'>
                                 <span className="m-1">Format JSON</span>
                                 {isValidJSON ? (
