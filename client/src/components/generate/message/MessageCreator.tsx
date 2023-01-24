@@ -114,7 +114,7 @@ const MessageCreator = (props: any) => {
                                     </select>
                                 </div>
                                 <div className='col-md-6'>
-                                    <SBCopyToClipboard buttonId='copyMessage1' data={message} customClass='float-right' shouldStringify={true} />                                    
+                                    <SBCopyToClipboard buttonId='copyMessage1' data={generatedMessage} customClass='float-right' shouldStringify={true} />                                    
                                     <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
                                         <FontAwesomeIcon icon={faFileDownload} />
                                     </Button>                                    
@@ -134,7 +134,7 @@ const MessageCreator = (props: any) => {
                             />
                         </div>
                         <div className='card-footer p-1'>
-                            <CopyToClipboard buttonId='copyMessage2' data={message} customClass='float-right' />
+                            <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' />
                             <Button id='msgDownload' title="Downloa message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
                                 <FontAwesomeIcon icon={faFileDownload} />
                             </Button>
