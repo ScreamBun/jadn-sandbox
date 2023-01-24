@@ -111,7 +111,7 @@ const MessageValidated = (props: any) => {
                     <div className="form-row">
 
                         <div className="input-group col px-1 mb-0">
-                            <select id="message-list" name="message-list" className="form-control mb-0" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)} overflow-y="scroll">
+                            <select id="message-list" name="message-list" className="form-control mb-0" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)} overflow-y="auto">
                                 <option value="">Message</option>
                                 <optgroup label="Testers">
                                     {Object.entries(msgOpts).map(([n, t]) => <option key={n} value={n} data-decode={t} >{n}</option>)}

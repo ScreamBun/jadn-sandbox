@@ -115,7 +115,7 @@ const SchemaConverted = (props: any) => {
                             height: '100%',
                             whiteSpace: 'pre',
                             overflowWrap: 'normal',
-                            overflowX: 'scroll',
+                            overflowX: 'auto',
                         }}
                         readOnly
                     />
