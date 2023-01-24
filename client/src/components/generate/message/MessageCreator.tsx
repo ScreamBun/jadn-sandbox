@@ -114,13 +114,13 @@ const MessageCreator = (props: any) => {
                                     </select>
                                 </div>
                                 <div className='col-md-6'>
-                                    <SBCopyToClipboard buttonId='copyMessage1' data={generatedMessage} customClass='float-right' shouldStringify={true} />                                    
+                                    <SBCopyToClipboard buttonId='copyMessage1' data={generatedMessage} customClass='float-right' shouldStringify={true} />
                                     <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
                                         <FontAwesomeIcon icon={faFileDownload} />
-                                    </Button>                                    
+                                    </Button>
                                     <Button onClick={() => setActiveView('message')} className="float-right btn-sm mr-1" color="info">View JSON</Button>
-                                </div> 
-                            </div>                           
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </TabPane>
@@ -138,12 +138,11 @@ const MessageCreator = (props: any) => {
                             <Button id='msgDownload' title="Downloa message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
                                 <FontAwesomeIcon icon={faFileDownload} />
                             </Button>
-                            <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">View Creator</Button>                            
+                            <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">View Creator</Button>
                         </div>
                     </div>
                 </TabPane>
             </TabContent>
         </fieldset>)
-
 }
 export default MessageCreator 

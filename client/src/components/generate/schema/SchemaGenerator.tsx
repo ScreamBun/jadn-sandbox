@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
-import SchemaCreator from './SchemaCreator'
 import { getPageTitle } from 'reducers/util'
 import { info } from 'actions/util'
 import SchemaConformance from './SchemaConformance'
+import SchemaCreator from './SchemaCreator'
 
 
 const SchemaGenerator = () => {
@@ -28,7 +28,7 @@ const SchemaGenerator = () => {
         e.preventDefault();
         setGeneratedSchema({
             types: []
-        })
+        });
     }
 
     return (
@@ -44,7 +44,7 @@ const SchemaGenerator = () => {
                             <h5 className='m-0'> Generate Schema</h5>
                         </div>
                         <div className='card-body p-2'>
-                            <Nav tabs>
+                            <Nav>
                                 <NavItem>
                                     <NavLink
                                         style={activeView == 'editor' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
@@ -73,7 +73,7 @@ const SchemaGenerator = () => {
                             </TabContent>
                         </div>
                         <div className='card-footer p-2'>
-                            <Button color="danger" className='float-right ml-1' type="reset" onClick={onReset}>Reset</Button>
+                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>

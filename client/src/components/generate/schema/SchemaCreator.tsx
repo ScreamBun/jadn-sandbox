@@ -26,7 +26,9 @@ const SchemaCreator = (props: any) => {
 
     useEffect(() => {
         if (selectedFile == "file") {
-            setGeneratedSchema('');
+            setGeneratedSchema({
+                types: []
+            });
         } else {
             try {
                 dispatch(loadFile('schemas', selectedFile))
@@ -41,11 +43,11 @@ const SchemaCreator = (props: any) => {
                             }
                         }
                     })
-                    .catch((_loadFileErr) => {
-                        setGeneratedSchema('');
+                    .catch((loadFileErr) => {
+                        console.log(loadFileErr);
                     })
             } catch (err) {
-                setGeneratedSchema('');
+                console.log(err);
             }
         }
     }, [selectedFile]);
@@ -79,8 +81,7 @@ const SchemaCreator = (props: any) => {
                         ...generatedSchema.info || {},
                         ...Info[data.info].edit()
                     }
-                }
-                );
+                });
             }
         } else if (data.types) {
             const tmpTypes = [...generatedSchema.types] || [];
@@ -97,13 +98,13 @@ const SchemaCreator = (props: any) => {
 
     const infoKeys = Object.keys(Info).map(k => (
         <Draggable type="info" data={k} key={Info[k].key}>
-            <ListGroupItem action>{Info[k].key}</ListGroupItem>
+            <ListGroupItem style={{ color: 'inherit' }} action>{Info[k].key}</ListGroupItem>
         </Draggable>
     ));
 
     const typesKeys = Object.keys(Types).map(k => (
         <Draggable type="types" data={k} key={Types[k].key}>
-            <ListGroupItem action>{Types[k].key}</ListGroupItem>
+            <ListGroupItem style={{ color: 'inherit' }} action>{Types[k].key}</ListGroupItem>
         </Draggable>
     ));
 
@@ -196,7 +197,7 @@ const SchemaCreator = (props: any) => {
                         <div className='card-body p-0' style={{ height: '40em' }}>
                             <div className='row'>
                                 <div id="schema-options" className='col-sm-3'>
-                                    <Nav tabs>
+                                    <Nav>
                                         <NavItem>
                                             <NavLink
                                                 style={activeOpt == 'info' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
@@ -250,10 +251,10 @@ const SchemaCreator = (props: any) => {
                                 </div>
                             </div>
                         </div>
-                        <div className='card-footer p-2'>
-                            <div className='row'>
+                        <div className='card-footer p-1'>
+                            <div className='row no-gutters'>
                                 <div className='col-md-6'>
-                                    <select id="schema-list" name="schema-list" className="form-control" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
+                                    <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
                                         <option value="">Select a Schema...</option>
                                         <optgroup label="Testers">
                                             {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
@@ -265,7 +266,7 @@ const SchemaCreator = (props: any) => {
                                     <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                                 </div>
                                 <div className='col-md-6'>
-                                    <Button onClick={() => setActiveView('schema')} color="info" className='float-right'>See Generated Schema</Button>
+                                    <Button onClick={() => setActiveView('schema')} color="info" className='float-right btn-sm mr-1'>See Generated Schema</Button>
                                 </div>
                             </div>
                         </div>
@@ -280,11 +281,11 @@ const SchemaCreator = (props: any) => {
                                 json={generatedSchema}
                             />
                         </div>
-                        <div className='card-footer p-2'>
+                        <div className='card-footer p-1'>
                             <div className='btn-group btn-group-sm float-right'>
-                                <Button onClick={() => setActiveView('creator')} className="float-right" color="info">See Schema Creator</Button>
-                                <Button id='schemaDownload' title="Download generated schema" color="info" className={`btn-sm float-right`} onClick={schemaDownload}>
-                                    <FontAwesomeIcon icon={faFileDownload} size='2x' />
+                                <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">See Schema Creator</Button>
+                                <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
+                                    <FontAwesomeIcon icon={faFileDownload} />
                                 </Button>
                             </div>
                         </div>

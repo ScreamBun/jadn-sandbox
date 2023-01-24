@@ -11,7 +11,6 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 
 const MessageValidated = (props: any) => {
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg } = props;
-    const [uploadedFile, setUploadedFile] = useState('');
 
     const msgOpts = useSelector(getMsgFiles);
     const decodeExports = decodeSchemaTypes.exports.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
@@ -23,7 +22,6 @@ const MessageValidated = (props: any) => {
             setLoadedMsg('');
             setDecodeMsg('');
             setMsgFormat('');
-            setUploadedFile('');
         } else {
             const fmt = selectedFile.split('.')[1];
             try {
@@ -60,7 +58,6 @@ const MessageValidated = (props: any) => {
             const type = file.name.split('.')[1];
 
             if (prefix == 'message') {
-                setUploadedFile(file.name);
                 const fileReader = new FileReader();
                 fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                     if (ev.target) {
