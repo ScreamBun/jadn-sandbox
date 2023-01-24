@@ -1,4 +1,4 @@
-import { faCubes, faInfoCircle, faMicrophone, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { faCubes, faInfoCircle, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI
