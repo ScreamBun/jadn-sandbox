@@ -26,7 +26,9 @@ const SchemaCreator = (props: any) => {
 
     useEffect(() => {
         if (selectedFile == "file") {
-            setGeneratedSchema('');
+            setGeneratedSchema({
+                types: []
+            });
         } else {
             try {
                 dispatch(loadFile('schemas', selectedFile))
@@ -41,11 +43,11 @@ const SchemaCreator = (props: any) => {
                             }
                         }
                     })
-                    .catch((_loadFileErr) => {
-                        setGeneratedSchema('');
+                    .catch((loadFileErr) => {
+                        console.log(loadFileErr);
                     })
             } catch (err) {
-                setGeneratedSchema('');
+                console.log(err);
             }
         }
     }, [selectedFile]);
@@ -96,13 +98,13 @@ const SchemaCreator = (props: any) => {
 
     const infoKeys = Object.keys(Info).map(k => (
         <Draggable type="info" data={k} key={Info[k].key}>
-            <ListGroupItem action>{Info[k].key}</ListGroupItem>
+            <ListGroupItem style={{ color: 'inherit' }} action>{Info[k].key}</ListGroupItem>
         </Draggable>
     ));
 
     const typesKeys = Object.keys(Types).map(k => (
         <Draggable type="types" data={k} key={Types[k].key}>
-            <ListGroupItem action>{Types[k].key}</ListGroupItem>
+            <ListGroupItem style={{ color: 'inherit' }} action>{Types[k].key}</ListGroupItem>
         </Draggable>
     ));
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
-import { faCheck, faCopy, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { getAllSchemas } from "../../reducers/util";
 import { loadFile, setSchema } from "../../actions/util";
 import { validateSchema } from "../../actions/validate";

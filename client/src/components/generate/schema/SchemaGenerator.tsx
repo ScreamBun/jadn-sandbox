@@ -28,7 +28,7 @@ const SchemaGenerator = () => {
         e.preventDefault();
         setGeneratedSchema({
             types: []
-        })
+        });
     }
 
     return (
