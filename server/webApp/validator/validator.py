@@ -1,6 +1,10 @@
+import base64
 import json
 import random
 import re
+import cbor2
+import cbor_json
+import binascii
 
 from io import StringIO
 from typing import Tuple, Union
@@ -61,11 +65,24 @@ class Validator:
                  
         if fmt in SerialFormats:
             serial = SerialFormats(fmt)
-            try:
-                message = Message.oc2_loads(msg, serial)
-            except Exception as e:  # pylint: disable=broad-except
-                # TODO: pick better exception
-                return False, f"OpenC2 Message Invalid - {e}", "", msg
+
+            if fmt == "cbor":
+                try:
+                    msg_hex_string = msg
+                    msg_binary_string = binascii.unhexlify(msg_hex_string)
+                    msg_native_json = cbor_json.native_from_cbor(msg_binary_string)
+
+                    serial = SerialFormats('json')
+                    message = Message.oc2_loads(msg_native_json, serial)
+                except Exception as e:
+                    return "Error: " + e
+            else:
+                try:
+                    message = Message.oc2_loads(msg, serial)
+                except Exception as e:  # pylint: disable=broad-except
+                    # TODO: pick better exception
+                    return False, f"OpenC2 Message Invalid - {e}", "", msg
+
         else:
             return False, random.choice(self.invalidMsgs), "", msg 
             

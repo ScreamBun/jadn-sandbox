@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
+import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 
 const SchemaConverted = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
@@ -27,7 +28,7 @@ const SchemaConverted = (props: any) => {
             thrift: 'text/plain'
         }; */
 
-    const schemaDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onDownloadSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (convertedSchema != '') {
             try {
@@ -53,7 +54,7 @@ const SchemaConverted = (props: any) => {
         }
     }
 
-    const pdfDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onDownloadPDFClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const data = JSON.parse(loadedSchema)
         if (convertedSchema != '') {
@@ -90,7 +91,7 @@ const SchemaConverted = (props: any) => {
         }
     }
 
-    const popOut = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const blob = new Blob([convertedSchema], { type: "text/html" });
         const data = URL.createObjectURL(blob);
@@ -104,7 +105,7 @@ const SchemaConverted = (props: any) => {
                 <div className="card-body p-0" style={{ height: '40em' }}>
                     <textarea
                         value={convertedSchema}
-                        className='form-control'
+                        className='form-control form-control-sm'
                         placeholder='Converted schema'
                         style={{
                             resize: 'none',
@@ -115,31 +116,33 @@ const SchemaConverted = (props: any) => {
                             height: '100%',
                             whiteSpace: 'pre',
                             overflowWrap: 'normal',
-                            overflowX: 'auto',
+                            overflowX: 'auto'
                         }}
                         readOnly
                     />
                 </div>
 
-                <div className='card-footer p-2'>
-                    <div className={`btn-group btn-group-sm float-right mr-2${convertedSchema ? '' : ' d-none'}`}>
-                        <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={schemaDownload}>
-                            <FontAwesomeIcon icon={faFileDownload} size='2x' />
+                <div className='card-footer p-1'>
+
+                    <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
+
+                    <div className={`btn-group btn-group-sm mr-1 float-right ${convertedSchema ? '' : ' d-none'}`}>
+                        <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
+                            <FontAwesomeIcon icon={faFileDownload} />
                         </Button>
                     </div>
 
-                    <div className={`btn-group btn-group-sm float-right mr-2${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
-                        <Button id="pdfDownload" title="Download PDF of the schema" color="info" onClick={pdfDownload}>
-                            <FontAwesomeIcon icon={faFilePdf} size='2x' />
+                    <div className={`${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
+                        <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
+                            <FontAwesomeIcon icon={faFilePdf} />
                         </Button>
-
-                        <Button id="popOut" title="View Schema in new window" color="info" onClick={popOut}>
-                            <FontAwesomeIcon icon={faWindowMaximize} size='2x' />
+                        <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick}>
+                            <FontAwesomeIcon icon={faWindowMaximize} />
                         </Button>
                     </div>
 
-                    <div className="form-row ml-1 mb-0">
-                        <div className="input-group col-md-6 px-1 mb-0">
+                    <div className="form-row">
+                        <div className="input-group  input-group-sm col-md-6 px-1">
                             <select id="convert-to" name="convert-to" className="form-control" value={conversion} onChange={handleConversion}>
                                 <option value=""> Convert To... </option>
                                 {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}

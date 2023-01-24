@@ -64,7 +64,7 @@ const MessageGenerator = () => {
                             </Form>
                         </div>
                         <div className='card-footer p-2'>
-                            <Button color="danger" className='float-right ml-1' type="reset" onClick={onReset}>Reset</Button>
+                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>
