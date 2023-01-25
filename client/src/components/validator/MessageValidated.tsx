@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Input } from "reactstrap";
 import {
@@ -128,7 +128,8 @@ const MessageValidated = (props: any) => {
                         </div>
 
                         <div className={`col ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
-                            <select className="form-control form-control-sm" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)}>
+                            <select className="form-control form-control-sm" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)}
+                            title="Select programming language of message">
                                 <option value="">Message Format</option>
                                 <option value="json">json</option>
                                 <option value="cbor">cbor</option>
@@ -139,7 +140,8 @@ const MessageValidated = (props: any) => {
                         <div className="col">
                             <div className="row">
                                 <div className="col-8">
-                                    <select className="form-control form-control-sm" id="message-decode" name="message-decode" required value={decodeMsg} onChange={(e) => setDecodeMsg(e.target.value)}>
+                                    <select className="form-control form-control-sm" id="message-decode" name="message-decode" required value={decodeMsg} onChange={(e) => setDecodeMsg(e.target.value)}
+                                    title="Select message type to validate against">
                                         <option value="">Message Type</option>
                                         <optgroup label="Exports">
                                             {decodeExports}

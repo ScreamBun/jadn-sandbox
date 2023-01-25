@@ -40,23 +40,41 @@ const MessageValidator = () => {
 
     const submitForm = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        try {
-            dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
-                .then((submitVal: any) => {
-                    if(submitVal && submitVal.payload.valid_bool){
-                        sbToastSuccess(submitVal.payload.valid_msg)
-                    }else {
-                        sbToastError(submitVal.payload.valid_msg)
-                    }
-                })
-                .catch((submitErr) => {
-                    sbToastError(submitErr.message)
-                    return false;
-                })
-        } catch (err) {
-            if (err instanceof Error) {
-                sbToastError(err.message)
+
+        if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
+            try {
+                dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
+                    .then((submitVal: any) => {
+                        if (submitVal && submitVal.payload.valid_bool) {
+                            sbToastSuccess(submitVal.payload.valid_msg)
+                        } else {
+                            sbToastError(submitVal.payload.valid_msg)
+                        }
+                    })
+                    .catch((submitErr) => {
+                        sbToastError(submitErr.message)
+                        return false;
+                    })
+            } catch (err) {
+                if (err instanceof Error) {
+                    sbToastError(err.message)
+                }
             }
+        } else {
+            var err = '';
+            if (!loadedSchema) {
+                err += ' schema';
+            }
+            if (!loadedMsg) {
+                err += ', message';
+            }
+            if (!msgFormat) {
+                err += ', message format';
+            }
+            if (!decodeMsg) {
+                err += ', message type';
+            }
+            sbToastError('ERROR: Validation failed - Please select ' + err)
         }
     }
 
@@ -96,7 +114,10 @@ const MessageValidator = () => {
                             </Form>
                         </div>
                         <div className='card-footer p-2'>
-                            <Button color="success" className='float-right ml-1 btn-sm' type="submit" onClick={submitForm} title="Validate the message against the given schema">Validate Message</Button>
+                            <Button color="success" className={`float-right ml-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit" onClick={submitForm}
+                                title={`${loadedSchema && loadedMsg && decodeMsg && msgFormat ? 'Validate the message against the given schema' : 'Cannot validate'}`}>
+                                Validate Message
+                            </Button>
                             <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
