@@ -124,8 +124,6 @@ const MessageValidator = () => {
                 </div>
             </div>
         </div>
-
     );
-
 }
 export default MessageValidator
