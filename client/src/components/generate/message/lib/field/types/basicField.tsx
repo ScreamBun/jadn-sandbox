@@ -104,7 +104,7 @@ const BasicField: FunctionComponent<BasicFieldConnectedProps> = props => {
               step="any"
               min={dayjs().format('YYYY-MM-DD HH:mm:ss')}
               pattern='/[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]/'
-              onChange={e => optChange(msgName.join('.'), e.target.value, arr)}
+              onChange={e => optChange(msgName.join('.'), dayjs(e.target.value).valueOf(), arr)}
             />
           </div>
         </div>
