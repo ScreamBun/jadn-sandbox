@@ -194,7 +194,7 @@ const SchemaCreator = (props: any) => {
             <TabContent activeTab={activeView}>
                 <TabPane tabId='creator'>
                     <div className='card'>
-                        <div className='card-body p-0' style={{ height: '40em' }}>
+                        <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
                             <div className='row'>
                                 <div id="schema-options" className='col-sm-3'>
                                     <Nav>
@@ -229,7 +229,7 @@ const SchemaCreator = (props: any) => {
                                     </TabContent>
                                 </div>
 
-                                <div id="schema-editor" className='col-md-9' style={{ height: '40em', overflowY: 'auto' }}>
+                                <div id="schema-editor" className='col-md-9' style={{ height: '40em' }}>
                                     <Droppable
                                         types={['info', 'types']} // <= allowed drop types
                                         onDrop={onDrop}
@@ -279,7 +279,7 @@ const SchemaCreator = (props: any) => {
 
                 <TabPane tabId='schema'>
                     <div className='card'>
-                        <div className='card-body' style={{ height: '40em' }}>
+                        <div className='card-body' style={{ height: '40em', overflowY: 'auto' }}>
                             <JSONPretty
                                 id='schema'
                                 json={generatedSchema}

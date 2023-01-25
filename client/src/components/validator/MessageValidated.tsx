@@ -105,7 +105,7 @@ const MessageValidated = (props: any) => {
                             height: '100%',
                             whiteSpace: 'pre',
                             overflowWrap: 'normal',
-                            overflowX: 'auto'  
+                            overflowY: 'auto'  
                         }}
                         required
                     />
