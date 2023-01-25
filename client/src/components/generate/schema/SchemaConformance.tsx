@@ -30,14 +30,15 @@ const SchemaGenerator = (props: any) => {
             <TabContent activeTab={activeConformanceView}>
                 <TabPane tabId='tests'>
                     <div className='card'>
-                        <div className='card-body p-0' style={{ height: '40em' }}>
+                        <div className='card-body p-0' style={{ height: '40em',  overflowY: 'auto' }}>
                             <ViewConformanceTests />
                         </div>
                     </div>
                 </TabPane>
+                
                 <TabPane tabId='test-results'>
                     <div className='card'>
-                        <div className='card-body p-0' style={{ height: '40em' }}>
+                        <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
                             <RunConformanceTests schema={generatedSchema} />
                         </div>
                     </div>

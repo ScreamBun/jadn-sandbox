@@ -96,7 +96,7 @@ const MessageCreator = (props: any) => {
                 <TabPane tabId='creator'>
                     <div className='card'>
                         <div className='card-body p-0' style={{ height: '40em' }}>
-                            <div id='command-fields' className='p-2' style={{ height: '40em', overflow: 'auto' }}>
+                            <div id='command-fields' className='p-2' style={{ height: '40em', overflowY: 'auto' }}>
                                 {commandFields}
                                 <div id="fieldDefs">
                                     {fieldDefs}
@@ -126,7 +126,7 @@ const MessageCreator = (props: any) => {
 
                 <TabPane tabId='message'>
                     <div className='card'>
-                        <div className='card-body' style={{ height: '40em' }}>
+                        <div className='card-body' style={{ height: '40em', overflowY: 'auto' }}>
                             <JSONPretty
                                 id='message'
                                 json={generatedMessage}
