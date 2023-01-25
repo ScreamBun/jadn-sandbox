@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { sbToastError } from 'components/common/SBToast';
 import { SchemaJADN } from './interface';
 import { getAllSchemas } from 'reducers/util';
+import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -265,7 +266,11 @@ const SchemaCreator = (props: any) => {
                                     <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                                 </div>
                                 <div className='col-md-6'>
-                                    <Button onClick={() => setActiveView('schema')} color="info" className='float-right btn-sm mr-1'>See Generated Schema</Button>
+                                    <SBCopyToClipboard buttonId='copyMessage1' data={generatedSchema} customClass='float-right' shouldStringify={true} />
+                                    <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
+                                        <FontAwesomeIcon icon={faFileDownload} />
+                                    </Button>
+                                    <Button onClick={() => setActiveView('schema')} color="info" className='float-right btn-sm mr-1'>View JADN</Button>
                                 </div>
                             </div>
                         </div>
@@ -281,12 +286,11 @@ const SchemaCreator = (props: any) => {
                             />
                         </div>
                         <div className='card-footer p-1'>
-                            <div className='btn-group btn-group-sm float-right'>
-                                <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">See Schema Creator</Button>
-                                <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
-                                    <FontAwesomeIcon icon={faFileDownload} />
-                                </Button>
-                            </div>
+                            <SBCopyToClipboard buttonId='copyMessage2' data={generatedSchema} customClass='float-right' shouldStringify={true} />
+                            <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
+                                <FontAwesomeIcon icon={faFileDownload} />
+                            </Button>
+                            <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">View Creator</Button>
                         </div>
                     </div>
                 </TabPane>

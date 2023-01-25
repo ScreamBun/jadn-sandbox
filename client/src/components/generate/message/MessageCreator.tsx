@@ -35,7 +35,6 @@ const MessageCreator = (props: any) => {
         } else {
             delMultiKey(generatedMessage, k.toString());
         }
-
         setGeneratedMessage(generatedMessage);
     }
 
@@ -135,7 +134,7 @@ const MessageCreator = (props: any) => {
                         </div>
                         <div className='card-footer p-1'>
                             <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' />
-                            <Button id='msgDownload' title="Downloa message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
+                            <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
                                 <FontAwesomeIcon icon={faFileDownload} />
                             </Button>
                             <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">View Creator</Button>
