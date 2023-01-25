@@ -57,7 +57,7 @@ const MessageGenerator = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <MessageCreator
-                                            message={generatedMessage} setMessage={setGeneratedMessage}
+                                            generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
                                             commandType={commandType} setCommandType={setCommandType} />
                                     </div>
                                 </div>
