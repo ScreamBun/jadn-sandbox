@@ -190,112 +190,101 @@ const SchemaCreator = (props: any) => {
     }
 
     return (
-        <fieldset className="p-0">
-            <TabContent activeTab={activeView}>
-                <TabPane tabId='creator'>
-                    <div className='card'>
-                        <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
-                            <div className='row'>
-                                <div id="schema-options" className='col-sm-3'>
-                                    <Nav>
-                                        <NavItem>
-                                            <NavLink
-                                                style={activeOpt == 'info' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
-                                                onClick={() => setActiveOpt('info')}
-                                            >
-                                                Info
-                                            </NavLink>
-                                        </NavItem>
-                                        <NavItem>
-                                            <NavLink
-                                                style={activeOpt == 'types' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
-                                                onClick={() => setActiveOpt('types')}
-                                            >
-                                                Types
-                                            </NavLink>
-                                        </NavItem>
-                                    </Nav>
-                                    <TabContent activeTab={activeOpt}>
-                                        <TabPane tabId='info'>
-                                            <ListGroup>
-                                                {infoKeys}
-                                            </ListGroup>
-                                        </TabPane>
-                                        <TabPane tabId='types'>
-                                            <ListGroup>
-                                                {typesKeys}
-                                            </ListGroup>
-                                        </TabPane>
-                                    </TabContent>
-                                </div>
+        <div className='card'>
+            <div className='card-header'>
+                <div className='row no-gutters'>
+                    <div className='col-md-3'>
+                        <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
+                            <option value="">Select a Schema...</option>
+                            <optgroup label="Testers">
+                                {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
+                            </optgroup>
+                            <optgroup label="Custom">
+                                <option value="file">File...</option>
+                            </optgroup>
+                        </select>
+                        <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
+                    </div>
+                    <div className='col-md-9'>
+                        <SBCopyToClipboard buttonId='copyMessage1' data={generatedSchema} customClass='float-right' shouldStringify={true} />
+                        <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
+                            <FontAwesomeIcon icon={faFileDownload} />
+                        </Button>
+                        <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="info">View Schema</Button>
+                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
+                    </div>
+                </div>
+            </div>
+            <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
+                <TabContent activeTab={activeView}>
+                    <TabPane tabId='creator'>
+                        <div className='row'>
+                            <div id="schema-options" className='col-sm-3'>
+                                <Nav>
+                                    <NavItem>
+                                        <NavLink
+                                            style={activeOpt == 'info' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
+                                            onClick={() => setActiveOpt('info')}
+                                        >
+                                            Info
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink
+                                            style={activeOpt == 'types' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
+                                            onClick={() => setActiveOpt('types')}
+                                        >
+                                            Types
+                                        </NavLink>
+                                    </NavItem>
+                                </Nav>
+                                <TabContent activeTab={activeOpt}>
+                                    <TabPane tabId='info'>
+                                        <ListGroup>
+                                            {infoKeys}
+                                        </ListGroup>
+                                    </TabPane>
+                                    <TabPane tabId='types'>
+                                        <ListGroup>
+                                            {typesKeys}
+                                        </ListGroup>
+                                    </TabPane>
+                                </TabContent>
+                            </div>
 
-                                <div id="schema-editor" className='col-md-9' style={{ height: '40em' }}>
-                                    <Droppable
-                                        types={['info', 'types']} // <= allowed drop types
-                                        onDrop={onDrop}
-                                        className='border col-12 p-0 pt-1'
-                                        style={{
-                                            minHeight: '20em',
-                                        }}
-                                    >
-                                        <div className="col pt-2">
-                                            <h2>Info</h2>
-                                            {infoEditors}
-                                        </div>
-                                        <hr />
-                                        <div className="col">
-                                            <h2>Types</h2>
-                                            {typesEditors}
-                                        </div>
-                                    </Droppable>
-                                </div>
+                            <div id="schema-editor" className='col-md-9'>
+                                <Droppable
+                                    types={['info', 'types']} // <= allowed drop types
+                                    onDrop={onDrop}
+                                    className='col-12 p-0 mt-1'
+                                    style={{
+                                        minHeight: '20em',
+                                    }}
+                                >
+                                    <div className="col pt-2">
+                                        <h2>Info</h2>
+                                        {infoEditors}
+                                    </div>
+                                    <hr />
+                                    <div className="col">
+                                        <h2>Types</h2>
+                                        {typesEditors}
+                                    </div>
+                                </Droppable>
                             </div>
                         </div>
-                        <div className='card-footer p-1'>
-                            <div className='row no-gutters'>
-                                <div className='col-md-6'>
-                                    <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
-                                        <option value="">Select a Schema...</option>
-                                        <optgroup label="Testers">
-                                            {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
-                                        </optgroup>
-                                        <optgroup label="Custom">
-                                            <option value="file">File...</option>
-                                        </optgroup>
-                                    </select>
-                                    <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
-                                </div>
-                                <div className='col-md-6'>
-                                    <SBCopyToClipboard buttonId='copyMessage1' data={generatedSchema} customClass='float-right' shouldStringify={true} />
-                                    <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
-                                        <FontAwesomeIcon icon={faFileDownload} />
-                                    </Button>
-                                    <Button onClick={() => setActiveView('schema')} color="info" className='float-right btn-sm mr-1'>View JADN</Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </TabPane>
+                    </TabPane>
 
-                <TabPane tabId='schema'>
-                    <div className='card'>
-                        <div className='card-body' style={{ height: '40em', overflowY: 'auto' }}>
-                            <JSONPretty
-                                id='schema'
-                                json={generatedSchema}
-                            />
-                        </div>
-                        <div className='card-footer p-1'>
-                            <SBCopyToClipboard buttonId='copyMessage2' data={generatedSchema} customClass='float-right' shouldStringify={true} />
-                            <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
-                                <FontAwesomeIcon icon={faFileDownload} />
-                            </Button>
-                            <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">View Creator</Button>
-                        </div>
-                    </div>
-                </TabPane>
-            </TabContent>
-        </fieldset>
+                    <TabPane tabId='schema'>
+                        <JSONPretty
+                            id='schema'
+                            json={generatedSchema}
+                            className='p-2'
+                        />
+                    </TabPane>
+                </TabContent >
+            </div>
+        </div>
     )
 }
 export default SchemaCreator 

@@ -39,15 +39,13 @@ const SchemaGenerator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header p-2'>
-                            <h5 className='m-0'> Generate Schema</h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}> Generate Schema</h5>
+                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                         <div className='card-body p-2'>
                             <SchemaCreator
                                 selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                 generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema} />
-                        </div>
-                        <div className='card-footer p-2'>
-                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>

@@ -35,46 +35,21 @@ const SchemaGenerator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header p-2'>
-                            <h5 className='m-0'> Schema Conformance </h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}> Schema Conformance </h5>
+                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                            <Button onClick={() => setActiveView('tests')} className={`float-right btn-sm m1-1 ${activeView == 'tests' ? ' d-none' : ''}`} color="info">View Tests</Button>
+                            <Button onClick={() => setActiveView('test-results')} className={`float-right btn-sm m1-1 ${activeView == 'test-results' ? ' d-none' : ''}`} color="info">View Test Results</Button>
                         </div>
-                        <div className='card-body p-2'>
-                            <Nav tabs>
-                                <NavItem>
-                                    <NavLink
-                                        style={activeView == 'tests' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
-                                        onClick={() => setActiveView('tests')}>
-                                        Tests
-                                    </NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink
-                                        style={activeView == 'test-results' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
-                                        onClick={() => setActiveView('test-results')}>
-                                        Tests Results
-                                    </NavLink>
-                                </NavItem>
-                            </Nav>
-
+                        <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
                             <TabContent activeTab={activeView}>
                                 <TabPane tabId='tests'>
-                                    <div className='card'>
-                                        <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
-                                            <ViewConformanceTests />
-                                        </div>
-                                    </div>
+                                    <ViewConformanceTests />
                                 </TabPane>
 
                                 <TabPane tabId='test-results'>
-                                    <div className='card'>
-                                        <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
-                                            <RunConformanceTests selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile} />
-                                        </div>
-                                    </div>
+                                    <RunConformanceTests selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile} />
                                 </TabPane>
                             </TabContent>
-                        </div>
-                        <div className='card-footer p-2'>
-                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>

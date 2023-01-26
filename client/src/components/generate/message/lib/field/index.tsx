@@ -64,6 +64,7 @@ class Field extends Component<FieldConnectedProps> {
       case 'Map':
         return <MapField {...args} />;
       case 'MapOf':
+        //TODO: FIX
         const [arr] = def;
         // eslint-disable-next-line react/jsx-one-expression-per-line
         return <FormText>MapOf: {arr}</FormText>;

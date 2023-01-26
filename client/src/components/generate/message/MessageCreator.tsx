@@ -14,7 +14,6 @@ const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
     let schemaObj = useSelector(getSelectedSchema);
 
-    //state 
     const [activeView, setActiveView] = useState('creator');
 
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
@@ -57,7 +56,7 @@ const MessageCreator = (props: any) => {
     } else {
         fieldDefs = (
             <FormText color="muted">
-                Command Fields will appear here after selecting a type
+                Message generator will appear here after selecting a message type
                 &nbsp;
                 {commandType}
             </FormText>
@@ -90,58 +89,46 @@ const MessageCreator = (props: any) => {
     }
 
     return (
-        <fieldset className="p-0">
-            <legend>Message Creator</legend>
-            <TabContent activeTab={activeView}>
-                <TabPane tabId='creator'>
-                    <div className='card'>
-                        <div className='card-body p-0' style={{ height: '40em' }}>
-                            <div id='command-fields' className='p-2' style={{ height: '40em', overflowY: 'auto' }}>
-                                {commandFields}
-                                <div id="fieldDefs">
-                                    {fieldDefs}
-                                </div>
-                            </div>
-                        </div>
-                        <div className='card-footer p-1'>
-                            <div className='row no-gutters'>
-                                <div className='col-md-6'>
-                                    <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} onChange={handleSelection}
-                                        title="Select message type to create based on valid JADN Schema">
-                                        <option value=''>Message Type</option>
-                                        {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
-                                    </select>
-                                </div>
-                                <div className='col-md-6'>
-                                    <SBCopyToClipboard buttonId='copyMessage1' data={generatedMessage} customClass='float-right' shouldStringify={true} />
-                                    <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
-                                        <FontAwesomeIcon icon={faFileDownload} />
-                                    </Button>
-                                    <Button onClick={() => setActiveView('message')} className="float-right btn-sm mr-1" color="info">View JSON</Button>
-                                </div>
-                            </div>
-                        </div>
+        <div className="card">
+            <div className="card-header">
+                <div className='row no-gutters'>
+                    <div className='col-md-3'>
+                        <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} onChange={handleSelection}
+                            title="Select message type to create based on valid JADN Schema">
+                            <option value=''>Message Type</option>
+                            {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
+                        </select>
                     </div>
-                </TabPane>
+                    <div className='col'>
+                        <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' />
+                        <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
+                            <FontAwesomeIcon icon={faFileDownload} />
+                        </Button>
+                        <Button onClick={() => setActiveView('message')} className={`float-right btn-sm mr-1 ${activeView == 'message' ? ' d-none' : ''}`} color="info">View Message</Button>
+                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
+                    </div>
+                </div>
+            </div>
+            <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
+                <TabContent activeTab={activeView}>
+                    <TabPane tabId='creator'>
+                        <div id='command-fields' className='p-2'>
+                            {commandFields}
+                            <div id="fieldDefs">
+                                {fieldDefs}
+                            </div>
+                        </div>
+                    </TabPane>
 
-                <TabPane tabId='message'>
-                    <div className='card'>
-                        <div className='card-body' style={{ height: '40em', overflowY: 'auto' }}>
-                            <JSONPretty
-                                id='message'
-                                json={generatedMessage}
-                            />
-                        </div>
-                        <div className='card-footer p-1'>
-                            <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' />
-                            <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
-                                <FontAwesomeIcon icon={faFileDownload} />
-                            </Button>
-                            <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">View Creator</Button>
-                        </div>
-                    </div>
-                </TabPane>
-            </TabContent>
-        </fieldset>)
+                    <TabPane tabId='message'>
+                        <JSONPretty
+                            id='message'
+                            json={generatedMessage}
+                            className='p-2'
+                        />
+                    </TabPane>
+                </TabContent>
+            </div>
+        </div>)
 }
 export default MessageCreator 

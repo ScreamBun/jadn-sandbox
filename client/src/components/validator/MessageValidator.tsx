@@ -38,7 +38,7 @@ const MessageValidator = () => {
         setLoadedMsg('');
     }
 
-    const submitForm = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
@@ -88,10 +88,11 @@ const MessageValidator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header p-2'>
-                            <h5 className='m-0'> Validate Message </h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}> Validate Message </h5>
+                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
-                        <div className='card-body p-1'>
-                            <Form>
+                        <div className='card-body p-2'>
+                            <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
@@ -107,18 +108,11 @@ const MessageValidator = () => {
                                             msgFormat={msgFormat} setMsgFormat={setMsgFormat}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes}
+                                            loadedSchema = {loadedSchema}
                                         />
                                     </div>
-
                                 </div>
                             </Form>
-                        </div>
-                        <div className='card-footer p-2'>
-                            <Button color="success" className={`float-right ml-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit" onClick={submitForm}
-                                title={`${loadedSchema && loadedMsg && decodeMsg && msgFormat ? 'Validate the message against the given schema' : 'Cannot validate'}`}>
-                                Validate Message
-                            </Button>
-                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>

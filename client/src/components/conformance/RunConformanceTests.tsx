@@ -313,159 +313,165 @@ const RunConformanceTests = (props: any) => {
   };
 
   return (
-    <div>
-      <div className='row'>
-        <div className='w-75 pl-3'>
-          <form onSubmit={onRunTests}>
-            <div className='btn-group' role='group'>
+    <div className='card m-2'>
+      <div className='card-header'>
+        <form onSubmit={onRunTests}>
+          <div className='row no-gutters'>
+            <div className='col-md-3'>
+              <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
+                <option value="">Select a Schema...</option>
+                <optgroup label="Testers">
+                  {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
+                </optgroup>
+                <optgroup label="Custom">
+                  <option value="file">File...</option>
+                </optgroup>
+              </select>
+              <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
+            </div>
 
-              <div>
-                <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
-                  <option value="">Select a Schema...</option>
-                  <optgroup label="Testers">
-                    {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
-                  </optgroup>
-                  <optgroup label="Custom">
-                    <option value="file">File...</option>
-                  </optgroup>
-                </select>
-                <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
-              </div>
-
-              <select required value={profileSelection} onChange={(e) => setProfileSelection(e.target.value)}>
+            <div className='col-md-3'>
+              <select required className="form-control form-control-sm" value={profileSelection} onChange={(e) => setProfileSelection(e.target.value)}>
                 <option value=''>Select a Profile Type</option>
                 {profilesOptions.map((option) => (
                   <option key={option} value={option}>{option}</option>
                 ))}
               </select>
-              <div className='btn-group'>
-                <Button id='runTests' type='submit' color={SUCCESS}>
-                  <FontAwesomeIcon className='mr-2' icon={faClipboardCheck} color='white' />
-                  Run Tests
-                </Button>
-              </div>
             </div>
-            <span className='badge badge-info badge-pill ml-2 p-2'>
-              <span className='mr-2'>Total Test Results</span>
-              {testResults.stats.overall.total}
-            </span>
-          </form>
-        </div>
-        <div className='w-25 float-right'>
-          <ConformanceChart testStats={testResults?.stats} />
-        </div>
+
+            <div className='col-md-6'>
+              <span className='badge badge-info badge-pill ml-2 p-2 float-right'>
+                <span className='mr-2'>Total Test Results</span>
+                {testResults.stats.overall.total}
+              </span>
+
+              <Button id='runTests' type='submit' color={SUCCESS} className='float-right btn-sm mr-1'>
+                <FontAwesomeIcon className='mr-2' icon={faClipboardCheck} color='white' />
+                Run Tests
+              </Button>
+            </div>
+          </div>
+        </form>
       </div>
-      <div className='row mt-2'>
-        <div className='col'>
-          <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={classnames({ active: activeTab === SUCCESS })}
-                onClick={() => onToggleTabs(SUCCESS)}
-              >
-                <TabTitleWithBadge tabTitle='Success' badgeValue={testResults.stats.overall.success} badgeType='badge-success' />
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={classnames({ active: activeTab === EXPECTED_FAILURE })}
-                onClick={() => onToggleTabs(EXPECTED_FAILURE)}
-              >
-                <TabTitleWithBadge tabTitle='Expected Failure' badgeValue={testResults.stats.overall.expected_failure} badgeType='badge-success' />
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={classnames({ active: activeTab === SKIPPED })}
-                onClick={() => onToggleTabs(SKIPPED)}
-              >
-                <TabTitleWithBadge tabTitle='Skipped' badgeValue={testResults.stats.overall.skipped} badgeType='badge-secondary' />
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={classnames({ active: activeTab === UNEXPECTED_SUCCESS })}
-                onClick={() => onToggleTabs(UNEXPECTED_SUCCESS)}
-              >
-                <TabTitleWithBadge tabTitle='Unexpected Success' badgeValue={testResults.stats.overall.unexpected_success} badgeType='badge-warning' />
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={classnames({ active: activeTab === FAILURE })}
-                onClick={() => onToggleTabs(FAILURE)}
-              >
-                <TabTitleWithBadge tabTitle='Failure' badgeValue={testResults.stats.overall.failure} badgeType='badge-danger' />
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={classnames({ active: activeTab === ERROR })}
-                onClick={() => onToggleTabs(ERROR)}
-              >
-                <TabTitleWithBadge tabTitle='Error' badgeValue={testResults.stats.overall.error} badgeType='badge-danger' />
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={classnames({ active: activeTab === 'json' })}
-                onClick={() => onToggleTabs('json')}
-              >
-                JSON
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <TabContent activeTab={activeTab}>
-            <TabPane tabId={SUCCESS}>
-              <div className='card'>
-                <div className='card-body'>
-                  <TestContent profileType={profileSelection} allResults={testResults} resultType={SUCCESS} />
+
+      <div className='card-body'>
+        <div className='row mt-2'>
+          <div className='float-right'>
+            <ConformanceChart testStats={testResults?.stats} />
+          </div>
+        </div>
+        <div className='row mt-2'>
+          <div className='col'>
+            <Nav tabs>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: activeTab === SUCCESS })}
+                  onClick={() => onToggleTabs(SUCCESS)}
+                >
+                  <TabTitleWithBadge tabTitle='Success' badgeValue={testResults.stats.overall.success} badgeType='badge-success' />
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: activeTab === EXPECTED_FAILURE })}
+                  onClick={() => onToggleTabs(EXPECTED_FAILURE)}
+                >
+                  <TabTitleWithBadge tabTitle='Expected Failure' badgeValue={testResults.stats.overall.expected_failure} badgeType='badge-success' />
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: activeTab === SKIPPED })}
+                  onClick={() => onToggleTabs(SKIPPED)}
+                >
+                  <TabTitleWithBadge tabTitle='Skipped' badgeValue={testResults.stats.overall.skipped} badgeType='badge-secondary' />
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: activeTab === UNEXPECTED_SUCCESS })}
+                  onClick={() => onToggleTabs(UNEXPECTED_SUCCESS)}
+                >
+                  <TabTitleWithBadge tabTitle='Unexpected Success' badgeValue={testResults.stats.overall.unexpected_success} badgeType='badge-warning' />
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: activeTab === FAILURE })}
+                  onClick={() => onToggleTabs(FAILURE)}
+                >
+                  <TabTitleWithBadge tabTitle='Failure' badgeValue={testResults.stats.overall.failure} badgeType='badge-danger' />
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: activeTab === ERROR })}
+                  onClick={() => onToggleTabs(ERROR)}
+                >
+                  <TabTitleWithBadge tabTitle='Error' badgeValue={testResults.stats.overall.error} badgeType='badge-danger' />
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: activeTab === 'json' })}
+                  onClick={() => onToggleTabs('json')}
+                >
+                  JSON
+                </NavLink>
+              </NavItem>
+            </Nav>
+            <TabContent activeTab={activeTab}>
+              <TabPane tabId={SUCCESS}>
+                <div className='card'>
+                  <div className='card-body'>
+                    <TestContent profileType={profileSelection} allResults={testResults} resultType={SUCCESS} />
+                  </div>
                 </div>
-              </div>
-            </TabPane>
-            <TabPane tabId={EXPECTED_FAILURE}>
-              <div className='card'>
-                <div className='card-body'>
-                  <TestContent profileType={profileSelection} allResults={testResults} resultType={EXPECTED_FAILURE} />
+              </TabPane>
+              <TabPane tabId={EXPECTED_FAILURE}>
+                <div className='card'>
+                  <div className='card-body'>
+                    <TestContent profileType={profileSelection} allResults={testResults} resultType={EXPECTED_FAILURE} />
+                  </div>
                 </div>
-              </div>
-            </TabPane>
-            <TabPane tabId={SKIPPED}>
-              <div className='card'>
-                <div className='card-body'>
-                  <TestContent profileType={profileSelection} allResults={testResults} resultType={SKIPPED} />
+              </TabPane>
+              <TabPane tabId={SKIPPED}>
+                <div className='card'>
+                  <div className='card-body'>
+                    <TestContent profileType={profileSelection} allResults={testResults} resultType={SKIPPED} />
+                  </div>
                 </div>
-              </div>
-            </TabPane>
-            <TabPane tabId={UNEXPECTED_SUCCESS}>
-              <div className='card'>
-                <div className='card-body'>
-                  <TestContent profileType={profileSelection} allResults={testResults} resultType={UNEXPECTED_SUCCESS} />
+              </TabPane>
+              <TabPane tabId={UNEXPECTED_SUCCESS}>
+                <div className='card'>
+                  <div className='card-body'>
+                    <TestContent profileType={profileSelection} allResults={testResults} resultType={UNEXPECTED_SUCCESS} />
+                  </div>
                 </div>
-              </div>
-            </TabPane>
-            <TabPane tabId={FAILURE}>
-              <div className='card'>
-                <div className='card-body'>
-                  <TestContent profileType={profileSelection} allResults={testResults} resultType={FAILURE} />
+              </TabPane>
+              <TabPane tabId={FAILURE}>
+                <div className='card'>
+                  <div className='card-body'>
+                    <TestContent profileType={profileSelection} allResults={testResults} resultType={FAILURE} />
+                  </div>
                 </div>
-              </div>
-            </TabPane>
-            <TabPane tabId={ERROR}>
-              <div className='card'>
-                <div className='card-body'>
-                  <TestContent profileType={profileSelection} allResults={testResults} resultType={ERROR} />
+              </TabPane>
+              <TabPane tabId={ERROR}>
+                <div className='card'>
+                  <div className='card-body'>
+                    <TestContent profileType={profileSelection} allResults={testResults} resultType={ERROR} />
+                  </div>
                 </div>
-              </div>
-            </TabPane>
-            <TabPane tabId='json'>
-              <div className='card'>
-                <div className='card-body'>
-                  <PrettyPrintJson data={testResults} />
+              </TabPane>
+              <TabPane tabId='json'>
+                <div className='card'>
+                  <div className='card-body'>
+                    <PrettyPrintJson data={testResults} />
+                  </div>
                 </div>
-              </div>
-            </TabPane>
-          </TabContent>
+              </TabPane>
+            </TabContent>
+          </div>
         </div>
       </div>
     </div>
