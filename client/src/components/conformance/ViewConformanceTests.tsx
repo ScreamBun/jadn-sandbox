@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh } from '@fortawesome/free-solid-svg-icons/faRefresh';
-import { Button, Nav, NavItem, TabContent, TabPane } from 'reactstrap';
+import { Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
 import { getAllConformanceTests } from './Api';
 import { sbToastError } from 'components/common/SBToast';
@@ -106,140 +106,141 @@ const ViewConformanceTests = () => {
   };
 
   return (
-      <div className='row m-2'>
-        <div className='col'>
-          <div className='btn-group-vertical float-right ml-1'>
-            <Button
-              id='reloadTests'
-              className='float-right btn-sm'
-              color="info"
-              onClick={fetchAllData}
-            >
-              <FontAwesomeIcon className='mr-2' icon={faRefresh} />
-              Reload Tests
-            </Button>
+    <div className='row m-2'>
+      <div className='col'>
+        <div className='btn-group-vertical float-right ml-1'>
+          <Button
+            id='reloadTests'
+            className='float-right btn-sm'
+            color="info"
+            onClick={fetchAllData}
+          >
+            <FontAwesomeIcon className='mr-2' icon={faRefresh} />
+            Reload Tests
+          </Button>
+          <Nav pills vertical>
+            <NavItem> <NavLink onClick={() => setActiveView('languageTestTitle')} className={`float-right btn-sm mt-1 ${activeView == 'languageTestTitle' ? ' active' : ''}`} color="info">View {languageTestTitle}</NavLink></NavItem>
+            <NavItem> <NavLink onClick={() => setActiveView('slpfTestTitle')} className={`float-right btn-sm mt-1 ${activeView == 'slpfTestTitle' ? ' active' : ''}`} color="info">View {slpfTestTitle}</NavLink></NavItem>
+          </Nav>
+        </div>
 
-            <Button onClick={() => setActiveView('languageTestTitle')} className='float-right btn-sm mt-1' color="info">View {languageTestTitle}</Button>
-            <Button onClick={() => setActiveView('slpfTestTitle')} className='float-right btn-sm mt-1' color="info">View {slpfTestTitle}</Button>
-          </div>
-
-          <div className='card'>
-            <TabContent activeTab={activeView}>
-              <TabPane tabId='languageTestTitle'>
-                <div className='card-header'>
-                  {languageTestTitle}
-                </div>
-                <div className='card-body'>
-                  <div className='card mb-2'>
-                    <div className='card-header bg-primary'>
-                      Valid Profiles
-                      <span className='ml-2 badge bg-light rounded-pill'>
-                        {Object.keys(languageTestProfiles).length}
-                      </span>
-                    </div>
-                    <div className='card-body p-0'>
-                      <ul className='list-group list-group-flush'>
-                        {Object.keys(languageTestProfiles).map((lProfileKey: any) => {
-                          return (
-                            <li key={lProfileKey} className='list-group-item'>{languageTestProfiles[lProfileKey]}</li>
-                          );
-                        })}
-                      </ul>
-                    </div>
+        <div className='card'>
+          <TabContent activeTab={activeView}>
+            <TabPane tabId='languageTestTitle'>
+              <div className='card-header'>
+                {languageTestTitle}
+              </div>
+              <div className='card-body'>
+                <div className='card mb-2'>
+                  <div className='card-header bg-primary'>
+                    Valid Profiles
+                    <span className='ml-2 badge bg-light rounded-pill'>
+                      {Object.keys(languageTestProfiles).length}
+                    </span>
                   </div>
-                  <div className='card mb-2'>
-                    <div className='card-header bg-primary'>
-                      <div className='row'>
-                        <div className='col pt-2'>
-                          Tests (Name and Description)
-                          <span className='ml-2 badge bg-light rounded-pill'>
-                            {Object.keys(filteredLanguageTests).length}
-                          </span>
-                        </div>
-                        <div className='col float-right'>
-                          <input
-                            id='langTestSearchFilter'
-                            type='text'
-                            className='form-control'
-                            defaultValue={languageTestSearch}
-                            placeholder='Filter Tests'
-                            onKeyUp={onLangTestKeyUpHandler}
-                          />
-                        </div>
+                  <div className='card-body p-0'>
+                    <ul className='list-group list-group-flush'>
+                      {Object.keys(languageTestProfiles).map((lProfileKey: any) => {
+                        return (
+                          <li key={lProfileKey} className='list-group-item'>{languageTestProfiles[lProfileKey]}</li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+                <div className='card mb-2'>
+                  <div className='card-header bg-primary'>
+                    <div className='row'>
+                      <div className='col pt-2'>
+                        Tests (Name and Description)
+                        <span className='ml-2 badge bg-light rounded-pill'>
+                          {Object.keys(filteredLanguageTests).length}
+                        </span>
+                      </div>
+                      <div className='col float-right'>
+                        <input
+                          id='langTestSearchFilter'
+                          type='text'
+                          className='form-control'
+                          defaultValue={languageTestSearch}
+                          placeholder='Filter Tests'
+                          onKeyUp={onLangTestKeyUpHandler}
+                        />
                       </div>
                     </div>
-                    <div className='card-body p-0'>
-                      <ul className='list-group list-group-flush'>
-                        {Object.keys(filteredLanguageTests).map((lKey: any) => {
-                          return (
-                            <li key={lKey} className='list-group-item'>{filteredLanguageTests[lKey]}</li>
-                          );
-                        })}
-                      </ul>
-                    </div>
+                  </div>
+                  <div className='card-body p-0'>
+                    <ul className='list-group list-group-flush'>
+                      {Object.keys(filteredLanguageTests).map((lKey: any) => {
+                        return (
+                          <li key={lKey} className='list-group-item'>{filteredLanguageTests[lKey]}</li>
+                        );
+                      })}
+                    </ul>
                   </div>
                 </div>
-              </TabPane>
+              </div>
+            </TabPane>
 
-              <TabPane tabId='slpfTestTitle'>
-                <div className='card-header'>
-                  {slpfTestTitle}
-                </div>
-                <div className='card-body'>
-                  <div className='card mb-2'>
-                    <div className='card-header bg-primary'>
-                      Valid Profiles
-                      <span className='ml-2 badge bg-light rounded-pill'>
-                        {Object.keys(slpfTestProfiles).length}
-                      </span>
-                    </div>
-                    <div className='card-body p-0'>
-                      <ul className='list-group list-group-flush'>
-                        {Object.keys(slpfTestProfiles).map((sProfileKey: any) => {
-                          return (
-                            <li key={sProfileKey} className='list-group-item'>{slpfTestProfiles[sProfileKey]}</li>
-                          );
-                        })}
-                      </ul>
-                    </div>
+            <TabPane tabId='slpfTestTitle'>
+              <div className='card-header'>
+                {slpfTestTitle}
+              </div>
+              <div className='card-body'>
+                <div className='card mb-2'>
+                  <div className='card-header bg-primary'>
+                    Valid Profiles
+                    <span className='ml-2 badge bg-light rounded-pill'>
+                      {Object.keys(slpfTestProfiles).length}
+                    </span>
                   </div>
-                  <div className='card mb-2'>
-                    <div className='card-header bg-primary'>
-                      <div className='row'>
-                        <div className='col pt-2'>
-                          Tests (Name and Description)
-                          <span className='ml-2 badge bg-light rounded-pill'>
-                            {Object.keys(filteredSlpfTests).length}
-                          </span>
-                        </div>
-                        <div className='col float-right'>
-                          <input
-                            id='slpfTestSearch'
-                            type='text'
-                            className='form-control'
-                            defaultValue={slpfTestSearch}
-                            placeholder='Filter Tests'
-                            onKeyUp={onSlpfTestKeyUpHandler}
-                          />
-                        </div>
+                  <div className='card-body p-0'>
+                    <ul className='list-group list-group-flush'>
+                      {Object.keys(slpfTestProfiles).map((sProfileKey: any) => {
+                        return (
+                          <li key={sProfileKey} className='list-group-item'>{slpfTestProfiles[sProfileKey]}</li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+                <div className='card mb-2'>
+                  <div className='card-header bg-primary'>
+                    <div className='row'>
+                      <div className='col pt-2'>
+                        Tests (Name and Description)
+                        <span className='ml-2 badge bg-light rounded-pill'>
+                          {Object.keys(filteredSlpfTests).length}
+                        </span>
+                      </div>
+                      <div className='col float-right'>
+                        <input
+                          id='slpfTestSearch'
+                          type='text'
+                          className='form-control'
+                          defaultValue={slpfTestSearch}
+                          placeholder='Filter Tests'
+                          onKeyUp={onSlpfTestKeyUpHandler}
+                        />
                       </div>
                     </div>
-                    <div className='card-body p-0'>
-                      <ul className='list-group list-group-flush'>
-                        {Object.keys(filteredSlpfTests).map((sKey: any) => {
-                          return (
-                            <li key={sKey} className='list-group-item'>{filteredSlpfTests[sKey]}</li>
-                          );
-                        })}
-                      </ul>
-                    </div>
+                  </div>
+                  <div className='card-body p-0'>
+                    <ul className='list-group list-group-flush'>
+                      {Object.keys(filteredSlpfTests).map((sKey: any) => {
+                        return (
+                          <li key={sKey} className='list-group-item'>{filteredSlpfTests[sKey]}</li>
+                        );
+                      })}
+                    </ul>
                   </div>
                 </div>
-              </TabPane>
-            </TabContent>
-          </div>
+              </div>
+            </TabPane>
+          </TabContent>
         </div>
       </div>
+    </div>
   );
 };
 

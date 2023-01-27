@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
+import { Button, TabContent, TabPane } from "reactstrap";
 import RunConformanceTests from "components/conformance/RunConformanceTests";
 import ViewConformanceTests from "components/conformance/ViewConformanceTests";
 import { getPageTitle } from "reducers/util";
