@@ -100,7 +100,7 @@ const SchemaConverted = (props: any) => {
 
     return (
         <div className="card">
-            <div className="card-header">
+            <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
                         <select id="convert-to" name="convert-to" className="form-control form-control-sm" value={conversion} onChange={handleConversion}>
