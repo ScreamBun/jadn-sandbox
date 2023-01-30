@@ -15,7 +15,7 @@ interface KeyValueEditorProps {
   placeholder?: string;
   type?: InputType;
   change: (_v: boolean|number|string) => void;
-  remove: (_id: string) => void;
+  remove: (_id: string|number) => void;
 }
 
 const defaultProps = {

@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
+import { Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { info } from 'actions/util'
-import SchemaConformance from './SchemaConformance'
 import SchemaCreator from './SchemaCreator'
 
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
 
-    const [activeView, setActiveView] = useState('editor');
     const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
     const [generatedSchema, setGeneratedSchema] = useState(
         {
@@ -41,39 +39,13 @@ const SchemaGenerator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header p-2'>
-                            <h5 className='m-0'> Generate Schema</h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}> Generate Schema</h5>
+                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                         <div className='card-body p-2'>
-                            <Nav>
-                                <NavItem>
-                                    <NavLink
-                                        style={activeView == 'editor' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
-                                        onClick={() => setActiveView('editor')}>
-                                        Creator
-                                    </NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink
-                                        style={activeView == 'conformance' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
-                                        onClick={() => setActiveView('conformance')}>
-                                        Conformance
-                                    </NavLink>
-                                </NavItem>
-                            </Nav>
-                            <TabContent activeTab={activeView}>
-                                <TabPane tabId='editor'>
-                                    <SchemaCreator
-                                        selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
-                                        generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema} />
-                                </TabPane>
-                                <TabPane tabId='conformance'>
-                                    <SchemaConformance
-                                        generatedSchema={generatedSchema} />
-                                </TabPane>
-                            </TabContent>
-                        </div>
-                        <div className='card-footer p-2'>
-                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                            <SchemaCreator
+                                selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
+                                generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema} />
                         </div>
                     </div>
                 </div>

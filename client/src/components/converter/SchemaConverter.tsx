@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
-import ConvertedSchema from './SchemaConverted'
+import SchemaConverted from './SchemaConverted'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
@@ -23,7 +23,6 @@ const SchemaConverter = () => {
         dispatch(info());
     }, [dispatch])
 
-    //if selected file is changed, remove converted schema
     useEffect(() => {
         setConvertedSchema('');
     }, [selectedFile])
@@ -105,7 +104,8 @@ const SchemaConverter = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header p-2'>
-                            <h5 className='m-0'>Convert Schema</h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}>Convert Schema</h5>
+                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                         <div className='card-body p-2'>
                             <Form onSubmit={submitForm}>
@@ -116,16 +116,13 @@ const SchemaConverter = () => {
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <ConvertedSchema
+                                        <SchemaConverted
                                             convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
                                             conversion={conversion} setConversion={setConversion}
                                             loadedSchema={loadedSchema} />
                                     </div>
                                 </div>
                             </Form>
-                        </div>
-                        <div className='card-footer p-2'>
-                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>

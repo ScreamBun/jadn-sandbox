@@ -5,7 +5,7 @@ import JSONPretty from 'react-json-pretty';
 import { Info, Types } from './structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faFileDownload } from '@fortawesome/free-solid-svg-icons';
+import { faFileDownload, faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { sbToastError } from 'components/common/SBToast';
 import { SchemaJADN } from './interface';
@@ -72,101 +72,6 @@ const SchemaCreator = (props: any) => {
         }
     }
 
-    const onDrop = (data: any) => {
-        if (data.info) {
-            if (!(data.info in (generatedSchema.info || {}))) {
-                setGeneratedSchema({
-                    ...generatedSchema,
-                    info: {
-                        ...generatedSchema.info || {},
-                        ...Info[data.info].edit()
-                    }
-                });
-            }
-        } else if (data.types) {
-            const tmpTypes = [...generatedSchema.types] || [];
-            const tmpDef = Types[data.types].edit();
-            tmpTypes.push(tmpDef);
-            setGeneratedSchema({
-                ...generatedSchema,
-                types: tmpTypes
-            });
-        } else {
-            console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
-        }
-    }
-
-    const infoKeys = Object.keys(Info).map(k => (
-        <Draggable type="info" data={k} key={Info[k].key}>
-            <ListGroupItem style={{ color: 'inherit' }} action>{Info[k].key}</ListGroupItem>
-        </Draggable>
-    ));
-
-    const typesKeys = Object.keys(Types).map(k => (
-        <Draggable type="types" data={k} key={Types[k].key}>
-            <ListGroupItem style={{ color: 'inherit' }} action>{Types[k].key}</ListGroupItem>
-        </Draggable>
-    ));
-
-    const infoEditors = Object.keys(Info).map((k, i) => {
-        const key = k as keyof typeof Info;
-        if (generatedSchema.info && k in generatedSchema.info) {
-            return Info[key].editor({
-                key: i,
-                value: generatedSchema.info[key],
-                placeholder: k,
-                change: val => setGeneratedSchema({
-                    ...generatedSchema,
-                    info: {
-                        ...generatedSchema.info,
-                        ...Info[key].edit(val)
-                    }
-                })
-                ,
-                remove: (id: string) => {
-                    if (generatedSchema.info && id in generatedSchema.info) {
-                        const tmpInfo = { ...generatedSchema.info };
-                        delete tmpInfo[id];
-                        setGeneratedSchema({
-                            ...generatedSchema,
-                            info: tmpInfo
-                        });
-                    }
-                }
-            });
-        }
-        // eslint-disable-next-line no-useless-return
-        return null;
-    }).filter(Boolean);
-
-    const typesEditors = (generatedSchema.types || []).map((def, i) => {
-        const type = def[1].toLowerCase() as keyof typeof Types;
-        return Types[type].editor({
-            key: i,
-            value: def,
-            dataIndex: i,
-            change: (val, idx: number) => {
-                const tmpTypes = [...generatedSchema.types];
-                tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
-                setGeneratedSchema({
-                    ...generatedSchema,
-                    types: tmpTypes
-                })
-            }
-            ,
-            remove: (idx: number) => {
-                if (generatedSchema.types.length >= idx) {
-                    const tmpTypes = [...generatedSchema.types];
-                    tmpTypes.splice(idx, 1);
-                    setGeneratedSchema({
-                        ...generatedSchema,
-                        types: tmpTypes
-                    });
-                }
-            }
-        });
-    });
-
     const schemaDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
@@ -189,113 +94,212 @@ const SchemaCreator = (props: any) => {
         }
     }
 
+    const DraggableSchemaOpts = () => {
+        const infoKeys = Object.keys(Info).map(k => (
+            <Draggable type="info" data={k} key={Info[k].key} >
+                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Info[k].key}
+                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
+                </ListGroupItem>
+            </Draggable>
+        ));
+
+        const typesKeys = Object.keys(Types).map(k => (
+            <Draggable type="types" data={k} key={Types[k].key}>
+                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Types[k].key}
+                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
+                </ListGroupItem>
+            </Draggable>
+        ));
+
+        return (
+            <div id="schema-options" className='col-sm-3'>
+                <Nav pills>
+                    <NavItem>
+                        <NavLink
+                            className={activeOpt == 'info' ? ' active' : ''}
+                            onClick={() => setActiveOpt('info')}
+                        >
+                            Info
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink
+                            className={activeOpt == 'types' ? ' active' : ''}
+                            onClick={() => setActiveOpt('types')}
+                        >
+                            Types
+                        </NavLink>
+                    </NavItem>
+                </Nav>
+                <TabContent activeTab={activeOpt}>
+                    <TabPane tabId='info'>
+                        <ListGroup>
+                            {infoKeys}
+                        </ListGroup>
+                    </TabPane>
+                    <TabPane tabId='types'>
+                        <ListGroup>
+                            {typesKeys}
+                        </ListGroup>
+                    </TabPane>
+                </TabContent>
+            </div>
+        );
+    }
+
+    const SchemaEditor = () => {
+        const onDrop = (data: any) => {
+            if (data.info) {
+                if (!(data.info in (generatedSchema.info || {}))) {
+                    setGeneratedSchema({
+                        ...generatedSchema,
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[data.info].edit()
+                        }
+                    });
+                }
+            } else if (data.types) {
+                const tmpTypes = [...generatedSchema.types] || [];
+                const tmpDef = Types[data.types].edit();
+                tmpTypes.push(tmpDef);
+                setGeneratedSchema({
+                    ...generatedSchema,
+                    types: tmpTypes
+                });
+            } else {
+                console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
+            }
+        }
+
+        const infoEditors = Object.keys(Info).map((k, i) => {
+            const key = k as keyof typeof Info;
+            if (generatedSchema.info && k in generatedSchema.info) {
+                return Info[key].editor({
+                    key: i,
+                    value: generatedSchema.info[key],
+                    placeholder: k,
+                    change: val => setGeneratedSchema({
+                        ...generatedSchema,
+                        info: {
+                            ...generatedSchema.info,
+                            ...Info[key].edit(val)
+                        }
+                    })
+                    ,
+                    remove: (id: string) => {
+                        if (generatedSchema.info && id in generatedSchema.info) {
+                            const tmpInfo = { ...generatedSchema.info };
+                            delete tmpInfo[id];
+                            setGeneratedSchema({
+                                ...generatedSchema,
+                                info: tmpInfo
+                            });
+                        }
+                    }
+                });
+            }
+            // eslint-disable-next-line no-useless-return
+            return null;
+        }).filter(Boolean);
+
+        const typesEditors = (generatedSchema.types || []).map((def, i) => {
+            const type = def[1].toLowerCase() as keyof typeof Types;
+            return Types[type].editor({
+                key: i,
+                value: def,
+                dataIndex: i,
+                change: (val, idx: number) => {
+                    const tmpTypes = [...generatedSchema.types];
+                    tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
+                    setGeneratedSchema({
+                        ...generatedSchema,
+                        types: tmpTypes
+                    })
+                }
+                ,
+                remove: (idx: number) => {
+                    if (generatedSchema.types.length >= idx) {
+                        const tmpTypes = [...generatedSchema.types];
+                        tmpTypes.splice(idx, 1);
+                        setGeneratedSchema({
+                            ...generatedSchema,
+                            types: tmpTypes
+                        });
+                    }
+                }
+            });
+        });
+
+        return (
+            <div id="schema-editor" className='col-md-9'>
+                <Droppable
+                    types={['info', 'types']} // <= allowed drop types
+                    onDrop={onDrop}
+                    className='col-12 mt-1'
+                    style={{
+                        minHeight: '20em',
+                    }}
+                >
+                    <div className="col pt-2">
+                        <h2>Info</h2>
+                        {infoEditors}
+                    </div>
+                    <hr />
+                    <div className="col">
+                        <h2>Types</h2>
+                        {typesEditors}
+                    </div>
+                </Droppable>
+            </div>
+        );
+    }
+
     return (
-        <fieldset className="p-0">
-            <TabContent activeTab={activeView}>
-                <TabPane tabId='creator'>
-                    <div className='card'>
-                        <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
-                            <div className='row'>
-                                <div id="schema-options" className='col-sm-3'>
-                                    <Nav>
-                                        <NavItem>
-                                            <NavLink
-                                                style={activeOpt == 'info' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
-                                                onClick={() => setActiveOpt('info')}
-                                            >
-                                                Info
-                                            </NavLink>
-                                        </NavItem>
-                                        <NavItem>
-                                            <NavLink
-                                                style={activeOpt == 'types' ? { textDecoration: 'underline' } : { textDecoration: 'none' }}
-                                                onClick={() => setActiveOpt('types')}
-                                            >
-                                                Types
-                                            </NavLink>
-                                        </NavItem>
-                                    </Nav>
-                                    <TabContent activeTab={activeOpt}>
-                                        <TabPane tabId='info'>
-                                            <ListGroup>
-                                                {infoKeys}
-                                            </ListGroup>
-                                        </TabPane>
-                                        <TabPane tabId='types'>
-                                            <ListGroup>
-                                                {typesKeys}
-                                            </ListGroup>
-                                        </TabPane>
-                                    </TabContent>
-                                </div>
-
-                                <div id="schema-editor" className='col-md-9' style={{ height: '40em' }}>
-                                    <Droppable
-                                        types={['info', 'types']} // <= allowed drop types
-                                        onDrop={onDrop}
-                                        className='border col-12 p-0 pt-1'
-                                        style={{
-                                            minHeight: '20em',
-                                        }}
-                                    >
-                                        <div className="col pt-2">
-                                            <h2>Info</h2>
-                                            {infoEditors}
-                                        </div>
-                                        <hr />
-                                        <div className="col">
-                                            <h2>Types</h2>
-                                            {typesEditors}
-                                        </div>
-                                    </Droppable>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='card-footer p-1'>
-                            <div className='row no-gutters'>
-                                <div className='col-md-6'>
-                                    <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
-                                        <option value="">Select a Schema...</option>
-                                        <optgroup label="Testers">
-                                            {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
-                                        </optgroup>
-                                        <optgroup label="Custom">
-                                            <option value="file">File...</option>
-                                        </optgroup>
-                                    </select>
-                                    <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
-                                </div>
-                                <div className='col-md-6'>
-                                    <SBCopyToClipboard buttonId='copyMessage1' data={generatedSchema} customClass='float-right' shouldStringify={true} />
-                                    <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
-                                        <FontAwesomeIcon icon={faFileDownload} />
-                                    </Button>
-                                    <Button onClick={() => setActiveView('schema')} color="info" className='float-right btn-sm mr-1'>View JADN</Button>
-                                </div>
-                            </div>
-                        </div>
+        <div className='card'>
+            <div className='card-header'>
+                <div className='row no-gutters'>
+                    <div className='col-md-3'>
+                        <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
+                            <option value="">Select a Schema...</option>
+                            <optgroup label="Testers">
+                                {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
+                            </optgroup>
+                            <optgroup label="Custom">
+                                <option value="file">File...</option>
+                            </optgroup>
+                        </select>
+                        <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                     </div>
-                </TabPane>
-
-                <TabPane tabId='schema'>
-                    <div className='card'>
-                        <div className='card-body' style={{ height: '40em', overflowY: 'auto' }}>
-                            <JSONPretty
-                                id='schema'
-                                json={generatedSchema}
-                            />
-                        </div>
-                        <div className='card-footer p-1'>
-                            <SBCopyToClipboard buttonId='copyMessage2' data={generatedSchema} customClass='float-right' shouldStringify={true} />
-                            <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
-                                <FontAwesomeIcon icon={faFileDownload} />
-                            </Button>
-                            <Button onClick={() => setActiveView('creator')} className="float-right btn-sm mr-1" color="info">View Creator</Button>
-                        </div>
+                    <div className='col-md-9'>
+                        <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass='float-right' shouldStringify={true} />
+                        <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
+                            <FontAwesomeIcon icon={faFileDownload} />
+                        </Button>
+                        <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="info">View Schema</Button>
+                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
                     </div>
-                </TabPane>
-            </TabContent>
-        </fieldset>
+                </div>
+            </div>
+            <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
+                <TabContent activeTab={activeView}>
+                    <TabPane tabId='creator'>
+                        <div className='row no-gutters'>
+                            <DraggableSchemaOpts />
+                            <SchemaEditor />
+                        </div>
+                    </TabPane>
+
+                    <TabPane tabId='schema'>
+                        <JSONPretty
+                            id='schema'
+                            json={generatedSchema}
+                            className='p-2'
+                        />
+                    </TabPane>
+                </TabContent >
+            </div>
+        </div>
     )
 }
 export default SchemaCreator 

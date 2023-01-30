@@ -1,7 +1,7 @@
 import { faCubes, faInfoCircle, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI
+  NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI
 } from 'components/utils/constants';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -94,9 +94,9 @@ const Home = () => {
                   <h5 className="card-title m-0">Validation</h5>
                 </div>
                 <ul className="list-group list-group-flush">
-                  <Link className="list-group-item" to={NAV_VALIDATE}>CBOR</Link>
-                  <Link className="list-group-item" to={NAV_VALIDATE}>JSON</Link>
-                  <Link className="list-group-item" to={NAV_VALIDATE}>Relax (XML)</Link>
+                  <Link className="list-group-item" to={NAV_VALIDATE_MESSAGE}>CBOR</Link>
+                  <Link className="list-group-item" to={NAV_VALIDATE_MESSAGE}>JSON</Link>
+                  <Link className="list-group-item" to={NAV_VALIDATE_MESSAGE}>Relax (XML)</Link>
                 </ul>
               </div>
 

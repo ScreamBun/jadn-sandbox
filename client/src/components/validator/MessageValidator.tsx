@@ -38,25 +38,43 @@ const MessageValidator = () => {
         setLoadedMsg('');
     }
 
-    const submitForm = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
-                .then((submitVal: any) => {
-                    if(submitVal && submitVal.payload.valid_bool){
-                        sbToastSuccess(submitVal.payload.valid_msg)
-                    }else {
-                        sbToastError(submitVal.payload.valid_msg)
-                    }
-                })
-                .catch((submitErr) => {
-                    sbToastError(submitErr.message)
-                    return false;
-                })
-        } catch (err) {
-            if (err instanceof Error) {
-                sbToastError(err.message)
+
+        if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
+            try {
+                dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
+                    .then((submitVal: any) => {
+                        if (submitVal && submitVal.payload.valid_bool) {
+                            sbToastSuccess(submitVal.payload.valid_msg)
+                        } else {
+                            sbToastError(submitVal.payload.valid_msg)
+                        }
+                    })
+                    .catch((submitErr) => {
+                        sbToastError(submitErr.message)
+                        return false;
+                    })
+            } catch (err) {
+                if (err instanceof Error) {
+                    sbToastError(err.message)
+                }
             }
+        } else {
+            var err = '';
+            if (!loadedSchema) {
+                err += ' schema';
+            }
+            if (!loadedMsg) {
+                err += ', message';
+            }
+            if (!msgFormat) {
+                err += ', message format';
+            }
+            if (!decodeMsg) {
+                err += ', message type';
+            }
+            sbToastError('ERROR: Validation failed - Please select ' + err)
         }
     }
 
@@ -70,10 +88,11 @@ const MessageValidator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header p-2'>
-                            <h5 className='m-0'> Validate Message </h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}> Validate Message </h5>
+                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
-                        <div className='card-body p-1'>
-                            <Form>
+                        <div className='card-body p-2'>
+                            <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
@@ -89,22 +108,16 @@ const MessageValidator = () => {
                                             msgFormat={msgFormat} setMsgFormat={setMsgFormat}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes}
+                                            loadedSchema = {loadedSchema}
                                         />
                                     </div>
-
                                 </div>
                             </Form>
-                        </div>
-                        <div className='card-footer p-2'>
-                            <Button color="success" className='float-right ml-1 btn-sm' type="submit" onClick={submitForm} title="Validate the message against the given schema">Validate Message</Button>
-                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     );
-
 }
 export default MessageValidator

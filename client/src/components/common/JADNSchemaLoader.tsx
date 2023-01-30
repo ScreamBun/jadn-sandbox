@@ -34,7 +34,7 @@ const JADNSchemaLoader = (props: any) => {
                             validateJSON(JSON.stringify(schemaObj));
                             validateJADN(JSON.stringify(schemaObj));
                             if (setDecodeSchemaTypes && setDecodeMsg) {
-                                loadDecodeTypes(schemaObj);                 
+                                loadDecodeTypes(schemaObj);
                             }
                         } catch (err) {
                             if (err instanceof Error) {
@@ -190,77 +190,74 @@ const JADNSchemaLoader = (props: any) => {
         }
 
         validateJADN(jsonObj);
-    }   
+    }
 
     return (
-        <fieldset className="p-0">
-            <legend>JADN Schema</legend>
-            <div className="card">
-                <div className="card-body p-0" style={{ height: '40em' }}>
-                    <Input
-                        id="schemaInput"
-                        type="textarea"
-                        onChange={onSchemaChange}
-                        value={loadedSchema}
-                        className='form-control form-control-sm'
-                        placeholder='Please select a schema'
-                        style={{
-                            resize: 'none',
-                            outline: 'none',
-                            width: '100%',
-                            padding: '10px',
-                            border: 'none',
-                            height: '100%',
-                            whiteSpace: 'pre',
-                            overflowWrap: 'normal',
-                            overflowX: 'auto'                            
-                        }}
-                    />
-                </div>
-
-                <div className="card-footer p-1">
-                    <div className="row no-gutters">
-                        <div className="col-md-6">
-                            <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
-                                <option value="">Select a Schema...</option>
-                                <optgroup label="Testers">
-                                    {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
-                                </optgroup>
-                                <optgroup label="Custom">
-                                    <option value="file">File...</option>
-                                </optgroup>
-                            </select>
-                            <Input type="file" id="schema-file" name="schema-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
-                        </div>
-                        <div className="col-md-6">
-                            <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right' />
-                            <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
-                                <span className="m-1">Validate JADN</span>
-                                {isValidJADN ? (
-                                    <span className="badge badge-pill badge-success">
-                                        <FontAwesomeIcon icon={faCheck} />
-                                    </span>) : (
-                                    <span className="badge badge-pill badge-danger">
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </span>)
-                                }
-                            </Button>
-                            <Button id='formatButton' className="float-right btn-sm mr-1" color="info" onClick={onFormatClick}
-                                title='Attempts to Parse and Format.'>
-                                <span className="m-1">Format JSON</span>
-                                {isValidJSON ? (
-                                    <span className="badge badge-pill badge-success">
-                                        <FontAwesomeIcon icon={faCheck} />
-                                    </span>) : (
-                                    <span className="badge badge-pill badge-danger">
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </span>)
-                                }
-                            </Button>                          
-                        </div>
+        <div className="card">
+            <div className="card-header p-2">
+                <div className="row no-gutters">
+                    <div className="col-md-3">
+                        <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
+                            <option value="">Select a Schema...</option>
+                            <optgroup label="Testers">
+                                {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
+                            </optgroup>
+                            <optgroup label="Custom">
+                                <option value="file">File...</option>
+                            </optgroup>
+                        </select>
+                        <Input type="file" id="schema-file" name="schema-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
+                    </div>
+                    <div className="col">
+                        <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right' />
+                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title="JADN schema must be valid" onClick={onValidateJADNClick}>
+                            <span className="m-1">Validate JADN</span>
+                            {isValidJADN ? (
+                                <span className="badge badge-pill badge-success">
+                                    <FontAwesomeIcon icon={faCheck} />
+                                </span>) : (
+                                <span className="badge badge-pill badge-danger">
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </span>)
+                            }
+                        </Button>
+                        <Button id='formatButton' className="float-right btn-sm mr-1" color="info" onClick={onFormatClick}
+                            title='Attempts to Parse and Format.'>
+                            <span className="m-1">Format JSON</span>
+                            {isValidJSON ? (
+                                <span className="badge badge-pill badge-success">
+                                    <FontAwesomeIcon icon={faCheck} />
+                                </span>) : (
+                                <span className="badge badge-pill badge-danger">
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </span>)
+                            }
+                        </Button>
                     </div>
                 </div>
             </div>
-        </fieldset>)
+            <div className="card-body p-0" style={{ height: '40em' }}>
+                <Input
+                    id="schemaInput"
+                    type="textarea"
+                    onChange={onSchemaChange}
+                    value={loadedSchema}
+                    className='form-control form-control-sm'
+                    placeholder='Please select a schema'
+                    style={{
+                        resize: 'none',
+                        outline: 'none',
+                        width: '100%',
+                        padding: '10px',
+                        border: 'none',
+                        height: '100%',
+                        whiteSpace: 'pre',
+                        overflowWrap: 'normal',
+                        overflowX: 'auto'
+                    }}
+                />
+            </div>
+        </div>
+    )
 }
 export default JADNSchemaLoader;

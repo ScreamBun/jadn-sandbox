@@ -99,62 +99,54 @@ const SchemaConverted = (props: any) => {
     }
 
     return (
-        <fieldset className="p-0">
-            <legend>Converted Schema</legend>
-            <div className="card">
-                <div className="card-body p-0" style={{ height: '40em' }}>
-                    <textarea
-                        value={convertedSchema}
-                        className='form-control form-control-sm'
-                        placeholder='Converted schema'
-                        style={{
-                            resize: 'none',
-                            outline: 'none',
-                            width: '100%',
-                            padding: '10px',
-                            border: 'none',
-                            height: '100%',
-                            whiteSpace: 'pre',
-                            overflowWrap: 'normal',
-                            overflowX: 'auto'
-                        }}
-                        readOnly
-                    />
-                </div>
-
-                <div className='card-footer p-1'>
-
-                    <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
-
-                    <div className={`btn-group btn-group-sm mr-1 float-right ${convertedSchema ? '' : ' d-none'}`}>
-                        <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm float-right${convertedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
+        <div className="card">
+            <div className="card-header p-2">
+                <div className='row no-gutters'>
+                    <div className='col-md-3'>
+                        <select id="convert-to" name="convert-to" className="form-control form-control-sm" value={conversion} onChange={handleConversion}>
+                            <option value=""> Convert To... </option>
+                            {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
+                        </select>
+                    </div>
+                    <div className='col-md-9'>
+                        <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
+                        <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm mr-1 float-right${convertedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
                             <FontAwesomeIcon icon={faFileDownload} />
                         </Button>
-                    </div>
 
-                    <div className={`${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
-                        <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
-                            <FontAwesomeIcon icon={faFilePdf} />
-                        </Button>
-                        <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick}>
-                            <FontAwesomeIcon icon={faWindowMaximize} />
-                        </Button>
-                    </div>
-
-                    <div className="form-row">
-                        <div className="input-group  input-group-sm col-md-6 px-1">
-                            <select id="convert-to" name="convert-to" className="form-control" value={conversion} onChange={handleConversion}>
-                                <option value=""> Convert To... </option>
-                                {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
-                            </select>
-                            <div className="input-group-append">
-                                <Button color="success" type="submit" id="convertSchema" title="Convert the given JADN schema to the selected format">Convert</Button>
-                            </div>
+                        <div className={`${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
+                            <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
+                                <FontAwesomeIcon icon={faFilePdf} />
+                            </Button>
+                            <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick}>
+                                <FontAwesomeIcon icon={faWindowMaximize} />
+                            </Button>
                         </div>
-                    </div>
 
+                        <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right" title="Convert the given JADN schema to the selected format">Convert</Button>
+                    </div>
                 </div>
             </div>
-        </fieldset>)
+            <div className="card-body p-0" style={{ height: '40em' }}>
+                <textarea
+                    value={convertedSchema}
+                    className='form-control form-control-sm'
+                    placeholder='Converted schema'
+                    style={{
+                        resize: 'none',
+                        outline: 'none',
+                        width: '100%',
+                        padding: '10px',
+                        border: 'none',
+                        height: '100%',
+                        whiteSpace: 'pre',
+                        overflowWrap: 'normal',
+                        overflowY: 'auto'
+                    }}
+                    readOnly
+                />
+            </div>
+        </div>
+    )
 }
 export default SchemaConverted;
