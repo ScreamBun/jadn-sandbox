@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useState } from 'react';
-import { ConnectedProps, connect } from 'react-redux';
+//basic
+import React, { useState } from 'react';
 import { Button, Input } from 'reactstrap';
 import { InputType } from 'reactstrap/types/lib/Input';
 import dayjs from 'dayjs'
@@ -7,8 +7,7 @@ import { v4 as uuid4 } from 'uuid';
 
 import Field from '..';
 import { isOptional } from '../..';
-import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
-import { RootState } from '../../../../../../reducers';
+import { StandardFieldArray } from '../../../../schema/interface';
 
 // Interface
 interface BasicFieldProps {
@@ -18,17 +17,13 @@ interface BasicFieldProps {
   parent?: string;
 }
 
-// Redux Connector
-const mapStateToProps = (state: RootState) => ({
-  schema: state.Util.selectedSchema as SchemaJADN
-});
-
-const connector = connect(mapStateToProps);
-type ConnectorProps = ConnectedProps<typeof connector>;
-type BasicFieldConnectedProps = BasicFieldProps & ConnectorProps;
-
 // Component
-const BasicField: FunctionComponent<BasicFieldConnectedProps> = props => {
+const BasicField = (props: BasicFieldProps) => {
+
+  const { arr, def, optChange, parent } = props;
+  const [_idx, name, type, _opts, comment] = def;
+  const msgName = parent ? [parent, name] : [name];
+
   const [value, setValue] = useState('');
 
   const inputOpts = (type: string) => {
@@ -52,12 +47,6 @@ const BasicField: FunctionComponent<BasicFieldConnectedProps> = props => {
     return opts;
   };
 
-  const {
-    arr, def, optChange, parent
-  } = props;
-  const [_idx, name, type, _opts, comment] = def;
-  const msgName = parent ? [parent, name] : [name];
-
   const createID = () => {
     const randomID = uuid4();
     setValue(randomID);
@@ -65,7 +54,7 @@ const BasicField: FunctionComponent<BasicFieldConnectedProps> = props => {
   }
 
   if (name >= 0) { // name is type if not field    
-    return <Field def={def} parent={msgName.join('.')} optChange={optChange} />;
+    return (<Field def={def} parent={msgName.join('.')} optChange={optChange} />);
   }
   const opts = inputOpts(type);
   if (name == 'command_id') {
@@ -88,7 +77,7 @@ const BasicField: FunctionComponent<BasicFieldConnectedProps> = props => {
           </div>
         </div>
       </div>
-    )
+    );
   } else if (opts.type == 'datetime') {
     return (
       <div className='form-group'>
@@ -131,6 +120,6 @@ const BasicField: FunctionComponent<BasicFieldConnectedProps> = props => {
       </div>
     );
   }
-};
+}
 
-export default connector(BasicField);
+export default BasicField;

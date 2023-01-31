@@ -1,9 +1,8 @@
-import React, { FunctionComponent } from 'react';
-import { ConnectedProps, connect } from 'react-redux';
+import React from 'react';
 import { OptionChange, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../key_value';
 import { safeGet } from '../../../../../utils';
-import { RootState } from '../../../../../../reducers';
+import { useAppSelector } from '../../../../../../reducers';
 
 // Interfaces
 interface TypeOptionsEditorProps {
@@ -15,25 +14,10 @@ interface TypeOptionsEditorProps {
   optionType?: string;
 }
 
-// Redux Connector
-const mapStateToProps = (state: RootState) => ({
-  schemaTypes: [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]
-});
-
-const connector = connect(mapStateToProps);
-type ConnectorProps = ConnectedProps<typeof connector>;
-type TypeOptionsEditorConnectedProps = TypeOptionsEditorProps & ConnectorProps;
-
-const defaultProps = {
-  placeholder: 'Set Type Options',
-  optionType: ''
-};
-
 // Type Options Editor
-const TypeOptionsEditor: FunctionComponent<TypeOptionsEditorConnectedProps> = props => {
-  const {
-    change, deserializedState, id, optionType, schemaTypes
-  } = props;
+const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
+  const { change, deserializedState, id, optionType } = props;
+  const schemaTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)])
 
   const getOptions = (key: string) => {
     switch (key) {
@@ -81,6 +65,9 @@ const TypeOptionsEditor: FunctionComponent<TypeOptionsEditorConnectedProps> = pr
   return '';
 };
 
-TypeOptionsEditor.defaultProps = defaultProps;
+TypeOptionsEditor.defaultProps = {
+  placeholder: 'Set Type Options',
+  optionType: ''
+};
 
-export default connector(TypeOptionsEditor);
+export default TypeOptionsEditor;

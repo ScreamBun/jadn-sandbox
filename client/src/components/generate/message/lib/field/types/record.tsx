@@ -1,9 +1,8 @@
-import React, { FunctionComponent } from 'react';
-import { ConnectedProps, connect } from 'react-redux';
+import React from 'react';
 import Field from '..';
 import { isOptional } from '../..';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
-import { RootState } from '../../../../../../reducers';
+import { useAppSelector } from '../../../../../../reducers';
 
 // Interface
 interface RecordFieldProps {
@@ -12,24 +11,16 @@ interface RecordFieldProps {
   parent?: string;
 }
 
-// Redux Connector
-const mapStateToProps = (state: RootState) => ({
-  schema: state.Util.selectedSchema as SchemaJADN
-});
-
-const connector = connect(mapStateToProps);
-type ConnectorProps = ConnectedProps<typeof connector>;
-type RecordFieldConnectedProps = RecordFieldProps & ConnectorProps;
-
 // Component
-const RecordField: FunctionComponent<RecordFieldConnectedProps> = props => {
-  const {
-    def, optChange, parent, schema
-  } = props;
+const RecordField = (props: RecordFieldProps) => {
+  const { def, optChange, parent } = props;
+  const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
+
   const [_idx, name, _type, _args, comment] = def;
 
-  let typeDef = schema.types.filter(t => t[0] === def[2]);
-  typeDef = typeDef.length === 1 ? typeDef[0] : [];
+  const typeDefs = schema.types.filter(t => t[0] === def[2]);
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={optChange} />)
 
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
@@ -38,17 +29,17 @@ const RecordField: FunctionComponent<RecordFieldConnectedProps> = props => {
       <div className='card'>
         <div className='card-header p-2'>
           <h4 className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</h4>
-          {comment ? <small className='card-subtitle text-muted'>{comment}</small>: ''}
+          {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
         </div>
 
         <div className='card-body mx-3'>
           <div className="col-12 my-1 px-0">
-            {typeDef[typeDef.length - 1].map(d => <Field key={d[0]} def={d} parent={msgName} optChange={optChange} />)}
+            {fieldDef}
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default connector(RecordField);
+export default RecordField;
