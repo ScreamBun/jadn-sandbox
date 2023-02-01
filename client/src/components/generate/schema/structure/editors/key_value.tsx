@@ -55,11 +55,11 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
 
   return (
     <FormGroup row className="border m-1 p-1">
-      <Label htmlFor={`editor-${name}`} sm={2} ><strong>{name}</strong></Label>
+      <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}</strong></Label>
       <div className="input-group col-sm-10">
         <Input
           type={type}
-          id={`editor-${name}`}
+          id={`editor-${placeholder}`}
           className={`form-control ${shadowless.includes(type) ? ' shadow-none' : ''}`}
           placeholder={placeholder}
           {...inputArgs}

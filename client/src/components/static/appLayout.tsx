@@ -15,7 +15,7 @@ const AppLayout = () => {
   const [navActive, setNavActive] = useState('home');
 
   const onToggleNav = () => {
-    setIsNavCollapsed(!isNavCollapsed);
+    setIsNavCollapsed(isNavCollapsed => !isNavCollapsed);
   };
 
   const onNavClick = (navClickEvent: any) => {

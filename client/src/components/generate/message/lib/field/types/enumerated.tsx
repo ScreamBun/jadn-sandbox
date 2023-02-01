@@ -21,7 +21,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
 
-  const defOpts = typeDef[typeDef.length - 1].map(opt => <option key={opt[0]} data-subtext={opt[2]}>{opt[1]}</option>);
+  const defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]}>{opt[1]}</option>);
 
   return (
     <div className='form-group'>
@@ -38,7 +38,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
               className="custom-select"
               onChange={e => optChange(msgName, e.target.value)}
             >
-              <option data-subtext={`${name} options`} value={name} >{`${name} options`}</option>
+              <option data-subtext={`${name} options`} value='' >{`${name} options`}</option>
               {defOpts}
             </select>
           </div>

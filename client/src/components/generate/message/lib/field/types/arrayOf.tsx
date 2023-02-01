@@ -32,6 +32,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   var optData: Record<string, any> = {};
   const [_idx, name, type, _args, comment] = def;
+  const msgName = (parent ? [parent, name] : [name]).join('.');
 
   useEffect(() => {
     const { optChange } = props;
@@ -42,8 +43,8 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     e.preventDefault();
     const maxCount = hasProperty(optData, 'max') ? optData.max : 20;
     const maxBool = count < maxCount;
-    setCount(maxBool ? count + 1 : count);
-    setMax(!maxBool);
+    setCount(maxBool ? count => count + 1 : count);
+    setMax(maxBool => !maxBool);
   }
 
   const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -55,16 +56,15 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       delete opts[Math.max.apply(Math, Object.keys(opts))];
     }
 
-    setCount(minBool ? count - 1 : count);
-    setMin(!minBool);
+    setCount(minBool ? count => count - 1 : count);
+    setMin(minBool => !minBool);
     setOpts(opts);
   }
 
   const optChange = (_k: string, v: any, i: number) => {
-    setOpts({ ...opts, [i]: v })
+    setOpts(opts => ({ ...opts, [i]: v }))
   }
 
-  const msgName = (parent ? [parent, name] : [name]).join('.');
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef) {
@@ -72,7 +72,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   }
 
   const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-  const arrDef = arrDefs.length === 1 ? arrDefs[0] : arrDefs[1];
+  const arrDef = arrDefs.length === 1 ? arrDefs[0] : typeDef[0];
 
   const fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
     : [0, arrDef, 'String', [], ''];

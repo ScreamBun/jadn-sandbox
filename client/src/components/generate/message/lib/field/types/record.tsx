@@ -17,12 +17,11 @@ const RecordField = (props: RecordFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   const [_idx, name, _type, _args, comment] = def;
+  const msgName = (parent ? [parent, name] : [name]).join('.');
 
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={optChange} />)
-
-  const msgName = (parent ? [parent, name] : [name]).join('.');
 
   return (
     <div className='form-group'>

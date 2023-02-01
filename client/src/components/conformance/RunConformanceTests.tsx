@@ -314,7 +314,7 @@ const RunConformanceTests = (props: any) => {
 
   return (
     <div className='card m-2'>
-      <div className='card-header'>
+      <div className='card-header p-2'>
         <form onSubmit={onRunTests}>
           <div className='row no-gutters'>
             <div className='col-md-3'>

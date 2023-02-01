@@ -151,22 +151,22 @@ const SchemaCreator = (props: any) => {
         const onDrop = (data: any) => {
             if (data.info) {
                 if (!(data.info in (generatedSchema.info || {}))) {
-                    setGeneratedSchema({
+                    setGeneratedSchema(generatedSchema => ({
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
                             ...Info[data.info].edit()
                         }
-                    });
+                    }));
                 }
             } else if (data.types) {
                 const tmpTypes = [...generatedSchema.types] || [];
                 const tmpDef = Types[data.types].edit();
                 tmpTypes.push(tmpDef);
-                setGeneratedSchema({
+                setGeneratedSchema(generatedSchema => ({
                     ...generatedSchema,
                     types: tmpTypes
-                });
+                }));
             } else {
                 console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
             }
@@ -179,22 +179,22 @@ const SchemaCreator = (props: any) => {
                     key: i,
                     value: generatedSchema.info[key],
                     placeholder: k,
-                    change: val => setGeneratedSchema({
+                    change: val => setGeneratedSchema(generatedSchema => ({
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info,
                             ...Info[key].edit(val)
                         }
-                    })
+                    }))
                     ,
                     remove: (id: string) => {
                         if (generatedSchema.info && id in generatedSchema.info) {
                             const tmpInfo = { ...generatedSchema.info };
                             delete tmpInfo[id];
-                            setGeneratedSchema({
+                            setGeneratedSchema(generatedSchema => ({
                                 ...generatedSchema,
                                 info: tmpInfo
-                            });
+                            }));
                         }
                     }
                 });
@@ -212,20 +212,20 @@ const SchemaCreator = (props: any) => {
                 change: (val, idx: number) => {
                     const tmpTypes = [...generatedSchema.types];
                     tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
-                    setGeneratedSchema({
+                    setGeneratedSchema(generatedSchema => ({
                         ...generatedSchema,
                         types: tmpTypes
-                    })
+                    }))
                 }
                 ,
                 remove: (idx: number) => {
                     if (generatedSchema.types.length >= idx) {
                         const tmpTypes = [...generatedSchema.types];
                         tmpTypes.splice(idx, 1);
-                        setGeneratedSchema({
+                        setGeneratedSchema(generatedSchema => ({
                             ...generatedSchema,
                             types: tmpTypes
-                        });
+                        }));
                     }
                 }
             });
@@ -257,7 +257,7 @@ const SchemaCreator = (props: any) => {
 
     return (
         <div className='card'>
-            <div className='card-header'>
+            <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
                         <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
