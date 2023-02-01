@@ -35,7 +35,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   const selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[0] === selected); //get opt where the key = selected
   const selectedDef = selectedDefs.length === 1 ? selectedDefs[0] : [];
 
-  const selectedOpts = selected >= 0 ? <Field key={def[1]} def={selectedDef} parent={msgName} optChange={optChange} /> : '';
+  const selectedOpts = selected >= 0 ? <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={optChange} /> : '';
 
   return (
     <div className='form-group'>
