@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FunctionComponent } from 'react';
+import React from 'react';
 import {
   Button, FormGroup, FormText, Input, Label
 } from 'reactstrap';
@@ -31,11 +31,11 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
   const inputArgs: Record<string, any> = {
     value,
     checked: type && value,
-    onChange: (e: ChangeEvent<HTMLInputElement>) => change(e.target.value)
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => change(e.target.value)
   };
 
   if (['checkbox', 'radio'].includes(type)) {
-    inputArgs.onChange = (e: ChangeEvent<HTMLInputElement>) => change(e.target.checked);
+    inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => change(e.target.checked);
   }
 
   if (type === 'select' && options) {
