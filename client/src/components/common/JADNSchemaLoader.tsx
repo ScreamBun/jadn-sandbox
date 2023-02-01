@@ -93,7 +93,7 @@ const JADNSchemaLoader = (props: any) => {
         jsonToFormat = validateJSON(jsonToFormat, false, true);
         if (jsonToFormat) {
             try {
-                jsonToFormat = JSON.stringify(jsonToFormat, undefined, '4');
+                jsonToFormat = JSON.stringify(jsonToFormat, undefined, 4);
                 setLoadedSchema(jsonToFormat);
                 sbToastSuccess(`Data Formatted`);
             } catch (err: any) {
