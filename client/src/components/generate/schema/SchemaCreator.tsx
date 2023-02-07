@@ -179,7 +179,8 @@ const SchemaCreator = (props: any) => {
                     key: i,
                     value: generatedSchema.info[key],
                     placeholder: k,
-                    change: val => setGeneratedSchema(generatedSchema => ({
+                    change: val => 
+                    setGeneratedSchema(generatedSchema => ({
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info,

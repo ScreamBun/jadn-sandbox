@@ -89,6 +89,6 @@ const KeyArrayEditor = (props: KeyArrayEditorProps) => {
 
 KeyArrayEditor.defaultProps = {
   placeholder: 'KeyArrayEditor'
-};;
+};
 
 export default KeyArrayEditor;
