@@ -127,12 +127,12 @@ const ViewConformanceTests = () => {
         <div className='card'>
           <TabContent activeTab={activeView}>
             <TabPane tabId='languageTestTitle'>
-              <div className='card-header'>
+              <div className='card-header p-2'>
                 {languageTestTitle}
               </div>
               <div className='card-body'>
                 <div className='card mb-2'>
-                  <div className='card-header bg-primary'>
+                  <div className='card-header p-2 bg-primary'>
                     Valid Profiles
                     <span className='ml-2 badge bg-light rounded-pill'>
                       {Object.keys(languageTestProfiles).length}
@@ -149,7 +149,7 @@ const ViewConformanceTests = () => {
                   </div>
                 </div>
                 <div className='card mb-2'>
-                  <div className='card-header bg-primary'>
+                  <div className='card-header p-2 bg-primary'>
                     <div className='row'>
                       <div className='col pt-2'>
                         Tests (Name and Description)
@@ -183,12 +183,12 @@ const ViewConformanceTests = () => {
             </TabPane>
 
             <TabPane tabId='slpfTestTitle'>
-              <div className='card-header'>
+              <div className='card-header p-2'>
                 {slpfTestTitle}
               </div>
               <div className='card-body'>
                 <div className='card mb-2'>
-                  <div className='card-header bg-primary'>
+                  <div className='card-header p-2 bg-primary'>
                     Valid Profiles
                     <span className='ml-2 badge bg-light rounded-pill'>
                       {Object.keys(slpfTestProfiles).length}
@@ -205,7 +205,7 @@ const ViewConformanceTests = () => {
                   </div>
                 </div>
                 <div className='card mb-2'>
-                  <div className='card-header bg-primary'>
+                  <div className='card-header p-2 bg-primary'>
                     <div className='row'>
                       <div className='col pt-2'>
                         Tests (Name and Description)

@@ -163,7 +163,13 @@ const JADNSchemaLoader = (props: any) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
+                        dispatch(setSchema(data))
                         setLoadedSchema(data);
+                        validateJSON(data);
+                        validateJADN(data);
+                        if (setDecodeSchemaTypes && setDecodeMsg) {
+                            loadDecodeTypes(data);
+                        }
                     } catch (err) {
                         sbToastError(`File cannot be loaded`)
                     }

@@ -1,50 +1,39 @@
-import React, { FunctionComponent } from 'react';
-import { ConnectedProps, connect } from 'react-redux';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import JADN_API, { Package } from './jadn_api';
 import {
   CardTemplate, ClassTemplate, EnumTemplate, FunctionTemplate, underEscape
 } from './templates';
-import { RootState } from '../../reducers';
+import { useAppSelector } from '../../reducers';
 
 // Interfaces
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface DocsProps {}
-
-// Redux Connector
-const mapStateToProps = (state: RootState) => ({
-  siteTitle: state.Util.site_title
-});
-
-const connector = connect(mapStateToProps, {});
-type ConnectorProps = ConnectedProps<typeof connector>;
-type DeviceConnectedProps = DocsProps & ConnectorProps;
 
 // Component
-const Docs: FunctionComponent<DeviceConnectedProps> = (props) => {
+const Docs = () => {
   const pkgFormat = (pkg: Package, name: string) => {
     const tmpPkg = {
       ...pkg,
       body: (
-        <div id={ `${underEscape(pkg.title)}-api` }>
-          { pkg.body.package && Object.keys(pkg.body.package).map(n => pkgFormat(pkg.body.package[n], n) ) }
-          { pkg.body.enum && <EnumTemplate enums={ pkg.body.enum } /> }
-          { pkg.body.class && <ClassTemplate cls={ pkg.body.class } /> }
-          { pkg.body.function && <FunctionTemplate fun={ pkg.body.function } /> }
+        <div id={`${underEscape(pkg.title)}-api`}>
+          {pkg.body.package && Object.keys(pkg.body.package).map(n => pkgFormat(pkg.body.package[n], n))}
+          {pkg.body.enum && <EnumTemplate enums={pkg.body.enum} />}
+          {pkg.body.class && <ClassTemplate cls={pkg.body.class} />}
+          {pkg.body.function && <FunctionTemplate fun={pkg.body.function} />}
         </div>
       )
     };
-    return <CardTemplate key={ name } header={ name } { ...tmpPkg } />;
+    return <CardTemplate key={name} header={name} {...tmpPkg} />;
   };
 
-  const { siteTitle } = props;
-  const api = Object.keys(JADN_API).map((pkg, i) => pkgFormat(JADN_API[pkg], pkg, i) );
+  const siteTitle = useAppSelector((state => state.Util.site_title));
+  const api = Object.keys(JADN_API).map((pkg, i) => pkgFormat(JADN_API[pkg], pkg, i));
   return (
     <div className='row mx-auto'>
       <Helmet>
-        <title>{ `${siteTitle} | API Docs` }</title>
-        <link rel="canonical" href={ `${window.location.origin}${window.location.pathname}` } />
+        <title>{`${siteTitle} | API Docs`}</title>
+        <link rel="canonical" href={`${window.location.origin}${window.location.pathname}`} />
       </Helmet>
       <div className="row">
         <div className="col-12">
@@ -66,10 +55,10 @@ const Docs: FunctionComponent<DeviceConnectedProps> = (props) => {
         </div>
       </div>
       <div id="api" className="col-12 p-3">
-        { api }
+        {api}
       </div>
     </div>
   );
 };
 
-export default connector(Docs);
+export default Docs;

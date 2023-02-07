@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Component } from 'react';
+import React, { Component } from 'react';
 import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, Collapse, FormGroup, Input, InputGroup, Label
@@ -60,7 +60,7 @@ class StructureEditor extends Component<StructureEditorProps, StructureEditorSta
     this.initState();
   }
 
-  onChange(e: ChangeEvent<HTMLInputElement>) {
+  onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
 

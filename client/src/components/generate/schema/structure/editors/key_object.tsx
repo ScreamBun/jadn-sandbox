@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Component, MouseEvent } from 'react';
+import React, { Component } from 'react';
 import {
   Button, ButtonGroup, FormText, Input
 } from 'reactstrap';
@@ -53,7 +53,7 @@ class KeyObjectEditor extends Component<KeyObjectEditorProps, KeyObjectEditorSta
     return propsChange || stateChange;
   }
 
-  onChange(e: ChangeEvent<HTMLInputElement>) {
+  onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { dataset, value } = e.target;
     const idx = parseInt(dataset.index || '',  10);
     const type = dataset.type as keyof Pair;
@@ -81,7 +81,7 @@ class KeyObjectEditor extends Component<KeyObjectEditorProps, KeyObjectEditorSta
     remove(name.toLowerCase());
   }
 
-  removeIndex(e: MouseEvent<HTMLButtonElement>) {
+  removeIndex(e: React.MouseEvent<HTMLButtonElement>) {
     const { value } = this.state;
     if (value.length > 1) {
       const { dataset } = e.currentTarget;

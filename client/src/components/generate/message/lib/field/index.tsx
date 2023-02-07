@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { ConnectedProps, connect } from 'react-redux';
+import React from 'react';
 import { FormText } from 'reactstrap';
 
 import {
@@ -8,7 +7,7 @@ import {
 import {
   SchemaJADN, StandardFieldArray
 } from '../../../schema/interface';
-import { RootState } from '../../../../../reducers';
+import { useAppSelector } from '../../../../../reducers';
 
 // Interfaces
 interface FieldProps {
@@ -18,65 +17,43 @@ interface FieldProps {
   parent?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface FieldState { }
-
-// Redux Connector
-const mapStateToProps = (state: RootState) => ({
-  schema: state.Util.selectedSchema as SchemaJADN
-});
-
-const connector = connect(mapStateToProps);
-type ConnectorProps = ConnectedProps<typeof connector>;
-type FieldConnectedProps = FieldProps & ConnectorProps;
-
 // Component
-class Field extends Component<FieldConnectedProps> {
-  shouldComponentUpdate(nextProps: FieldConnectedProps, nextState: FieldState) {
-    const propsUpdate = this.props !== nextProps;
-    const stateUpdate = this.state !== nextState;
-    return propsUpdate || stateUpdate;
-  }
+const Field = (props: FieldProps) => {
+  const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN
+  const { def, idx, optChange, parent } = props;
 
-  render() {
-    const {
-      def, idx, optChange, parent, schema
-    } = this.props;
-    const parentName = parent || '';
-    const typeDefs = schema.types.filter(t => t[0] === def[2]);
-    const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  const parentName = parent || '';
+  const typeDefs = schema.types.filter(t => t[0] === def[2]);
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  // console.log(parentName, def);
+  const args = {
+    def,
+    parent: parentName,
+    optChange: (k: string, v: any) => optChange(k, v, idx)
+  };
 
-    // console.log(parentName, def);
-    const args = {
-      def,
-      parent: parentName,
-      optChange: (k: string, v: any) => optChange(k, v, idx)
-    };
-
-
-    switch (typeDef[1]) {
-      case 'Enumerated':
-        return <EnumeratedField {...args} />;
-      case 'Choice':
-        return <ChoiceField {...args} />;
-      case 'Record':
-        return <RecordField {...args} />;
-      case 'Map':
-        return <MapField {...args} />;
-      case 'MapOf':
-        //TODO: FIX
-        const [arr] = def;
-        // eslint-disable-next-line react/jsx-one-expression-per-line
-        return <FormText>MapOf: {arr}</FormText>;
-      case 'ArrayOf':
-        return <ArrayOfField {...args} />;
-      case 'Array':
-        return <ArrayField {...args} />;
-      default:
-        return <BasicField {...args} />;
-    }
+  switch (typeDef[1]) {
+    case 'Enumerated':
+      return <EnumeratedField {...args} />;
+    case 'Choice':
+      return <ChoiceField {...args} />;
+    case 'Record':
+      return <RecordField {...args} />;
+    case 'Map':
+      return <MapField {...args} />;
+    case 'MapOf':
+      //TODO: FIX
+      const [arr] = def;
+      // eslint-disable-next-line react/jsx-one-expression-per-line
+      return <FormText>MapOf: {arr}</FormText>;
+    case 'ArrayOf':
+      return <ArrayOfField {...args} />;
+    case 'Array':
+      return <ArrayField {...args} />;
+    default:
+      return <BasicField {...args} />;
   }
 }
 
-export default connector(Field);
+export default Field;
 

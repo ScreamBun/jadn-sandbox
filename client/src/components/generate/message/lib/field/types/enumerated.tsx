@@ -1,8 +1,7 @@
-import React, { FunctionComponent } from 'react';
-import { ConnectedProps, connect } from 'react-redux';
+import React from 'react';
 import { isOptional } from '../..';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
-import { RootState } from '../../../../../../reducers';
+import { useAppSelector } from '../../../../../../reducers';
 
 // Interface
 interface EnumeratedFieldProps {
@@ -11,34 +10,25 @@ interface EnumeratedFieldProps {
   parent?: string;
 }
 
-// Redux Connector
-const mapStateToProps = (state: RootState) => ({
-  schema: state.Util.selectedSchema as SchemaJADN
-});
-
-const connector = connect(mapStateToProps);
-type ConnectorProps = ConnectedProps<typeof connector>;
-type EnumeratedFieldConnectedProps = EnumeratedFieldProps & ConnectorProps;
-
 // Component
-const EnumeratedField: FunctionComponent<EnumeratedFieldConnectedProps> = props => {
-  const {
-    def, optChange, parent, schema
-  } = props;
+const EnumeratedField = (props: EnumeratedFieldProps) => {
+  const { def, optChange, parent } = props;
+  const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
+
   const [_idx, name, type, _opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
-  let typeDef = schema.types.filter(t => t[0] === type);
-  typeDef = typeDef.length === 1 ? typeDef[0] : [];
+  const typeDefs = schema.types.filter(t => t[0] === type);
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
 
-  const defOpts = typeDef[typeDef.length - 1].map(opt => <option key={opt[0]} data-subtext={opt[2]}>{opt[1]}</option>);
+  const defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]}>{opt[1]}</option>);
 
   return (
     <div className='form-group'>
       <div className='card'>
         <div className='card-header p-2'>
           <h4 className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</h4>
-          {comment ? <small className='card-subtitle text-muted'>{comment}</small>: ''}
+          {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
         </div>
         <div className='card-body mx-3'>
           <div className="col-12 my-1 px-0">
@@ -48,7 +38,7 @@ const EnumeratedField: FunctionComponent<EnumeratedFieldConnectedProps> = props 
               className="custom-select"
               onChange={e => optChange(msgName, e.target.value)}
             >
-              <option data-subtext={`${name} options`} value={name} >{`${name} options`}</option>
+              <option data-subtext={`${name} options`} value='' >{`${name} options`}</option>
               {defOpts}
             </select>
           </div>
@@ -56,6 +46,6 @@ const EnumeratedField: FunctionComponent<EnumeratedFieldConnectedProps> = props 
       </div>
     </div>
   );
-};
+}
 
-export default connector(EnumeratedField);
+export default EnumeratedField;

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FunctionComponent } from 'react';
+import React from 'react';
 import {
   Button, FormGroup, FormText, Input, Label
 } from 'reactstrap';
@@ -9,27 +9,20 @@ import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 // Interface
 interface KeyValueEditorProps {
   name: string;
-  value: boolean|number|string;
+  value: boolean | number | string;
   description?: string;
   options?: Array<string>; // only for type='select'
   placeholder?: string;
   type?: InputType;
-  change: (_v: boolean|number|string) => void;
-  remove: (_id: string|number) => void;
+  change: (_v: boolean | number | string) => void;
+  remove: (_id: string | number) => void;
 }
 
-const defaultProps = {
-  description: '',
-  options: [],
-  placeholder: 'KeyValueEditor',
-  type: 'text' as InputType
-};
-
 // Key Value Editor
-const KeyValueEditor: FunctionComponent<KeyValueEditorProps> = props => {
+const KeyValueEditor = (props: KeyValueEditorProps) => {
   const {
     name, value, description, options, placeholder, type, change, remove
-  } = {...defaultProps, ...props};
+  } = props;
 
   const shadowless: Array<InputType> = [
     'checkbox', 'file', 'hidden', 'image', 'radio'
@@ -38,23 +31,23 @@ const KeyValueEditor: FunctionComponent<KeyValueEditorProps> = props => {
   const inputArgs: Record<string, any> = {
     value,
     checked: type && value,
-    onChange: (e: ChangeEvent<HTMLInputElement>) => change(e.target.value)
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => change(e.target.value)
   };
 
   if (['checkbox', 'radio'].includes(type)) {
-    inputArgs.onChange = (e: ChangeEvent<HTMLInputElement>) => change(e.target.checked);
+    inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => change(e.target.checked);
   }
 
   if (type === 'select' && options) {
-    inputArgs.children = options.map(opt => <option key={ opt } value={ opt } >{ opt }</option>);
+    inputArgs.children = options.map(opt => <option key={opt} value={opt} >{opt}</option>);
   }
 
-  let removeBtn: JSX.Element|undefined;
+  let removeBtn: JSX.Element | undefined;
   if (remove) {
     removeBtn = (
       <div className="input-group-append">
-        <Button color='danger' onClick={ () => remove(name.toLowerCase()) }>
-          <FontAwesomeIcon icon={ faMinusSquare } />
+        <Button color='danger' onClick={() => remove(name.toLowerCase())}>
+          <FontAwesomeIcon icon={faMinusSquare} />
         </Button>
       </div>
     );
@@ -62,22 +55,27 @@ const KeyValueEditor: FunctionComponent<KeyValueEditorProps> = props => {
 
   return (
     <FormGroup row className="border m-1 p-1">
-      <Label htmlFor={ `editor-${name}` } sm={ 2 } ><strong>{ name }</strong></Label>
+      <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}</strong></Label>
       <div className="input-group col-sm-10">
         <Input
-          type={ type }
-          id={ `editor-${name}` }
-          className={ `form-control ${shadowless.includes(type) ? ' shadow-none' : ''}` }
-          placeholder={ placeholder }
-          { ...inputArgs }
+          type={type}
+          id={`editor-${placeholder}`}
+          className={`form-control ${shadowless.includes(type) ? ' shadow-none' : ''}`}
+          placeholder={placeholder}
+          {...inputArgs}
         />
-        { removeBtn }
+        {removeBtn}
       </div>
-      { description ? <FormText color='muted' className='ml-3'>{ description }</FormText> : '' }
+      {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
     </FormGroup>
   );
 };
 
-KeyValueEditor.defaultProps = defaultProps;
+KeyValueEditor.defaultProps = {
+  description: '',
+  options: [],
+  placeholder: 'KeyValueEditor',
+  type: 'text' as InputType
+};
 
 export default KeyValueEditor;

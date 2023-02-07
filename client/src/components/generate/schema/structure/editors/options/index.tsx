@@ -1,4 +1,4 @@
-import React, { Component, MouseEvent } from 'react';
+import React, { Component } from 'react';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
@@ -12,7 +12,7 @@ import { objectFromTuple } from '../../../../../utils';
 
 // Interface
 interface OptionsModalProps {
-  toggleModal: (e: MouseEvent<HTMLButtonElement>) => void;
+  toggleModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
   saveModal: (_v: Array<string>) => void;
   isOpen: boolean;
   fieldOptions?: boolean;

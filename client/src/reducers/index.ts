@@ -4,8 +4,9 @@ import { LocationChangeAction, RouterState, connectRouter } from 'connected-reac
 import convert, { ConvertState } from './convert';
 import util, { UtilState } from './util';
 import validate, { ValidateState } from './validate';
+import { TypedUseSelectorHook, useSelector } from 'react-redux';
 
-export interface RootState {
+interface RootState {
   router: Reducer<RouterState<History>, LocationChangeAction<History>>; // MUST BE 'router'
   // Custom Reducers
   Convert: ConvertState;
@@ -20,3 +21,5 @@ export default (history: History) => combineReducers({
   Util: util,
   Validate: validate
 });
+
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector

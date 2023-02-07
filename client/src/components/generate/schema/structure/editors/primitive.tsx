@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Component } from 'react';
+import React, { Component } from 'react';
 import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
@@ -50,7 +50,7 @@ class PrimitiveEditor extends Component<PrimitiveEditorProps, PrimitiveEditorSta
     this.initState();
   }
 
-  onChange(e: ChangeEvent<HTMLInputElement>) {
+  onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
 

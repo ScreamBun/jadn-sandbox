@@ -1,5 +1,6 @@
-import React, { Component, MouseEvent } from 'react';
-import { ConnectedProps, connect } from 'react-redux';
+
+//ArrayOf
+import React, { useState, useEffect } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -9,7 +10,7 @@ import { isOptional } from '../..';
 import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
-import { RootState } from '../../../../../../reducers';
+import { useAppSelector } from '../../../../../../reducers';
 
 // Interface
 interface ArrayOfFieldProps {
@@ -19,158 +20,98 @@ interface ArrayOfFieldProps {
   parent?: string;
 }
 
-interface ArrayOfFieldState {
-  min: boolean;
-  max: boolean;
-  count: number;
-  opts: Record<string, boolean | number | string>
-}
-
-// Redux Connector
-const mapStateToProps = (state: RootState) => ({
-  schema: state.Util.selectedSchema as SchemaJADN,
-  baseTypes: state.Util.types.base
-});
-
-const connector = connect(mapStateToProps);
-type ConnectorProps = ConnectedProps<typeof connector>;
-type ArrayOfFieldConnectedProps = ArrayOfFieldProps & ConnectorProps;
-
 // Component
-class ArrayOfField extends Component<ArrayOfFieldConnectedProps, ArrayOfFieldState> {
-  msgName: string;
-  opts: Record<string, any>;
-  typeDef?: TypeArray;
+const ArrayOfField = (props: ArrayOfFieldProps) => {
+  const { def, parent } = props;
+  const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
-  constructor(props: ArrayOfFieldConnectedProps) {
-    super(props);
-    this.addOpt = this.addOpt.bind(this);
-    this.optChange = this.optChange.bind(this);
-    this.removeOpt = this.removeOpt.bind(this);
-    const { def, parent, schema } = this.props;
+  const [min, setMin] = useState(false);
+  const [max, setMax] = useState(false);
+  const [count, setCount] = useState(1);
+  const [opts, setOpts] = useState({});
 
-    const [_idx, name, type, _args, _comment] = def;
-    this.opts = {};
+  var optData: Record<string, any> = {};
+  const [_idx, name, type, _args, comment] = def;
+  const msgName = (parent ? [parent, name] : [name]).join('.');
 
-    const typeDef = schema.types.filter(t => { return t[0] === type; });
-    this.typeDef = typeDef.length === 1 ? typeDef[0] : undefined;
-    this.msgName = (parent ? [parent, name] : [name]).join('.');
+  useEffect(() => {
+    const { optChange } = props;
+    optChange(msgName, Array.from(new Set(Object.values(opts))));
+  })
 
-    this.state = {
-      min: false,
-      max: false,
-      count: 1,
-      opts: {}
-    };
-  }
-
-  addOpt(e: MouseEvent<HTMLButtonElement>) {
+  const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const max = hasProperty(this.opts, 'max') ? this.opts.max : 20;
-
-    this.setState(prevState => {
-      const maxBool = prevState.count < max;
-      return {
-        count: maxBool ? prevState.count + 1 : prevState.count,
-        max: !maxBool
-      };
-    }, () => {
-      const { optChange } = this.props;
-      const { opts } = this.state;
-      optChange(this.msgName, Array.from(new Set(Object.values(opts))));
-    });
+    const maxCount = hasProperty(optData, 'max') ? optData.max : 20;
+    const maxBool = count < maxCount;
+    setCount(maxBool ? count => count + 1 : count);
+    setMax(maxBool => !maxBool);
   }
 
-  removeOpt(e: MouseEvent<HTMLButtonElement>) {
+  const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const min = hasProperty(this.opts, 'min') ? this.opts.min : 0;
+    const minCount = hasProperty(optData, 'min') ? optData.min : 0;
 
-    this.setState(prevState => {
-      const { count, opts } = prevState;
-      const minBool = count > min;
-      if (minBool) {
-        // eslint-disable-next-line prefer-spread
-        delete opts[Math.max.apply(Math, Object.keys(opts))];
-      }
+    const minBool = count > minCount;
+    if (minBool) {
+      delete opts[Math.max.apply(Math, Object.keys(opts))];
+    }
 
-      return {
-        count: minBool ? count - 1 : count,
-        min: !minBool,
-        opts
-      };
-    }, () => {
-      const { optChange } = this.props;
-      const { opts } = this.state;
-      optChange(this.msgName, Array.from(new Set(Object.values(opts))));
-    });
+    setCount(minBool ? count => count - 1 : count);
+    setMin(minBool => !minBool);
+    setOpts(opts);
   }
 
-  optChange(_k: string, v: any, i: number) {
-    this.setState(prevState => ({
-      opts: {
-        ...prevState.opts,
-        [i]: v
-      }
-    }), () => {
-      const { optChange } = this.props;
-      const { opts } = this.state;
-      optChange(this.msgName, Array.from(new Set(Object.values(opts))));
-    });
+  const optChange = (_k: string, v: any, i: number) => {
+    setOpts(opts => ({ ...opts, [i]: v }))
   }
 
-  render() {
-    const { def, schema } = this.props;
-    const { count, max, min } = this.state;
-    const [_idx, name, _type, _args, comment] = def;
-    if (this.typeDef) {
-      this.opts = opts2obj(this.typeDef[2]);
-    }
+  const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  if (typeDef) {
+    optData = (opts2obj(typeDef[2]));
+  }
 
-    let arrDef = schema.types.filter(t => t[0] === this.opts.vtype);
-    if (arrDef.length === 1) {
-      // eslint-disable-next-line prefer-destructuring
-      arrDef = arrDef[0];
-      arrDef = [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]];
-    } else {
-      arrDef = [0, arrDef[1], 'String', [], ''];
-    }
+  const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
+  const arrDef = arrDefs.length === 1 ? arrDefs[0] : typeDef[0];
 
-    const fields = [];
-    for (let i = 0; i < count; ++i) {
-      fields.push(<Field key={i} def={arrDef} parent={this.msgName} optChange={this.optChange} idx={i} />);
-    }
+  const fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
+    : [0, arrDef, 'String', [], ''];
 
-    return (
-      <div className='form-group'>
-        <div className='card'>
-          <div className='card-header p-2'>
-            <h4 className='card-title m-0'>
-              {`${name}${isOptional(def) ? '' : '*'}`}
-            </h4>
-            <Button
-              color="danger"
-              className={`float-right p-1${min ? ' disabled' : ''}`}
-              onClick={this.removeOpt}
-            >
-              <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-            </Button>
-            <Button
-              color="primary"
-              className={`float-right p-1${max ? ' disabled' : ''}`}
-              onClick={this.addOpt}
-            >
-              <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-            </Button>
-            {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
-          </div>
+  const fields: any[] = [];
+  for (let i = 0; i < count; ++i) {
+    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={optChange} idx={i} />);
+  }
 
-          <div className='card-body mx-3'>
-            {fields}
-          </div>
+  return (
+    <div className='form-group'>
+      <div className='card'>
+        <div className='card-header p-2'>
+          <h4 className='card-title m-0'>
+            {`${name}${isOptional(def) ? '' : '*'}`}
+          </h4>
+          <Button
+            color="danger"
+            className={`float-right p-1${min ? ' disabled' : ''}`}
+            onClick={removeOpt}
+          >
+            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+          </Button>
+          <Button
+            color="primary"
+            className={`float-right p-1${max ? ' disabled' : ''}`}
+            onClick={addOpt}
+          >
+            <FontAwesomeIcon icon={faPlusSquare} size="lg" />
+          </Button>
+          {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
+        </div>
+
+        <div className='card-body mx-3'>
+          {fields}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-export default connector(ArrayOfField);
+export default ArrayOfField;

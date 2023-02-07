@@ -25,6 +25,7 @@ const MessageCreator = (props: any) => {
     }
 
     const optChange = (k: string, v: any) => {
+        //console.log(k, v)
         if (k.length > 1 && generatedMessage[k[0]] && !generatedMessage[k[0]][k[1]]) {
             delMultiKey(generatedMessage, k[0].toString());
         }
@@ -90,7 +91,7 @@ const MessageCreator = (props: any) => {
 
     return (
         <div className="card">
-            <div className="card-header">
+            <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
                         <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} onChange={handleSelection}

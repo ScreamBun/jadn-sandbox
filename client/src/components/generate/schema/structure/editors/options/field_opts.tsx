@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { FieldOptionInputArgs, OptionChange } from './consts';
 import KeyValueEditor from '../key_value';
 
@@ -11,16 +11,9 @@ interface FieldOptionsEditorProps {
   placeholder?: string;
 }
 
-const defaultProps = {
-  fieldOptions: false,
-  placeholder: 'Set Field Options'
-};
-
 // Field Options Editor
-const FieldOptionsEditor: FunctionComponent<FieldOptionsEditorProps> = props => {
-  const {
-    change, deserializedState, fieldOptions, id
-  } = props;
+const FieldOptionsEditor = (props: FieldOptionsEditorProps) => {
+  const { change, deserializedState, fieldOptions, id } = props;
 
   const validOptions = () => {
     return Object.keys(FieldOptionInputArgs).map(key => {
@@ -51,6 +44,9 @@ const FieldOptionsEditor: FunctionComponent<FieldOptionsEditorProps> = props => 
   return '';
 };
 
-FieldOptionsEditor.defaultProps = defaultProps;
+FieldOptionsEditor.defaultProps = {
+  fieldOptions: false,
+  placeholder: 'Set Field Options'
+};
 
 export default FieldOptionsEditor;
