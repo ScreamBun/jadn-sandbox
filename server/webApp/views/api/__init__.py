@@ -8,6 +8,7 @@ from .convert import add_resources as add_convert
 from .load import add_resources as add_load
 from .conformance import add_resources as add_test
 from .validate import add_resources as add_validate
+from .format import add_resources as add_format
 
 log = logging.getLogger()
 api = Blueprint("api", __name__)
@@ -44,3 +45,4 @@ add_convert(api_root, url_prefix="/convert")
 add_load(api_root, url_prefix="/load")
 add_test(api_root, url_prefix="/conformance")
 add_validate(api_root, url_prefix="/validate")
+add_format(api_root, url_prefix="/format")

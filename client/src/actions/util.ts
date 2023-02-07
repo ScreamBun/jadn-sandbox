@@ -19,8 +19,8 @@ export const setSchema = (schema: SchemaJADN) => createAction({
     {
       type: SCHEMA_SUCCESS,
       payload: (_action, _state) => ({ schema })
-      }, SCHEMA_FAILURE
-    ]
+    }, SCHEMA_FAILURE
+  ]
 });
 
 export interface SetSchemaSuccessAction extends ActionSuccessResult {
@@ -75,7 +75,7 @@ export interface LoadSuccessAction extends ActionSuccessResult {
 
 // Request Actions
 export interface UtilRequestActions extends ActionRequestResult {
-  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE ;
+  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE;
 }
 
 // Failure Actions

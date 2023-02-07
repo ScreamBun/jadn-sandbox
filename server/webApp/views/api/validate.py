@@ -46,7 +46,7 @@ class Validate(Resource):
 
 class ValidateSchema(Resource):
     """
-    Endpoint for api//validate/schema
+    Endpoint for api/validate/schema
     """
     def get(self):
         return redirect("/")

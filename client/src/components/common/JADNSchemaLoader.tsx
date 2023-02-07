@@ -8,19 +8,18 @@ import { validateSchema } from "../../actions/validate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sbToastError, sbToastSuccess } from "./SBToast";
 import SBCopyToClipboard from "./SBCopyToClipboard";
+import { format } from "actions/format";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
 
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
-    const [isValidJSON, setIsValidJSON] = useState(false);
     const [isValidJADN, setIsValidJADN] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
 
     useEffect(() => {
         if (selectedFile == "" || selectedFile == "file") {
             setLoadedSchema('');
-            setIsValidJSON(false);
             setIsValidJADN(false);
         } else {
             try {
@@ -29,10 +28,14 @@ const JADNSchemaLoader = (props: any) => {
 
                         try {
                             let schemaObj = loadFileVal.payload.data;
+                            let schemaStr = JSON.stringify(schemaObj);
+                            validateJADN(schemaStr);
+                            dispatch(format(schemaStr))
+                                .then(formatVal => {
+                                    setLoadedSchema(formatVal.payload.schema);
+                                })
                             dispatch(setSchema(schemaObj))
-                            setLoadedSchema(JSON.stringify(schemaObj, undefined, 4));
-                            validateJSON(JSON.stringify(schemaObj));
-                            validateJADN(JSON.stringify(schemaObj));
+
                             if (setDecodeSchemaTypes && setDecodeMsg) {
                                 loadDecodeTypes(schemaObj);
                             }
@@ -42,7 +45,6 @@ const JADNSchemaLoader = (props: any) => {
                                 return;
                             }
                         }
-
                     })
                     .catch((loadFileErr) => {
                         setSelectedFile('');
@@ -90,18 +92,15 @@ const JADNSchemaLoader = (props: any) => {
         }
 
         jsonToFormat = jsonToFormat.trim();
-        jsonToFormat = validateJSON(jsonToFormat, false, true);
-        if (jsonToFormat) {
-            try {
-                jsonToFormat = JSON.stringify(jsonToFormat, undefined, 4);
-                setLoadedSchema(jsonToFormat);
+
+        dispatch(format(jsonToFormat))
+            .then(formatVal => {
+                setLoadedSchema(formatVal.payload.schema);
                 sbToastSuccess(`Data Formatted`);
-            } catch (err: any) {
-                sbToastError(`Unable to format: ${err.message}`)
-            }
-        } else {
-            sbToastError(`Unable to format`)
-        }
+            })
+            .catch(formatFail => {
+                sbToastError(`Unable to format: ${formatFail.message}`)
+            })
     }
 
     const validateJADN = (jsonToValidate: any) => {
@@ -131,7 +130,6 @@ const JADNSchemaLoader = (props: any) => {
         let jsonObj = null;
 
         if (!jsonToValidate) {
-            setIsValidJSON(false);
             setIsValidJADN(false);
             sbToastError(`No data found`)
             return jsonObj;
@@ -139,9 +137,7 @@ const JADNSchemaLoader = (props: any) => {
 
         try {
             jsonObj = JSON.parse(jsonToValidate);
-            setIsValidJSON(true);
         } catch (err: any) {
-            setIsValidJSON(false);
             setIsValidJADN(false);
             if (showErrorPopup) {
                 sbToastError(`Invalid Format: ${err.message}`)
@@ -230,14 +226,6 @@ const JADNSchemaLoader = (props: any) => {
                         <Button id='formatButton' className="float-right btn-sm mr-1" color="info" onClick={onFormatClick}
                             title='Attempts to Parse and Format.'>
                             <span className="m-1">Format JSON</span>
-                            {isValidJSON ? (
-                                <span className="badge badge-pill badge-success">
-                                    <FontAwesomeIcon icon={faCheck} />
-                                </span>) : (
-                                <span className="badge badge-pill badge-danger">
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </span>)
-                            }
                         </Button>
                     </div>
                 </div>
