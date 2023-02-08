@@ -243,17 +243,17 @@ const JADNSchemaLoader = (props: any) => {
             </div>
             <div className="card-body p-0" style={{ height: '40em' }}>
                 <Input
-                    id="schemaInput"
+                    id="schemaInput2"
                     type="textarea"
                     onChange={onSchemaChange}
                     value={loadedSchema}
                     className='form-control form-control-sm line-numbers'
-                    placeholder='Please select a schema'
+                    placeholder='Please select or enter a schema'
                     style={{
                         resize: 'none',
                         outline: 'none',
                         width: '100%',
-                        padding: '10px',
+                        padding: '10px 10px 10px 30px',
                         border: 'none',
                         height: '100%',
                         whiteSpace: 'pre',
