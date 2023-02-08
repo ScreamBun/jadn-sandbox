@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sbToastError, sbToastSuccess } from "./SBToast";
 import SBCopyToClipboard from "./SBCopyToClipboard";
 import { format } from "actions/format";
+import { runFormatData } from "./Api";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -93,14 +94,24 @@ const JADNSchemaLoader = (props: any) => {
 
         jsonToFormat = jsonToFormat.trim();
 
-        dispatch(format(jsonToFormat))
-            .then(formatVal => {
-                setLoadedSchema(formatVal.payload.schema);
+        // dispatch(format(jsonToFormat))
+        //     .then(formatVal => {
+        //         setLoadedSchema(formatVal.payload.schema);
+        //         sbToastSuccess(`Data Formatted`);
+        //     })
+        //     .catch(formatFail => {
+        //         sbToastError(`Unable to format: ${formatFail.message}`)
+        //     })
+
+        runFormatData(jsonToFormat).then((returnData: any) => {
+            if (returnData.schema) {
+                setLoadedSchema(returnData.schema);
                 sbToastSuccess(`Data Formatted`);
-            })
-            .catch(formatFail => {
-                sbToastError(`Unable to format: ${formatFail.message}`)
-            })
+            } else {
+                sbToastError(returnData.message);
+            }
+            return true;
+        });        
     }
 
     const validateJADN = (jsonToValidate: any) => {
