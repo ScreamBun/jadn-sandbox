@@ -108,7 +108,7 @@ const MessageValidator = () => {
                                             msgFormat={msgFormat} setMsgFormat={setMsgFormat}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes}
-                                            loadedSchema = {loadedSchema}
+                                            loadedSchema={loadedSchema}
                                         />
                                     </div>
                                 </div>

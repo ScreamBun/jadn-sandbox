@@ -12,12 +12,16 @@ import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 
 const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
-    let schemaObj = useSelector(getSelectedSchema);
 
     const [activeView, setActiveView] = useState('creator');
 
+    let schemaObj = useSelector(getSelectedSchema);
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType) : [];
+
+    if (!exportRecords) {
+        sbToastError(`No Message Type Found. Please define exports in info section of schema.`);
+    }
 
     const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCommandType(e.target.value);
@@ -94,10 +98,10 @@ const MessageCreator = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
-                        <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} onChange={handleSelection}
+                        <select id='command-list' name='command-list' className='form-control form-control-sm' disabled={exportRecords ? false : true} onChange={handleSelection}
                             title="Select message type to create based on valid JADN Schema">
                             <option value=''>Message Type</option>
-                            {exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>)}
+                            {exportRecords ? exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>) : []}
                         </select>
                     </div>
                     <div className='col'>

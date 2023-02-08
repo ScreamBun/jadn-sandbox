@@ -123,7 +123,7 @@ const SchemaConverted = (props: any) => {
                             </Button>
                         </div>
 
-                        <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right" title="Convert the given JADN schema to the selected format">Convert</Button>
+                        <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right" disabled={loadedSchema && conversion ? false : true} title="Convert the given JADN schema to the selected format">Convert</Button>
                     </div>
                 </div>
             </div>

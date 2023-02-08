@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { Button } from 'reactstrap'
@@ -6,6 +6,14 @@ import MessageCreator from './MessageCreator'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+
+function usePrev(value: any) {
+    const ref = useRef();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
+}
 
 const MessageGenerator = () => {
     const dispatch = useDispatch()
@@ -21,9 +29,16 @@ const MessageGenerator = () => {
         dispatch(info());
     }, [dispatch])
 
+    const prevSchema = usePrev(loadedSchema);
     useEffect(() => {
-        setGeneratedMessage({});
-        setCommandType('');
+        const prevStr = prevSchema ? prevSchema.replace(/\s+/g, '') : '';
+        const str = loadedSchema.replace(/\s+/g, '');
+
+        if (prevStr && prevStr != str) {
+            setGeneratedMessage({});
+            setCommandType('');
+        }
+
     }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {

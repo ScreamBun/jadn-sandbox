@@ -21,15 +21,15 @@ class Format(Resource):
         request_json = request.json
 
         try:
-            jsonDumped = dumps(request_json)
+            output = dumps(request_json)
 
         except (TypeError, ValueError):
             tb = traceback.format_exc()
             print(tb)
-            return "Error: " + tb, 500   
+            output =  "Error: " + tb   
         
         return jsonify({
-            "schema": jsonDumped
+            "schema": output
         })
          
 
