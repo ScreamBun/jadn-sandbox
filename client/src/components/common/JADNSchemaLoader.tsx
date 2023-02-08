@@ -247,7 +247,7 @@ const JADNSchemaLoader = (props: any) => {
                     type="textarea"
                     onChange={onSchemaChange}
                     value={loadedSchema}
-                    className='form-control form-control-sm'
+                    className='form-control form-control-sm line-numbers'
                     placeholder='Please select a schema'
                     style={{
                         resize: 'none',
@@ -263,6 +263,6 @@ const JADNSchemaLoader = (props: any) => {
                 />
             </div>
         </div>
-    )
+    ) 
 }
 export default JADNSchemaLoader;
