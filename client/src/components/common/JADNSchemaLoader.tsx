@@ -198,7 +198,7 @@ const JADNSchemaLoader = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className="row no-gutters">
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
                             <option value="">Select a Schema...</option>
                             <optgroup label="Testers">
