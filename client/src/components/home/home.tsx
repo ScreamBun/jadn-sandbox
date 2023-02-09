@@ -73,7 +73,7 @@ const Home = () => {
               <div className="card">
                 <div className="card-body text-center bg-primary p-2 text-light">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faShuffle} /></p>
-                  <h5 className="card-title m-0">Conversion</h5>
+                  <h5 className="card-title m-0">Schema Conversion</h5>
                 </div>
                 <ul className="list-group list-group-flush">
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>GraphViz</Link>
@@ -91,7 +91,7 @@ const Home = () => {
               <div className="card">
                 <div className="card-body text-center bg-primary p-2 text-light">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faMicroscope} /></p>
-                  <h5 className="card-title m-0">Validation</h5>
+                  <h5 className="card-title m-0">Message Validation</h5>
                 </div>
                 <ul className="list-group list-group-flush">
                   <Link className="list-group-item" to={NAV_VALIDATE_MESSAGE}>CBOR</Link>
@@ -109,11 +109,11 @@ const Home = () => {
                   <h5 className="card-title m-0">Information</h5>
                 </div>
                 <ul className="list-group list-group-flush">
-                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2} target='_blank' rel='noreferrer'>OpenC2</a></li>
-                  <li className="list-group-item"><a href={NAV_EXTERNAL_OASIS_OPEN} target='_blank' rel='noreferrer'>OASIS Open</a></li>
-                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SPEC} target='_blank' rel='noreferrer'>JADN Specification Doc</a></li>
                   <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SRC} target='_blank' rel='noreferrer'>JADN Sandbox Source Code</a></li>
                   <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_PYPI} target='_blank' rel='noreferrer'>JADN Python Package</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SPEC} target='_blank' rel='noreferrer'>JADN Specification Doc</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OASIS_OPEN} target='_blank' rel='noreferrer'>OASIS Open</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2} target='_blank' rel='noreferrer'>OpenC2</a></li>
                 </ul>
               </div>
 

@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sbToastError, sbToastSuccess } from "./SBToast";
 import SBCopyToClipboard from "./SBCopyToClipboard";
 import { format } from "actions/format";
-import { runFormatData } from "./Api";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -266,6 +265,6 @@ const JADNSchemaLoader = (props: any) => {
                 />
             </div>
         </div>
-    ) 
+    )
 }
 export default JADNSchemaLoader;

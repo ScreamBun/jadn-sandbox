@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem, Input } from 'reactstrap'
 import { Draggable, Droppable } from 'react-drag-and-drop';
-import JSONPretty from 'react-json-pretty';
 import { Info, Types } from './structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,17 +10,21 @@ import { sbToastError } from 'components/common/SBToast';
 import { SchemaJADN } from './interface';
 import { getAllSchemas } from 'reducers/util';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
+import { format } from 'actions/format';
 
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
+    const [data, setData] = useState('');
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
     const schemaOpts = useSelector(getAllSchemas);
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema.jsObject as SchemaJADN));
+        dispatch(format(JSON.stringify(generatedSchema)))
+            .then(val => setData(val.payload.schema))
     }, [generatedSchema])
 
     useEffect(() => {
@@ -179,14 +182,14 @@ const SchemaCreator = (props: any) => {
                     key: i,
                     value: generatedSchema.info[key],
                     placeholder: k,
-                    change: val => 
-                    setGeneratedSchema(generatedSchema => ({
-                        ...generatedSchema,
-                        info: {
-                            ...generatedSchema.info,
-                            ...Info[key].edit(val)
-                        }
-                    }))
+                    change: val =>
+                        setGeneratedSchema(generatedSchema => ({
+                            ...generatedSchema,
+                            info: {
+                                ...generatedSchema.info,
+                                ...Info[key].edit(val)
+                            }
+                        }))
                     ,
                     remove: (id: string) => {
                         if (generatedSchema.info && id in generatedSchema.info) {
@@ -282,24 +285,40 @@ const SchemaCreator = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
-                <TabContent activeTab={activeView}>
-                    <TabPane tabId='creator'>
+            <TabContent activeTab={activeView}>
+                <TabPane tabId='creator'>
+                    <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
                         <div className='row no-gutters'>
                             <DraggableSchemaOpts />
                             <SchemaEditor />
                         </div>
-                    </TabPane>
+                    </div>
+                </TabPane>
 
-                    <TabPane tabId='schema'>
-                        <JSONPretty
-                            id='schema'
-                            json={generatedSchema}
-                            className='p-2'
+                <TabPane tabId='schema'>
+                    <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
+                        <Input
+                            id="Generated Schema"
+                            type="textarea"
+                            value={data}
+                            className='form-control form-control-sm'
+                            style={{
+                                resize: 'none',
+                                outline: 'none',
+                                width: '100%',
+                                padding: '10px',
+                                border: 'none',
+                                height: '100%',
+                                whiteSpace: 'pre',
+                                overflowWrap: 'normal',
+                                overflowX: 'auto'
+                            }}
+                            readOnly
                         />
-                    </TabPane>
-                </TabContent >
-            </div>
+                    </div>
+
+                </TabPane>
+            </TabContent >
         </div>
     )
 }
