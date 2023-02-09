@@ -63,10 +63,10 @@ const BasicField = (props: BasicFieldProps) => {
         <div className='card'>
           <div className='card-header p-2'>
             <Button color='primary' className='float-right' onClick={createID}>Generate ID</Button>
-            <h4 className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</h4>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
             {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
           </div>
-          <div className='card-body mx-3'>
+          <div className='card-body m-0 p-0'>
             <Input
               value={value}
               type={opts.type}
@@ -83,10 +83,10 @@ const BasicField = (props: BasicFieldProps) => {
       <div className='form-group'>
         <div className='card'>
           <div className='card-header p-2'>
-            <h4 className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</h4>
-            {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            <span>{comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}</span>
           </div>
-          <div className='card-body mx-3'>
+          <div className='card-body m-0 p-0'>
             <Input
               name={name}
               type="datetime-local"
@@ -105,10 +105,10 @@ const BasicField = (props: BasicFieldProps) => {
       <div className='form-group'>
         <div className='card'>
           <div className='card-header p-2'>
-            <h4 className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</h4>
-            {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            <span>{comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}</span>
           </div>
-          <div className='card-body mx-3'>
+          <div className='card-body m-0 p-0'>
             <Input
               type={opts.type}
               placeholder={opts.placeholder}
