@@ -16,6 +16,11 @@ const SchemaConverted = (props: any) => {
         setConvertedSchema('');
     }
 
+    const handleConversion2 = (e2: React.ChangeEvent<MARKDOWNSelectElement>) => {
+        setConversion(e2.target.value);
+        setConvertedSchema('');
+    }
+
     /*    type MimeType = 'cddl' | 'html' | 'jadn' | 'json' | 'md' | 'proto3' | 'rng' | 'thrift';
          const downloadMime = {
             cddl: 'text/plain',
@@ -29,6 +34,32 @@ const SchemaConverted = (props: any) => {
         }; */
 
     const onDownloadSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (convertedSchema != '') {
+            try {
+                const data = convertedSchema;
+                const fmt = conversion;
+                const filename = `schema.${fmt}`;
+
+                const blob = new Blob([data], { type: "application/json" });
+                const elem = document.createElement('a');
+                elem.href = URL.createObjectURL(blob);
+                elem.download = filename;
+                document.body.appendChild(elem);
+                elem.click();
+
+                elem.remove();
+                URL.revokeObjectURL(elem.href);
+            } catch (err) {
+                console.log(err);
+                sbToastError(`File cannot be downloaded`);
+            }
+        } else {
+            sbToastError(`No Converted Schema Exists`);
+        }
+    }
+
+    const onDownloadSchemaClick2 = (e2: React.MouseEvent<MARKDOWNButtonElement>) => {
         e.preventDefault();
         if (convertedSchema != '') {
             try {
@@ -91,9 +122,53 @@ const SchemaConverted = (props: any) => {
         }
     }
 
+    const onDownloadPDFClick2 = (e2: React.MouseEvent<MARKDOWNButtonElement>) => {
+        e.preventDefault();
+        const data = JSON.parse(loadedSchema)
+        if (convertedSchema != '') {
+            try {
+                fetch('/api/convert/pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        schema: data
+                    })
+                }).then(
+                    rsp => rsp.blob()
+                ).then(blob => {
+                    const elem = document.createElement('a');
+                    elem.href = URL.createObjectURL(blob);
+                    elem.download = "schema.pdf";
+                    document.body.appendChild(elem);
+                    elem.click();
+
+                    elem.remove();
+                    URL.revokeObjectURL(elem.href);
+                }).catch(err => {
+                    console.log(err);
+                });
+
+            } catch (err) {
+                console.log(err);
+                sbToastError(`PDF cannot be downloaded`);
+            }
+        } else {
+            sbToastError(`No Converted Schema Exists`);
+        }
+    }
+
     const onPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const blob = new Blob([convertedSchema], { type: "text/html" });
+        const data = URL.createObjectURL(blob);
+        window.open(data);
+    }
+
+    const onPopOutClick2 = (e2: React.MouseEvent<MARKDOWNButtonElement>) => {
+        e.preventDefault();
+        const blob = new Blob([convertedSchema], { type: "text/markdown" });
         const data = URL.createObjectURL(blob);
         window.open(data);
     }
