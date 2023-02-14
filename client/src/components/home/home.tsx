@@ -80,6 +80,7 @@ const Home = () => {
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>HTML</Link>
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JADN</Link>
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JIDL</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JSON</Link>
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>MarkDown</Link>
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>Relax (XML)</Link>
                 </ul>
