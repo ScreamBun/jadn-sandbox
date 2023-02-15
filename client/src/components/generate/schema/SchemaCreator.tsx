@@ -108,166 +108,106 @@ const SchemaCreator = (props: any) => {
         }
     }
 
-    const DraggableSchemaOpts = () => {
-        const infoKeys = Object.keys(Info).map(k => (
-            <Draggable type="info" data={k} key={Info[k].key} >
-                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Info[k].key}
-                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
-                </ListGroupItem>
-            </Draggable>
-        ));
+    const infoKeys = Object.keys(Info).map(k => (
+        <Draggable type="info" data={k} key={Info[k].key} >
+            <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Info[k].key}
+                <FontAwesomeIcon icon={faGripLines} className='float-right' />
+            </ListGroupItem>
+        </Draggable>
+    ));
 
-        const typesKeys = Object.keys(Types).map(k => (
-            <Draggable type="types" data={k} key={Types[k].key}>
-                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Types[k].key}
-                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
-                </ListGroupItem>
-            </Draggable>
-        ));
+    const typesKeys = Object.keys(Types).map(k => (
+        <Draggable type="types" data={k} key={Types[k].key}>
+            <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Types[k].key}
+                <FontAwesomeIcon icon={faGripLines} className='float-right' />
+            </ListGroupItem>
+        </Draggable>
+    ));
 
-        return (
-            <div id="schema-options" className='col-sm-3'>
-                <Nav pills>
-                    <NavItem>
-                        <NavLink
-                            className={activeOpt == 'info' ? ' active' : ''}
-                            onClick={() => setActiveOpt('info')}
-                        >
-                            Info
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink
-                            className={activeOpt == 'types' ? ' active' : ''}
-                            onClick={() => setActiveOpt('types')}
-                        >
-                            Types
-                        </NavLink>
-                    </NavItem>
-                </Nav>
-                <TabContent activeTab={activeOpt}>
-                    <TabPane tabId='info'>
-                        <ListGroup>
-                            {infoKeys}
-                        </ListGroup>
-                    </TabPane>
-                    <TabPane tabId='types'>
-                        <ListGroup>
-                            {typesKeys}
-                        </ListGroup>
-                    </TabPane>
-                </TabContent>
-            </div>
-        );
+
+
+    const onDrop = (data: any) => {
+        if (data.info) {
+            if (!(data.info in (generatedSchema.info || {}))) {
+                setGeneratedSchema((generatedSchema) => ({
+                    ...generatedSchema,
+                    info: {
+                        ...generatedSchema.info || {},
+                        ...Info[data.info].edit()
+                    }
+                }));
+            }
+        } else if (data.types) {
+            const tmpTypes = [...generatedSchema.types] || [];
+            const tmpDef = Types[data.types].edit();
+            tmpTypes.push(tmpDef);
+            setGeneratedSchema(generatedSchema => ({
+                ...generatedSchema,
+                types: tmpTypes
+            }));
+        } else {
+            console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
+        }
     }
 
-    const SchemaEditor = () => {
-        const onDrop = (data: any) => {
-            if (data.info) {
-                if (!(data.info in (generatedSchema.info || {}))) {
-                    setGeneratedSchema((generatedSchema) => ({
-                        ...generatedSchema,
-                        info: {
-                            ...generatedSchema.info || {},
-                            ...Info[data.info].edit()
-                        }
-                    }));
-                }
-            } else if (data.types) {
-                const tmpTypes = [...generatedSchema.types] || [];
-                const tmpDef = Types[data.types].edit();
-                tmpTypes.push(tmpDef);
-                setGeneratedSchema(generatedSchema => ({
-                    ...generatedSchema,
-                    types: tmpTypes
-                }));
-            } else {
-                console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
-            }
-        }
-
-        const infoEditors = Object.keys(Info).map((k, i) => {
-            const key = k as keyof typeof Info;
-            if (generatedSchema.info && k in generatedSchema.info) {
-                return Info[key].editor({
-                    key: i,
-                    value: generatedSchema.info[key],
-                    placeholder: k,
-                    change: val =>
-                        setGeneratedSchema(generatedSchema => ({
-                            ...generatedSchema,
-                            info: {
-                                ...generatedSchema.info,
-                                ...Info[key].edit(val)
-                            }
-                        }))
-                    ,
-                    remove: (id: string) => {
-                        if (generatedSchema.info && id in generatedSchema.info) {
-                            const tmpInfo = { ...generatedSchema.info };
-                            delete tmpInfo[id];
-                            setGeneratedSchema(generatedSchema => ({
-                                ...generatedSchema,
-                                info: tmpInfo
-                            }));
-                        }
-                    }
-                });
-            }
-            return null;
-        }).filter(Boolean);
-
-        const typesEditors = (generatedSchema.types || []).map((def, i) => {
-            const type = def[1].toLowerCase() as keyof typeof Types;
-            return Types[type].editor({
+    const infoEditors = Object.keys(Info).map((k, i) => {
+        const key = k as keyof typeof Info;
+        if (generatedSchema.info && k in generatedSchema.info) {
+            return Info[key].editor({
                 key: i,
-                value: def,
-                dataIndex: i,
-                change: (val, idx: number) => {
-                    const tmpTypes = [...generatedSchema.types];
-                    tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
+                value: generatedSchema.info[key],
+                placeholder: k,
+                change: val =>
                     setGeneratedSchema(generatedSchema => ({
                         ...generatedSchema,
-                        types: tmpTypes
+                        info: {
+                            ...generatedSchema.info,
+                            ...Info[key].edit(val)
+                        }
                     }))
-                }
                 ,
-                remove: (idx: number) => {
-                    if (generatedSchema.types.length >= idx) {
-                        const tmpTypes = [...generatedSchema.types];
-                        tmpTypes.splice(idx, 1);
+                remove: (id: string) => {
+                    if (generatedSchema.info && id in generatedSchema.info) {
+                        const tmpInfo = { ...generatedSchema.info };
+                        delete tmpInfo[id];
                         setGeneratedSchema(generatedSchema => ({
                             ...generatedSchema,
-                            types: tmpTypes
+                            info: tmpInfo
                         }));
                     }
                 }
             });
-        });
+        }
+        return null;
+    }).filter(Boolean);
 
-        return (
-            <div id="schema-editor" className='col-md-9'>
-                <Droppable
-                    types={['info', 'types']} // <= allowed drop types
-                    onDrop={onDrop}
-                    className='col-12 mt-1'
-                    style={{
-                        minHeight: '20em',
-                    }}
-                >
-                    <div className="col pt-2">
-                        <h2>Info</h2>
-                        {infoEditors}
-                    </div>
-                    <hr />
-                    <div className="col">
-                        <h2>Types</h2>
-                        {typesEditors}
-                    </div>
-                </Droppable>
-            </div>
-        );
-    }
+    const typesEditors = (generatedSchema.types || []).map((def, i) => {
+        const type = def[1].toLowerCase() as keyof typeof Types;
+        return Types[type].editor({
+            key: i,
+            value: def,
+            dataIndex: i,
+            change: (val, idx: number) => {
+                const tmpTypes = [...generatedSchema.types];
+                tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
+                setGeneratedSchema(generatedSchema => ({
+                    ...generatedSchema,
+                    types: tmpTypes
+                }))
+            }
+            ,
+            remove: (idx: number) => {
+                if (generatedSchema.types.length >= idx) {
+                    const tmpTypes = [...generatedSchema.types];
+                    tmpTypes.splice(idx, 1);
+                    setGeneratedSchema(generatedSchema => ({
+                        ...generatedSchema,
+                        types: tmpTypes
+                    }));
+                }
+            }
+        });
+    });
 
     return (
         <div className='card'>
@@ -299,8 +239,58 @@ const SchemaCreator = (props: any) => {
                 <TabPane tabId='creator'>
                     <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
                         <div className='row no-gutters'>
-                            <DraggableSchemaOpts />
-                            <SchemaEditor />
+                            <div id="schema-options" className='col-sm-3'>
+                                <Nav pills>
+                                    <NavItem>
+                                        <NavLink
+                                            className={activeOpt == 'info' ? ' active' : ''}
+                                            onClick={() => setActiveOpt('info')}
+                                        >
+                                            Info
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink
+                                            className={activeOpt == 'types' ? ' active' : ''}
+                                            onClick={() => setActiveOpt('types')}
+                                        >
+                                            Types
+                                        </NavLink>
+                                    </NavItem>
+                                </Nav>
+                                <TabContent activeTab={activeOpt}>
+                                    <TabPane tabId='info'>
+                                        <ListGroup>
+                                            {infoKeys}
+                                        </ListGroup>
+                                    </TabPane>
+                                    <TabPane tabId='types'>
+                                        <ListGroup>
+                                            {typesKeys}
+                                        </ListGroup>
+                                    </TabPane>
+                                </TabContent>
+                            </div>
+                            <div id="schema-editor" className='col-md-9'>
+                                <Droppable
+                                    types={['info', 'types']} // <= allowed drop types
+                                    onDrop={onDrop}
+                                    className='col-12 mt-1'
+                                    style={{
+                                        minHeight: '20em',
+                                    }}
+                                >
+                                    <div className="col pt-2">
+                                        <h2>Info</h2>
+                                        {infoEditors}
+                                    </div>
+                                    <hr />
+                                    <div className="col">
+                                        <h2>Types</h2>
+                                        {typesEditors}
+                                    </div>
+                                </Droppable>
+                            </div>
                         </div>
                     </div>
                 </TabPane>
