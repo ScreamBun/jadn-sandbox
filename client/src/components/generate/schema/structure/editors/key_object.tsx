@@ -26,7 +26,6 @@ const KeyObjectEditor = (props: KeyObjectEditorProps) => {
     const { dataset, value } = e.target;
     const idx = parseInt(dataset.index || '', 10);
     const type = dataset.type as keyof Pair;
-    console.log('Update KeyObject');
 
     const tmpvalue = [...valueObj];
     tmpvalue[idx][type] = value;
@@ -62,7 +61,6 @@ const KeyObjectEditor = (props: KeyObjectEditorProps) => {
     if (valueObj.some(v => v.key === '')) {
       return;
     }
-    console.log('Add KeyObject');
 
     const tmpvalue = [...valueObj, { key: '', value: '' }];
     change(toObject(tmpvalue));

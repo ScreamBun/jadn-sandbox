@@ -23,7 +23,6 @@ const SchemaCreator = (props: any) => {
     useEffect(() => {
         const schemaStr = JSON.stringify(generatedSchema);
         dispatch(setSchema(generatedSchema));
-        console.log(schemaStr)
         dispatch(format(schemaStr))
             .then(val => {
                 //TODO: data does not format properly
@@ -46,9 +45,6 @@ const SchemaCreator = (props: any) => {
                         try {
                             let schemaObj = loadFileVal.payload.data;
                             setGeneratedSchema(schemaObj);
-                            /*                             dispatch(format(JSON.stringify(schemaObj)))
-                                                            .then(val => { setData(val.payload.schema) });
-                                                        dispatch(setSchema(schemaObj)); */
                         } catch (err) {
                             if (err instanceof Error) {
                                 sbToastError(err.message);
@@ -74,8 +70,6 @@ const SchemaCreator = (props: any) => {
                     let data = ev.target.result;
                     try {
                         setGeneratedSchema(JSON.parse(data));
-                        /*                        setData(data);
-                                               dispatch(setSchema(data)); */
                     } catch (err) {
                         console.log(err);
                         sbToastError(`Schema cannot be loaded`);
@@ -207,7 +201,7 @@ const SchemaCreator = (props: any) => {
                 }
             }
         });
-    });
+    }).filter(Boolean);
 
     return (
         <div className='card'>

@@ -77,7 +77,6 @@ const StructureEditor = (props: StructureEditorProps) => {
     }
 
     const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
-    console.log(updatevalue)
     change(updatevalue, dataIndex);
   }
 

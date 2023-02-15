@@ -45,7 +45,6 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
     });
   };
 
-  console.log(validOptions())
   if (validOptions().length != 0) {
     return (
       <div className="border m-1 p-1">
