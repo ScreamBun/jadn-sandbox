@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
 import {
@@ -17,15 +17,16 @@ const MessageValidated = (props: any) => {
     const decodeAll = decodeSchemaTypes.all.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (selectedFile == "" || selectedFile == "file") {
+    const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedFile(e.target.value);
+        if (e.target.value == "" || e.target.value == "file") {
             setLoadedMsg('');
             setDecodeMsg('');
             setMsgFormat('');
         } else {
-            const fmt = selectedFile.split('.')[1];
+            const fmt = e.target.value.split('.')[1];
             try {
-                dispatch(loadFile('messages', selectedFile))
+                dispatch(loadFile('messages', e.target.value))
                     .then((loadFileVal) => {
                         setMsgFormat(fmt);
                         const data = loadFileVal.payload.data;
@@ -41,14 +42,13 @@ const MessageValidated = (props: any) => {
                 setLoadedMsg('');
             }
         }
-    }, [selectedFile]);
+    };
 
     const onMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedFile('empty');
         setDecodeMsg('');
         setMsgFormat('');
         setLoadedMsg(e.target.value);
-
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,7 +89,7 @@ const MessageValidated = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
-                        <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)} overflow-y="scroll">
+                        <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect} overflow-y="scroll">
                             <option value="">Message</option>
                             <optgroup label="Testers">
                                 {Object.entries(msgOpts).map(([n, t]) => <option key={n} value={n} data-decode={t} >{n}</option>)}

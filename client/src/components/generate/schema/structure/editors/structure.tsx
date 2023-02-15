@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import equal from 'fast-deep-equal';
+import React, { useCallback, useState } from 'react';
+//import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, Collapse, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
-import { PrimitiveTypeObject, TypeKeys } from './consts';
+import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options';
 import FieldEditor from './field';
 import {
@@ -23,277 +23,166 @@ interface StructureEditorProps {
   remove: (i: number) => void;
 }
 
-interface StructureEditorState {
-  fieldCollapse: boolean;
-  value: {
-    name: string;
-    type: string;
-    options: Array<string>;
-    comment: string;
-    fields: Array<FieldArray>
-  };
-  fields: Array<JSX.Element>;
-  modal: boolean;
-}
-
 // Structure Editor
-class StructureEditor extends Component<StructureEditorProps, StructureEditorState> {
-  constructor(props: StructureEditorProps) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-    this.addField = this.addField.bind(this);
-    this.removeAll = this.removeAll.bind(this);
-    this.toggleFields = this.toggleFields.bind(this);
-    this.saveModal = this.saveModal.bind(this);
-    this.toggleModal = this.toggleModal.bind(this);
+const StructureEditor = (props: StructureEditorProps) => {
+  const { value, change, dataIndex } = props;
 
-    const { value } = this.props;
-    this.state = {
-      fieldCollapse: false,
-      value: zip(TypeKeys, value) as StructureEditorState['value'],
-      fields: [],
-      modal: false
-    };
-  }
+  const [fieldCollapse, setFieldCollapse] = useState(false);
+  //const fieldToggle = useCallback(() => setFieldCollapse(!fieldCollapse), []);
 
-  componentDidMount() {
-    this.initState();
-  }
+  const [modal, setModal] = useState(false);
+  let valueObj = zip(TypeKeys, value) as StandardTypeObject;
 
-  onChange(e: React.ChangeEvent<HTMLInputElement>) {
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
-
-    this.setState(prevState => ({
-      value: {
-        ...prevState.value,
-        [key]: value
-      }
-    }), () => {
-      const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(this.state.value, dataIndex);
-    });
+    const updatevalue = { ...valueObj, [key]: value }
+    change(updatevalue, dataIndex);
   }
 
-  initState() {
-    const { value } = this.props;
-    if (value && Array.isArray(value)) {
-      const updatevalue = zip(TypeKeys, value);
-
-      // eslint-disable-next-line react/destructuring-assignment
-      if (!equal(updatevalue, this.state.value)) {
-        this.setState(prevState => ({
-          value: {
-            ...prevState.value,
-            ...updatevalue
-          }
-        }));
-        this.setState(prevState => ({
-          fields: prevState.value.fields.map((f, i) => this.makeField(f, i))
-        }));
+  /*   initState() {
+      const { value } = this.props;
+      if (value && Array.isArray(value)) {
+        const updatevalue = zip(TypeKeys, value);
+  
+        // eslint-disable-next-line react/destructuring-assignment
+        if (!equal(updatevalue, this.state.value)) {
+          this.setState(prevState => ({
+            value: {
+              ...prevState.value,
+              ...updatevalue
+            }
+          }));
+          this.setState(prevState => ({
+            fields: prevState.value.fields.map((f, i) => this.makeField(f, i))
+          }));
+        }
       }
-    }
-  }
+    } */
 
-  removeAll() {
-    const { dataIndex, remove } = this.props;
+  const removeAll = () => {
+    const { dataIndex, remove } = props;
     remove(dataIndex);
   }
 
-  addField() {
-    const { value } = this.state;
+  const addField = () => {
     let field: EnumeratedFieldArray | StandardFieldArray;
     const uid = new Date().getTime();
-    if (value.type.toLowerCase() === 'enumerated') {
+    if (valueObj.type.toLowerCase() === 'enumerated') {
       field = [uid, '', ''] as EnumeratedFieldArray;
     } else {
-      field = [uid, 'field name', 'Null', [], ''] as StandardFieldArray;
+      //TODO: default field type is String ? Fix line in field.tsx too.
+      field = [uid, 'field name', 'String', [], ''] as StandardFieldArray;
     }
 
-    this.setState(prevState => {
-      return {
-        fieldCollapse: true,
-        value: {
-          ...prevState.value,
-          fields: [...prevState.value.fields, field]
-        },
-        fields: [
-          ...prevState.fields,
-          this.makeField(field, prevState.fields.length)
-        ]
-      };
-    }, () => {
-      const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(this.state.value, dataIndex);
-    });
+    const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
+    console.log(updatevalue)
+    change(updatevalue, dataIndex);
   }
 
-  toggleFields() {
-    this.setState(prevState => ({
-      fieldCollapse: !prevState.fieldCollapse
-    }));
-  }
+  const fieldChange = (val: FieldArray, idx: number) => {
+    const tmpFieldValues = [...valueObj.fields];
+    tmpFieldValues[idx] = val;
 
-  toggleModal() {
-    this.setState(prevState => ({
-      modal: !prevState.modal
-    }));
-  }
+    const updatevalue = { ...valueObj, fields: tmpFieldValues };
+    change(updatevalue, dataIndex)
+  };
 
-  saveModal(data: Array<string>) {
-    this.toggleModal();
+  const fieldRemove = (idx: number) => {
+    const tmpFieldValues = [...valueObj.fields];
 
-    this.setState(prevState => ({
-      value: {
-        ...prevState.value,
-        options: data
-      }
-    }), () => {
-      const { change, dataIndex } = this.props;
-      // eslint-disable-next-line react/destructuring-assignment
-      change(this.state.value, dataIndex);
-    });
-  }
-
-  makeField(field: FieldArray, field_idx: number) {
-    const fieldChange = (val: FieldArray, idx: number) => this.setState(prevState => {
-      const tmpFields = [...prevState.value.fields];
-      tmpFields[idx] = val; //add field to end of arr
-      return {
-        value: {
-          ...prevState.value,
-          fields: tmpFields
-        }
-      };
-    }, () => {
-      const { change, dataIndex } = this.props;
-      change(this.state.value, dataIndex);  // eslint-disable-line react/destructuring-assignment
-    });
-
-    const fieldRemove = (idx: number) => {
-      if (this.state.value.fields.length >= idx) {
-        // eslint-disable-line react/destructuring-assignment
-        this.setState(prevState => {
-          const tmpFieldValues = [...prevState.value.fields];
-          const tmpFields = [...prevState.fields];
-
-          if (idx + 1 == this.state.value.fields.length) {
-            tmpFieldValues.pop();
-          } else {
-            tmpFieldValues.splice(idx, 1);
-          }
-
-          //remove at dataindex instead if index of array 
-          tmpFields.filter((field) => field.props.dataIndex != idx)
-
-          return {
-            value: {
-              ...prevState.value,
-              fields: tmpFieldValues
-            },
-            fields: tmpFields
-          };
-        }, () => {
-          const { change, dataIndex } = this.props;
-          change(this.state.value, dataIndex);  // eslint-disable-line react/destructuring-assignment
-        });
-      }
-    };
-
-    // eslint-disable-next-line react/destructuring-assignment
-    const { value } = this.state;
-    const { type } = value;
-
-    return (
-      <FieldEditor
-        key={field[0]}
-        dataIndex={field_idx}
-        enumerated={type.toLowerCase() === 'enumerated'}
-        value={field}
-        change={fieldChange}
-        remove={fieldRemove}
-      />
-    );
-  }
-
-  render() {
-    const {
-      fieldCollapse, fields, modal, value
-    } = this.state;
-
-    if (value.fields && fields.length !== value.fields.length) {
-      setTimeout(() => {
-        this.setState(prevState => ({
-          fields: prevState.value.fields.map((f, i) => this.makeField(f, i))
-        }));
-      }, 250);
+    if (idx + 1 == valueObj.fields.length) {
+      tmpFieldValues.pop();
+    } else {
+      tmpFieldValues.splice(idx, 1);
     }
 
-    return (
-      <div className="border m-1 p-1">
-        <ButtonGroup size="sm" className="float-right">
-          <Button color="danger" onClick={this.removeAll} >
-            <FontAwesomeIcon icon={faMinusCircle} />
-          </Button>
-        </ButtonGroup>
+    const updatevalue = { ...valueObj, fields: tmpFieldValues };
+    change(updatevalue, dataIndex);
+  };
 
-        <div className="border-bottom mb-2">
-          <h3 className="col-sm-10 my-1">{`${value.name}(${value.type})`}</h3>
-        </div>
+  const fields: any[] = [];
+  for (let i = 0; i < valueObj.fields.length; ++i) {
+    fields.push(<FieldEditor
+      key={valueObj.fields[i][0]}
+      dataIndex={i}
+      enumerated={valueObj.type.toLowerCase() === 'enumerated'}
+      value={valueObj.fields[i]}
+      change={fieldChange}
+      remove={fieldRemove}
+    />);
+  }
 
-        <div className="row m-0">
-          <FormGroup className="col-md-4">
-            <Label>Name</Label>
-            <Input type="text" placeholder="Name" value={value.name} onChange={this.onChange} />
-          </FormGroup>
+  const saveModal = (modalData: Array<string>) => {
+    setModal(!modal);
+    const updatevalue = { ...valueObj, options: modalData }
+    change(updatevalue, dataIndex);
+  }
 
-          <FormGroup className="col-md-2">
-            <Label>&nbsp;</Label>
-            <InputGroup>
-              <Button outline color="info" onClick={this.toggleModal}>Type Options</Button>
-              <OptionsModal
-                optionValues={value.options}
-                isOpen={modal}
-                optionType={value.type}
-                toggleModal={this.toggleModal}
-                saveModal={this.saveModal}
-              />
-            </InputGroup>
-          </FormGroup>
+  return (
+    <div className="border m-1 p-1">
+      <ButtonGroup size="sm" className="float-right">
+        <Button color="danger" onClick={removeAll} >
+          <FontAwesomeIcon icon={faMinusCircle} />
+        </Button>
+      </ButtonGroup>
 
-          <FormGroup className="col-md-6">
-            <Label>Comment</Label>
-            <Input type="textarea" placeholder="Comment" rows={1} value={value.comment} onChange={this.onChange} />
-          </FormGroup>
-
-          <FormGroup tag="fieldset" className="col-12 border">
-            <legend>
-              Fields
-              <ButtonGroup className="float-right">
-                <Button color={fieldCollapse ? 'warning' : 'success'} onClick={this.toggleFields} >
-                  <FontAwesomeIcon icon={fieldCollapse ? faMinusCircle : faPlusCircle} />
-                  &nbsp;
-                  {fieldCollapse ? ' Hide' : ' Show'}
-                </Button>
-                <Button color="primary" onClick={this.addField} >
-                  <FontAwesomeIcon icon={faPlusSquare} />
-                  &nbsp;
-                  Add
-                </Button>
-              </ButtonGroup>
-            </legend>
-
-            <Collapse isOpen={fieldCollapse}>
-              {fields}
-            </Collapse>
-            {!fieldCollapse && fields.length > 0 ? <p>Expand to view/edit fields</p> : ''}
-          </FormGroup>
-        </div>
+      <div className="border-bottom mb-2">
+        <h3 className="col-sm-10 my-1">{`${valueObj.name}(${valueObj.type})`}</h3>
       </div>
-    );
-  }
+
+      <div className="row m-0">
+        <FormGroup className="col-md-4">
+          <Label>Name</Label>
+          <Input type="text" placeholder="Name" value={valueObj.name} onChange={onChange} />
+        </FormGroup>
+
+        <FormGroup className="col-md-2">
+          <Label>&nbsp;</Label>
+          <InputGroup>
+            <Button outline color="info" onClick={() => setModal(!modal)}>Type Options</Button>
+            <OptionsModal
+              optionValues={valueObj.options}
+              isOpen={modal}
+              optionType={valueObj.type}
+              toggleModal={() => setModal(!modal)}
+              saveModal={saveModal}
+            />
+          </InputGroup>
+        </FormGroup>
+
+        <FormGroup className="col-md-6">
+          <Label>Comment</Label>
+          <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} />
+        </FormGroup>
+
+        <FormGroup tag="fieldset" className="col-12 border">
+          <legend>
+            Fields
+            <ButtonGroup className="float-right">
+              <Button color={fieldCollapse ? 'warning' : 'success'} onClick={() => setFieldCollapse(!fieldCollapse)}>
+                <FontAwesomeIcon icon={fieldCollapse ? faMinusCircle : faPlusCircle} />
+                &nbsp;
+                {fieldCollapse ? ' Hide' : ' Show'}
+              </Button>
+              <Button color="primary" onClick={addField} >
+                <FontAwesomeIcon icon={faPlusSquare} />
+                &nbsp;
+                Add
+              </Button>
+            </ButtonGroup>
+          </legend>
+
+          <Collapse isOpen={fieldCollapse}>
+            {fields}
+          </Collapse>
+          {!fieldCollapse && fields.length > 0 ? <p>Expand to view/edit fields</p> :
+            fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
+        </FormGroup>
+      </div>
+    </div>
+  );
 }
 
 export default StructureEditor;

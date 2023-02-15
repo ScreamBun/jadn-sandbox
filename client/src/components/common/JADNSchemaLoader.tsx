@@ -175,7 +175,7 @@ const JADNSchemaLoader = (props: any) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        dispatch(setSchema(data))
+                        dispatch(setSchema(data));
                         setLoadedSchema(data);
                         validateJADN(data);
                         if (setDecodeSchemaTypes && setDecodeMsg) {

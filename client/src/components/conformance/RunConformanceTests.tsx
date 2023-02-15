@@ -260,13 +260,14 @@ const RunConformanceTests = (props: any) => {
       });
   };
 
-  useEffect(() => {
-    if (selectedFile == "file") {
+  const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedFile(e.target.value);
+    if (e.target.value == "file") {
       setSchemaToTest({});
 
     } else {
       try {
-        dispatch(loadFile('schemas', selectedFile))
+        dispatch(loadFile('schemas', e.target.value))
           .then((loadFileVal) => {
             try {
               let schemaObj = loadFileVal.payload.data;
@@ -285,7 +286,7 @@ const RunConformanceTests = (props: any) => {
         console.log(err);
       }
     }
-  }, [selectedFile]);
+  };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -318,7 +319,7 @@ const RunConformanceTests = (props: any) => {
         <form onSubmit={onRunTests}>
           <div className='row no-gutters'>
             <div className='col-md-3'>
-              <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
+              <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
                 <option value="">Select a Schema...</option>
                 <optgroup label="Testers">
                   {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}

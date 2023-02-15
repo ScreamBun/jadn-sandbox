@@ -2,7 +2,6 @@ import React from 'react';
 import { OptionChange, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../key_value';
 import { safeGet } from '../../../../../utils';
-import { useAppSelector } from '../../../../../../reducers';
 
 // Interfaces
 interface TypeOptionsEditorProps {
@@ -16,8 +15,7 @@ interface TypeOptionsEditorProps {
 
 // Type Options Editor
 const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
-  const { change, deserializedState, id, optionType } = props;
-  const schemaTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)])
+  const { change, deserializedState, id, optionType, schemaTypes } = props;
 
   const getOptions = (key: string) => {
     switch (key) {

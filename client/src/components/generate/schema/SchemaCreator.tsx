@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { faFileDownload, faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { sbToastError } from 'components/common/SBToast';
-import { SchemaJADN } from './interface';
 import { getAllSchemas } from 'reducers/util';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import { format } from 'actions/format';
@@ -22,23 +21,34 @@ const SchemaCreator = (props: any) => {
     const schemaOpts = useSelector(getAllSchemas);
 
     useEffect(() => {
-        dispatch(setSchema(generatedSchema.jsObject as SchemaJADN));
-        dispatch(format(JSON.stringify(generatedSchema)))
-            .then(val => setData(val.payload.schema))
+        const schemaStr = JSON.stringify(generatedSchema);
+        dispatch(setSchema(generatedSchema));
+        console.log(schemaStr)
+        dispatch(format(schemaStr))
+            .then(val => {
+                //TODO: data does not format properly
+                setData(val.payload.schema)
+            });
     }, [generatedSchema])
 
-    useEffect(() => {
-        if (selectedFile == "file") {
+    const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedFile(e.target.value);
+        if (e.target.value == "file") {
             setGeneratedSchema({
                 types: []
             });
+            setData('');
+            dispatch(setSchema({ types: [] }));
         } else {
             try {
-                dispatch(loadFile('schemas', selectedFile))
+                dispatch(loadFile('schemas', e.target.value))
                     .then((loadFileVal) => {
                         try {
                             let schemaObj = loadFileVal.payload.data;
                             setGeneratedSchema(schemaObj);
+                            /*                             dispatch(format(JSON.stringify(schemaObj)))
+                                                            .then(val => { setData(val.payload.schema) });
+                                                        dispatch(setSchema(schemaObj)); */
                         } catch (err) {
                             if (err instanceof Error) {
                                 sbToastError(err.message);
@@ -53,8 +63,7 @@ const SchemaCreator = (props: any) => {
                 console.log(err);
             }
         }
-    }, [selectedFile]);
-
+    };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -65,6 +74,8 @@ const SchemaCreator = (props: any) => {
                     let data = ev.target.result;
                     try {
                         setGeneratedSchema(JSON.parse(data));
+                        /*                        setData(data);
+                                               dispatch(setSchema(data)); */
                     } catch (err) {
                         console.log(err);
                         sbToastError(`Schema cannot be loaded`);
@@ -154,7 +165,7 @@ const SchemaCreator = (props: any) => {
         const onDrop = (data: any) => {
             if (data.info) {
                 if (!(data.info in (generatedSchema.info || {}))) {
-                    setGeneratedSchema(generatedSchema => ({
+                    setGeneratedSchema((generatedSchema) => ({
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
@@ -203,7 +214,6 @@ const SchemaCreator = (props: any) => {
                     }
                 });
             }
-            // eslint-disable-next-line no-useless-return
             return null;
         }).filter(Boolean);
 
@@ -264,7 +274,7 @@ const SchemaCreator = (props: any) => {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
-                        <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)}>
+                        <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
                             <option value="">Select a Schema...</option>
                             <optgroup label="Testers">
                                 {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
