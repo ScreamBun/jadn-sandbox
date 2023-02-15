@@ -198,7 +198,7 @@ const SchemaConverted = (props: any) => {
                             </Button>
                         </div>
 
-                        <div className={`${conversion == 'markdown' && convertedSchema ? '' : ' d-none'}`}>
+                        <div className={`${conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
                             <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick2}>
                                 <FontAwesomeIcon icon={faFilePdf} />
                             </Button>
