@@ -15,12 +15,12 @@ const SchemaConverted = (props: any) => {
         setConversion(e.target.value);
         setConvertedSchema('');
     }
-
+/*
     const handleConversion2 = (e2: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e2.target.value);
         setConvertedSchema('');
     }
-
+*/
     /*    type MimeType = 'cddl' | 'html' | 'jadn' | 'json' | 'md' | 'proto3' | 'rng' | 'thrift';
          const downloadMime = {
             cddl: 'text/plain',
@@ -194,6 +194,15 @@ const SchemaConverted = (props: any) => {
                                 <FontAwesomeIcon icon={faFilePdf} />
                             </Button>
                             <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick}>
+                                <FontAwesomeIcon icon={faWindowMaximize} />
+                            </Button>
+                        </div>
+
+                        <div className={`${conversion == 'markdown' && convertedSchema ? '' : ' d-none'}`}>
+                            <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick2}>
+                                <FontAwesomeIcon icon={faFilePdf} />
+                            </Button>
+                            <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick2}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
                         </div>
