@@ -16,7 +16,7 @@ const SchemaConverted = (props: any) => {
         setConvertedSchema('');
     }
 
-    const handleConversion2 = (e2: React.ChangeEvent<MARKDOWNSelectElement>) => {
+    const handleConversion2 = (e2: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e2.target.value);
         setConvertedSchema('');
     }
@@ -59,8 +59,8 @@ const SchemaConverted = (props: any) => {
         }
     }
 
-    const onDownloadSchemaClick2 = (e2: React.MouseEvent<MARKDOWNButtonElement>) => {
-        e.preventDefault();
+    const onDownloadSchemaClick2 = (e2: React.MouseEvent<HTMLButtonElement>) => {
+        e2.preventDefault();
         if (convertedSchema != '') {
             try {
                 const data = convertedSchema;
@@ -122,8 +122,8 @@ const SchemaConverted = (props: any) => {
         }
     }
 
-    const onDownloadPDFClick2 = (e2: React.MouseEvent<MARKDOWNButtonElement>) => {
-        e.preventDefault();
+    const onDownloadPDFClick2 = (e2: React.MouseEvent<HTMLButtonElement>) => {
+        e2.preventDefault();
         const data = JSON.parse(loadedSchema)
         if (convertedSchema != '') {
             try {
@@ -166,8 +166,8 @@ const SchemaConverted = (props: any) => {
         window.open(data);
     }
 
-    const onPopOutClick2 = (e2: React.MouseEvent<MARKDOWNButtonElement>) => {
-        e.preventDefault();
+    const onPopOutClick2 = (e2: React.MouseEvent<HTMLButtonElement>) => {
+        e2.preventDefault();
         const blob = new Blob([convertedSchema], { type: "text/markdown" });
         const data = URL.createObjectURL(blob);
         window.open(data);
