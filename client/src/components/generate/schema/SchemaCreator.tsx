@@ -269,7 +269,7 @@ const SchemaCreator = (props: any) => {
                                 <TabContent activeTab={activeOpt}>
                                     <TabPane tabId='info'>
                                         <ListGroup>
-                                            {infoKeys}
+                                            {infoKeys.length != 0 ? infoKeys : <div className='col'>No more Info to add</div>}
                                         </ListGroup>
                                     </TabPane>
                                     <TabPane tabId='types'>
