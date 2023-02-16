@@ -83,10 +83,10 @@ const SchemaCreator = (props: any) => {
     const schemaDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
-            const data = generatedSchema;
+            const formattedSchema = data;
             const filename = `schema.jadn`; //convert to jadn??
 
-            const blob = new Blob([data], { type: "application/json" });
+            const blob = new Blob([formattedSchema], { type: "application/json" });
             //content: `data:application/json;charset=utf-8,${encodeURIComponent(FormatJADN(prevState.schema))}`
             const elem = document.createElement('a');
             elem.href = URL.createObjectURL(blob);
@@ -102,13 +102,29 @@ const SchemaCreator = (props: any) => {
         }
     }
 
-    const infoKeys = Object.keys(Info).map(k => (
-        <Draggable type="info" data={k} key={Info[k].key} >
-            <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Info[k].key}
-                <FontAwesomeIcon icon={faGripLines} className='float-right' />
-            </ListGroupItem>
-        </Draggable>
-    ));
+    let infoKeys;
+    if (generatedSchema.info) {
+        const unusedInfoKeys = Object.keys(Info).filter(k =>
+            !(Object.keys(generatedSchema.info).includes(k)));
+
+        const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
+
+        infoKeys = Object.keys(unusedInfo).map(k => (
+            <Draggable type="info" data={k} key={unusedInfo[k].key} >
+                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{unusedInfo[k].key}
+                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
+                </ListGroupItem>
+            </Draggable>
+        ));
+    } else {
+        infoKeys = Object.keys(Info).map(k => (
+            <Draggable type="info" data={k} key={Info[k].key} >
+                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Info[k].key}
+                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
+                </ListGroupItem>
+            </Draggable>
+        ));
+    }
 
     const typesKeys = Object.keys(Types).map(k => (
         <Draggable type="types" data={k} key={Types[k].key}>
@@ -117,8 +133,6 @@ const SchemaCreator = (props: any) => {
             </ListGroupItem>
         </Draggable>
     ));
-
-
 
     const onDrop = (data: any) => {
         if (data.info) {
@@ -220,7 +234,7 @@ const SchemaCreator = (props: any) => {
                         <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
                     </div>
                     <div className='col-md-9'>
-                        <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass='float-right' shouldStringify={true} />
+                        <SBCopyToClipboard buttonId='copyMessage' data={data} customClass='float-right' />
                         <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
                             <FontAwesomeIcon icon={faFileDownload} />
                         </Button>

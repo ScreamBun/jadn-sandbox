@@ -7,14 +7,6 @@ import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 
-function usePrev(value: any) {
-    const ref = useRef();
-    useEffect(() => {
-        ref.current = value;
-    });
-    return ref.current;
-}
-
 const MessageGenerator = () => {
     const dispatch = useDispatch()
 
@@ -29,16 +21,9 @@ const MessageGenerator = () => {
         dispatch(info());
     }, [dispatch])
 
-    const prevSchema = usePrev(loadedSchema);
     useEffect(() => {
-        const prevStr = prevSchema ? prevSchema.replace(/\s+/g, '') : '';
-        const str = loadedSchema.replace(/\s+/g, '');
-
-        if (prevStr && prevStr != str) {
-            setGeneratedMessage({});
-            setCommandType('');
-        }
-
+        setGeneratedMessage({});
+        setCommandType('');
     }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {

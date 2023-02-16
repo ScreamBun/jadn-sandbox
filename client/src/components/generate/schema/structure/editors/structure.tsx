@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-  Button, ButtonGroup, Collapse, FormGroup, Input, InputGroup, Label
+  Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -158,7 +158,7 @@ const StructureEditor = (props: StructureEditorProps) => {
 
         <FormGroup tag="fieldset" className="col-12 border">
           <legend>
-            Fields
+            {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'}
             <ButtonGroup className="float-right">
               <Button color={fieldCollapse ? 'warning' : 'success'} onClick={() => setFieldCollapse(!fieldCollapse)}>
                 <FontAwesomeIcon icon={fieldCollapse ? faMinusCircle : faPlusCircle} />
@@ -173,9 +173,8 @@ const StructureEditor = (props: StructureEditorProps) => {
             </ButtonGroup>
           </legend>
 
-          <Collapse isOpen={fieldCollapse}>
-            {fields}
-          </Collapse>
+          {fieldCollapse && fields}
+
           {!fieldCollapse && fields.length > 0 ? <p>Expand to view/edit fields</p> :
             fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
         </FormGroup>
