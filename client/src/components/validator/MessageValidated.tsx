@@ -51,7 +51,7 @@ const MessageValidated = (props: any) => {
         setLoadedMsg(e.target.value);
     }
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0];
             const prefix = file.name.split('.')[0];
@@ -98,7 +98,7 @@ const MessageValidated = (props: any) => {
                                 <option value="file">File...</option>
                             </optgroup>
                         </select>
-                        <Input type="file" id="message-file" name="message-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".json,.jadn,.xml,.cbor" onChange={handleFileChange} />
+                        <Input type="file" id="message-file" name="message-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".json,.jadn,.xml,.cbor" onChange={onFileChange} />
                     </div>
 
                     <div className={`col-md-3 ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>

@@ -173,13 +173,13 @@ const JADNSchemaLoader = (props: any) => {
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
-                    let data = ev.target.result;
+                    let dataStr = ev.target.result;
                     try {
-                        dispatch(setSchema(data));
-                        setLoadedSchema(data);
-                        validateJADN(data);
+                        dispatch(setSchema(dataStr));
+                        setLoadedSchema(dataStr);
+                        validateJADN(dataStr);
                         if (setDecodeSchemaTypes && setDecodeMsg) {
-                            loadDecodeTypes(data);
+                            loadDecodeTypes(JSON.parse(dataStr));
                         }
                     } catch (err) {
                         sbToastError(`File cannot be loaded`)
