@@ -1,17 +1,15 @@
 import React, { useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { json } from '@codemirror/lang-json';
-import { html } from '@codemirror/lang-html';
-import { markdown } from '@codemirror/lang-markdown';
-import { xml } from '@codemirror/lang-xml';
-import { githubLight} from '@uiw/codemirror-themes-all';
-import { LANG_HTML, LANG_JADN, LANG_JSON, LANG_MARKDOWN, LANG_XML } from 'components/utils/constants';
+import { githubLight } from '@uiw/codemirror-themes-all';
+import { langs } from '@uiw/codemirror-extensions-langs';
+import { LANG_HTML, LANG_MARKDOWN, LANG_XML } from 'components/utils/constants';
 
 // References:
 // https://reactjsexample.com/codemirror-component-for-react/
 // https://uiwjs.github.io/react-codemirror/
 // https://uiwjs.github.io/react-codemirror/#/extensions/basic-setup
 // https://uiwjs.github.io/react-codemirror/#/theme/data/xcode/light
+// Possible dark theme: abcdef
 
 const SBEditor = (props: any) => {
 
@@ -24,28 +22,22 @@ const SBEditor = (props: any) => {
         onEditorChange
     } = props;
 
-    let lang = json();
+    let extensions = [langs.json()]
 
     useEffect(() => {
-        if(convertTo){
+        if(convertTo != null){
             switch(convertTo.toLowerCase()) {
-                case LANG_JADN:
-                    lang = json();
-                    break;                
-                case LANG_JSON:
-                    lang = json();
-                    break;
                 case LANG_HTML:
-                    lang = html();
+                    extensions = [langs.html()];
                     break; 
                 case LANG_MARKDOWN:
-                    lang = markdown();
+                    extensions = [langs.markdown()];
                     break;
                 case LANG_XML:
-                    lang = xml();
+                    extensions = [langs.xml()];
                     break;                              
                 default:
-                    lang = json();
+                    extensions = [langs.json()];
                 break;
             }
         }
@@ -58,14 +50,16 @@ const SBEditor = (props: any) => {
       }, []);
 
       return (
-        <CodeMirror
-            value={data}
+
+        <CodeMirror 
+            value={data} 
             height={height}
-            readOnly={isReadOnly}
-            theme={githubLight}        
-            extensions={[lang]}
+            readOnly={isReadOnly} 
+            theme={githubLight}
+            extensions={extensions} 
             onChange={onChange}
         />
+
       );
   }
 
