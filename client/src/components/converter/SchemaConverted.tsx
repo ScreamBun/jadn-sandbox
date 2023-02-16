@@ -6,6 +6,7 @@ import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-s
 import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
+import SBEditor from "components/common/SBEditor";
 
 const SchemaConverted = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
@@ -15,18 +16,6 @@ const SchemaConverted = (props: any) => {
         setConversion(e.target.value);
         setConvertedSchema('');
     }
-
-    /*    type MimeType = 'cddl' | 'html' | 'jadn' | 'json' | 'md' | 'proto3' | 'rng' | 'thrift';
-         const downloadMime = {
-            cddl: 'text/plain',
-            html: 'text/html',
-            md: 'text/plain',
-            jadn: 'application/json',
-            json: 'application/json',
-            proto3: 'text/x-c',
-            rng: 'application/xml',
-            thrift: 'text/plain'
-        }; */
 
     const onDownloadSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -127,24 +116,8 @@ const SchemaConverted = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0" style={{ height: '40em' }}>
-                <textarea
-                    value={convertedSchema}
-                    className='form-control form-control-sm'
-                    placeholder='Converted schema'
-                    style={{
-                        resize: 'none',
-                        outline: 'none',
-                        width: '100%',
-                        padding: '10px',
-                        border: 'none',
-                        height: '100%',
-                        whiteSpace: 'pre',
-                        overflowWrap: 'normal',
-                        overflowY: 'auto'
-                    }}
-                    readOnly
-                />
+            <div className="card-body p-0">
+                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion}></SBEditor>                
             </div>
         </div>
     )

@@ -1,4 +1,10 @@
 // eslint-disable-next-line import/prefer-default-export
+export const LANG_JADN = 'jadn';
+export const LANG_JSON = 'json';
+export const LANG_HTML= 'html';
+export const LANG_MARKDOWN= 'md';
+export const LANG_XML= 'xml';
+
 export const NAV_HOME = '/home';
 export const NAV_VALIDATE_MESSAGE = '/validate-message';
 export const NAV_CONVERT_SCHEMA = '/convert-schema';

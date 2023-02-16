@@ -1,29 +1,69 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
-import { githubLight } from '@uiw/codemirror-themes-all';
+import { json } from '@codemirror/lang-json';
+import { html } from '@codemirror/lang-html';
+import { markdown } from '@codemirror/lang-markdown';
+import { xml } from '@codemirror/lang-xml';
+import { githubLight} from '@uiw/codemirror-themes-all';
+import { LANG_HTML, LANG_JADN, LANG_JSON, LANG_MARKDOWN, LANG_XML } from 'components/utils/constants';
+
+// References:
+// https://reactjsexample.com/codemirror-component-for-react/
+// https://uiwjs.github.io/react-codemirror/
+// https://uiwjs.github.io/react-codemirror/#/extensions/basic-setup
+// https://uiwjs.github.io/react-codemirror/#/theme/data/xcode/light
 
 const SBEditor = (props: any) => {
 
-    const code = 'const a = 0;';
+    const { 
+        data, 
+        setData, 
+        height = "40em", 
+        isReadOnly = false, 
+        convertTo,
+        onEditorChange
+    } = props;
 
-    const onChange = React.useCallback((value, viewUpdate) => {
-        console.log('value:', value);
+    let lang = json();
+
+    useEffect(() => {
+        if(convertTo){
+            switch(convertTo.toLowerCase()) {
+                case LANG_JADN:
+                    lang = json();
+                    break;                
+                case LANG_JSON:
+                    lang = json();
+                    break;
+                case LANG_HTML:
+                    lang = html();
+                    break; 
+                case LANG_MARKDOWN:
+                    lang = markdown();
+                    break;
+                case LANG_XML:
+                    lang = xml();
+                    break;                              
+                default:
+                    lang = json();
+                break;
+            }
+        }
+    }, [convertTo])    
+
+    const onChange = React.useCallback((value: any, viewUpdate: any) => {
+        // console.log('value:', value);
+        setData(value);
+        // onChangeToParent();
       }, []);
-
-
-    //   new EditorView({
-    //     doc: "console.log('hello')\n",
-    //     extensions: [basicSetup, javascript()],
-    //     parent: document.body
-    //   })
 
       return (
         <CodeMirror
-            value={code}
-            height="40em"
+            value={data}
+            height={height}
+            readOnly={isReadOnly}
             theme={githubLight}        
-            extensions={[javascript({ jsx: true })]}
+            extensions={[lang]}
             onChange={onChange}
         />
       );
