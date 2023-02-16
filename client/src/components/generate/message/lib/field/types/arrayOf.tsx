@@ -1,6 +1,6 @@
 
 //ArrayOf
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -22,22 +22,17 @@ interface ArrayOfFieldProps {
 
 // Component
 const ArrayOfField = (props: ArrayOfFieldProps) => {
-  const { def, parent } = props;
+  const { def, parent, optChange } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   const [min, setMin] = useState(false);
   const [max, setMax] = useState(false);
   const [count, setCount] = useState(1);
-  const [opts, setOpts] = useState({});
+  const [opts, setOpts] = useState([]);
 
   var optData: Record<string, any> = {};
   const [_idx, name, type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-
-  useEffect(() => {
-    const { optChange } = props;
-    optChange(msgName, Array.from(new Set(Object.values(opts))));
-  })
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -45,6 +40,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     const maxBool = count < maxCount;
     setCount(maxBool ? count => count + 1 : count);
     setMax(maxBool => !maxBool);
+    setOpts(opts => [...opts, undefined]);
   }
 
   const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,16 +49,41 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
     const minBool = count > minCount;
     if (minBool) {
-      delete opts[Math.max.apply(Math, Object.keys(opts))];
+      setOpts(opts.slice(0, -1));
+      const tmpOpts = opts;
+      tmpOpts.pop();
+      const filteredOpts = tmpOpts.filter(data => {
+        return data != null;
+      });
+      optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
     }
 
     setCount(minBool ? count => count - 1 : count);
     setMin(minBool => !minBool);
-    setOpts(opts);
   }
 
-  const optChange = (_k: string, v: any, i: number) => {
-    setOpts(opts => ({ ...opts, [i]: v }))
+  const onChange = (_k: string, v: any, i: number) => {
+    if (Number.isNaN(v)) {
+      v = undefined;
+    }
+    if (i < opts.length) {
+      const updatedOpts = opts.map((data, index) => {
+        if (index == i) {
+          return v;
+        } else {
+          return data;
+        }
+      });
+      setOpts(updatedOpts);
+    } else {
+      setOpts(opts => [...opts, v]);
+    }
+    const tmpOpts = opts;
+    tmpOpts[i] = v;
+    const filteredOpts = tmpOpts.filter(data => {
+      return data != null;
+    });
+    optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -79,7 +100,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const fields: any[] = [];
   for (let i = 0; i < count; ++i) {
-    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={optChange} idx={i} />);
+    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} />);
   }
 
   return (

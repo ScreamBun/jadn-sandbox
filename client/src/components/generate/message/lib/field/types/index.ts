@@ -10,11 +10,11 @@ export {
   // Primitive Field
   BasicField,
   // Structure Field
-  ArrayField,
   ArrayOfField,
+  // MapOfField,
+  ArrayField,
   ChoiceField,
   EnumeratedField,
   MapField,
-  // MapOfField,
   RecordField
 };

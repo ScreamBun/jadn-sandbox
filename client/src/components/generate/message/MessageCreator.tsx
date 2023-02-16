@@ -59,7 +59,6 @@ const MessageCreator = (props: any) => {
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (Array.isArray(recordDef[recordDef.length - 1])) {
         const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
-        console.log(fields)
         fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} />);
     } else {
         fieldDefs = (
