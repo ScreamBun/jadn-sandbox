@@ -29,7 +29,9 @@ const MessageCreator = (props: any) => {
     }
 
     const optChange = (k: string, v: any) => {
-        //console.log(k, v)
+        console.log(k, v)
+        console.log(typeof v)
+
         if (k.length > 1 && generatedMessage[k[0]] && !generatedMessage[k[0]][k[1]]) {
             delMultiKey(generatedMessage, k[0].toString());
         }
@@ -57,6 +59,7 @@ const MessageCreator = (props: any) => {
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (Array.isArray(recordDef[recordDef.length - 1])) {
         const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
+        console.log(fields)
         fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} />);
     } else {
         fieldDefs = (
@@ -73,7 +76,7 @@ const MessageCreator = (props: any) => {
         if (generatedMessage != '{}') {
             try {
                 const data = JSON.stringify(generatedMessage, null, 2);
-                const filename = `schema.json`;
+                const filename = `message.json`;
 
                 const blob = new Blob([data], { type: "application/json" });
                 const elem = document.createElement('a');
@@ -98,14 +101,14 @@ const MessageCreator = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
-                        <select id='command-list' name='command-list' className='form-control form-control-sm' disabled={exportRecords ? false : true} onChange={handleSelection}
+                        <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} disabled={exportRecords ? false : true} onChange={handleSelection}
                             title="Select message type to create based on valid JADN Schema">
                             <option value=''>Message Type</option>
                             {exportRecords ? exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>) : []}
                         </select>
                     </div>
                     <div className='col'>
-                        <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' />
+                        <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' shouldStringify={true} />
                         <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
                             <FontAwesomeIcon icon={faFileDownload} />
                         </Button>

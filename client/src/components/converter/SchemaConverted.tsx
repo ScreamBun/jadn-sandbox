@@ -191,7 +191,24 @@ const SchemaConverted = (props: any) => {
                             </Button>
                         </div>
 
-                        <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right" disabled={loadedSchema && conversion ? false : true} title="Convert the given JADN schema to the selected format">Convert</Button>
+                        <div className={`${conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
+                            <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick2}>
+                                <FontAwesomeIcon icon={faFilePdf} />
+                            </Button>
+                            <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick2}>
+                                <FontAwesomeIcon icon={faWindowMaximize} />
+                            </Button>
+                        </div>
+
+                        <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
+                            disabled={loadedSchema && conversion ? false : true}
+                            title={!loadedSchema && !conversion ? "Please select schema and language for conversion" :
+                                !loadedSchema && conversion ? "Please select a schema" :
+                                    loadedSchema && !conversion ? 'Please select a language to convert to' :
+                                        loadedSchema && conversion ? "Convert the given JADN schema to the selected format" : "Convert the given JADN schema to the selected format"}
+                        >
+                            Convert
+                        </Button>
                     </div>
                 </div>
             </div>

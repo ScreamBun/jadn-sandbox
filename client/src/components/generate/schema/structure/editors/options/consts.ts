@@ -127,7 +127,7 @@ export const FieldOptionInputArgs = {
     description: 'Maximum cardinality'
   },
   tagid: {
-    // type: ...
+    // type: Enumerated
     description: 'Field containing an explicit tag for this Choice type'
   },
   dir: {
