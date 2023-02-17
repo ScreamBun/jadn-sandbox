@@ -8,7 +8,6 @@ import { loadFile } from "actions/util";
 import { getMsgFiles } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
-import { LANG_JSON } from "components/utils/constants";
 import SBEditor from "components/common/SBEditor";
 
 const MessageValidated = (props: any) => {

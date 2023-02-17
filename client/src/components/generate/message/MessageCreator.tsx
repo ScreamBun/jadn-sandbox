@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import JSONPretty from 'react-json-pretty'
 import { useSelector } from 'react-redux'
 import { TabContent, TabPane, Button, FormText } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib'
