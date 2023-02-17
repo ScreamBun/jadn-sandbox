@@ -57,7 +57,7 @@ const Home = () => {
             <div className='col-md-3'>
 
               <div className="card">
-                <div className="card-body text-center bg-primary p-2 text-light">
+                <div className="card-body text-center bg-primary p-2 text-white">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faCubes} /></p>
                   <h5 className="card-title m-0">Generation</h5>
                 </div>
@@ -71,7 +71,7 @@ const Home = () => {
             <div className='col-md-3'>
 
               <div className="card">
-                <div className="card-body text-center bg-primary p-2 text-light">
+                <div className="card-body text-center bg-primary p-2 text-white">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faShuffle} /></p>
                   <h5 className="card-title m-0">Schema Conversion</h5>
                 </div>
@@ -80,6 +80,7 @@ const Home = () => {
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>HTML</Link>
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JADN</Link>
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JIDL</Link>
+                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JSON</Link>
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>MarkDown</Link>
                   <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>Relax (XML)</Link>
                 </ul>
@@ -89,7 +90,7 @@ const Home = () => {
             <div className='col-md-3'>
 
               <div className="card">
-                <div className="card-body text-center bg-primary p-2 text-light">
+                <div className="card-body text-center bg-primary p-2 text-white">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faMicroscope} /></p>
                   <h5 className="card-title m-0">Message Validation</h5>
                 </div>
@@ -104,7 +105,7 @@ const Home = () => {
             <div className='col-md-3'>
 
               <div className="card">
-                <div className="card-body text-center bg-primary p-2 text-light">
+                <div className="card-body text-center bg-primary tp-2 text-white">
                   <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faInfoCircle} /></p>
                   <h5 className="card-title m-0">Information</h5>
                 </div>

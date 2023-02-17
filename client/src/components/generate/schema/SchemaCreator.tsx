@@ -10,6 +10,7 @@ import { sbToastError } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import { format } from 'actions/format';
+import SBEditor from 'components/common/SBEditor';
 
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -305,24 +306,7 @@ const SchemaCreator = (props: any) => {
 
                 <TabPane tabId='schema'>
                     <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
-                        <Input
-                            id="Generated Schema"
-                            type="textarea"
-                            value={data}
-                            className='form-control form-control-sm'
-                            style={{
-                                resize: 'none',
-                                outline: 'none',
-                                width: '100%',
-                                padding: '10px',
-                                border: 'none',
-                                height: '100%',
-                                whiteSpace: 'pre',
-                                overflowWrap: 'normal',
-                                overflowX: 'auto'
-                            }}
-                            readOnly
-                        />
+                        <SBEditor data={data} isReadOnly={true}></SBEditor>
                     </div>
 
                 </TabPane>

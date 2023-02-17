@@ -27,13 +27,15 @@ const RecordField = (props: RecordFieldProps) => {
     <div className='form-group'>
       <div className='card'>
         <div className='card-header p-2'>
-          <h4 className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</h4>
+          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
           {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
         </div>
 
         <div className='card-body mx-3'>
-          <div className="col-12 my-1 px-0">
-            {fieldDef}
+          <div className='row'>
+            <div className="col my-1 px-0">
+              {fieldDef}
+            </div>
           </div>
         </div>
       </div>

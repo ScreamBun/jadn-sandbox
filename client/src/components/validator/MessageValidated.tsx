@@ -8,6 +8,7 @@ import { loadFile } from "actions/util";
 import { getMsgFiles } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
+import SBEditor from "components/common/SBEditor";
 
 const MessageValidated = (props: any) => {
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, loadedSchema } = props;
@@ -44,11 +45,11 @@ const MessageValidated = (props: any) => {
         }
     };
 
-    const onMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onMsgChange = () => {
         setSelectedFile('empty');
         setDecodeMsg('');
         setMsgFormat('');
-        setLoadedMsg(e.target.value);
+        // setLoadedMsg(e.target.value);
     }
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,27 +134,8 @@ const MessageValidated = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0" style={{ height: '40em' }}>
-                <Input
-                    id="messageInput"
-                    type="textarea"
-                    onChange={onMsgChange}
-                    value={loadedMsg}
-                    className='form-control form-control-sm'
-                    placeholder='Paste or load message here to be validated'
-                    style={{
-                        resize: 'none',
-                        outline: 'none',
-                        width: '100%',
-                        padding: '10px',
-                        border: 'none',
-                        height: '100%',
-                        whiteSpace: 'pre',
-                        overflowWrap: 'normal',
-                        overflowY: 'auto'
-                    }}
-                    required
-                />
+            <div className="card-body p-0">
+                <SBEditor data={loadedMsg} setData={setLoadedMsg} convertTo={msgFormat} onEditorChange={onMsgChange}></SBEditor>
             </div>
         </div>
     )

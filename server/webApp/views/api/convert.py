@@ -4,6 +4,7 @@ import re
 
 from io import BytesIO
 import traceback
+import jadn
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource, reqparse
 from jadnschema.convert import SchemaFormats, dumps, html_dumps
@@ -51,7 +52,14 @@ class Convert(Resource):
                 
 
                 try:
-                    conv = dumps(schema, **kwargs)
+
+                    if conv_fmt == "json":
+                        data = request_json["schema"]
+                        schema_checked = jadn.check(data) 
+                        conv = jadn.translate.json_schema_dumps(schema_checked)
+                    else:
+                        conv = dumps(schema, **kwargs)
+                        
                 except:
                     tb = traceback.format_exc()
                     print(tb)

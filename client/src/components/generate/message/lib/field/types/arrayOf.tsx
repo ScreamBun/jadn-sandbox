@@ -107,9 +107,9 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     <div className='form-group'>
       <div className='card'>
         <div className='card-header p-2'>
-          <h4 className='card-title m-0'>
+          <p className='card-title m-0'>
             {`${name}${isOptional(def) ? '' : '*'}`}
-          </h4>
+          </p>
           <Button
             color="danger"
             className={`float-right p-1${min ? ' disabled' : ''}`}

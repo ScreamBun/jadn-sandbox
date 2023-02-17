@@ -9,6 +9,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sbToastError, sbToastSuccess } from "./SBToast";
 import SBCopyToClipboard from "./SBCopyToClipboard";
 import { format } from "actions/format";
+import SBEditor from "./SBEditor";
+import { LANG_JSON } from "components/utils/constants";
+
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -194,14 +197,13 @@ const JADNSchemaLoader = (props: any) => {
         formatJSON(loadedSchema);
     }
 
-    const onSchemaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLoadedSchema(e.target.value);
+    const sbEditorOnChange = () => {
         setIsValidJADN(false);
 
         if (setDecodeSchemaTypes && setDecodeMsg) {
-            loadDecodeTypes(e.target.value);
+            loadDecodeTypes(loadedSchema);
         }
-    }
+    }    
 
     const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         validateJADN(loadedSchema);
@@ -238,32 +240,14 @@ const JADNSchemaLoader = (props: any) => {
                         </Button>
                         <Button id='formatButton' className="float-right btn-sm mr-1" color="info" onClick={onFormatClick}
                             title='Attempts to Parse and Format.'>
-                            <span className="m-1">Format JSON</span>
+                            <span className="m-1">Format JADN</span>
                         </Button>
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0" style={{ height: '40em' }}>
-                <Input
-                    id="schemaInput2"
-                    type="textarea"
-                    onChange={onSchemaChange}
-                    value={loadedSchema}
-                    className='form-control form-control-sm line-numbers'
-                    placeholder='Please select or enter a schema'
-                    style={{
-                        resize: 'none',
-                        outline: 'none',
-                        width: '100%',
-                        padding: '10px 10px 10px 30px',
-                        border: 'none',
-                        height: '100%',
-                        whiteSpace: 'pre',
-                        overflowWrap: 'normal',
-                        overflowX: 'auto'
-                    }}
-                />
-            </div>
+            <div className="card-body p-0">
+                <SBEditor data={loadedSchema} setData={setLoadedSchema} convertTo={LANG_JSON}></SBEditor>                
+            </div>          
         </div>
     )
 }
