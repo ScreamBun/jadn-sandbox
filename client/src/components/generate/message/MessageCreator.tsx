@@ -9,6 +9,7 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sbToastError } from 'components/common/SBToast'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
+import SBEditor from 'components/common/SBEditor'
 
 const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
@@ -129,11 +130,7 @@ const MessageCreator = (props: any) => {
                     </TabPane>
 
                     <TabPane tabId='message'>
-                        <JSONPretty
-                            id='message'
-                            json={generatedMessage}
-                            className='p-2'
-                        />
+                        <SBEditor data={JSON.stringify(generatedMessage, null, 2)} isReadOnly={true}></SBEditor>
                     </TabPane>
                 </TabContent>
             </div>

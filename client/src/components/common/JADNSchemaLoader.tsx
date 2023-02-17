@@ -246,7 +246,7 @@ const JADNSchemaLoader = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={loadedSchema} setData={setLoadedSchema} lang={LANG_JSON}></SBEditor>                
+                <SBEditor data={loadedSchema} setData={setLoadedSchema} convertTo={LANG_JSON}></SBEditor>                
             </div>          
         </div>
     )

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { githubLight } from '@uiw/codemirror-themes-all';
 import { langs } from '@uiw/codemirror-extensions-langs';
@@ -13,54 +13,49 @@ import { LANG_HTML, LANG_MARKDOWN, LANG_XML } from 'components/utils/constants';
 
 const SBEditor = (props: any) => {
 
-    const { 
-        data, 
-        setData, 
-        height = "40em", 
-        isReadOnly = false, 
+    const {
+        data,
+        setData,
+        height = "40em",
+        isReadOnly = false,
         convertTo,
-        onEditorChange
     } = props;
 
     let extensions = [langs.json()]
 
-    useEffect(() => {
-        if(convertTo != null){
-            switch(convertTo.toLowerCase()) {
-                case LANG_HTML:
-                    extensions = [langs.html()];
-                    break; 
-                case LANG_MARKDOWN:
-                    extensions = [langs.markdown()];
-                    break;
-                case LANG_XML:
-                    extensions = [langs.xml()];
-                    break;                              
-                default:
-                    extensions = [langs.json()];
+    if (convertTo != null) {
+        switch (convertTo.toLowerCase()) {
+            case LANG_HTML:
+                extensions = [langs.html()];
                 break;
-            }
+            case LANG_MARKDOWN:
+                extensions = [langs.markdown()];
+                break;
+            case LANG_XML:
+                extensions = [langs.xml()];
+                break;
+            default:
+                extensions = [langs.json()];
+                break;
         }
-    }, [convertTo])    
+    }
 
     const onChange = React.useCallback((value: any, viewUpdate: any) => {
         // console.log('value:', value);
         setData(value);
         // onChangeToParent();
-      }, []);
+    }, []);
 
-      return (
-
-        <CodeMirror 
-            value={data} 
+    return (
+        <CodeMirror
+            value={data}
             height={height}
-            readOnly={isReadOnly} 
+            readOnly={isReadOnly}
             theme={githubLight}
-            extensions={extensions} 
+            extensions={extensions}
             onChange={onChange}
         />
+    );
+}
 
-      );
-  }
-
-  export default SBEditor;  
+export default SBEditor;  
