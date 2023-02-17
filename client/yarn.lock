@@ -5309,6 +5309,7 @@ __metadata:
     html-webpack-plugin: ^5.5.0
     jest: ^29.3.1
     lodash: ^4.17.21
+    marked: ^4.2.12
     min-document: ^2.19.0
     mini-css-extract-plugin: ^2.7.2
     node-sass: ^8.0.0
@@ -9228,6 +9229,15 @@ __metadata:
   version: 4.3.0
   resolution: "map-obj@npm:4.3.0"
   checksum: fbc554934d1a27a1910e842bc87b177b1a556609dd803747c85ece420692380827c6ae94a95cce4407c054fa0964be3bf8226f7f2cb2e9eeee432c7c1985684e
+  languageName: node
+  linkType: hard
+
+"marked@npm:^4.2.12":
+  version: 4.2.12
+  resolution: "marked@npm:4.2.12"
+  bin:
+    marked: bin/marked.js
+  checksum: bd551cd61028ee639d4ca2ccdfcc5a6ba4227c1b143c4538f3cde27f569dcb57df8e6313560394645b418b84a7336c07ab1e438b89b6324c29d7d8cdd3102d63
   languageName: node
   linkType: hard
 

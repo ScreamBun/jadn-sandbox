@@ -7,6 +7,7 @@ import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
+import SBMarkdownPreviewer from "components/common/SBMarkdownPreviewer";
 
 const SchemaConverted = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
@@ -141,7 +142,8 @@ const SchemaConverted = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion}></SBEditor>
+                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
+                <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
             </div>
         </div>
     )
