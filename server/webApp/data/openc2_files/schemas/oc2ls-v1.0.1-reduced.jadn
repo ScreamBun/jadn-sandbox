@@ -1,0 +1,36 @@
+{
+  "info": {
+    "package": "http://oasis-open.org/openc2/oc2ls/v1.0.1",
+    "version": "0",
+    "title": "Language schema with errata",
+    "description": "OpenC2 LS version 1.0 + errata",
+    "exports": ["OpenC2-Command", "OpenC2-Response"],
+    "config": {
+      "$Sys": ":",
+      "$TypeName": "^[A-Z][-:A-Za-z0-9]{0,31}$",
+      "$FieldName": "^[a-z][-_a-z0-9]{0,31}$"
+    }
+  },
+  "types": [
+    ["OpenC2-Command", "Record", [], "", [
+      [1, "action", "Action", [], "The task or activity to be performed (i.e., the 'verb')."],
+      [2, "target", "Target", [], "The object of the Action. The Action is performed on the Target."],
+      [3, "command_id", "String", ["[0"], "An identifier of this Command."]
+    ]],
+    ["OpenC2-Response", "Map", [], "", [
+      [1, "status", "String", [], "An integer status code"],
+      [2, "status_text", "String", ["[0"], "A free-form human-readable description of the Response status"]
+    ]],
+    ["Action", "Enumerated", [], "", [
+      [1, "scan", "Systematic examination of some aspect of the entity or its environment."],
+      [2, "locate", "Find an object physically, logically, functionally, or by organization."],
+      [3, "query", "Initiate a request for information."]
+    ]],
+    ["Target", "Choice", [], "OpenC2 Target datatypes", [
+      [1, "artifact", "String", [], "An array of bytes representing a file-like object or a link to that object."],
+      [2, "command", "String", [], "A reference to a previously issued Command."]
+    ]],
+    ["Action-Targets", "MapOf", ["{1", "+Action", "*Targets"], "Map of each action supported by this actuator to the list of targets applicable to that action"],
+    ["Targets", "ArrayOf", ["*>Target", "{1", "}0", "q"], "List of JSON Pointers to Target types"]
+  ]
+}
