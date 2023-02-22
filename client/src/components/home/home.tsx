@@ -1,4 +1,4 @@
-import { faCircle, faCircleStop, faCommentAlt, faCommentSms, faCubes, faInfoCircle, faLanguage, faMessage, faMicroscope, faPalette, faPencilRuler, faShuffle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faCheckDouble, faCircle, faCircleStop, faCode, faCodeBranch, faCodeCompare, faCommentAlt, faCommentSms, faCubes, faInfoCircle, faLanguage, faMessage, faMicroscope, faPalette, faPencilRuler, faShuffle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI
@@ -73,7 +73,7 @@ const Home = () => {
             <div className='col-md'>
               <div className="card" style={{height: '18em'}}>
                 <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x' icon={faPalette} />                  
+                  <FontAwesomeIcon className='fa-3x' icon={faShuffle} />                  
                 </div>
                 <div className="card-body">
                   <h5 className="card-title">Convert</h5>
@@ -90,7 +90,7 @@ const Home = () => {
             <div className='col-md'>
               <div className="card" style={{height: '18em'}}>
                 <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x' icon={faShuffle} />                  
+                  <FontAwesomeIcon className='fa-3x' icon={faCode} />                  
                 </div>
                 <div className="card-body">
                   <h5 className="card-title">Translate</h5>
@@ -110,7 +110,7 @@ const Home = () => {
                 <div className="card-img-top text-center py-3 bg-primary">
                   {/* <i className="fa-3x fas fa-comment-alt-check"></i> */}
 
-                  <FontAwesomeIcon className='fa-3x' icon={faShuffle} /> 
+                  <FontAwesomeIcon className='fa-3x' icon={faCheckDouble} /> 
 
                 </div>
                 <div className="card-body">
@@ -127,11 +127,11 @@ const Home = () => {
             <div className='col-md'>
               <div className="card" style={{height: '18em'}}>
                 <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x' icon={faMicroscope} />                  
+                  <FontAwesomeIcon className='fa-3x' icon={faCodeBranch} />                  
                 </div>
                 <div className="card-body">
                   <h5 className="card-title">Transform</h5>
-                  <p className="card-text">Convert a JADN Schema into a different but related JADN Schema, like the transform functions listed in the API: resolve references, simplify by removing extensions, strip comments, etc.</p>
+                  <p className="card-text">Convert one or more JADN Schemas into a different but related Schema. Resolve references, simplify by removing extensions, strip comments, etc.</p>
                 </div>
                 <div className="card-body">
                   Coming soon                
