@@ -2,7 +2,7 @@ import { invertObject, objectFromTuple, safeGet } from '../../../../../utils';
 
 // Interfaces
 export type Val = [k: string, v: any];
-export type OptionChange = (v: Val, t: 'field'|'type') => void;
+export type OptionChange = (v: Val, t: 'field' | 'type') => void;
 
 // Consts
 export const TypeOptions = {
@@ -38,7 +38,7 @@ export const OptionTypes = {
   type: Object.keys(TypeOptions)
 };
 
-export const OptionIds = invertObject({...FieldOptions, ...TypeOptions});
+export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
 export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend'];
 export const IntegerOpts = ['minc', 'maxc', 'tagid', 'minv', 'maxv'];
 export const FloatOpts = ['minf', 'maxf'];
@@ -94,7 +94,7 @@ export const RequiredOptions: Record<string, Array<string>> = {
   Array: [],
   ArrayOf: ['vtype'],
   Choice: [],
-  Enumerated:[],
+  Enumerated: [],
   Map: [],
   MapOf: ['ktype', 'vtype'],
   Record: []
@@ -127,7 +127,7 @@ export const FieldOptionInputArgs = {
     description: 'Maximum cardinality'
   },
   tagid: {
-    // type: ...
+    // type: Enumerated
     description: 'Field containing an explicit tag for this Choice type'
   },
   dir: {
@@ -150,11 +150,9 @@ export const TypeOptionInputArgs = {
     description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName'
   },
   vtype: {
-    // TODO: change to select?
     description: 'Value type for ArrayOf and MapOf'
   },
   ktype: {
-    // TODO: change to select?
     description: 'Key type for MapOf'
   },
   enum: {
@@ -208,10 +206,16 @@ export const TypeOptionInputArgs = {
 };
 
 // Helper Functions
-export const opts2obj = (opts: Array<string>): Record<string, boolean|number|string> => {
-  return objectFromTuple(...opts.map<[string, boolean|number|string]|[]>(o => {
+export const opts2obj = (opts: Array<string>): Record<string, boolean | number | string> => {
+  return objectFromTuple(...opts.map<[string, boolean | number | string] | []>(o => {
     const opt = o.slice(0, 1);
-    const val = o.slice(1);
+    let val = o.slice(1);
+
+    if (/>/.test(val)) {
+      //const pointer = val.slice(0, 1);
+      val = val.slice(1);
+    }
+
     if (opt in OptionIds) {
       const optKey = OptionIds[opt];
       return [optKey, BoolOpts.includes(optKey) ? true : val];
@@ -220,11 +224,11 @@ export const opts2obj = (opts: Array<string>): Record<string, boolean|number|str
   }));
 };
 
-export const opts2arr = (opts: Record<string, boolean|number|string>): Array<string> => {
+export const opts2arr = (opts: Record<string, boolean | number | string>): Array<string> => {
   const ids = invertObject(OptionIds);
   // eslint-disable-next-line array-callback-return
   return Object.keys(opts).map(opt => {
-    let val = safeGet(opts, opt) as boolean|number|string;
+    let val = safeGet(opts, opt) as boolean | number | string;
     if (val !== null && val !== undefined) {
       if (opt === 'vtype') {
         val = val as string;

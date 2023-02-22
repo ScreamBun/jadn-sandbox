@@ -28,7 +28,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
       <div className='card'>
         <div className='card-header p-2'>
           <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
+          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
         </div>
         <div className='card-body m-0 p-0'>
           <div className='row'>

@@ -36,6 +36,12 @@ const MessageValidator = () => {
         setLoadedSchema('');
         setSelectedMsgFile('');
         setLoadedMsg('');
+        setMsgFormat('');
+        setDecodeMsg('');
+        setDecodeSchemaTypes({
+            all: [],
+            exports: []
+        });
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {

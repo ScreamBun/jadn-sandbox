@@ -1,6 +1,6 @@
 
 //ArrayOf
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +14,6 @@ import { useAppSelector } from '../../../../../../reducers';
 
 // Interface
 interface ArrayOfFieldProps {
-  arr?: any;
   def: StandardFieldArray;
   optChange: (n: string, v: any, i?: number) => void;
   parent?: string;
@@ -22,47 +21,76 @@ interface ArrayOfFieldProps {
 
 // Component
 const ArrayOfField = (props: ArrayOfFieldProps) => {
-  const { def, parent } = props;
+  const { def, parent, optChange } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   const [min, setMin] = useState(false);
   const [max, setMax] = useState(false);
   const [count, setCount] = useState(1);
-  const [opts, setOpts] = useState({});
+  const [opts, setOpts] = useState([]);
 
   var optData: Record<string, any> = {};
   const [_idx, name, type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
-  useEffect(() => {
-    const { optChange } = props;
-    optChange(msgName, Array.from(new Set(Object.values(opts))));
-  })
-
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const maxCount = hasProperty(optData, 'max') ? optData.max : 20;
+    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : 100;
     const maxBool = count < maxCount;
     setCount(maxBool ? count => count + 1 : count);
     setMax(maxBool => !maxBool);
+    setOpts(opts => [...opts, undefined]);
   }
 
   const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const minCount = hasProperty(optData, 'min') ? optData.min : 0;
+    const minCount = hasProperty(optData, 'minv') ? optData.minv : 0;
 
     const minBool = count > minCount;
     if (minBool) {
-      delete opts[Math.max.apply(Math, Object.keys(opts))];
+      setOpts(opts.slice(0, -1));
+      const tmpOpts = opts;
+      tmpOpts.pop();
+      const filteredOpts = tmpOpts.filter(data => {
+        return data != null;
+      });
+
+      if (hasProperty(optData, 'unique') && optData.unique) {
+        optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
+      } else {
+        optChange(msgName, Array.from(Object.values(filteredOpts)));
+      }
     }
 
     setCount(minBool ? count => count - 1 : count);
     setMin(minBool => !minBool);
-    setOpts(opts);
   }
 
-  const optChange = (_k: string, v: any, i: number) => {
-    setOpts(opts => ({ ...opts, [i]: v }))
+  const onChange = (_k: string, v: any, i: number) => {
+    if (Number.isNaN(v)) {
+      v = undefined;
+    }
+
+    let updatedOpts;
+    if (i < opts.length) {
+      updatedOpts = opts.map((data, index) => {
+        if (index == i) {
+          return v;
+        } else {
+          return data;
+        }
+      });
+      setOpts(updatedOpts);
+    } else {
+      setOpts(opts => [...opts, v]);
+      updatedOpts = [...opts, v];
+    }
+
+    if (hasProperty(optData, 'unique') && optData.unique) {
+      optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+    } else {
+      optChange(msgName, Array.from(Object.values(updatedOpts)));
+    }
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -79,7 +107,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const fields: any[] = [];
   for (let i = 0; i < count; ++i) {
-    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={optChange} idx={i} />);
+    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} />);
   }
 
   return (
@@ -103,10 +131,10 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
           >
             <FontAwesomeIcon icon={faPlusSquare} size="lg" />
           </Button>
-          {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
+          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
         </div>
 
-        <div className='card-body mx-3'>
+        <div className='card-body mx-2'>
           {fields}
         </div>
       </div>

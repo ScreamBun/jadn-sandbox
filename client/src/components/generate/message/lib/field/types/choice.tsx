@@ -42,7 +42,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
       <div className='card'>
         <div className='card-header p-2'>
           <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {comment && <small className='card-subtitle text-muted'>{comment}</small>}
+          {comment && <small className='card-subtitle form-text text-muted'>{comment}</small>}
         </div>
         <div className='card-body m-0 p-0'>
           <div className='row'>
@@ -54,10 +54,8 @@ const ChoiceField = (props: ChoiceFieldProps) => {
             </div>
           </div>
           <div className='row'>
-            <div className="col mb-2">
-              {
-                selectedOpts
-              }
+            <div className="col">
+              { selectedOpts }
             </div>
           </div>
         </div>

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import JSONPretty from 'react-json-pretty'
 import { useSelector } from 'react-redux'
 import { TabContent, TabPane, Button, FormText } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib'
@@ -9,6 +8,7 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sbToastError } from 'components/common/SBToast'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
+import SBEditor from 'components/common/SBEditor'
 
 const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
@@ -19,17 +19,15 @@ const MessageCreator = (props: any) => {
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType) : [];
 
-    if (!exportRecords) {
-        sbToastError(`No Message Type Found. Please define exports in info section of schema.`);
-    }
-
     const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCommandType(e.target.value);
         setGeneratedMessage({});
     }
 
     const optChange = (k: string, v: any) => {
-        //console.log(k, v)
+        console.log(k, v)
+        //console.log(typeof v)
+
         if (k.length > 1 && generatedMessage[k[0]] && !generatedMessage[k[0]][k[1]]) {
             delMultiKey(generatedMessage, k[0].toString());
         }
@@ -73,7 +71,7 @@ const MessageCreator = (props: any) => {
         if (generatedMessage != '{}') {
             try {
                 const data = JSON.stringify(generatedMessage, null, 2);
-                const filename = `schema.json`;
+                const filename = `message.json`;
 
                 const blob = new Blob([data], { type: "application/json" });
                 const elem = document.createElement('a');
@@ -98,14 +96,14 @@ const MessageCreator = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
-                        <select id='command-list' name='command-list' className='form-control form-control-sm' disabled={exportRecords ? false : true} onChange={handleSelection}
-                            title="Select message type to create based on valid JADN Schema">
+                        <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} disabled={exportRecords ? false : true} onChange={handleSelection}
+                            title={exportRecords ? "Select message type to create based on valid JADN Schema" : "No Message Type Found. Please define exports in info section of schema."}>
                             <option value=''>Message Type</option>
                             {exportRecords ? exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>) : []}
                         </select>
                     </div>
                     <div className='col'>
-                        <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' />
+                        <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' shouldStringify={true} />
                         <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
                             <FontAwesomeIcon icon={faFileDownload} />
                         </Button>
@@ -126,11 +124,7 @@ const MessageCreator = (props: any) => {
                     </TabPane>
 
                     <TabPane tabId='message'>
-                        <JSONPretty
-                            id='message'
-                            json={generatedMessage}
-                            className='p-2'
-                        />
+                        <SBEditor data={JSON.stringify(generatedMessage, null, 2)} isReadOnly={true}></SBEditor>
                     </TabPane>
                 </TabContent>
             </div>

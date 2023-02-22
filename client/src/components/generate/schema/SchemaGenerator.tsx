@@ -24,6 +24,7 @@ const SchemaGenerator = () => {
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setSelectedSchemaFile('');
         setGeneratedSchema({
             types: []
         });

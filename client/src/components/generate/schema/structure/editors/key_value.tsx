@@ -9,11 +9,11 @@ import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 // Interface
 interface KeyValueEditorProps {
   name: string;
-  value: boolean | number | string;
   description?: string;
-  options?: Array<string>; // only for type='select'
   placeholder?: string;
+  value: boolean | number | string;
   type?: InputType;
+  options?: Array<string>; // only for type='select'
   change: (_v: boolean | number | string) => void;
   remove: (_id: string | number) => void;
 }
@@ -42,17 +42,6 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
     inputArgs.children = options.map(opt => <option key={opt} value={opt} >{opt}</option>);
   }
 
-  let removeBtn: JSX.Element | undefined;
-  if (remove) {
-    removeBtn = (
-      <div className="input-group-append">
-        <Button color='danger' onClick={() => remove(name.toLowerCase())}>
-          <FontAwesomeIcon icon={faMinusSquare} />
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <FormGroup row className="border m-1 p-1">
       <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}</strong></Label>
@@ -64,7 +53,12 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
           placeholder={placeholder}
           {...inputArgs}
         />
-        {removeBtn}
+        {remove ?
+          <div className="input-group-append">
+            <Button color='danger' onClick={() => remove(name.toLowerCase())}>
+              <FontAwesomeIcon icon={faMinusSquare} />
+            </Button>
+          </div> : ''}
       </div>
       {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
     </FormGroup>

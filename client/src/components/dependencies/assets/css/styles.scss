@@ -151,9 +151,7 @@ legend {
 // Extra large devices (large desktops, 1200px and up)
 @media (min-width: 1200px) {}
 
-.line-numbers {
-    background: url(http://i.imgur.com/2cOaJ.png);
-    background-attachment: local;
-    background-repeat: no-repeat;
-    border-color:#ccc;
+.cm-editor * {
+      font-family: Arial, monospace;
+      font-size: 14px;
 }

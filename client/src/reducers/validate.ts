@@ -37,7 +37,6 @@ export default (state = initialState, action: validate.ValidateActions) => {
 			};
 
 		case validate.VALIDATE_FAILURE:
-			console.log(action.payload);
 			return {
 				...state,
 				error: action.payload.valid_msg || action.payload.error || 'ERROR'

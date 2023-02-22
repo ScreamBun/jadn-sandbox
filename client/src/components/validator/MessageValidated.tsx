@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
 import {
@@ -8,6 +8,7 @@ import { loadFile } from "actions/util";
 import { getMsgFiles } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
+import SBEditor from "components/common/SBEditor";
 
 const MessageValidated = (props: any) => {
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, loadedSchema } = props;
@@ -17,15 +18,16 @@ const MessageValidated = (props: any) => {
     const decodeAll = decodeSchemaTypes.all.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (selectedFile == "" || selectedFile == "file") {
+    const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedFile(e.target.value);
+        if (e.target.value == "" || e.target.value == "file") {
             setLoadedMsg('');
             setDecodeMsg('');
             setMsgFormat('');
         } else {
-            const fmt = selectedFile.split('.')[1];
+            const fmt = e.target.value.split('.')[1];
             try {
-                dispatch(loadFile('messages', selectedFile))
+                dispatch(loadFile('messages', e.target.value))
                     .then((loadFileVal) => {
                         setMsgFormat(fmt);
                         const data = loadFileVal.payload.data;
@@ -41,17 +43,16 @@ const MessageValidated = (props: any) => {
                 setLoadedMsg('');
             }
         }
-    }, [selectedFile]);
+    };
 
-    const onMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onMsgChange = () => {
         setSelectedFile('empty');
         setDecodeMsg('');
         setMsgFormat('');
-        setLoadedMsg(e.target.value);
-
+        // setLoadedMsg(e.target.value);
     }
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0];
             const prefix = file.name.split('.')[0];
@@ -89,7 +90,7 @@ const MessageValidated = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
-                        <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={(e) => setSelectedFile(e.target.value)} overflow-y="scroll">
+                        <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect} overflow-y="scroll">
                             <option value="">Message</option>
                             <optgroup label="Testers">
                                 {Object.entries(msgOpts).map(([n, t]) => <option key={n} value={n} data-decode={t} >{n}</option>)}
@@ -98,7 +99,7 @@ const MessageValidated = (props: any) => {
                                 <option value="file">File...</option>
                             </optgroup>
                         </select>
-                        <Input type="file" id="message-file" name="message-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".json,.jadn,.xml,.cbor" onChange={handleFileChange} />
+                        <Input type="file" id="message-file" name="message-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".json,.jadn,.xml,.cbor" onChange={onFileChange} />
                     </div>
 
                     <div className={`col-md-3 ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
@@ -133,27 +134,8 @@ const MessageValidated = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0" style={{ height: '40em' }}>
-                <Input
-                    id="messageInput"
-                    type="textarea"
-                    onChange={onMsgChange}
-                    value={loadedMsg}
-                    className='form-control form-control-sm'
-                    placeholder='Paste or load message here to be validated'
-                    style={{
-                        resize: 'none',
-                        outline: 'none',
-                        width: '100%',
-                        padding: '10px',
-                        border: 'none',
-                        height: '100%',
-                        whiteSpace: 'pre',
-                        overflowWrap: 'normal',
-                        overflowY: 'auto'
-                    }}
-                    required
-                />
+            <div className="card-body p-0">
+                <SBEditor data={loadedMsg} setData={setLoadedMsg} convertTo={msgFormat} onEditorChange={onMsgChange}></SBEditor>
             </div>
         </div>
     )
