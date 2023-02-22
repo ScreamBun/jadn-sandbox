@@ -1,4 +1,4 @@
-import { faCubes, faInfoCircle, faMicroscope, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faCircleStop, faCommentAlt, faCommentSms, faCubes, faInfoCircle, faLanguage, faMessage, faMicroscope, faPalette, faPencilRuler, faShuffle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI
@@ -53,73 +53,107 @@ const Home = () => {
           </p>
           <hr />
           <br />
-          <div className='row'>
-            <div className='col-md-3'>
 
-              <div className="card">
-                <div className="card-body text-center bg-primary p-2 text-white">
-                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faCubes} /></p>
-                  <h5 className="card-title m-0">Generation</h5>
+          <div className="row">
+            <div className='col-md'>
+              <div className="card" style={{height: '18em'}}>
+                <div className="card-img-top text-center py-3 bg-primary">
+                  <FontAwesomeIcon className='fa-3x' icon={faPencilRuler} />                  
                 </div>
-                <ul className="list-group list-group-flush">
-                  <Link className="list-group-item" to={NAV_GENERATE_MESSAGE}>Messages</Link>
-                  <Link className="list-group-item" to={NAV_GENERATE_SCHEMA}>Schemas</Link>
-                </ul>
-              </div>
-
-            </div>
-            <div className='col-md-3'>
-
-              <div className="card">
-                <div className="card-body text-center bg-primary p-2 text-white">
-                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faShuffle} /></p>
-                  <h5 className="card-title m-0">Schema Conversion</h5>
+                <div className="card-body">
+                  <h5 className="card-title">Creation</h5>
+                  <p className="card-text">Create an OpenC2 compliant schema or message using the Editor or based on pre-generated examples.</p>
                 </div>
-                <ul className="list-group list-group-flush">
-                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>GraphViz</Link>
-                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>HTML</Link>
-                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JADN</Link>
-                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JIDL</Link>
-                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>JSON</Link>
-                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>MarkDown</Link>
-                  <Link className="list-group-item" to={NAV_CONVERT_SCHEMA}>Relax (XML)</Link>
-                </ul>
+                <div className="card-body">
+                  <Link className="card-link" to={NAV_GENERATE_SCHEMA}>Schemas</Link>
+                  <Link className="card-link" to={NAV_GENERATE_MESSAGE}>Messages</Link>
+                </div>                
               </div>
-
             </div>
-            <div className='col-md-3'>
-
-              <div className="card">
-                <div className="card-body text-center bg-primary p-2 text-white">
-                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faMicroscope} /></p>
-                  <h5 className="card-title m-0">Message Validation</h5>
+            <div className='col-md'>
+              <div className="card" style={{height: '18em'}}>
+                <div className="card-img-top text-center py-3 bg-primary">
+                  <FontAwesomeIcon className='fa-3x' icon={faPalette} />                  
                 </div>
-                <ul className="list-group list-group-flush">
-                  <Link className="list-group-item" to={NAV_VALIDATE_MESSAGE}>CBOR</Link>
-                  <Link className="list-group-item" to={NAV_VALIDATE_MESSAGE}>JSON</Link>
-                  <Link className="list-group-item" to={NAV_VALIDATE_MESSAGE}>Relax (XML)</Link>
-                </ul>
-              </div>
-
-            </div>
-            <div className='col-md-3'>
-
-              <div className="card">
-                <div className="card-body text-center bg-primary tp-2 text-white">
-                  <p className="card-text"><FontAwesomeIcon className='fa-3x' icon={faInfoCircle} /></p>
-                  <h5 className="card-title m-0">Information</h5>
+                <div className="card-body">
+                  <h5 className="card-title">Convert</h5>
+                  <p className="card-text">Convert a JADN Schema between JADN formats (jadn, md, jidl, html, dot, plantuml, etc).  Input=JADN Schema, Output= the same JADN Schema in a different representation.</p>
                 </div>
-                <ul className="list-group list-group-flush">
-                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SRC} target='_blank' rel='noreferrer'>JADN Sandbox Source Code</a></li>
-                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_PYPI} target='_blank' rel='noreferrer'>JADN Python Package</a></li>
-                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SPEC} target='_blank' rel='noreferrer'>JADN Specification Doc</a></li>
-                  <li className="list-group-item"><a href={NAV_EXTERNAL_OASIS_OPEN} target='_blank' rel='noreferrer'>OASIS Open</a></li>
-                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2} target='_blank' rel='noreferrer'>OpenC2</a></li>
-                </ul>
+                <div className="card-body">
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA}>GraphViz</Link>
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA}>HTML</Link>
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA}>JIDL</Link>
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA}>MarkDown</Link>
+                </div>                  
               </div>
-
             </div>
+            <div className='col-md'>
+              <div className="card" style={{height: '18em'}}>
+                <div className="card-img-top text-center py-3 bg-primary">
+                  <FontAwesomeIcon className='fa-3x' icon={faShuffle} />                  
+                </div>
+                <div className="card-body">
+                  <h5 className="card-title">Translate</h5>
+                  <p className="card-text">Convert a JADN Schema to a schema for other data formats. Input=JADN Schema, Output=JSON Schema, XSD, etc.</p>
+                </div>
+                <div className="card-body">
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA}>JSON</Link>
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA}>Relax (XML)</Link>
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA}>XSD (Coming Soon)</Link>
+                </div>                 
+              </div>
+            </div>                          
           </div>
+          <div className="row">
+            <div className='col-md'>
+              <div className="card" style={{height: '18em'}}>
+                <div className="card-img-top text-center py-3 bg-primary">
+                  {/* <i className="fa-3x fas fa-comment-alt-check"></i> */}
+
+                  <FontAwesomeIcon className='fa-3x' icon={faShuffle} /> 
+
+                </div>
+                <div className="card-body">
+                  <h5 className="card-title">Codec</h5>
+                  <p className="card-text">Validate data (messages) against a JADN Schema and convert them from one data format to another.</p>
+                </div>
+                <div className="card-body">
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>CBOR</Link>
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>JSON</Link>
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>Relax (XML)</Link>                  
+                </div>                 
+              </div>
+            </div> 
+            <div className='col-md'>
+              <div className="card" style={{height: '18em'}}>
+                <div className="card-img-top text-center py-3 bg-primary">
+                  <FontAwesomeIcon className='fa-3x' icon={faMicroscope} />                  
+                </div>
+                <div className="card-body">
+                  <h5 className="card-title">Transform</h5>
+                  <p className="card-text">Convert a JADN Schema into a different but related JADN Schema, like the transform functions listed in the API: resolve references, simplify by removing extensions, strip comments, etc.</p>
+                </div>
+                <div className="card-body">
+                  Coming soon                
+                </div>                 
+              </div>
+            </div>
+            <div className='col-md'>
+              <div className="card" style={{height: '18em'}}>
+                <div className="card-img-top text-center py-3 bg-primary">
+                  <FontAwesomeIcon className='fa-3x' icon={faMicroscope} />                  
+                </div>
+                <div className="card-body">
+                  <h5 className="card-title">Generate</h5>
+                  <p className="card-text">Example message generation based off of a schema.</p>
+                </div>
+                <div className="card-body">
+                  Coming soon                
+                </div>                 
+              </div>
+            </div>                    
+          </div>
+
         </div>
       </div>
     </div>
