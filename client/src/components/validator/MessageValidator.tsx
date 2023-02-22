@@ -26,6 +26,7 @@ const MessageValidator = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Validate ';
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+
     useEffect(() => {
         dispatch(info());
     }, [dispatch])

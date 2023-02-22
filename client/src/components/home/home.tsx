@@ -113,9 +113,9 @@ const Home = () => {
                   <p className="card-text">Validate data (messages) against a JADN Schema and convert them from one data format to another.</p>
                 </div>
                 <div className="card-body">
-                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>CBOR</Link>
-                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>JSON</Link>
-                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>Relax (XML)</Link>                  
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ formatType: "cbor" }}>CBOR</Link>
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ formatType: "json" }}>JSON</Link>
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ formatType: "xml" }}>Relax (XML)</Link>                  
                 </div>                 
               </div>
             </div> 

@@ -61,7 +61,7 @@ const AppLayout = () => {
                 <DropdownItem tag={Link} to={NAV_GENERATE_MESSAGE} onClick={onNavClick} active={navActive == 'Generate Message'}>
                   Generate Message
                 </DropdownItem>
-                <DropdownItem tag={Link} to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} active={navActive == 'Validate Message'}>
+                <DropdownItem tag={Link} to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} active={navActive == 'Validate Message'} state={{ formatType: "" }}>
                   Validate Message
                 </DropdownItem>
               </DropdownMenu>
