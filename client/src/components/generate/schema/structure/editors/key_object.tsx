@@ -74,7 +74,7 @@ const KeyObjectEditor = (props: KeyObjectEditorProps) => {
         className="form-control"
         data-index={i}
         data-type="key"
-        placeholder={placeholder}
+        placeholder={'NSID'}
         value={obj.key}
         onChange={onChange}
       />
