@@ -50,13 +50,16 @@ class Convert(Resource):
                 if conv_fmt == "html":
                     kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
                 
-
                 try:
 
                     if conv_fmt == "json":
                         data = request_json["schema"]
                         schema_checked = jadn.check(data) 
                         conv = jadn.translate.json_schema_dumps(schema_checked)
+                    elif conv_fmt == "jadn":
+                        data = request_json["schema"]
+                        schema_checked = jadn.check(data) 
+                        conv = dumps(schema_checked, **kwargs)
                     else:
                         conv = dumps(schema, **kwargs)
                         

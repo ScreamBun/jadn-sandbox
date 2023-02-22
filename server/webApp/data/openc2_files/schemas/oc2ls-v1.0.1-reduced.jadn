@@ -30,7 +30,7 @@
       [1, "artifact", "String", [], "An array of bytes representing a file-like object or a link to that object."],
       [2, "command", "String", [], "A reference to a previously issued Command."]
     ]],
-    ["Action-Targets", "MapOf", ["{1", "+Action", "*Targets"], "Map of each action supported by this actuator to the list of targets applicable to that action"],
-    ["Targets", "ArrayOf", ["*>Target", "{1", "}0", "q"], "List of JSON Pointers to Target types"]
+    ["Action-Targets", "MapOf", ["{0", "+Action", "*Targets"], "Map of each action supported by this actuator to the list of targets applicable to that action"],
+    ["Targets", "ArrayOf", ["*>Target", "{0", "}0", "q"], "List of JSON Pointers to Target types"]
   ]
 }
