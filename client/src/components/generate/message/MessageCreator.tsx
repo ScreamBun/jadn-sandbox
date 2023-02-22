@@ -26,7 +26,7 @@ const MessageCreator = (props: any) => {
 
     const optChange = (k: string, v: any) => {
         console.log(k, v)
-        console.log(typeof v)
+        //console.log(typeof v)
 
         if (k.length > 1 && generatedMessage[k[0]] && !generatedMessage[k[0]][k[1]]) {
             delMultiKey(generatedMessage, k[0].toString());

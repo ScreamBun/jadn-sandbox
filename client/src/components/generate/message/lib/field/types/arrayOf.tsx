@@ -14,7 +14,6 @@ import { useAppSelector } from '../../../../../../reducers';
 
 // Interface
 interface ArrayOfFieldProps {
-  arr?: any;
   def: StandardFieldArray;
   optChange: (n: string, v: any, i?: number) => void;
   parent?: string;
@@ -36,7 +35,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const maxCount = hasProperty(optData, 'max') ? optData.max : 20;
+    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : 100;
     const maxBool = count < maxCount;
     setCount(maxBool ? count => count + 1 : count);
     setMax(maxBool => !maxBool);
@@ -45,7 +44,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const minCount = hasProperty(optData, 'min') ? optData.min : 0;
+    const minCount = hasProperty(optData, 'minv') ? optData.minv : 0;
 
     const minBool = count > minCount;
     if (minBool) {
@@ -66,8 +65,10 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     if (Number.isNaN(v)) {
       v = undefined;
     }
+
+    let updatedOpts;
     if (i < opts.length) {
-      const updatedOpts = opts.map((data, index) => {
+      updatedOpts = opts.map((data, index) => {
         if (index == i) {
           return v;
         } else {
@@ -77,13 +78,10 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       setOpts(updatedOpts);
     } else {
       setOpts(opts => [...opts, v]);
+      updatedOpts = [...opts, v];
     }
-    const tmpOpts = opts;
-    tmpOpts[i] = v;
-    const filteredOpts = tmpOpts.filter(data => {
-      return data != null;
-    });
-    optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
+
+    optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -124,10 +122,10 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
           >
             <FontAwesomeIcon icon={faPlusSquare} size="lg" />
           </Button>
-          {comment ? <small className='card-subtitle text-muted'>{comment}</small> : ''}
+          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
         </div>
 
-        <div className='card-body mx-3'>
+        <div className='card-body mx-2'>
           {fields}
         </div>
       </div>

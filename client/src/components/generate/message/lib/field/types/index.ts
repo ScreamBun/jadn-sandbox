@@ -5,13 +5,14 @@ import RecordField from './record';
 import MapField from './map';
 import ArrayOfField from './arrayOf';
 import ArrayField from './array';
+import MapOfField from './mapOf';
 
 export {
   // Primitive Field
   BasicField,
   // Structure Field
   ArrayOfField,
-  // MapOfField,
+  MapOfField,
   ArrayField,
   ChoiceField,
   EnumeratedField,

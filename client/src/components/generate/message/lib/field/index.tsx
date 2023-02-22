@@ -1,8 +1,6 @@
 import React from 'react';
-import { FormText } from 'reactstrap';
-
 import {
-  BasicField, EnumeratedField, ChoiceField, RecordField, MapField, ArrayOfField, ArrayField
+  BasicField, EnumeratedField, ChoiceField, RecordField, MapField, ArrayOfField, ArrayField, MapOfField
 } from './types';
 import {
   SchemaJADN, StandardFieldArray
@@ -42,10 +40,7 @@ const Field = (props: FieldProps) => {
     case 'Map':
       return <MapField {...args} />;
     case 'MapOf':
-      //TODO: FIX
-      const [arr] = def;
-      // eslint-disable-next-line react/jsx-one-expression-per-line
-      return <FormText>MapOf: {arr}</FormText>;
+      return <MapOfField {...args} />;
     case 'ArrayOf':
       return <ArrayOfField {...args} />;
     case 'Array':
