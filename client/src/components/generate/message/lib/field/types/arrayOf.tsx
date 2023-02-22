@@ -54,7 +54,12 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       const filteredOpts = tmpOpts.filter(data => {
         return data != null;
       });
-      optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
+
+      if (hasProperty(optData, 'unique') && optData.unique) {
+        optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
+      } else {
+        optChange(msgName, Array.from(Object.values(filteredOpts)));
+      }
     }
 
     setCount(minBool ? count => count - 1 : count);
@@ -81,7 +86,11 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       updatedOpts = [...opts, v];
     }
 
-    optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+    if (hasProperty(optData, 'unique') && optData.unique) {
+      optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+    } else {
+      optChange(msgName, Array.from(Object.values(updatedOpts)));
+    }
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
