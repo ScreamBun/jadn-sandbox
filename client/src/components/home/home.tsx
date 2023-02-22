@@ -1,7 +1,7 @@
-import { faCheckCircle, faCheckDouble, faCircle, faCircleStop, faCode, faCodeBranch, faCodeCompare, faCommentAlt, faCommentSms, faCubes, faInfoCircle, faLanguage, faMessage, faMicroscope, faPalette, faPencilRuler, faShuffle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faCheckDouble, faCircle, faCircleStop, faCode, faCodeBranch, faCodeCompare, faCommentAlt, faCommentSms, faCubes, faEnvelopeCircleCheck, faFileCirclePlus, faInfoCircle, faLanguage, faMessage, faMicroscope, faPalette, faPencilRuler, faShuffle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI
+  NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_GENERATE_SCHEMA, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OASIS_OPEN, NAV_EXTERNAL_OPENC2_JADN_PYPI, NAV_HOME
 } from 'components/utils/constants';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -52,15 +52,13 @@ const Home = () => {
             schemas used to validate specific data formats.
           </p>
           <hr />
-          <br />
-
           <div className="row">
             <div className='col-md'>
-              <div className="card" style={{height: '18em'}}>
+              <div className="card">
                 <div className="card-img-top text-center py-3 bg-primary">
                   <FontAwesomeIcon className='fa-3x' icon={faPencilRuler} />                  
                 </div>
-                <div className="card-body">
+                <div className="card-body" style={{height: '9em'}}>
                   <h5 className="card-title">Creation</h5>
                   <p className="card-text">Create an OpenC2 compliant schema or message using the Editor or based on pre-generated examples.</p>
                 </div>
@@ -71,11 +69,11 @@ const Home = () => {
               </div>
             </div>
             <div className='col-md'>
-              <div className="card" style={{height: '18em'}}>
+              <div className="card">
                 <div className="card-img-top text-center py-3 bg-primary">
                   <FontAwesomeIcon className='fa-3x' icon={faShuffle} />                  
                 </div>
-                <div className="card-body">
+                <div className="card-body" style={{height: '9em'}}>
                   <h5 className="card-title">Convert</h5>
                   <p className="card-text">Convert a JADN Schema between JADN formats (jadn, md, jidl, html, dot, plantuml, etc).  Input=JADN Schema, Output= the same JADN Schema in a different representation.</p>
                 </div>
@@ -88,11 +86,11 @@ const Home = () => {
               </div>
             </div>
             <div className='col-md'>
-              <div className="card" style={{height: '18em'}}>
+              <div className="card">
                 <div className="card-img-top text-center py-3 bg-primary">
                   <FontAwesomeIcon className='fa-3x' icon={faCode} />                  
                 </div>
-                <div className="card-body">
+                <div className="card-body" style={{height: '9em'}}>
                   <h5 className="card-title">Translate</h5>
                   <p className="card-text">Convert a JADN Schema to a schema for other data formats. Input=JADN Schema, Output=JSON Schema, XSD, etc.</p>
                 </div>
@@ -106,14 +104,11 @@ const Home = () => {
           </div>
           <div className="row">
             <div className='col-md'>
-              <div className="card" style={{height: '18em'}}>
+              <div className="card">
                 <div className="card-img-top text-center py-3 bg-primary">
-                  {/* <i className="fa-3x fas fa-comment-alt-check"></i> */}
-
-                  <FontAwesomeIcon className='fa-3x' icon={faCheckDouble} /> 
-
+                  <FontAwesomeIcon className='fa-3x' icon={faEnvelopeCircleCheck} /> 
                 </div>
-                <div className="card-body">
+                <div className="card-body" style={{height: '9em'}}>
                   <h5 className="card-title">Codec</h5>
                   <p className="card-text">Validate data (messages) against a JADN Schema and convert them from one data format to another.</p>
                 </div>
@@ -125,30 +120,30 @@ const Home = () => {
               </div>
             </div> 
             <div className='col-md'>
-              <div className="card" style={{height: '18em'}}>
+              <div className="card">
                 <div className="card-img-top text-center py-3 bg-primary">
                   <FontAwesomeIcon className='fa-3x' icon={faCodeBranch} />                  
                 </div>
-                <div className="card-body">
+                <div className="card-body" style={{height: '9em'}}>
                   <h5 className="card-title">Transform</h5>
                   <p className="card-text">Convert one or more JADN Schemas into a different but related Schema. Resolve references, simplify by removing extensions, strip comments, etc.</p>
                 </div>
                 <div className="card-body">
-                  Coming soon                
+                  <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>         
                 </div>                 
               </div>
             </div>
             <div className='col-md'>
-              <div className="card" style={{height: '18em'}}>
+              <div className="card">
                 <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x' icon={faMicroscope} />                  
+                  <FontAwesomeIcon className='fa-3x' icon={faFileCirclePlus} />                  
                 </div>
-                <div className="card-body">
+                <div className="card-body" style={{height: '9em'}}>
                   <h5 className="card-title">Generate</h5>
                   <p className="card-text">Example message generation based off of a schema.</p>
                 </div>
                 <div className="card-body">
-                  Coming soon                
+                  <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>             
                 </div>                 
               </div>
             </div>                    
