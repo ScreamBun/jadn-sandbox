@@ -9,6 +9,7 @@ import { MessageGenerator, SchemaGenerator } from './components/generate/';
 import SchemaConverter from './components/converter/SchemaConverter'
 import MessageValidator from './components/validator/MessageValidator';
 import SchemaConformance from 'components/conformance/SchemaConformance';
+import About from 'components/about/about';
 
 
 export const App = () => {
@@ -25,6 +26,7 @@ export const App = () => {
             <Route path="generate-message" element={<MessageGenerator />} />
             <Route path="generate-schema" element={<SchemaGenerator />} />
             <Route path="schema-conformance" element={<SchemaConformance />} />
+            <Route path="about" element={<About />} />
             <Route path="*" element={<Home />} />
           </Route>
         </Routes>

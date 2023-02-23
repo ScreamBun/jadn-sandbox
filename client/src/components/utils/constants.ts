@@ -11,6 +11,7 @@ export const NAV_CONVERT_SCHEMA = '/convert-schema';
 export const NAV_GENERATE_MESSAGE= '/generate-message';
 export const NAV_GENERATE_SCHEMA = '/generate-schema';
 export const NAV_SCHEMA_CONFORMANCE = '/schema-conformance';
+export const NAV_ABOUT = '/about';
 
 export const NAV_EXTERNAL_OPENC2 = 'https://openc2.org/';
 export const NAV_EXTERNAL_OASIS_OPEN= 'https://www.oasis-open.org/';
