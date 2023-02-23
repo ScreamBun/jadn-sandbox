@@ -5,8 +5,8 @@ import {
 import {
   OptionTypes, Val, opts2arr, opts2obj
 } from './consts';
-import TypeOptionsEditor from './type_opts';
-import FieldOptionsEditor from './field_opts';
+import TypeOptionsEditor from './TypeOptionsEditor';
+import FieldOptionsEditor from './FieldOptionsEditor';
 import { objectFromTuple } from '../../../../../utils';
 
 // Interface

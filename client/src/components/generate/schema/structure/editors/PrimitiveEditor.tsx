@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from './consts';
-import OptionsModal from './options';
+import OptionsModal from './options/OptionsModal';
 import { zip } from '../../../../utils';
 
 // Interface

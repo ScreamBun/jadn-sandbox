@@ -1,6 +1,6 @@
 import React from 'react';
-import Field from '..';
-import { isOptional } from '../..';
+import Field from '../Field';
+import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 

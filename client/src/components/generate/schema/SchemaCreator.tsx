@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem, Input } from 'reactstrap'
 import { Draggable, Droppable } from 'react-drag-and-drop';
-import { Info, Types } from './structure';
+import { Info, Types } from './structure/structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
 import { faFileDownload, faGripLines } from '@fortawesome/free-solid-svg-icons';

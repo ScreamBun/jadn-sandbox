@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   BasicField, EnumeratedField, ChoiceField, RecordField, MapField, ArrayOfField, ArrayField, MapOfField
-} from './types';
+} from './types/Types';
 import {
   SchemaJADN, StandardFieldArray
 } from '../../../schema/interface';

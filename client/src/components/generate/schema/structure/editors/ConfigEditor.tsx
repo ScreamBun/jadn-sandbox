@@ -3,7 +3,7 @@ import { Button, FormText } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { ConfigOptions } from './consts';
-import KeyValueEditor from './key_value';
+import KeyValueEditor from './KeyValueEditor';
 
 // Interfaces
 interface ConfigEditorProps {

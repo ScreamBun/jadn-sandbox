@@ -5,8 +5,8 @@ import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
-import Field from '..';
-import { isOptional } from '../..';
+import Field from '../Field';
+import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
@@ -19,7 +19,7 @@ interface MapOfFieldProps {
     parent?: string;
 }
 
-// Component
+// MapOf Field Component
 const MapOfField = (props: MapOfFieldProps) => {
     const { def, parent, optChange } = props;
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
@@ -28,6 +28,8 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [max, setMax] = useState(false);
     const [count, setCount] = useState(1);
     const [opts, setOpts] = useState([]); //array of objects
+    const [isValid, setisValid] = useState('');
+
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, _args, comment] = def;
@@ -37,6 +39,9 @@ const MapOfField = (props: MapOfFieldProps) => {
         e.preventDefault();
         const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : 20;
         const maxBool = count < maxCount;
+        if (!maxBool) {
+            setisValid('Error: Maximum of ' + maxCount)
+        }
         setCount(maxBool ? count => count + 1 : count);
         setMax(maxBool => !maxBool);
         setOpts([...opts, {}]);
@@ -60,6 +65,8 @@ const MapOfField = (props: MapOfFieldProps) => {
                 return data != null;
             });
             optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
+        } else {
+            setisValid('Error: Minimum of ' + minCount)
         }
 
         setCount(minBool ? count => count - 1 : count);
@@ -148,6 +155,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                         <FontAwesomeIcon icon={faPlusSquare} size="lg" />
                     </Button>
                     {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                    <div><small className='form-text' style={{ color: 'red' }}> {isValid}</small></div>
                 </div>
 
                 <div className='card-body mx-2'>

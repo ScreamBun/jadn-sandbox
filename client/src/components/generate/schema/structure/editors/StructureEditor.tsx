@@ -7,8 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faPlusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
-import OptionsModal from './options';
-import FieldEditor from './field';
+import OptionsModal from './options/OptionsModal';
+import FieldEditor from './FieldEditor';
 import {
   EnumeratedFieldArray, FieldArray, StandardFieldArray, TypeArray
 } from '../../interface';

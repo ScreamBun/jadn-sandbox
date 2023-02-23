@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from 'components/home/home';
 import AppLayout from './components/static/appLayout';
 
-import { MessageGenerator, SchemaGenerator } from './components/generate/';
+import { MessageGenerator, SchemaGenerator } from './components/generate/generators';
 import SchemaConverter from './components/converter/SchemaConverter'
 import MessageValidator from './components/validator/MessageValidator';
 import SchemaConformance from 'components/conformance/SchemaConformance';

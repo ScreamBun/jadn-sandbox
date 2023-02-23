@@ -4,8 +4,8 @@ import { Button, Input } from 'reactstrap';
 import dayjs from 'dayjs'
 import { v4 as uuid4 } from 'uuid';
 
-import Field from '..';
-import { isOptional } from '../..';
+import Field from '../Field';
+import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { opts2obj } from 'components/generate/schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
@@ -124,6 +124,7 @@ const BasicField = (props: BasicFieldProps) => {
               onChange={e => { setValue(e.target.value); validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
             />
           </div>
+          {err}
         </div>
       </div>
     );
@@ -145,6 +146,7 @@ const BasicField = (props: BasicFieldProps) => {
               onChange={e => { validate(dayjs(e.target.value).valueOf()); optChange(msgName.join('.'), dayjs(e.target.value).valueOf(), arr); }}
             />
           </div>
+          {err}
         </div>
       </div>
     );
@@ -164,6 +166,7 @@ const BasicField = (props: BasicFieldProps) => {
               onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
             />
           </div>
+          {err}
         </div>
       </div>
     );

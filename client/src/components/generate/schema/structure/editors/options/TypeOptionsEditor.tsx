@@ -1,6 +1,6 @@
 import React from 'react';
 import { OptionChange, TypeOptionInputArgs, ValidOptions } from './consts';
-import KeyValueEditor from '../key_value';
+import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
 
 // Interfaces

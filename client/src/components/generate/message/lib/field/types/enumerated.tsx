@@ -1,5 +1,5 @@
 import React from 'react';
-import { isOptional } from '../..';
+import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 

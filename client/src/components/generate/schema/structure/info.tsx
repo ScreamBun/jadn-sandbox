@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ConfigObjectEditor, KeyArrayEditor, KeyObjectEditor, KeyValueEditor
-} from './editors';
+} from './editors/editors';
 import { InfoDef } from './interfaces';
 
 interface EditorProps {

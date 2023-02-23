@@ -8,7 +8,7 @@ import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {
   FieldObject, EnumeratedFieldObject, EnumeratedFieldKeys, StandardFieldKeys, StandardFieldObject
 } from './consts';
-import OptionsModal from './options';
+import OptionsModal from './options/OptionsModal';
 import { EnumeratedFieldArray, FieldArray, StandardFieldArray } from '../../interface';
 import { objectValues, splitCamel, zip } from '../../../../utils';
 import { useAppSelector } from '../../../../../reducers';

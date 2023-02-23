@@ -1,6 +1,6 @@
 import React from 'react';
 import { FieldOptionInputArgs, OptionChange } from './consts';
-import KeyValueEditor from '../key_value';
+import KeyValueEditor from '../KeyValueEditor';
 
 // Interfaces
 interface FieldOptionsEditorProps {

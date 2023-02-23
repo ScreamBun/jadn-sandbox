@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { TabContent, TabPane, Button, FormText } from 'reactstrap'
-import { Field, delMultiKey, setMultiKey } from './lib'
+import { Field, delMultiKey, setMultiKey } from './lib/GenMsgLib'
 import { getSelectedSchema } from 'reducers/util'
 import { StandardFieldArray } from '../schema/interface'
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
