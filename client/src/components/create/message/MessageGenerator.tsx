@@ -15,7 +15,7 @@ const MessageGenerator = () => {
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [commandType, setCommandType] = useState('');
 
-    const meta_title = useSelector(getPageTitle) + ' | Generate Message'
+    const meta_title = useSelector(getPageTitle) + ' | Message Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());

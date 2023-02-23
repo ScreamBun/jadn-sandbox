@@ -6,7 +6,7 @@ import { Link, NavLink, Outlet } from 'react-router-dom';
 import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { toast, ToastContainer } from 'react-toastify';
 import favicon from '../dependencies/assets/img/jadn-favicon.png';
-import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_GENERATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_SCHEMA_CONFORMANCE } from 'components/utils/constants';
+import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_SCHEMA_CONFORMANCE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE } from 'components/utils/constants';
 
 
 const AppLayout = () => {
@@ -42,34 +42,34 @@ const AppLayout = () => {
                 Creation
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem tag={Link} to={NAV_GENERATE_SCHEMA} onClick={onNavClick} active={navActive == 'Schema Creation'}>
+                <DropdownItem tag={Link} to={NAV_CREATE_SCHEMA} onClick={onNavClick} active={navActive == 'Schema Creation'}>
                   Schema Creation
                 </DropdownItem>
-                <DropdownItem tag={Link} to={NAV_GENERATE_MESSAGE} onClick={onNavClick} active={navActive == 'Message Creation'}>
+                <DropdownItem tag={Link} to={NAV_CREATE_MESSAGE} onClick={onNavClick} active={navActive == 'Message Creation'}>
                   Message Creation
-                </DropdownItem>                
+                </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_CONVERT_SCHEMA} onClick={onNavClick} state={{ navConvertTo: "", title: "Schema Conversion" }}>Schema Conversion</NavLink>
-            </NavItem>              
+              <NavLink className='nav-link py-1' to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }} onClick={onNavClick}>Schema Conversion</NavLink>
+            </NavItem>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_CONVERT_SCHEMA} onClick={onNavClick} state={{ navConvertTo: "", title: "Schema Translation" }}>Schema Translation</NavLink>
+              <NavLink className='nav-link py-1' to={NAV_TRANSLATE} state={{ navConvertTo: "" }} onClick={onNavClick}>Schema Translation</NavLink>
             </NavItem>
             <NavItem>
               <NavLink className='nav-link py-1' to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} state={{ navMsgFormat: "" }}>Codec</NavLink>
-            </NavItem>                      
-            <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>Transform</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>Generate</NavLink>
-            </NavItem>                                               
+              <NavLink className='nav-link py-1' to={NAV_TRANSFORM} state={{ navConvertTo: "" }} onClick={onNavClick}>Transform</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link py-1' to={NAV_GENERATE} onClick={onNavClick}>Generate</NavLink>
+            </NavItem>
           </ul>
           <ul className="nav navbar-nav navbar-right ml-auto">
             <NavItem>
               <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>About</NavLink>
-            </NavItem> 
+            </NavItem>
           </ul>
         </div>
       </nav>

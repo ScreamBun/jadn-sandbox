@@ -16,7 +16,7 @@ const SchemaGenerator = () => {
             types: []
         });
 
-    const meta_title = useSelector(getPageTitle) + ' | Generate Schema'
+    const meta_title = useSelector(getPageTitle) + ' | Schema Generation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());

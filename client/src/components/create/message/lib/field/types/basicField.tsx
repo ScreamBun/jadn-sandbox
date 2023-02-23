@@ -7,7 +7,7 @@ import { v4 as uuid4 } from 'uuid';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
-import { opts2obj } from 'components/generate/schema/structure/editors/options/consts';
+import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from 'reducers';
 

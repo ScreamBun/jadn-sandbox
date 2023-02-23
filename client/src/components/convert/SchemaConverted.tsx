@@ -9,16 +9,23 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
+const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown'];
 
 const SchemaConverted = (props: any) => {
     const location = useLocation()
     const { navConvertTo } = location.state
 
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
-    const convertOpts = useSelector(getConversions);
-    
+    const data = useSelector(getConversions);
+    let convertOpts = {};
+    for (let i = 0; i < Object.keys(data).length; i++) {
+        if (validConversions.includes(Object.keys(data)[i])) {
+            convertOpts[Object.keys(data)[i]] = Object.values(data)[i];
+        }
+    }
+
     useEffect(() => {
-        if(!isNull(navConvertTo)){
+        if (!isNull(navConvertTo)) {
             setConversion(navConvertTo);
         }
     }, [])
