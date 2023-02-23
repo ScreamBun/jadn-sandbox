@@ -197,13 +197,15 @@ const JADNSchemaLoader = (props: any) => {
         formatJSON(loadedSchema);
     }
 
-    const sbEditorOnChange = () => {
-        setIsValidJADN(false);
+    const sbEditorOnChange = (data: any) => {
+        console.log("onch")
+        setLoadedSchema(data);
+        validateJADN(data);
 
         if (setDecodeSchemaTypes && setDecodeMsg) {
-            loadDecodeTypes(loadedSchema);
+            loadDecodeTypes(data);
         }
-    }    
+    }
 
     const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         validateJADN(loadedSchema);
@@ -246,8 +248,8 @@ const JADNSchemaLoader = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={loadedSchema} setData={setLoadedSchema} convertTo={LANG_JSON}></SBEditor>                
-            </div>          
+                <SBEditor data={loadedSchema} onChange={sbEditorOnChange} convertTo={LANG_JSON}></SBEditor>
+            </div>
         </div>
     )
 }

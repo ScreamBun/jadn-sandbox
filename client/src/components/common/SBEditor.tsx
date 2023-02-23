@@ -15,10 +15,10 @@ const SBEditor = (props: any) => {
 
     const {
         data,
-        setData,
         height = "40em",
         isReadOnly = false,
         convertTo,
+        onChange
     } = props;
 
     let extensions = [langs.json()]
@@ -39,12 +39,6 @@ const SBEditor = (props: any) => {
                 break;
         }
     }
-
-    const onChange = React.useCallback((value: any, viewUpdate: any) => {
-        // console.log('value:', value);
-        setData(value);
-        // onChangeToParent();
-    }, []);
 
     return (
         <CodeMirror
