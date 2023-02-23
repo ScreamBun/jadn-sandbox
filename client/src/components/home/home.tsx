@@ -61,7 +61,7 @@ const Home = () => {
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_GENERATE_SCHEMA}>Creation</Link>
                   </h5>
-                  <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-generated examples.</p>
+                  <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-existing examples.</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_GENERATE_SCHEMA}>Schemas</Link>
@@ -78,7 +78,7 @@ const Home = () => {
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "", title: "Schema Conversion" }}>Schema Conversion</Link>
                   </h5>
-                  <p className="card-text">Convert a JADN Schema between JADN formats (jadn, md, jidl, html, dot, plantuml, etc).  Input=JADN Schema, Output= the same JADN Schema in a different representation.</p>
+                  <p className="card-text">Convert a Schema from JADN or JIDL to another JADN or visual representation (jadn, jidl, html, md, dot, or plantuml).</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "gv", title: "Schema Conversion" }}>GraphViz</Link>
@@ -97,7 +97,7 @@ const Home = () => {
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "", title: "Schema Translation" }}>Schema Translation</Link>
                   </h5>
-                  <p className="card-text">Convert a JADN Schema to a schema for other data formats. Input=JADN Schema, Output=JSON Schema, XSD, etc.</p>
+                  <p className="card-text">Translate a Schema and its data from JADN to another Schema or Data format.</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "json", title: "Schema Translation" }}>JSON</Link>
@@ -135,7 +135,7 @@ const Home = () => {
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_HOME}>Transform</Link> 
                   </h5>
-                  <p className="card-text">Convert one or more JADN Schemas into a different but related Schema. Resolve references, simplify by removing extensions, strip comments, etc.</p>
+                  <p className="card-text">Transform JADN Schemas by performing commonly used funtions to get a new, valid JADN schema. Resolve references between multiple Schemas, Remove Extensions to simplify, or Remove Comments.</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>         
@@ -151,7 +151,7 @@ const Home = () => {
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_HOME}>Generate</Link> 
                   </h5>                  
-                  <p className="card-text">Example message generation based off of a schema.</p>
+                  <p className="card-text">Generate example messages based off of a given schema.</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>             
