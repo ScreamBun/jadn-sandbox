@@ -59,7 +59,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
         return data != null;
       });
 
-      if (hasProperty(optData, 'unique') && optData.unique) {
+      if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
         optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
       } else {
         optChange(msgName, Array.from(Object.values(filteredOpts)));
@@ -92,7 +92,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       updatedOpts = [...opts, v];
     }
 
-    if (hasProperty(optData, 'unique') && optData.unique) {
+    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
       optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
     } else {
       optChange(msgName, Array.from(Object.values(updatedOpts)));
