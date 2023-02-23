@@ -30,27 +30,6 @@ const Home = () => {
           <h5 className='m-0'>Home</h5>
         </div>
         <div className='card-body p-2'>
-          <p className='mt-2'>
-            The <b> JADN Sandbox </b> provides the ability to generate, convert, and validate OpenC2 compliant schemas and messages.
-          </p>
-          <p>
-            <b> JSON Abstract Data Notation (JADN) </b> is an information modeling language.  It has several
-            purposes including defining data structures, validating data instances, informing user
-            interfaces working with structured data, and facilitating protocol internationalization.
-            JADN specifications consist of two parts:
-          </p>
-          <ul>
-            <li>abstract type definitions that are independent
-              of data format, and </li>
-            <li> serialization rules that define how to represent type instances using
-              specific data formats. </li>
-          </ul>
-          <p>
-            A <b> JADN schema </b> itself is a structured information object that can be
-            serialized and transferred between applications, documented in multiple formats such as text-based
-            interface definition languages, property tables or diagrams, and translated into concrete
-            schemas used to validate specific data formats.
-          </p>
           <div className="row">
             <div className='col-md'>
               <div className="card">
@@ -61,7 +40,7 @@ const Home = () => {
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
                   </h5>
-                  <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-generated examples.</p>
+                  <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-existing examples.</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
@@ -97,7 +76,7 @@ const Home = () => {
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "" }}>Schema Translation</Link>
                   </h5>
-                  <p className="card-text">Convert a JADN Schema to a schema for other data formats. Input=JADN Schema, Output=JSON Schema, XSD, etc.</p>
+                  <p className="card-text">Translate a Schema and its data from JADN to another Schema or Data format.</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "json" }}>JSON</Link>

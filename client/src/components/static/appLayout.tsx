@@ -6,8 +6,7 @@ import { Link, NavLink, Outlet } from 'react-router-dom';
 import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { toast, ToastContainer } from 'react-toastify';
 import favicon from '../dependencies/assets/img/jadn-favicon.png';
-import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_SCHEMA_CONFORMANCE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE } from 'components/utils/constants';
-
+import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_SCHEMA_CONFORMANCE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE, NAV_ABOUT } from 'components/utils/constants';
 
 const AppLayout = () => {
 
@@ -68,7 +67,7 @@ const AppLayout = () => {
           </ul>
           <ul className="nav navbar-nav navbar-right ml-auto">
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>About</NavLink>
+              <NavLink className='nav-link py-1' to={NAV_ABOUT} onClick={onNavClick}>About</NavLink>
             </NavItem>
           </ul>
         </div>
