@@ -8,11 +8,11 @@ import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import SBMarkdownPreviewer from "components/common/SBMarkdownPreviewer";
+import { markdownToHTML } from "components/common/SBMarkdownConverter";
 
 const SchemaConverted = (props: any) => {
-    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
+    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, markdownText, showPreviewer, height = "20em" } = props;
     const convertOpts = useSelector(getConversions);
-
     const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);
         setConvertedSchema('');
@@ -88,9 +88,10 @@ const SchemaConverted = (props: any) => {
         window.open(data);
     }
 
-    const onPopOutClick2 = (e2: React.MouseEvent<HTMLButtonElement>) => {
-        e2.preventDefault();
-        const blob = new Blob([convertedSchema], { type: "text/markdown" });
+    const onPopOutClick2 = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        const htmlContent = markdownToHTML(convertedSchema);
+        const blob = new Blob([htmlContent], { type: "text/html" });
         const data = URL.createObjectURL(blob);
         window.open(data);
     }
@@ -127,6 +128,7 @@ const SchemaConverted = (props: any) => {
                             <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick2}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
+
                         </div>
 
                         <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
@@ -142,7 +144,9 @@ const SchemaConverted = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
+                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height={`${conversion == 'md' && convertedSchema ? "20em" :  "40em"}`}></SBEditor>
+            </div>
+            <div className={`${conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
                 <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
             </div>
         </div>

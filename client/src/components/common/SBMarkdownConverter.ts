@@ -12,5 +12,10 @@ renderer.link = function (href, title, text) {
 }
   
 export function markdownToHTML(markdownText: string) {
-    return marked(markdownText, { renderer: renderer });
+    try{
+       return marked(markdownText, { renderer: renderer });
+    }catch (error) {
+    console.error("Something bad happened");
+    return error;
+  }
 }
