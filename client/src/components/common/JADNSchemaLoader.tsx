@@ -198,9 +198,8 @@ const JADNSchemaLoader = (props: any) => {
     }
 
     const sbEditorOnChange = (data: any) => {
-        console.log("onch")
+        setIsValidJADN(false);
         setLoadedSchema(data);
-        validateJADN(data);
 
         if (setDecodeSchemaTypes && setDecodeMsg) {
             loadDecodeTypes(data);
