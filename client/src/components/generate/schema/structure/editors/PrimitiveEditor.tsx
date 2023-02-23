@@ -74,7 +74,7 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
       </ButtonGroup>
 
       <div className="border-bottom mb-2">
-        <h3 className="col-sm-10 my-1">{`${valueObj.name}(${valueObj.type})`}</h3>
+        <h5 className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
       </div>
 
       <div className="row m-0">

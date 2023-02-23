@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,10 +7,21 @@ import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
+import { isNull } from "lodash";
+import { useLocation } from "react-router-dom";
 
 const SchemaConverted = (props: any) => {
+    const location = useLocation()
+    const { navConvertTo } = location.state
+
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema } = props;
     const convertOpts = useSelector(getConversions);
+    
+    useEffect(() => {
+        if(!isNull(navConvertTo)){
+            setConversion(navConvertTo);
+        }
+    }, [])
 
     const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);

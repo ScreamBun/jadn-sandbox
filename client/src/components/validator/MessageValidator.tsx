@@ -26,6 +26,7 @@ const MessageValidator = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Validate ';
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
@@ -94,7 +95,7 @@ const MessageValidator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}> Validate Message </h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Codec</span></h5>
                             <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                         <div className='card-body p-2'>

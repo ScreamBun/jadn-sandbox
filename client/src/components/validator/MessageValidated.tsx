@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
 import {
@@ -9,14 +9,25 @@ import { getMsgFiles } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
+import { useLocation } from "react-router-dom";
+import { isNull } from "lodash";
 
 const MessageValidated = (props: any) => {
+    const location = useLocation()
+    const { navMsgFormat } = location.state
+
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, loadedSchema } = props;
 
     const msgOpts = useSelector(getMsgFiles);
     const decodeExports = decodeSchemaTypes.exports.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
     const decodeAll = decodeSchemaTypes.all.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(!isNull(navMsgFormat)){
+            setMsgFormat(navMsgFormat);
+        }
+    }, [])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedFile(e.target.value);

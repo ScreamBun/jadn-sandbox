@@ -53,10 +53,11 @@ const JADNSchemaLoader = (props: any) => {
                                 return;
                             }
                         }
+
                     })
                     .catch((loadFileErr) => {
                         setSelectedFile('');
-                        setLoadedSchema(JSON.stringify(loadFileErr.payload.data));
+                        setLoadedSchema(JSON.stringify(loadFileErr.payload));
                     })
             } catch (err) {
                 setLoadedSchema(null);
@@ -152,7 +153,7 @@ const JADNSchemaLoader = (props: any) => {
         try {
             dispatch(validateSchema(jsonObj))
                 .then((validateSchemaVal: any) => {
-                    if (validateSchemaVal.payload.valid_bool) {
+                    if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
                         dispatch(setSchema(jsonObj))
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
