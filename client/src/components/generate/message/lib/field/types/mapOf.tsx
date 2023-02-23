@@ -37,6 +37,7 @@ const MapOfField = (props: MapOfFieldProps) => {
 
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setisValid('');
         const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : 20;
         const maxBool = count < maxCount;
         if (!maxBool) {
@@ -49,6 +50,7 @@ const MapOfField = (props: MapOfFieldProps) => {
 
     const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setisValid('');
         const minCount = hasProperty(optData, 'minv') ? optData.minv : 0;
 
         const minBool = count > minCount;

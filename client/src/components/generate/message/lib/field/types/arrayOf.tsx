@@ -36,6 +36,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setisValid('');
     const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : 100;
     const maxBool = count < maxCount;
     if (!maxBool) {
@@ -47,6 +48,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   }
 
   const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setisValid('');
     e.preventDefault();
     const minCount = hasProperty(optData, 'minv') ? optData.minv : 0;
 
