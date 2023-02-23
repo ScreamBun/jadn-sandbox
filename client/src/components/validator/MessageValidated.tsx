@@ -14,7 +14,7 @@ import { isNull } from "lodash";
 
 const MessageValidated = (props: any) => {
     const location = useLocation()
-    const { formatType } = location.state
+    const { navMsgFormat } = location.state
 
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, loadedSchema } = props;
 
@@ -24,8 +24,8 @@ const MessageValidated = (props: any) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(!isNull(formatType)){
-            setMsgFormat(formatType);
+        if(!isNull(navMsgFormat)){
+            setMsgFormat(navMsgFormat);
         }
     }, [])
 

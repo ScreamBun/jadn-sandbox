@@ -8,9 +8,13 @@ import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { useLocation } from 'react-router-dom'
 
 const SchemaConverter = () => {
     const dispatch = useDispatch();
+
+    const location = useLocation()
+    const { title } = location.state    
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
@@ -104,7 +108,7 @@ const SchemaConverter = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}>Convert Schema</h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>{title}</span></h5>
                             <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                         <div className='card-body p-2'>

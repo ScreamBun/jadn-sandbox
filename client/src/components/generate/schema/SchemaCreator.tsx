@@ -290,12 +290,12 @@ const SchemaCreator = (props: any) => {
                                     }}
                                 >
                                     <div className="col pt-2">
-                                        <h2>Info</h2>
+                                        <h5>Info</h5>
                                         {infoEditors}
                                     </div>
                                     <hr />
                                     <div className="col">
-                                        <h2>Types</h2>
+                                        <h5>Types</h5>
                                         {typesEditors}
                                     </div>
                                 </Droppable>

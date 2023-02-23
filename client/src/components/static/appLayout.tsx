@@ -39,33 +39,32 @@ const AppLayout = () => {
             </NavItem>
             <UncontrolledDropdown nav inNavbar setActiveFromChild>
               <DropdownToggle className="nav-link py-1" nav caret size='sm'>
-                Schema
-              </DropdownToggle>
-              <DropdownMenu >
-                <DropdownItem tag={Link} to={NAV_GENERATE_SCHEMA} onClick={onNavClick} active={navActive == 'Generate Schema'}>
-                  Generate Schema
-                </DropdownItem>
-                <DropdownItem tag={Link} to={NAV_CONVERT_SCHEMA} onClick={onNavClick} active={navActive == 'Convert Schema'}>
-                  Convert Schema
-                </DropdownItem>
-                <DropdownItem tag={Link} to={NAV_SCHEMA_CONFORMANCE} onClick={onNavClick} active={navActive == 'Schema Conformance'}>
-                  Schema Conformance
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-            <UncontrolledDropdown nav inNavbar setActiveFromChild>
-              <DropdownToggle className="nav-link py-1" nav caret size='sm'>
-                Message
+                Creation
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem tag={Link} to={NAV_GENERATE_MESSAGE} onClick={onNavClick} active={navActive == 'Generate Message'}>
-                  Generate Message
+                <DropdownItem tag={Link} to={NAV_GENERATE_SCHEMA} onClick={onNavClick} active={navActive == 'Schema Creation'}>
+                  Schema Creation
                 </DropdownItem>
-                <DropdownItem tag={Link} to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} active={navActive == 'Validate Message'} state={{ formatType: "" }}>
-                  Validate Message
-                </DropdownItem>
+                <DropdownItem tag={Link} to={NAV_GENERATE_MESSAGE} onClick={onNavClick} active={navActive == 'Message Creation'}>
+                  Message Creation
+                </DropdownItem>                
               </DropdownMenu>
             </UncontrolledDropdown>
+            <NavItem>
+              <NavLink className='nav-link py-1' to={NAV_CONVERT_SCHEMA} onClick={onNavClick} state={{ navConvertTo: "", title: "Schema Conversion" }}>Schema Conversion</NavLink>
+            </NavItem>              
+            <NavItem>
+              <NavLink className='nav-link py-1' to={NAV_CONVERT_SCHEMA} onClick={onNavClick} state={{ navConvertTo: "", title: "Schema Translation" }}>Schema Translation</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link py-1' to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} state={{ navMsgFormat: "" }}>Codec</NavLink>
+            </NavItem>                      
+            <NavItem>
+              <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>Transform</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>Generate</NavLink>
+            </NavItem>                                  
           </ul>
         </div>
       </nav>

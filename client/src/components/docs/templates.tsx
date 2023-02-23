@@ -40,7 +40,7 @@ export const CardTemplate: FunctionComponent<CardTemplateProps> = ({
         >
           API
         </Button>
-        <h3>{ header }</h3>
+        <h5>{ header }</h5>
       </CardHeader>
       <CardBody>
         { title && <CardTitle>{ title }</CardTitle> }
