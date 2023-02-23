@@ -1,5 +1,5 @@
 // Actions for utils API
-import { SchemaJADN } from 'components/generate/schema/interface';
+import { SchemaJADN } from 'components/create/schema/interface';
 import { createAction } from 'redux-api-middleware';
 import { ActionFailureResult, ActionRequestResult, ActionSuccessResult } from './interfaces';
 

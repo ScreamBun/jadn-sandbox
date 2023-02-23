@@ -14,7 +14,7 @@ const SchemaGenerator = () => {
     const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
     const [activeView, setActiveView] = useState('tests');
 
-    const meta_title = useSelector(getPageTitle) + ' | Generate Schema'
+    const meta_title = useSelector(getPageTitle) + ' | Schema Conformance'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
