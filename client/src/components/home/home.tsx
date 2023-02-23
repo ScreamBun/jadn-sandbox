@@ -112,7 +112,7 @@ const Home = () => {
                 </div>
                 <div className="card-body" style={{height: '10em'}}>
                   <h5 className="card-title">
-                    <Link className="card-link" to={NAV_HOME}>Transformation</Link> 
+                    <Link className="card-link" to={NAV_TRANSFORM}>Transformation</Link>
                   </h5>
                   <p className="card-text">Convert one or more JADN Schemas into a different but related Schema. Resolve references, simplify by removing extensions, strip comments, etc.</p>
                 </div>
@@ -128,9 +128,9 @@ const Home = () => {
                 </div>
                 <div className="card-body" style={{height: '10em'}}>
                   <h5 className="card-title">
-                    <Link className="card-link" to={NAV_HOME}>Example Message Generation</Link> 
-                  </h5>                  
-                  <p className="card-text">Generate example messages based off of a given schema.</p>
+                    <Link className="card-link" to={NAV_GENERATE}>Example Message Generation</Link>
+                  </h5>
+                  <p className="card-text">Example message generation based off of a schema.</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>

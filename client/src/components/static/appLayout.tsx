@@ -57,7 +57,7 @@ const AppLayout = () => {
             </NavItem>
             <NavItem>
               <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} state={{ navMsgFormat: "" }}>Validation</NavLink>
-            </NavItem>                      
+            </NavItem>
             <NavItem>
               <NavLink className='nav-link px-0' to={NAV_TRANSFORM} state={{ navConvertTo: "" }} onClick={onNavClick}>Transformation</NavLink>
             </NavItem>
@@ -67,8 +67,8 @@ const AppLayout = () => {
           </ul>
           <ul className="nav navbar-nav navbar-right ml-auto">
             <NavItem>
-              <NavLink className='nav-link' to={NAV_ABOUT} onClick={onNavClick}>About</NavLink>
-            </NavItem> 
+              <NavLink className='nav-link px-0' to={NAV_ABOUT} onClick={onNavClick}>About</NavLink>
+            </NavItem>
           </ul>
         </div>
       </nav>
