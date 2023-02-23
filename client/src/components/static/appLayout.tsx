@@ -33,7 +33,7 @@ const AppLayout = () => {
           <span className='font-weight-bold font-italic mx-2'>JADN Sandbox</span>
         </a>
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id='navToggle'>
-          <ul className='nav navbar-nav mr-auto'>
+          <ul className='nav navbar-nav'>
             <NavItem>
               <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>Home</NavLink>
             </NavItem>
@@ -64,7 +64,12 @@ const AppLayout = () => {
             </NavItem>
             <NavItem>
               <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>Generate</NavLink>
-            </NavItem>                                  
+            </NavItem>                                               
+          </ul>
+          <ul className="nav navbar-nav navbar-right ml-auto">
+            <NavItem>
+              <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>About</NavLink>
+            </NavItem> 
           </ul>
         </div>
       </nav>
