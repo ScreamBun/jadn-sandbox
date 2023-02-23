@@ -34,10 +34,10 @@ const AppLayout = () => {
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id='navToggle'>
           <ul className='nav navbar-nav'>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>Home</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_HOME} onClick={onNavClick}>Home</NavLink>
             </NavItem>
             <UncontrolledDropdown nav inNavbar setActiveFromChild>
-              <DropdownToggle className="nav-link py-1" nav caret size='sm'>
+              <DropdownToggle className="nav-link px-0" nav caret size='sm'>
                 Creation
               </DropdownToggle>
               <DropdownMenu>
@@ -50,24 +50,24 @@ const AppLayout = () => {
               </DropdownMenu>
             </UncontrolledDropdown>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }} onClick={onNavClick}>Schema Conversion</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }} onClick={onNavClick}>Conversion</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_TRANSLATE} state={{ navConvertTo: "" }} onClick={onNavClick}>Schema Translation</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_TRANSLATE} state={{ navConvertTo: "" }} onClick={onNavClick}>Translation</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} state={{ navMsgFormat: "" }}>Codec</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} state={{ navMsgFormat: "" }}>Validation</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_TRANSFORM} state={{ navConvertTo: "" }} onClick={onNavClick}>Transform</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_TRANSFORM} state={{ navConvertTo: "" }} onClick={onNavClick}>Transformation</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_GENERATE} onClick={onNavClick}>Generate</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_GENERATE} onClick={onNavClick}>Generation</NavLink>
             </NavItem>
           </ul>
           <ul className="nav navbar-nav navbar-right ml-auto">
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_ABOUT} onClick={onNavClick}>About</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_ABOUT} onClick={onNavClick}>About</NavLink>
             </NavItem>
           </ul>
         </div>

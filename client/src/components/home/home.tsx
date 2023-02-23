@@ -33,8 +33,8 @@ const Home = () => {
           <div className="row">
             <div className='col-md'>
               <div className="card">
-                <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x text-white' icon={faPencilRuler} />
+                <div className="card-img-top text-center py-2 bg-primary">
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faPencilRuler} />                  
                 </div>
                 <div className="card-body" style={{ height: '9em' }}>
                   <h5 className="card-title">
@@ -50,8 +50,8 @@ const Home = () => {
             </div>
             <div className='col-md'>
               <div className="card">
-                <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x text-white' icon={faShuffle} />
+                <div className="card-img-top text-center py-2 bg-primary">
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faShuffle} />                  
                 </div>
                 <div className="card-body" style={{ height: '9em' }}>
                   <h5 className="card-title">
@@ -69,8 +69,8 @@ const Home = () => {
             </div>
             <div className='col-md'>
               <div className="card">
-                <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x text-white' icon={faCode} />
+                <div className="card-img-top text-center py-2 bg-primary">
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faCode} />                  
                 </div>
                 <div className="card-body" style={{ height: '9em' }}>
                   <h5 className="card-title">
@@ -89,12 +89,12 @@ const Home = () => {
           <div className="row">
             <div className='col-md'>
               <div className="card mt-2">
-                <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x text-white' icon={faEnvelopeCircleCheck} />
+                <div className="card-img-top text-center py-2 bg-primary">
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faEnvelopeCircleCheck} /> 
                 </div>
-                <div className="card-body" style={{ height: '9em' }}>
+                <div className="card-body" style={{height: '10em'}}>
                   <h5 className="card-title">
-                    <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "" }}>Codec</Link>
+                    <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "" }}>Message Validation</Link>
                   </h5>
                   <p className="card-text">Validate data (messages) against a JADN Schema and convert them from one data format to another.</p>
                 </div>
@@ -104,15 +104,15 @@ const Home = () => {
                   <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "xml" }}>Relax (XML)</Link>
                 </div>
               </div>
-            </div>
-            <div className='col-md'>
+            </div> 
+            <div className='col-md px-0'>
               <div className="card mt-2">
-                <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x text-white' icon={faCodeBranch} />
+                <div className="card-img-top text-center py-2 bg-primary">
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faCodeBranch} />                  
                 </div>
-                <div className="card-body" style={{ height: '9em' }}>
+                <div className="card-body" style={{height: '10em'}}>
                   <h5 className="card-title">
-                    <Link className="card-link" to={NAV_TRANSFORM}>Transform</Link>
+                    <Link className="card-link" to={NAV_TRANSFORM}>Transformation</Link>
                   </h5>
                   <p className="card-text">Convert one or more JADN Schemas into a different but related Schema. Resolve references, simplify by removing extensions, strip comments, etc.</p>
                 </div>
@@ -123,12 +123,12 @@ const Home = () => {
             </div>
             <div className='col-md'>
               <div className="card mt-2">
-                <div className="card-img-top text-center py-3 bg-primary">
-                  <FontAwesomeIcon className='fa-3x text-white' icon={faFileCirclePlus} />
+                <div className="card-img-top text-center py-2 bg-primary">
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faFileCirclePlus} />                  
                 </div>
-                <div className="card-body" style={{ height: '9em' }}>
+                <div className="card-body" style={{height: '10em'}}>
                   <h5 className="card-title">
-                    <Link className="card-link" to={NAV_GENERATE}>Generate</Link>
+                    <Link className="card-link" to={NAV_GENERATE}>Example Message Generation</Link>
                   </h5>
                   <p className="card-text">Example message generation based off of a schema.</p>
                 </div>
