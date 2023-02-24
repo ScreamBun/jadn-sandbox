@@ -39,10 +39,10 @@ const SchemaTransformed = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
-
-                    </div>
                     <div className='col-md-9'>
+                        Specify transformation type here..
+                    </div>
+                    <div className='col-md-3'>
                         <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema} customClass='float-right' />
                         <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm mr-1 float-right${transformedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
                             <FontAwesomeIcon icon={faFileDownload} />

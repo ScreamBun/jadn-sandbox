@@ -70,14 +70,12 @@ const SBMultiFileUploader = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <Input type="file" id="schema-files" name="schema-files" accept=".jadn" onChange={onFileUpload} multiple hidden />
-                <label htmlFor="schema-files" className="float-right">
-                    <a className='btn-sm btn-primary mr-1' style={{ display: 'inline-block' }}> Upload Files </a>
-                </label>
+                {/*<a className='btn-sm btn-primary mr-1' style={{ display: 'inline-block' }}> Upload Files </a> */}
+                <Button color="info" id="triggerFileLoader" className="btn-sm mr-1 float-right" onClick={() => document.getElementById('schema-files').click()}> Upload Files </Button>
             </div>
             <div className="card-body p-0" style={{ height: '40em' }}>
                 <h5 className="p-2"> Pre-populated List of Files to Choose from </h5>
-
-                <div id="prepopulated-schema-list" className='mb-2' style={{ overflowY: 'auto', borderStyle: 'ridge', borderWidth: 'thin' }}>
+                <div id="prepopulated-schema-list" className='m-2 p-2' style={{ overflowY: 'auto', borderStyle: 'ridge', borderWidth: 'thin' }}>
                     <div style={{ height: '5em' }}>
                         <ul style={{ listStyleType: 'none' }}>
                             {schemaOpts.map((s: any, index: number) => (
