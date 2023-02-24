@@ -36,7 +36,7 @@ class LoadFile(Resource):
                         filedata += asciiChr if asciiNum <= 128 else f"\\x{asciiNum:02X}"
 
             return {
-                "file": filename,
+                "name": filename,
                 "type": filetype,
                 "data": filedata
             }, 200

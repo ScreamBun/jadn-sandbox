@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
-import { getConversions } from "reducers/convert";
+import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
-import { isNull } from "lodash";
-import { useLocation } from "react-router-dom";
 
 const SchemaTransformed = (props: any) => {
 

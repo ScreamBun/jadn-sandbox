@@ -68,7 +68,7 @@ export interface LoadSuccessAction extends ActionSuccessResult {
   type: typeof LOAD_SUCCESS;
   payload: {
     type: 'messages' | 'schemas';
-    file: string;
+    name: string;
     data: Record<string, any>;
   };
 }

@@ -2,6 +2,8 @@ import React from 'react';
 import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
+import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
+import { hasProperty } from 'react-json-editor/dist/utils';
 
 // Interface
 interface EnumeratedFieldProps {
@@ -15,13 +17,17 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   const { def, optChange, parent } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
+  var optData: Record<string, any> = {};
   const [_idx, name, type, _opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  if (typeDef) {
+    optData = (opts2obj(typeDef[2]));
+  }
 
-  const defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]}>{opt[1]}</option>);
+  const defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
 
   return (
     <div className='form-group'>
