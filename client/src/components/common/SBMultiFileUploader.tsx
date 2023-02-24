@@ -49,7 +49,16 @@ const SBMultiFileUploader = (props: any) => {
         }
     }
 
-    const removeFile = (index: number) => {
+    const removeFile = (index: number, filename: string) => {
+        //uncheck box 
+        var inputElem = document.getElementsByTagName('input');
+        for (var i = 0; i < inputElem.length; i++) {
+            if (inputElem[i].type == 'checkbox') {
+                if (inputElem[i].name == 'schema-files' && inputElem[i].id == filename) {
+                    inputElem[i].checked = false;
+                }
+            }
+        }
         setData(data.filter((_file: File, fileIndex: number) => fileIndex !== index));
     }
 
@@ -101,7 +110,7 @@ const SBMultiFileUploader = (props: any) => {
                             {data.map((file: File, index: number) => (
                                 <li className="list-group-item" key={index}>
                                     {file.name}
-                                    <Button id='removeFile' color="danger" className='btn-sm float-right' onClick={() => removeFile(index)}>
+                                    <Button id='removeFile' color="danger" className='btn-sm float-right' onClick={() => removeFile(index, file.name)}>
                                         <FontAwesomeIcon icon={faTrash} />
                                     </Button>
                                 </li>
