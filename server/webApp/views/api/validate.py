@@ -61,12 +61,8 @@ class ValidateSchema(Resource):
             schema = args["schema"]
 
         val = current_app.validator.validateSchema(schema)
-        print(val)
-        data = {
-            "valid_bool": val[0],
-            "valid_msg": val[1]
-        }
-        return data, 200
+
+        return jsonify({ "valid_bool": val[0], "valid_msg": val[1] })
 
 
 # Register resources

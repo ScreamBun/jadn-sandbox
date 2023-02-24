@@ -53,10 +53,11 @@ const JADNSchemaLoader = (props: any) => {
                                 return;
                             }
                         }
+
                     })
                     .catch((loadFileErr) => {
                         setSelectedFile('');
-                        setLoadedSchema(JSON.stringify(loadFileErr.payload.data));
+                        setLoadedSchema(JSON.stringify(loadFileErr.payload));
                     })
             } catch (err) {
                 setLoadedSchema(null);
@@ -152,7 +153,7 @@ const JADNSchemaLoader = (props: any) => {
         try {
             dispatch(validateSchema(jsonObj))
                 .then((validateSchemaVal: any) => {
-                    if (validateSchemaVal.payload.valid_bool) {
+                    if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
                         dispatch(setSchema(jsonObj))
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
@@ -197,13 +198,14 @@ const JADNSchemaLoader = (props: any) => {
         formatJSON(loadedSchema);
     }
 
-    const sbEditorOnChange = () => {
+    const sbEditorOnChange = (data: any) => {
         setIsValidJADN(false);
+        setLoadedSchema(data);
 
         if (setDecodeSchemaTypes && setDecodeMsg) {
-            loadDecodeTypes(loadedSchema);
+            loadDecodeTypes(data);
         }
-    }    
+    }
 
     const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
         validateJADN(loadedSchema);
@@ -246,8 +248,8 @@ const JADNSchemaLoader = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={loadedSchema} setData={setLoadedSchema} convertTo={LANG_JSON}></SBEditor>                
-            </div>          
+                <SBEditor data={loadedSchema} onChange={sbEditorOnChange} convertTo={LANG_JSON}></SBEditor>
+            </div>
         </div>
     )
 }

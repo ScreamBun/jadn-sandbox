@@ -1,4 +1,4 @@
-import { SchemaJADN, TypeArray } from 'components/generate/schema/interface';
+import { SchemaJADN, TypeArray } from 'components/create/schema/interface';
 import * as util from '../actions/util';
 
 export interface UtilState {

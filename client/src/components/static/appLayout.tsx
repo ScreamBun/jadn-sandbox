@@ -6,8 +6,7 @@ import { Link, NavLink, Outlet } from 'react-router-dom';
 import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { toast, ToastContainer } from 'react-toastify';
 import favicon from '../dependencies/assets/img/jadn-favicon.png';
-import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_GENERATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_GENERATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_SCHEMA_CONFORMANCE } from 'components/utils/constants';
-
+import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_SCHEMA_CONFORMANCE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE, NAV_ABOUT } from 'components/utils/constants';
 
 const AppLayout = () => {
 
@@ -33,39 +32,43 @@ const AppLayout = () => {
           <span className='font-weight-bold font-italic mx-2'>JADN Sandbox</span>
         </a>
         <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id='navToggle'>
-          <ul className='nav navbar-nav mr-auto'>
+          <ul className='nav navbar-nav'>
             <NavItem>
-              <NavLink className='nav-link py-1' to={NAV_HOME} onClick={onNavClick}>Home</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_HOME} onClick={onNavClick}>Home</NavLink>
             </NavItem>
             <UncontrolledDropdown nav inNavbar setActiveFromChild>
-              <DropdownToggle className="nav-link py-1" nav caret size='sm'>
-                Schema
-              </DropdownToggle>
-              <DropdownMenu >
-                <DropdownItem tag={Link} to={NAV_GENERATE_SCHEMA} onClick={onNavClick} active={navActive == 'Generate Schema'}>
-                  Generate Schema
-                </DropdownItem>
-                <DropdownItem tag={Link} to={NAV_CONVERT_SCHEMA} onClick={onNavClick} active={navActive == 'Convert Schema'}>
-                  Convert Schema
-                </DropdownItem>
-                <DropdownItem tag={Link} to={NAV_SCHEMA_CONFORMANCE} onClick={onNavClick} active={navActive == 'Schema Conformance'}>
-                  Schema Conformance
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-            <UncontrolledDropdown nav inNavbar setActiveFromChild>
-              <DropdownToggle className="nav-link py-1" nav caret size='sm'>
-                Message
+              <DropdownToggle className="nav-link px-0" nav caret size='sm'>
+                Creation
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem tag={Link} to={NAV_GENERATE_MESSAGE} onClick={onNavClick} active={navActive == 'Generate Message'}>
-                  Generate Message
+                <DropdownItem tag={Link} to={NAV_CREATE_SCHEMA} onClick={onNavClick} active={navActive == 'Schema Creation'}>
+                  Schema Creation
                 </DropdownItem>
-                <DropdownItem tag={Link} to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} active={navActive == 'Validate Message'}>
-                  Validate Message
+                <DropdownItem tag={Link} to={NAV_CREATE_MESSAGE} onClick={onNavClick} active={navActive == 'Message Creation'}>
+                  Message Creation
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
+            <NavItem>
+              <NavLink className='nav-link px-0' to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }} onClick={onNavClick}>Schema Conversion</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link px-0' to={NAV_TRANSLATE} state={{ navConvertTo: "" }} onClick={onNavClick}>Schema Translation</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} state={{ navMsgFormat: "" }}>Validation</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link px-0' to={NAV_TRANSFORM} state={{ navConvertTo: "" }} onClick={onNavClick}>Transformation</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className='nav-link px-0' to={NAV_GENERATE} onClick={onNavClick}>Generation</NavLink>
+            </NavItem>
+          </ul>
+          <ul className="nav navbar-nav navbar-right ml-auto">
+            <NavItem>
+              <NavLink className='nav-link px-0' to={NAV_ABOUT} onClick={onNavClick}>About</NavLink>
+            </NavItem>
           </ul>
         </div>
       </nav>
