@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
@@ -12,6 +12,7 @@ import { markdownToHTML } from "components/common/SBMarkdownConverter";
 
 const SchemaConverted = (props: any) => {
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, markdownText, showPreviewer, height = "20em" } = props;
+    const [spiltViewFlag, setSplitViewFlag] = useState(false);
     const convertOpts = useSelector(getConversions);
     const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);
@@ -96,6 +97,11 @@ const SchemaConverted = (props: any) => {
         window.open(data);
     }
 
+    const splitView = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setSplitViewFlag(splitView => !splitView);
+    }
+
     return (
         <div className="card">
             <div className="card-header p-2">
@@ -128,7 +134,9 @@ const SchemaConverted = (props: any) => {
                             <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick2}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
-
+                            <Button id="splitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={splitView}>
+                                <FontAwesomeIcon icon={faFile} />
+                            </Button>
                         </div>
 
                         <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
@@ -144,9 +152,9 @@ const SchemaConverted = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height={`${conversion == 'md' && convertedSchema ? "20em" :  "40em"}`}></SBEditor>
+                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height={`${conversion == 'md' && convertedSchema && spiltViewFlag ? "20em" :  "40em"}`}></SBEditor>
             </div>
-            <div className={`${conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
+            <div className={`${conversion == 'md' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
                 <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
             </div>
         </div>
