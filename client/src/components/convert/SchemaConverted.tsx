@@ -12,6 +12,8 @@ import { markdownToHTML } from "components/common/SBMarkdownConverter";
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown'];
+import SBHtmlPreviewer from "components/common/SBHtmlPreviewer";
+import { htmlToHTML } from "components/common/SBHtmlConverter";
 
 const SchemaConverted = (props: any) => {
     const location = useLocation()
@@ -122,6 +124,7 @@ const SchemaConverted = (props: any) => {
         setSplitViewFlag(splitView => !splitView);
     }
 
+
     return (
         <div className="card">
             <div className="card-header p-2">
@@ -145,6 +148,9 @@ const SchemaConverted = (props: any) => {
                             <Button id="HTMLpopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onHTMLPopOutClick}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
+                            <Button id="splitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={splitView}>
+                                <FontAwesomeIcon icon={faFile} />
+                            </Button>
                         </div>
 
                         <div className={`${conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
@@ -155,29 +161,38 @@ const SchemaConverted = (props: any) => {
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
                             <Button id="splitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={splitView}>
-                                <FontAwesomeIcon icon={faFile} />
+                            <FontAwesomeIcon icon={faFile} />
                             </Button>
                         </div>
+                        <div>
 
                         <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
                             disabled={loadedSchema && conversion ? false : true}
                             title={!loadedSchema && !conversion ? "Please select schema and language for conversion" :
                                 !loadedSchema && conversion ? "Please select a schema" :
                                     loadedSchema && !conversion ? 'Please select a language to convert to' :
-                                        loadedSchema && conversion ? "Convert the given JADN schema to the selected format" : "Convert the given JADN schema to the selected format"}
-                        >
+                                        loadedSchema && conversion ? "Convert the given JADN schema to the selected format" : "Convert the given JADN schema to the selected format"}>
+
                             Convert
                         </Button>
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0">
-                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height={`${conversion == 'md' && convertedSchema && spiltViewFlag ? "20em" : "40em"}`}></SBEditor>
+            <div className="card-body p-0" className={`${(conversion == 'md' || conversion == 'html') && spiltViewFlag ? 'd-none' : ''}`}>
+                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
             </div>
-            <div className={`${conversion == 'md' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
-                <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
+            <div className="card-body p-0" className={`${(conversion == 'md' || conversion == 'html') && spiltViewFlag ? '' : ' d-none'}`}>
+                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
+
+                <div className={`${conversion == 'md' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
+                    <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
+                </div>
+                <div className={`${conversion == 'html' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
+                    <SBHtmlPreviewer htmlText={convertedSchema} showPreviewer={true} height="20em"></SBHtmlPreviewer>
+                </div>
             </div>
         </div>
+ </div>
     )
 }
 export default SchemaConverted;
