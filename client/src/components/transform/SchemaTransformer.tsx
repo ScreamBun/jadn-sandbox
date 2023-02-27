@@ -6,7 +6,7 @@ import { getPageTitle } from 'reducers/util'
 import { validateSchema } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
-import SBMultiFileUploader from 'components/common/SBMultiFileUploader'
+import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
 
 const SchemaTransformer = () => {
 
@@ -54,7 +54,7 @@ const SchemaTransformer = () => {
                             <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <SBMultiFileUploader data={selectedFiles} setData={setSelectedFiles} />
+                                        <SBMultiSchemaLoader data={selectedFiles} setData={setSelectedFiles} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTransformed transformedSchema={transformedSchema} />

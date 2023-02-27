@@ -7,7 +7,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { info, loadFile } from "actions/util";
 
-const SBMultiFileUploader = (props: any) => {
+const SBMultiSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
     const { data, setData } = props;
 
@@ -123,4 +123,4 @@ const SBMultiFileUploader = (props: any) => {
         </div>
     )
 }
-export default SBMultiFileUploader;
+export default SBMultiSchemaLoader;
