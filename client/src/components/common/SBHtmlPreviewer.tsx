@@ -1,6 +1,4 @@
 import React from "react";
-import { htmlToHTML } from "./SBHtmlConverter";
-import { markdownToHTML } from "./SBMarkdownConverter";
 
 const SBHtmlPreviewer = (props: any) => {
 
