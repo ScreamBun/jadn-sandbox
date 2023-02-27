@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useDispatch, useSelector } from 'react-redux'
-import { Form, Button, Input } from 'reactstrap'
-import { getAllSchemas, getPageTitle } from 'reducers/util'
+import { useSelector } from 'react-redux'
+import { Form, Button } from 'reactstrap'
+import { getPageTitle } from 'reducers/util'
 import { validateSchema } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
@@ -33,7 +33,7 @@ const SchemaTransformer = () => {
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         //validate all selected files
-        //transform files
+        //call resolve_references.py
         //set transformed Schema
     }
 

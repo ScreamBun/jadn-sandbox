@@ -112,6 +112,8 @@ const SchemaConverted = (props: any) => {
         window.open(data);
     }
 
+    //create ability to convert schema into all formats: add a new tabbed/collapsible view in body
+
     return (
         <div className="card">
             <div className="card-header p-2">
