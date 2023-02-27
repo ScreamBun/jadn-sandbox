@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faFileDownload, faFilePdf, faWindowMaximize, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
@@ -149,7 +149,7 @@ const SchemaConverted = (props: any) => {
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
                             <Button id="splitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={splitView}>
-                                <FontAwesomeIcon icon={faFile} />
+                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90'/>
                             </Button>
                         </div>
 
@@ -161,7 +161,7 @@ const SchemaConverted = (props: any) => {
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
                             <Button id="splitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={splitView}>
-                            <FontAwesomeIcon icon={faFile} />
+                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90'/>
                             </Button>
                         </div>
                         <div>
