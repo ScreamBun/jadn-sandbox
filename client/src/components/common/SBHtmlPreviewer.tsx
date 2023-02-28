@@ -6,7 +6,7 @@ const SBHtmlPreviewer = (props: any) => {
     const previewerClassName = "previewer " + (showPreviewer ? "hide" : "");
 
     return (
-        <div className="card text-white bg-secondary" style={{ 'height': height, 'overflow': 'auto' }}>
+        <div className="card bg-secondary" style={{ 'height': height, 'overflow': 'auto' }}>
             <div className={previewerClassName}>
                 <div id="preview"
                     className="previewer-content"
