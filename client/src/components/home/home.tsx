@@ -26,17 +26,17 @@ const Home = () => {
         <link rel="canonical" href={meta_canonical} />
       </Helmet>
       <div className='card'>
-        <div className='card-header p-2'>
+        <div className='card-header'>
           <h5 className='m-0'>Home</h5>
         </div>
-        <div className='card-body p-2'>
+        <div className='card-body'>
           <div className="row">
-            <div className='col-md'>
+            <div className='col-lg'>
               <div className="card">
                 <div className="card-img-top text-center py-2 bg-primary">
                   <FontAwesomeIcon className='fa-2x text-white' icon={faPencilRuler} />                  
                 </div>
-                <div className="card-body" style={{ height: '9em' }}>
+                <div className="card-body" style={{ height: '10em' }}>
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
                   </h5>
@@ -48,12 +48,12 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            <div className='col-md'>
+            <div className='col-lg'>
               <div className="card">
                 <div className="card-img-top text-center py-2 bg-primary">
                   <FontAwesomeIcon className='fa-2x text-white' icon={faShuffle} />                  
                 </div>
-                <div className="card-body" style={{ height: '9em' }}>
+                <div className="card-body" style={{ height: '10em' }}>
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }}>Schema Conversion</Link>
                   </h5>
@@ -67,12 +67,12 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            <div className='col-md'>
+            <div className='col-lg'>
               <div className="card">
                 <div className="card-img-top text-center py-2 bg-primary">
                   <FontAwesomeIcon className='fa-2x text-white' icon={faCode} />                  
                 </div>
-                <div className="card-body" style={{ height: '9em' }}>
+                <div className="card-body" style={{ height: '10em' }}>
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "" }}>Schema Translation</Link>
                   </h5>
@@ -87,7 +87,7 @@ const Home = () => {
             </div>
           </div>
           <div className="row">
-            <div className='col-md'>
+            <div className='col-lg'>
               <div className="card mt-2">
                 <div className="card-img-top text-center py-2 bg-primary">
                   <FontAwesomeIcon className='fa-2x text-white' icon={faEnvelopeCircleCheck} /> 
@@ -105,7 +105,7 @@ const Home = () => {
                 </div>
               </div>
             </div> 
-            <div className='col-md px-0'>
+            <div className='col-lg'>
               <div className="card mt-2">
                 <div className="card-img-top text-center py-2 bg-primary">
                   <FontAwesomeIcon className='fa-2x text-white' icon={faCodeBranch} />                  
@@ -121,7 +121,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            <div className='col-md'>
+            <div className='col-lg'>
               <div className="card mt-2">
                 <div className="card-img-top text-center py-2 bg-primary">
                   <FontAwesomeIcon className='fa-2x text-white' icon={faFileCirclePlus} />                  
