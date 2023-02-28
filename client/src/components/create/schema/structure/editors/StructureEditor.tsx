@@ -28,8 +28,7 @@ const StructureEditor = (props: StructureEditorProps) => {
   const { value, change, dataIndex } = props;
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
-  //const fieldToggle = useCallback(() => setFieldCollapse(!fieldCollapse), []);
-
+  const [fieldCount, setFieldCount] = useState(0);
   const [modal, setModal] = useState(false);
   let valueObj = zip(TypeKeys, value) as StandardTypeObject;
 
@@ -68,16 +67,17 @@ const StructureEditor = (props: StructureEditorProps) => {
 
   const addField = () => {
     let field: EnumeratedFieldArray | StandardFieldArray;
-    const uid = new Date().getTime();
+    //const uid = new Date().getTime();
     if (valueObj.type.toLowerCase() === 'enumerated') {
-      field = [uid, '', ''] as EnumeratedFieldArray;
+      field = [fieldCount, '', ''] as EnumeratedFieldArray;
     } else {
       //TODO: default field type is String ? Fix line in field.tsx too.
-      field = [uid, 'field name', 'String', [], ''] as StandardFieldArray;
+      field = [fieldCount, 'field name', 'String', [], ''] as StandardFieldArray;
     }
 
     const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
     change(updatevalue, dataIndex);
+    setFieldCount(fieldCount => fieldCount + 1);
   }
 
   const fieldChange = (val: FieldArray, idx: number) => {
