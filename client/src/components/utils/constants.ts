@@ -23,4 +23,4 @@ export const NAV_EXTERNAL_OPENC2 = 'https://openc2.org/';
 export const NAV_EXTERNAL_OPENC2_FAQ = 'https://openc2.org/faqs.html';
 export const NAV_EXTERNAL_OPENC2_JADN_PYPI = 'https://pypi.org/project/jadn/';
 export const NAV_EXTERNAL_OPENC2_JADN_SRC = 'https://github.com/oasis-open/openc2-jadn/';
-export const NAV_EXTERNAL_OPENC2_JADN_SPEC = 'https://docs.oasis-open.org/openc2/jadn/v1.0/csd01/jadn-v1.0-csd01.html';
+export const NAV_EXTERNAL_OPENC2_JADN_SPEC = 'https://docs.oasis-open.org/openc2/jadn/v1.0/jadn-v1.0.html';
