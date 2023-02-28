@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faFileDownload, faFilePdf, faWindowMaximize, faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import { faFileDownload, faFilePdf, faWindowMaximize, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
@@ -13,7 +13,6 @@ import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown'];
 import SBHtmlPreviewer from "components/common/SBHtmlPreviewer";
-import { htmlToHTML } from "components/common/SBHtmlConverter";
 
 const SchemaConverted = (props: any) => {
     const location = useLocation()
@@ -39,6 +38,7 @@ const SchemaConverted = (props: any) => {
     const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);
         setConvertedSchema('');
+        setSplitViewFlag(false);
     }
 
     const onDownloadSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -111,7 +111,7 @@ const SchemaConverted = (props: any) => {
         window.open(data);
     }
 
-    const onPopOutClick2 = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onMDPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const htmlContent = markdownToHTML(convertedSchema);
         const blob = new Blob([htmlContent], { type: "text/html" });
@@ -119,7 +119,7 @@ const SchemaConverted = (props: any) => {
         window.open(data);
     }
 
-    const splitView = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const toggleSplitView = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSplitViewFlag(splitView => !splitView);
     }
@@ -142,42 +142,44 @@ const SchemaConverted = (props: any) => {
                         </Button>
 
                         <div className={`${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
-                            <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
+                            <Button id="htmlPdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
                                 <FontAwesomeIcon icon={faFilePdf} />
                             </Button>
-                            <Button id="HTMLpopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onHTMLPopOutClick}>
+                            <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onHTMLPopOutClick}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
-                            <Button id="splitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={splitView}>
-                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90'/>
+                            <Button id="htmlSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
+                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
                             </Button>
                         </div>
 
                         <div className={`${conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
-                            <Button id="pdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
+                            <Button id="mdPdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
                                 <FontAwesomeIcon icon={faFilePdf} />
                             </Button>
-                            <Button id="popOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick2}>
+                            <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onMDPopOutClick}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
-                            <Button id="splitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={splitView}>
-                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90'/>
+                            <Button id="htmlSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
+                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
                             </Button>
                         </div>
                         <div>
 
-                        <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
-                            disabled={loadedSchema && conversion ? false : true}
-                            title={!loadedSchema && !conversion ? "Please select schema and language for conversion" :
-                                !loadedSchema && conversion ? "Please select a schema" :
-                                    loadedSchema && !conversion ? 'Please select a language to convert to' :
-                                        loadedSchema && conversion ? "Convert the given JADN schema to the selected format" : "Convert the given JADN schema to the selected format"}>
+                            <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
+                                disabled={loadedSchema && conversion ? false : true}
+                                title={!loadedSchema && !conversion ? "Please select schema and language for conversion" :
+                                    !loadedSchema && conversion ? "Please select a schema" :
+                                        loadedSchema && !conversion ? 'Please select a language to convert to' :
+                                            loadedSchema && conversion ? "Convert the given JADN schema to the selected format" : "Convert the given JADN schema to the selected format"}>
 
-                            Convert
-                        </Button>
+                                Convert
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div className="card-body p-0" className={`${(conversion == 'md' || conversion == 'html') && spiltViewFlag ? 'd-none' : ''}`}>
                 <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
             </div>
@@ -192,7 +194,6 @@ const SchemaConverted = (props: any) => {
                 </div>
             </div>
         </div>
- </div>
     )
 }
 export default SchemaConverted;
