@@ -180,10 +180,10 @@ const SchemaConverted = (props: any) => {
             </div>
 
             <div className="card-body p-0" className={`${(conversion == 'md' || conversion == 'html') && spiltViewFlag ? 'd-none' : ''}`}>
-                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
+                <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
             </div>
             <div className="card-body p-0" className={`${(conversion == 'md' || conversion == 'html') && spiltViewFlag ? '' : ' d-none'}`}>
-                <SBEditor data={convertedSchema} setData={setConvertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
+                <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
 
                 <div className={`${conversion == 'md' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
                     <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
