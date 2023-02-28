@@ -160,7 +160,7 @@ const SchemaConverted = (props: any) => {
                             <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onMDPopOutClick}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
-                            <Button id="htmlSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
+                            <Button id="mdSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
                                 <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
                             </Button>
                         </div>
