@@ -1,34 +1,39 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
-import { info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
+import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
 
 const SchemaTransformer = () => {
-    const dispatch = useDispatch();
 
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [transformedSchema, setTransformedSchema] = useState('');
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-    useEffect(() => {
-        dispatch(info());
-    }, [dispatch])
 
     const onReset = () => {
         setSelectedFiles([]);
         setTransformedSchema('');
+        //clear checkboxes 
+        var inputElem = document.getElementsByTagName('input');
+        for (var i = 0; i < inputElem.length; i++) {
+            if (inputElem[i].type == 'checkbox') {
+                if (inputElem[i].name == 'schema-files') {
+                    inputElem[i].checked = false;
+                }
+            }
+        }
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         //validate all selected files
-        //transform files
+        //call resolve_references.py
         //set transformed Schema
     }
 
@@ -49,7 +54,7 @@ const SchemaTransformer = () => {
                             <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        multiple file uploader here...
+                                        <SBMultiSchemaLoader data={selectedFiles} setData={setSelectedFiles} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTransformed transformedSchema={transformedSchema} />

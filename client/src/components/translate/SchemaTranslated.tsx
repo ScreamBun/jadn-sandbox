@@ -9,7 +9,7 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
-const validTranslations = ['JSON', 'Relax'];
+const validTranslations = ['JSON', 'Relax', 'XSD'];
 
 const SchemaTranslated = (props: any) => {
     const location = useLocation()

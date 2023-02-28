@@ -1,4 +1,4 @@
-import { SchemaJADN, TypeArray } from 'components/create/schema/interface';
+import { SchemaJADN } from 'components/create/schema/interface';
 import * as util from '../actions/util';
 
 export interface UtilState {
@@ -50,7 +50,7 @@ export default (state = initialState, action: util.UtilActions) => {
       };
 
     case util.LOAD_SUCCESS:
-      tmpState.loaded[action.payload.type][action.payload.file] = action.payload.data;
+      tmpState.loaded[action.payload.type][action.payload.name] = action.payload.data;
       return tmpState;
 
     case util.SCHEMA_SUCCESS:

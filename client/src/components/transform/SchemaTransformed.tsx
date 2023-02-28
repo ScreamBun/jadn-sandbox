@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileDownload, faFilePdf, faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
-import { getConversions } from "reducers/convert";
+import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
-import { isNull } from "lodash";
-import { useLocation } from "react-router-dom";
 
 const SchemaTransformed = (props: any) => {
 
@@ -43,10 +39,10 @@ const SchemaTransformed = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
-
-                    </div>
                     <div className='col-md-9'>
+                        Specify transformation type here..
+                    </div>
+                    <div className='col-md-3'>
                         <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema} customClass='float-right' />
                         <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm mr-1 float-right${transformedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
                             <FontAwesomeIcon icon={faFileDownload} />

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { Button } from 'reactstrap'
+import { Button, Form } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import ExampleCreator from './ExampleCreator'
 
 const ExampleGenerator = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [generatedMessage, setGeneratedMessage] = useState({});
+    const [generatedMessages, setGeneratedMessages] = useState(["Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "]);
 
     const meta_title = useSelector(getPageTitle) + ' | Message Generation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -20,17 +20,23 @@ const ExampleGenerator = () => {
         dispatch(info());
     }, [dispatch])
 
-    useEffect(() => {
-        setGeneratedMessage({});
-    }, [loadedSchema])
+/*     useEffect(() => {
+        setGeneratedMessages([]);
+    }, [loadedSchema]) */
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedFile('');
         setLoadedSchema('');
-        setGeneratedMessage({});
+        setGeneratedMessages([]);
 
         dispatch(setSchema({ types: [] }));
+    }
+
+    const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        //call make_examples.py
+        //set generated example messages 
     }
 
     return (
@@ -47,18 +53,21 @@ const ExampleGenerator = () => {
                             <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                         <div className='card-body p-2'>
-                            <div className='row'>
-                                <div className='col-md-6 pr-1'>
-                                    <JADNSchemaLoader
-                                        selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                        loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                            <Form onSubmit={submitForm}>
+                                <div className='row'>
+                                    <div className='col-md-6 pr-1'>
+                                        <JADNSchemaLoader
+                                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                    </div>
+                                    <div className='col-md-6 pl-1'>
+                                        <ExampleCreator
+                                            generatedMessages={generatedMessages}
+                                            loadedSchema={loadedSchema}
+                                        />
+                                    </div>
                                 </div>
-                                <div className='col-md-6 pl-1'>
-                                    <ExampleCreator
-                                        generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                    />
-                                </div>
-                            </div>
+                            </Form>
                         </div>
                     </div>
                 </div>

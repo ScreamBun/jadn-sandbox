@@ -124,7 +124,6 @@ const SchemaConverted = (props: any) => {
         setSplitViewFlag(splitView => !splitView);
     }
 
-
     return (
         <div className="card">
             <div className="card-header p-2">
