@@ -12,7 +12,7 @@ const ExampleGenerator = () => {
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [generatedMessages, setGeneratedMessages] = useState([]);
+    const [generatedMessages, setGeneratedMessages] = useState(["Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "]);
 
     const meta_title = useSelector(getPageTitle) + ' | Message Generation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -20,9 +20,9 @@ const ExampleGenerator = () => {
         dispatch(info());
     }, [dispatch])
 
-    useEffect(() => {
+/*     useEffect(() => {
         setGeneratedMessages([]);
-    }, [loadedSchema])
+    }, [loadedSchema]) */
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
