@@ -11,7 +11,7 @@ const About = () => {
             <div className="row">
               <div className='col-md-12'>
                 <p className='mt-2'>
-                  The <b> JADN Sandbox </b> provides the ability to create, convert, translate, transform, and validate OpenC2 compliant schemas.  
+                  The <b> JADN Sandbox </b> provides the ability to create, convert, translate, transform, and validate JADN compliant schemas.  
                   In addition, for applications that communicate via messaging, the app provides the ability to create and validate messages against a schema, as well as, 
                   generate test messages based on the provided schema.  Within JADN Sandbox users can interact with the JADN information modeling tools and create 
                   schemas or messages based on their application or systems needs or just to learn more about JADN with a hands on approach.  
