@@ -1,4 +1,4 @@
-import { NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OPENC2_FAQ, NAV_EXTERNAL_OPENC2_JADN_PYPI, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2_JADN_SRC } from "components/utils/constants";
+import { NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OPENC2_FAQ, NAV_EXTERNAL_OPENC2_JADN_INFO_MODELING, NAV_EXTERNAL_OPENC2_JADN_PYPI, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2_JADN_SRC } from "components/utils/constants";
 import React from "react"
 
 const About = () => {
@@ -19,7 +19,7 @@ const About = () => {
               </div>
             </div>
             <div className="row">
-              <div className='col-md-9 pr-1'>
+              <div className='col-md-8 pr-1'>
                 <ul className="list-group">
                     <li className="list-group-item active">
                       <b>FAQ</b>
@@ -54,12 +54,13 @@ const About = () => {
                     </li>
                   </ul>                   
                 </div>
-                <div className='col-md-3 pl-1'>
+                <div className='col-md-4 pl-1'>
                   <ul className="list-group">
                   <li className="list-group-item active">
                     <b>References</b>
                   </li>                 
                   <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SPEC} target='_blank' rel='noreferrer'>JADN Specification Doc</a></li>
+                  <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_INFO_MODELING} target='_blank' rel='noreferrer'>Information Modeling with JADN (work in progress)</a></li>
                   <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SRC} target='_blank' rel='noreferrer'>JADN Sandbox Source Code</a></li>
                   <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_PYPI} target='_blank' rel='noreferrer'>JADN Python Package</a></li>
                   <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2} target='_blank' rel='noreferrer'>OpenC2</a>
