@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Input } from "reactstrap";
+import { Button } from "reactstrap";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { getAllSchemas } from "../../reducers/util";
 import { info, loadFile, setSchema } from "../../actions/util";
@@ -94,6 +94,10 @@ const JADNSchemaLoader = (props: any) => {
         setDecodeMsg(msgDecode);
     }
 
+    const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
+        formatJSON(loadedSchema);
+    }
+
     const formatJSON = (jsonToFormat: string) => {
         if (!jsonToFormat) {
             sbToastError(`Nothing to format`)
@@ -117,29 +121,8 @@ const JADNSchemaLoader = (props: any) => {
             })
     }
 
-    const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
-        let jsonObj = null;
-
-        if (!jsonToValidate) {
-            setIsValidJADN(false);
-            sbToastError(`No data found`)
-            return jsonObj;
-        }
-
-        try {
-            jsonObj = JSON.parse(jsonToValidate);
-        } catch (err: any) {
-            setIsValidJADN(false);
-            if (showErrorPopup) {
-                sbToastError(`Invalid Format: ${err.message}`)
-            }
-        }
-
-        if (onErrorReturnOrig && !jsonObj) {
-            jsonObj = jsonToValidate
-        }
-
-        return jsonObj;
+    const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
+        validateJADN(loadedSchema);
     }
 
     const validateJADN = (jsonToValidate: any) => {
@@ -171,7 +154,32 @@ const JADNSchemaLoader = (props: any) => {
         }
     }
 
+    const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
+        let jsonObj = null;
+
+        if (!jsonToValidate) {
+            sbToastError(`No data found`)
+            return jsonObj;
+        }
+
+        try {
+            jsonObj = JSON.parse(jsonToValidate);
+        } catch (err: any) {
+            if (showErrorPopup) {
+                sbToastError(`Invalid Format: ${err.message}`)
+            }
+        }
+
+        if (onErrorReturnOrig && !jsonObj) {
+            jsonObj = jsonToValidate
+        }
+
+        return jsonObj;
+    }
+
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setIsValidJADN(false);
+        setLoadedSchema('');
         if (e.target.files) {
             const file = e.target.files[0];
             const fileReader = new FileReader();
@@ -181,7 +189,6 @@ const JADNSchemaLoader = (props: any) => {
                     try {
                         dispatch(setSchema(dataStr));
                         setLoadedSchema(dataStr);
-                        validateJADN(dataStr);
                         if (setDecodeSchemaTypes && setDecodeMsg) {
                             loadDecodeTypes(JSON.parse(dataStr));
                         }
@@ -194,38 +201,42 @@ const JADNSchemaLoader = (props: any) => {
         }
     }
 
-    const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
-        formatJSON(loadedSchema);
-    }
-
     const sbEditorOnChange = (data: any) => {
         setIsValidJADN(false);
         setLoadedSchema(data);
-
         if (setDecodeSchemaTypes && setDecodeMsg) {
             loadDecodeTypes(data);
         }
     }
 
-    const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
-        validateJADN(loadedSchema);
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setSelectedFile('');
+        setLoadedSchema('');
     }
 
     return (
         <div className="card">
             <div className="card-header p-2">
                 <div className="row no-gutters">
-                    <div className="col-md-4">
-                        <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
-                            <option value="">Select a Schema...</option>
-                            <optgroup label="Testers">
-                                {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
-                            </optgroup>
-                            <optgroup label="Custom">
-                                <option value="file">File...</option>
-                            </optgroup>
-                        </select>
-                        <Input type="file" id="schema-file" name="schema-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
+                    <div className="col-md-6">
+                        <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
+                            <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
+                                <option value="">Select a Schema...</option>
+                                <optgroup label="Testers">
+                                    {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
+                                </optgroup>
+                                <optgroup label="Custom">
+                                    <option value="file">File...</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                            <input type="file" id="schema-file" name="schema-file" accept=".jadn" onChange={onFileChange} className='form-control-sm' />
+                            <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload}>
+                                <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
+                            </Button>
+                        </div>
                     </div>
                     <div className="col">
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right' />
