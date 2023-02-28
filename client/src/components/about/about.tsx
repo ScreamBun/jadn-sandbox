@@ -48,7 +48,7 @@ const About = () => {
                     </li>
                     <li className="list-group-item">
                       <p><b>What is a JIDL?</b></p>
-                      <p>JADN Interface Definition Language (IDL) is a textual representation of JADN type definitions" definition in the jadn spec.  
+                      <p>JADN Interface Definition Language (IDL) is a textual representation of JADN type definitions" definition in the JADN spec.  
                         JIDL provides a human readable format of the JADN information model. 
                       </p>
                     </li>
