@@ -88,7 +88,7 @@ const Home = () => {
           </div>
           <div className="row">
             <div className='col-lg'>
-              <div className="card mt-2">
+              <div className="card mt-3">
                 <div className="card-img-top text-center py-2 bg-primary">
                   <FontAwesomeIcon className='fa-2x text-white' icon={faEnvelopeCircleCheck} /> 
                 </div>
@@ -106,7 +106,7 @@ const Home = () => {
               </div>
             </div> 
             <div className='col-lg'>
-              <div className="card mt-2">
+              <div className="card mt-3">
                 <div className="card-img-top text-center py-2 bg-primary">
                   <FontAwesomeIcon className='fa-2x text-white' icon={faCodeBranch} />                  
                 </div>
@@ -122,7 +122,7 @@ const Home = () => {
               </div>
             </div>
             <div className='col-lg'>
-              <div className="card mt-2">
+              <div className="card mt-3">
                 <div className="card-img-top text-center py-2 bg-primary">
                   <FontAwesomeIcon className='fa-2x text-white' icon={faFileCirclePlus} />                  
                 </div>
