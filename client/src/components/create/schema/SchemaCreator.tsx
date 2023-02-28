@@ -254,6 +254,7 @@ const SchemaCreator = (props: any) => {
                                         <NavLink
                                             className={activeOpt == 'info' ? ' active' : ''}
                                             onClick={() => setActiveOpt('info')}
+                                            title="meta data (about a schema package)"
                                         >
                                             Info
                                         </NavLink>
@@ -262,6 +263,7 @@ const SchemaCreator = (props: any) => {
                                         <NavLink
                                             className={activeOpt == 'types' ? ' active' : ''}
                                             onClick={() => setActiveOpt('types')}
+                                            title="schema content (the information model)"
                                         >
                                             Types
                                         </NavLink>
@@ -290,12 +292,12 @@ const SchemaCreator = (props: any) => {
                                     }}
                                 >
                                     <div className="col pt-2">
-                                        <h5>Info</h5>
+                                        <h5>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
                                         {infoEditors}
                                     </div>
                                     <hr />
                                     <div className="col">
-                                        <h5>Types</h5>
+                                        <h5>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
                                         {typesEditors}
                                     </div>
                                 </Droppable>
