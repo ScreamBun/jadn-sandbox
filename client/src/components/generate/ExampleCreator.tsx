@@ -43,7 +43,7 @@ const ExampleCreator = (props: any) => {
         <div className="card" key={i}>
             <div className="card-header">
                 <h5 className="mb-0">
-                    <button className="btn btn-link" type="button" onClick={() => onToggle(i)} >
+                    <button className="btn btn-link" id ={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
                         Message Example #{i}
                     </button>
                     <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-right' />

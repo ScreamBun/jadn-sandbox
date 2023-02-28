@@ -56,11 +56,11 @@ const MessageValidated = (props: any) => {
         }
     };
 
-    const onMsgChange = () => {
+    const onMsgChange = (data: any) => {
         setSelectedFile('empty');
         setDecodeMsg('');
         setMsgFormat('');
-        // setLoadedMsg(e.target.value);
+        setLoadedMsg(data);
     }
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,7 +146,7 @@ const MessageValidated = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={loadedMsg} setData={setLoadedMsg} convertTo={msgFormat} onEditorChange={onMsgChange}></SBEditor>
+                <SBEditor data={loadedMsg} convertTo={msgFormat} onChange={onMsgChange}></SBEditor>
             </div>
         </div>
     )

@@ -90,7 +90,7 @@ const SchemaTranslated = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={translatedSchema} setData={setTranslatedSchema} isReadOnly={true} convertTo={translation}></SBEditor>
+                <SBEditor data={translatedSchema} isReadOnly={true} convertTo={translation}></SBEditor>
             </div>
         </div>
     )
