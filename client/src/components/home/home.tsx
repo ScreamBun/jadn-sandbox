@@ -94,7 +94,7 @@ const Home = () => {
               <div className="card-img-top text-center py-2 bg-primary">
                 <FontAwesomeIcon className='fa-2x text-white' icon={faEnvelopeCircleCheck} />
               </div>
-              <div className="card-body" style={{ height: '10em' }}>
+              <div className="card-body">
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "" }}>Message Validation</Link>
                 </h5>
@@ -110,11 +110,13 @@ const Home = () => {
               <div className="card-img-top text-center py-2 bg-primary">
                 <FontAwesomeIcon className='fa-2x text-white' icon={faCodeBranch} />
               </div>
-              <div className="card-body" style={{ height: '10em' }}>
+              <div className="card-body">
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_TRANSFORM}>Schema Transformation</Link>
                 </h5>
-                <p className="card-text">Convert one or more JADN Schemas into a different but related Schema (resolve references, simplify by removing extensions, strip comments, etc).</p>
+                <p className="card-text">Convert one or more JADN Schemas into a different but related Schema (resolve references, 
+                simplify by removing extensions, strip comments, etc).</p>
+                <br/>
               </div>
               <div className="card-footer">
                 <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
@@ -124,7 +126,7 @@ const Home = () => {
               <div className="card-img-top text-center py-2 bg-primary">
                 <FontAwesomeIcon className='fa-2x text-white' icon={faFileCirclePlus} />
               </div>
-              <div className="card-body" style={{ height: '10em' }}>
+              <div className="card-body">
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_GENERATE}>Example Message Generation</Link>
                 </h5>
