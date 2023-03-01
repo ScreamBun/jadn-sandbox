@@ -50,7 +50,7 @@ const AppLayout = () => {
               </DropdownMenu>
             </UncontrolledDropdown>
             <NavItem>
-              <NavLink className='nav-link px-0' to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }} onClick={onNavClick} title='Schema Conversion: Convert a Schema into a visual representation'>Conversion</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }} onClick={onNavClick} title='Schema Visualization: Convert a Schema into a visual representation'>Visualization</NavLink>
             </NavItem>
             <NavItem>
               <NavLink className='nav-link px-0' to={NAV_TRANSLATE} state={{ navConvertTo: "" }} onClick={onNavClick} title='Schema Translation: Translate between JADN Schemas and other data types'>Translation</NavLink>

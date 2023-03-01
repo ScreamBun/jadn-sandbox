@@ -1,4 +1,4 @@
-import { faCode, faCodeBranch, faEnvelopeCircleCheck, faFileCirclePlus, faPencilRuler, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { faCode, faCodeBranch, faEnvelopeCircleCheck, faEye, faEyeSlash, faFileCirclePlus, faPencilRuler, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_CREATE_SCHEMA, NAV_HOME, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE
@@ -51,17 +51,17 @@ const Home = () => {
               </div>
               <div className="card">
                 <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faShuffle} />
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faEye} />
                 </div>
                 <div className="card-body">
                   <h5 className="card-title">
-                    <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }}>Schema Conversion</Link>
+                    <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }}>Schema Visualization</Link>
                   </h5>
-                  <p className="card-text">Convert a JADN Schema between JADN formats (JADN, MD, JIDL, HTML, DOT, PlantUML, etc). </p>
+                  <p className="card-text">Convert a JADN Schema into different visualization formats. </p>
                   <div className="card-text">
                     <div className="card-text">
                       Input: JADN Schema
-                      <p>Output: the same JADN Schema in a different representation</p>
+                      <p>Output: The same JADN Schema in a different visual representation</p>
                     </div>
                   </div>
                 </div>
