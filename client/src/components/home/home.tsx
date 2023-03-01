@@ -34,7 +34,7 @@ const Home = () => {
             <div className='col-lg'>
               <div className="card">
                 <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faPencilRuler} />                  
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faPencilRuler} />
                 </div>
                 <div className="card-body" style={{ height: '10em' }}>
                   <h5 className="card-title">
@@ -51,13 +51,19 @@ const Home = () => {
             <div className='col-lg'>
               <div className="card">
                 <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faShuffle} />                  
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faShuffle} />
                 </div>
                 <div className="card-body" style={{ height: '10em' }}>
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }}>Schema Conversion</Link>
                   </h5>
-                  <p className="card-text">Convert a JADN Schema between JADN formats (jadn, md, jidl, html, dot, plantuml, etc).  Input=JADN Schema, Output= the same JADN Schema in a different representation.</p>
+                  <p className="card-text">Convert a JADN Schema between JADN formats (JADN, MD, JIDL, HTML, DOT, PlantUML, etc). </p>
+                  <div className="card-text">
+                    <div className="card-text">
+                      Input: JADN Schema
+                      <p>Output: the same JADN Schema in a different representation</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "gv" }}>GraphViz</Link>
@@ -70,13 +76,13 @@ const Home = () => {
             <div className='col-lg'>
               <div className="card">
                 <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faCode} />                  
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faCode} />
                 </div>
                 <div className="card-body" style={{ height: '10em' }}>
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "" }}>Schema Translation</Link>
                   </h5>
-                  <p className="card-text">Translate a Schema and its data from JADN to another Schema or Data format.</p>
+                  <p className="card-text">Translate a Schema and its data from JADN to another Schema or data format.</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "json" }}>JSON</Link>
@@ -90,9 +96,9 @@ const Home = () => {
             <div className='col-lg'>
               <div className="card mt-3">
                 <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faEnvelopeCircleCheck} /> 
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faEnvelopeCircleCheck} />
                 </div>
-                <div className="card-body" style={{height: '10em'}}>
+                <div className="card-body" style={{ height: '10em' }}>
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "" }}>Message Validation</Link>
                   </h5>
@@ -104,17 +110,17 @@ const Home = () => {
                   <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "xml" }}>Relax (XML)</Link>
                 </div>
               </div>
-            </div> 
+            </div>
             <div className='col-lg'>
               <div className="card mt-3">
                 <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faCodeBranch} />                  
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faCodeBranch} />
                 </div>
-                <div className="card-body" style={{height: '10em'}}>
+                <div className="card-body" style={{ height: '10em' }}>
                   <h5 className="card-title">
-                    <Link className="card-link" to={NAV_TRANSFORM}>Transformation</Link>
+                    <Link className="card-link" to={NAV_TRANSFORM}>Schema Transformation</Link>
                   </h5>
-                  <p className="card-text">Convert one or more JADN Schemas into a different but related Schema. Resolve references, simplify by removing extensions, strip comments, etc.</p>
+                  <p className="card-text">Convert one or more JADN Schemas into a different but related Schema (resolve references, simplify by removing extensions, strip comments, etc).</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
@@ -124,13 +130,13 @@ const Home = () => {
             <div className='col-lg'>
               <div className="card mt-3">
                 <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faFileCirclePlus} />                  
+                  <FontAwesomeIcon className='fa-2x text-white' icon={faFileCirclePlus} />
                 </div>
-                <div className="card-body" style={{height: '10em'}}>
+                <div className="card-body" style={{ height: '10em' }}>
                   <h5 className="card-title">
                     <Link className="card-link" to={NAV_GENERATE}>Example Message Generation</Link>
                   </h5>
-                  <p className="card-text">Example message generation based off of a schema.</p>
+                  <p className="card-text">Generate various example messages based off of a Schema.</p>
                 </div>
                 <div className="card-body">
                   <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
