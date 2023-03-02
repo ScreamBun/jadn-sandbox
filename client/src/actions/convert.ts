@@ -36,7 +36,7 @@ export const convertSchema = (schema: Record<string, any>, t: string) => createA
   endpoint: `${baseAPI}/`,
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify({
     schema,
@@ -50,7 +50,7 @@ export const convertSchema = (schema: Record<string, any>, t: string) => createA
 export interface ConvertSchemaSuccessAction extends ActionSuccessResult {
   type: typeof CONVERT_SUCCESS;
   payload: {
-    schema: Record<string, any>;
+    schema: string;
   };
 }
 

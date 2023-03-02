@@ -146,20 +146,20 @@ legend {
 @media (min-width: 768px) {
     .collapse {
         display: none !important;
-    }  
+    }
 }
 
 // Large devices (desktops, 992px and up)
 @media (min-width: 992px) {
     .collapse {
         display: none !important;
-    }      
+    }
 }
 
 // Extra large devices (large desktops, 1200px and up)
 @media (min-width: 1200px) {}
 
 .cm-editor * {
-      font-family: Arial, monospace;
-      font-size: 14px;
+    font-family: Consolas, monaco, monospace;
+    font-size: 14px;
 }
