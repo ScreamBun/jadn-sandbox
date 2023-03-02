@@ -16,7 +16,7 @@
    1. Under WebValidator/client run: 
       1. yarn install
       2. yarn build
-      2. yarn start or watch
+      3. yarn start or watch
 3. In your browser go to: http://localhost:3000/
 
 ## How To
