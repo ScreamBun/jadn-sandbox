@@ -25,8 +25,7 @@ class Format(Resource):
 
         except (TypeError, ValueError):
             tb = traceback.format_exc()
-            print(tb)
-            output =  "Error: " + tb   
+            raise Exception("Error: " + tb)
         
         return jsonify({
             "schema": output

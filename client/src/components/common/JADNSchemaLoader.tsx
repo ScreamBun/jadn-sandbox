@@ -213,6 +213,7 @@ const JADNSchemaLoader = (props: any) => {
         e.preventDefault();
         setSelectedFile('');
         setLoadedSchema('');
+        document.getElementById("schema-file").value = '';
     }
 
     return (
