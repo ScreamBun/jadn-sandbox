@@ -1,4 +1,4 @@
-./jadnschema-0.2.4-py2.py3-none-any.whl
+ ./jadnschema-0.2.5-py2.py3-none-any.whl
 # -e /home/matt/screamingbunny/Schema/jadnschema
 # -e /home/kaitlyn_hsu/ScreamingBunnyRepo/Schema/jadnschema
 cbor-json==0.0.4
@@ -7,5 +7,5 @@ flask==2.2.2
 flask_restful==0.3.9
 gunicorn==20.1.0
 jadn==0.6.17
-lxml  # Use version form JADNSchema
+lxml  # Use version from JADNSchema
 weasyprint==57.0

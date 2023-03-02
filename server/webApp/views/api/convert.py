@@ -60,6 +60,11 @@ class Convert(Resource):
                         data = request_json["schema"]
                         schema_checked = jadn.check(data) 
                         conv = dumps(schema_checked, **kwargs)
+                    if conv_fmt == "puml":
+                        data = request_json["schema"]
+                        schema_checked = jadn.check(data) 
+                        conv = jadn.convert.plant_dumps(schema_checked, style={'links': True, 'detail': 'information'})                     
+                        # conv = jadn.convert.plant_dumps(schema_checked)                     
                     else:
                         conv = dumps(schema, **kwargs)
                         
