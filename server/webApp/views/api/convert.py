@@ -1,6 +1,4 @@
 import logging
-import os
-import re
 
 from io import BytesIO
 import traceback
@@ -40,7 +38,7 @@ class Convert(Resource):
             try:
                 conv_fmt = SchemaFormats(args["convert-to"])
             except Exception:  
-                conv = "Error: Invalid Conversion Type"
+                raise Exception("Error: Invalid Conversion Type")
             else:
 
                 kwargs = {
@@ -70,8 +68,7 @@ class Convert(Resource):
                         
                 except:
                     tb = traceback.format_exc()
-                    print(tb)
-                    conv = "Error: " + tb
+                    raise Exception("Error: " + tb)
 
         else:
             conv = "Error: Fix the base schema errors before converting..."

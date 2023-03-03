@@ -13,7 +13,7 @@
     }
 }
 /* Standard Styles */
-body {
+div>body {
 	font-family: Cambria, serif;
 	font-size: 16px;
 }

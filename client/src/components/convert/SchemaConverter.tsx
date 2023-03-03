@@ -25,7 +25,7 @@ const SchemaConverter = () => {
 
     useEffect(() => {
         setConvertedSchema('');
-    }, [selectedFile])
+    }, [selectedFile]);
 
     const onReset = () => {
         setSelectedFile('');
@@ -67,8 +67,8 @@ const SchemaConverter = () => {
                                             sbToastSuccess(`Schema conversion to ${conversion} successfully`);
                                         }
                                     })
-                                    .catch((_convertSchemaErr) => {
-                                        sbToastError(_convertSchemaErr);
+                                    .catch((convertSchemaErr: string) => {
+                                        sbToastError(convertSchemaErr);
                                     })
 
                             } catch (err) {
@@ -82,7 +82,7 @@ const SchemaConverter = () => {
                             sbToastError("No conversion selected");
                         }
                     })
-                    .catch((validateSchemaErr) => {
+                    .catch((validateSchemaErr: string) => {
                         sbToastError(validateSchemaErr);
                     })
 

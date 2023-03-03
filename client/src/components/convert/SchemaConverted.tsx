@@ -33,7 +33,7 @@ const SchemaConverted = (props: any) => {
         if (!isNull(navConvertTo)) {
             setConversion(navConvertTo);
         }
-    }, [])
+    }, []);
 
     const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);
@@ -179,10 +179,10 @@ const SchemaConverted = (props: any) => {
                 </div>
             </div>
 
-            <div className="card-body p-0" className={`${(conversion == 'md' || conversion == 'html') && spiltViewFlag ? 'd-none' : ''}`}>
+            <div className={`card-body p-0 ${(conversion == 'md' || conversion == 'html') && spiltViewFlag ? 'd-none' : ''}`}>
                 <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
             </div>
-            <div className="card-body p-0" className={`${(conversion == 'md' || conversion == 'html') && spiltViewFlag ? '' : ' d-none'}`}>
+            <div className={`card-body p-0 ${(conversion == 'md' || conversion == 'html') && spiltViewFlag ? '' : ' d-none'}`}>
                 <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
 
                 <div className={`${conversion == 'md' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
