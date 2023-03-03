@@ -28,7 +28,7 @@ const StructureEditor = (props: StructureEditorProps) => {
   const { value, change, dataIndex } = props;
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
-  const [fieldCount, setFieldCount] = useState(0);
+  const [fieldCount, setFieldCount] = useState(1);
   const [modal, setModal] = useState(false);
   let valueObj = zip(TypeKeys, value) as StandardTypeObject;
 
@@ -101,6 +101,55 @@ const StructureEditor = (props: StructureEditorProps) => {
     change(updatevalue, dataIndex);
   };
 
+  const saveModal = (modalData: Array<string>) => {
+    setModal(!modal);
+    const updatevalue = { ...valueObj, options: modalData }
+    change(updatevalue, dataIndex);
+  }
+
+  //If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
+  if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
+    return (
+      <div className="border m-1 p-1">
+        <ButtonGroup size="sm" className="float-right">
+          <Button color="danger" onClick={removeAll} >
+            <FontAwesomeIcon icon={faMinusCircle} />
+          </Button>
+        </ButtonGroup>
+
+        <div className="border-bottom mb-2">
+          <h5 className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
+        </div>
+
+        <div className="row m-0">
+          <FormGroup className="col-md-4">
+            <Label>Name</Label>
+            <Input type="text" placeholder="Name" value={valueObj.name} onChange={onChange} />
+          </FormGroup>
+
+          <FormGroup className="col-md-2">
+            <Label>&nbsp;</Label>
+            <InputGroup>
+              <Button outline color="info" onClick={() => setModal(!modal)}>Type Options</Button>
+              <OptionsModal
+                optionValues={valueObj.options}
+                isOpen={modal}
+                optionType={valueObj.type}
+                toggleModal={() => setModal(!modal)}
+                saveModal={saveModal}
+              />
+            </InputGroup>
+          </FormGroup>
+
+          <FormGroup className="col-md-6">
+            <Label>Comment</Label>
+            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} />
+          </FormGroup>
+        </div>
+      </div>
+    );
+  }
+
   const fields: any[] = [];
   for (let i = 0; i < valueObj.fields.length; ++i) {
     fields.push(<FieldEditor
@@ -113,11 +162,7 @@ const StructureEditor = (props: StructureEditorProps) => {
     />);
   }
 
-  const saveModal = (modalData: Array<string>) => {
-    setModal(!modal);
-    const updatevalue = { ...valueObj, options: modalData }
-    change(updatevalue, dataIndex);
-  }
+
 
   return (
     <div className="border m-1 p-1">

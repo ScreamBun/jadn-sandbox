@@ -45,11 +45,13 @@ const OptionsModal = (props: OptionsModalProps) => {
   const [data, setData] = useState(deserializeOptions(optionValues));
 
   const saveOptions = (state: Val, type: 'field' | 'type') => {
+    let typeOptVal: string | undefined;
+    state[1] == '' ? typeOptVal = undefined : typeOptVal = state[1];
     setData(data => ({
       ...data,
       [type]: {
         ...data[type],
-        [state[0]]: state[1]
+        [state[0]]: typeOptVal
       }
     }))
   }
@@ -61,9 +63,7 @@ const OptionsModal = (props: OptionsModalProps) => {
   return (
     <Modal size="xl" isOpen={isOpen}>
       <ModalHeader>
-        {fieldOptions ? 'Field' : 'Type'}
-        &nbsp;
-        Options
+        {fieldOptions ? 'Field' : 'Type'} Options
       </ModalHeader>
       <ModalBody>
         <FieldOptionsEditor

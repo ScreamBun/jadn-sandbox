@@ -8,9 +8,9 @@ import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
+import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
-import { useAppSelector } from '../../../../../../reducers';
 
 // Interface
 interface ArrayOfFieldProps {
@@ -31,8 +31,36 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const [isValid, setisValid] = useState('');
 
   var optData: Record<string, any> = {};
-  const [_idx, name, type, _args, comment] = def;
+  const [_idx, name, type, args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
+
+  if (type.toLowerCase() == 'arrayof') {
+    optData = (opts2obj(args));
+  } else {
+    const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
+    const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+
+    if (typeDef) {
+      optData = (opts2obj(typeDef[2]));
+    }
+  }
+
+  // TODO optData : must include vtype
+  // TODO optData: MUST NOT include more than one collection option (set, unique, or unordered).
+  if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
+    optData.vtype = optData.vtype.slice(1);
+  }
+
+  const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
+  const arrDef = arrDefs.length === 1 ? arrDefs[0] : typeDef[0];
+
+  const fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
+    : [0, arrDef, 'String', [], ''];
+
+  const fields: any[] = [];
+  for (let i = 0; i < count; ++i) {
+    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} />);
+  }
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -99,23 +127,6 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     } else {
       optChange(msgName, Array.from(Object.values(updatedOpts)));
     }
-  }
-
-  const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
-  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-  if (typeDef) {
-    optData = (opts2obj(typeDef[2]));
-  }
-
-  const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-  const arrDef = arrDefs.length === 1 ? arrDefs[0] : typeDef[0];
-
-  const fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
-    : [0, arrDef, 'String', [], ''];
-
-  const fields: any[] = [];
-  for (let i = 0; i < count; ++i) {
-    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} />);
   }
 
   return (

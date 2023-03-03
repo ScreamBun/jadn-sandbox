@@ -25,15 +25,17 @@ const BasicField = (props: BasicFieldProps) => {
   const { arr, def, optChange, parent } = props;
   const [_idx, name, type, opts, comment] = def;
   const msgName = parent ? [parent, name] : [name];
-
   var optData: Record<string, any> = {};
-  optData = (opts2obj(opts));
 
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDefName = typeDefs.length === 1 ? typeDefs[0][0] : 'text';
   let typeDef = typeDefs.length === 1 ? typeDefs[0][1] : 'text';
-  typeDef == 'Integer' ? typeDef = 'number' : typeDef = typeDef.toLowerCase();
+  //typeDef == 'Integer' ? typeDef = 'number' : typeDef = typeDef.toLowerCase(); //added step 
+  if (typeDef) {
+    optData = (opts2obj(opts));
+    //TODO type opts : format
+  }
 
   const [value, setValue] = useState('');
   const [isValid, setisValid] = useState({
@@ -89,13 +91,14 @@ const BasicField = (props: BasicFieldProps) => {
           }
         }
       }
-      if (hasProperty(optData, 'pattern')) {
+      if (hasProperty(optData, 'pattern') && typeof data == 'string') {
         if (!optData.pattern.test(data)) {
           valc = 'red';
           valm.push('Pattern Error: must match ' + optData.pattern);
         }
       }
     }
+    //TODO: check format
     setisValid({ color: valc, msg: valm });
   }
 
@@ -162,6 +165,27 @@ const BasicField = (props: BasicFieldProps) => {
           <div className='card-body m-0 p-0'>
             <Input
               type={typeDef}
+              step='any'
+              name={name}
+              onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
+            />
+          </div>
+          {err}
+        </div>
+      </div>
+    );
+
+  } else if (typeDef == 'integer') {
+    return (
+      <div className='form-group'>
+        <div className='card'>
+          <div className='card-header p-2'>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
+          <div className='card-body m-0 p-0'>
+            <Input
+              type={'number'}
               name={name}
               onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
             />

@@ -22,15 +22,15 @@ const Field = (props: FieldProps) => {
 
   const parentName = parent || '';
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
-  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  const typeDef = typeDefs.length === 1 ? typeDefs[0][1] : def[2];
+
   // console.log(parentName, def);
   const args = {
     def,
     parent: parentName,
     optChange: (k: string, v: any) => optChange(k, v, idx)
   };
-
-  switch (typeDef[1]) {
+  switch (typeDef) {
     case 'Enumerated':
       return <EnumeratedField {...args} />;
     case 'Choice':

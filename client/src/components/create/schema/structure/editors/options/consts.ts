@@ -211,11 +211,6 @@ export const opts2obj = (opts: Array<string>): Record<string, boolean | number |
     const opt = o.slice(0, 1);
     let val = o.slice(1);
 
-    if (/>/.test(val)) {
-      //const pointer = val.slice(0, 1);
-      val = val.slice(1);
-    }
-
     if (opt in OptionIds) {
       const optKey = OptionIds[opt];
       return [optKey, BoolOpts.includes(optKey) ? true : val];

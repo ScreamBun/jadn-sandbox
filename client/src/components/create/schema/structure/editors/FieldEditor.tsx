@@ -36,7 +36,9 @@ const FieldEditor = (props: FieldEditorProps) => {
   let valueObj = zip(fieldKeys, value) as FieldObject;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     const { placeholder, value } = e.target;
+    //TODO JADN: MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension 
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
