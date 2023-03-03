@@ -1,6 +1,9 @@
 import ast
 import json
 import logging
+import traceback
+
+import jadn
 
 from flask import Blueprint, current_app, jsonify, redirect
 from flask_restful import Api, Resource, reqparse
@@ -54,15 +57,23 @@ class ValidateSchema(Resource):
     def post(self):
         args = parser.parse_args()
 
+        response_data = {}
+        err_msg = ""
+
         try:
             schema = json.dumps(ast.literal_eval(args["schema"]))
-        except (TypeError, ValueError) as e:
-            print(f"Error: {e}")
-            schema = args["schema"]
+            jadn.check(ast.literal_eval(args["schema"])) 
+        except Exception as ex:
+            print(f"Error: {ex}")
+            err_msg = str(ex)
 
-        val = current_app.validator.validateSchema(schema)
+        if err_msg:
+            response_data = { "valid_bool": False, "valid_msg": err_msg }
+        else:
+            val = current_app.validator.validateSchema(schema)
+            response_data = { "valid_bool": val[0], "valid_msg": val[1] }
 
-        return jsonify({ "valid_bool": val[0], "valid_msg": val[1] })
+        return jsonify(response_data)
 
 
 # Register resources

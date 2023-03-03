@@ -39,7 +39,7 @@ export default (state = initialState, action: validate.ValidateActions) => {
 		case validate.VALIDATE_FAILURE:
 			return {
 				...state,
-				error: action.payload.valid_msg || action.payload.error || 'ERROR'
+				error: action.payload.error || action.payload.valid_msg || 'ERROR'
 			};
 
 		default:
