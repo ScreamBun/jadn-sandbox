@@ -11,7 +11,7 @@ import SBMarkdownPreviewer from "components/common/SBMarkdownPreviewer";
 import { markdownToHTML } from "components/common/SBMarkdownConverter";
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
-const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown'];
+const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 import SBHtmlPreviewer from "components/common/SBHtmlPreviewer";
 
 const SchemaConverted = (props: any) => {

@@ -70,6 +70,7 @@ const Home = () => {
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "html" }}>HTML</Link>
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "jidl" }}>JIDL</Link>
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "md" }}>MarkDown</Link>
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "puml" }}>PlantUML</Link>
                 </div>                 
               </div>
               <div className="card">
