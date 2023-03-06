@@ -4,7 +4,7 @@ import { Draggable, Droppable } from 'react-drag-and-drop';
 import { Info, Types } from './structure/structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faFileDownload, faGripLines } from '@fortawesome/free-solid-svg-icons';
+import { faFileDownload, faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { sbToastError } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
@@ -79,6 +79,13 @@ const SchemaCreator = (props: any) => {
             };
             fileReader.readAsText(file);
         }
+    }
+
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setSelectedFile('');
+        setGeneratedSchema('');
+        document.getElementById("schema-file").value = '';
     }
 
     const schemaDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -223,16 +230,23 @@ const SchemaCreator = (props: any) => {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
-                        <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
-                            <option value="">Select a Schema...</option>
-                            <optgroup label="Testers">
-                                {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
-                            </optgroup>
-                            <optgroup label="Custom">
-                                <option value="file">File...</option>
-                            </optgroup>
-                        </select>
-                        <Input type="file" id="schema-file" name="schema-file" className={`form-control ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".jadn" onChange={onFileChange} />
+                        <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
+                            <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
+                                <option value="">Select a Schema...</option>
+                                <optgroup label="Testers">
+                                    {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
+                                </optgroup>
+                                <optgroup label="Custom">
+                                    <option value="file">File...</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                            <input type="file" id="schema-file" name="schema-file" accept=".jadn" onChange={onFileChange} className='form-control-sm' />
+                            <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload}>
+                                <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
+                            </Button>
+                        </div>
                     </div>
                     <div className='col-md-9'>
                         <SBCopyToClipboard buttonId='copyMessage' data={data} customClass='float-right' />
