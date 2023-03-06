@@ -102,10 +102,16 @@ const StructureEditor = (props: StructureEditorProps) => {
   };
 
   const saveModal = (modalData: Array<string>) => {
-    setModal(!modal);
+    toggleModal();
     const updatevalue = { ...valueObj, options: modalData }
     change(updatevalue, dataIndex);
   }
+
+
+  const toggleModal = () => {
+    setModal(modal => !modal);
+  }
+
 
   //If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
   if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
@@ -130,12 +136,12 @@ const StructureEditor = (props: StructureEditorProps) => {
           <FormGroup className="col-md-2">
             <Label>&nbsp;</Label>
             <InputGroup>
-              <Button outline color="info" onClick={() => setModal(!modal)}>Type Options</Button>
+              <Button outline color="info" onClick={toggleModal}>Type Options</Button>
               <OptionsModal
                 optionValues={valueObj.options}
                 isOpen={modal}
                 optionType={valueObj.type}
-                toggleModal={() => setModal(!modal)}
+                toggleModal={toggleModal}
                 saveModal={saveModal}
               />
             </InputGroup>
@@ -185,12 +191,12 @@ const StructureEditor = (props: StructureEditorProps) => {
         <FormGroup className="col-md-2">
           <Label>&nbsp;</Label>
           <InputGroup>
-            <Button outline color="info" onClick={() => setModal(!modal)}>Type Options</Button>
+            <Button outline color="info" onClick={toggleModal}>Type Options</Button>
             <OptionsModal
               optionValues={valueObj.options}
               isOpen={modal}
               optionType={valueObj.type}
-              toggleModal={() => setModal(!modal)}
+              toggleModal={toggleModal}
               saveModal={saveModal}
             />
           </InputGroup>

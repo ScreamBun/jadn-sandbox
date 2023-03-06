@@ -75,9 +75,13 @@ const FieldEditor = (props: FieldEditorProps) => {
   }
 
   const saveModal = (modalData: Array<string>) => {
-    setModal(modal => !modal);
+    toggleModal();
     const updatevalue = { ...valueObj, options: modalData }
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
+  }
+
+  const toggleModal = () => {
+    setModal(modal => !modal);
   }
 
   const makeOptions = () => {
@@ -116,12 +120,12 @@ const FieldEditor = (props: FieldEditorProps) => {
         </FormGroup>
 
         <FormGroup className="col-md-4 d-inline-block">
-          <Button outline color="info" onClick={() => setModal(!modal)}>Field Options</Button>
+          <Button outline color="info" onClick={toggleModal}>Field Options</Button>
           <OptionsModal
             optionValues={val.options}
             isOpen={modal}
             saveModal={saveModal}
-            toggleModal={() => setModal(!modal)}
+            toggleModal={toggleModal}
             optionType={val.type}
             fieldOptions
           />

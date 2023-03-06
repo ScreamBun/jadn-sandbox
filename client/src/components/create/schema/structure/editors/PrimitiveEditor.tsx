@@ -60,9 +60,13 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
   }
 
   const saveModal = (modalData: Array<string>) => {
-    setModal(modal => !modal);
+    toggleModal();
     const updatevalue = { ...valueObj, options: modalData }
     change(updatevalue, dataIndex);
+  }
+
+  const toggleModal = () => {
+    setModal(modal => !modal);
   }
 
   return (
@@ -86,12 +90,12 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
         <FormGroup className="col-md-2">
           <Label>&nbsp;</Label>
           <InputGroup>
-            <Button outline color="info" onClick={() => setModal(!modal)}>Type Options</Button>
+            <Button outline color="info" onClick={toggleModal}>Type Options</Button>
             <OptionsModal
               optionValues={valueObj.options}
               isOpen={modal}
               optionType={valueObj.type}
-              toggleModal={() => setModal(!modal)}
+              toggleModal={toggleModal}
               saveModal={saveModal}
             />
           </InputGroup>
