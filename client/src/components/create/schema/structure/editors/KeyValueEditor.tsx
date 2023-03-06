@@ -16,12 +16,13 @@ interface KeyValueEditorProps {
   options?: Array<string>; // only for type='select'
   change: (_v: boolean | number | string) => void;
   remove: (_id: string | number) => void;
+  required: boolean;
 }
 
 // Key Value Editor
 const KeyValueEditor = (props: KeyValueEditorProps) => {
   const {
-    name, value, description, options, placeholder, type, change, remove
+    name, value, description, options, placeholder, type, change, remove, required
   } = props;
 
   const shadowless: Array<InputType> = [
@@ -44,7 +45,7 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
 
   return (
     <FormGroup row className="border m-1 p-1">
-      <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}</strong></Label>
+      <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
       <div className="input-group col-sm-10">
         <Input
           type={type}

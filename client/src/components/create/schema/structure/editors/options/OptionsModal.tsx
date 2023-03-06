@@ -8,6 +8,7 @@ import {
 import TypeOptionsEditor from './TypeOptionsEditor';
 import FieldOptionsEditor from './FieldOptionsEditor';
 import { objectFromTuple } from '../../../../../utils';
+import { sbToastError } from 'components/common/SBToast';
 
 // Interface
 interface OptionsModalProps {
@@ -37,6 +38,8 @@ const serializeOptions = (type: Record<string | number, string | number | boolea
     ...opts2arr(field)  // Field Options
   ];
 }
+//MUST NOT include more than one collection option (set, unique, or unordered)
+const collectionType = ['unique', 'set', 'unordered'];
 
 // Component
 const OptionsModal = (props: OptionsModalProps) => {
@@ -47,13 +50,23 @@ const OptionsModal = (props: OptionsModalProps) => {
   const saveOptions = (state: Val, type: 'field' | 'type') => {
     let typeOptVal: string | undefined;
     state[1] == '' ? typeOptVal = undefined : typeOptVal = state[1];
+
     setData(data => ({
       ...data,
       [type]: {
         ...data[type],
         [state[0]]: typeOptVal
       }
-    }))
+    }));
+    //TODO: remove key from data if undefined
+    if (typeOptVal != undefined) {
+      for (let i = 0; i < collectionType.length; i++) {
+        if (collectionType[i] in data['type'] && data['type'][collectionType[i]] != undefined) {
+          sbToastError('MUST NOT include more than one collection option (set, unique, or unordered)');
+          return;
+        }
+      }
+    }
   }
 
   const saveData = () => {

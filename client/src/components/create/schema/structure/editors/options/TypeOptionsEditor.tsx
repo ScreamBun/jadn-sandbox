@@ -1,5 +1,5 @@
 import React from 'react';
-import { OptionChange, TypeOptionInputArgs, ValidOptions } from './consts';
+import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
 
@@ -40,6 +40,7 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
           options={getOptions(key)}
           change={val => change([key, val], 'type')}
           value={deserializedState[key]}
+          required={RequiredOptions[optionType].includes(key) ? true : false}
         />
       );
     });
