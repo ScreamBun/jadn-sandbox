@@ -6,9 +6,13 @@
     "description": "OpenC2 LS version 1.0 + errata",
     "exports": ["OpenC2-Command", "OpenC2-Response"],
     "config": {
+      "$MaxBinary": 255,
+      "$MaxString": 255,
+      "$MaxElements": 100,
       "$Sys": ":",
       "$TypeName": "^[A-Z][-:A-Za-z0-9]{0,31}$",
-      "$FieldName": "^[a-z][-_a-z0-9]{0,31}$"
+      "$FieldName": "^[a-z][-_a-z0-9]{0,31}$",
+      "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
     }
   },
   "types": [
@@ -19,7 +23,7 @@
       [4, "actuator", "Actuator", ["[0"], "The subject of the Action. The Actuator executes the Action on the Target."],
       [5, "command_id", "String", ["[0"], "An identifier of this Command."]
     ]],
-    ["OpenC2-Response", "Map", [], "", [
+    ["OpenC2-Response", "Map", ["{1"], "", [
       [1, "status", "Status-Code", [], "An integer status code"],
       [2, "status_text", "String", ["[0"], "A free-form human-readable description of the Response status"],
       [3, "results", "Results", ["[0"], "Map of key:value pairs that contain additional results based on the invoking Command."]
@@ -73,16 +77,16 @@
       [4, "response_requested", "Response-Type", ["[0"], "The type of Response required for the Command: `none`, `ack`, `status`, `complete`."]
     ]],
     ["Actuator", "Choice", [], "", [
-      ["1", "placeholder", "String", [], "Placeholder"]
+      [1, "placeholder", "String", [], "Placeholder"]
     ]],
     ["Results", "Map", ["{1"], "", [
-      [1, "versions", "ArrayOf", ["*Version", "[0", "]0", "q"], "List of OpenC2 language versions supported by this Actuator"],
-      [2, "profiles", "ArrayOf", ["[0", "*Nsid"], "List of profiles supported by this Actuator"],
+      [1, "versions", "ArrayOf", ["*Version", "q", "[0", "]0"], "List of OpenC2 language versions supported by this Actuator"],
+      [2, "profiles", "ArrayOf", ["*Nsid", "[0"], "List of profiles supported by this Actuator"],
       [3, "pairs", "Action-Targets", ["[0"], "List of targets applicable to each supported Action"],
       [4, "rate_limit", "Number", ["[0"], "Maximum number of requests per minute supported by design or policy"]
     ]],
-    ["Action-Targets", "MapOf", ["{1", "+Action", "*Targets"], "Map of each action supported by this actuator to the list of targets applicable to that action"],
-    ["Targets", "ArrayOf", ["*>Target", "{1", "}0", "q"], "List of JSON Pointers to Target types"],
+    ["Action-Targets", "MapOf", ["*Targets", "+Action", "{1"], "Map of each action supported by this actuator to the list of targets applicable to that action"],
+    ["Targets", "ArrayOf", ["*>Target", "{1", "}1", "q"], "List of JSON Pointers to Target types"],
     ["Status-Code", "Enumerated", ["="], "", [
       [102, "Processing", "an interim Response used to inform the Producer that the Consumer has accepted the Command but has not yet completed it."],
       [200, "OK", "the Command has succeeded."],
@@ -139,7 +143,7 @@
     ["IRI", "String", ["/iri"], "Internationalized Resource Identifier, [[RFC3987]](#rfc3987)."],
     ["MAC-Addr", "Binary", ["/eui"], "Media Access Control / Extended Unique Identifier address - EUI-48 or EUI-64 as defined in [[EUI]](#eui)."],
     ["Process", "Map", ["{1"], "", [
-      [1, "pid", "Integer", ["[0", "{0"], "Process ID of the process"],
+      [1, "pid", "Integer", ["{0", "[0"], "Process ID of the process"],
       [2, "name", "String", ["[0"], "Name of the process"],
       [3, "cwd", "String", ["[0"], "Current working directory of the process"],
       [4, "executable", "File", ["[0"], "Executable that was executed to start the process"],
@@ -157,9 +161,9 @@
       [4, "rate_limit", "Maximum number of Commands per minute supported by design or policy"]
     ]],
     ["Hashes", "Map", ["{1"], "Cryptographic Hash values", [
-      [1, "md5", "Binary", ["[0", "/x"], "MD5 hash as defined in [[RFC1321]](#rfc1321)"],
-      [2, "sha1", "Binary", ["[0", "/x"], "SHA1 hash as defined in [[RFC6234]](#rfc6234)"],
-      [3, "sha256", "Binary", ["[0", "/x"], "SHA256 hash as defined in [[RFC6234]](#rfc6234)"]
+      [1, "md5", "Binary", ["/x", "[0"], "MD5 hash as defined in [[RFC1321]](#rfc1321)"],
+      [2, "sha1", "Binary", ["/x", "[0"], "SHA1 hash as defined in [[RFC6234]](#rfc6234)"],
+      [3, "sha256", "Binary", ["/x", "[0"], "SHA256 hash as defined in [[RFC6234]](#rfc6234)"]
     ]],
     ["Hostname", "String", ["/hostname"], "Internet host name as specified in [[RFC1123]](#rfc1123)"],
     ["IDN-Hostname", "String", ["/idn-hostname"], "Internationalized Internet host name as specified in [[RFC5890]](#rfc5890), Section 2.3.2.3."],
