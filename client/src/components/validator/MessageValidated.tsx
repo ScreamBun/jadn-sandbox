@@ -130,9 +130,9 @@ const MessageValidated = (props: any) => {
                             <optgroup label="Exports">
                                 {decodeExports}
                             </optgroup>
-                            <optgroup label="All">
+                            {/* <optgroup label="All">
                                 {decodeAll}
-                            </optgroup>
+                            </optgroup> */}
                         </select>
                     </div>
 
