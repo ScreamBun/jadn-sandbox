@@ -141,9 +141,22 @@ const MapOfField = (props: MapOfFieldProps) => {
         : [0, valDef, 'String', [], ''];
 
     const fields: any[] = [];
-    for (let i = 0; i < count; ++i) {
-        fields.push(<Field key={"k" + i} def={keyField} parent={msgName} optChange={onChange} idx={i} />);
-        fields.push(<Field key={"v" + i} def={valField} parent={msgName} optChange={onChange} idx={i} />);
+    for (let i = 1; i < count + 1; ++i) {
+        fields.push(
+            <div className='form-group' key={i}>
+                <div className='card'>
+                    <div className='card-header p-2'>
+                        <p className='card-title m-0'>
+                            {name} {i}
+                        </p>
+                    </div>
+                    <div className='card-body mx-2'>
+                        <Field key={"k" + i} def={keyField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key={"v" + i} def={valField} parent={msgName} optChange={onChange} idx={i} />
+                    </div>
+                </div>
+            </div >
+        );
     }
 
     return (
