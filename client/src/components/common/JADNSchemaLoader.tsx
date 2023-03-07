@@ -202,10 +202,11 @@ const JADNSchemaLoader = (props: any) => {
     }
 
     const sbEditorOnChange = (data: any) => {
+        dispatch(setSchema(data));
         setIsValidJADN(false);
         setLoadedSchema(data);
         if (setDecodeSchemaTypes && setDecodeMsg) {
-            loadDecodeTypes(data);
+            loadDecodeTypes(JSON.parse(data));
         }
     }
 
