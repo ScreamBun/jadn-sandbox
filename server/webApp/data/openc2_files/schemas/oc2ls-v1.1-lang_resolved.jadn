@@ -60,7 +60,7 @@
       [25, "properties", "Properties", [], "Data attribute associated with an Actuator."],
       [19, "uri", "URI", [], "A uniform resource identifier (URI)."]
     ]],
-    ["Actuator", "Choice", [], "", []],
+    ["Actuator", "Choice", [], ""],
     ["Args", "Map", ["{1"], "", [
       [1, "start_time", "Date-Time", ["[0"], "The specific date/time to initiate the Command"],
       [2, "stop_time", "Date-Time", ["[0"], "The specific date/time to terminate the Command"],
@@ -75,7 +75,7 @@
       [5, "args", "Enumerated", ["#Args", "[0", "]0"], "List of supported Command Arguments"]
     ]],
     ["Action-Targets", "MapOf", ["*Targets", "+Action", "{1"], "Map of all actions to all targets"],
-    ["Targets", "ArrayOf", ["*>Target", "{1", "}0", "q"], "List of all Target types"],
+    ["Targets", "ArrayOf", ["*>Target", "{1", "}1", "q"], "List of all Target types"],
     ["Status-Code", "Enumerated", ["="], "", [
       [102, "Processing", "an interim Response used to inform the Producer that the Consumer has accepted the Command but has not yet completed it"],
       [200, "OK", "the Command has succeeded"],
