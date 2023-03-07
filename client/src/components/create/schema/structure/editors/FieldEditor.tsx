@@ -12,6 +12,7 @@ import OptionsModal from './options/OptionsModal';
 import { EnumeratedFieldArray, FieldArray, StandardFieldArray } from '../../interface';
 import { objectValues, splitCamel, zip } from '../../../../utils';
 import { useAppSelector } from '../../../../../reducers';
+import { sbToastError } from 'components/common/SBToast';
 
 // Interface
 interface FieldEditorProps {
@@ -39,6 +40,11 @@ const FieldEditor = (props: FieldEditorProps) => {
     e.preventDefault();
     const { placeholder, value } = e.target;
     //TODO JADN: MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension 
+    if (enumerated) {
+      if (!valueObj.value) {
+        sbToastError('Value required for Enum');
+      }
+    }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);

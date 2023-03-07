@@ -13,6 +13,7 @@ import {
   EnumeratedFieldArray, FieldArray, StandardFieldArray, TypeArray
 } from '../../interface';
 import { zip } from '../../../../utils';
+import { sbToastError } from 'components/common/SBToast';
 
 
 // Interface
@@ -28,10 +29,10 @@ const StructureEditor = (props: StructureEditorProps) => {
   const { value, change, dataIndex } = props;
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
-  const [fieldCount, setFieldCount] = useState(1);
   const [modal, setModal] = useState(false);
   let valueObj = zip(TypeKeys, value) as StandardTypeObject;
-
+  let UIDList: any[] = [];
+  let fieldCount = 1;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
@@ -68,8 +69,10 @@ const StructureEditor = (props: StructureEditorProps) => {
   const addField = () => {
     let field: EnumeratedFieldArray | StandardFieldArray;
     //const uid = new Date().getTime();
+    checkUID(false, '');
+
     if (valueObj.type.toLowerCase() === 'enumerated') {
-      field = [fieldCount, '', ''] as EnumeratedFieldArray;
+      field = [fieldCount, 'field value', ''] as EnumeratedFieldArray;
     } else {
       //TODO: default field type is String ? Fix line in field.tsx too.
       field = [fieldCount, 'field name', 'String', [], ''] as StandardFieldArray;
@@ -77,10 +80,15 @@ const StructureEditor = (props: StructureEditorProps) => {
 
     const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
     change(updatevalue, dataIndex);
-    setFieldCount(fieldCount => fieldCount + 1);
+    UIDList.push(fieldCount);
+    fieldCount = fieldCount + 1;
   }
 
   const fieldChange = (val: FieldArray, idx: number) => {
+    checkUID(true, val[0]);
+    if (typeof val[0] != 'number') {
+      val[0] = parseInt(val[0]); //force index to type number
+    }
     const tmpFieldValues = [...valueObj.fields];
     tmpFieldValues[idx] = val;
 
@@ -106,7 +114,6 @@ const StructureEditor = (props: StructureEditorProps) => {
     const updatevalue = { ...valueObj, options: modalData }
     change(updatevalue, dataIndex);
   }
-
 
   const toggleModal = () => {
     setModal(modal => !modal);
@@ -168,7 +175,24 @@ const StructureEditor = (props: StructureEditorProps) => {
     />);
   }
 
+  for (let i = 0; i < fields.length; ++i) {
+    UIDList.push(fields[i].key);
+  }
 
+  const checkUID = (onchg: boolean, num: string | number) => {
+    //changing fields: check for uid 
+    //adding fields: add a unique id
+    if (onchg) {
+      if (UIDList.includes(num)) {
+        sbToastError('Error: Must be unique ID');
+      }
+    } else {
+      const currMaxID = Math.max(...UIDList);
+      if (fieldCount <= currMaxID) {
+        fieldCount = currMaxID + 1;
+      }
+    }
+  }
 
   return (
     <div className="border m-1 p-1">
