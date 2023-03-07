@@ -30,39 +30,8 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [isValid, setisValid] = useState('');
 
     var optData: Record<string, any> = {};
-    const [_idx, name, type, _args, comment] = def;
+    const [_idx, name, type, args, comment] = def;
     const msgName = (parent ? [parent, name] : [name]).join('.');
-
-    const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
-    const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-    if (typeDef) {
-        optData = (opts2obj(typeDef[2]));
-        if (optData.ktype.startsWith("#") || optData.ktype.startsWith(">")) {
-            optData.ktype = optData.ktype.slice(1);
-        }
-        if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
-            optData.vtype = optData.vtype.slice(1);
-        }
-        // MUST include ktype and vtype options.
-    }
-
-    const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
-    const keyDef = keyDefs.length === 1 ? keyDefs[0] : typeDef[0];
-
-    const keyField = keyDefs.length === 1 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]]
-        : [0, keyDef, 'String', [], ''];
-
-    const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-    const valDef = valDefs.length === 1 ? valDefs[0] : typeDef[0];
-
-    const valField = valDefs.length === 1 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]]
-        : [0, valDef, 'String', [], ''];
-
-    const fields: any[] = [];
-    for (let i = 0; i < count; ++i) {
-        fields.push(<Field key={"k" + i} def={keyField} parent={msgName} optChange={onChange} idx={i} />);
-        fields.push(<Field key={"v" + i} def={valField} parent={msgName} optChange={onChange} idx={i} />);
-    }
 
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -138,6 +107,43 @@ const MapOfField = (props: MapOfFieldProps) => {
             ({ [key]: value })));
 
         optChange(msgName, data);
+    }
+
+    const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
+    const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
+
+    if (typeDef) {
+        if (typeDefs.length === 1) {
+            optData = (opts2obj(typeDef[2]));
+        } else {
+            optData = (opts2obj(args));
+        }
+        if (optData.ktype.startsWith("#") || optData.ktype.startsWith(">")) {
+            optData.ktype = optData.ktype.slice(1);
+        }
+        if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
+            optData.vtype = optData.vtype.slice(1);
+        }
+        // MUST include ktype and vtype options.
+        //console.log(optData);
+    }
+
+    const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
+    const keyDef = keyDefs.length === 1 ? keyDefs[0] : typeDef[0];
+
+    const keyField = keyDefs.length === 1 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]]
+        : [0, keyDef, 'String', [], ''];
+
+    const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
+    const valDef = valDefs.length === 1 ? valDefs[0] : typeDef[0];
+
+    const valField = valDefs.length === 1 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]]
+        : [0, valDef, 'String', [], ''];
+
+    const fields: any[] = [];
+    for (let i = 0; i < count; ++i) {
+        fields.push(<Field key={"k" + i} def={keyField} parent={msgName} optChange={onChange} idx={i} />);
+        fields.push(<Field key={"v" + i} def={valField} parent={msgName} optChange={onChange} idx={i} />);
     }
 
     return (

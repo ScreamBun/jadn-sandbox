@@ -34,21 +34,21 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const [_idx, name, type, args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
-  if (type.toLowerCase() == 'arrayof') {
-    optData = (opts2obj(args));
-  } else {
-    const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
-    const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
 
-    if (typeDef) {
+  if (typeDef) {
+    if (typeDefs.length === 1) {
       optData = (opts2obj(typeDef[2]));
+    } else {
+      optData = (opts2obj(args));
     }
-  }
-
-  // TODO optData : must include vtype
-  // TODO optData: MUST NOT include more than one collection option (set, unique, or unordered).
-  if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
-    optData.vtype = optData.vtype.slice(1);
+    // TODO optData : must include vtype
+    // TODO optData: MUST NOT include more than one collection option (set, unique, or unordered).
+    if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
+      optData.vtype = optData.vtype.slice(1);
+    }
+    //console.log(optData);
   }
 
   const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);

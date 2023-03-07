@@ -188,7 +188,7 @@ const StructureEditor = (props: StructureEditorProps) => {
       }
     } else {
       const currMaxID = Math.max(...UIDList);
-      if (fieldCount <= currMaxID) {
+      if (currMaxID && fieldCount <= currMaxID) {
         fieldCount = currMaxID + 1;
       }
     }
