@@ -144,7 +144,7 @@ const BasicField = (props: BasicFieldProps) => {
         </div>
       </div>
     );
-  } else if (typeDefName == 'Date-Time') {
+  } else if (typeDefName.toLowerCase() == 'date-time') {
     return (
       <div className='form-group'>
         <div className='card'>
@@ -167,7 +167,7 @@ const BasicField = (props: BasicFieldProps) => {
       </div>
     );
 
-  } else if (typeDef == 'number') {
+  } else if (typeDef.toLowerCase() == 'number') {
     return (
       <div className='form-group'>
         <div className='card'>
@@ -188,7 +188,7 @@ const BasicField = (props: BasicFieldProps) => {
       </div>
     );
 
-  } else if (typeDef == 'integer') {
+  } else if (typeDef.toLowerCase() == 'integer') {
     return (
       <div className='form-group'>
         <div className='card'>
