@@ -31,36 +31,8 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const [isValid, setisValid] = useState('');
 
   var optData: Record<string, any> = {};
-  const [_idx, name, type, args, comment] = def;
+  const [_idx, name, type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-
-  const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
-  const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
-
-  if (typeDef) {
-    if (typeDefs.length === 1) {
-      optData = (opts2obj(typeDef[2]));
-    } else {
-      optData = (opts2obj(args));
-    }
-    // TODO optData : must include vtype
-    // TODO optData: MUST NOT include more than one collection option (set, unique, or unordered).
-    if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
-      optData.vtype = optData.vtype.slice(1);
-    }
-    //console.log(optData);
-  }
-
-  const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-  const arrDef = arrDefs.length === 1 ? arrDefs[0] : def;
-
-  const fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
-    : [0, arrDef, 'String', [], ''];
-
-  const fields: any[] = [];
-  for (let i = 0; i < count; ++i) {
-    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} />);
-  }
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -127,6 +99,31 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     } else {
       optChange(msgName, Array.from(Object.values(updatedOpts)));
     }
+  }
+
+  const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
+
+  if (typeDef) {
+    optData = (opts2obj(typeDef[2]));
+    // TODO optData : must include vtype
+    // TODO optData: MUST NOT include more than one collection option (set, unique, or unordered).
+    if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
+      optData.vtype = optData.vtype.slice(1);
+    }
+    //console.log(optData);
+  }
+
+  const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
+  const arrDef = arrDefs.length === 1 ? arrDefs[0] : def;
+  console.log(arrDef)
+
+  const fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
+    : [0, name, 'String', [], ''];
+
+  const fields: any[] = [];
+  for (let i = 0; i < count; ++i) {
+    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} />);
   }
 
   return (
