@@ -26,7 +26,7 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [min, setMin] = useState(false);
     const [max, setMax] = useState(false);
     const [count, setCount] = useState(1);
-    const [opts, setOpts] = useState([]); //array of objects
+    const [opts, setOpts] = useState([]);
     const [isValid, setisValid] = useState('');
 
     var optData: Record<string, any> = {};
@@ -43,7 +43,6 @@ const MapOfField = (props: MapOfFieldProps) => {
         }
         setCount(maxBool ? count => count + 1 : count);
         setMax(maxBool => !maxBool);
-        setOpts([...opts, {}]);
     }
 
     const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -74,42 +73,70 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const onChange = (k: string, v: any, i: number) => {
-        //get value 
-        //get value type: is it a key or value?
-        //add data to obj or make change to data
+        const ktype = msgName + "." + optData.ktype.toLowerCase();
+        const vtype = msgName + "." + optData.vtype.toLowerCase();
+
+        console.log("key ----- " + k + "------------ONCHG TRIGGERINGGGG");
+        console.log("val input ----- " + v);
+        console.log("i index ----- " + i);
+        console.log("opts.length --- " + opts.length);
+        console.log(i <= opts.length - 1); //false = add, else chg
+
         if (Number.isNaN(v)) {
             v = undefined;
         }
 
-        const ktype = msgName + "." + optData.ktype.toLowerCase();
-        //const vtype = msgName + "." + optData.vtype.toLowerCase();
-        let key;
-        if (k == ktype) {
-            key = "key";
-        } else {
-            key = "value";
-        }
-
         let updatedOpts;
-        if (i < opts.length) {
+        if (i <= opts.length - 1) {
+            //update
             updatedOpts = opts.map((opt, index) => {
                 if (i === index) {
-                    return { ...opt, [key]: v };
+                    console.log("CHANGING @" + index)
+                    if (k == ktype) {
+                        console.log("CHG KEY TO --- " + JSON.stringify(opt))
+
+                        //save data in tmpdata
+                        //change key
+                        let tmpData = opt[value];
+                        console.log(tmpData)
+
+                        return { ...opt, [v]: tmpData };
+                    } else if (k == vtype) {
+                        console.log("CHG VAL TO --- " + JSON.stringify(opt))
+
+                        return { ...opt, [opt]: { ...opt[i], v } };
+                    }
                 } else {
                     return opt;
                 }
             });
             setOpts(updatedOpts);
+
         } else {
-            setOpts([...opts, { [key]: v }]);
-            updatedOpts = [...opts, { [key]: v }];
+            //add 
+            if (k == ktype) {
+                setOpts([...opts, { [v]: '' }]);
+                updatedOpts = [...opts, { [v]: '' }];
+            } else if (k == vtype) {
+                setOpts([...opts, { '': v }]);
+                updatedOpts = [...opts, { '': v }];
+            }
         }
 
+        console.log(opts)
+        console.log(opts.length)
 
-        const data = Object.assign({}, ...updatedOpts.map(({ key, value }) =>
-            ({ [key]: value })));
+        console.log("RESULT ---- " + JSON.stringify(updatedOpts))
+        console.log(updatedOpts?.length)
 
-        optChange(msgName, data);
+        /*         const data = Object.assign({}, ...updatedOpts.map((item) => {
+                    console.log(item.key)
+                })); */
+
+        /* ({ [key]: value }))); */
+        //        console.log("RESULT ---- " + JSON.stringify(data))
+
+        optChange(msgName, updatedOpts);
     }
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -144,13 +171,13 @@ const MapOfField = (props: MapOfFieldProps) => {
         : [0, valDef, 'String', [], ''];
 
     const fields: any[] = [];
-    for (let i = 1; i < count + 1; ++i) {
+    for (let i = 0; i < count; ++i) {
         fields.push(
             <div className='form-group' key={i}>
                 <div className='card'>
                     <div className='card-header p-2'>
                         <p className='card-title m-0'>
-                            {name} {i}
+                            {name} {i + 1}
                         </p>
                     </div>
                     <div className='card-body mx-2'>
