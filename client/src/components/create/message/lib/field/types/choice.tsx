@@ -23,7 +23,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { optChange, def } = props;
     setSelected(e.target.value);
-    optChange(def[1], undefined); //target is undefined
+    optChange(def[1], e.target.value); //target is undefined
     //e.target.selectedOptions[0].text
   }
 
@@ -37,16 +37,23 @@ const ChoiceField = (props: ChoiceFieldProps) => {
     optData = (opts2obj(typeDef[2]));
     //TODO type opts: extend
   }
-  const defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
 
-  let selectedDefs; //get opt where the key = selected
-  if (hasProperty(optData, 'id') && optData.id) {
-    selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[0] === selected);
+  let defOpts;
+  let selectedOpts;
+  if (typeDef[typeDef.length - 1] == '' || typeDef[typeDef.length - 1] == null) {
+    defOpts = <option value="-1">No Options Available</option>;
   } else {
-    selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[1] === selected);
+    defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
+
+    let selectedDefs; //get opt where the key = selected
+    if (hasProperty(optData, 'id') && optData.id) {
+      selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[0] === selected);
+    } else {
+      selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[1] === selected);
+      const selectedDef = selectedDefs.length === 1 ? selectedDefs[0] : [];
+      selectedOpts = selected >= '0' ? <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={optChange} /> : '';
+    }
   }
-  const selectedDef = selectedDefs.length === 1 ? selectedDefs[0] : [];
-  const selectedOpts = selected >= '0' ? <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={optChange} /> : '';
 
   return (
     <div className='form-group'>

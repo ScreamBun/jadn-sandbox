@@ -10,6 +10,7 @@ import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from 'reducers';
+import { $MAX_STRING, $MINV } from 'components/create/consts';
 
 // Interface
 interface BasicFieldProps {
@@ -77,6 +78,12 @@ const BasicField = (props: BasicFieldProps) => {
             valm.push('Minv Error: must be more than' + optData.minv);
           }
         }
+      } else {
+        optData.minv = $MINV;
+        if (data < optData.minv) {
+          valc = 'red';
+          valm.push('Minv Error: must be more than' + optData.minv);
+        }
       }
       if (hasProperty(optData, 'maxv')) {
         if (typeof data == 'string') {
@@ -89,6 +96,12 @@ const BasicField = (props: BasicFieldProps) => {
             valc = 'red';
             valm.push('Maxv Error: must be less than ' + optData.maxv);
           }
+        }
+      } else {
+        optData.maxv = $MAX_STRING;
+        if (data.length > optData.maxv) {
+          valc = 'red';
+          valm.push('Maxv Error: must be less than ' + optData.maxv);
         }
       }
       if (hasProperty(optData, 'pattern') && typeof data == 'string') {
