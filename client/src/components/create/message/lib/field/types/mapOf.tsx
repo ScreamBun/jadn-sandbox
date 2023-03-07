@@ -74,6 +74,9 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const onChange = (k: string, v: any, i: number) => {
+        //get value 
+        //get value type: is it a key or value?
+        //add data to obj or make change to data
         if (Number.isNaN(v)) {
             v = undefined;
         }

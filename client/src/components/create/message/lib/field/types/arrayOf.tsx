@@ -116,7 +116,6 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
   const arrDef = arrDefs.length === 1 ? arrDefs[0] : def;
-  console.log(arrDef)
 
   const fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
     : [0, name, 'String', [], ''];
