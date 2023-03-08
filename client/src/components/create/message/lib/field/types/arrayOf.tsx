@@ -102,7 +102,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
-  const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
 
   if (typeDef) {
     if (type.toLowerCase() == 'arrayof') {

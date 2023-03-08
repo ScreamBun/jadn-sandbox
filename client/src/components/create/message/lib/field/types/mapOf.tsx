@@ -73,6 +73,10 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const onChange = (k: string, v: any, i: number) => {
+        console.log("Key = " + k)
+        console.log("Val = " + v)
+        console.log("index = " + i)
+
         //let every obj have a key and value
         //then reduce object to key:value pairs 
         const ktype = msgName + "." + optData.ktype.toLowerCase();
@@ -106,8 +110,6 @@ const MapOfField = (props: MapOfFieldProps) => {
                 //add key
                 setOpts([...opts, { ['key']: v }]);
                 updatedOpts = [...opts, { ['key']: v, ['value']: '' }];
-
-
             } else if (k == vtype) {
                 //add val
                 setOpts([...opts, { ['value']: v }]);
@@ -162,8 +164,8 @@ const MapOfField = (props: MapOfFieldProps) => {
                         </p>
                     </div>
                     <div className='card-body mx-2'>
-                        <Field key='key' def={keyField} parent={msgName} optChange={onChange} idx={i} />
-                        <Field key='value' def={valField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key={keyField[0]} def={keyField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key={valField[0]} def={valField} parent={msgName} optChange={onChange} idx={i} />
                     </div>
                 </div>
             </div >
