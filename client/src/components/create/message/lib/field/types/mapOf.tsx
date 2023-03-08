@@ -73,14 +73,10 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const onChange = (k: string, v: any, i: number) => {
+        //let every obj have a key and value
+        //then reduce object to key:value pairs 
         const ktype = msgName + "." + optData.ktype.toLowerCase();
         const vtype = msgName + "." + optData.vtype.toLowerCase();
-
-        console.log("key ----- " + k + "------------ONCHG TRIGGERINGGGG");
-        console.log("val input ----- " + v);
-        console.log("i index ----- " + i);
-        console.log("opts.length --- " + opts.length);
-        console.log(i <= opts.length - 1); //false = add, else chg
 
         if (Number.isNaN(v)) {
             v = undefined;
@@ -91,20 +87,12 @@ const MapOfField = (props: MapOfFieldProps) => {
             //update
             updatedOpts = opts.map((opt, index) => {
                 if (i === index) {
-                    console.log("CHANGING @" + index)
                     if (k == ktype) {
-                        console.log("CHG KEY TO --- " + JSON.stringify(opt))
-
-                        //save data in tmpdata
                         //change key
-                        let tmpData = opt[value];
-                        console.log(tmpData)
-
-                        return { ...opt, [v]: tmpData };
+                        return { ...opt, ['key']: v };
                     } else if (k == vtype) {
-                        console.log("CHG VAL TO --- " + JSON.stringify(opt))
-
-                        return { ...opt, [opt]: { ...opt[i], v } };
+                        //change val ---- get nested val ??
+                        return { ...opt, ['value']: v };
                     }
                 } else {
                     return opt;
@@ -115,28 +103,21 @@ const MapOfField = (props: MapOfFieldProps) => {
         } else {
             //add 
             if (k == ktype) {
-                setOpts([...opts, { [v]: '' }]);
-                updatedOpts = [...opts, { [v]: '' }];
+                //add key
+                setOpts([...opts, { ['key']: v }]);
+                updatedOpts = [...opts, { ['key']: v, ['value']: '' }];
+
+
             } else if (k == vtype) {
-                setOpts([...opts, { '': v }]);
-                updatedOpts = [...opts, { '': v }];
+                //add val
+                setOpts([...opts, { ['value']: v }]);
+                updatedOpts = [...opts, { ['key']: '', ['value']: v }];
             }
         }
+        console.log(JSON.stringify(updatedOpts))
 
-        console.log(opts)
-        console.log(opts.length)
-
-        console.log("RESULT ---- " + JSON.stringify(updatedOpts))
-        console.log(updatedOpts?.length)
-
-        /*         const data = Object.assign({}, ...updatedOpts.map((item) => {
-                    console.log(item.key)
-                })); */
-
-        /* ({ [key]: value }))); */
-        //        console.log("RESULT ---- " + JSON.stringify(data))
-
-        optChange(msgName, updatedOpts);
+        const data = updatedOpts?.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
+        optChange(msgName, data);
     }
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -181,8 +162,8 @@ const MapOfField = (props: MapOfFieldProps) => {
                         </p>
                     </div>
                     <div className='card-body mx-2'>
-                        <Field key={"k" + i} def={keyField} parent={msgName} optChange={onChange} idx={i} />
-                        <Field key={"v" + i} def={valField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key='key' def={keyField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key='value' def={valField} parent={msgName} optChange={onChange} idx={i} />
                     </div>
                 </div>
             </div >
