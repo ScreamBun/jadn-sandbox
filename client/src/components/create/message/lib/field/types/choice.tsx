@@ -23,7 +23,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { optChange, def } = props;
     setSelected(e.target.value);
-    optChange(def[1], e.target.value); //target is undefined
+    optChange(def[1], undefined); //target is undefined
     //e.target.selectedOptions[0].text
   }
 
