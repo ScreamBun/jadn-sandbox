@@ -164,19 +164,23 @@ const StructureEditor = (props: StructureEditorProps) => {
   }
 
   const fields: any[] = [];
-  for (let i = 0; i < valueObj.fields.length; ++i) {
-    fields.push(<FieldEditor
-      key={valueObj.fields[i][0]}
-      dataIndex={i}
-      enumerated={valueObj.type.toLowerCase() === 'enumerated'}
-      value={valueObj.fields[i]}
-      change={fieldChange}
-      remove={fieldRemove}
-    />);
+  if (valueObj.fields) {
+    for (let i = 0; i < valueObj.fields.length; ++i) {
+      fields.push(<FieldEditor
+        key={valueObj.fields[i][0]}
+        dataIndex={i}
+        enumerated={valueObj.type.toLowerCase() === 'enumerated'}
+        value={valueObj.fields[i]}
+        change={fieldChange}
+        remove={fieldRemove}
+      />);
+    }
   }
 
-  for (let i = 0; i < fields.length; ++i) {
-    UIDList.push(fields[i].key);
+  if (fields.length) {
+    for (let i = 0; i < fields.length; ++i) {
+      UIDList.push(fields[i].key);
+    }
   }
 
   const checkUID = (onchg: boolean, num: string | number) => {
