@@ -142,16 +142,21 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
-    const keyDef = keyDefs.length === 1 ? keyDefs[0] : typeDef[0];
+    const keyDef = keyDefs.length === 1 ? keyDefs[0] : [];
 
     const keyField = keyDefs.length === 1 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]]
         : [0, keyDef, 'String', [], ''];
 
+    // const keyField = keyDef.map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={optChange} />)
+
     const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-    const valDef = valDefs.length === 1 ? valDefs[0] : typeDef[0];
+    const valDef = valDefs.length === 1 ? valDefs[0] : [];
 
     const valField = valDefs.length === 1 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]]
         : [0, valDef, 'String', [], ''];
+
+    // const valField = valDef.map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={optChange} />)
+
 
     const fields: any[] = [];
     for (let i = 0; i < count; ++i) {
@@ -164,8 +169,10 @@ const MapOfField = (props: MapOfFieldProps) => {
                         </p>
                     </div>
                     <div className='card-body mx-2'>
-                        <Field key={keyField[0]} def={keyField} parent={msgName} optChange={onChange} idx={i} />
-                        <Field key={valField[0]} def={valField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key={"key"} def={keyField} parent={msgName + "." + i} optChange={optChange} idx={i} />
+                        <Field key={"value"} def={valField} parent={msgName + "." + i} optChange={optChange} idx={i} />
+                        {/* {keyField}
+                        {valField} */}
                     </div>
                 </div>
             </div >
