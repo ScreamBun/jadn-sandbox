@@ -11,6 +11,7 @@ import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/in
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
+import { merge } from 'lodash';
 
 // Interface
 interface ArrayOfFieldProps {
@@ -44,7 +45,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     }
     setCount(maxBool ? count => count + 1 : count);
     setMax(maxBool => !maxBool);
-    setOpts(opts => [...opts, undefined]);
+    //setOpts(opts => [...opts, undefined]);
   }
 
   const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -74,13 +75,39 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     setMin(minBool => !minBool);
   }
 
-  const onChange = (_k: string, v: any, i: number) => {
+  const onChange = (k: string, v: any, i: number) => {
     if (Number.isNaN(v)) {
       v = undefined;
     }
 
+    const arrKeys = msgName.split(".");
+    const valKeys = k.split(".");
+
+    if (valKeys.length == 1 && v == undefined) {
+      //reset
+      setOpts([]);
+    } else if ((arrKeys.length < valKeys.length - 1) && (valKeys.length - arrKeys.length != 1)) {
+      //create nested obj based on keys
+      const nestedKeys = valKeys.slice(arrKeys.length + 1);
+      let nestedObj = {};
+      nestedKeys.reduce((obj, key, index) => {
+        if (index == nestedKeys.length - 1) {
+          return obj[key] = v;
+        } else {
+          return obj[key] = {};
+        }
+      }, nestedObj);
+
+      v = nestedObj;
+
+      //merge and update v obj at opt[i] 
+      let oldV = opts[i];
+      v = merge(oldV, v);
+    } //else v is an arrayOf string
+
     let updatedOpts;
     if (i < opts.length) {
+      //update
       updatedOpts = opts.map((data, index) => {
         if (index == i) {
           return v;
@@ -90,6 +117,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       });
       setOpts(updatedOpts);
     } else {
+      //add
       setOpts(opts => [...opts, v]);
       updatedOpts = [...opts, v];
     }

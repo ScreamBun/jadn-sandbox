@@ -73,11 +73,7 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const onChange = (k: string, v: any, i: number) => {
-        console.log("Key = " + k)
-        console.log("Val = " + v)
-        console.log("index = " + i)
-
-        //let every obj have a key and value
+        //let every obj have a key and value [{key: '', value:''}, ...]
         //then reduce object to key:value pairs 
         const ktype = msgName + "." + optData.ktype.toLowerCase();
         const vtype = msgName + "." + optData.vtype.toLowerCase();
@@ -116,7 +112,6 @@ const MapOfField = (props: MapOfFieldProps) => {
                 updatedOpts = [...opts, { ['key']: '', ['value']: v }];
             }
         }
-        console.log(JSON.stringify(updatedOpts))
 
         const data = updatedOpts?.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
         optChange(msgName, data);
@@ -144,18 +139,15 @@ const MapOfField = (props: MapOfFieldProps) => {
     const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
     const keyDef = keyDefs.length === 1 ? keyDefs[0] : [];
 
-    const keyField = keyDefs.length === 1 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]]
-        : [0, keyDef, 'String', [], ''];
-
-    // const keyField = keyDef.map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={optChange} />)
+    const keyField = keyDef.length === 4 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 1]]
+        : [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]];
 
     const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
     const valDef = valDefs.length === 1 ? valDefs[0] : [];
 
-    const valField = valDefs.length === 1 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]]
-        : [0, valDef, 'String', [], ''];
-
-    // const valField = valDef.map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={optChange} />)
+    //CHECK IF THERE ARE FIELDS (type array vs standard field array)
+    const valField = valDef.length === 4 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 1]]
+        : [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]];
 
 
     const fields: any[] = [];
@@ -169,10 +161,8 @@ const MapOfField = (props: MapOfFieldProps) => {
                         </p>
                     </div>
                     <div className='card-body mx-2'>
-                        <Field key={"key"} def={keyField} parent={msgName + "." + i} optChange={optChange} idx={i} />
-                        <Field key={"value"} def={valField} parent={msgName + "." + i} optChange={optChange} idx={i} />
-                        {/* {keyField}
-                        {valField} */}
+                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key={"value"} def={valField} parent={msgName} optChange={onChange} idx={i} />
                     </div>
                 </div>
             </div >
