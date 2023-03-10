@@ -133,21 +133,36 @@ const MapOfField = (props: MapOfFieldProps) => {
             optData.vtype = optData.vtype.slice(1);
         }
         // MUST include ktype and vtype options.
-        //console.log(optData);
+        console.log(optData);
     }
 
     const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
-    const keyDef = keyDefs.length === 1 ? keyDefs[0] : [];
+    let keyDef; //keyDef == defined or based type
+    let keyField;
 
-    const keyField = keyDef.length === 4 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 1]]
-        : [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]];
+    //CURRENTLY IN TypeKey = 'name' | 'type' | 'options' | 'comment' | 'fields';
+    //StandardFieldKey = 'id' | 'name' | 'type' | 'options' | 'comment';
+    if (keyDefs.length === 1) {
+        keyDef = keyDefs[0];
+        keyField = keyDef.length === 4 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 1]]
+            : [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]];
+    } else {
+        keyDef = optData.ktype;
+        keyField = [0, keyDef, keyDef, [], ''];
+    }
 
     const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-    const valDef = valDefs.length === 1 ? valDefs[0] : [];
-
-    //CHECK IF THERE ARE FIELDS (type array vs standard field array)
-    const valField = valDef.length === 4 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 1]]
-        : [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]];
+    let valDef;
+    let valField;
+    if (valDefs.length === 1) {
+        valDef = valDefs[0];
+        //CHECK IF THERE ARE FIELDS (type array vs standard field array)
+        valField = valDef.length === 4 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 1]]
+            : [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]];
+    } else {
+        valDef = optData.vtype;
+        valField = [0, valDef, valDef, [], ''];
+    }
 
 
     const fields: any[] = [];

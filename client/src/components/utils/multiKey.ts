@@ -11,10 +11,6 @@ export const setMultiKey = (obj: Record<string, any>, key: string, val: any): vo
   const k = key.replace(/\[\]$/, '');
   const keys = k.split('.');
 
-  console.log(obj)
-  console.log(key)
-  console.log(val)
-
   if (keys.length > 1) {
     if (!(keys[0] in obj)) {
       // eslint-disable-next-line no-param-reassign
