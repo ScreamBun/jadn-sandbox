@@ -24,7 +24,7 @@ const MessageValidated = (props: any) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(!isNull(navMsgFormat)){
+        if (!isNull(navMsgFormat)) {
             setMsgFormat(navMsgFormat);
         }
     }, [])
@@ -66,33 +66,32 @@ const MessageValidated = (props: any) => {
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0];
-            const prefix = file.name.split('.')[0];
+            //const prefix = file.name.split('.')[0];
             const type = file.name.split('.')[1];
 
-            if (prefix == 'message') {
-                const fileReader = new FileReader();
-                fileReader.onload = (ev: ProgressEvent<FileReader>) => {
-                    if (ev.target) {
-                        let data = ev.target.result;
-                        try {
-                            data = JSON.stringify(data, null, 2); // must turn str into obj before str
-                        } catch (err) {
-                            switch (type) {
-                                case 'cbor':
-                                    data = escaped2cbor(hexify(data));
-                                    break;
-                                default:
-                                    sbToastError(`File cannot be loaded`);
-                            }
+            const fileReader = new FileReader();
+            fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+                if (ev.target) {
+                    let data = ev.target.result;
+                    try {
+                        //data = JSON.stringify(data, null, 2); // must turn str into obj before str
+                    } catch (err) {
+                        switch (type) {
+                            case 'cbor':
+                                data = escaped2cbor(hexify(data));
+                                break;
+                            default:
+                                sbToastError(`File cannot be loaded`);
                         }
-                        type == 'jadn' ? setMsgFormat('json') : setMsgFormat(type);
-                        setLoadedMsg(data);
                     }
-                };
-                fileReader.readAsText(file);
-            } else {
-                sbToastError(`Schema cannot be loaded. Please upload a message file.`);
-            }
+                    type == 'jadn' ? setMsgFormat('json') : setMsgFormat(type);
+                    setLoadedMsg(data);
+                }
+            };
+            fileReader.readAsText(file);
+
+            // sbToastError(`Schema cannot be loaded. Please upload a message file.`);
+
         }
     }
 

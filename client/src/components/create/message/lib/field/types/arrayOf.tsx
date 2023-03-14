@@ -122,6 +122,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       updatedOpts = [...opts, v];
     }
 
+    //send up arrayOf data
     if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
       optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
     } else {

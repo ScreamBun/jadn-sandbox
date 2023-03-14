@@ -11,6 +11,7 @@ import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/in
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from '../../../../../../reducers';
+import { merge } from 'lodash';
 
 // Interface
 interface MapOfFieldProps {
@@ -73,14 +74,46 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const onChange = (k: string, v: any, i: number) => {
-        //let every obj have a key and value [{key: '', value:''}, ...]
-        //then reduce object to key:value pairs 
+        //opts: let every obj have a key and value [{key: '', value:''}, ...]
+        //data : then reduce object to key:value pairs 
         const ktype = msgName + "." + optData.ktype.toLowerCase();
         const vtype = msgName + "." + optData.vtype.toLowerCase();
 
         if (Number.isNaN(v)) {
             v = undefined;
         }
+
+        const arrKeys = msgName.split(".");
+        const valKeys = k.split(".");
+
+        if (valKeys.length == 1 && v == undefined) {
+            //reset
+            setOpts([]);
+        } else if ((arrKeys.length < valKeys.length)) {
+            //create nested obj based on keys
+            const nestedKeys = valKeys.slice(arrKeys.length);
+            let nestedObj = {};
+            nestedKeys.reduce((obj, key, index) => {
+                if (index == nestedKeys.length - 1) {
+                    return obj[key] = v;
+                } else {
+                    return obj[key] = {};
+                }
+            }, nestedObj);
+
+            v = nestedObj;
+
+            if (opts[i]) {
+                //merge and update v obj at opt[i] key or value 
+                let oldV;
+                if (k == ktype && opts[i]['key']) {
+                    oldV = opts[i]['key'];
+                } else if (k == vtype && opts[i]['value']) {
+                    oldV = opts[i]['value'];
+                }
+                v = merge(oldV, v);
+            }//else no data to merge
+        } //else v is not an obj
 
         let updatedOpts;
         if (i <= opts.length - 1) {
@@ -91,7 +124,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                         //change key
                         return { ...opt, ['key']: v };
                     } else if (k == vtype) {
-                        //change val ---- get nested val ??
+                        //change val
                         return { ...opt, ['value']: v };
                     }
                 } else {
@@ -104,18 +137,50 @@ const MapOfField = (props: MapOfFieldProps) => {
             //add 
             if (k == ktype) {
                 //add key
-                setOpts([...opts, { ['key']: v }]);
+                setOpts([...opts, { ['key']: v, ['value']: '' }]);
                 updatedOpts = [...opts, { ['key']: v, ['value']: '' }];
             } else if (k == vtype) {
                 //add val
-                setOpts([...opts, { ['value']: v }]);
+                setOpts([...opts, { ['key']: '', ['value']: v }]);
                 updatedOpts = [...opts, { ['key']: '', ['value']: v }];
             }
         }
 
-        const data = updatedOpts?.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
+        /* //working ish---- string escape characters visible...
+        updatedOpts?.forEach((obj) => {
+            const newKey = JSON.stringify(obj.key)
+            Object.assign(data, { [newKey]: obj.value });
+        }) */
+
+        //const data = updatedOpts?.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
+        //issue: key ===> obj obj         
+        //CREATE MAP not obj, but json does not understand MAP
+        //convert map key to string ===> obj
+
+        /*    let mapOfdata: Map<any, any>[] = [];
+           updatedOpts?.forEach(obj => {
+               let newO = new Map();
+               newO.set(obj.key, obj.value);
+               mapOfdata.push(newO)
+           }); 
+                   console.log(mapOfdata)*/
+
+        //JSON object if ktype is a String type
+        //JSON array if ktype is not a String type. 
+        let data;
+        if (updatedOpts && typeof updatedOpts[0]['key'] == "string") {
+            data = updatedOpts.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
+        } else {
+            //data = updatedOpts;
+            data = [];
+            updatedOpts?.forEach(obj => {
+                data.push(obj.key);
+                data.push(obj.value);
+            });
+        }
         optChange(msgName, data);
     }
+
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
@@ -133,7 +198,7 @@ const MapOfField = (props: MapOfFieldProps) => {
             optData.vtype = optData.vtype.slice(1);
         }
         // MUST include ktype and vtype options.
-        console.log(optData);
+        //console.log(optData);
     }
 
     const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
@@ -144,11 +209,13 @@ const MapOfField = (props: MapOfFieldProps) => {
     //StandardFieldKey = 'id' | 'name' | 'type' | 'options' | 'comment';
     if (keyDefs.length === 1) {
         keyDef = keyDefs[0];
+        //CHECK IF THERE ARE FIELDS (type array vs standard field array)
         keyField = keyDef.length === 4 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 1]]
             : [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]];
     } else {
+        //definition not found
         keyDef = optData.ktype;
-        keyField = [0, keyDef, keyDef, [], ''];
+        keyField = [0, keyDef.toLowerCase(), 'String', [], ''];
     }
 
     const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
@@ -156,14 +223,12 @@ const MapOfField = (props: MapOfFieldProps) => {
     let valField;
     if (valDefs.length === 1) {
         valDef = valDefs[0];
-        //CHECK IF THERE ARE FIELDS (type array vs standard field array)
         valField = valDef.length === 4 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 1]]
             : [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]];
     } else {
         valDef = optData.vtype;
-        valField = [0, valDef, valDef, [], ''];
+        valField = [0, valDef.toLowerCase(), 'String', [], ''];
     }
-
 
     const fields: any[] = [];
     for (let i = 0; i < count; ++i) {
