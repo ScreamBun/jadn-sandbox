@@ -26,7 +26,7 @@ const ArrayField = (props: ArrayFieldProps) => {
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
-    console.log(optData)
+    //console.log(optData)
     //TODO type opts: extend, minv, maxv, and format 
   }
 

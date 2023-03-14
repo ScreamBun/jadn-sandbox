@@ -11,6 +11,7 @@ import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/in
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from '../../../../../../reducers';
+import { merge } from 'lodash';
 
 // Interface
 interface MapOfFieldProps {
@@ -73,38 +74,58 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const onChange = (k: string, v: any, i: number) => {
+        //opts: let every obj have a key and value [{key: '', value:''}, ...]
+        //data : then reduce object to key:value pairs 
         const ktype = msgName + "." + optData.ktype.toLowerCase();
         const vtype = msgName + "." + optData.vtype.toLowerCase();
-
-        console.log("key ----- " + k + "------------ONCHG TRIGGERINGGGG");
-        console.log("val input ----- " + v);
-        console.log("i index ----- " + i);
-        console.log("opts.length --- " + opts.length);
-        console.log(i <= opts.length - 1); //false = add, else chg
 
         if (Number.isNaN(v)) {
             v = undefined;
         }
+
+        const arrKeys = msgName.split(".");
+        const valKeys = k.split(".");
+
+        if (valKeys.length == 1 && v == undefined) {
+            //reset
+            setOpts([]);
+        } else if ((arrKeys.length < valKeys.length)) {
+            //create nested obj based on keys
+            const nestedKeys = valKeys.slice(arrKeys.length);
+            let nestedObj = {};
+            nestedKeys.reduce((obj, key, index) => {
+                if (index == nestedKeys.length - 1) {
+                    return obj[key] = v;
+                } else {
+                    return obj[key] = {};
+                }
+            }, nestedObj);
+
+            v = nestedObj;
+
+            if (opts[i]) {
+                //merge and update v obj at opt[i] key or value 
+                let oldV;
+                if (k == ktype && opts[i]['key']) {
+                    oldV = opts[i]['key'];
+                } else if (k == vtype && opts[i]['value']) {
+                    oldV = opts[i]['value'];
+                }
+                v = merge(oldV, v);
+            }//else no data to merge
+        } //else v is not an obj
 
         let updatedOpts;
         if (i <= opts.length - 1) {
             //update
             updatedOpts = opts.map((opt, index) => {
                 if (i === index) {
-                    console.log("CHANGING @" + index)
                     if (k == ktype) {
-                        console.log("CHG KEY TO --- " + JSON.stringify(opt))
-
-                        //save data in tmpdata
                         //change key
-                        let tmpData = opt[value];
-                        console.log(tmpData)
-
-                        return { ...opt, [v]: tmpData };
+                        return { ...opt, ['key']: v };
                     } else if (k == vtype) {
-                        console.log("CHG VAL TO --- " + JSON.stringify(opt))
-
-                        return { ...opt, [opt]: { ...opt[i], v } };
+                        //change val
+                        return { ...opt, ['value']: v };
                     }
                 } else {
                     return opt;
@@ -115,29 +136,51 @@ const MapOfField = (props: MapOfFieldProps) => {
         } else {
             //add 
             if (k == ktype) {
-                setOpts([...opts, { [v]: '' }]);
-                updatedOpts = [...opts, { [v]: '' }];
+                //add key
+                setOpts([...opts, { ['key']: v, ['value']: '' }]);
+                updatedOpts = [...opts, { ['key']: v, ['value']: '' }];
             } else if (k == vtype) {
-                setOpts([...opts, { '': v }]);
-                updatedOpts = [...opts, { '': v }];
+                //add val
+                setOpts([...opts, { ['key']: '', ['value']: v }]);
+                updatedOpts = [...opts, { ['key']: '', ['value']: v }];
             }
         }
 
-        console.log(opts)
-        console.log(opts.length)
+        /* //working ish---- string escape characters visible...
+        updatedOpts?.forEach((obj) => {
+            const newKey = JSON.stringify(obj.key)
+            Object.assign(data, { [newKey]: obj.value });
+        }) */
 
-        console.log("RESULT ---- " + JSON.stringify(updatedOpts))
-        console.log(updatedOpts?.length)
+        //const data = updatedOpts?.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
+        //issue: key ===> obj obj         
+        //CREATE MAP not obj, but json does not understand MAP
+        //convert map key to string ===> obj
 
-        /*         const data = Object.assign({}, ...updatedOpts.map((item) => {
-                    console.log(item.key)
-                })); */
+        /*    let mapOfdata: Map<any, any>[] = [];
+           updatedOpts?.forEach(obj => {
+               let newO = new Map();
+               newO.set(obj.key, obj.value);
+               mapOfdata.push(newO)
+           }); 
+                   console.log(mapOfdata)*/
 
-        /* ({ [key]: value }))); */
-        //        console.log("RESULT ---- " + JSON.stringify(data))
-
-        optChange(msgName, updatedOpts);
+        //JSON object if ktype is a String type
+        //JSON array if ktype is not a String type. 
+        let data;
+        if (updatedOpts && typeof updatedOpts[0]['key'] == "string") {
+            data = updatedOpts.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
+        } else {
+            //data = updatedOpts;
+            data = [];
+            updatedOpts?.forEach(obj => {
+                data.push(obj.key);
+                data.push(obj.value);
+            });
+        }
+        optChange(msgName, data);
     }
+
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
@@ -159,16 +202,33 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
-    const keyDef = keyDefs.length === 1 ? keyDefs[0] : typeDef[0];
+    let keyDef; //keyDef == defined or based type
+    let keyField;
 
-    const keyField = keyDefs.length === 1 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]]
-        : [0, keyDef, 'String', [], ''];
+    //CURRENTLY IN TypeKey = 'name' | 'type' | 'options' | 'comment' | 'fields';
+    //StandardFieldKey = 'id' | 'name' | 'type' | 'options' | 'comment';
+    if (keyDefs.length === 1) {
+        keyDef = keyDefs[0];
+        //CHECK IF THERE ARE FIELDS (type array vs standard field array)
+        keyField = keyDef.length === 4 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 1]]
+            : [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]];
+    } else {
+        //definition not found
+        keyDef = optData.ktype;
+        keyField = [0, keyDef.toLowerCase(), 'String', [], ''];
+    }
 
     const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-    const valDef = valDefs.length === 1 ? valDefs[0] : typeDef[0];
-
-    const valField = valDefs.length === 1 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]]
-        : [0, valDef, 'String', [], ''];
+    let valDef;
+    let valField;
+    if (valDefs.length === 1) {
+        valDef = valDefs[0];
+        valField = valDef.length === 4 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 1]]
+            : [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]];
+    } else {
+        valDef = optData.vtype;
+        valField = [0, valDef.toLowerCase(), 'String', [], ''];
+    }
 
     const fields: any[] = [];
     for (let i = 0; i < count; ++i) {
@@ -181,8 +241,8 @@ const MapOfField = (props: MapOfFieldProps) => {
                         </p>
                     </div>
                     <div className='card-body mx-2'>
-                        <Field key={"k" + i} def={keyField} parent={msgName} optChange={onChange} idx={i} />
-                        <Field key={"v" + i} def={valField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key={"value"} def={valField} parent={msgName} optChange={onChange} idx={i} />
                     </div>
                 </div>
             </div >
