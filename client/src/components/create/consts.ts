@@ -21,3 +21,5 @@ if maxc is less than minc, the field definition MUST be considered invalid.
     TypeName = String{pattern="$TypeName"}       // Default = ^[A-Z][-$A-Za-z0-9]{0,63}$
     FieldName = String{pattern="$FieldName"}     // Default = ^[a-z][_A-Za-z0-9]{0,63}$
 */
+
+export const $FIELDS_IDX = 5;

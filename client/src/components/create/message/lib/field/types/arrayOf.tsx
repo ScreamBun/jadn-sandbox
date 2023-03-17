@@ -12,6 +12,7 @@ import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { merge } from 'lodash';
+import { $MAX_ELEMENTS, $MINV } from 'components/create/consts';
 
 // Interface
 interface ArrayOfFieldProps {
@@ -38,41 +39,39 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setisValid('');
-    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : 100;
+    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : $MAX_ELEMENTS;
     const maxBool = count < maxCount;
     if (!maxBool) {
       setisValid('Error: Maximum of ' + maxCount)
     }
     setCount(maxBool ? count => count + 1 : count);
-    setMax(maxBool => !maxBool);
+    setMax(!maxBool);
+    setMin(false);
     //setOpts(opts => [...opts, undefined]);
   }
 
   const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     setisValid('');
     e.preventDefault();
-    const minCount = hasProperty(optData, 'minv') ? optData.minv : 0;
+    const minCount = hasProperty(optData, 'minv') ? optData.minv : $MINV;
 
     const minBool = count > minCount;
     if (minBool) {
       setOpts(opts.slice(0, -1));
       const tmpOpts = opts;
       tmpOpts.pop();
-      const filteredOpts = tmpOpts.filter(data => {
-        return data != null;
-      });
-
       if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-        optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
+        optChange(msgName, Array.from(new Set(Object.values(tmpOpts))));
       } else {
-        optChange(msgName, Array.from(Object.values(filteredOpts)));
+        optChange(msgName, Array.from(Object.values(tmpOpts)));
       }
     } else {
       setisValid('Error: Minimum of ' + minCount)
     }
 
     setCount(minBool ? count => count - 1 : count);
-    setMin(minBool => !minBool);
+    setMin(!minBool);
+    setMax(false);
   }
 
   const onChange = (k: string, v: any, i: number) => {
@@ -83,10 +82,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     const arrKeys = msgName.split(".");
     const valKeys = k.split(".");
 
-    if (valKeys.length == 1 && v == undefined) {
-      //reset
-      setOpts([]);
-    } else if ((arrKeys.length < valKeys.length - 1) && (valKeys.length - arrKeys.length != 1)) {
+    if ((arrKeys.length < valKeys.length - 1) && (valKeys.length - arrKeys.length != 1)) {
       //create nested obj based on keys
       const nestedKeys = valKeys.slice(arrKeys.length + 1);
       let nestedObj = {};
@@ -101,8 +97,24 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       v = nestedObj;
 
       //merge and update v obj at opt[i] 
-      let oldV = opts[i];
-      v = merge(oldV, v);
+      //if the old V has more items than the new value, then a value has been removed and
+      //if value exists in old V and if value is null; do not merge
+      if (opts.length != 0) {
+        let oldV = opts[i];
+
+        if (oldV) {
+          if (typeof oldV[valKeys[valKeys.length - 1]] != 'object' && v == '') {
+            v = undefined;
+          } else if (typeof oldV[valKeys[valKeys.length - 1]] == 'object' && Object.keys(oldV).includes(valKeys[valKeys.length - 1])) {
+            if (oldV[valKeys[valKeys.length - 1]].length >= v[valKeys[valKeys.length - 1]].length) {
+              oldV[valKeys[valKeys.length - 1]] = v[valKeys[valKeys.length - 1]]; //TODO: delete
+              v = oldV;
+            }
+          } else {
+            v = merge(oldV, v);
+          }
+        } //if oldV is not null
+      }
     } //else v is an arrayOf string
 
     let updatedOpts;
@@ -115,12 +127,11 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
           return data;
         }
       });
-      setOpts(updatedOpts);
     } else {
       //add
-      setOpts(opts => [...opts, v]);
       updatedOpts = [...opts, v];
     }
+    setOpts(updatedOpts);
 
     //send up arrayOf data
     if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
@@ -139,17 +150,17 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     } else {
       optData = (opts2obj(typeDef[2]));
     }
-    // TODO optData : must include vtype
-    // TODO optData: MUST NOT include more than one collection option (set, unique, or unordered).
+    // MUST include vtype
+    // MUST NOT include more than one collection option (set, unique, or unordered).
     if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
       optData.vtype = optData.vtype.slice(1);
     }
-    //console.log(optData);
   }
 
   const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
   const arrDef = arrDefs.length === 1 ? arrDefs[0] : def;
 
+  //no fields in def
   const fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
     : [0, name, 'String', [], ''];
 

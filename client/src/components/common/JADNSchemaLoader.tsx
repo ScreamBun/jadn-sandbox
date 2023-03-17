@@ -26,14 +26,13 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedFile(e.target.value);
+        setIsValidJADN(false);
         if (e.target.value == "" || e.target.value == "file") {
             setLoadedSchema('');
-            setIsValidJADN(false);
         } else {
             try {
                 dispatch(loadFile('schemas', e.target.value))
                     .then((loadFileVal) => {
-
                         try {
                             let schemaObj = loadFileVal.payload.data;
                             let schemaStr = JSON.stringify(schemaObj);
@@ -61,7 +60,6 @@ const JADNSchemaLoader = (props: any) => {
                     })
             } catch (err) {
                 setLoadedSchema(null);
-                setIsValidJADN(false);
             }
         }
     };

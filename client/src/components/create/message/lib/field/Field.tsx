@@ -28,7 +28,9 @@ const Field = (props: FieldProps) => {
     parent: parentName,
     optChange: (k: string, v: any) => optChange(k, v, idx)
   };
+  
   switch (typeDef) {
+    //Binary? Boolean?
     case 'Enumerated':
       return <EnumeratedField {...args} />;
     case 'Choice':
