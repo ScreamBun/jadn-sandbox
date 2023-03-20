@@ -40,6 +40,12 @@ const FieldEditor = (props: FieldEditorProps) => {
     e.preventDefault();
     const { placeholder, value } = e.target;
     //TODO JADN: MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension 
+    if (placeholder == "Name") {
+      if (value.includes('/')) {
+        sbToastError('Error: FieldNames MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension.');
+        return;
+      }
+    }
     if (enumerated) {
       if (!valueObj.value) {
         sbToastError('Value required for Enum');
