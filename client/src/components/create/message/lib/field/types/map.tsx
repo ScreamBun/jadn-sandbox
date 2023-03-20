@@ -54,7 +54,7 @@ const MapField = (props: MapFieldProps) => {
         validate(count - 1);
       }//else value is updated
     }
-    optChange(k, v)
+    optChange(k, v);
   }
 
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
@@ -63,9 +63,13 @@ const MapField = (props: MapFieldProps) => {
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
     //TODO type opts: extend
+    console.log(optData)
   }
 
   //if extend
+  console.log(typeDef)
+  console.log(typeDef[typeDef.length - 1])
+
   //Expected: fields (typeDef.length  == 5)
   const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} />)
 

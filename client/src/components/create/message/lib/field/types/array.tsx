@@ -5,7 +5,7 @@ import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
-import { $MINV, $MAX_ELEMENTS } from 'components/create/consts';
+import { $MINV, $MAX_ELEMENTS, $FIELDS_IDX } from 'components/create/consts';
 
 // Interface
 interface ArrayFieldProps {
@@ -66,6 +66,7 @@ const ArrayField = (props: ArrayFieldProps) => {
   }
 
   //if extend
+  //if (hasProperty(optData, 'extend') && optData.extend) 
   //Expected: fields (typeDef.length  == 5)
   const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
 

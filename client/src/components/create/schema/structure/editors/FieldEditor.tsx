@@ -26,9 +26,9 @@ interface FieldEditorProps {
 // Field Editor
 const FieldEditor = (props: FieldEditorProps) => {
   const { enumerated, value, dataIndex, change } = props;
-  const allTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]);
+  const allTypes = useAppSelector((state) => [...state.Util.types.fieldTypes, ...Object.keys(state.Util.types.schema)]);
   const types = useAppSelector((state) => ({
-    base: state.Util.types.base,
+    base: state.Util.types.fieldTypes,
     schema: Object.keys(state.Util.types.schema) || {}
   }));
 

@@ -23,3 +23,5 @@ if maxc is less than minc, the field definition MUST be considered invalid.
 */
 
 export const $FIELDS_IDX = 5;
+
+//MUST NOT create FieldNames containing the JSON Pointer field separator "/",

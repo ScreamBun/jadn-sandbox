@@ -32,7 +32,6 @@ const BasicField = (props: BasicFieldProps) => {
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDefName = typeDefs.length === 1 ? typeDefs[0][0] : 'text';
   let typeDef = typeDefs.length === 1 ? typeDefs[0][1] : 'text';
-  //typeDef == 'Integer' ? typeDef = 'number' : typeDef = typeDef.toLowerCase(); //added step 
   if (typeDef) {
     optData = (opts2obj(opts));
     //TODO type opts : format
