@@ -16,6 +16,7 @@ const SchemaConverter = () => {
     const [loadedSchema, setLoadedSchema] = useState('');
     const [convertedSchema, setConvertedSchema] = useState('');
     const [conversion, setConversion] = useState('');
+    const [spiltViewFlag, setSplitViewFlag] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Convert Schema'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -25,6 +26,7 @@ const SchemaConverter = () => {
 
     useEffect(() => {
         setConvertedSchema('');
+        setSplitViewFlag(false);
     }, [selectedFile]);
 
     const onReset = () => {
@@ -32,6 +34,7 @@ const SchemaConverter = () => {
         setLoadedSchema('');
         setConversion('');
         setConvertedSchema('');
+        setSplitViewFlag(false);
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -121,6 +124,7 @@ const SchemaConverter = () => {
                                         <SchemaConverted
                                             convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
                                             conversion={conversion} setConversion={setConversion}
+                                            spiltViewFlag={spiltViewFlag} setSplitViewFlag={setSplitViewFlag}
                                             loadedSchema={loadedSchema} />
                                     </div>
                                 </div>
