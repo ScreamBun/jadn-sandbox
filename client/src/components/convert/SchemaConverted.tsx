@@ -13,7 +13,8 @@ import SBMarkdownPreviewer from "components/common/SBMarkdownPreviewer";
 import SBpumlPreviewer from "components/common/SBpumlPreviewer";
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
-import { saveAs } from 'file-saver'
+import { saveAs } from 'file-saver';
+import * as d3 from "d3-graphviz";
 
 var plantumlEncoder = require('plantuml-encoder');
 
@@ -27,25 +28,27 @@ const SchemaConverted = (props: any) => {
     const [pumlURL, setPumlURL] = useState('');
 
     useEffect(() => {
-        if (conversion == 'puml') {
-            var encoded = plantumlEncoder.encode(convertedSchema);
-            setPumlURL('http://www.plantuml.com/plantuml/img/' + encoded);
-        }
-    }, [convertedSchema])
-
-    const data = useSelector(getConversions);
-    let convertOpts = {};
-    for (let i = 0; i < Object.keys(data).length; i++) {
-        if (validConversions.includes(Object.keys(data)[i])) {
-            convertOpts[Object.keys(data)[i]] = Object.values(data)[i];
-        }
-    }
-
-    useEffect(() => {
         if (!isNull(navConvertTo)) {
             setConversion(navConvertTo);
         }
     }, []);
+
+    useEffect(() => {
+        if (conversion == 'puml') {
+            var encoded = plantumlEncoder.encode(convertedSchema);
+            setPumlURL('http://www.plantuml.com/plantuml/img/' + encoded);
+        }
+        if (conversion == 'gv') {
+            d3.graphviz("#gv")
+                .fit(true)
+                .height(320)
+                .width(920)
+                .zoomScaleExtent([1, 10])
+                .on("click", () => onGVPopOutClick)
+                .renderDot(convertedSchema);
+        }
+    }, [convertedSchema]);
+
 
     const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);
@@ -116,7 +119,7 @@ const SchemaConverted = (props: any) => {
         }
     }
 
-    const onDownloadJPGClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onDownloadPNGClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         saveAs(pumlURL, 'puml.png');
     }
@@ -136,9 +139,26 @@ const SchemaConverted = (props: any) => {
         window.open(data);
     }
 
+    const onGVPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+    }
+
     const toggleSplitView = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSplitViewFlag(splitView => !splitView);
+    }
+
+    const onDiagramReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        d3.graphviz("#gv").resetZoom();
+    }
+
+    const data = useSelector(getConversions);
+    let convertOpts = {};
+    for (let i = 0; i < Object.keys(data).length; i++) {
+        if (validConversions.includes(Object.keys(data)[i])) {
+            convertOpts[Object.keys(data)[i]] = Object.values(data)[i];
+        }
     }
 
     return (
@@ -182,13 +202,25 @@ const SchemaConverted = (props: any) => {
                         </div>
 
                         <div className={`${conversion == 'puml' && convertedSchema ? '' : ' d-none'}`}>
-                            <Button id="pumlPdfDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadJPGClick}>
+                            <Button id="pumlPngDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPNGClick}>
                                 <FontAwesomeIcon icon={faFileImage} />
                             </Button>
                             <Button id="pumlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" target="_blank" href={pumlURL}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
                             <Button id="pumlSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
+                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
+                            </Button>
+                        </div>
+
+                        <div className={`${conversion == 'gv' && convertedSchema ? '' : ' d-none'}`}>
+                            {/*    <Button id="gvPngDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadSVGClick}>
+                                <FontAwesomeIcon icon={faFileImage} />
+                            </Button> */}
+                            <Button id="gvPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onGVPopOutClick}>
+                                <FontAwesomeIcon icon={faWindowMaximize} />
+                            </Button>
+                            <Button id="gvSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
                                 <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
                             </Button>
                         </div>
@@ -208,10 +240,10 @@ const SchemaConverted = (props: any) => {
                 </div>
             </div>
 
-            <div className={`card-body p-0 ${(conversion == 'html' || conversion == 'md' || conversion == 'puml') && spiltViewFlag ? 'd-none' : ''}`}>
+            <div className={`card-body p-0 ${(conversion == 'html' || conversion == 'md' || conversion == 'puml' || conversion == 'gv') && spiltViewFlag ? 'd-none' : ''}`}>
                 <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
             </div>
-            <div className={`card-body p-0 ${(conversion == 'html' || conversion == 'md' || conversion == 'puml') && spiltViewFlag ? '' : ' d-none'}`}>
+            <div className={`card-body p-0 ${(conversion == 'html' || conversion == 'md' || conversion == 'puml' || conversion == 'gv') && spiltViewFlag ? '' : ' d-none'}`}>
                 <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
 
                 <div className={`${conversion == 'html' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
@@ -222,6 +254,11 @@ const SchemaConverted = (props: any) => {
                 </div>
                 <div className={`${conversion == 'puml' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
                     <SBpumlPreviewer data={pumlURL} height="20em"></SBpumlPreviewer>
+                </div>
+                <div className={`${conversion == 'gv' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
+                    <Button id="diagramReset" color="info" className="btn-sm m-1" style={{ zIndex: '1', position: 'absolute' }} onClick={onDiagramReset}>reset</Button>
+                    <div id="gv" style={{ height: '20em', textAlign: 'center', zIndex: '0' }}><a id="a"></a>
+                    </div>
                 </div>
             </div>
         </div>
