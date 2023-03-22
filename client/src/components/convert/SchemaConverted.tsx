@@ -43,6 +43,9 @@ const SchemaConverted = (props: any) => {
                 .width(920)
                 .zoomScaleExtent([1, 10])
                 .renderDot(convertedSchema);
+            d3.graphviz("#fullGV")
+                .fit(true)
+                .renderDot(convertedSchema);
         }
     }, [convertedSchema]);
 
@@ -122,8 +125,7 @@ const SchemaConverted = (props: any) => {
     }
 
     const onDownloadSVGClick = () => {
-        d3.graphviz("#gv").resetZoom();
-        const svg = document.getElementById("gv")?.innerHTML; //the size of the SVG is dependent on the div (IT'S SMALL!)
+        const svg = document.getElementById("fullGV")?.innerHTML;
         var blob = new Blob([svg], { type: "image/svg+xml" });
         saveAs(blob, "graphViz.svg");
     }
@@ -145,7 +147,9 @@ const SchemaConverted = (props: any) => {
 
     const onGVPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        //TODO
+        var newWindowContent = document.getElementById('fullGV').innerHTML;
+        var newWindow = window.open("");
+        newWindow.document.write(newWindowContent);
     }
 
     const toggleSplitView = (e: React.MouseEvent<HTMLButtonElement>) => {

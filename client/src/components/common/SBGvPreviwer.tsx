@@ -12,9 +12,11 @@ const SBGvPreviewer = (props: any) => {
     }
 
     return (
-        <div id="content" className="card bg-secondary" style={{ 'height': height }}>
+        <div id="content" className="card bg-secondary" style={{ 'height': height, overflow: 'hidden' }}>
             <Button id="diagramReset" color="info" className="btn-sm m-1" style={{ zIndex: '1', position: 'absolute' }} onClick={onDiagramReset}>reset</Button>
-            <div id="gv" style={{ textAlign: 'center', zIndex: '0' }}>
+            <div id="gv" style={{ 'height': height, textAlign: 'center', zIndex: '0' }}>
+            </div>
+            <div id="fullGV" style={{ visibility: 'hidden' }}>
             </div>
         </div>
     );
