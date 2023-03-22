@@ -32,10 +32,10 @@ const SchemaConverted = (props: any) => {
     }, []);
 
     useEffect(() => {
-        if (conversion == 'puml') {
+        if (conversion == 'puml' && convertedSchema) {
             setPumlURL(convertToPuml(convertedSchema));
         }
-        if (conversion == 'gv') {
+        if (conversion == 'gv' && convertedSchema) {
             d3.graphviz("#gv")
                 .fit(true)
                 .height(320)
