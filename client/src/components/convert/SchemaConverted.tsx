@@ -15,6 +15,7 @@ import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import { saveAs } from 'file-saver';
 import * as d3 from "d3-graphviz";
+import SBGvPreviewer from "components/common/SBGvPreviwer";
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
@@ -120,6 +121,13 @@ const SchemaConverted = (props: any) => {
         saveAs(pumlURL, 'puml.png');
     }
 
+    const onDownloadSVGClick = () => {
+        d3.graphviz("#gv").resetZoom();
+        const svg = document.getElementById("gv")?.innerHTML; //the size of the SVG is dependent on the div (IT'S SMALL!)
+        var blob = new Blob([svg], { type: "image/svg+xml" });
+        saveAs(blob, "graphViz.svg");
+    }
+
     const onHTMLPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const blob = new Blob([convertedSchema], { type: "text/html" });
@@ -137,16 +145,12 @@ const SchemaConverted = (props: any) => {
 
     const onGVPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        //TODO
     }
 
     const toggleSplitView = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSplitViewFlag(splitView => !splitView);
-    }
-
-    const onDiagramReset = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        d3.graphviz("#gv").resetZoom();
     }
 
     const data = useSelector(getConversions);
@@ -210,9 +214,9 @@ const SchemaConverted = (props: any) => {
                         </div>
 
                         <div className={`${conversion == 'gv' && convertedSchema ? '' : ' d-none'}`}>
-                            {/*    <Button id="gvPngDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadSVGClick}>
+                            <Button id="gvSvgDownload" title="Download SVG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadSVGClick}>
                                 <FontAwesomeIcon icon={faFileImage} />
-                            </Button> */}
+                            </Button>
                             <Button id="gvPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onGVPopOutClick}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
@@ -252,9 +256,7 @@ const SchemaConverted = (props: any) => {
                     <SBPumlPreviewer data={pumlURL} height="20em"></SBPumlPreviewer>
                 </div>
                 <div className={`${conversion == 'gv' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
-                    <Button id="diagramReset" color="info" className="btn-sm m-1" style={{ zIndex: '1', position: 'absolute' }} onClick={onDiagramReset}>reset</Button>
-                    <div id="gv" style={{ height: '20em', textAlign: 'center', zIndex: '0' }}>
-                    </div>
+                    <SBGvPreviewer height="20em"></SBGvPreviewer>
                 </div>
             </div>
         </div>
