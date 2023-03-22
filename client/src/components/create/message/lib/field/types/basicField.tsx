@@ -32,7 +32,6 @@ const BasicField = (props: BasicFieldProps) => {
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDefName = typeDefs.length === 1 ? typeDefs[0][0] : 'text';
   let typeDef = typeDefs.length === 1 ? typeDefs[0][1] : 'text';
-  //typeDef == 'Integer' ? typeDef = 'number' : typeDef = typeDef.toLowerCase(); //added step 
   if (typeDef) {
     optData = (opts2obj(opts));
     //TODO type opts : format
@@ -57,7 +56,7 @@ const BasicField = (props: BasicFieldProps) => {
       if (hasProperty(optData, 'minf')) {
         if (data < optData.minf) {
           valc = 'red';
-          valm.push('Minf Error: must be more than ' + optData.minf);
+          valm.push('Minf Error: must be greater than ' + optData.minf);
         }
       }
       if (hasProperty(optData, 'maxf')) {
@@ -70,26 +69,26 @@ const BasicField = (props: BasicFieldProps) => {
         if (typeof data == 'string') {
           if (data.length < optData.minv) {
             valc = 'red';
-            valm.push('Minv Error: must be more than ' + optData.minv);
+            valm.push('Minv Error: must be greater than ' + optData.minv + ' characters');
           }
         } else {
           if (data < optData.minv) {
             valc = 'red';
-            valm.push('Minv Error: must be more than' + optData.minv);
+            valm.push('Minv Error: must be greater than ' + optData.minv);
           }
         }
       } else {
         optData.minv = $MINV;
         if (data < optData.minv) {
           valc = 'red';
-          valm.push('Minv Error: must be more than' + optData.minv);
+          valm.push('Minv Error: must be greater than ' + optData.minv);
         }
       }
       if (hasProperty(optData, 'maxv')) {
         if (typeof data == 'string') {
           if (data.length > optData.maxv) {
             valc = 'red';
-            valm.push('Maxv Error: must be less than ' + optData.maxv);
+            valm.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
           }
         } else {
           if (data > optData.maxv) {
@@ -107,7 +106,7 @@ const BasicField = (props: BasicFieldProps) => {
       if (hasProperty(optData, 'pattern') && typeof data == 'string') {
         if (!optData.pattern.test(data)) {
           valc = 'red';
-          valm.push('Pattern Error: must match ' + optData.pattern);
+          valm.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
         }
       }
     }

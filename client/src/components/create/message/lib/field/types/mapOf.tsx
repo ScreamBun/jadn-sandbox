@@ -12,6 +12,7 @@ import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from '../../../../../../reducers';
 import { merge } from 'lodash';
+import { $MAX_ELEMENTS, $MINV } from 'components/create/consts';
 
 // Interface
 interface MapOfFieldProps {
@@ -37,19 +38,20 @@ const MapOfField = (props: MapOfFieldProps) => {
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setisValid('');
-        const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : 20;
+        const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : $MAX_ELEMENTS;
         const maxBool = count < maxCount;
         if (!maxBool) {
-            setisValid('Error: Maximum of ' + maxCount)
+            setisValid('Error: Cannot add fields - Maximum of ' + maxCount)
         }
         setCount(maxBool ? count => count + 1 : count);
-        setMax(maxBool => !maxBool);
+        setMax(!maxBool);
+        setMin(false);
     }
 
     const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setisValid('');
-        const minCount = hasProperty(optData, 'minv') ? optData.minv : 0;
+        const minCount = hasProperty(optData, 'minv') ? optData.minv : $MINV;
 
         const minBool = count > minCount;
         if (minBool) {
@@ -66,11 +68,12 @@ const MapOfField = (props: MapOfFieldProps) => {
             });
             optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
         } else {
-            setisValid('Error: Minimum of ' + minCount)
+            setisValid('Error: Cannot remove fields - Minimum of ' + minCount)
         }
 
         setCount(minBool ? count => count - 1 : count);
-        setMin(minBool => !minBool);
+        setMin(!minBool);
+        setMax(false);
     }
 
     const onChange = (k: string, v: any, i: number) => {
@@ -103,7 +106,7 @@ const MapOfField = (props: MapOfFieldProps) => {
 
             v = nestedObj;
 
-            if (opts[i]) {
+            if (opts.length != 0) {
                 //merge and update v obj at opt[i] key or value 
                 let oldV;
                 if (k == ktype && opts[i]['key']) {
@@ -111,7 +114,16 @@ const MapOfField = (props: MapOfFieldProps) => {
                 } else if (k == vtype && opts[i]['value']) {
                     oldV = opts[i]['value'];
                 }
-                v = merge(oldV, v);
+                if (oldV) {
+                    if (typeof oldV[valKeys[valKeys.length - 1]] != 'object' && v == '') {
+                        v = undefined;
+                    } else if (typeof oldV[valKeys[valKeys.length - 1]] == 'object' && oldV[valKeys[valKeys.length - 1]].length >= v[valKeys[valKeys.length - 1]].length) {
+                        oldV[valKeys[valKeys.length - 1]] = v[valKeys[valKeys.length - 1]]; //TODO: delete
+                        v = oldV;
+                    } else {
+                        v = merge(oldV, v);
+                    }
+                }//else no data to merge
             }//else no data to merge
         } //else v is not an obj
 
@@ -146,25 +158,6 @@ const MapOfField = (props: MapOfFieldProps) => {
             }
         }
 
-        /* //working ish---- string escape characters visible...
-        updatedOpts?.forEach((obj) => {
-            const newKey = JSON.stringify(obj.key)
-            Object.assign(data, { [newKey]: obj.value });
-        }) */
-
-        //const data = updatedOpts?.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
-        //issue: key ===> obj obj         
-        //CREATE MAP not obj, but json does not understand MAP
-        //convert map key to string ===> obj
-
-        /*    let mapOfdata: Map<any, any>[] = [];
-           updatedOpts?.forEach(obj => {
-               let newO = new Map();
-               newO.set(obj.key, obj.value);
-               mapOfdata.push(newO)
-           }); 
-                   console.log(mapOfdata)*/
-
         //JSON object if ktype is a String type
         //JSON array if ktype is not a String type. 
         let data;
@@ -180,7 +173,6 @@ const MapOfField = (props: MapOfFieldProps) => {
         }
         optChange(msgName, data);
     }
-
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
@@ -198,7 +190,6 @@ const MapOfField = (props: MapOfFieldProps) => {
             optData.vtype = optData.vtype.slice(1);
         }
         // MUST include ktype and vtype options.
-        //console.log(optData);
     }
 
     const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
@@ -206,6 +197,7 @@ const MapOfField = (props: MapOfFieldProps) => {
     let keyField;
 
     //CURRENTLY IN TypeKey = 'name' | 'type' | 'options' | 'comment' | 'fields';
+    //no fields in def
     //StandardFieldKey = 'id' | 'name' | 'type' | 'options' | 'comment';
     if (keyDefs.length === 1) {
         keyDef = keyDefs[0];

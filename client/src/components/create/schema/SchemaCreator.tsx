@@ -26,7 +26,6 @@ const SchemaCreator = (props: any) => {
         dispatch(setSchema(generatedSchema));
         dispatch(format(schemaStr))
             .then(val => {
-                //TODO: data does not format properly
                 setData(val.payload.schema)
             });
     }, [generatedSchema])

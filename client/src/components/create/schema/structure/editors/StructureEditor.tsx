@@ -14,6 +14,7 @@ import {
 } from '../../interface';
 import { zip } from '../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
+import { useAppSelector } from 'reducers';
 
 
 // Interface
@@ -27,15 +28,22 @@ interface StructureEditorProps {
 // Structure Editor
 const StructureEditor = (props: StructureEditorProps) => {
   const { value, change, dataIndex } = props;
+  const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
   const [modal, setModal] = useState(false);
   let valueObj = zip(TypeKeys, value) as StandardTypeObject;
-  let UIDList: any[] = [];
   let fieldCount = 1;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //check type name
     const { placeholder, value } = e.target;
+    if (placeholder == "Name") {
+      if (predefinedTypes.includes(value.toLowerCase())) {
+        sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
+        return;
+      }
+    }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }
     change(updatevalue, dataIndex);
@@ -68,24 +76,40 @@ const StructureEditor = (props: StructureEditorProps) => {
 
   const addField = () => {
     let field: EnumeratedFieldArray | StandardFieldArray;
-    //const uid = new Date().getTime();
-    checkUID(false, '');
-
+    //create unique ID
+    const currMaxID = Math.max(...listID);
+    if (currMaxID && fieldCount <= currMaxID) {
+      fieldCount = currMaxID + 1;
+    }
+    let fieldName;
     if (valueObj.type.toLowerCase() === 'enumerated') {
-      field = [fieldCount, 'field value', ''] as EnumeratedFieldArray;
+      fieldName = 'field_value_' + fieldCount;
+      field = [fieldCount, fieldName, ''] as EnumeratedFieldArray;
     } else {
       //TODO: default field type is String ? Fix line in field.tsx too.
-      field = [fieldCount, 'field name', 'String', [], ''] as StandardFieldArray;
+      fieldName = 'field_name_' + fieldCount;
+      field = [fieldCount, fieldName, 'String', [], ''] as StandardFieldArray;
     }
-
     const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
     change(updatevalue, dataIndex);
-    UIDList.push(fieldCount);
     fieldCount = fieldCount + 1;
   }
 
   const fieldChange = (val: FieldArray, idx: number) => {
-    checkUID(true, val[0]);
+    //check field ID and field name
+    if (listID.includes(val[0])) {
+      sbToastError('Error: FieldID must be unique');
+      return;
+    }
+
+    for (let i = 0; i < fields.length; i++) {
+      var name = fields[i].props.value[1];
+      if (name == val[1] && i != idx) {
+        sbToastError('Error: FieldName must be unique');
+        return;
+      }
+    }
+
     if (typeof val[0] != 'number') {
       val[0] = parseInt(val[0]); //force index to type number
     }
@@ -163,6 +187,8 @@ const StructureEditor = (props: StructureEditorProps) => {
     );
   }
 
+  //FieldType MUST be a Primitive type, ArrayOf, MapOf, or a model-defined type. 
+  //no enum, choice, map, array, record
   const fields: any[] = [];
   if (valueObj.fields) {
     for (let i = 0; i < valueObj.fields.length; ++i) {
@@ -176,27 +202,7 @@ const StructureEditor = (props: StructureEditorProps) => {
       />);
     }
   }
-
-  if (fields.length) {
-    for (let i = 0; i < fields.length; ++i) {
-      UIDList.push(fields[i].key);
-    }
-  }
-
-  const checkUID = (onchg: boolean, num: string | number) => {
-    //changing fields: check for uid 
-    //adding fields: add a unique id
-    if (onchg) {
-      if (UIDList.includes(num)) {
-        sbToastError('Error: Must be unique ID');
-      }
-    } else {
-      const currMaxID = Math.max(...UIDList);
-      if (currMaxID && fieldCount <= currMaxID) {
-        fieldCount = currMaxID + 1;
-      }
-    }
-  }
+  const listID = fields.map(field => field.key);
 
   return (
     <div className="border m-1 p-1">
@@ -239,10 +245,10 @@ const StructureEditor = (props: StructureEditorProps) => {
           <legend>
             {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'}
             <ButtonGroup className="float-right">
-              <Button color={fieldCollapse ? 'warning' : 'success'} onClick={() => setFieldCollapse(!fieldCollapse)}>
-                <FontAwesomeIcon icon={fieldCollapse ? faMinusCircle : faPlusCircle} />
+              <Button color={fieldCollapse ? 'success' : 'warning'} onClick={() => setFieldCollapse(!fieldCollapse)}>
+                <FontAwesomeIcon icon={fieldCollapse ? faPlusCircle : faMinusCircle} />
                 &nbsp;
-                {fieldCollapse ? ' Hide' : ' Show'}
+                {fieldCollapse ? ' Show' : ' Hide'}
               </Button>
               <Button color="primary" onClick={addField} >
                 <FontAwesomeIcon icon={faPlusSquare} />
@@ -252,10 +258,10 @@ const StructureEditor = (props: StructureEditorProps) => {
             </ButtonGroup>
           </legend>
 
-          {fieldCollapse && fields}
+          {!fieldCollapse && fields}
 
-          {!fieldCollapse && fields.length > 0 ? <p>Expand to view/edit fields</p> :
-            fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
+          {fieldCollapse && fields.length > 0 ? <p>Expand to view/edit fields</p> :
+            !fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
         </FormGroup>
       </div>
     </div>

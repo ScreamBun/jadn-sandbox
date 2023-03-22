@@ -11,6 +11,8 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
 import { isNull } from "lodash";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const MessageValidated = (props: any) => {
     const location = useLocation()
@@ -20,7 +22,7 @@ const MessageValidated = (props: any) => {
 
     const msgOpts = useSelector(getMsgFiles);
     const decodeExports = decodeSchemaTypes.exports.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
-    const decodeAll = decodeSchemaTypes.all.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
+    //const decodeAll = decodeSchemaTypes.all.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -75,6 +77,8 @@ const MessageValidated = (props: any) => {
                     let data = ev.target.result;
                     try {
                         //data = JSON.stringify(data, null, 2); // must turn str into obj before str
+                        type == 'jadn' ? setMsgFormat('json') : setMsgFormat(type);
+                        setLoadedMsg(data);
                     } catch (err) {
                         switch (type) {
                             case 'cbor':
@@ -84,32 +88,44 @@ const MessageValidated = (props: any) => {
                                 sbToastError(`File cannot be loaded`);
                         }
                     }
-                    type == 'jadn' ? setMsgFormat('json') : setMsgFormat(type);
-                    setLoadedMsg(data);
                 }
             };
             fileReader.readAsText(file);
-
             // sbToastError(`Schema cannot be loaded. Please upload a message file.`);
-
         }
+    }
+
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setSelectedFile('');
+        setLoadedMsg('');
+        //setDecodeMsg('');
+        //setMsgFormat('');
+        document.getElementById("message-file").value = '';
     }
 
     return (
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
-                        <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect} overflow-y="scroll">
-                            <option value="">Message</option>
-                            <optgroup label="Testers">
-                                {Object.entries(msgOpts).map(([n, t]) => <option key={n} value={n} data-decode={t} >{n}</option>)}
-                            </optgroup>
-                            <optgroup label="Custom">
-                                <option value="file">File...</option>
-                            </optgroup>
-                        </select>
-                        <Input type="file" id="message-file" name="message-file" className={`form-control form-control-sm ${selectedFile == 'file' ? '' : ' d-none'}`} accept=".json,.jadn,.xml,.cbor" onChange={onFileChange} />
+                    <div className={`${selectedFile == 'file' ? 'col-md-6' : ' col-md-3'}`}>
+                        <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
+                            <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
+                                <option value="">Message</option>
+                                <optgroup label="Testers">
+                                    {Object.entries(msgOpts).map(([n, t]) => <option key={n} value={n} data-decode={t} >{n}</option>)}
+                                </optgroup>
+                                <optgroup label="Custom">
+                                    <option value="file">File...</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                            <input type="file" id="message-file" name="message-file" accept=".json,.jadn,.xml,.cbor" onChange={onFileChange} className='form-control-sm' />
+                            <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload} style={{ display: 'inline' }}>
+                                <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
+                            </Button>
+                        </div>
                     </div>
 
                     <div className={`col-md-3 ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
@@ -135,7 +151,7 @@ const MessageValidated = (props: any) => {
                         </select>
                     </div>
 
-                    <div className={`${selectedFile == '' || selectedFile == 'empty' ? 'col-md-3' : 'col-md-6'}`}>
+                    <div className={`${msgFormat == '' ? 'col-md-3' : ' col-md-6'}`}>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
                             title={`${loadedSchema && loadedMsg && decodeMsg && msgFormat ? 'Validate the message against the given schema' : 'Cannot validate'}`}>

@@ -5,6 +5,7 @@ import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
+import { $FIELDS_IDX } from 'components/create/consts';
 
 // Interface
 interface ChoiceFieldProps {
@@ -40,8 +41,10 @@ const ChoiceField = (props: ChoiceFieldProps) => {
     //TODO type opts: extend
   }
 
-  let defOpts; //select dropdown
-  if (typeDef[typeDef.length - 1] == '' || typeDef[typeDef.length - 1] == null) {
+  let defOpts; //select dropdown options
+  //if extend
+  //Expected: fields (typeDef.length  == 5)
+  if ((typeDef.length == $FIELDS_IDX && (typeDef[typeDef.length - 1] == '' || typeDef[typeDef.length - 1] == null)) || typeDef.length != $FIELDS_IDX) {
     defOpts = <option value="-1">No Options Available</option>;
   } else {
     defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);

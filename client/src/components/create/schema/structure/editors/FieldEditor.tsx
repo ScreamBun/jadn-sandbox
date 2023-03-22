@@ -26,9 +26,9 @@ interface FieldEditorProps {
 // Field Editor
 const FieldEditor = (props: FieldEditorProps) => {
   const { enumerated, value, dataIndex, change } = props;
-  const allTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]);
+  const allTypes = useAppSelector((state) => [...state.Util.types.fieldTypes, ...Object.keys(state.Util.types.schema)]);
   const types = useAppSelector((state) => ({
-    base: state.Util.types.base,
+    base: state.Util.types.fieldTypes,
     schema: Object.keys(state.Util.types.schema) || {}
   }));
 
@@ -40,6 +40,12 @@ const FieldEditor = (props: FieldEditorProps) => {
     e.preventDefault();
     const { placeholder, value } = e.target;
     //TODO JADN: MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension 
+    if (placeholder == "Name") {
+      if (value.includes('/')) {
+        sbToastError('Error: FieldNames MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension.');
+        return;
+      }
+    }
     if (enumerated) {
       if (!valueObj.value) {
         sbToastError('Value required for Enum');
