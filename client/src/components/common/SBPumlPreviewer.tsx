@@ -1,9 +1,17 @@
 import React from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import encoder from "plantuml-encoder";
 
-const SBpumlPreviewer = (props: any) => {
+export const convertToPuml = (data: any) => {
+    const encoded = encoder.encode(data);
+    const url = 'http://www.plantuml.com/plantuml/img/' + encoded; 
+    return url;
+}
+
+const SBPumlPreviewer = (props: any) => {
 
     const { data, height = "20em" } = props;
+    
 
     return (
         <div id="content" className="card bg-secondary" style={{ 'height': height, 'overflow': 'auto' }}>
@@ -19,4 +27,4 @@ const SBpumlPreviewer = (props: any) => {
         </div>
     );
 }
-export default SBpumlPreviewer;
+export default SBPumlPreviewer;

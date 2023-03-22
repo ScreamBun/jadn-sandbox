@@ -10,12 +10,10 @@ import SBEditor from "components/common/SBEditor";
 import { markdownToHTML } from "components/common/SBMarkdownConverter";
 import SBHtmlPreviewer from "components/common/SBHtmlPreviewer";
 import SBMarkdownPreviewer from "components/common/SBMarkdownPreviewer";
-import SBpumlPreviewer from "components/common/SBpumlPreviewer";
+import SBPumlPreviewer, { convertToPuml } from "components/common/SBPumlPreviewer";
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import { saveAs } from 'file-saver'
-
-var plantumlEncoder = require('plantuml-encoder');
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
@@ -28,8 +26,7 @@ const SchemaConverted = (props: any) => {
 
     useEffect(() => {
         if (conversion == 'puml') {
-            var encoded = plantumlEncoder.encode(convertedSchema);
-            setPumlURL('http://www.plantuml.com/plantuml/img/' + encoded);
+            setPumlURL(convertToPuml(convertedSchema))
         }
     }, [convertedSchema])
 
@@ -116,7 +113,7 @@ const SchemaConverted = (props: any) => {
         }
     }
 
-    const onDownloadJPGClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onDownloadPNGClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         saveAs(pumlURL, 'puml.png');
     }
@@ -182,7 +179,7 @@ const SchemaConverted = (props: any) => {
                         </div>
 
                         <div className={`${conversion == 'puml' && convertedSchema ? '' : ' d-none'}`}>
-                            <Button id="pumlPdfDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadJPGClick}>
+                            <Button id="pumlPdfDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPNGClick}>
                                 <FontAwesomeIcon icon={faFileImage} />
                             </Button>
                             <Button id="pumlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" target="_blank" href={pumlURL}>
@@ -221,7 +218,7 @@ const SchemaConverted = (props: any) => {
                     <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
                 </div>
                 <div className={`${conversion == 'puml' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
-                    <SBpumlPreviewer data={pumlURL} height="20em"></SBpumlPreviewer>
+                    <SBPumlPreviewer data={pumlURL} height="20em"></SBPumlPreviewer>
                 </div>
             </div>
         </div>
