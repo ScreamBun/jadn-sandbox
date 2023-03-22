@@ -10,19 +10,17 @@ import SBEditor from "components/common/SBEditor";
 import { markdownToHTML } from "components/common/SBMarkdownConverter";
 import SBHtmlPreviewer from "components/common/SBHtmlPreviewer";
 import SBMarkdownPreviewer from "components/common/SBMarkdownPreviewer";
-import SBpumlPreviewer from "components/common/SBpumlPreviewer";
+import SBPumlPreviewer, { convertToPuml } from "components/common/SBPumlPreviewer";
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import { saveAs } from 'file-saver';
 import * as d3 from "d3-graphviz";
 
-var plantumlEncoder = require('plantuml-encoder');
-
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
 const SchemaConverted = (props: any) => {
-    const location = useLocation()
-    const { navConvertTo } = location.state
+    const location = useLocation();
+    const { navConvertTo } = location.state;
 
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag } = props;
     const [pumlURL, setPumlURL] = useState('');
@@ -35,8 +33,7 @@ const SchemaConverted = (props: any) => {
 
     useEffect(() => {
         if (conversion == 'puml') {
-            var encoded = plantumlEncoder.encode(convertedSchema);
-            setPumlURL('http://www.plantuml.com/plantuml/img/' + encoded);
+            setPumlURL(convertToPuml(convertedSchema));
         }
         if (conversion == 'gv') {
             d3.graphviz("#gv")
@@ -44,7 +41,6 @@ const SchemaConverted = (props: any) => {
                 .height(320)
                 .width(920)
                 .zoomScaleExtent([1, 10])
-                .on("click", () => onGVPopOutClick)
                 .renderDot(convertedSchema);
         }
     }, [convertedSchema]);
@@ -253,11 +249,11 @@ const SchemaConverted = (props: any) => {
                     <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
                 </div>
                 <div className={`${conversion == 'puml' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
-                    <SBpumlPreviewer data={pumlURL} height="20em"></SBpumlPreviewer>
+                    <SBPumlPreviewer data={pumlURL} height="20em"></SBPumlPreviewer>
                 </div>
                 <div className={`${conversion == 'gv' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
                     <Button id="diagramReset" color="info" className="btn-sm m-1" style={{ zIndex: '1', position: 'absolute' }} onClick={onDiagramReset}>reset</Button>
-                    <div id="gv" style={{ height: '20em', textAlign: 'center', zIndex: '0' }}><a id="a"></a>
+                    <div id="gv" style={{ height: '20em', textAlign: 'center', zIndex: '0' }}>
                     </div>
                 </div>
             </div>

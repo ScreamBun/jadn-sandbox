@@ -3278,6 +3278,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/plantuml-encoder@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@types/plantuml-encoder@npm:1.4.0"
+  dependencies:
+    "@types/node": "*"
+  checksum: a5d1ae2ddea6387cdd5e1b0039f81c4ab5315889d51bcf4089e29c28bdbe81a79c3ae1723e2d95d0ba16fe9648075fc56db2fe1601d6ff807d94abbd48bf6493
+  languageName: node
+  linkType: hard
+
 "@types/prettier@npm:^2.1.5":
   version: 2.7.2
   resolution: "@types/prettier@npm:2.7.2"
@@ -5189,6 +5198,7 @@ __metadata:
     "@types/lodash": ^4.14.191
     "@types/min-document": ^2.19.0
     "@types/node": ^18.14.0
+    "@types/plantuml-encoder": ^1.4.0
     "@types/react": ^18.0.28
     "@types/react-dom": ^18.0.11
     "@types/react-redux": ^7.1.25
