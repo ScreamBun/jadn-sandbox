@@ -14,7 +14,7 @@ import SBPumlPreviewer, { convertToPuml } from "components/common/SBPumlPreviewe
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import { saveAs } from 'file-saver';
-import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView } from "components/common/SBGvPreviwer";
+import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView } from "components/common/SBGvPreviewer";
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
