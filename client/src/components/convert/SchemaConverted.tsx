@@ -14,8 +14,7 @@ import SBPumlPreviewer, { convertToPuml } from "components/common/SBPumlPreviewe
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import { saveAs } from 'file-saver';
-import * as d3 from "d3-graphviz";
-import SBGvPreviewer from "components/common/SBGvPreviwer";
+import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView } from "components/common/SBGvPreviwer";
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
@@ -37,15 +36,8 @@ const SchemaConverted = (props: any) => {
             setPumlURL(convertToPuml(convertedSchema));
         }
         if (conversion == 'gv' && convertedSchema) {
-            d3.graphviz("#gv")
-                .fit(true)
-                .height(320)
-                .width(920)
-                .zoomScaleExtent([1, 10])
-                .renderDot(convertedSchema);
-            d3.graphviz("#fullGV")
-                .fit(true)
-                .renderDot(convertedSchema);
+            convertToGvSplitView(convertedSchema);
+            convertToGvFullView(convertedSchema);
         }
     }, [convertedSchema]);
 
