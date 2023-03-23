@@ -26,7 +26,13 @@ const SchemaCreator = (props: any) => {
         dispatch(setSchema(generatedSchema));
         dispatch(format(schemaStr))
             .then(val => {
-                setData(val.payload.schema)
+                if (!val.error) {
+                    setData(val.payload.schema);
+                } else {
+                    //TODO: force PRETTY format, specify err msg
+                    sbToastError(val.payload);
+                    setData(JSON.stringify(generatedSchema, null, 1));
+                }
             });
     }, [generatedSchema])
 
@@ -215,10 +221,29 @@ const SchemaCreator = (props: any) => {
                 if (generatedSchema.types.length >= idx) {
                     const tmpTypes = [...generatedSchema.types];
                     tmpTypes.splice(idx, 1);
-                    setGeneratedSchema(generatedSchema => ({
+                    //check if references is resolved
+                    const tmpData = {
                         ...generatedSchema,
                         types: tmpTypes
-                    }));
+                    };
+                    dispatch(format(tmpData))
+                        .then(val => {
+                            if (!val.error) {
+                                setGeneratedSchema(generatedSchema => ({
+                                    ...generatedSchema,
+                                    types: tmpTypes
+                                }));
+                            } else {
+                                //prompt user here
+                                var confirmation = confirm("Are you sure you want to remove this?");
+                                if (confirmation) {
+                                    setGeneratedSchema(generatedSchema => ({
+                                        ...generatedSchema,
+                                        types: tmpTypes
+                                    }));
+                                }
+                            };
+                        })
                 }
             }
         });
