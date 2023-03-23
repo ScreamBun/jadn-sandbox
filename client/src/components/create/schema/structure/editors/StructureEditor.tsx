@@ -43,6 +43,10 @@ const StructureEditor = (props: StructureEditorProps) => {
         sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
         return;
       }
+      if (value.length >= 64) {
+        sbToastError('Error: Max length reached');
+        return;
+      }
     }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }

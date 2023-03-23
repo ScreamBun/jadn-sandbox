@@ -39,10 +39,13 @@ const FieldEditor = (props: FieldEditorProps) => {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const { placeholder, value } = e.target;
-    //TODO JADN: MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension 
     if (placeholder == "Name") {
       if (value.includes('/')) {
         sbToastError('Error: FieldNames MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension.');
+        return;
+      }
+      if (value.length >= 64) {
+        sbToastError('Error: Max length reached');
         return;
       }
     }
