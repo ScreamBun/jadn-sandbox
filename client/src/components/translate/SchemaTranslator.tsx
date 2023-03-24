@@ -25,7 +25,7 @@ const SchemaTranslator = () => {
 
     useEffect(() => {
         setTranslatedSchema('');
-    }, [selectedFile])
+    }, [loadedSchema])
 
     const onReset = () => {
         setSelectedFile('');

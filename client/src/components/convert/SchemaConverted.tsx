@@ -100,6 +100,7 @@ const SchemaConverted = (props: any) => {
                     URL.revokeObjectURL(elem.href);
                 }).catch(err => {
                     console.log(err);
+                    sbToastError(`PDF cannot be downloaded`);
                 });
 
             } catch (err) {

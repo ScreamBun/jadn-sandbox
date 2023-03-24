@@ -51,7 +51,9 @@ const MessageValidated = (props: any) => {
                             setLoadedMsg(formattedData);
                         }
                     })
-                    .catch((loadFileErr) => { setLoadedMsg(loadFileErr.payload.data) })
+                    .catch((loadFileErr) => {
+                        setLoadedMsg(loadFileErr.payload.data);
+                    })
             } catch (err) {
                 setLoadedMsg('');
             }

@@ -27,7 +27,7 @@ const SchemaConverter = () => {
     useEffect(() => {
         setConvertedSchema('');
         setSplitViewFlag(false);
-    }, [selectedFile]);
+    }, [loadedSchema]);
 
     const onReset = () => {
         setSelectedFile('');

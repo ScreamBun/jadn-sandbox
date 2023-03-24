@@ -41,7 +41,7 @@ const JADNSchemaLoader = (props: any) => {
                                 .then(formatVal => {
                                     setLoadedSchema(formatVal.payload.schema);
                                 })
-                            dispatch(setSchema(schemaObj))
+                            dispatch(setSchema(schemaObj));
 
                             if (setDecodeSchemaTypes && setDecodeMsg) {
                                 loadDecodeTypes(schemaObj);
@@ -57,6 +57,7 @@ const JADNSchemaLoader = (props: any) => {
                     .catch((loadFileErr) => {
                         setSelectedFile('');
                         setLoadedSchema(JSON.stringify(loadFileErr.payload));
+                        sbToastError(loadFileErr);
                     })
             } catch (err) {
                 setLoadedSchema(null);
@@ -136,7 +137,7 @@ const JADNSchemaLoader = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
-                        dispatch(setSchema(jsonObj))
+                        dispatch(setSchema(jsonObj));
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
                         sbToastError(validateSchemaVal.payload.valid_msg);
