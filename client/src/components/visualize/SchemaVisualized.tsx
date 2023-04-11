@@ -15,6 +15,7 @@ import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import { saveAs } from 'file-saver';
 import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView } from "components/common/SBGvPreviewer";
+import SBCollapseViewer from "components/common/SBCollapseViewer";
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
@@ -166,13 +167,16 @@ const SchemaVisualized = (props: any) => {
                         <select id="convert-to" name="convert-to" className="form-control form-control-sm" value={conversion} onChange={handleConversion}>
                             <option value=""> Convert To... </option>
                             {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
+                            <option value="all"> All </option>
                         </select>
                     </div>
                     <div className='col-md-9'>
-                        <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
-                        <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm mr-1 float-right${convertedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
-                            <FontAwesomeIcon icon={faFileDownload} />
-                        </Button>
+                        <div className={`${conversion == 'all' && convertedSchema ? ' d-none' : ''}`}>
+                            <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
+                            <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm mr-1 float-right${convertedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
+                                <FontAwesomeIcon icon={faFileDownload} />
+                            </Button>
+                        </div>
 
                         <div className={`${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
                             <Button id="htmlPdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
@@ -236,26 +240,29 @@ const SchemaVisualized = (props: any) => {
                     </div>
                 </div>
             </div>
+            {conversion == 'all' && convertedSchema ? <SBCollapseViewer data={convertedSchema} /> :
+                <>
+                    <div className={`card-body p-0 ${(conversion == 'html' || conversion == 'md' || conversion == 'puml' || conversion == 'gv') && spiltViewFlag ? 'd-none' : ''}`}>
+                        <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
+                    </div>
+                    <div className={`card-body p-0 ${(conversion == 'html' || conversion == 'md' || conversion == 'puml' || conversion == 'gv') && spiltViewFlag ? '' : ' d-none'}`}>
+                        <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
 
-            <div className={`card-body p-0 ${(conversion == 'html' || conversion == 'md' || conversion == 'puml' || conversion == 'gv') && spiltViewFlag ? 'd-none' : ''}`}>
-                <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
-            </div>
-            <div className={`card-body p-0 ${(conversion == 'html' || conversion == 'md' || conversion == 'puml' || conversion == 'gv') && spiltViewFlag ? '' : ' d-none'}`}>
-                <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
-
-                <div className={`${conversion == 'html' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
-                    <SBHtmlPreviewer htmlText={convertedSchema} showPreviewer={true} height="20em"></SBHtmlPreviewer>
-                </div>
-                <div className={`${conversion == 'md' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
-                    <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
-                </div>
-                <div className={`${conversion == 'puml' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
-                    <SBPumlPreviewer data={pumlURL} height="20em"></SBPumlPreviewer>
-                </div>
-                <div className={`${conversion == 'gv' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
-                    <SBGvPreviewer height="20em"></SBGvPreviewer>
-                </div>
-            </div>
+                        <div className={`${conversion == 'html' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
+                            <SBHtmlPreviewer htmlText={convertedSchema} showPreviewer={true} height="20em"></SBHtmlPreviewer>
+                        </div>
+                        <div className={`${conversion == 'md' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
+                            <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true} height="20em"></SBMarkdownPreviewer>
+                        </div>
+                        <div className={`${conversion == 'puml' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
+                            <SBPumlPreviewer data={pumlURL} height="20em"></SBPumlPreviewer>
+                        </div>
+                        <div className={`${conversion == 'gv' && convertedSchema && spiltViewFlag ? '' : ' d-none'}`}>
+                            <SBGvPreviewer height="20em"></SBGvPreviewer>
+                        </div>
+                    </div>
+                </>
+            }
         </div>
     )
 }
