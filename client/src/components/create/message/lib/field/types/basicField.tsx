@@ -166,28 +166,7 @@ const BasicField = (props: BasicFieldProps) => {
       </div>
     );
 
-  } else if (typeDef.toLowerCase() == 'number') {
-    return (
-      <div className='form-group'>
-        <div className='card'>
-          <div className='card-header p-2'>
-            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          </div>
-          <div className='card-body m-0 p-0'>
-            <Input
-              type={typeDef}
-              step='any'
-              name={name}
-              onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
-            />
-          </div>
-          {err}
-        </div>
-      </div>
-    );
-
-  } else if (typeDef.toLowerCase() == 'integer') {
+  } else if (typeDef.toLowerCase() == 'number' || typeDef.toLowerCase() == 'integer') {
     return (
       <div className='form-group'>
         <div className='card'>
@@ -198,6 +177,7 @@ const BasicField = (props: BasicFieldProps) => {
           <div className='card-body m-0 p-0'>
             <Input
               type={'number'}
+              step='any'
               name={name}
               onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
             />
@@ -207,6 +187,25 @@ const BasicField = (props: BasicFieldProps) => {
       </div>
     );
 
+  } else if (typeDef.toLowerCase() == 'boolean') {
+    return (
+      <div className='form-group'>
+        <div className='card'>
+          <div className='card-header p-2'>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
+          <div className='card-body m-0 p-0'>
+            <Input
+              type={'checkbox'}
+              name={name}
+              onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.checked, arr); }}
+            />
+          </div>
+          {err}
+        </div>
+      </div>
+    );
   } else {
     return (
       <div className='form-group'>
