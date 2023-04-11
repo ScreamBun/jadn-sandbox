@@ -18,7 +18,7 @@ const SchemaVisualizer = () => {
     const [conversion, setConversion] = useState('');
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
 
-    const meta_title = useSelector(getPageTitle) + ' | Convert Schema'
+    const meta_title = useSelector(getPageTitle) + ' | Schema Visualization'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
@@ -58,7 +58,7 @@ const SchemaVisualizer = () => {
                     .then((validateSchemaVal) => {
 
                         //create ability to convert schema into all formats
-                        if (validateSchemaVal.payload.valid_bool == true && conversion) {
+                        if (validateSchemaVal.payload.valid_bool == true && conversion != 'all') {
                             try {
                                 dispatch(convertSchema(schemaObj, conversion))
                                     .then((convertSchemaVal) => {
@@ -79,6 +79,11 @@ const SchemaVisualizer = () => {
                                     sbToastError(err.message);
                                 }
                             }
+                        } else if (validateSchemaVal.payload.valid_bool == true && conversion == 'all') {
+                            //dispatch make-all-formats
+                            //.then setConvertedSchema([])
+                            //conversion check 
+                            //.catch
                         } else if (validateSchemaVal.payload.valid_bool == false) {
                             sbToastError("Invalid Schema");
                         } else if (conversion == '') {
