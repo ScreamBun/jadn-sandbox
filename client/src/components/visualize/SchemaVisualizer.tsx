@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
-import SchemaConverted from './SchemaConverted'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import SchemaVisualized from './SchemaVisualized'
 
-const SchemaConverter = () => {
+const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
@@ -121,7 +121,7 @@ const SchemaConverter = () => {
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <SchemaConverted
+                                        <SchemaVisualized
                                             convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
                                             conversion={conversion} setConversion={setConversion}
                                             spiltViewFlag={spiltViewFlag} setSplitViewFlag={setSplitViewFlag}
@@ -137,4 +137,4 @@ const SchemaConverter = () => {
     );
 }
 
-export default SchemaConverter
+export default SchemaVisualizer

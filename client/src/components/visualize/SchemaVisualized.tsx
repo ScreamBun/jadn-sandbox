@@ -18,7 +18,7 @@ import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView } from "compon
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
-const SchemaConverted = (props: any) => {
+const SchemaVisualized = (props: any) => {
     const location = useLocation();
     const { navConvertTo } = location.state;
 
@@ -259,4 +259,4 @@ const SchemaConverted = (props: any) => {
         </div>
     )
 }
-export default SchemaConverted;
+export default SchemaVisualized;
