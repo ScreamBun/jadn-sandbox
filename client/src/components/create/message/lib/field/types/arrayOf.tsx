@@ -29,7 +29,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const [min, setMin] = useState(false);
   const [max, setMax] = useState(false);
   const [count, setCount] = useState(1);
-  const [opts, setOpts] = useState([]);
+  const [opts, setOpts] = useState<any[]>([]);
   const [isValid, setisValid] = useState('');
 
   var optData: Record<string, any> = {};

@@ -8,9 +8,8 @@ import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from 'reducers';
-import { $MAX_STRING, $MINV } from 'components/create/consts';
+import { validateOptData } from '../../utils';
 
 // Interface
 interface BasicFieldProps {
@@ -38,80 +37,15 @@ const BasicField = (props: BasicFieldProps) => {
   }
 
   const [value, setValue] = useState('');
-  const [isValid, setisValid] = useState({
+  const [isValid, setisValid] = useState<{ color: string, msg: string[] }>({
     color: '',
     msg: []
-  })
+  });
 
   const createID = () => {
     const randomID = uuid4();
     setValue(randomID);
     optChange(msgName.join('.'), randomID, arr);
-  }
-
-  const validate = (data: any) => {
-    let valc = '';
-    let valm = [];
-    if (optData && data) {
-      if (hasProperty(optData, 'minf')) {
-        if (data < optData.minf) {
-          valc = 'red';
-          valm.push('Minf Error: must be greater than ' + optData.minf);
-        }
-      }
-      if (hasProperty(optData, 'maxf')) {
-        if (data > optData.maxf) {
-          valc = 'red';
-          valm.push('Maxf Error: must be less than ' + optData.maxf);
-        }
-      }
-      if (hasProperty(optData, 'minv')) {
-        if (typeof data == 'string') {
-          if (data.length < optData.minv) {
-            valc = 'red';
-            valm.push('Minv Error: must be greater than ' + optData.minv + ' characters');
-          }
-        } else {
-          if (data < optData.minv) {
-            valc = 'red';
-            valm.push('Minv Error: must be greater than ' + optData.minv);
-          }
-        }
-      } else {
-        optData.minv = $MINV;
-        if (data < optData.minv) {
-          valc = 'red';
-          valm.push('Minv Error: must be greater than ' + optData.minv);
-        }
-      }
-      if (hasProperty(optData, 'maxv')) {
-        if (typeof data == 'string') {
-          if (data.length > optData.maxv) {
-            valc = 'red';
-            valm.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
-          }
-        } else {
-          if (data > optData.maxv) {
-            valc = 'red';
-            valm.push('Maxv Error: must be less than ' + optData.maxv);
-          }
-        }
-      } else {
-        optData.maxv = $MAX_STRING;
-        if (data.length > optData.maxv) {
-          valc = 'red';
-          valm.push('Maxv Error: must be less than ' + optData.maxv);
-        }
-      }
-      if (hasProperty(optData, 'pattern') && typeof data == 'string') {
-        if (!optData.pattern.test(data)) {
-          valc = 'red';
-          valm.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
-        }
-      }
-    }
-    //TODO: check format
-    setisValid({ color: valc, msg: valm });
   }
 
   let err: any[] = [];
@@ -136,7 +70,12 @@ const BasicField = (props: BasicFieldProps) => {
               value={value}
               type={typeDef}
               name={name}
-              onChange={e => { setValue(e.target.value); validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
+              onChange={e => {
+                setValue(e.target.value);
+                const validMsg = validateOptData(optData, e.target.value);
+                setisValid(validMsg);
+                optChange(msgName.join('.'), e.target.value, arr);
+              }}
             />
           </div>
           {err}
@@ -158,7 +97,11 @@ const BasicField = (props: BasicFieldProps) => {
               step="any"
               min={dayjs().format('YYYY-MM-DD HH:mm:ss')}
               pattern='/[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]/'
-              onChange={e => { validate(dayjs(e.target.value).valueOf()); optChange(msgName.join('.'), dayjs(e.target.value).valueOf(), arr); }}
+              onChange={e => {
+                const validMsg = validateOptData(optData, dayjs(e.target.value).valueOf());
+                setisValid(validMsg);
+                optChange(msgName.join('.'), dayjs(e.target.value).valueOf(), arr);
+              }}
             />
           </div>
           {err}
@@ -179,7 +122,11 @@ const BasicField = (props: BasicFieldProps) => {
               type={'number'}
               step='any'
               name={name}
-              onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
+              onChange={e => {
+                const validMsg = validateOptData(optData, e.target.value);
+                setisValid(validMsg);
+                optChange(msgName.join('.'), e.target.value, arr);
+              }}
             />
           </div>
           {err}
@@ -199,7 +146,11 @@ const BasicField = (props: BasicFieldProps) => {
             <Input
               type={'checkbox'}
               name={name}
-              onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.checked, arr); }}
+              onChange={e => {
+                const validMsg = validateOptData(optData, e.target.value);
+                setisValid(validMsg);
+                optChange(msgName.join('.'), e.target.checked, arr);
+              }}
             />
           </div>
           {err}
@@ -218,7 +169,11 @@ const BasicField = (props: BasicFieldProps) => {
             <Input
               type={typeDef}
               name={name}
-              onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
+              onChange={e => {
+                const validMsg = validateOptData(optData, e.target.value);
+                setisValid(validMsg);
+                optChange(msgName.join('.'), e.target.value, arr);
+              }}
               style={{ borderColor: isValid.color }}
             />
           </div>

@@ -4,8 +4,7 @@ import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { hasProperty } from 'react-json-editor/dist/utils';
-import { $MAX_ELEMENTS, $MINV } from 'components/create/consts';
+import { validateOptDataElem } from '../../utils';
 
 // Interface
 interface RecordFieldProps {
@@ -23,8 +22,8 @@ const RecordField = (props: RecordFieldProps) => {
   const [_idx, name, type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [count, setCount] = useState(0);
-  const [data, setData] = useState([]); //track elements
-  const [isValid, setisValid] = useState({
+  const [data, setData] = useState<string[]>([]); //track elements
+  const [isValid, setisValid] = useState<{ color: string, msg: string[] }>({
     color: '',
     msg: []
   });
@@ -34,7 +33,8 @@ const RecordField = (props: RecordFieldProps) => {
     const firstRender = ref.current;
     if (firstRender) {
       ref.current = false;
-      validate(count);
+      const validMsg = validateOptDataElem(optData, count);
+      setisValid(validMsg);
     }
   });
 
@@ -43,7 +43,8 @@ const RecordField = (props: RecordFieldProps) => {
       //add
       setData(data => [...data, k]);
       setCount(count => count + 1);
-      validate(count + 1);
+      const validMsg = validateOptDataElem(optData, count + 1);
+      setisValid(validMsg);
     } else {
       if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v)) {
         //remove
@@ -51,7 +52,8 @@ const RecordField = (props: RecordFieldProps) => {
           return elem != k;
         }));
         setCount(count => count - 1);
-        validate(count - 1);
+        const validMsg = validateOptDataElem(optData, count - 1);
+        setisValid(validMsg);
       }//else value is updated
     }
     optChange(k, v)
@@ -67,39 +69,6 @@ const RecordField = (props: RecordFieldProps) => {
   //if extend
   //Expected: fields (typeDef.length == 5)
   const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
-
-  const validate = (count: number) => {
-    //check # of elements in record
-    let valc = '';
-    let valm = [];
-    if (optData) {
-      if (hasProperty(optData, 'minv')) {
-        if (count < optData.minv) {
-          valc = 'red';
-          valm.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
-        }
-      } else {
-        optData.minv = $MINV;
-        if (count < optData.minv) {
-          valc = 'red';
-          valm.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
-        }
-      }
-      if (hasProperty(optData, 'maxv')) {
-        if (count > optData.maxv) {
-          valc = 'red';
-          valm.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
-        }
-      } else {
-        optData.maxv = $MAX_ELEMENTS;
-        if (count > optData.maxv) {
-          valc = 'red';
-          valm.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
-        }
-      }
-    }
-    setisValid({ color: valc, msg: valm });
-  }
 
   let err: any[] = [];
   (isValid.msg).forEach(msg => {
