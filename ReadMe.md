@@ -31,25 +31,6 @@
     ./startup.sh
     ```
 
-6. Enter the following in your browser to access the app
-
-    ```bash
-    http://localhost:3000/
-    ```
-
-7. To kill the app, go to the startup.sh commandline window and kill it
-
-1. Server Side
-   1. Under WebValidator/server run:
-      1. pip install -r requirements.txt
-      2. ./start.sh
-2. Client Side
-   1. Under WebValidator/client run:
-      1. yarn install
-      2. yarn build
-      3. yarn start or watch
-3. In your browser go to: <http://localhost:3000/>
-
 ## How To
 
 ### Create a jadnschema wheel
