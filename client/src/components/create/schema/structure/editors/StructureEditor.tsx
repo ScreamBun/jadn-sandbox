@@ -43,6 +43,10 @@ const StructureEditor = (props: StructureEditorProps) => {
         sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
         return;
       }
+      if (value.length >= 64) {
+        sbToastError('Error: Max length reached');
+        return;
+      }
     }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }
@@ -161,7 +165,7 @@ const StructureEditor = (props: StructureEditorProps) => {
         <div className="row m-0">
           <FormGroup className="col-md-4">
             <Label>Name</Label>
-            <Input type="text" placeholder="Name" value={valueObj.name} onChange={onChange} />
+            <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} />
           </FormGroup>
 
           <FormGroup className="col-md-2">
@@ -219,7 +223,7 @@ const StructureEditor = (props: StructureEditorProps) => {
       <div className="row m-0">
         <FormGroup className="col-md-4">
           <Label>Name</Label>
-          <Input type="text" placeholder="Name" value={valueObj.name} onChange={onChange} />
+          <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} />
         </FormGroup>
 
         <FormGroup className="col-md-2">

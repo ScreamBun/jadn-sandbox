@@ -22,6 +22,11 @@ if maxc is less than minc, the field definition MUST be considered invalid.
     FieldName = String{pattern="$FieldName"}     // Default = ^[a-z][_A-Za-z0-9]{0,63}$
 */
 
+//The default value of TypeOptions, Fields, and FieldOptions is the empty Array. 
+//The default value of TypeDescription and FieldDescription is the empty String. 
+//When serializing, default values MAY be included or omitted in the serialized document. 
+//When deserializing, default values MUST be available from the API instance if not present in the document.
+
 export const $FIELDS_IDX = 5;
 
 //MUST NOT create FieldNames containing the JSON Pointer field separator "/",

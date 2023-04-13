@@ -1,13 +1,13 @@
 /* eslint compat/compat: 0 */
 
 /* Async load of a file from a generic url */
-const readAllChunks = (stream: ReadableStream<Uint8Array>|null): Promise<Array<Uint8Array | undefined>> => {
+const readAllChunks = (stream: ReadableStream<Uint8Array> | null): Promise<Array<Uint8Array | undefined>> => {
   if (stream) {
     const reader = stream.getReader();
-    const chunks: Array<Uint8Array|undefined> = [];
+    const chunks: Array<Uint8Array | undefined> = [];
 
-    const pump = (): Promise<Array<Uint8Array|undefined>> => {
-      return reader.read().then<Array<Uint8Array|undefined>>(({ value, done }) => {
+    const pump = (): Promise<Array<Uint8Array | undefined>> => {
+      return reader.read().then<Array<Uint8Array | undefined>>(({ value, done }) => {
         if (done) {
           return chunks;
         }
@@ -22,7 +22,7 @@ const readAllChunks = (stream: ReadableStream<Uint8Array>|null): Promise<Array<U
   });
 };
 
-const chunk2str = (chunks: Array<Uint8Array|undefined>) => {
+const chunk2str = (chunks: Array<Uint8Array | undefined>) => {
   if (chunks && chunks.length === 1) {
     const rtnArr = Array.from(chunks[0]);
     return rtnArr.map(c => c > 128 ? `\\x${c.toString(16)}` : String.fromCharCode(c)).join('');
@@ -33,7 +33,7 @@ const chunk2str = (chunks: Array<Uint8Array|undefined>) => {
 export const validURL = (url: string) => url.match(/^(https?:\/\/)?(www\.)?[0-9a-z]+([-.]{1}[0-9a-z]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/);
 
 
-export const loadURL = (url: string)  => {
+export const loadURL = (url: string) => {
   if (!validURL(url)) {
     return new Promise((resolve, reject) => {
       reject(new Error('invalid url'));
@@ -50,7 +50,7 @@ export const loadURL = (url: string)  => {
   rtnArr.fileExt = rtnArr.file.substring(rtnArr.file.lastIndexOf('.') + 1);
 
   const jsonParser = (key: string, val: any) => {
-    return typeof(val) === 'string' ? val.replace(/\\/g, '\\\\') : val;
+    return typeof (val) === 'string' ? val.replace(/\\/g, '\\\\') : val;
   };
 
   return fetch(url).then(
@@ -88,5 +88,5 @@ export const loadURL = (url: string)  => {
         error: 'cannot load url'
       };
       return rtnArr;
-  });
+    });
 };

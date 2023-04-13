@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
-import SchemaConverted from './SchemaConverted'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import SchemaVisualized from './SchemaVisualized'
 
-const SchemaConverter = () => {
+const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
@@ -18,7 +18,7 @@ const SchemaConverter = () => {
     const [conversion, setConversion] = useState('');
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
 
-    const meta_title = useSelector(getPageTitle) + ' | Convert Schema'
+    const meta_title = useSelector(getPageTitle) + ' | Schema Visualization'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
@@ -27,7 +27,7 @@ const SchemaConverter = () => {
     useEffect(() => {
         setConvertedSchema('');
         setSplitViewFlag(false);
-    }, [selectedFile]);
+    }, [loadedSchema]);
 
     const onReset = () => {
         setSelectedFile('');
@@ -58,7 +58,7 @@ const SchemaConverter = () => {
                     .then((validateSchemaVal) => {
 
                         //create ability to convert schema into all formats
-                        if (validateSchemaVal.payload.valid_bool == true && conversion) {
+                        if (validateSchemaVal.payload.valid_bool == true && conversion != 'all') {
                             try {
                                 dispatch(convertSchema(schemaObj, conversion))
                                     .then((convertSchemaVal) => {
@@ -79,6 +79,11 @@ const SchemaConverter = () => {
                                     sbToastError(err.message);
                                 }
                             }
+                        } else if (validateSchemaVal.payload.valid_bool == true && conversion == 'all') {
+                            //dispatch make-all-formats
+                            //.then setConvertedSchema([])
+                            //conversion check 
+                            //.catch
                         } else if (validateSchemaVal.payload.valid_bool == false) {
                             sbToastError("Invalid Schema");
                         } else if (conversion == '') {
@@ -121,7 +126,7 @@ const SchemaConverter = () => {
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <SchemaConverted
+                                        <SchemaVisualized
                                             convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
                                             conversion={conversion} setConversion={setConversion}
                                             spiltViewFlag={spiltViewFlag} setSplitViewFlag={setSplitViewFlag}
@@ -137,4 +142,4 @@ const SchemaConverter = () => {
     );
 }
 
-export default SchemaConverter
+export default SchemaVisualizer

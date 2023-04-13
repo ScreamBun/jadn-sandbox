@@ -22,15 +22,21 @@ const Field = (props: FieldProps) => {
 
   const parentName = parent || '';
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
-  const typeDef = typeDefs.length === 1 ? typeDefs[0][1] : def[2];
+  var typeDef = typeDefs.length === 1 ? typeDefs[0][1] : def[2];
+  //circular dependency check: make field primitive
+  if (parent && parent.split(".")[parent.split(".").length - 1] == def[1]) {
+    //note: @PROCESS - parent does not appear as a grandchild...
+    //handle L opt in typeDef..?
+    return;
+  }
   const args = {
     def,
     parent: parentName,
     optChange: (k: string, v: any) => optChange(k, v, idx)
   };
-  
+
   switch (typeDef) {
-    //Binary? Boolean?
+    //Binary?
     case 'Enumerated':
       return <EnumeratedField {...args} />;
     case 'Choice':

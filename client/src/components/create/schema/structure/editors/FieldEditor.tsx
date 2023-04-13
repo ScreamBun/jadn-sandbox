@@ -39,10 +39,13 @@ const FieldEditor = (props: FieldEditorProps) => {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const { placeholder, value } = e.target;
-    //TODO JADN: MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension 
     if (placeholder == "Name") {
       if (value.includes('/')) {
         sbToastError('Error: FieldNames MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension.');
+        return;
+      }
+      if (value.length >= 64) {
+        sbToastError('Error: Max length reached');
         return;
       }
     }
@@ -121,7 +124,7 @@ const FieldEditor = (props: FieldEditorProps) => {
       <div className="col-md-10 p-0 m-0">
         <FormGroup className="col-md-4 d-inline-block">
           <Label>Name</Label>
-          <Input type="text" placeholder="Name" value={val.name} onChange={onChange} />
+          <Input type="text" placeholder="Name" maxLength={64} value={val.name} onChange={onChange} />
         </FormGroup>
 
         <FormGroup className="col-md-4 d-inline-block">

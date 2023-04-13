@@ -281,6 +281,7 @@ const RunConformanceTests = (props: any) => {
           })
           .catch((loadFileErr) => {
             console.log(loadFileErr);
+            sbToastError(loadFileErr);
           })
       } catch (err) {
         console.log(err);

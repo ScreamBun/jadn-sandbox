@@ -9,6 +9,7 @@ import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options/OptionsModal';
 import { zip } from '../../../../utils';
+import { sbToastError } from 'components/common/SBToast';
 
 // Interface
 interface PrimitiveEditorProps {
@@ -32,6 +33,12 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
+    if (placeholder == "Name") {
+      if (value.length >= 64) {
+        sbToastError('Error: Max length reached');
+        return;
+      }
+    }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }
     change(updatevalue, dataIndex);
@@ -84,7 +91,7 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
       <div className="row m-0">
         <FormGroup className="col-md-4">
           <Label>Name</Label>
-          <Input type="text" placeholder="Name" value={valueObj.name} onChange={onChange} />
+          <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} />
         </FormGroup>
 
         <FormGroup className="col-md-2">

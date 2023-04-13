@@ -1,4 +1,4 @@
-import { faCode, faCodeBranch, faEnvelopeCircleCheck, faEye, faEyeSlash, faFileCirclePlus, faPencilRuler, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { faCode, faCodeBranch, faEnvelopeCircleCheck, faEye, faFileCirclePlus, faPencilRuler } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_CREATE_SCHEMA, NAV_HOME, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE
@@ -30,67 +30,67 @@ const Home = () => {
           <h5 className='m-0'>Home</h5>
         </div>
         <div className='card-body'>
-          <div className='card-group'>          
-              <div className="card">
-                <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faPencilRuler} />
-                </div>
-                <div className="card-body">
-                  <h5 className="card-title">
-                    <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
-                  </h5>
-                  <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-existing examples.</p>
-                </div>
-                <div className="card-body">
-
-                </div>
-                <div className="card-footer">
-                  <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
-                  <Link className="card-link" to={NAV_CREATE_MESSAGE}>Messages</Link>
-                </div>                
+          <div className='card-group'>
+            <div className="card">
+              <div className="card-img-top text-center py-2 bg-primary">
+                <FontAwesomeIcon className='fa-2x text-white' icon={faPencilRuler} />
               </div>
-              <div className="card">
-                <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faEye} />
-                </div>
-                <div className="card-body">
-                  <h5 className="card-title">
-                    <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }}>Schema Visualization</Link>
-                  </h5>
-                  <p className="card-text">Convert a JADN Schema into different visualization formats. </p>
+              <div className="card-body">
+                <h5 className="card-title">
+                  <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
+                </h5>
+                <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-existing examples.</p>
+              </div>
+              <div className="card-body">
+
+              </div>
+              <div className="card-footer">
+                <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
+                <Link className="card-link" to={NAV_CREATE_MESSAGE}>Messages</Link>
+              </div>
+            </div>
+            <div className="card">
+              <div className="card-img-top text-center py-2 bg-primary">
+                <FontAwesomeIcon className='fa-2x text-white' icon={faEye} />
+              </div>
+              <div className="card-body">
+                <h5 className="card-title">
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }}>Schema Visualization</Link>
+                </h5>
+                <p className="card-text">Convert a JADN Schema into different visualization formats. </p>
+                <div className="card-text">
                   <div className="card-text">
-                    <div className="card-text">
-                      Input: JADN Schema
-                      <p>Output: The same JADN Schema in a different visual representation</p>
-                    </div>
+                    Input: JADN Schema
+                    <p>Output: The same JADN Schema in a different visual representation</p>
                   </div>
                 </div>
-                <div className="card-footer">
-                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "gv" }}>GraphViz</Link>
-                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "html" }}>HTML</Link>
-                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "jidl" }}>JIDL</Link>
-                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "md" }}>MarkDown</Link>
-                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "puml" }}>PlantUML</Link>
-                </div>                 
               </div>
-              <div className="card">
-                <div className="card-img-top text-center py-2 bg-primary">
-                  <FontAwesomeIcon className='fa-2x text-white' icon={faCode} />
-                </div>
-                <div className="card-body">
-                  <h5 className="card-title">
-                    <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "" }}>Schema Translation</Link>
-                  </h5>
-                  <p className="card-text">Translate a Schema and its data from JADN to another Schema or data format.</p>
-                </div>
-                <div className="card-footer">
-                  <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "json" }}>JSON</Link>
-                  <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "rng" }}>Relax (XML)</Link>
-                  <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "" }}>XSD (Coming Soon)</Link>
-                </div>
+              <div className="card-footer">
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "gv" }}>GraphViz</Link>
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "html" }}>HTML</Link>
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "jidl" }}>JIDL</Link>
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "md" }}>MarkDown</Link>
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "puml" }}>PlantUML</Link>
               </div>
+            </div>
+            <div className="card">
+              <div className="card-img-top text-center py-2 bg-primary">
+                <FontAwesomeIcon className='fa-2x text-white' icon={faCode} />
+              </div>
+              <div className="card-body">
+                <h5 className="card-title">
+                  <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "" }}>Schema Translation</Link>
+                </h5>
+                <p className="card-text">Translate a Schema and its data from JADN to another Schema or data format.</p>
+              </div>
+              <div className="card-footer">
+                <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "json" }}>JSON</Link>
+                <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "rng" }}>Relax (XML)</Link>
+                <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "" }}>XSD (Coming Soon)</Link>
+              </div>
+            </div>
           </div>
-          <div className='card-group'>  
+          <div className='card-group'>
             <div className="card mt-3">
               <div className="card-img-top text-center py-2 bg-primary">
                 <FontAwesomeIcon className='fa-2x text-white' icon={faEnvelopeCircleCheck} />
@@ -115,9 +115,9 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_TRANSFORM}>Schema Transformation</Link>
                 </h5>
-                <p className="card-text">Convert one or more JADN Schemas into a different but related Schema (resolve references, 
-                simplify by removing extensions, strip comments, etc).</p>
-                <br/>
+                <p className="card-text">Convert one or more JADN Schemas into a different but related Schema (resolve references,
+                  simplify by removing extensions, strip comments, etc).</p>
+                <br />
               </div>
               <div className="card-footer">
                 <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
