@@ -10,7 +10,7 @@
 ## Quick Start
 
 *Note: This assumes you have [Git](https://git-scm.com/) and [Python](https://www.python.org/downloads/release/python-3100/) installed and an active [GitHub](https://github.com/ScreamBun/jadn-sandbox) account.*
- 
+
 1. Clone the JADN Sandbox from GitHub to your local workstation
 2. From commandline, go to the directory where you would like the application to live, here's an example:
 
@@ -24,7 +24,7 @@
     git clone https://github.com/ScreamBun/jadn-sandbox.git
     ```
 
-4. (Optional, specific to Linux and Mac) Create a virtual environment for the app
+4. (Optional, specific to Linux and Mac) Create a [virtual environment](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for the app
 5. Run the startup script to install the app's dependencies and fire up it's servers
 
     ```bash
