@@ -1,5 +1,5 @@
 import React from 'react';
-import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
+import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidFormats, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
 
@@ -23,6 +23,8 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
         return [];
       case 'vtype':
         return schemaTypes;
+      case 'format':
+        return ValidFormats;
       default:
         return [];
     }
