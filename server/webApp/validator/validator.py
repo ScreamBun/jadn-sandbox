@@ -63,6 +63,8 @@ class Validator:
         if isinstance(s, str):
             return False, "Schema Invalid - The schema failed to load", "", msg
                  
+        # Left off here.... need to validate field types using jadnschema validations..
+
         if fmt in SerialFormats:
             serial = SerialFormats(fmt)
 
