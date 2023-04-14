@@ -46,6 +46,7 @@ export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern', 'poi
 export const EnumId = TypeOptions.enum;
 export const PointerId = TypeOptions.pointer;
 
+// TODO: Use BT format_options
 export const ValidFormats: Array<string> = [
   // JSON Formats
   'date-time',              // RFC 3339 § 5.6
