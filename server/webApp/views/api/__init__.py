@@ -4,6 +4,9 @@ import re
 
 from flask import Blueprint, current_app, jsonify
 from flask_restful import Api, Resource
+
+from server.webApp.config import DefaultConfig
+
 from .convert import add_resources as add_convert
 from .load import add_resources as add_load
 from .conformance import add_resources as add_test
