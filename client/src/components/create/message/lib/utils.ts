@@ -3,6 +3,7 @@
 import { $MINV, $MAX_ELEMENTS, $MAX_STRING } from 'components/create/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
 import { FieldArray, TypeArray } from '../../schema/interface';
+import { ValidFormats } from 'components/create/schema/structure/editors/options/consts';
 
 export const isOptional = (def: TypeArray | FieldArray) => {
 	switch (def.length) {
@@ -109,10 +110,112 @@ export const validateOptData = (optData: any, data: any) => {
 				valm.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
 			}
 		}
-		if (hasProperty(optData, 'format')) {
-			//TODO: check format
-
+		if (hasProperty(optData, 'format') && ValidFormats.includes(optData.format)) {
+			const isFormatted = isFormattedOptData(optData.format, data);
+			if (!isFormatted) {
+				valc = 'red';
+				valm.push('Format Error: must match specified format: ' + optData.format);
+			}
 		}
 	}
 	return ({ 'color': valc, 'msg': valm });
+}
+
+export const isFormattedOptData = (formatType: typeof ValidFormats[number], value: any) => {
+	var isFormatted;
+	// JSON Formats
+	switch (formatType) {
+		case 'date-time':
+			//YYYY-MM-DD T HH:MM:SS [.S] Z
+			break;
+
+		case 'date':
+			//YYYY-MM-DD
+			break;
+
+		case 'time':
+			// HH:MM:SS [.S] Z
+			break;
+
+		case 'duration':
+			break;
+
+		case 'email':
+			break;
+
+		case 'idn-email':
+			break;
+
+		case 'hostname':
+			break;
+
+		case 'idn-hostname':
+			break;
+
+		case 'ipv4':
+			break;
+
+		case 'ipv6':
+			break;
+
+		case 'uri':
+			break;
+
+		case 'uri-reference':
+			break;
+
+		case 'iri':
+			break;
+
+		case 'iri-reference':
+			break;
+
+		case 'uri-template':
+			break;
+
+		case 'json-pointer':
+			break;
+
+		case 'relative-json-pointer':
+			break;
+
+		case 'regex':
+			break;
+
+		case 'uuid':
+			break;
+
+		// JADN Formats
+		case 'eui':
+			break;
+
+		case 'ipv4-addr':
+			break;
+
+		case 'ipv6-addr':
+			break;
+
+		case 'ipv4-net':
+			break;
+
+		case 'ipv6-net':
+			break;
+
+		case 'i8':
+			break;
+
+		case 'i16':
+			break;
+
+		case 'i32':
+			break;
+
+		case 'u\\d+':
+			break;
+
+		// Serialization
+		case 'x':
+			break;
+	}
+	return isFormatted;
 }

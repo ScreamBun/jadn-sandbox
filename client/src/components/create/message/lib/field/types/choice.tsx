@@ -38,11 +38,9 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
-    //TODO type opts: extend
   }
 
   let defOpts; //select dropdown options
-  //if extend
   //Expected: fields (typeDef.length  == 5)
   if ((typeDef.length == $FIELDS_IDX && (typeDef[typeDef.length - 1] == '' || typeDef[typeDef.length - 1] == null)) || typeDef.length != $FIELDS_IDX) {
     defOpts = <option value="-1">No Options Available</option>;

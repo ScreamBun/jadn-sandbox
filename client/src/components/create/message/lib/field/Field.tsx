@@ -36,7 +36,6 @@ const Field = (props: FieldProps) => {
   }
 
   switch (typeDef) {
-    //Binary?
     case 'Enumerated':
       return <EnumeratedField {...args} />;
     case 'Choice':

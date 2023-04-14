@@ -37,7 +37,7 @@ const MapField = (props: MapFieldProps) => {
       const validMsg = validateOptDataElem(optData, count);
       setisValid(validMsg);
     }
-  });
+  }, []);
 
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {
@@ -65,11 +65,9 @@ const MapField = (props: MapFieldProps) => {
 
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
-    //TODO type opts: extend
     console.log(optData)
   }
 
-  //if extend
   console.log(typeDef)
   console.log(typeDef[typeDef.length - 1])
 

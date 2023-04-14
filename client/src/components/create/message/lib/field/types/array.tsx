@@ -3,8 +3,8 @@ import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
-import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { validateOptDataElem } from '../../utils';
+import { opts2obj, ValidFormats } from 'components/create/schema/structure/editors/options/consts';
+import { isFormattedOptData, validateOptDataElem } from '../../utils';
 
 // Interface
 interface ArrayFieldProps {
@@ -39,6 +39,13 @@ const ArrayField = (props: ArrayFieldProps) => {
   });
 
   const onChange = (k: string, v: any) => {
+    /*     if (optData.hasProperty('format') && ValidFormats.includes(optData.format)) {
+          //TODO: format --- get all fields -> data
+          const formattedVal = isFormattedOptData(optData.format, v);
+          optChange(k, formattedVal);
+          return;
+        } */
+
     if (!data.includes(k)) {
       //add
       setData(data => [...data, k]);
@@ -63,12 +70,8 @@ const ArrayField = (props: ArrayFieldProps) => {
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
-    //console.log(optData)
-    //TODO type opts: extend and format 
   }
 
-  //if extend
-  //if (hasProperty(optData, 'extend') && optData.extend) 
   //Expected: fields (typeDef.length  == 5)
   const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
 

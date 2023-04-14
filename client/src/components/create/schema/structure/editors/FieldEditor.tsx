@@ -117,7 +117,7 @@ const FieldEditor = (props: FieldEditorProps) => {
     ));
 
     const val = valueObj as StandardFieldObject;
-    //TODO: default field type is String ? 
+    //default field type is String ? 
     const v = allTypes.includes(val.type) ? val.type : 'String';
 
     return (
