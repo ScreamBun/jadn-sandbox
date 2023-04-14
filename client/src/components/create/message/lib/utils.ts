@@ -122,7 +122,7 @@ export const validateOptData = (optData: any, data: any) => {
 }
 
 export const isFormattedOptData = (formatType: typeof ValidFormats[number], value: any) => {
-	var isFormatted;
+	var isFormatted = false;
 	// JSON Formats
 	switch (formatType) {
 		case 'date-time':
