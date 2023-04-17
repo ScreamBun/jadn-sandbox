@@ -38,8 +38,7 @@ class FormatOptions(Resource):
     """
 
     def get(self):
-
-
+        
         format_list = current_app.formatOptions.get_format_list()
         
         return jsonify({
@@ -49,7 +48,8 @@ class FormatOptions(Resource):
 
 # Register resources (APIs)
 resources = {
-    Format: {"urls": ("/", )}
+    Format: {"urls": ("/", )},
+    FormatOptions: {"urls": ("/options", )}
 }
 
 def add_resources(bp, url_prefix=""):

@@ -21,9 +21,6 @@ export const format = (schema: string) => createAction({
 
 export interface FormatSuccessAction extends ActionSuccessResult {
     type: typeof FORMAT_SUCCESS;
-    payload: {
-        schema: string;
-    };
 }
 
 // GET - /api/format/options - get valid format options
@@ -40,9 +37,6 @@ export const getValidFormatOpts = () => createAction({
 
 export interface getValidFormatSuccessAction extends ActionSuccessResult {
     type: typeof VALID_FORMAT_OPTIONS_SUCCESS;
-    payload: {
-        format_options: Array<any>;
-    };
 }
 
 // Request Actions

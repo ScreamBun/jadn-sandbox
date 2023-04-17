@@ -2,8 +2,8 @@ import React from 'react';
 import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
-import { getValidFormats } from 'reducers/format';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { getValidFormatOpts } from 'actions/format';
 
 
 // Interfaces
@@ -19,7 +19,7 @@ interface TypeOptionsEditorProps {
 // Type Options Editor
 const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
   const { change, deserializedState, id, optionType, schemaTypes } = props;
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const getOptions = (key: string) => {
     switch (key) {
@@ -28,13 +28,16 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
       case 'vtype':
         return schemaTypes;
       case 'format':
-        /*         var valid_formats;
-                dispatch(getValidFormatOpts)
-                  .then((val: Array<any>) => { valid_formats = val; })
-                  .catch((_val: any) => { valid_formats = []; });
-                return valid_formats; */
-        const ValidFormats = useSelector(getValidFormats);
-        return ValidFormats;
+        var valid_formats: any[] = [];
+        dispatch(getValidFormatOpts())
+          .then((val: Array<any>) => {
+            valid_formats = val;
+          })
+          .catch((val: any) => {
+            console.log("ERROR: " + val);
+            valid_formats = [];
+          });
+        return valid_formats;
       default:
         return [];
     }
