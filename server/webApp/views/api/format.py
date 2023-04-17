@@ -1,11 +1,9 @@
 import logging
 import traceback
 
-from flask import jsonify, request
+from flask import current_app, jsonify, request
 from flask_restful import Resource, reqparse
 from jadnschema.convert import dumps
-
-from server.webApp.models.format_option import get_format_options
 
 
 logger = logging.getLogger(__name__)
@@ -40,10 +38,12 @@ class FormatOptions(Resource):
     """
 
     def get(self):
-        format_options = get_format_options
+
+
+        format_list = current_app.formatOptions.get_format_list()
         
         return jsonify({
-            "format_options": format_options
+            "format_options": format_list
         })    
          
 
