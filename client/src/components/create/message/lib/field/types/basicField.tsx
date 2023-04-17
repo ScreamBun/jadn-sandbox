@@ -4,7 +4,7 @@ import { Input, Label } from 'reactstrap';
 
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
+import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { useAppSelector } from 'reducers';
 import { validateOptData } from '../../utils';
@@ -29,8 +29,10 @@ const BasicField = (props: BasicFieldProps) => {
 
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const typeDefs = schema.types.filter(t => t[0] === type);
-  let typeDef = typeDefs.length === 1 ? typeDefs[0][1] : 'text';
-  if (typeDef) {
+  let typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
+  if (typeDefs.length === 1) {
+    optData = (opts2obj(typeDef[2]));
+  } else {
     optData = (opts2obj(opts));
   }
 
@@ -52,10 +54,10 @@ const BasicField = (props: BasicFieldProps) => {
     return (<FormattedField
       basicProps={props} optData={optData}
       isValid={isValid} setisValid={setisValid}
-      typeDef={typeDef} err={err} />);
+      err={err} />);
   }
 
-  if (typeDef.toLowerCase() == 'boolean') {
+  if (typeDef[1].toLowerCase() == 'boolean') {
     return (
       <div className='form-group'>
         <Label check>
@@ -78,7 +80,7 @@ const BasicField = (props: BasicFieldProps) => {
   }
 
   //TODO: Binary minv/maxv check
-  if (typeDef.toLowerCase() == 'binary') {
+  if (typeDef[1].toLowerCase() == 'binary') {
     return (
       <div className='form-group'>
         <div className='card'>
@@ -88,7 +90,7 @@ const BasicField = (props: BasicFieldProps) => {
           </div>
           <div className='card-body m-0 p-0'>
             <Input
-              type={typeDef}
+              type={typeDef[1]}
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
@@ -118,7 +120,7 @@ const BasicField = (props: BasicFieldProps) => {
     );
   }
 
-  if (typeDef.toLowerCase() == 'number' || typeDef.toLowerCase() == 'integer') {
+  if (typeDef[1].toLowerCase() == 'number' || typeDef[1].toLowerCase() == 'integer') {
     return (
       <div className='form-group'>
         <div className='card'>
@@ -156,7 +158,7 @@ const BasicField = (props: BasicFieldProps) => {
         </div>
         <div className='card-body m-0 p-0'>
           <Input
-            type={typeDef}
+            type={typeDef[1]}
             name={name}
             defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
             placeholder={optData.format ? optData.format : ''}

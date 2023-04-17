@@ -110,11 +110,11 @@ export const validateOptData = (optData: any, data: any) => {
 			}
 		}
 		if (hasProperty(optData, 'format')) {
-			const isFormatted = isFormattedOptData(optData.format, data);
+			/* const isFormatted = isFormattedOptData(optData.format, data);
 			if (!isFormatted) {
 				valc = 'red';
 				valm.push('Format Error: must match specified format: ' + optData.format);
-			}
+			} */
 		}
 	}
 	return ({ 'color': valc, 'msg': valm });
@@ -125,15 +125,12 @@ export const isFormattedOptData = (formatType: any, value: any) => {
 	// JSON Formats
 	switch (formatType) {
 		case 'date-time':
-			//YYYY-MM-DD T HH:MM:SS [.S] Z
 			break;
 
 		case 'date':
-			//YYYY-MM-DD
 			break;
 
 		case 'time':
-			// HH:MM:SS [.S] Z
 			break;
 
 		case 'duration':

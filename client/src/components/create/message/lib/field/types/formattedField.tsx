@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 
 const FormattedField = (props: any) => {
 
-    const { basicProps, typeDef, optData, isValid, setisValid, err } = props;
+    const { basicProps, optData, isValid, setisValid, err } = props;
     const { arr, def, optChange, parent } = basicProps;
     const [_idx, name, _type, _opts, comment] = def;
     const msgName = parent ? [parent, name] : [name];
@@ -36,9 +36,9 @@ const FormattedField = (props: any) => {
                                 step="any"
                                 min={dayjs().format('YYYY-MM-DDTHH:mm:ssZ[Z]')}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, dayjs(e.target.value));
+                                    const validMsg = validateOptData(optData, dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'));
                                     setisValid(validMsg);
-                                    optChange(msgName.join('.'), dayjs(e.target.value), arr);
+                                    optChange(msgName.join('.'), dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'), arr);
                                 }}
                             />
                         </div>
@@ -62,9 +62,9 @@ const FormattedField = (props: any) => {
                                 step="any"
                                 min={dayjs().format('YYYY-MM-DD')}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, dayjs(e.target.value));
+                                    const validMsg = validateOptData(optData, dayjs(e.target.value).format('YYYY-MM-DD'));
                                     setisValid(validMsg);
-                                    optChange(msgName.join('.'), dayjs(e.target.value), arr);
+                                    optChange(msgName.join('.'), dayjs(e.target.value).format('YYYY-MM-DD'), arr);
                                 }}
                             />
                         </div>
@@ -88,9 +88,9 @@ const FormattedField = (props: any) => {
                                 step="any"
                                 min={dayjs().format('HH:mm:ssZ[Z]')}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, dayjs(e.target.value));
+                                    const validMsg = validateOptData(optData, dayjs(e.target.value).format('HH:mm:ssZ[Z]'));
                                     setisValid(validMsg);
-                                    optChange(msgName.join('.'), dayjs(e.target.value), arr);
+                                    optChange(msgName.join('.'), dayjs(e.target.value).format('HH:mm:ssZ[Z]'), arr);
                                 }}
                             />
                         </div>
@@ -109,7 +109,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'number'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -125,7 +125,8 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        case 'email'://TODO
+        case 'email':
+        case 'idn-email':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -151,59 +152,9 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        case 'idn-email'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={typeDef}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
         case 'hostname'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={typeDef}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
         case 'idn-hostname'://TODO
+
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -213,7 +164,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -230,6 +181,9 @@ const FormattedField = (props: any) => {
             );
 
         case 'ipv4'://TODO
+        case 'ipv4-addr'://TODO
+        case 'ipv4-net'://TODO
+
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -239,7 +193,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -256,6 +210,9 @@ const FormattedField = (props: any) => {
             );
 
         case 'ipv6'://TODO
+        case 'ipv6-addr'://TODO
+        case 'ipv6-net'://TODO
+
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -265,7 +222,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -291,7 +248,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -317,7 +274,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -343,7 +300,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -369,7 +326,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -395,7 +352,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -421,7 +378,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -447,7 +404,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -473,7 +430,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -501,7 +458,7 @@ const FormattedField = (props: any) => {
                         <div className='card-body m-0 p-0'>
                             <Input
                                 value={uuid}
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 onChange={e => {
                                     setUUID(e.target.value);
@@ -527,111 +484,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'ipv4-addr'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={typeDef}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'ipv6-addr'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={typeDef}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'ipv4-net'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={typeDef}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'ipv6-net'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -657,7 +510,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -683,7 +536,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -709,7 +562,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -735,7 +588,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -751,7 +604,6 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        // Serialization
         case 'x'://TODO
             return (
                 <div className='form-group'>
@@ -762,7 +614,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -787,7 +639,7 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                type={typeDef}
+                                type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
