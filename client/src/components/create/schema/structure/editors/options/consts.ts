@@ -47,7 +47,7 @@ export const EnumId = TypeOptions.enum;
 export const PointerId = TypeOptions.pointer;
 
 // TODO: Use BT format_options
-export const ValidFormats: Array<string> = [
+/* export const ValidFormats: Array<string> = [
   // JSON Formats
   'date-time',              // RFC 3339 § 5.6
   'date',                   // RFC 3339 § 5.6
@@ -82,7 +82,7 @@ export const ValidFormats: Array<string> = [
   'ipv6-addr',  // Binary-JSON string containing text representation of IPv6 address specified in RFC 4291 § 2.2
   'ipv4-net',   // Array-JSON string containing text representation of IPv4 address range specified in RFC 4632 § 3.1
   'ipv6-net'    // Array-JSON string containing text representation of IPv6 address range specified in RFC 4291 § 2.3
-];
+]; */
 
 export const RequiredOptions: Record<string, Array<string>> = {
   // Primitives

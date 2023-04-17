@@ -3,7 +3,6 @@
 import { $MINV, $MAX_ELEMENTS, $MAX_STRING } from 'components/create/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
 import { FieldArray, TypeArray } from '../../schema/interface';
-import { ValidFormats } from 'components/create/schema/structure/editors/options/consts';
 
 export const isOptional = (def: TypeArray | FieldArray) => {
 	switch (def.length) {
@@ -110,7 +109,7 @@ export const validateOptData = (optData: any, data: any) => {
 				valm.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
 			}
 		}
-		if (hasProperty(optData, 'format') && ValidFormats.includes(optData.format)) {
+		if (hasProperty(optData, 'format')) {
 			const isFormatted = isFormattedOptData(optData.format, data);
 			if (!isFormatted) {
 				valc = 'red';
@@ -121,7 +120,7 @@ export const validateOptData = (optData: any, data: any) => {
 	return ({ 'color': valc, 'msg': valm });
 }
 
-export const isFormattedOptData = (formatType: typeof ValidFormats[number], value: any) => {
+export const isFormattedOptData = (formatType: any, value: any) => {
 	var isFormatted = false;
 	// JSON Formats
 	switch (formatType) {

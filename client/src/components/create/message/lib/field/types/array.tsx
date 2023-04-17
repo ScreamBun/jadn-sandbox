@@ -3,7 +3,7 @@ import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
-import { opts2obj, ValidFormats } from 'components/create/schema/structure/editors/options/consts';
+import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { isFormattedOptData, validateOptDataElem } from '../../utils';
 
 // Interface
