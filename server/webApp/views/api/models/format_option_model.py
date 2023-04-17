@@ -1,9 +1,30 @@
-from .format_option_model import FormatOption, FormatType
+from enum import Enum
 
 
-class FormatOptions(): 
+class FormatType(Enum):
+    JSON = 'JSON Formats'
+    JADN = 'JADN Formats'
 
-    format_list = []
+class FormatOption():  
+
+    name = ""
+    ui_name = ""
+    spec = ""
+    type = FormatType.JSON
+    note = ""
+    rule = ""
+
+    def __init__(self, name, ui_name, spec, type, note):
+        self.name = name
+        self.ui_name = ui_name
+        self.spec = spec
+        self.type = type
+        self.note = note
+
+
+class FormatOptionDict(): 
+
+    formats_dict = {}
 
     # JSON Formats
     date_time = FormatOption("date-time", "Date Time", "RFC 3339 5.6", FormatType.JSON, "ex: 1970-01-01T01:01:01.01Z")
@@ -38,35 +59,40 @@ class FormatOptions():
 
 
     def __init__(self):
-        self.format_list.append(self.date_time)
-        self.format_list.append(self.date)
-        self.format_list.append(self.time)
-        self.format_list.append(self.duration)
-        self.format_list.append(self.email)
-        self.format_list.append(self.idn_email)
-        self.format_list.append(self.hostname)
-        self.format_list.append(self.idn_hostname)
-        self.format_list.append(self.ipv4)
-        self.format_list.append(self.ipv6)
-        self.format_list.append(self.uri)
-        self.format_list.append(self.uri_reference)
-        self.format_list.append(self.uri_template)    
-        self.format_list.append(self.iri)
-        self.format_list.append(self.iri_reference)
-        self.format_list.append(self.json_pointer)
-        self.format_list.append(self.relative_json_pointer)
-        self.format_list.append(self.regex)
+        self.formats_dict[self.date_time.name, self.date_time]
+        # self.formats_dict.append(self.date)
+        # self.formats_dict.append(self.time)
+        # self.formats_dict.append(self.duration)
+        # self.formats_dict.append(self.email)
+        # self.formats_dict.append(self.idn_email)
+        # self.formats_dict.append(self.hostname)
+        # self.formats_dict.append(self.idn_hostname)
+        # self.formats_dict.append(self.ipv4)
+        # self.formats_dict.append(self.ipv6)
+        # self.formats_dict.append(self.uri)
+        # self.formats_dict.append(self.uri_reference)
+        # self.formats_dict.append(self.uri_template)    
+        # self.formats_dict.append(self.iri)
+        # self.formats_dict.append(self.iri_reference)
+        # self.formats_dict.append(self.json_pointer)
+        # self.formats_dict.append(self.relative_json_pointer)
+        # self.formats_dict.append(self.regex)
 
         # JADN Formats
-        self.format_list.append(self.eui)
-        self.format_list.append(self.ipv4_addr)
-        self.format_list.append(self.ipv6_addr)
-        self.format_list.append(self.ipv4_net)
-        self.format_list.append(self.ipv6_net)
-        self.format_list.append(self.i8)
-        self.format_list.append(self.i16)    
-        self.format_list.append(self.i32)
-        self.format_list.append(self.ud)
+        # self.formats_dict.append(self.eui)
+        # self.formats_dict.append(self.ipv4_addr)
+        # self.formats_dict.append(self.ipv6_addr)
+        # self.formats_dict.append(self.ipv4_net)
+        # self.formats_dict.append(self.ipv6_net)
+        # self.formats_dict.append(self.i8)
+        # self.formats_dict.append(self.i16)    
+        # self.formats_dict.append(self.i32)
+        # self.formats_dict.append(self.ud)
     
-    def get_format_list(self):
-        return self.format_list
+    def get_formats_dict(self):
+
+        formats_dict = {}
+        formats_dict[self.date_time.name, self.date_time]
+
+
+        return self.formats_dict        
