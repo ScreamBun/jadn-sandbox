@@ -32,7 +32,7 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
       ref.current = false;
       dispatch(getValidFormatOpts())
         .then((val: Payload) => {
-          setFormatOpts(val.payload.format_options.map(obj => obj.name));
+          setFormatOpts(val.payload.format_options.map(obj => obj.ui_name));
         })
         .catch((val: Payload) => {
           console.log("ERROR: " + val.payload.err);
