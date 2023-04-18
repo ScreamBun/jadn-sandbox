@@ -34,6 +34,3 @@ export default (state = initialState, action: format.FormatActions) => {
             return state;
     }
 };
-
-//selectors
-export const getValidFormats = (state: { Format: { format_options: any; }; }) => state.Format.format_options;

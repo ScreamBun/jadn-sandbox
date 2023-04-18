@@ -134,7 +134,7 @@ const BasicField = (props: BasicFieldProps) => {
               step='any'
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-              placeholder={optData.format ? optData.format : ''}
+              placeholder={optData.pattern ? optData.pattern : ''}
               onChange={e => {
                 const validMsg = validateOptData(optData, e.target.value);
                 setisValid(validMsg);
@@ -148,7 +148,6 @@ const BasicField = (props: BasicFieldProps) => {
     );
   }
 
-  //pattern can also be placeholder?
   return (
     <div className='form-group'>
       <div className='card'>
@@ -161,7 +160,7 @@ const BasicField = (props: BasicFieldProps) => {
             type={typeDef[1]}
             name={name}
             defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-            placeholder={optData.format ? optData.format : ''}
+            placeholder={optData.pattern ? optData.pattern : ''}
             onChange={e => {
               const validMsg = validateOptData(optData, e.target.value);
               setisValid(validMsg);
