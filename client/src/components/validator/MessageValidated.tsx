@@ -153,7 +153,7 @@ const MessageValidated = (props: any) => {
                         </select>
                     </div>
 
-                    <div className={`${msgFormat == '' ? 'col-md-3' : ' col-md-6'}`}>
+                    <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
                             title={`${loadedSchema && loadedMsg && decodeMsg && msgFormat ? 'Validate the message against the given schema' : 'Cannot validate'}`}>
