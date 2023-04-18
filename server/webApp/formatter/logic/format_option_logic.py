@@ -19,7 +19,7 @@ class FormatOptionLogic:
     ipv4 = FormatOptionModel("ipv4", "IPv4", "RFC 2673 3.2", FormatType.JSON.value, "").__dict__
     ipv6 = FormatOptionModel("ipv6", "IPv6", "RFC 4291 2.2", FormatType.JSON.value, "").__dict__
     uri = FormatOptionModel("uri", "URI", "RFC 3986", FormatType.JSON.value, "", regex_uri_rfc_3986).__dict__
-    uri_reference = FormatOptionModel("uri-reference'", "URI Reference'", "RFC 5322", FormatType.JSON.value, "").__dict__
+    uri_reference = FormatOptionModel("uri-reference", "URI Reference'", "RFC 5322", FormatType.JSON.value, "").__dict__
     uri_template = FormatOptionModel("uri-template", "URI Template", "RFC 6570", FormatType.JSON.value, "").__dict__
     iri = FormatOptionModel("iri", "IRI", "RFC 3987", FormatType.JSON.value, "").__dict__
     iri_reference = FormatOptionModel("iri-reference", "IRI Reference", "RFC 3987", FormatType.JSON.value, "").__dict__

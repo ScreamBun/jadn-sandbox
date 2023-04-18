@@ -62,7 +62,10 @@ class Validator:
 
         if isinstance(s, str):
             return False, "Schema Invalid - The schema failed to load", "", msg
-                 
+
+        if fmt not in SerialFormats:
+            return False, "Serialization Format not found", "", msg
+
         # Left off here.... need to validate field types using jadnschema validations..
 
         if fmt in SerialFormats:
@@ -86,7 +89,7 @@ class Validator:
                     return False, f"OpenC2 Message Invalid - {e}", "", msg
 
         else:
-            return False, random.choice(self.invalidMsgs), "", msg 
+            return False, "Serialization Format not found", "", msg
             
         records = list(s.types.keys())
         if decode in records:
