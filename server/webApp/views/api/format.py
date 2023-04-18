@@ -97,18 +97,22 @@ class FormatOption():
 
 def get_formats():
 
+    email_RFC_5322_regex = "([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|\[[\t -Z^-~]*])"
+    uri_RFC_3986_regex = "(https?:\/\/(www\.)?)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
+    hostname_regex = "(?!-)[A-Z0-9-]{1,63}(?<!-)$"
+
     # JSON Formats
     date_time = FormatOption("date-time", "Date Time", "RFC 3339 5.6", FormatType.JSON.value, "ex: 1970-01-01T01:01:01.01Z").__dict__
     date = FormatOption("date", "Date", "RFC 3339 5.6", FormatType.JSON.value, "ex: 1970-01-01").__dict__
     time = FormatOption("time", "Time", "RFC 3339 5.6", FormatType.JSON.value, "ex: 01:01:01.01Z").__dict__
-    duration = FormatOption("duration", "Duration", "RFC 3339", FormatType.JSON.value, "").__dict__
-    email = FormatOption("email", "Email", "RFC 5322 3.4.1", FormatType.JSON.value, "ex: user@foo.org").__dict__
+    duration = FormatOption("duration", "Duration", "RFC 3339", FormatType.JSON.value).__dict__
+    email = FormatOption("email", "Email", "RFC 5322 3.4.1", FormatType.JSON.value, "ex: user@foo.org", email_RFC_5322_regex).__dict__
     idn_email = FormatOption("idn-email", "IDN Email", "RFC 6531", FormatType.JSON.value, "").__dict__
-    hostname = FormatOption("hostname", "Hostname", "RFC 1034 3.1", FormatType.JSON.value, "").__dict__
+    hostname = FormatOption("hostname", "Hostname", "RFC 1034 3.1", FormatType.JSON.value, "", hostname_regex).__dict__
     idn_hostname = FormatOption("idn-hostname", "IDN hostname", "RFC 5890 2.3.2.3", FormatType.JSON.value, "").__dict__
     ipv4 = FormatOption("ipv4", "IPv4", "RFC 2673 3.2", FormatType.JSON.value, "").__dict__
     ipv6 = FormatOption("ipv6", "IPv6", "RFC 4291 2.2", FormatType.JSON.value, "").__dict__
-    uri = FormatOption("uri", "URI", "RFC 3986", FormatType.JSON.value, "").__dict__
+    uri = FormatOption("uri", "URI", "RFC 3986", FormatType.JSON.value, "", uri_RFC_3986_regex).__dict__
     uri_reference = FormatOption("uri-reference'", "URI Reference'", "RFC 5322", FormatType.JSON.value, "").__dict__
     uri_template = FormatOption("uri-template", "URI Template", "RFC 6570", FormatType.JSON.value, "").__dict__
     iri = FormatOption("iri", "IRI", "RFC 3987", FormatType.JSON.value, "").__dict__
