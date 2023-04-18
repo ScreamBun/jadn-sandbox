@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 // Field Utils
-import { $MINV, $MAX_ELEMENTS, $MAX_STRING } from 'components/create/consts';
+import { $MINV, $MAX_ELEMENTS, $MAX_STRING, $MAX_BINARY } from 'components/create/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
 import { FieldArray, TypeArray } from '../../schema/interface';
 
@@ -20,7 +20,7 @@ export const validateOptDataElem = (optData: any, count: number) => {
 	//check # of elements in record
 	let valc = '';
 	let valm = [];
-	if (optData) {
+	if (optData && count) {
 		if (hasProperty(optData, 'minv')) {
 			if (count < optData.minv) {
 				valc = 'red';
@@ -109,109 +109,61 @@ export const validateOptData = (optData: any, data: any) => {
 				valm.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
 			}
 		}
-		if (hasProperty(optData, 'format')) {
-			/* const isFormatted = isFormattedOptData(optData.format, data);
-			if (!isFormatted) {
-				valc = 'red';
-				valm.push('Format Error: must match specified format: ' + optData.format);
-			} */
-		}
+		//format check - server side
+
 	}
 	return ({ 'color': valc, 'msg': valm });
 }
 
-export const isFormattedOptData = (formatType: any, value: any) => {
-	var isFormatted = false;
-	// JSON Formats
-	switch (formatType) {
-		case 'date-time':
-			break;
 
-		case 'date':
-			break;
+export const validateOptDataBinary = (optData: any, data: any) => {
+	let valc = '';
+	let valm = [];
+	//A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
+	//TODO: Get number of bytes in data
 
-		case 'time':
-			break;
+	if (optData && data) {
+		if (hasProperty(optData, 'minv')) {
+			if (data < optData.minv) {
+				valc = 'red';
+				valm.push('Minv Error: must be greater than ' + optData.minv);
+			}
 
-		case 'duration':
-			break;
-
-		case 'email':
-			break;
-
-		case 'idn-email':
-			break;
-
-		case 'hostname':
-			break;
-
-		case 'idn-hostname':
-			break;
-
-		case 'ipv4':
-			break;
-
-		case 'ipv6':
-			break;
-
-		case 'uri':
-			break;
-
-		case 'uri-reference':
-			break;
-
-		case 'iri':
-			break;
-
-		case 'iri-reference':
-			break;
-
-		case 'uri-template':
-			break;
-
-		case 'json-pointer':
-			break;
-
-		case 'relative-json-pointer':
-			break;
-
-		case 'regex':
-			break;
-
-		case 'uuid':
-			break;
-
-		// JADN Formats
-		case 'eui':
-			break;
-
-		case 'ipv4-addr':
-			break;
-
-		case 'ipv6-addr':
-			break;
-
-		case 'ipv4-net':
-			break;
-
-		case 'ipv6-net':
-			break;
-
-		case 'i8':
-			break;
-
-		case 'i16':
-			break;
-
-		case 'i32':
-			break;
-
-		case 'u\\d+':
-			break;
-
-		// Serialization
-		case 'x':
-			break;
+		} else {
+			optData.minv = $MINV;
+			if (data < optData.minv) {
+				valc = 'red';
+				valm.push('Minv Error: must be greater than ' + optData.minv);
+			}
+		}
+		if (hasProperty(optData, 'maxv')) {
+			if (data > optData.maxv) {
+				valc = 'red';
+				valm.push('Maxv Error: must be less than ' + optData.maxv);
+			}
+		} else {
+			optData.maxv = $MAX_BINARY;
+			if (data.length > optData.maxv) {
+				valc = 'red';
+				valm.push('Maxv Error: must be less than ' + optData.maxv);
+			}
+		}
+		//format check - server side
 	}
-	return isFormatted;
+	return ({ 'color': valc, 'msg': valm });
+}
+
+export const validateBinary = (data: any, type: string) => {
+	//TODO: ipv4, ipv6
+	//Basic check if binary data
+	if (type == 'binary' && !data.match(/^[0-1]{1,}$/g)) {
+		return false;
+	}
+	if (type == 'ipv4' && !data.match(/^[0-1]{1,}$/g)) {
+		return false;
+	}
+	if (type == 'ipv6' && !data.match(/^[0-1]{1,}$/g)) {
+		return false;
+	}
+	return true;
 }

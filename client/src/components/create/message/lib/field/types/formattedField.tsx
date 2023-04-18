@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { hasProperty } from "react-json-editor/dist/utils";
 import { Button, Input } from "reactstrap";
-import { isOptional, validateOptData } from "../../utils";
+import { isOptional, validateBinary, validateOptData, validateOptDataBinary } from "../../utils";
 import { v4 as uuid4 } from 'uuid';
 import dayjs from 'dayjs';
+
+//This component is used to help users format/serialize data into valid JSON
+//input fields, basic input validation, and parsing
+//e.g. ipv4 addr : fields for [ipv4][/CIDR ] with field validation then gets parsed into JSON as => ipv4/CIDR 
 
 const FormattedField = (props: any) => {
 
@@ -19,6 +23,39 @@ const FormattedField = (props: any) => {
         setUUID(randomID);
         optChange(msgName.join('.'), randomID, arr);
     }
+
+    //ipv4-net 
+    //ipv6-net
+    const [ipValue, setIpValue] = useState<any[]>(['', '']);
+    const ipvNetOnchg = (k: string, v: any, idx: number, ipvType: string) => {
+        const newArr = ipValue.map((obj, i) => {
+            if (i === idx) {
+                return v;
+            } else {
+                return obj;
+            }
+        });
+        setIpValue(newArr);
+
+        const newValue = `${newArr[0]}${newArr[1] ? `/${newArr[1]}` : ``}`;
+
+        //validate data
+        if (newArr[0]) {
+            const isBinary = validateBinary(newArr[0], ipvType);
+            if (isBinary) {
+                const validMsg = validateOptDataBinary(optData, newArr[0]);
+                setisValid(validMsg);
+                optChange(k, newValue);
+            } else {
+                setisValid({
+                    color: 'red',
+                    msg: ["Error: Invalid Binary value"]
+                })
+                optChange(k, '');
+            }
+        }
+    }
+
 
     switch (optData.format) {
         case 'date-time':
@@ -74,6 +111,7 @@ const FormattedField = (props: any) => {
             );
 
         case 'time':
+        case 'duration':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -92,32 +130,6 @@ const FormattedField = (props: any) => {
                                     setisValid(validMsg);
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('HH:mm:ssZ[Z]'), arr);
                                 }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'duration': //TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'number'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
                             />
                         </div>
                         {err}
@@ -152,34 +164,6 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        case 'hostname'://TODO
-        case 'idn-hostname'://TODO
-
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
         case 'ipv4'://TODO
         case 'ipv4-addr'://TODO
             return (
@@ -195,9 +179,18 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    const isBinary = validateBinary(e.target.value, 'ipv4');
+                                    if (isBinary) {
+                                        const validMsg = validateOptDataBinary(optData, e.target.value);
+                                        setisValid(validMsg);
+                                        optChange(msgName.join('.'), e.target.value, arr);
+                                    } else {
+                                        setisValid({
+                                            color: 'red',
+                                            msg: ["Error: Invalid Binary value"]
+                                        })
+                                        optChange(msgName.join('.'), '', arr);
+                                    }
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -206,8 +199,8 @@ const FormattedField = (props: any) => {
                     </div>
                 </div>
             );
-        case 'ipv4-net'://TODO
 
+        case 'ipv4-net':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -215,27 +208,22 @@ const FormattedField = (props: any) => {
                             <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
                             {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
                         </div>
-                        <div className='card-body m-0 p-0'>
+                        <div className='card-body m-0 p-0 input-group'>
                             <Input
                                 type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr[0]);
-                                }}
+                                onChange={e =>
+                                    ipvNetOnchg(msgName.join('.'), e.target.value, 0, "ipv4")}
                                 style={{ borderColor: isValid.color }}
                             />
+                            <span className="input-group-text"> / </span>
                             <Input
                                 type={'number'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), "/" + e.target.value, arr[1]);
-                                }}
+                                onChange={e =>
+                                    ipvNetOnchg(msgName.join('.'), e.target.value, 1, "ipv4")}
                                 style={{ borderColor: isValid.color }}
                             />
                         </div>
@@ -246,6 +234,7 @@ const FormattedField = (props: any) => {
 
         case 'ipv6'://TODO
         case 'ipv6-addr'://TODO
+        case 'eui': //TODO
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -259,9 +248,18 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr[0]);
+                                    const isBinary = validateBinary(e.target.value, 'ipv6');
+                                    if (isBinary) {
+                                        const validMsg = validateOptDataBinary(optData, e.target.value);
+                                        setisValid(validMsg);
+                                        optChange(msgName.join('.'), e.target.value, arr);
+                                    } else {
+                                        setisValid({
+                                            color: 'red',
+                                            msg: ["Error: Invalid Binary value"]
+                                        })
+                                        optChange(msgName.join('.'), '', arr);
+                                    }
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -270,8 +268,8 @@ const FormattedField = (props: any) => {
                     </div>
                 </div>
             );
-        case 'ipv6-net'://TODO
 
+        case 'ipv6-net':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -279,235 +277,22 @@ const FormattedField = (props: any) => {
                             <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
                             {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
                         </div>
-                        <div className='card-body m-0 p-0'>
+                        <div className='card-body m-0 p-0 input-group'>
                             <Input
                                 type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
+                                onChange={e =>
+                                    ipvNetOnchg(msgName.join('.'), e.target.value, 0, "ipv6")}
                                 style={{ borderColor: isValid.color }}
                             />
+                            <span className="input-group-text"> / </span>
                             <Input
                                 type={'number'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), "/" + e.target.value, arr[1]);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'uri'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'uri-reference'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'iri'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'iri-reference'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'uri-template'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'json-pointer'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'relative-json-pointer'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'regex'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
+                                onChange={e =>
+                                    ipvNetOnchg(msgName.join('.'), e.target.value, 1, "ipv6")}
                                 style={{ borderColor: isValid.color }}
                             />
                         </div>
@@ -543,34 +328,7 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        // JADN Formats
-        case 'eui'://TODO
-            return (
-                <div className='form-group'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                        </div>
-                        <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
-                                name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                }}
-                                style={{ borderColor: isValid.color }}
-                            />
-                        </div>
-                        {err}
-                    </div>
-                </div>
-            );
-
-        case 'i8'://TODO
+        case 'i8':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -586,9 +344,18 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    const isBinary = validateBinary(e.target.value, 'i8');
+                                    if (isBinary) {
+                                        const validMsg = validateOptDataBinary(optData, e.target.value);
+                                        setisValid(validMsg);
+                                        optChange(msgName.join('.'), e.target.value, arr);
+                                    } else {
+                                        setisValid({
+                                            color: 'red',
+                                            msg: ["Error: Invalid Binary value"]
+                                        })
+                                        optChange(msgName.join('.'), '', arr);
+                                    }
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -598,7 +365,7 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        case 'i16'://TODO
+        case 'i16':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -614,9 +381,18 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    const isBinary = validateBinary(e.target.value, 'i16');
+                                    if (isBinary) {
+                                        const validMsg = validateOptDataBinary(optData, e.target.value);
+                                        setisValid(validMsg);
+                                        optChange(msgName.join('.'), e.target.value, arr);
+                                    } else {
+                                        setisValid({
+                                            color: 'red',
+                                            msg: ["Error: Invalid Binary value"]
+                                        })
+                                        optChange(msgName.join('.'), '', arr);
+                                    }
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -626,7 +402,7 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        case 'i32'://TODO
+        case 'i32':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -642,9 +418,18 @@ const FormattedField = (props: any) => {
                                 max={2147483647}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    const isBinary = validateBinary(e.target.value, 'i32');
+                                    if (isBinary) {
+                                        const validMsg = validateOptDataBinary(optData, e.target.value);
+                                        setisValid(validMsg);
+                                        optChange(msgName.join('.'), e.target.value, arr);
+                                    } else {
+                                        setisValid({
+                                            color: 'red',
+                                            msg: ["Error: Invalid Binary value"]
+                                        })
+                                        optChange(msgName.join('.'), '', arr);
+                                    }
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -654,7 +439,8 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        case 'u\\d+'://TODO
+        case 'u\\d+':
+            const n = optData.format.substring(1); // digit after u
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -666,12 +452,22 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'number'}
                                 min={0}
+                                max={2 ** (n - 1)}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    const isBinary = validateBinary(e.target.value, 'u');
+                                    if (isBinary) {
+                                        const validMsg = validateOptDataBinary(optData, e.target.value);
+                                        setisValid(validMsg);
+                                        optChange(msgName.join('.'), e.target.value, arr);
+                                    } else {
+                                        setisValid({
+                                            color: 'red',
+                                            msg: ["Error: Invalid Binary value"]
+                                        })
+                                        optChange(msgName.join('.'), '', arr);
+                                    }
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -695,9 +491,18 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    const isBinary = validateBinary(e.target.value, 'binary');
+                                    if (isBinary) {
+                                        const validMsg = validateOptDataBinary(optData, e.target.value);
+                                        setisValid(validMsg);
+                                        optChange(msgName.join('.'), e.target.value, arr);
+                                    } else {
+                                        setisValid({
+                                            color: 'red',
+                                            msg: ["Error: Invalid Binary value"]
+                                        })
+                                        optChange(msgName.join('.'), '', arr);
+                                    }
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -706,6 +511,18 @@ const FormattedField = (props: any) => {
                     </div>
                 </div>
             );
+
+
+        case 'hostname':
+        case 'idn-hostname':
+        case 'uri':
+        case 'uri-reference':
+        case 'iri':
+        case 'iri-reference':
+        case 'uri-template':
+        case 'json-pointer':
+        case 'relative-json-pointer':
+        case 'regex': //check for pattern?
         default:
             return (
                 <div className='form-group'>

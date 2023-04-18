@@ -4,7 +4,9 @@ import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { isFormattedOptData, validateOptDataElem } from '../../utils';
+import { validateOptDataElem } from '../../utils';
+import { hasProperty } from 'react-json-editor/dist/utils';
+import FormattedField from './formattedField';
 
 // Interface
 interface ArrayFieldProps {
@@ -39,13 +41,6 @@ const ArrayField = (props: ArrayFieldProps) => {
   });
 
   const onChange = (k: string, v: any) => {
-    /*     if (optData.hasProperty('format') && ValidFormats.includes(optData.format)) {
-          //TODO: format --- get all fields -> data
-          const formattedVal = isFormattedOptData(optData.format, v);
-          optChange(k, formattedVal);
-          return;
-        } */
-
     if (!data.includes(k)) {
       //add
       setData(data => [...data, k]);
@@ -72,13 +67,20 @@ const ArrayField = (props: ArrayFieldProps) => {
     optData = (opts2obj(typeDef[2]));
   }
 
-  //Expected: fields (typeDef.length  == 5)
-  const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
-
   let err: any[] = [];
   (isValid.msg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
+
+  if (hasProperty(optData, 'format')) {
+    return (<FormattedField
+      basicProps={props} optData={optData}
+      isValid={isValid} setisValid={setisValid}
+      err={err} />);
+  }
+
+  //Expected: fields (typeDef.length  == 5)
+  const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
 
   return (
     <div className='form-group'>

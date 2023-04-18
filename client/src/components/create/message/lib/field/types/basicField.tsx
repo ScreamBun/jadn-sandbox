@@ -4,10 +4,10 @@ import { Input, Label } from 'reactstrap';
 
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
+import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { useAppSelector } from 'reducers';
-import { validateOptData } from '../../utils';
+import { validateBinary, validateOptData, validateOptDataBinary } from '../../utils';
 import { hasProperty } from 'react-json-editor/dist/utils';
 import { FormattedField } from './Types';
 
@@ -94,20 +94,16 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                if (e.target.value.match(/^[0-1]{1,}$/g)) {
-                  const validMsg = validateOptData(optData, e.target.value);
+                const isBinary = validateBinary(e.target.value, 'binary');
+                if (isBinary) {
+                  const validMsg = validateOptDataBinary(optData, e.target.value);
                   setisValid(validMsg);
                   optChange(msgName.join('.'), e.target.value, arr);
                 } else {
-                  if (e.target.value != '') {
-                    //validation: only allow 1 and 0 input
-                    setisValid(validMsg => ({
-                      color: 'red',
-                      msg: [...validMsg.msg,
-                      validMsg.msg.includes("Error: Invalid Binary value") ? '' :
-                        "Error: Invalid Binary value"]
-                    }))
-                  }
+                  setisValid({
+                    color: 'red',
+                    msg: ["Error: Invalid Binary value"]
+                  })
                   optChange(msgName.join('.'), '', arr);
                 }
               }}
