@@ -65,31 +65,25 @@ class Validator:
 
         if fmt not in SerialFormats:
             return False, "Serialization Format not found", "", msg
+        
+        
+        serial = SerialFormats(fmt)
+        if fmt == "cbor":
+            try:
+                msg_hex_string = msg
+                msg_binary_string = binascii.unhexlify(msg_hex_string)
+                msg_native_json = cbor_json.native_from_cbor(msg_binary_string)
 
-        # Left off here.... need to validate field types using jadnschema validations..
-
-        if fmt in SerialFormats:
-            serial = SerialFormats(fmt)
-
-            if fmt == "cbor":
-                try:
-                    msg_hex_string = msg
-                    msg_binary_string = binascii.unhexlify(msg_hex_string)
-                    msg_native_json = cbor_json.native_from_cbor(msg_binary_string)
-
-                    serial = SerialFormats('json')
-                    message = Message.oc2_loads(msg_native_json, serial)
-                except Exception as e:
-                    return "Error: " + e
-            else:
-                try:
-                    message = Message.oc2_loads(msg, serial)
-                except Exception as e:  # pylint: disable=broad-except
-                    # TODO: pick better exception
-                    return False, f"OpenC2 Message Invalid - {e}", "", msg
-
+                serial = SerialFormats('json')
+                message = Message.oc2_loads(msg_native_json, serial)
+            except Exception as e:
+                return "Error: " + e
         else:
-            return False, "Serialization Format not found", "", msg
+            try:
+                message = Message.oc2_loads(msg, serial)
+            except Exception as e:  # pylint: disable=broad-except
+                # TODO: pick better exception
+                return False, f"OpenC2 Message Invalid - {e}", "", msg
             
         records = list(s.types.keys())
         if decode in records:
