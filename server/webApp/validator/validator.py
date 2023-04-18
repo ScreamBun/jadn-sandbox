@@ -12,6 +12,8 @@ from jadnschema import jadn
 from jadnschema.schema import Schema
 from jadnschema.convert.message import Message, SerialFormats
 from unittest import TextTestRunner
+
+from pydantic import ValidationError
 from .profiles import get_profile_suite, load_test_suite, tests_in_suite, TestResults
 
 
@@ -81,21 +83,42 @@ class Validator:
         else:
             try:
                 message = Message.oc2_loads(msg, serial)
-            except Exception as e:  # pylint: disable=broad-except
-                # TODO: pick better exception
-                return False, f"OpenC2 Message Invalid - {e}", "", msg
+            except Exception as e: 
+                err_msg = e
+                return False, f"OpenC2 Message Invalid - {err_msg}", "", msg
             
         records = list(s.types.keys())
         if decode in records:
+
             try:
                 s.validate_as(decode, message.content)
                 return True, random.choice(self.validMsgs), json.dumps(msg), msg
 
-            except Exception as err:  # pylint: disable=broad-except
-                # TODO: pick better exception
-                return False, f"Message Invalid - {err}", "", msg
+            except Exception as err: 
+                if isinstance(err, ValidationError):
+                    err_msg = self.getValidationErrorMsg(err)
+                    err_path = self.getValidationErrorPath(err)
+                    return False, f"{err_msg} \n {err_path}", "", msg
+                else:
+                    return False, f"{err}", "", msg
+
         else:
             return False, "Decode Invalid - The decode message type was not found in the schema", "", msg
+
+    # TODO: Move to Utils
+    def getValidationErrorMsg(err: ValidationError):
+        errs = err.errors()
+        err = errs[0]
+        err_msg = err['msg']
+        return err_msg
+    
+    # TODO: Move to Utils
+    def getValidationErrorPath(err: ValidationError):
+        err_loc_tuple = err['loc']
+        err_loc_list = list(err_loc_tuple)
+        err_loc_list.remove('__root__')
+        err_path = " / ".join(err_loc_list)
+        return err_path
 
     # Profile test validation
     def getProfileTests(self, profile: str = None) -> dict:
