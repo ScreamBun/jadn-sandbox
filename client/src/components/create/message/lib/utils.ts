@@ -116,54 +116,66 @@ export const validateOptData = (optData: any, data: any) => {
 }
 
 
-export const validateOptDataBinary = (optData: any, data: any) => {
+export const validateOptDataBinary = (optData: any, data: any, type: string) => {
 	let valc = '';
 	let valm = [];
-	//A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
+	// A sequence of octets. Length is the number of octets.
+	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
 	//TODO: Get number of bytes in data
+	const isBinary = validateBinary(data, type);
+	if (isBinary) {
+		if (optData && data) {
+			if (hasProperty(optData, 'minv')) {
+				if (data < optData.minv) {
+					valc = 'red';
+					valm.push('Minv Error: must be greater than ' + optData.minv);
+				}
 
-	if (optData && data) {
-		if (hasProperty(optData, 'minv')) {
-			if (data < optData.minv) {
-				valc = 'red';
-				valm.push('Minv Error: must be greater than ' + optData.minv);
+			} else {
+				optData.minv = $MINV;
+				if (data < optData.minv) {
+					valc = 'red';
+					valm.push('Minv Error: must be greater than ' + optData.minv);
+				}
 			}
-
-		} else {
-			optData.minv = $MINV;
-			if (data < optData.minv) {
-				valc = 'red';
-				valm.push('Minv Error: must be greater than ' + optData.minv);
+			if (hasProperty(optData, 'maxv')) {
+				if (data > optData.maxv) {
+					valc = 'red';
+					valm.push('Maxv Error: must be less than ' + optData.maxv);
+				}
+			} else {
+				optData.maxv = $MAX_BINARY;
+				if (data.length > optData.maxv) {
+					valc = 'red';
+					valm.push('Maxv Error: must be less than ' + optData.maxv);
+				}
 			}
+			//format check - server side
 		}
-		if (hasProperty(optData, 'maxv')) {
-			if (data > optData.maxv) {
-				valc = 'red';
-				valm.push('Maxv Error: must be less than ' + optData.maxv);
-			}
-		} else {
-			optData.maxv = $MAX_BINARY;
-			if (data.length > optData.maxv) {
-				valc = 'red';
-				valm.push('Maxv Error: must be less than ' + optData.maxv);
-			}
-		}
-		//format check - server side
+	} else {
+		valc = 'red';
+		valm.push('Binary Error: Invalid ' + type + ' value');
 	}
 	return ({ 'color': valc, 'msg': valm });
 }
 
 export const validateBinary = (data: any, type: string) => {
-	//TODO: ipv4, ipv6
-	//Basic check if binary data
-	if (type == 'binary' && !data.match(/^[0-1]{1,}$/g)) {
-		return false;
+	if (type == 'binary' && data.match(/^[0-1]{1,}$/g)) { //Base64url encoding
+		return true;
 	}
-	if (type == 'ipv4' && !data.match(/^[0-1]{1,}$/g)) {
-		return false;
+	if (type == 'ipv4' && data.match(
+		/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)) {
+		return true;
 	}
-	if (type == 'ipv6' && !data.match(/^[0-1]{1,}$/g)) {
-		return false;
+	if (type == 'ipv6' && data.match(
+		/^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/)) {
+		return true;
 	}
-	return true;
+	if (type == 'hex' && data.match(/(0x)?[0-9A-F]+/)) {
+		return true;
+	}
+	if (type == 'eui' && data.match(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$/)) {
+		return true;
+	}
+	return false;
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { hasProperty } from "react-json-editor/dist/utils";
 import { Button, Input } from "reactstrap";
-import { isOptional, validateBinary, validateOptData, validateOptDataBinary } from "../../utils";
+import { isOptional, validateOptData, validateOptDataBinary } from "../../utils";
 import { v4 as uuid4 } from 'uuid';
 import dayjs from 'dayjs';
 
@@ -39,23 +39,15 @@ const FormattedField = (props: any) => {
 
         const newValue = `${newArr[0]}${newArr[1] ? `/${newArr[1]}` : ``}`;
 
-        //validate data
+        //validate ipv data
+        //validate CIDR?
         if (newArr[0]) {
-            const isBinary = validateBinary(newArr[0], ipvType);
-            if (isBinary) {
-                const validMsg = validateOptDataBinary(optData, newArr[0]);
-                setisValid(validMsg);
-                optChange(k, newValue);
-            } else {
-                setisValid({
-                    color: 'red',
-                    msg: ["Error: Invalid Binary value"]
-                })
-                optChange(k, '');
-            }
+            const validMsg = validateOptDataBinary(optData, newArr[0], ipvType);
+            setisValid(validMsg);
+            optChange(k, newValue);
+            // if not binary, optChange(k, '');
         }
     }
-
 
     switch (optData.format) {
         case 'date-time':
@@ -164,8 +156,8 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        case 'ipv4'://TODO
-        case 'ipv4-addr'://TODO
+        case 'ipv4':
+        case 'ipv4-addr':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -179,18 +171,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const isBinary = validateBinary(e.target.value, 'ipv4');
-                                    if (isBinary) {
-                                        const validMsg = validateOptDataBinary(optData, e.target.value);
-                                        setisValid(validMsg);
-                                        optChange(msgName.join('.'), e.target.value, arr);
-                                    } else {
-                                        setisValid({
-                                            color: 'red',
-                                            msg: ["Error: Invalid Binary value"]
-                                        })
-                                        optChange(msgName.join('.'), '', arr);
-                                    }
+                                    const validMsg = validateOptDataBinary(optData, e.target.value, 'ipv4');
+                                    setisValid(validMsg);
+                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    //optChange(msgName.join('.'), '', arr);
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -232,9 +216,8 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        case 'ipv6'://TODO
-        case 'ipv6-addr'://TODO
-        case 'eui': //TODO
+        case 'ipv6':
+        case 'ipv6-addr':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -248,18 +231,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const isBinary = validateBinary(e.target.value, 'ipv6');
-                                    if (isBinary) {
-                                        const validMsg = validateOptDataBinary(optData, e.target.value);
-                                        setisValid(validMsg);
-                                        optChange(msgName.join('.'), e.target.value, arr);
-                                    } else {
-                                        setisValid({
-                                            color: 'red',
-                                            msg: ["Error: Invalid Binary value"]
-                                        })
-                                        optChange(msgName.join('.'), '', arr);
-                                    }
+                                    const validMsg = validateOptDataBinary(optData, e.target.value, 'ipv6');
+                                    setisValid(validMsg);
+                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    //optChange(msgName.join('.'), '', arr);                             
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -293,6 +268,33 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e =>
                                     ipvNetOnchg(msgName.join('.'), e.target.value, 1, "ipv6")}
+                                style={{ borderColor: isValid.color }}
+                            />
+                        </div>
+                        {err}
+                    </div>
+                </div>
+            );
+
+        case 'eui':
+            return (
+                <div className='form-group'>
+                    <div className='card'>
+                        <div className='card-header p-2'>
+                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        </div>
+                        <div className='card-body m-0 p-0'>
+                            <Input
+                                type={'text'}
+                                name={name}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                onChange={e => {
+                                    const validMsg = validateOptDataBinary(optData, e.target.value, 'eui');
+                                    setisValid(validMsg);
+                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    //optChange(msgName.join('.'), '', arr);                             
+                                }}
                                 style={{ borderColor: isValid.color }}
                             />
                         </div>
@@ -344,18 +346,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const isBinary = validateBinary(e.target.value, 'i8');
-                                    if (isBinary) {
-                                        const validMsg = validateOptDataBinary(optData, e.target.value);
-                                        setisValid(validMsg);
-                                        optChange(msgName.join('.'), e.target.value, arr);
-                                    } else {
-                                        setisValid({
-                                            color: 'red',
-                                            msg: ["Error: Invalid Binary value"]
-                                        })
-                                        optChange(msgName.join('.'), '', arr);
-                                    }
+                                    const validMsg = validateOptData(optData, e.target.value);
+                                    setisValid(validMsg);
+                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    //optChange(msgName.join('.'), '', arr);                                   
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -381,18 +375,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const isBinary = validateBinary(e.target.value, 'i16');
-                                    if (isBinary) {
-                                        const validMsg = validateOptDataBinary(optData, e.target.value);
-                                        setisValid(validMsg);
-                                        optChange(msgName.join('.'), e.target.value, arr);
-                                    } else {
-                                        setisValid({
-                                            color: 'red',
-                                            msg: ["Error: Invalid Binary value"]
-                                        })
-                                        optChange(msgName.join('.'), '', arr);
-                                    }
+                                    const validMsg = validateOptData(optData, e.target.value);
+                                    setisValid(validMsg);
+                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    //optChange(msgName.join('.'), '', arr);                                   
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -418,18 +404,10 @@ const FormattedField = (props: any) => {
                                 max={2147483647}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const isBinary = validateBinary(e.target.value, 'i32');
-                                    if (isBinary) {
-                                        const validMsg = validateOptDataBinary(optData, e.target.value);
-                                        setisValid(validMsg);
-                                        optChange(msgName.join('.'), e.target.value, arr);
-                                    } else {
-                                        setisValid({
-                                            color: 'red',
-                                            msg: ["Error: Invalid Binary value"]
-                                        })
-                                        optChange(msgName.join('.'), '', arr);
-                                    }
+                                    const validMsg = validateOptData(optData, e.target.value);
+                                    setisValid(validMsg);
+                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    //optChange(msgName.join('.'), '', arr);                                   
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -456,18 +434,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const isBinary = validateBinary(e.target.value, 'u');
-                                    if (isBinary) {
-                                        const validMsg = validateOptDataBinary(optData, e.target.value);
-                                        setisValid(validMsg);
-                                        optChange(msgName.join('.'), e.target.value, arr);
-                                    } else {
-                                        setisValid({
-                                            color: 'red',
-                                            msg: ["Error: Invalid Binary value"]
-                                        })
-                                        optChange(msgName.join('.'), '', arr);
-                                    }
+                                    const validMsg = validateOptData(optData, e.target.value);
+                                    setisValid(validMsg);
+                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    // optChange(msgName.join('.'), '', arr);
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
@@ -477,7 +447,7 @@ const FormattedField = (props: any) => {
                 </div>
             );
 
-        case 'x'://TODO
+        case 'x':
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -491,18 +461,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const isBinary = validateBinary(e.target.value, 'binary');
-                                    if (isBinary) {
-                                        const validMsg = validateOptDataBinary(optData, e.target.value);
-                                        setisValid(validMsg);
-                                        optChange(msgName.join('.'), e.target.value, arr);
-                                    } else {
-                                        setisValid({
-                                            color: 'red',
-                                            msg: ["Error: Invalid Binary value"]
-                                        })
-                                        optChange(msgName.join('.'), '', arr);
-                                    }
+                                    const validMsg = validateOptDataBinary(optData, e.target.value, 'hex');
+                                    setisValid(validMsg);
+                                    optChange(msgName.join('.'), e.target.value, arr);
+                                    //optChange(msgName.join('.'), '', arr);                      
                                 }}
                                 style={{ borderColor: isValid.color }}
                             />
