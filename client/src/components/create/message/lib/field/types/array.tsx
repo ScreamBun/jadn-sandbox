@@ -25,10 +25,7 @@ const ArrayField = (props: ArrayFieldProps) => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [count, setCount] = useState(0);
   const [data, setData] = useState<string[]>([]); //track elements
-  const [isValid, setisValid] = useState<{ color: string, msg: string[] }>({
-    color: '',
-    msg: []
-  });
+  const [errMsg, setErrMsg] = useState<string[]>([]);
 
   const ref = useRef(true);
   useEffect(() => {
@@ -36,7 +33,7 @@ const ArrayField = (props: ArrayFieldProps) => {
     if (firstRender) {
       ref.current = false;
       const validMsg = validateOptDataElem(optData, count);
-      setisValid(validMsg);
+      setErrMsg(validMsg);
     }
   });
 
@@ -46,7 +43,7 @@ const ArrayField = (props: ArrayFieldProps) => {
       setData(data => [...data, k]);
       setCount(count => count + 1);
       const validMsg = validateOptDataElem(optData, count + 1);
-      setisValid(validMsg);
+      setErrMsg(validMsg);
     } else {
       if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v)) {
         //remove
@@ -55,7 +52,7 @@ const ArrayField = (props: ArrayFieldProps) => {
         }));
         setCount(count => count - 1);
         const validMsg = validateOptDataElem(optData, count - 1);
-        setisValid(validMsg);
+        setErrMsg(validMsg);
       }//else value is updated
     }
     optChange(k, v)
@@ -68,14 +65,14 @@ const ArrayField = (props: ArrayFieldProps) => {
   }
 
   let err: any[] = [];
-  (isValid.msg).forEach(msg => {
+  (errMsg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
 
   if (hasProperty(optData, 'format')) {
     return (<FormattedField
       basicProps={props} optData={optData}
-      isValid={isValid} setisValid={setisValid}
+      errMsg={errMsg} setErrMsg={setErrMsg}
       err={err} />);
   }
 

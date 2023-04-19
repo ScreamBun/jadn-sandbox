@@ -23,10 +23,8 @@ const RecordField = (props: RecordFieldProps) => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [count, setCount] = useState(0);
   const [data, setData] = useState<string[]>([]); //track elements
-  const [isValid, setisValid] = useState<{ color: string, msg: string[] }>({
-    color: '',
-    msg: []
-  });
+  const [errMsg, setErrMsg] = useState<string[]>([]);
+
 
   const ref = useRef(true);
   useEffect(() => {
@@ -34,7 +32,7 @@ const RecordField = (props: RecordFieldProps) => {
     if (firstRender) {
       ref.current = false;
       const validMsg = validateOptDataElem(optData, count);
-      setisValid(validMsg);
+      setErrMsg(validMsg);
     }
   });
 
@@ -44,7 +42,7 @@ const RecordField = (props: RecordFieldProps) => {
       setData(data => [...data, k]);
       setCount(count => count + 1);
       const validMsg = validateOptDataElem(optData, count + 1);
-      setisValid(validMsg);
+      setErrMsg(validMsg);
     } else {
       if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v)) {
         //remove
@@ -53,7 +51,7 @@ const RecordField = (props: RecordFieldProps) => {
         }));
         setCount(count => count - 1);
         const validMsg = validateOptDataElem(optData, count - 1);
-        setisValid(validMsg);
+        setErrMsg(validMsg);
       }//else value is updated
     }
     optChange(k, v)
@@ -69,7 +67,7 @@ const RecordField = (props: RecordFieldProps) => {
   const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
 
   let err: any[] = [];
-  (isValid.msg).forEach(msg => {
+  (errMsg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
 

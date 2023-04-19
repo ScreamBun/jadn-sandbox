@@ -29,7 +29,7 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [max, setMax] = useState(false);
     const [count, setCount] = useState(1);
     const [opts, setOpts] = useState<any[]>([]);
-    const [isValid, setisValid] = useState('');
+    const [errMsg, setErrMsg] = useState('');
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
@@ -37,11 +37,11 @@ const MapOfField = (props: MapOfFieldProps) => {
 
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setisValid('');
+        setErrMsg('');
         const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : $MAX_ELEMENTS;
         const maxBool = count < maxCount;
         if (!maxBool) {
-            setisValid('Error: Cannot add fields - Maximum of ' + maxCount)
+            setErrMsg('Error: Cannot add fields - Maximum of ' + maxCount)
         }
         setCount(maxBool ? count => count + 1 : count);
         setMax(!maxBool);
@@ -50,7 +50,7 @@ const MapOfField = (props: MapOfFieldProps) => {
 
     const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setisValid('');
+        setErrMsg('');
         const minCount = hasProperty(optData, 'minv') ? optData.minv : $MINV;
 
         const minBool = count > minCount;
@@ -68,7 +68,7 @@ const MapOfField = (props: MapOfFieldProps) => {
             });
             optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
         } else {
-            setisValid('Error: Cannot remove fields - Minimum of ' + minCount)
+            setErrMsg('Error: Cannot remove fields - Minimum of ' + minCount)
         }
 
         setCount(minBool ? count => count - 1 : count);
@@ -263,7 +263,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                         <FontAwesomeIcon icon={faPlusSquare} size="lg" />
                     </Button>
                     {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                    <div><small className='form-text' style={{ color: 'red' }}> {isValid}</small></div>
+                    <div><small className='form-text' style={{ color: 'red' }}> {errMsg}</small></div>
                 </div>
 
                 <div className='card-body mx-2'>

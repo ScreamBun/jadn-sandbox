@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 
 const FormattedField = (props: any) => {
 
-    const { basicProps, optData, isValid, setisValid, err } = props;
+    const { basicProps, optData, setErrMsg, err } = props;
     const { arr, def, optChange, parent } = basicProps;
     const [_idx, name, _type, _opts, comment] = def;
     const msgName = parent ? [parent, name] : [name];
@@ -43,9 +43,8 @@ const FormattedField = (props: any) => {
         //validate CIDR?
         if (newArr[0]) {
             const validMsg = validateOptDataBinary(optData, newArr[0], ipvType);
-            setisValid(validMsg);
-            optChange(k, newValue);
-            // if not binary, optChange(k, '');
+            setErrMsg(validMsg);
+            err.length == 0 ? optChange(k, newValue) : optChange(k, '');
         }
     }
 
@@ -66,7 +65,7 @@ const FormattedField = (props: any) => {
                                 min={dayjs().format('YYYY-MM-DDTHH:mm:ssZ[Z]')}
                                 onChange={e => {
                                     const validMsg = validateOptData(optData, dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'));
-                                    setisValid(validMsg);
+                                    setErrMsg(validMsg);
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'), arr);
                                 }}
                             />
@@ -92,7 +91,7 @@ const FormattedField = (props: any) => {
                                 min={dayjs().format('YYYY-MM-DD')}
                                 onChange={e => {
                                     const validMsg = validateOptData(optData, dayjs(e.target.value).format('YYYY-MM-DD'));
-                                    setisValid(validMsg);
+                                    setErrMsg(validMsg);
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('YYYY-MM-DD'), arr);
                                 }}
                             />
@@ -119,7 +118,7 @@ const FormattedField = (props: any) => {
                                 min={dayjs().format('HH:mm:ssZ[Z]')}
                                 onChange={e => {
                                     const validMsg = validateOptData(optData, dayjs(e.target.value).format('HH:mm:ssZ[Z]'));
-                                    setisValid(validMsg);
+                                    setErrMsg(validMsg);
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('HH:mm:ssZ[Z]'), arr);
                                 }}
                             />
@@ -145,11 +144,10 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
+                                    setErrMsg(validMsg);
                                     optChange(msgName.join('.'), e.target.value, arr);
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -172,12 +170,10 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptDataBinary(optData, e.target.value, 'ipv4');
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                    //optChange(msgName.join('.'), '', arr);
+                                    setErrMsg(validMsg);
+                                    err.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -199,8 +195,7 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e =>
                                     ipvNetOnchg(msgName.join('.'), e.target.value, 0, "ipv4")}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                             <span className="input-group-text"> / </span>
                             <Input
                                 type={'number'}
@@ -208,8 +203,7 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e =>
                                     ipvNetOnchg(msgName.join('.'), e.target.value, 1, "ipv4")}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -232,12 +226,10 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptDataBinary(optData, e.target.value, 'ipv6');
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                    //optChange(msgName.join('.'), '', arr);                             
+                                    setErrMsg(validMsg);
+                                    err.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -259,8 +251,7 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e =>
                                     ipvNetOnchg(msgName.join('.'), e.target.value, 0, "ipv6")}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                             <span className="input-group-text"> / </span>
                             <Input
                                 type={'number'}
@@ -268,8 +259,7 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e =>
                                     ipvNetOnchg(msgName.join('.'), e.target.value, 1, "ipv6")}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -291,12 +281,10 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptDataBinary(optData, e.target.value, 'eui');
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                    //optChange(msgName.join('.'), '', arr);                             
+                                    setErrMsg(validMsg);
+                                    err.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -320,7 +308,7 @@ const FormattedField = (props: any) => {
                                 onChange={e => {
                                     setUUID(e.target.value);
                                     const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
+                                    setErrMsg(validMsg);
                                     optChange(msgName.join('.'), e.target.value, arr);
                                 }}
                             />
@@ -347,12 +335,10 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                    //optChange(msgName.join('.'), '', arr);                                   
+                                    setErrMsg(validMsg);
+                                    err.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -376,12 +362,10 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                    //optChange(msgName.join('.'), '', arr);                                   
+                                    setErrMsg(validMsg);
+                                    err.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -405,19 +389,17 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                    //optChange(msgName.join('.'), '', arr);                                   
+                                    setErrMsg(validMsg);
+                                    err.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
                 </div>
             );
 
-        case 'u\\d+':
+        case 'u\\d+': //TODO
             const n = optData.format.substring(1); // digit after u
             return (
                 <div className='form-group'>
@@ -435,12 +417,11 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                    // optChange(msgName.join('.'), '', arr);
+                                    setErrMsg(validMsg);
+                                    err.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
+
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -462,12 +443,10 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptDataBinary(optData, e.target.value, 'hex');
-                                    setisValid(validMsg);
-                                    optChange(msgName.join('.'), e.target.value, arr);
-                                    //optChange(msgName.join('.'), '', arr);                      
+                                    setErrMsg(validMsg);
+                                    err.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>
@@ -500,11 +479,10 @@ const FormattedField = (props: any) => {
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
                                     const validMsg = validateOptData(optData, e.target.value);
-                                    setisValid(validMsg);
+                                    setErrMsg(validMsg);
                                     optChange(msgName.join('.'), e.target.value, arr);
                                 }}
-                                style={{ borderColor: isValid.color }}
-                            />
+                                style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
                         </div>
                         {err}
                     </div>

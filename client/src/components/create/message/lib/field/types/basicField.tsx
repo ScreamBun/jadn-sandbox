@@ -7,7 +7,7 @@ import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { useAppSelector } from 'reducers';
-import { validateBinary, validateOptData, validateOptDataBinary } from '../../utils';
+import { validateOptData, validateOptDataBinary } from '../../utils';
 import { hasProperty } from 'react-json-editor/dist/utils';
 import { FormattedField } from './Types';
 
@@ -36,13 +36,9 @@ const BasicField = (props: BasicFieldProps) => {
     optData = (opts2obj(opts));
   }
 
-  const [isValid, setisValid] = useState<{ color: string, msg: string[] }>({
-    color: '',
-    msg: []
-  });
-
+  const [errMsg, setErrMsg] = useState<string[]>([]);
   let err: any[] = [];
-  (isValid.msg).forEach(msg => {
+  (errMsg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
 
@@ -53,7 +49,7 @@ const BasicField = (props: BasicFieldProps) => {
   if (hasProperty(optData, 'format')) {
     return (<FormattedField
       basicProps={props} optData={optData}
-      isValid={isValid} setisValid={setisValid}
+      errMsg={errMsg} setErrMsg={setErrMsg}
       err={err} />);
   }
 
@@ -67,7 +63,7 @@ const BasicField = (props: BasicFieldProps) => {
             defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
             onChange={e => {
               const validMsg = validateOptData(optData, e.target.value);
-              setisValid(validMsg);
+              setErrMsg(validMsg);
               optChange(msgName.join('.'), e.target.checked, arr);
             }}
           />
@@ -94,20 +90,12 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                const isBinary = validateBinary(e.target.value, 'binary');
-                if (isBinary) {
-                  const validMsg = validateOptDataBinary(optData, e.target.value);
-                  setisValid(validMsg);
-                  optChange(msgName.join('.'), e.target.value, arr);
-                } else {
-                  setisValid({
-                    color: 'red',
-                    msg: ["Error: Invalid Binary value"]
-                  })
-                  optChange(msgName.join('.'), '', arr);
-                }
+                const validMsg = validateOptDataBinary(optData, e.target.value, 'binary');
+                setErrMsg(validMsg);
+                optChange(msgName.join('.'), e.target.value, arr);
+                //optChange(msgName.join('.'), '', arr);
               }}
-              style={{ borderColor: isValid.color }}
+              style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }}
             />
           </div>
           {err}
@@ -133,7 +121,7 @@ const BasicField = (props: BasicFieldProps) => {
               placeholder={optData.pattern ? optData.pattern : ''}
               onChange={e => {
                 const validMsg = validateOptData(optData, e.target.value);
-                setisValid(validMsg);
+                setErrMsg(validMsg);
                 optChange(msgName.join('.'), e.target.value, arr);
               }}
             />
@@ -159,11 +147,10 @@ const BasicField = (props: BasicFieldProps) => {
             placeholder={optData.pattern ? optData.pattern : ''}
             onChange={e => {
               const validMsg = validateOptData(optData, e.target.value);
-              setisValid(validMsg);
+              setErrMsg(validMsg);
               optChange(msgName.join('.'), e.target.value, arr);
             }}
-            style={{ borderColor: isValid.color }}
-          />
+            style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
         </div>
         {err}
       </div>
