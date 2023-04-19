@@ -73,7 +73,11 @@ const ArrayField = (props: ArrayFieldProps) => {
   }
 
   //Expected: fields (typeDef.length  == 5)
-  const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
+  const fieldDef = typeDef[typeDef.length - 1].map((d: any) =>
+    <div className="col my-1 px-0">
+      <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />
+    </div>
+  )
 
   let err: any[] = [];
   (isValid.msg).forEach(msg => {
@@ -90,9 +94,7 @@ const ArrayField = (props: ArrayFieldProps) => {
         </div>
         <div className='card-body mx-2'>
           <div className='row'>
-            <div className="col my-1 px-0">
-              {fieldDef}
-            </div>
+            {fieldDef}
           </div>
         </div>
       </div>
