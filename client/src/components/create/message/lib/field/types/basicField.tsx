@@ -67,8 +67,6 @@ const BasicField = (props: BasicFieldProps) => {
             name={name}
             defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
             onChange={e => {
-              const errCheck = validateOptData(optData, e.target.value);
-              setErrMsg(errCheck);
               optChange(msgName.join('.'), e.target.checked, arr);
             }}
             style={{ borderColor: errMsg.color }}
@@ -97,7 +95,7 @@ const BasicField = (props: BasicFieldProps) => {
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
                 console.log(optData.format)
-                const errCheck = validateOptDataBinary(optData, e.target.value, optData.format);
+                const errCheck = validateOptDataBinary(optData, e.target.value);
                 setErrMsg(errCheck);
                 errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
               }}
@@ -125,7 +123,7 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                const errCheck = validateOptData(optData, e.target.value);
+                const errCheck = validateOptData(optData, e.target.value, 'number');
                 setErrMsg(errCheck);
                 optChange(msgName.join('.'), e.target.value, arr);
               }}
@@ -153,7 +151,7 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                const errCheck = validateOptData(optData, e.target.value);
+                const errCheck = validateOptData(optData, e.target.value, 'integer');
                 setErrMsg(errCheck);
                 optChange(msgName.join('.'), e.target.value, arr);
               }}
@@ -180,7 +178,7 @@ const BasicField = (props: BasicFieldProps) => {
             defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
             placeholder={optData.pattern ? optData.pattern : ''}
             onChange={e => {
-              const errCheck = validateOptData(optData, e.target.value);
+              const errCheck = validateOptData(optData, e.target.value, 'string');
               setErrMsg(errCheck);
               optChange(msgName.join('.'), e.target.value, arr);
             }}

@@ -60,7 +60,7 @@ const ArrayField = (props: ArrayFieldProps) => {
     }
     //remove empty fields?
     setCount(updatedArr.length);
-    const errCheck = validateOptDataElem(optData, updatedArr.length);
+    const errCheck = validateOptDataElem(optData, updatedArr.length, optData.format ? true : false, updatedArr);
     setErrMsg(errCheck);
 
     optChange(msgName, updatedArr);
