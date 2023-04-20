@@ -16,9 +16,11 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 	}
 };
 
+//TYPE OPTION VALIDATION
 export const validateOptDataElem = (optData: any, count: number) => {
 	//check # of elements in record
 	let m = [];
+	let c = '';
 	if (optData && count) {
 		if (hasProperty(optData, 'minv')) {
 			if (count < optData.minv) {
@@ -41,11 +43,15 @@ export const validateOptDataElem = (optData: any, count: number) => {
 			}
 		}
 	}
-	return m;
+	if (m.length != 0) {
+		c == 'red';
+	}
+	return { 'msg': m, 'color': c };
 }
 
 export const validateOptData = (optData: any, data: any) => {
 	let m = [];
+	let c = '';
 	if (optData && data) {
 		if (hasProperty(optData, 'minf')) {
 			if (data < optData.minf) {
@@ -97,15 +103,20 @@ export const validateOptData = (optData: any, data: any) => {
 		//format check - server side
 
 	}
-	return m;
+	if (m.length != 0) {
+		c == 'red';
+	}
+	return { 'msg': m, 'color': c };
 }
 
 
-export const validateOptDataBinary = (optData: any, data: any, type: string) => {
+export const validateOptDataBinary = (optData: any, data: any, type: string = 'binary') => {
 	let m = [];
+	let c = '';
 	// binary - A sequence of octets. Length is the number of octets.
 	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
 	//TODO: Get number of bytes in data
+
 	const isBinary = validateBinary(data, type);
 	if (isBinary) {
 		if (optData && data) {
@@ -135,11 +146,15 @@ export const validateOptDataBinary = (optData: any, data: any, type: string) => 
 	} else {
 		m.push('Binary Error: Invalid ' + type + ' value');
 	}
-	return m;
+	if (m.length != 0) {
+		c == 'red';
+	}
+	return { 'msg': m, 'color': c };
 }
 
+
+//FORMAT TYPE OPTION VALIDATION
 export const validateBinary = (data: any, type: string) => {
-	// TODO: convert to binary ? get length?
 	if (type == 'binary' && data.match(/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/)) { //Base64url encoding
 		return true;
 	}
@@ -149,11 +164,11 @@ export const validateBinary = (data: any, type: string) => {
 	if (type == 'eui' && data.match(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$/)) {
 		return true;
 	}
-	if (type == 'ipv4' && data.match(
+	if ((type == 'ipv4' || type == 'ipv4-addr') && data.match(
 		/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)) {
 		return true;
 	}
-	if (type == 'ipv6' && data.match(
+	if ((type == 'ipv6' || type == 'ipv6-addr') && data.match(
 		/^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/)) {
 		return true;
 	}

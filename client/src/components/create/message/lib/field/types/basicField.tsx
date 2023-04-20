@@ -26,34 +26,39 @@ const BasicField = (props: BasicFieldProps) => {
   const [_idx, name, type, opts, comment] = def;
   const msgName = parent ? [parent, name] : [name];
   var optData: Record<string, any> = {};
-
+  let baseType: string;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const typeDefs = schema.types.filter(t => t[0] === type);
   let typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
-  if (typeDefs.length === 1) {
+  if (typeDefs.length === 1) {     //primitive field
     optData = (opts2obj(typeDef[2]));
-  } else {
+    baseType = typeDef[1];
+  } else {     //structured field
     optData = (opts2obj(opts));
+    baseType = type;
   }
 
-  const [errMsg, setErrMsg] = useState<string[]>([]);
+  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
+    color: '',
+    msg: []
+  });
   let err: any[] = [];
-  (errMsg).forEach(msg => {
+  (errMsg.msg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
 
   if (name >= 0) { // name is type if not field    
-    return (<Field def={def} parent={msgName.join('.')} optChange={optChange} />);
+    return (<Field key={def[1]} def={def} parent={msgName.join('.')} optChange={optChange} />);
   }
 
-  if (hasProperty(optData, 'format')) {
-    return (<FormattedField
-      basicProps={props} optData={optData}
-      errMsg={errMsg} setErrMsg={setErrMsg}
-      err={err} />);
-  }
-
-  if (typeDef[1].toLowerCase() == 'boolean') {
+  /*   if (hasProperty(optData, 'format')) {
+      return (<FormattedField
+        basicProps={props} optData={optData}
+        errMsg={errMsg} setErrMsg={setErrMsg}
+        err={err} />);
+    }
+   */
+  if (baseType.toLowerCase() == 'boolean') {
     return (
       <div className='form-group'>
         <Label check>
@@ -62,10 +67,11 @@ const BasicField = (props: BasicFieldProps) => {
             name={name}
             defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
             onChange={e => {
-              const validMsg = validateOptData(optData, e.target.value);
-              setErrMsg(validMsg);
+              const errCheck = validateOptData(optData, e.target.value);
+              setErrMsg(errCheck);
               optChange(msgName.join('.'), e.target.checked, arr);
             }}
+            style={{ borderColor: errMsg.color }}
           />
           <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
           {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
@@ -76,7 +82,7 @@ const BasicField = (props: BasicFieldProps) => {
   }
 
   //TODO: Binary minv/maxv check
-  if (typeDef[1].toLowerCase() == 'binary') {
+  if (baseType.toLowerCase() == 'binary') {
     return (
       <div className='form-group'>
         <div className='card'>
@@ -86,16 +92,16 @@ const BasicField = (props: BasicFieldProps) => {
           </div>
           <div className='card-body m-0 p-0'>
             <Input
-              type={typeDef[1]}
+              type={'text'}
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                const validMsg = validateOptDataBinary(optData, e.target.value, 'binary');
-                setErrMsg(validMsg);
-                optChange(msgName.join('.'), e.target.value, arr);
-                //optChange(msgName.join('.'), '', arr);
+                console.log(optData.format)
+                const errCheck = validateOptDataBinary(optData, e.target.value, optData.format);
+                setErrMsg(errCheck);
+                errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
               }}
-              style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }}
+              style={{ borderColor: errMsg.color }}
             />
           </div>
           {err}
@@ -104,7 +110,7 @@ const BasicField = (props: BasicFieldProps) => {
     );
   }
 
-  if (typeDef[1].toLowerCase() == 'number' || typeDef[1].toLowerCase() == 'integer') {
+  if (baseType.toLowerCase() == 'number') {
     return (
       <div className='form-group'>
         <div className='card'>
@@ -118,12 +124,40 @@ const BasicField = (props: BasicFieldProps) => {
               step='any'
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-              placeholder={optData.pattern ? optData.pattern : ''}
               onChange={e => {
-                const validMsg = validateOptData(optData, e.target.value);
-                setErrMsg(validMsg);
+                const errCheck = validateOptData(optData, e.target.value);
+                setErrMsg(errCheck);
                 optChange(msgName.join('.'), e.target.value, arr);
               }}
+              style={{ borderColor: errMsg.color }}
+            />
+          </div>
+          {err}
+        </div>
+      </div>
+    );
+  }
+
+
+  if (baseType.toLowerCase() == 'integer') {
+    return (
+      <div className='form-group'>
+        <div className='card'>
+          <div className='card-header p-2'>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
+          <div className='card-body m-0 p-0'>
+            <Input
+              type={'number'}
+              name={name}
+              defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+              onChange={e => {
+                const errCheck = validateOptData(optData, e.target.value);
+                setErrMsg(errCheck);
+                optChange(msgName.join('.'), e.target.value, arr);
+              }}
+              style={{ borderColor: errMsg.color }}
             />
           </div>
           {err}
@@ -141,16 +175,16 @@ const BasicField = (props: BasicFieldProps) => {
         </div>
         <div className='card-body m-0 p-0'>
           <Input
-            type={typeDef[1]}
+            type={'text'}
             name={name}
             defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
             placeholder={optData.pattern ? optData.pattern : ''}
             onChange={e => {
-              const validMsg = validateOptData(optData, e.target.value);
-              setErrMsg(validMsg);
+              const errCheck = validateOptData(optData, e.target.value);
+              setErrMsg(errCheck);
               optChange(msgName.join('.'), e.target.value, arr);
             }}
-            style={{ borderColor: `${err.length == 0 ? 'none' : 'red'}` }} />
+            style={{ borderColor: errMsg.color }} />
         </div>
         {err}
       </div>

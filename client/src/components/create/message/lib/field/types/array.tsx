@@ -25,7 +25,10 @@ const ArrayField = (props: ArrayFieldProps) => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [count, setCount] = useState(0);
   const [data, setData] = useState<string[]>([]); //track elements
-  const [errMsg, setErrMsg] = useState<string[]>([]);
+  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
+    color: '',
+    msg: []
+  });
 
   const ref = useRef(true);
   useEffect(() => {
@@ -37,25 +40,30 @@ const ArrayField = (props: ArrayFieldProps) => {
     }
   });
 
-  const onChange = (k: string, v: any) => {
-    if (!data.includes(k)) {
-      //add
-      setData(data => [...data, k]);
-      setCount(count => count + 1);
-      const validMsg = validateOptDataElem(optData, count + 1);
-      setErrMsg(validMsg);
+  const onChange = (_k: string, v: any, i: number) => {
+    var updatedArr;
+    if (data.length - 1 < i) {
+      //add 
+      setData([...data, v]);
+      updatedArr = [...data, v];
+
     } else {
-      if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v)) {
-        //remove
-        setData(data => data.filter((elem) => {
-          return elem != k;
-        }));
-        setCount(count => count - 1);
-        const validMsg = validateOptDataElem(optData, count - 1);
-        setErrMsg(validMsg);
-      }//else value is updated
+      //update arr at index
+      updatedArr = data.map((field, idx) => {
+        if (idx === i) {
+          return v;
+        } else {
+          return field;
+        }
+      });
+      setData(updatedArr);
     }
-    optChange(k, v)
+    //remove empty fields?
+    setCount(updatedArr.length);
+    const errCheck = validateOptDataElem(optData, updatedArr.length);
+    setErrMsg(errCheck);
+
+    optChange(msgName, updatedArr);
   }
 
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
@@ -65,19 +73,23 @@ const ArrayField = (props: ArrayFieldProps) => {
   }
 
   let err: any[] = [];
-  (errMsg).forEach(msg => {
+  (errMsg.msg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
 
-  if (hasProperty(optData, 'format')) {
-    return (<FormattedField
-      basicProps={props} optData={optData}
-      errMsg={errMsg} setErrMsg={setErrMsg}
-      err={err} />);
-  }
+  /*   if (hasProperty(optData, 'format')) {
+      return (<FormattedField
+        basicProps={props} optData={optData}
+        errMsg={errMsg} setErrMsg={setErrMsg}
+        err={err} />);
+    } */
 
   //Expected: fields (typeDef.length  == 5)
-  const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
+  const fieldDef = typeDef[typeDef.length - 1].map((d: any, i: number) =>
+    <div className="col my-1 px-0">
+      <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} />
+    </div>
+  )
 
   return (
     <div className='form-group'>
@@ -89,9 +101,7 @@ const ArrayField = (props: ArrayFieldProps) => {
         </div>
         <div className='card-body mx-2'>
           <div className='row'>
-            <div className="col my-1 px-0">
-              {fieldDef}
-            </div>
+            {fieldDef}
           </div>
         </div>
       </div>

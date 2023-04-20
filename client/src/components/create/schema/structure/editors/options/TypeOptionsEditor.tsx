@@ -4,10 +4,6 @@ import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
 import { useDispatch } from 'react-redux';
 import { getValidFormatOpts } from 'actions/format';
-import { Payload } from 'actions/interfaces';
-import { validateOptDataElem } from 'components/create/message/lib/utils';
-import { count } from 'console';
-
 
 // Interfaces
 interface TypeOptionsEditorProps {
@@ -23,7 +19,7 @@ interface TypeOptionsEditorProps {
 const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
   const { change, deserializedState, id, optionType, schemaTypes } = props;
   const dispatch = useDispatch();
-  const [formatOpts, setFormatOpts] = useState([]);
+  const [formatOpts, setFormatOpts] = useState<string[]>([]);
 
   const ref = useRef(true);
   useEffect(() => {
@@ -31,10 +27,10 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
     if (firstRender) {
       ref.current = false;
       dispatch(getValidFormatOpts())
-        .then((val: Payload) => {
+        .then((val) => {
           setFormatOpts(val.payload.format_options.map(obj => obj.ui_name));
         })
-        .catch((val: Payload) => {
+        .catch((val) => {
           console.log("ERROR: " + val.payload.err);
           setFormatOpts([]);
         })
@@ -48,8 +44,8 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
       case 'vtype':
         return schemaTypes;
       case 'format':
+        //get only applicable formats based on type 
         return formatOpts;
-
       default:
         return [];
     }

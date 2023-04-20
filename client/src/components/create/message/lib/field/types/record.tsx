@@ -23,7 +23,10 @@ const RecordField = (props: RecordFieldProps) => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [count, setCount] = useState(0);
   const [data, setData] = useState<string[]>([]); //track elements
-  const [errMsg, setErrMsg] = useState<string[]>([]);
+  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
+    color: '',
+    msg: []
+  });
 
 
   const ref = useRef(true);
@@ -31,8 +34,8 @@ const RecordField = (props: RecordFieldProps) => {
     const firstRender = ref.current;
     if (firstRender) {
       ref.current = false;
-      const validMsg = validateOptDataElem(optData, count);
-      setErrMsg(validMsg);
+      const errCheck = validateOptDataElem(optData, count);
+      setErrMsg(errCheck);
     }
   });
 
@@ -67,7 +70,7 @@ const RecordField = (props: RecordFieldProps) => {
   const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
 
   let err: any[] = [];
-  (errMsg).forEach(msg => {
+  (errMsg.msg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
 

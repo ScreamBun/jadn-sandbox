@@ -24,7 +24,10 @@ const MapField = (props: MapFieldProps) => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [count, setCount] = useState(0);
   const [data, setData] = useState<string[]>([]); //track elements
-  const [errMsg, setErrMsg] = useState<string[]>([]);
+  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
+    color: '',
+    msg: []
+  });
 
 
   const ref = useRef(true);
@@ -73,7 +76,7 @@ const MapField = (props: MapFieldProps) => {
   const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} />)
 
   let err: any[] = [];
-  (errMsg).forEach(msg => {
+  (errMsg.msg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
 
