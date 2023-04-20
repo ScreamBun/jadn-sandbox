@@ -112,8 +112,9 @@ export const validateOptData = (optData: any, data: number | string, baseType: '
 		}
 
 		//string only
-		if (hasProperty(optData, 'pattern') && baseType == 'string') {
-			if (!optData.pattern.test(data)) {
+		if (hasProperty(optData, 'pattern') && baseType == 'string' && typeof data == 'string') {
+			const regex = new RegExp(optData.pattern, "g");
+			if (!regex.test(data)) {
 				m.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
 			}
 		}

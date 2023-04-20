@@ -11,7 +11,6 @@ import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/in
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from '../../../../../../reducers';
-import { merge } from 'lodash';
 import { $MAX_ELEMENTS, $MINV } from 'components/create/consts';
 
 // Interface
@@ -79,54 +78,16 @@ const MapOfField = (props: MapOfFieldProps) => {
     const onChange = (k: string, v: any, i: number) => {
         //opts: let every obj have a key and value [{key: '', value:''}, ...]
         //data : then reduce object to key:value pairs 
-        const ktype = msgName + "." + optData.ktype.toLowerCase();
-        const vtype = msgName + "." + optData.vtype.toLowerCase();
-
         if (Number.isNaN(v)) {
             v = undefined;
         }
 
-        const arrKeys = msgName.split(".");
-        const valKeys = k.split(".");
+        //determine if key is of key or value type
+        const ktype = msgName + "." + optData.ktype.toLowerCase();
+        const vtype = msgName + "." + optData.vtype.toLowerCase();
 
-        if (valKeys.length == 1 && v == undefined) {
-            //reset
-            setOpts([]);
-        } else if ((arrKeys.length < valKeys.length)) {
-            //create nested obj based on keys
-            const nestedKeys = valKeys.slice(arrKeys.length);
-            let nestedObj = {};
-            nestedKeys.reduce((obj, key, index) => {
-                if (index == nestedKeys.length - 1) {
-                    return obj[key] = v;
-                } else {
-                    return obj[key] = {};
-                }
-            }, nestedObj);
-
-            v = nestedObj;
-
-            if (opts.length != 0) {
-                //merge and update v obj at opt[i] key or value 
-                let oldV;
-                if (k == ktype && opts[i]['key']) {
-                    oldV = opts[i]['key'];
-                } else if (k == vtype && opts[i]['value']) {
-                    oldV = opts[i]['value'];
-                }
-                if (oldV) {
-                    if (typeof oldV[valKeys[valKeys.length - 1]] != 'object' && v == '') {
-                        v = undefined;
-                    } else if (typeof oldV[valKeys[valKeys.length - 1]] == 'object' && oldV[valKeys[valKeys.length - 1]].length >= v[valKeys[valKeys.length - 1]].length) {
-                        oldV[valKeys[valKeys.length - 1]] = v[valKeys[valKeys.length - 1]]; //TODO: delete
-                        v = oldV;
-                    } else {
-                        v = merge(oldV, v);
-                    }
-                }//else no data to merge
-            }//else no data to merge
-        } //else v is not an obj
-
+        //add obj {[key/value]: v} at i 
+        //update v if obj exists at i 
         let updatedOpts;
         if (i <= opts.length - 1) {
             //update
@@ -158,6 +119,8 @@ const MapOfField = (props: MapOfFieldProps) => {
             }
         }
 
+        //TODO: fix JSON ? --- currently {key: value} rather than {[keyName: key] : [valueName: value]}
+        //TODO: check for nested MapOf
         //JSON object if ktype is a String type
         //JSON array if ktype is not a String type. 
         let data;

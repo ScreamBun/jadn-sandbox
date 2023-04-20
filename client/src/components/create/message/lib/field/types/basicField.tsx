@@ -60,7 +60,7 @@ const BasicField = (props: BasicFieldProps) => {
    */
   if (baseType.toLowerCase() == 'boolean') {
     return (
-      <div className='form-group'>
+      <div className='form-group m-3'>
         <Label check>
           <Input
             type={'checkbox'}

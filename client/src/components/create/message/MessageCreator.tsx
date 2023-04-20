@@ -54,9 +54,14 @@ const MessageCreator = (props: any) => {
     }
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
-    if (Array.isArray(recordDef[recordDef.length - 1])) {
-        const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
-        fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} />);
+    if (commandType) {
+        if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
+            const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
+            fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} />);
+        } else { //baseType = Primitive type, ArrayOf , MapOf --- convert TypeArray to FieldArray
+            const field = [0, recordDef[0], recordDef[1], recordDef[2], recordDef[3], recordDef[4]];
+            fieldDefs = <Field key={field[0]} def={field} optChange={optChange} />;
+        }
     } else {
         fieldDefs = (
             <FormText color="muted">
