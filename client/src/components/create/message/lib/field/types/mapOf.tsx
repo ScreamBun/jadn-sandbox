@@ -41,7 +41,7 @@ const MapOfField = (props: MapOfFieldProps) => {
         const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : $MAX_ELEMENTS;
         const maxBool = count < maxCount;
         if (!maxBool) {
-            setErrMsg('Error: Cannot add fields - Maximum of ' + maxCount)
+            setErrMsg('Error: Maximum of ' + maxCount)
         }
         setCount(maxBool ? count => count + 1 : count);
         setMax(!maxBool);
@@ -68,7 +68,7 @@ const MapOfField = (props: MapOfFieldProps) => {
             });
             optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
         } else {
-            setErrMsg('Error: Cannot remove fields - Minimum of ' + minCount)
+            setErrMsg('Error: Minimum of ' + minCount)
         }
 
         setCount(minBool ? count => count - 1 : count);

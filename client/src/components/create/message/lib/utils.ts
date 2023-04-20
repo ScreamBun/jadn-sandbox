@@ -56,7 +56,7 @@ export const validateOptDataElem = (optData: any, count: number, formatCheck: bo
 	}
 
 	if (m.length != 0) {
-		c == 'red';
+		c = 'red';
 	}
 	return { 'msg': m, 'color': c };
 }
@@ -67,7 +67,7 @@ export const validateOptData = (optData: any, data: number | string, baseType: '
 
 	if (optData && data) {
 		if (hasProperty(optData, 'minv')) {
-			if (baseType == 'string') {
+			if (baseType == 'string' && typeof data == 'string') {
 				if (data.length < optData.minv) {
 					m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
 				}
@@ -78,7 +78,7 @@ export const validateOptData = (optData: any, data: number | string, baseType: '
 			}
 		} else {
 			optData.minv = $MINV;
-			if (baseType == 'string') {
+			if (baseType == 'string' && typeof data == 'string') {
 				if (data.length < optData.minv) {
 					m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
 				}
@@ -89,7 +89,7 @@ export const validateOptData = (optData: any, data: number | string, baseType: '
 			}
 		}
 		if (hasProperty(optData, 'maxv')) {
-			if (baseType == 'string') {
+			if (baseType == 'string' && typeof data == 'string') {
 				if (data.length > optData.maxv) {
 					m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
 				}
@@ -100,7 +100,7 @@ export const validateOptData = (optData: any, data: number | string, baseType: '
 			}
 		} else {
 			optData.maxv = $MAX_STRING;
-			if (baseType == 'string') {
+			if (baseType == 'string' && typeof data == 'string') {
 				if (data.length > optData.maxv) {
 					m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
 				}
@@ -131,7 +131,7 @@ export const validateOptData = (optData: any, data: number | string, baseType: '
 		//format check - server side
 	}
 	if (m.length != 0) {
-		c == 'red';
+		c = 'red';
 	}
 	return { 'msg': m, 'color': c };
 }
@@ -176,7 +176,7 @@ export const validateOptDataBinary = (optData: any, data: string) => {
 	}
 
 	if (m.length != 0) {
-		c == 'red';
+		c = 'red';
 	}
 	return { 'msg': m, 'color': c };
 }

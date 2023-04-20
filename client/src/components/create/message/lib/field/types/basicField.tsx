@@ -97,7 +97,7 @@ const BasicField = (props: BasicFieldProps) => {
                 console.log(optData.format)
                 const errCheck = validateOptDataBinary(optData, e.target.value);
                 setErrMsg(errCheck);
-                errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
+                optChange(msgName.join('.'), e.target.value, arr);
               }}
               style={{ borderColor: errMsg.color }}
             />
