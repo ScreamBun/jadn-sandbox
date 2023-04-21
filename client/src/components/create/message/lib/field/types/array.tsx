@@ -77,12 +77,12 @@ const ArrayField = (props: ArrayFieldProps) => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
 
-  /*   if (hasProperty(optData, 'format')) {
-      return (<FormattedField
-        basicProps={props} optData={optData}
-        errMsg={errMsg} setErrMsg={setErrMsg}
-        err={err} />);
-    } */
+  if (hasProperty(optData, 'format')) {
+    return (<FormattedField
+      basicProps={props} optData={optData}
+      errMsg={errMsg} setErrMsg={setErrMsg}
+      err={err} />);
+  }
 
   //Expected: fields (typeDef.length  == 5)
   const fieldDef = typeDef[typeDef.length - 1].map((d: any, i: number) =>

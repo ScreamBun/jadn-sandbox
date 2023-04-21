@@ -51,13 +51,13 @@ const BasicField = (props: BasicFieldProps) => {
     return (<Field key={def[1]} def={def} parent={msgName.join('.')} optChange={optChange} />);
   }
 
-  /*   if (hasProperty(optData, 'format')) {
-      return (<FormattedField
-        basicProps={props} optData={optData}
-        errMsg={errMsg} setErrMsg={setErrMsg}
-        err={err} />);
-    }
-   */
+  if (hasProperty(optData, 'format')) {
+    return (<FormattedField
+      basicProps={props} optData={optData}
+      errMsg={errMsg} setErrMsg={setErrMsg}
+      err={err} />);
+  }
+
   if (baseType.toLowerCase() == 'boolean') {
     return (
       <div className='form-group m-3'>
@@ -94,9 +94,9 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                console.log(optData.format)
                 const errCheck = validateOptDataBinary(optData, e.target.value);
                 setErrMsg(errCheck);
+                //encode into base64?
                 optChange(msgName.join('.'), e.target.value, arr);
               }}
               style={{ borderColor: errMsg.color }}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { hasProperty } from "react-json-editor/dist/utils";
 import { Button, Input } from "reactstrap";
-import { isOptional, validateOptData, validateOptDataBinary } from "../../utils";
+import { isOptional, validateOptData, validateOptDataBinary, validateOptDataElem } from "../../utils";
 import { v4 as uuid4 } from 'uuid';
 import dayjs from 'dayjs';
 
@@ -40,9 +40,9 @@ const FormattedField = (props: any) => {
         const newValue = `${newArr[0]}${newArr[1] ? `/${newArr[1]}` : ``}`;
 
         if (newArr[0]) {
-            const errCheck = validateOptDataBinary(optData, newArr[0]);
+            const errCheck = validateOptDataElem(optData, newArr.length, optData.format ? true : false, newArr);
             setErrMsg(errCheck);
-            errCheck.msg.length == 0 ? optChange(k, newValue) : optChange(k, '');
+            optChange(k, newValue);
         }
     }
 
@@ -417,6 +417,7 @@ const FormattedField = (props: any) => {
             );
 
         case 'u\\d+': //TODO
+        case 'u<n>':
             const n = optData.format.substring(1); // digit after u
             return (
                 <div className='form-group'>
@@ -429,7 +430,7 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'number'}
                                 min={0}
-                                max={2 ** (n - 1)}
+                                max={2 ** (parseInt(n) - 1)}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
@@ -481,7 +482,7 @@ const FormattedField = (props: any) => {
         case 'uri-template':
         case 'json-pointer':
         case 'relative-json-pointer':
-        case 'regex': //check for pattern?
+        case 'regex':
         default:
             return (
                 <div className='form-group'>
