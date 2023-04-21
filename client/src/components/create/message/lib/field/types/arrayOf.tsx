@@ -61,6 +61,9 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       const tmpOpts = opts;
       tmpOpts.pop();
       if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+        if (Array.from(new Set(Object.values(tmpOpts))).length != Object.values(tmpOpts).length) {
+          setErrMsg(`${optData.unique ? `Unique` : `Set`} Error: Must not contain duplicate values`);
+        }
         optChange(msgName, Array.from(new Set(Object.values(tmpOpts))));
       } else {
         optChange(msgName, Array.from(Object.values(tmpOpts)));
@@ -134,7 +137,10 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     setOpts(updatedOpts);
 
     //send up arrayOf data
-    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+    if ((hasProperty(optData, 'unique') && optData.unique) || (hasProperty(optData, 'set') && optData.set)) {
+      if (Array.from(new Set(Object.values(updatedOpts))).length != Object.values(updatedOpts).length) {
+        setErrMsg(`${optData.unique ? `Unique` : `Set`} Error: Must not contain duplicate values`);
+      }
       optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
     } else {
       optChange(msgName, Array.from(Object.values(updatedOpts)));
