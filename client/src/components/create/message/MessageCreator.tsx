@@ -9,15 +9,39 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sbToastError } from 'components/common/SBToast'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
+import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPENAME } from '../consts'
 
 const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
 
     const [activeView, setActiveView] = useState('creator');
 
+    const [configOpt, setConfigOpt] = useState({
+        $MaxBinary: $MAX_BINARY,
+        $MaxString: $MAX_STRING,
+        $MaxElements: $MAX_ELEMENTS,
+        $Sys: $SYS,
+        $TypeName: $TYPENAME,
+        $FieldName: $FIELDNAME,
+        $NSID: $NSID
+    })
+
     let schemaObj = useSelector(getSelectedSchema);
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType) : [];
+
+    //set configuration data
+    const configDefs = schemaObj.info && schemaObj.info.config ? schemaObj.info.config : [];
+    if (configDefs) {
+        for (const [key, value] of Object.entries(configDefs)) {
+            if (key in configOpt && configOpt[key] != value) {
+                setConfigOpt({
+                    ...configOpt,
+                    [key]: value
+                })
+            }
+        }
+    }
 
     const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCommandType(e.target.value);
@@ -57,10 +81,10 @@ const MessageCreator = (props: any) => {
     if (commandType) {
         if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
             const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
-            fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} />);
+            fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} config={configOpt} />);
         } else { //baseType = Primitive type, ArrayOf , MapOf --- convert TypeArray to FieldArray
             const field = [0, recordDef[0], recordDef[1], recordDef[2], recordDef[3], recordDef[4]];
-            fieldDefs = <Field key={field[0]} def={field} optChange={optChange} />;
+            fieldDefs = <Field key={field[0]} def={field} optChange={optChange} config={configOpt} />;
         }
     } else {
         fieldDefs = (
@@ -134,6 +158,7 @@ const MessageCreator = (props: any) => {
                     </TabPane>
                 </TabContent>
             </div>
-        </div>)
+        </div>
+    )
 }
 export default MessageCreator 

@@ -4,10 +4,10 @@ import { Input, Label } from 'reactstrap';
 
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
+import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { useAppSelector } from 'reducers';
-import { validateOptData, validateOptDataBinary } from '../../utils';
+import { validateOptDataNum, validateOptDataBinary, validateOptDataStr } from '../../utils';
 import { hasProperty } from 'react-json-editor/dist/utils';
 import { FormattedField } from './Types';
 
@@ -17,14 +17,16 @@ interface BasicFieldProps {
   def: StandardFieldArray;
   optChange: (n: string, v: any, i?: number) => void;
   parent?: string;
+  config: InfoConfig;
 }
 
 // Component
 const BasicField = (props: BasicFieldProps) => {
 
-  const { arr, def, optChange, parent } = props;
+  const { arr, def, optChange, parent, config } = props;
   const [_idx, name, type, opts, comment] = def;
   const msgName = parent ? [parent, name] : [name];
+
   var optData: Record<string, any> = {};
   let baseType: string;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
@@ -42,6 +44,7 @@ const BasicField = (props: BasicFieldProps) => {
     color: '',
     msg: []
   });
+
   let err: any[] = [];
   (errMsg.msg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
@@ -54,7 +57,7 @@ const BasicField = (props: BasicFieldProps) => {
   if (hasProperty(optData, 'format')) {
     return (<FormattedField
       basicProps={props} optData={optData}
-      errMsg={errMsg} setErrMsg={setErrMsg}
+      errMsg={errMsg} setErrMsg={setErrMsg} config={config}
       err={err} />);
   }
 
@@ -94,7 +97,7 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                const errCheck = validateOptDataBinary(optData, e.target.value);
+                const errCheck = validateOptDataBinary(config, optData, e.target.value);
                 setErrMsg(errCheck);
                 //encode into base64?
                 optChange(msgName.join('.'), e.target.value, arr);
@@ -123,7 +126,7 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                const errCheck = validateOptData(optData, e.target.value, 'number');
+                const errCheck = validateOptDataNum(config, optData, e.target.value);
                 setErrMsg(errCheck);
                 optChange(msgName.join('.'), e.target.value, arr);
               }}
@@ -151,7 +154,7 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                const errCheck = validateOptData(optData, e.target.value, 'integer');
+                const errCheck = validateOptDataNum(config, optData, e.target.value);
                 setErrMsg(errCheck);
                 optChange(msgName.join('.'), e.target.value, arr);
               }}
@@ -178,7 +181,7 @@ const BasicField = (props: BasicFieldProps) => {
             defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
             placeholder={optData.pattern ? optData.pattern : ''}
             onChange={e => {
-              const errCheck = validateOptData(optData, e.target.value, 'string');
+              const errCheck = validateOptDataStr(config, optData, e.target.value);
               setErrMsg(errCheck);
               optChange(msgName.join('.'), e.target.value, arr);
             }}

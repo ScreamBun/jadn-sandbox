@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 // Field Utils
-import { $MINV, $MAX_ELEMENTS, $MAX_STRING, $MAX_BINARY } from 'components/create/consts';
+import { $MINV } from 'components/create/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
-import { FieldArray, TypeArray } from '../../schema/interface';
+import { FieldArray, InfoConfig, TypeArray } from '../../schema/interface';
 
 export const isOptional = (def: TypeArray | FieldArray) => {
 	switch (def.length) {
@@ -17,13 +17,14 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 };
 
 //TYPE OPTION VALIDATION
-//possibly change count to data.length
+// possibly change count to data.length
 // optData validation for Array, ArrayOf, Map, MapOf, or Record
-export const validateOptDataElem = (optData: any, count: number, formatCheck: boolean = false, data?: any) => {
+export const validateOptDataElem = (config: InfoConfig, optData: any, count: number, formatCheck: boolean = false, data?: any) => {
 	let isFormatted: boolean = false;
 	let m = [];
 	let c = '';
 
+	//ARRAY
 	if (formatCheck && data) {
 		isFormatted = validateArrayFormat(data, optData.format);
 		if (!isFormatted) {
@@ -31,7 +32,7 @@ export const validateOptDataElem = (optData: any, count: number, formatCheck: bo
 		}
 	}
 
-	//check # of elements in record
+	//check # of elements
 	if (optData && count) {
 		if (hasProperty(optData, 'minv')) {
 			if (count < optData.minv) {
@@ -48,7 +49,7 @@ export const validateOptDataElem = (optData: any, count: number, formatCheck: bo
 				m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
 			}
 		} else {
-			optData.maxv = $MAX_ELEMENTS;
+			optData.maxv = config.$MaxElements;
 			if (count > optData.maxv) {
 				m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
 			}
@@ -60,84 +61,42 @@ export const validateOptDataElem = (optData: any, count: number, formatCheck: bo
 	}
 	return { 'msg': m, 'color': c };
 }
-// optData validation for String, Number, Integer
-export const validateOptData = (optData: any, data: any, baseType: 'string' | 'number' | 'integer') => {
+// optData validation for String
+export const validateOptDataStr = (config: InfoConfig, optData: any, data: string) => {
 	let m = [];
 	let c = '';
 
 	if (optData && data) {
 		if (hasProperty(optData, 'minv')) {
-			if (baseType == 'string' && typeof data == 'string') {
-				if (data.length < optData.minv) {
-					m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
-				}
-			} else {
-				if (data < optData.minv) {
-					m.push('Minv Error: must be greater than ' + optData.minv);
-				}
+			if (data.length < optData.minv) {
+				m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
 			}
 		} else {
 			optData.minv = $MINV;
-			if (baseType == 'string' && typeof data == 'string') {
-				if (data.length < optData.minv) {
-					m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
-				}
-			} else {
-				if (data < optData.minv) {
-					m.push('Minv Error: must be greater than ' + optData.minv);
-				}
+			if (data.length < optData.minv) {
+				m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
 			}
 		}
 		if (hasProperty(optData, 'maxv')) {
-			if (baseType == 'string' && typeof data == 'string') {
-				if (data.length > optData.maxv) {
-					m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
-				}
-			} else {
-				if (data > optData.maxv) {
-					m.push('Maxv Error: must be less than ' + optData.maxv);
-				}
+			if (data.length > optData.maxv) {
+				m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
 			}
 		} else {
-			optData.maxv = $MAX_STRING;
-			if (baseType == 'string' && typeof data == 'string') {
-				if (data.length > optData.maxv) {
-					m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
-				}
-			} else {
-				if (data > optData.maxv) {
-					m.push('Maxv Error: must be less than ' + optData.maxv);
-				}
+			optData.maxv = config.$MaxString;
+			if (data.length > optData.maxv) {
+				m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
 			}
 		}
 
-		//string only
-		if (hasProperty(optData, 'pattern') && baseType == 'string' && typeof data == 'string') {
+		if (hasProperty(optData, 'pattern') && typeof data == 'string') {
 			const regex = new RegExp(optData.pattern, "g");
 			if (!regex.test(data)) {
 				m.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
 			}
 		}
-		//number only
-		if (hasProperty(optData, 'minf') && baseType == 'number') {
-			if (data < optData.minf) {
-				m.push('Minf Error: must be greater than ' + optData.minf);
-			}
-		}
-		if (hasProperty(optData, 'maxf') && baseType == 'number') {
-			if (data > optData.maxf) {
-				m.push('Maxf Error: must be less than ' + optData.maxf);
-			}
-		}
-		//format check - server side
-		if (hasProperty(optData, 'format') && baseType == 'string') {
+
+		if (hasProperty(optData, 'format')) {
 			const isFormatted = validateStringFormat(data, optData.format);
-			if (!isFormatted) {
-				m.push('Format Error: Invalid ' + optData.format + ' value');
-			}
-		}
-		if (hasProperty(optData, 'format') && baseType == 'number') {
-			const isFormatted = validateNumericFormat(data, optData.format);
 			if (!isFormatted) {
 				m.push('Format Error: Invalid ' + optData.format + ' value');
 			}
@@ -148,9 +107,61 @@ export const validateOptData = (optData: any, data: any, baseType: 'string' | 'n
 	}
 	return { 'msg': m, 'color': c };
 }
+// optData validation for Number, Integer
+export const validateOptDataNum = (config: InfoConfig, optData: any, data: number) => {
+	let m = [];
+	let c = '';
+
+	if (optData && data) {
+		if (hasProperty(optData, 'format')) {
+			const isFormatted = validateNumericFormat(data, optData.format);
+			if (!isFormatted) {
+				m.push('Format Error: Invalid ' + optData.format + ' value');
+			}
+		}
+		//INTEGER
+		if (hasProperty(optData, 'minv')) {
+			if (data < optData.minv) {
+				m.push('Minv Error: must be greater than ' + optData.minv);
+			}
+
+		} else {
+			optData.minv = $MINV;
+			if (data < optData.minv) {
+				m.push('Minv Error: must be greater than ' + optData.minv);
+			}
+		}
+		if (hasProperty(optData, 'maxv')) {
+			if (data > optData.maxv) {
+				m.push('Maxv Error: must be less than ' + optData.maxv);
+			}
+		} else {
+			optData.maxv = config.$MaxString;
+			if (data > optData.maxv) {
+				m.push('Maxv Error: must be less than ' + optData.maxv);
+			}
+		}
+		//NUMBER
+		//TODO: check for minf/maxf defaults
+		if (hasProperty(optData, 'minf')) {
+			if (data < optData.minf) {
+				m.push('Minf Error: must be greater than ' + optData.minf);
+			}
+		}
+		if (hasProperty(optData, 'maxf')) {
+			if (data > optData.maxf) {
+				m.push('Maxf Error: must be less than ' + optData.maxf);
+			}
+		}
+	}
+	if (m.length != 0) {
+		c = 'red';
+	}
+	return { 'msg': m, 'color': c };
+}
 
 // optData validation for Binary
-export const validateOptDataBinary = (optData: any, data: string) => {
+export const validateOptDataBinary = (config: InfoConfig, optData: any, data: string) => {
 	const binaryType = optData.format ?? 'binary';
 
 	let m = [];
@@ -180,12 +191,11 @@ export const validateOptDataBinary = (optData: any, data: string) => {
 				m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
 			}
 		} else {
-			optData.maxv = $MAX_BINARY;
+			optData.maxv = config.$MaxBinary;
 			if (data.length > optData.maxv) {
 				m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
 			}
 		}
-		//format check - server side
 	}
 
 	if (m.length != 0) {

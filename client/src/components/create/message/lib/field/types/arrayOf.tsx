@@ -7,23 +7,24 @@ import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
+import { InfoConfig, SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { merge } from 'lodash';
-import { $MAX_ELEMENTS, $MINV } from 'components/create/consts';
+import { $MINV } from 'components/create/consts';
 
 // Interface
 interface ArrayOfFieldProps {
   def: StandardFieldArray;
   optChange: (n: string, v: any, i?: number) => void;
   parent?: string;
+  config: InfoConfig;
 }
 
 // ArrayOf Field Component
 const ArrayOfField = (props: ArrayOfFieldProps) => {
-  const { def, parent, optChange } = props;
+  const { def, parent, optChange, config } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   const [min, setMin] = useState(false);
@@ -39,7 +40,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setErrMsg('');
-    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : $MAX_ELEMENTS;
+    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
     const maxBool = count < maxCount;
     if (!maxBool) {
       setErrMsg('Error: Maximum of ' + maxCount)

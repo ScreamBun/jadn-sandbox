@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
+import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { validateOptDataElem } from '../../utils';
@@ -11,11 +11,12 @@ interface RecordFieldProps {
   def: StandardFieldArray;
   optChange: (n: string, v: any) => void;
   parent?: string;
+  config: InfoConfig;
 }
 
 // Component
 const RecordField = (props: RecordFieldProps) => {
-  const { def, optChange, parent } = props;
+  const { def, optChange, parent, config } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   var optData: Record<string, any> = {};
 
@@ -34,7 +35,7 @@ const RecordField = (props: RecordFieldProps) => {
     const firstRender = ref.current;
     if (firstRender) {
       ref.current = false;
-      const errCheck = validateOptDataElem(optData, count);
+      const errCheck = validateOptDataElem(config, optData, count);
       setErrMsg(errCheck);
     }
   });
@@ -44,7 +45,7 @@ const RecordField = (props: RecordFieldProps) => {
       //add
       setData(data => [...data, k]);
       setCount(count => count + 1);
-      const validMsg = validateOptDataElem(optData, count + 1);
+      const validMsg = validateOptDataElem(config, optData, count + 1);
       setErrMsg(validMsg);
     } else {
       if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v)) {
@@ -53,7 +54,7 @@ const RecordField = (props: RecordFieldProps) => {
           return elem != k;
         }));
         setCount(count => count - 1);
-        const validMsg = validateOptDataElem(optData, count - 1);
+        const validMsg = validateOptDataElem(config, optData, count - 1);
         setErrMsg(validMsg);
       }//else value is updated
     }

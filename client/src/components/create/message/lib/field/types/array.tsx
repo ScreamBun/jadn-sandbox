@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
+import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { validateOptDataElem } from '../../utils';
@@ -13,6 +13,7 @@ interface ArrayFieldProps {
   def: StandardFieldArray;
   optChange: (n: string, v: any) => void;
   parent?: string;
+  config: InfoConfig;
 }
 
 // Component
@@ -20,7 +21,7 @@ const ArrayField = (props: ArrayFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN
   var optData: Record<string, any> = {};
 
-  const { def, optChange, parent } = props;
+  const { def, optChange, parent, config } = props;
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [count, setCount] = useState(0);
@@ -35,7 +36,7 @@ const ArrayField = (props: ArrayFieldProps) => {
     const firstRender = ref.current;
     if (firstRender) {
       ref.current = false;
-      const validMsg = validateOptDataElem(optData, count);
+      const validMsg = validateOptDataElem(config, optData, count);
       setErrMsg(validMsg);
     }
   });
@@ -60,7 +61,7 @@ const ArrayField = (props: ArrayFieldProps) => {
     }
     //remove empty fields?
     setCount(updatedArr.length);
-    const errCheck = validateOptDataElem(optData, updatedArr.length, optData.format ? true : false, updatedArr);
+    const errCheck = validateOptDataElem(config, optData, updatedArr.length, optData.format ? true : false, updatedArr);
     setErrMsg(errCheck);
 
     optChange(msgName, updatedArr);

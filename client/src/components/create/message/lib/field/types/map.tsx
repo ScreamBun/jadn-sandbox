@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
+import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
@@ -12,11 +12,12 @@ interface MapFieldProps {
   def: StandardFieldArray;
   optChange: (n: string, v: any) => void;
   parent?: string;
+  config: InfoConfig;
 }
 
 // Component
 const MapField = (props: MapFieldProps) => {
-  const { def, optChange, parent } = props;
+  const { def, optChange, parent, config } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   var optData: Record<string, any> = {};
@@ -35,7 +36,7 @@ const MapField = (props: MapFieldProps) => {
     const firstRender = ref.current;
     if (firstRender) {
       ref.current = false;
-      const validMsg = validateOptDataElem(optData, count);
+      const validMsg = validateOptDataElem(config, optData, count);
       setErrMsg(validMsg);
     }
   }, []);
@@ -45,7 +46,7 @@ const MapField = (props: MapFieldProps) => {
       //add
       setData(data => [...data, k]);
       setCount(count => count + 1);
-      const validMsg = validateOptDataElem(optData, count + 1);
+      const validMsg = validateOptDataElem(config, optData, count + 1);
       setErrMsg(validMsg);
     } else {
       if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v)) {
@@ -54,7 +55,7 @@ const MapField = (props: MapFieldProps) => {
           return elem != k;
         }));
         setCount(count => count - 1);
-        const validMsg = validateOptDataElem(optData, count - 1);
+        const validMsg = validateOptDataElem(config, optData, count - 1);
         setErrMsg(validMsg);
       }//else value is updated
     }

@@ -5,7 +5,7 @@ export interface InfoConfig {
   $MaxBinary?: number;
   $MaxString?: number;
   $MaxElements?: number;
-  $FS?: string;
+  //$FS?: string;
   $Sys?: string;
   $TypeName?: string;
   $FieldName?: string;

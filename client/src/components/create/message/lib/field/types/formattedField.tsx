@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { hasProperty } from "react-json-editor/dist/utils";
 import { Button, Input } from "reactstrap";
-import { isOptional, validateOptData, validateOptDataBinary, validateOptDataElem } from "../../utils";
+import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
 import { v4 as uuid4 } from 'uuid';
 import dayjs from 'dayjs';
 
 //This component is used to help users format/serialize data into valid JSON
 //input fields, basic input validation, and parsing
 //e.g. ipv4 addr : fields for [ipv4][/CIDR ] with field validation then gets parsed into JSON as => ipv4/CIDR 
-
 const FormattedField = (props: any) => {
 
-    const { basicProps, optData, errMsg, setErrMsg, err } = props;
+    const { basicProps, config, optData, errMsg, setErrMsg, err } = props;
     const { arr, def, optChange, parent } = basicProps;
     const [_idx, name, _type, _opts, comment] = def;
     const msgName = parent ? [parent, name] : [name];
@@ -40,7 +39,7 @@ const FormattedField = (props: any) => {
         const newValue = `${newArr[0]}${newArr[1] ? `/${newArr[1]}` : ``}`;
 
         if (newArr[0]) {
-            const errCheck = validateOptDataElem(optData, newArr.length, optData.format ? true : false, newArr);
+            const errCheck = validateOptDataElem(config, optData, newArr.length, optData.format ? true : false, newArr);
             setErrMsg(errCheck);
             optChange(k, newValue);
         }
@@ -62,7 +61,7 @@ const FormattedField = (props: any) => {
                                 step="any"
                                 min={dayjs().format('YYYY-MM-DDTHH:mm:ssZ[Z]')}
                                 onChange={e => {
-                                    const validMsg = validateOptData(optData, dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'), 'string');
+                                    const validMsg = validateOptDataStr(config, optData, dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'));
                                     setErrMsg(validMsg);
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'), arr);
                                 }}
@@ -89,7 +88,7 @@ const FormattedField = (props: any) => {
                                 step="any"
                                 min={dayjs().format('YYYY-MM-DD')}
                                 onChange={e => {
-                                    const errCheck = validateOptData(optData, dayjs(e.target.value).format('YYYY-MM-DD'), 'string');
+                                    const errCheck = validateOptDataStr(config, optData, dayjs(e.target.value).format('YYYY-MM-DD'));
                                     setErrMsg(errCheck);
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('YYYY-MM-DD'), arr);
                                 }}
@@ -117,7 +116,7 @@ const FormattedField = (props: any) => {
                                 step="any"
                                 min={dayjs().format('HH:mm:ssZ[Z]')}
                                 onChange={e => {
-                                    const errCheck = validateOptData(optData, dayjs(e.target.value).format('HH:mm:ssZ[Z]'), 'string');
+                                    const errCheck = validateOptDataStr(config, optData, dayjs(e.target.value).format('HH:mm:ssZ[Z]'));
                                     setErrMsg(errCheck);
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('HH:mm:ssZ[Z]'), arr);
                                 }}
@@ -144,7 +143,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptData(optData, e.target.value, 'string');
+                                    const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName.join('.'), e.target.value, arr);
                                 }}
@@ -171,7 +170,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptDataBinary(optData, e.target.value);
+                                    const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
@@ -232,7 +231,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptDataBinary(optData, e.target.value);
+                                    const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
@@ -292,7 +291,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptDataBinary(optData, e.target.value);
+                                    const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
@@ -320,7 +319,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 onChange={e => {
                                     setUUID(e.target.value);
-                                    const errCheck = validateOptData(optData, e.target.value, 'string');
+                                    const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName.join('.'), e.target.value, arr);
                                 }}
@@ -348,7 +347,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptData(optData, e.target.value, 'integer');
+                                    const errCheck = validateOptDataNum(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
@@ -376,7 +375,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptData(optData, e.target.value, 'integer');
+                                    const errCheck = validateOptDataNum(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
@@ -404,7 +403,7 @@ const FormattedField = (props: any) => {
                                 max={2147483647}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptData(optData, e.target.value, 'integer');
+                                    const errCheck = validateOptDataNum(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
@@ -434,7 +433,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptData(optData, e.target.value, 'integer');
+                                    const errCheck = validateOptDataNum(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
@@ -460,7 +459,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptDataBinary(optData, e.target.value);
+                                    const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
@@ -497,7 +496,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptData(optData, e.target.value, 'string');
+                                    const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName.join('.'), e.target.value, arr);
                                 }}
