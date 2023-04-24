@@ -26,8 +26,11 @@ const SchemaCreator = (props: any) => {
         dispatch(setSchema(generatedSchema));
         dispatch(format(schemaStr))
             .then(val => {
-                setData(val.payload.schema)
-            });
+                if (val.error) {
+                    sbToastError(val.payload.message); //TODO: get pydantic err
+                }
+                setData(val.payload.schema);
+            })
     }, [generatedSchema])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {

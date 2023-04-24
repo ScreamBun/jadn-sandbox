@@ -8,7 +8,7 @@ import { zip } from '../../../../utils';
 // Fields
 export interface EnumeratedFieldObject {
   id: number;
-  value: number|string;
+  value: number | string;
   comment: string;
 }
 export interface StandardFieldObject {
@@ -54,9 +54,9 @@ export const ConfigOptions = {
     description: 'Schema default maximum number of items/properties'
   },
   // $FS - String{1..1} optional,
-  $FS: {
-    description: 'Field Separator character used in pathnames'
-  },
+  /*   $FS: {
+      description: 'Field Separator character used in pathnames'
+    }, */
   // $Sys - String{1..1} optional,
   $Sys: {
     description: 'System character for TypeName'
@@ -86,9 +86,9 @@ export const FieldArr2Object = (values: FieldArray): FieldObject => {
   throw new Error('Cannot create Field object, array shoud contain 3 or 5 values');
 };
 
-export const TypeArr2Object = (values: PrimitiveTypeArray|StandardTypeArray): TypeObject => {
+export const TypeArr2Object = (values: PrimitiveTypeArray | StandardTypeArray): TypeObject => {
   let obj: Record<string, any> = {};
-  if (values.length >=4 && values.length <=5) {
+  if (values.length >= 4 && values.length <= 5) {
     obj = zip(TypeKeys, values);
   } else {
     throw new Error('Cannot create Type object, array shoud contain 3 or 5 values');

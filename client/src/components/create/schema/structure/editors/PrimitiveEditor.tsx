@@ -38,6 +38,10 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
         sbToastError('Error: Max length reached');
         return;
       }
+      if (value.includes('$')) {
+        sbToastError('Error: TypeNames SHOULD NOT contain the System character');
+        return;
+      }
     }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }

@@ -1,4 +1,4 @@
-import ConfigObjectEditor from './ConfigEditor';
+import ConfigObjectEditor from './ConfigObjectEditor';
 import KeyArrayEditor from './KeyArrayEditor';
 import KeyObjectEditor from './KeyObjectEditor';
 import KeyValueEditor from './KeyValueEditor';
