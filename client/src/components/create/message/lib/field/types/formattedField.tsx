@@ -38,11 +38,9 @@ const FormattedField = (props: any) => {
 
         const newValue = `${newArr[0]}${newArr[1] ? `/${newArr[1]}` : ``}`;
 
-        if (newArr[0]) {
-            const errCheck = validateOptDataElem(config, optData, newArr, optData.format ? true : false);
-            setErrMsg(errCheck);
-            optChange(k, newValue);
-        }
+        const errCheck = validateOptDataElem(config, optData, newArr, optData.format ? true : false);
+        setErrMsg(errCheck);
+        optChange(k, newValue);
     }
 
     switch (optData.format) {
