@@ -29,7 +29,6 @@ const MapField = (props: MapFieldProps) => {
     msg: []
   });
 
-
   const ref = useRef(true);
   useEffect(() => {
     const firstRender = ref.current;

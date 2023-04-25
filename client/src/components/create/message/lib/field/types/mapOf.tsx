@@ -1,6 +1,6 @@
 
 //ArrayOf
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -11,6 +11,8 @@ import { InfoConfig, SchemaJADN, StandardFieldArray, TypeArray } from '../../../
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { useAppSelector } from '../../../../../../reducers';
 import { validateOptDataElem } from '../../utils';
+import { hasProperty } from 'components/utils';
+import { $MINV } from 'components/create/consts';
 
 // Interface
 interface MapOfFieldProps {
@@ -26,6 +28,8 @@ const MapOfField = (props: MapOfFieldProps) => {
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
     const [count, setCount] = useState(1);
+    const [min, setMin] = useState(false);
+    const [max, setMax] = useState(false);
     const [opts, setOpts] = useState<any[]>([]); //opts: let every obj have a key and value [{key: '', value:''}, ...]
     const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
         color: '',
@@ -36,13 +40,32 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [_idx, name, type, args, comment] = def;
     const msgName = (parent ? [parent, name] : [name]).join('.');
 
+    const ref = useRef(true);
+    useEffect(() => {
+        const firstRender = ref.current;
+        if (firstRender) {
+            ref.current = false;
+            const validMsg = validateOptDataElem(config, optData, opts);
+            setErrMsg(validMsg);
+        }
+    }, []);
+
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        //check if max fields has been created
+        const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
+        setMax(maxCount <= count);
         setCount(count + 1);
     }
 
     const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        //check if min fields exist
+        const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
+        setMin(count <= minCount);
+        if (count <= minCount) {
+            return;
+        }
         //remove from end of arr
         var updatedOpts = opts.filter((_obj, index) => {
             return index != count - 1;
@@ -199,14 +222,14 @@ const MapOfField = (props: MapOfFieldProps) => {
                     </p>
                     <Button
                         color="danger"
-                        className={`float-right p-1`}
+                        className={`float-right p-1${min ? ' disabled' : ''}`}
                         onClick={removeOpt}
                     >
                         <FontAwesomeIcon icon={faMinusSquare} size="lg" />
                     </Button>
                     <Button
                         color="primary"
-                        className={`float-right p-1`}
+                        className={`float-right p-1${max ? ' disabled' : ''}`}
                         onClick={addOpt}
                     >
                         <FontAwesomeIcon icon={faPlusSquare} size="lg" />
