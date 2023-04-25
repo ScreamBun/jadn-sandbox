@@ -61,8 +61,7 @@ const FormattedField = (props: any) => {
                                 step="any"
                                 min={dayjs().format('YYYY-MM-DDTHH:mm:ssZ[Z]')}
                                 onChange={e => {
-                                    const validMsg = validateOptDataStr(config, optData, dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'));
-                                    setErrMsg(validMsg);
+                                    //TODO? check for min/max?
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'), arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}
@@ -88,8 +87,7 @@ const FormattedField = (props: any) => {
                                 step="any"
                                 min={dayjs().format('YYYY-MM-DD')}
                                 onChange={e => {
-                                    const errCheck = validateOptDataStr(config, optData, dayjs(e.target.value).format('YYYY-MM-DD'));
-                                    setErrMsg(errCheck);
+                                    //TODO? check for min/max?
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('YYYY-MM-DD'), arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}
@@ -116,8 +114,7 @@ const FormattedField = (props: any) => {
                                 step="any"
                                 min={dayjs().format('HH:mm:ssZ[Z]')}
                                 onChange={e => {
-                                    const errCheck = validateOptDataStr(config, optData, dayjs(e.target.value).format('HH:mm:ssZ[Z]'));
-                                    setErrMsg(errCheck);
+                                    //TODO? check for min/max?
                                     optChange(msgName.join('.'), dayjs(e.target.value).format('HH:mm:ssZ[Z]'), arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}

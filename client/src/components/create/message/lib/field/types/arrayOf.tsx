@@ -49,7 +49,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       const validMsg = validateOptDataElem(config, optData, opts);
       setErrMsg(validMsg);
     }
-  }, []);
+  });
 
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {

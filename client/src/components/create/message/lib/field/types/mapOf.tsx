@@ -48,7 +48,7 @@ const MapOfField = (props: MapOfFieldProps) => {
             const validMsg = validateOptDataElem(config, optData, opts);
             setErrMsg(validMsg);
         }
-    }, []);
+    });
 
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();

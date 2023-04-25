@@ -24,7 +24,6 @@ const ArrayField = (props: ArrayFieldProps) => {
   const { def, optChange, parent, config } = props;
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-  const [count, setCount] = useState(0);
   const [data, setData] = useState<string[]>([]); //track elements
   const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
     color: '',
@@ -36,7 +35,7 @@ const ArrayField = (props: ArrayFieldProps) => {
     const firstRender = ref.current;
     if (firstRender) {
       ref.current = false;
-      const validMsg = validateOptDataElem(config, optData, count);
+      const validMsg = validateOptDataElem(config, optData, data);
       setErrMsg(validMsg);
     }
   });
@@ -60,7 +59,6 @@ const ArrayField = (props: ArrayFieldProps) => {
       setData(updatedArr);
     }
     //remove empty fields?
-    setCount(updatedArr.length);
     const errCheck = validateOptDataElem(config, optData, updatedArr, optData.format ? true : false);
     setErrMsg(errCheck);
 
@@ -88,7 +86,7 @@ const ArrayField = (props: ArrayFieldProps) => {
   //Expected: fields (typeDef.length  == 5)
   const fieldDef = typeDef[typeDef.length - 1].map((d: any, i: number) =>
     <div className="col my-1 px-0">
-      <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config}/>
+      <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config} />
     </div>
   )
 

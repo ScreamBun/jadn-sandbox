@@ -37,7 +37,7 @@ const MapField = (props: MapFieldProps) => {
       const validMsg = validateOptDataElem(config, optData, data);
       setErrMsg(validMsg);
     }
-  }, []);
+  });
 
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {

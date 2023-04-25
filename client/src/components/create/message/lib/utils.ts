@@ -161,37 +161,38 @@ export const validateOptDataNum = (optData: any, data: number) => {
 export const validateOptDataBinary = (config: InfoConfig, optData: any, data: string) => {
 	const binaryType = optData.format ?? 'binary';
 
-	let m = [];
+	let m: string[] = [];
 	let c = '';
 	// binary - A sequence of octets. Length is the number of octets.
 	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
-	//TODO: Get number of bytes in data
+	//TODO: Get number of bytes in data - convert string to binary 
 	const isFormatted = validateBinaryFormat(data, binaryType);
 	if (!isFormatted) {
 		m.push('Format Error: Invalid ' + binaryType + ' value');
+		return { 'msg': m, 'color': 'red' };
 	}
 
-	if (hasProperty(optData, 'minv')) {
-		if (data < optData.minv) {
-			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
+	/* 	if (hasProperty(optData, 'minv')) {
+			if (data < optData.minv) {
+				m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
+			}
+	
+		} else {
+			optData.minv = $MINV;
+			if (data < optData.minv) {
+				m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
+			}
 		}
-
-	} else {
-		optData.minv = $MINV;
-		if (data < optData.minv) {
-			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
-		}
-	}
-	if (hasProperty(optData, 'maxv')) {
-		if (data > optData.maxv) {
-			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
-		}
-	} else {
-		optData.maxv = config.$MaxBinary;
-		if (data.length > optData.maxv) {
-			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
-		}
-	}
+		if (hasProperty(optData, 'maxv')) {
+			if (data > optData.maxv) {
+				m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
+			}
+		} else {
+			optData.maxv = config.$MaxBinary;
+			if (data.length > optData.maxv) {
+				m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
+			}
+		} */
 	if (m.length != 0) {
 		c = 'red';
 	}
