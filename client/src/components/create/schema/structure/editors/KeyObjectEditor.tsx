@@ -22,6 +22,9 @@ const KeyObjectEditor = (props: KeyObjectEditorProps) => {
   const { value, description, name, placeholder, change } = props;
   let valueObj = Object.keys(value).map(k => ({ key: k, value: value[k] }));
 
+  //TODO:A Namespace Identifier (NSID) is, by default, a 1-8 character string beginning with a letter and containing only letters and numbers. 
+  //Default formatting can be overridden by inserting an alternative definition into a JADN schema.
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { dataset, value } = e.target;
     const idx = parseInt(dataset.index || '', 10);
