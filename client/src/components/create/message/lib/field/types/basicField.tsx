@@ -126,9 +126,9 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                const errCheck = validateOptDataNum(config, optData, e.target.value);
+                const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                 setErrMsg(errCheck);
-                optChange(msgName.join('.'), e.target.value, arr);
+                optChange(msgName.join('.'), parseInt(e.target.value), arr);
               }}
               style={{ borderColor: errMsg.color }}
             />
@@ -154,9 +154,9 @@ const BasicField = (props: BasicFieldProps) => {
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                const errCheck = validateOptDataNum(config, optData, e.target.value);
+                const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                 setErrMsg(errCheck);
-                optChange(msgName.join('.'), e.target.value, arr);
+                optChange(msgName.join('.'), parseInt(e.target.value), arr);
               }}
               style={{ borderColor: errMsg.color }}
             />

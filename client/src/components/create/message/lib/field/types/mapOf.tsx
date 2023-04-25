@@ -9,9 +9,8 @@ import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { InfoConfig, SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
-import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from '../../../../../../reducers';
-import { $MINV } from 'components/create/consts';
+import { validateOptDataElem } from '../../utils';
 
 // Interface
 interface MapOfFieldProps {
@@ -25,11 +24,13 @@ interface MapOfFieldProps {
 const MapOfField = (props: MapOfFieldProps) => {
     const { def, parent, optChange, config } = props;
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-    const [min, setMin] = useState(false);
-    const [max, setMax] = useState(false);
+
     const [count, setCount] = useState(1);
-    const [opts, setOpts] = useState<any[]>([]);
-    const [errMsg, setErrMsg] = useState('');
+    const [opts, setOpts] = useState<any[]>([]); //opts: let every obj have a key and value [{key: '', value:''}, ...]
+    const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
+        color: '',
+        msg: []
+    });
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
@@ -37,48 +38,28 @@ const MapOfField = (props: MapOfFieldProps) => {
 
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setErrMsg('');
-        const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
-        const maxBool = count < maxCount;
-        if (!maxBool) {
-            setErrMsg('Error: Maximum of ' + maxCount)
-        }
-        setCount(maxBool ? count => count + 1 : count);
-        setMax(!maxBool);
-        setMin(false);
+        setCount(count + 1);
     }
 
     const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setErrMsg('');
-        const minCount = hasProperty(optData, 'minv') ? optData.minv : $MINV;
+        //remove from end of arr
+        var updatedOpts = opts.filter((_obj, index) => {
+            return index != count - 1;
+        });
+        setOpts(updatedOpts);
+        //TODO? filter null values?
+        //validate data
+        const errCheck = validateOptDataElem(config, optData, updatedOpts);
+        setErrMsg(errCheck);
 
-        const minBool = count > minCount;
-        if (minBool) {
-            setOpts(
-                opts.filter((_opt, index) =>
-                    index !== opts.length - 1
-                )
-            );
-
-            const tmpOpts = [...opts];
-            tmpOpts.pop();
-            const filteredOpts = tmpOpts.filter(data => {
-                return data != null;
-            });
-            optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
-        } else {
-            setErrMsg('Error: Minimum of ' + minCount)
-        }
-
-        setCount(minBool ? count => count - 1 : count);
-        setMin(!minBool);
-        setMax(false);
+        //update data
+        optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+        setCount(count - 1);
     }
 
     const onChange = (k: string, v: any, i: number) => {
-        //opts: let every obj have a key and value [{key: '', value:''}, ...]
-        //data : then reduce object to key:value pairs 
+        //data : reduce opts to key:value pairs 
         if (Number.isNaN(v)) {
             v = undefined;
         }
@@ -89,7 +70,7 @@ const MapOfField = (props: MapOfFieldProps) => {
 
         //add obj {[key/value]: v} at i 
         //update v if obj exists at i 
-        let updatedOpts;
+        let updatedOpts = [];
         if (i <= opts.length - 1) {
             //update
             updatedOpts = opts.map((opt, index) => {
@@ -120,7 +101,11 @@ const MapOfField = (props: MapOfFieldProps) => {
             }
         }
 
-        //TODO: fix JSON ? --- currently {key: value} rather than {[keyName: key] : [valueName: value]}
+        //TODO?: filter - remove null values.
+        const errCheck = validateOptDataElem(config, optData, updatedOpts);
+        setErrMsg(errCheck);
+
+        //TODO?: fix JSON --- currently {key: value} rather than {[keyName: key] : [valueName: value]}
         //TODO: check for nested MapOf
         //JSON object if ktype is a String type
         //JSON array if ktype is not a String type. 
@@ -197,8 +182,8 @@ const MapOfField = (props: MapOfFieldProps) => {
                         </p>
                     </div>
                     <div className='card-body mx-2'>
-                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChange} idx={i} />
-                        <Field key={"value"} def={valField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChange} idx={i} config={config} />
+                        <Field key={"value"} def={valField} parent={msgName} optChange={onChange} idx={i} config={config} />
                     </div>
                 </div>
             </div >
@@ -214,20 +199,20 @@ const MapOfField = (props: MapOfFieldProps) => {
                     </p>
                     <Button
                         color="danger"
-                        className={`float-right p-1${min ? ' disabled' : ''}`}
+                        className={`float-right p-1`}
                         onClick={removeOpt}
                     >
                         <FontAwesomeIcon icon={faMinusSquare} size="lg" />
                     </Button>
                     <Button
                         color="primary"
-                        className={`float-right p-1${max ? ' disabled' : ''}`}
+                        className={`float-right p-1`}
                         onClick={addOpt}
                     >
                         <FontAwesomeIcon icon={faPlusSquare} size="lg" />
                     </Button>
                     {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                    <div><small className='form-text' style={{ color: 'red' }}> {errMsg}</small></div>
+                    <div><small className='form-text' style={{ color: 'red' }}> {errMsg.msg}</small></div>
                 </div>
 
                 <div className='card-body mx-2'>

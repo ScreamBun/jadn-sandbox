@@ -12,7 +12,7 @@ import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { merge } from 'lodash';
-import { $MINV } from 'components/create/consts';
+import { validateOptDataElem } from '../../utils';
 
 // Interface
 interface ArrayOfFieldProps {
@@ -27,11 +27,12 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const { def, parent, optChange, config } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
-  const [min, setMin] = useState(false);
-  const [max, setMax] = useState(false);
   const [count, setCount] = useState(1);
-  const [opts, setOpts] = useState<any[]>([]);
-  const [errMsg, setErrMsg] = useState('');
+  const [opts, setOpts] = useState<any[]>([]); //track elem of vtype
+  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
+    color: '',
+    msg: []
+  });
 
   var optData: Record<string, any> = {};
   const [_idx, name, type, args, comment] = def;
@@ -39,43 +40,32 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setErrMsg('');
-    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
-    const maxBool = count < maxCount;
-    if (!maxBool) {
-      setErrMsg('Error: Maximum of ' + maxCount)
-    }
-    setCount(maxBool ? count => count + 1 : count);
-    setMax(!maxBool);
-    setMin(false);
-    //setOpts(opts => [...opts, undefined]);
+    // const updatedOpts = [...opts, ''];
+    //setOpts(updatedOpts);
+    setCount(count + 1);
   }
 
   const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setErrMsg('');
     e.preventDefault();
-    const minCount = hasProperty(optData, 'minv') ? optData.minv : $MINV;
+    //remove from end of arr
+    var updatedOpts = opts.filter((_elem, index) => {
+      return index != count - 1;
+    });
+    setOpts(updatedOpts);
 
-    const minBool = count > minCount;
-    if (minBool) {
-      setOpts(opts.slice(0, -1));
-      const tmpOpts = opts;
-      tmpOpts.pop();
-      if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-        if (Array.from(new Set(Object.values(tmpOpts))).length != Object.values(tmpOpts).length) {
-          setErrMsg(`${optData.unique ? `Unique` : `Set`} Error: Must not contain duplicate values`);
-        }
-        optChange(msgName, Array.from(new Set(Object.values(tmpOpts))));
-      } else {
-        optChange(msgName, Array.from(Object.values(tmpOpts)));
-      }
+    //validate data
+    const errCheck = validateOptDataElem(config, optData, updatedOpts);
+    setErrMsg(errCheck);
+
+    //update data
+    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+      updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
     } else {
-      setErrMsg('Error: Minimum of ' + minCount)
+      updatedOpts = Array.from(Object.values(updatedOpts));
     }
 
-    setCount(minBool ? count => count - 1 : count);
-    setMin(!minBool);
-    setMax(false);
+    optChange(msgName, updatedOpts);
+    setCount(count - 1);
   }
 
   const onChange = (k: string, v: any, i: number) => {
@@ -138,14 +128,16 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     setOpts(updatedOpts);
 
     //send up arrayOf data
-    if ((hasProperty(optData, 'unique') && optData.unique) || (hasProperty(optData, 'set') && optData.set)) {
-      if (Array.from(new Set(Object.values(updatedOpts))).length != Object.values(updatedOpts).length) {
-        setErrMsg(`${optData.unique ? `Unique` : `Set`} Error: Must not contain duplicate values`);
-      }
-      optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+    const errCheck = validateOptDataElem(config, optData, updatedOpts);
+    setErrMsg(errCheck);
+
+    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+      updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
     } else {
-      optChange(msgName, Array.from(Object.values(updatedOpts)));
+      updatedOpts = Array.from(Object.values(updatedOpts));
     }
+
+    optChange(msgName, updatedOpts);
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -173,7 +165,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const fields: any[] = [];
   for (let i = 0; i < count; ++i) {
-    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} />);
+    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />);
   }
 
   return (
@@ -185,20 +177,20 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
           </p>
           <Button
             color="danger"
-            className={`float-right p-1${min ? ' disabled' : ''}`}
+            className={`float-right p-1`}
             onClick={removeOpt}
           >
             <FontAwesomeIcon icon={faMinusSquare} size="lg" />
           </Button>
           <Button
             color="primary"
-            className={`float-right p-1${max ? ' disabled' : ''}`}
+            className={`float-right p-1`}
             onClick={addOpt}
           >
             <FontAwesomeIcon icon={faPlusSquare} size="lg" />
           </Button>
           {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          <div><small className='form-text' style={{ color: 'red' }}> {errMsg}</small></div>
+          <div><small className='form-text' style={{ color: 'red' }}> {errMsg.msg}</small></div>
         </div>
 
         <div className='card-body mx-2'>

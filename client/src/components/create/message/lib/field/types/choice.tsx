@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
+import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
@@ -12,11 +12,12 @@ interface ChoiceFieldProps {
   def: StandardFieldArray;
   optChange: (n: string, v: any) => void;
   parent?: string;
+  config: InfoConfig;
 }
 
 // Component
 const ChoiceField = (props: ChoiceFieldProps) => {
-  const { def, optChange, parent } = props;
+  const { def, optChange, parent, config } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const [selected, setSelected] = useState('-1');
 
@@ -57,7 +58,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
       selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[1] === selected);
     }
     const selectedDef = selectedDefs.length === 1 ? selectedDefs[0] : [];
-    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={optChange} />;
+    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={optChange} config={config}/>;
   }
 
   return (

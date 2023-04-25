@@ -39,7 +39,7 @@ const FormattedField = (props: any) => {
         const newValue = `${newArr[0]}${newArr[1] ? `/${newArr[1]}` : ``}`;
 
         if (newArr[0]) {
-            const errCheck = validateOptDataElem(config, optData, newArr.length, optData.format ? true : false, newArr);
+            const errCheck = validateOptDataElem(config, optData, newArr, optData.format ? true : false);
             setErrMsg(errCheck);
             optChange(k, newValue);
         }
@@ -347,9 +347,9 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptDataNum(config, optData, e.target.value);
+                                    const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
-                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
+                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), parseInt(e.target.value), arr) : optChange(msgName.join('.'), '', arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}
                             />
@@ -375,9 +375,9 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptDataNum(config, optData, e.target.value);
+                                    const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
-                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
+                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), parseInt(e.target.value), arr) : optChange(msgName.join('.'), '', arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}
                             />
@@ -403,9 +403,9 @@ const FormattedField = (props: any) => {
                                 max={2147483647}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptDataNum(config, optData, e.target.value);
+                                    const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
-                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
+                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), parseInt(e.target.value), arr) : optChange(msgName.join('.'), '', arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}
                             />
@@ -433,9 +433,9 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const errCheck = validateOptDataNum(config, optData, e.target.value);
+                                    const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
-                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
+                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), parseInt(e.target.value), arr) : optChange(msgName.join('.'), '', arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}
                             />

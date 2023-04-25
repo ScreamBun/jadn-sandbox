@@ -38,7 +38,7 @@ export type FieldArray = StandardFieldArray | EnumeratedFieldArray;
 // Standard Type
 export type TypeKey = 'name' | 'type' | 'options' | 'comment' | 'fields';
 export type StandardTypeArray = [string, string, Array<string>, string, Array<StandardFieldArray>|Array<EnumeratedFieldArray>]
-// Custom Type - keys same as TypeKeys, no fields
+// Custom Type - keys same as TypeKeys, no fields --> use for primitive, arrayOf, mapOf type
 export type PrimitiveTypeArray = [string, string, Array<string>, string]
 // General Type
 export type TypeArray = PrimitiveTypeArray|StandardTypeArray

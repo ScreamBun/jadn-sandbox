@@ -61,7 +61,7 @@ const ArrayField = (props: ArrayFieldProps) => {
     }
     //remove empty fields?
     setCount(updatedArr.length);
-    const errCheck = validateOptDataElem(config, optData, updatedArr.length, optData.format ? true : false, updatedArr);
+    const errCheck = validateOptDataElem(config, optData, updatedArr, optData.format ? true : false);
     setErrMsg(errCheck);
 
     optChange(msgName, updatedArr);
@@ -80,7 +80,7 @@ const ArrayField = (props: ArrayFieldProps) => {
 
   if (hasProperty(optData, 'format')) {
     return (<FormattedField
-      basicProps={props} optData={optData}
+      basicProps={props} optData={optData} config={config}
       errMsg={errMsg} setErrMsg={setErrMsg}
       err={err} />);
   }
@@ -88,7 +88,7 @@ const ArrayField = (props: ArrayFieldProps) => {
   //Expected: fields (typeDef.length  == 5)
   const fieldDef = typeDef[typeDef.length - 1].map((d: any, i: number) =>
     <div className="col my-1 px-0">
-      <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} />
+      <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config}/>
     </div>
   )
 

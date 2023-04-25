@@ -23,7 +23,6 @@ const MapField = (props: MapFieldProps) => {
   var optData: Record<string, any> = {};
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-  const [count, setCount] = useState(0);
   const [data, setData] = useState<string[]>([]); //track elements
   const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
     color: '',
@@ -36,7 +35,7 @@ const MapField = (props: MapFieldProps) => {
     const firstRender = ref.current;
     if (firstRender) {
       ref.current = false;
-      const validMsg = validateOptDataElem(config, optData, count);
+      const validMsg = validateOptDataElem(config, optData, data);
       setErrMsg(validMsg);
     }
   }, []);
@@ -44,21 +43,21 @@ const MapField = (props: MapFieldProps) => {
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {
       //add
-      setData(data => [...data, k]);
-      setCount(count => count + 1);
-      const validMsg = validateOptDataElem(config, optData, count + 1);
+      const updatedData = [...data, k];
+      setData(updatedData);
+      const validMsg = validateOptDataElem(config, optData, updatedData);
       setErrMsg(validMsg);
     } else {
-      if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v)) {
-        //remove
-        setData(data => data.filter((elem) => {
-          return elem != k;
-        }));
-        setCount(count => count - 1);
-        const validMsg = validateOptDataElem(config, optData, count - 1);
-        setErrMsg(validMsg);
-      }//else value is updated
-    }
+      //remove
+      const updatedData = data.filter((elem) => {
+        return elem != k;
+      });
+      setData(updatedData);
+      const validMsg = validateOptDataElem(config, optData, updatedData);
+      setErrMsg(validMsg);
+    }//else value is updated
+
+    //TODO?: filter - remove null values
     optChange(k, v);
   }
 
@@ -74,7 +73,7 @@ const MapField = (props: MapFieldProps) => {
   console.log(typeDef[typeDef.length - 1])
 
   //Expected: fields (typeDef.length  == 5)
-  const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} />)
+  const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} config={config} />)
 
   let err: any[] = [];
   (errMsg.msg).forEach(msg => {

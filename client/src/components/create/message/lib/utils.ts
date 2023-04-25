@@ -19,11 +19,12 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 //TYPE OPTION VALIDATION
 // possibly change count to data.length
 // optData validation for Array, ArrayOf, Map, MapOf, or Record
-export const validateOptDataElem = (config: InfoConfig, optData: any, count: number, formatCheck: boolean = false, data?: any) => {
+export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[], formatCheck: boolean = false) => {
 	let isFormatted: boolean = false;
 	let m = [];
 	let c = '';
-
+	let count = data.length;
+	console.log(data, count)
 	//ARRAY
 	if (formatCheck && data) {
 		isFormatted = validateArrayFormat(data, optData.format);
@@ -32,27 +33,32 @@ export const validateOptDataElem = (config: InfoConfig, optData: any, count: num
 		}
 	}
 
-	//check # of elements
-	if (optData && count) {
-		if (hasProperty(optData, 'minv')) {
-			if (count < optData.minv) {
-				m.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
-			}
-		} else {
-			optData.minv = $MINV;
-			if (count < optData.minv) {
-				m.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
-			}
+	//ARRAYOF
+	if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+		if (Array.from(new Set(Object.values(data))).length != Object.values(data).length) {
+			m.push(`${optData.unique ? `Unique` : `Set`} Error: Must not contain duplicate values`);
 		}
-		if (hasProperty(optData, 'maxv')) {
-			if (count > optData.maxv) {
-				m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
-			}
-		} else {
-			optData.maxv = config.$MaxElements;
-			if (count > optData.maxv) {
-				m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
-			}
+	}
+
+	//check # of elements
+	if (hasProperty(optData, 'minv')) {
+		if (count < optData.minv) {
+			m.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
+		}
+	} else {
+		optData.minv = $MINV;
+		if (count < optData.minv) {
+			m.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
+		}
+	}
+	if (hasProperty(optData, 'maxv')) {
+		if (count > optData.maxv) {
+			m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
+		}
+	} else {
+		optData.maxv = config.$MaxElements;
+		if (count > optData.maxv) {
+			m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
 		}
 	}
 
@@ -66,40 +72,38 @@ export const validateOptDataStr = (config: InfoConfig, optData: any, data: strin
 	let m = [];
 	let c = '';
 
-	if (optData && data) {
-		if (hasProperty(optData, 'minv')) {
-			if (data.length < optData.minv) {
-				m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
-			}
-		} else {
-			optData.minv = $MINV;
-			if (data.length < optData.minv) {
-				m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
-			}
+	if (hasProperty(optData, 'minv')) {
+		if (data.length < optData.minv) {
+			m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
 		}
-		if (hasProperty(optData, 'maxv')) {
-			if (data.length > optData.maxv) {
-				m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
-			}
-		} else {
-			optData.maxv = config.$MaxString;
-			if (data.length > optData.maxv) {
-				m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
-			}
+	} else {
+		optData.minv = $MINV;
+		if (data.length < optData.minv) {
+			m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
 		}
+	}
+	if (hasProperty(optData, 'maxv')) {
+		if (data.length > optData.maxv) {
+			m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
+		}
+	} else {
+		optData.maxv = config.$MaxString;
+		if (data.length > optData.maxv) {
+			m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
+		}
+	}
 
-		if (hasProperty(optData, 'pattern') && typeof data == 'string') {
-			const regex = new RegExp(optData.pattern, "g");
-			if (!regex.test(data)) {
-				m.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
-			}
+	if (hasProperty(optData, 'pattern') && typeof data == 'string') {
+		const regex = new RegExp(optData.pattern, "g");
+		if (!regex.test(data)) {
+			m.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
 		}
+	}
 
-		if (hasProperty(optData, 'format')) {
-			const isFormatted = validateStringFormat(data, optData.format);
-			if (!isFormatted) {
-				m.push('Format Error: Invalid ' + optData.format + ' value');
-			}
+	if (hasProperty(optData, 'format')) {
+		const isFormatted = validateStringFormat(data, optData.format);
+		if (!isFormatted) {
+			m.push('Format Error: Invalid ' + optData.format + ' value');
 		}
 	}
 	if (m.length != 0) {
@@ -108,50 +112,43 @@ export const validateOptDataStr = (config: InfoConfig, optData: any, data: strin
 	return { 'msg': m, 'color': c };
 }
 // optData validation for Number, Integer
-export const validateOptDataNum = (config: InfoConfig, optData: any, data: number) => {
+export const validateOptDataNum = (optData: any, data: number) => {
 	let m = [];
 	let c = '';
 
-	if (optData && data) {
-		if (hasProperty(optData, 'format')) {
-			const isFormatted = validateNumericFormat(data, optData.format);
-			if (!isFormatted) {
-				m.push('Format Error: Invalid ' + optData.format + ' value');
-			}
+	if (hasProperty(optData, 'format')) {
+		const isFormatted = validateNumericFormat(data, optData.format);
+		if (!isFormatted) {
+			m.push('Format Error: Invalid ' + optData.format + ' value');
 		}
-		//INTEGER
-		if (hasProperty(optData, 'minv')) {
-			if (data < optData.minv) {
-				m.push('Minv Error: must be greater than ' + optData.minv);
-			}
+	}
+	//INTEGER
+	if (hasProperty(optData, 'minv')) {
+		if (data < optData.minv) {
+			m.push('Minv Error: must be greater than ' + optData.minv);
+		}
 
-		} else {
-			optData.minv = $MINV;
-			if (data < optData.minv) {
-				m.push('Minv Error: must be greater than ' + optData.minv);
-			}
+	} else {
+		optData.minv = $MINV;
+		if (data < optData.minv) {
+			m.push('Minv Error: must be greater than ' + optData.minv);
 		}
-		if (hasProperty(optData, 'maxv')) {
-			if (data > optData.maxv) {
-				m.push('Maxv Error: must be less than ' + optData.maxv);
-			}
-		} else {
-			optData.maxv = config.$MaxString;
-			if (data > optData.maxv) {
-				m.push('Maxv Error: must be less than ' + optData.maxv);
-			}
+	}
+	if (hasProperty(optData, 'maxv')) {
+		if (data > optData.maxv) {
+			m.push('Maxv Error: must be less than ' + optData.maxv);
 		}
-		//NUMBER
-		//TODO: check for minf/maxf defaults
-		if (hasProperty(optData, 'minf')) {
-			if (data < optData.minf) {
-				m.push('Minf Error: must be greater than ' + optData.minf);
-			}
+	}
+	//NUMBER
+	//TODO: check for minf/maxf defaults
+	if (hasProperty(optData, 'minf')) {
+		if (data < optData.minf) {
+			m.push('Minf Error: must be greater than ' + optData.minf);
 		}
-		if (hasProperty(optData, 'maxf')) {
-			if (data > optData.maxf) {
-				m.push('Maxf Error: must be less than ' + optData.maxf);
-			}
+	}
+	if (hasProperty(optData, 'maxf')) {
+		if (data > optData.maxf) {
+			m.push('Maxf Error: must be less than ' + optData.maxf);
 		}
 	}
 	if (m.length != 0) {
@@ -174,30 +171,27 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 		m.push('Format Error: Invalid ' + binaryType + ' value');
 	}
 
-	if (optData && data) {
-		if (hasProperty(optData, 'minv')) {
-			if (data < optData.minv) {
-				m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
-			}
-
-		} else {
-			optData.minv = $MINV;
-			if (data < optData.minv) {
-				m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
-			}
+	if (hasProperty(optData, 'minv')) {
+		if (data < optData.minv) {
+			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
 		}
-		if (hasProperty(optData, 'maxv')) {
-			if (data > optData.maxv) {
-				m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
-			}
-		} else {
-			optData.maxv = config.$MaxBinary;
-			if (data.length > optData.maxv) {
-				m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
-			}
+
+	} else {
+		optData.minv = $MINV;
+		if (data < optData.minv) {
+			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
 		}
 	}
-
+	if (hasProperty(optData, 'maxv')) {
+		if (data > optData.maxv) {
+			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
+		}
+	} else {
+		optData.maxv = config.$MaxBinary;
+		if (data.length > optData.maxv) {
+			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
+		}
+	}
 	if (m.length != 0) {
 		c = 'red';
 	}
