@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { hasProperty } from "react-json-editor/dist/utils";
+import { hasProperty } from "components/utils";
 import { Button, Input } from "reactstrap";
 import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
 import { v4 as uuid4 } from 'uuid';

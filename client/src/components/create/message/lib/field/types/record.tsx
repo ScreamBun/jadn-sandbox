@@ -5,6 +5,7 @@ import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/i
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { validateOptDataElem } from '../../utils';
+import { $FIELDS_LENGTH } from 'components/create/consts';
 
 // Interface
 interface RecordFieldProps {
@@ -67,7 +68,9 @@ const RecordField = (props: RecordFieldProps) => {
   }
 
   //Expected: fields (typeDef.length == 5)
-  const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} />)
+  const fieldDef = typeDef.length == $FIELDS_LENGTH ?
+    typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} />)
+    : <div> No fields </div>;
 
   let err: any[] = [];
   (errMsg.msg).forEach(msg => {

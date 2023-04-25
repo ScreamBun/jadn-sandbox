@@ -10,6 +10,7 @@ import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys }
 import OptionsModal from './options/OptionsModal';
 import { zip } from '../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
+import { InfoConfig } from '../../interface';
 
 // Interface
 interface PrimitiveEditorProps {
@@ -17,11 +18,12 @@ interface PrimitiveEditorProps {
   value: Array<any>;
   change: (v: any, i: number) => void;
   remove: (i: number) => void;
+  config: InfoConfig;
 }
 
 // Primitive Editor
 const PrimitiveEditor = (props: PrimitiveEditorProps) => {
-  const { value, change, dataIndex } = props;
+  const { value, change, dataIndex, config } = props;
   let valueObj: StandardFieldObject | PrimitiveTypeObject;
   if (Number.isInteger(value[0])) {
     valueObj = zip(StandardFieldKeys, value) as StandardFieldObject;
@@ -33,14 +35,17 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
-    if (placeholder == "Name") {
+    if (placeholder == "Name" && value) {
       if (value.length >= 64) {
         sbToastError('Error: Max length reached');
         return;
       }
-      if (value.includes('$')) {
+      if (value.includes(config.$Sys)) {
         sbToastError('Error: TypeNames SHOULD NOT contain the System character');
-        return;
+      }
+      const regex = new RegExp(config.$TypeName, "g");
+      if (!regex.test(value)) {
+        sbToastError('Error: TypeName does not match regex');
       }
     }
     const key = placeholder.toLowerCase();

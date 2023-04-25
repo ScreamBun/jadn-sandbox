@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 // Field Utils
 import { $MINV } from 'components/create/consts';
-import { hasProperty } from 'react-json-editor/dist/utils';
+import { hasProperty } from 'components/utils';
 import { FieldArray, InfoConfig, TypeArray } from '../../schema/interface';
 
 export const isOptional = (def: TypeArray | FieldArray) => {
@@ -307,7 +307,7 @@ export const validateStringFormat = (data: string, type: string) => {
 		return true;
 	}
 	if (type == 'uri-reference' || type == 'iri-reference') {
-		//if data is valid uri/ref
+		//TODO: if data is valid uri/ref
 		//then check if vald iri/ref
 		return true;
 	}
@@ -332,6 +332,7 @@ export const validateStringFormat = (data: string, type: string) => {
 		return true;
 	}
 	if (type == 'json-pointer' || type == 'relative-json-pointer') {
+		//TODO
 		return true;
 	}
 	if (type == 'regex') { //check for valid pattern?

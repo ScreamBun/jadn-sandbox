@@ -9,7 +9,7 @@ import {
   FieldObject, EnumeratedFieldObject, EnumeratedFieldKeys, StandardFieldKeys, StandardFieldObject
 } from './consts';
 import OptionsModal from './options/OptionsModal';
-import { EnumeratedFieldArray, FieldArray, StandardFieldArray } from '../../interface';
+import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../interface';
 import { objectValues, splitCamel, zip } from '../../../../utils';
 import { useAppSelector } from '../../../../../reducers';
 import { sbToastError } from 'components/common/SBToast';
@@ -21,11 +21,12 @@ interface FieldEditorProps {
   value: EnumeratedFieldArray | StandardFieldArray;
   change: (_v: EnumeratedFieldArray | StandardFieldArray, _i: number) => void;
   remove: (_i: number) => void;
+  config: InfoConfig;
 }
 
 // Field Editor
 const FieldEditor = (props: FieldEditorProps) => {
-  const { enumerated, value, dataIndex, change } = props;
+  const { enumerated, value, dataIndex, change, config } = props;
   const allTypes = useAppSelector((state) => [...state.Util.types.fieldTypes, ...Object.keys(state.Util.types.schema)]);
   const types = useAppSelector((state) => ({
     base: state.Util.types.fieldTypes,
@@ -39,7 +40,7 @@ const FieldEditor = (props: FieldEditorProps) => {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const { placeholder, value } = e.target;
-    if (placeholder == "Name") {
+    if (placeholder == "Name" && value) {
       if (value.includes('/')) {
         sbToastError('Error: FieldNames MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension.');
         return;
@@ -47,6 +48,10 @@ const FieldEditor = (props: FieldEditorProps) => {
       if (value.length >= 64) {
         sbToastError('Error: Max length reached');
         return;
+      }
+      const regex = new RegExp(config.$FieldName, "g");
+      if (!regex.test(value)) {
+        sbToastError('Error: FieldName does not match regex');
       }
     }
     if (enumerated) {

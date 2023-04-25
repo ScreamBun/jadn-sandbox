@@ -8,7 +8,7 @@ import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/i
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { useAppSelector } from 'reducers';
 import { validateOptDataNum, validateOptDataBinary, validateOptDataStr } from '../../utils';
-import { hasProperty } from 'react-json-editor/dist/utils';
+import { hasProperty } from 'components/utils';
 import { FormattedField } from './Types';
 
 // Interface

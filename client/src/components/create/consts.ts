@@ -21,4 +21,4 @@ if maxc is less than minc, the field definition MUST be considered invalid.
 //When serializing, default values MAY be included or omitted in the serialized document. 
 //When deserializing, default values MUST be available from the API instance if not present in the document.
 
-export const $FIELDS_IDX = 5;
+export const $FIELDS_LENGTH = 5;
