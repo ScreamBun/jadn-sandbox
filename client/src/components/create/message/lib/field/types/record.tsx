@@ -1,29 +1,30 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
+import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { validateOptDataElem } from '../../utils';
+import { $FIELDS_LENGTH } from 'components/create/consts';
 
 // Interface
 interface RecordFieldProps {
   def: StandardFieldArray;
   optChange: (n: string, v: any) => void;
   parent?: string;
+  config: InfoConfig;
 }
 
 // Component
 const RecordField = (props: RecordFieldProps) => {
-  const { def, optChange, parent } = props;
+  const { def, optChange, parent, config } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   var optData: Record<string, any> = {};
 
   const [_idx, name, type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-  const [count, setCount] = useState(0);
   const [data, setData] = useState<string[]>([]); //track elements
-  const [isValid, setisValid] = useState<{ color: string, msg: string[] }>({
+  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
     color: '',
     msg: []
   });
@@ -33,29 +34,30 @@ const RecordField = (props: RecordFieldProps) => {
     const firstRender = ref.current;
     if (firstRender) {
       ref.current = false;
-      const validMsg = validateOptDataElem(optData, count);
-      setisValid(validMsg);
+      const errCheck = validateOptDataElem(config, optData, data);
+      setErrMsg(errCheck);
     }
   });
 
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {
       //add
-      setData(data => [...data, k]);
-      setCount(count => count + 1);
-      const validMsg = validateOptDataElem(optData, count + 1);
-      setisValid(validMsg);
+      const updatedData = [...data, k];
+      setData(updatedData);
+      const validMsg = validateOptDataElem(config, optData, updatedData);
+      setErrMsg(validMsg);
     } else {
       if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v)) {
         //remove
-        setData(data => data.filter((elem) => {
+        const updatedData = data.filter((elem) => {
           return elem != k;
-        }));
-        setCount(count => count - 1);
-        const validMsg = validateOptDataElem(optData, count - 1);
-        setisValid(validMsg);
+        });
+        setData(updatedData);
+        const validMsg = validateOptDataElem(config, optData, updatedData);
+        setErrMsg(validMsg);
       }//else value is updated
     }
+    //TODO?: filter - remove null values
     optChange(k, v)
   }
 
@@ -63,15 +65,15 @@ const RecordField = (props: RecordFieldProps) => {
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
-    //TODO type opts: extend 
   }
 
-  //if extend
   //Expected: fields (typeDef.length == 5)
-  const fieldDef = typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} />)
+  const fieldDef = typeDef.length == $FIELDS_LENGTH ?
+    typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} />)
+    : <div> No fields </div>;
 
   let err: any[] = [];
-  (isValid.msg).forEach(msg => {
+  (errMsg.msg).forEach(msg => {
     err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
   });
 

@@ -2,10 +2,12 @@ import * as format from '../actions/format';
 
 export interface FormatState {
     schema: string;
+    format_options: Array<any>;
 }
 
 const initialState: FormatState = {
-    schema: ''
+    schema: '',
+    format_options: []
 };
 
 export default (state = initialState, action: format.FormatActions) => {
@@ -16,12 +18,18 @@ export default (state = initialState, action: format.FormatActions) => {
                 schema: action.payload.schema,
             };
 
+        case format.VALID_FORMAT_OPTIONS_SUCCESS:
+            return {
+                ...state,
+                format_options: action.payload.format_options,
+            };
+
         case format.FORMAT_FAILURE:
+        case format.VALID_FORMAT_OPTIONS_FAILURE:
             return {
                 ...state,
                 error: action.payload.error || 'ERROR'
             };
-
         default:
             return state;
     }

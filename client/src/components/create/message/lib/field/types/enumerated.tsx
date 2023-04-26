@@ -24,7 +24,6 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef) {
     optData = (opts2obj(opts));
-    //TODO type opts: extend
   }
 
   let defOpts;
@@ -43,7 +42,6 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
     });
 
   } else {
-    //if extend
     //Expected: items (typeDef.length  == 5)
     defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
   }

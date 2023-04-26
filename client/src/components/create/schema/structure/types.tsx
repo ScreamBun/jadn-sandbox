@@ -1,7 +1,7 @@
 import React from 'react';
 import { PrimitiveEditor, StructureEditor } from './editors/editors';
 import { PrimitiveDef, StructureDef } from './interfaces';
-import { StandardTypeArray } from '../interface';
+import { InfoConfig, StandardTypeArray } from '../interface';
 
 interface EditorProps {
   key?: number | string | undefined;  // eslint-disable-line react/require-default-props
@@ -9,6 +9,7 @@ interface EditorProps {
   value: StandardTypeArray;
   change?: (v: string | Record<string, any>, i: number) => void;  // eslint-disable-line react/require-default-props
   remove?: (i: number) => void;  // eslint-disable-line react/require-default-props
+  config: InfoConfig;
 }
 
 const typeDef = (props: StructureDef) => {

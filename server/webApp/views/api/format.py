@@ -1,7 +1,9 @@
+from enum import Enum
+import json
 import logging
 import traceback
 
-from flask import jsonify, request
+from flask import current_app, jsonify, request
 from flask_restful import Resource, reqparse
 from jadnschema.convert import dumps
 
@@ -30,14 +32,35 @@ class Format(Resource):
         return jsonify({
             "schema": output
         })
+    
+
+class FormatOptions(Resource):
+    """
+    Endpoint for api/format/options
+    """
+
+    def get(self):
+
+        format_options = current_app.formatOptionLogic.get_formats()
+        
+        try:
+            j = jsonify({
+                "format_options": format_options
+            }) 
+        except:
+            raise  traceback.print_exc()
+
+        return j
          
 
 # Register resources (APIs)
 resources = {
-    Format: {"urls": ("/", )}
+    Format: {"urls": ("/", )},
+    FormatOptions: {"urls": ("/options", )}
 }
 
 def add_resources(bp, url_prefix=""):
     for cls, opts in resources.items():
         args = [f"{url_prefix}{url}" for url in opts["urls"]] + opts.get("args", [])
-        bp.add_resource(cls, *args, **opts.get("kwargs", {}))              
+        bp.add_resource(cls, *args, **opts.get("kwargs", {}))         
+                 

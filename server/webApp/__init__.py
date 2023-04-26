@@ -1,6 +1,7 @@
 from flask import Flask
 from .config import DefaultConfig
 from .validator import Validator
+from .formatter.logic import FormatOptionLogic
 
 
 # Initialize the app
@@ -10,6 +11,7 @@ app.url_map.strict_slashes = False
 
 print("Starting OpenC2 Flask Server")
 app.validator = Validator()
+app.formatOptionLogic = FormatOptionLogic()
 
 from .views import *  # pylint: disable=wrong-import-position
 register_all(app)

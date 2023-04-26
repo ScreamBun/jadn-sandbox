@@ -4,6 +4,8 @@ import {
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { InfoConfig } from '../../interface';
+import { sbToastError } from 'components/common/SBToast';
 
 // Interface
 interface KeyObjectEditorProps {
@@ -13,19 +15,29 @@ interface KeyObjectEditorProps {
   value: Record<string, any>;
   change: (_v: Record<string, any>) => void;
   remove: (_id: string) => void;
+  config: InfoConfig;
 }
 
 type Pair = { key: string, value: any };
 
 // Key Object Editor
 const KeyObjectEditor = (props: KeyObjectEditorProps) => {
-  const { value, description, name, placeholder, change } = props;
+  const { value, description, name, placeholder, change, config } = props;
   let valueObj = Object.keys(value).map(k => ({ key: k, value: value[k] }));
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { dataset, value } = e.target;
     const idx = parseInt(dataset.index || '', 10);
     const type = dataset.type as keyof Pair;
+
+    //TODO:A Namespace Identifier (NSID) is, by default, a 1-8 character string beginning with a letter and containing only letters and numbers. 
+    //Default formatting can be overridden by inserting an alternative definition into a JADN schema.
+    if (type == 'key' && value) {
+      const regex = new RegExp(config.$NSID, "g");
+      if (!regex.test(value)) {
+        sbToastError('Error: Namespace Identifier does not match regex');
+      }
+    }
 
     const tmpvalue = [...valueObj];
     tmpvalue[idx][type] = value;

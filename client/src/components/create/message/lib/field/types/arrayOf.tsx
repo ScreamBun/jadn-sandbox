@@ -1,77 +1,97 @@
 
 //ArrayOf
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
+import { InfoConfig, SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { hasProperty } from '../../../../../utils';
 import { merge } from 'lodash';
-import { $MAX_ELEMENTS, $MINV } from 'components/create/consts';
+import { validateOptDataElem } from '../../utils';
+import { $MINV } from 'components/create/consts';
 
 // Interface
 interface ArrayOfFieldProps {
   def: StandardFieldArray;
   optChange: (n: string, v: any, i?: number) => void;
   parent?: string;
+  config: InfoConfig;
 }
 
 // ArrayOf Field Component
 const ArrayOfField = (props: ArrayOfFieldProps) => {
-  const { def, parent, optChange } = props;
+  const { def, parent, optChange, config } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
+  const [count, setCount] = useState(1);
   const [min, setMin] = useState(false);
   const [max, setMax] = useState(false);
-  const [count, setCount] = useState(1);
-  const [opts, setOpts] = useState<any[]>([]);
-  const [isValid, setisValid] = useState('');
+  const [opts, setOpts] = useState<any[]>([]); //track elem of vtype
+  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
+    color: '',
+    msg: []
+  });
 
   var optData: Record<string, any> = {};
   const [_idx, name, type, args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
+  const ref = useRef(true);
+  useEffect(() => {
+    const firstRender = ref.current;
+    if (firstRender) {
+      ref.current = false;
+      const validMsg = validateOptDataElem(config, optData, opts);
+      setErrMsg(validMsg);
+    }
+  });
+
+
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setisValid('');
-    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : $MAX_ELEMENTS;
-    const maxBool = count < maxCount;
-    if (!maxBool) {
-      setisValid('Error: Maximum of ' + maxCount)
+    //check if max fields has been created
+    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
+    setMax(maxCount <= count);
+    if (maxCount <= count) {
+      return;
     }
-    setCount(maxBool ? count => count + 1 : count);
-    setMax(!maxBool);
-    setMin(false);
-    //setOpts(opts => [...opts, undefined]);
+    // const updatedOpts = [...opts, ''];
+    //setOpts(updatedOpts);
+    setCount(count + 1);
   }
 
   const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setisValid('');
     e.preventDefault();
-    const minCount = hasProperty(optData, 'minv') ? optData.minv : $MINV;
+    //check if min fields exist
+    const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
+    setMin(count <= minCount);
+    if (count <= minCount) {
+      return;
+    }
+    //remove from end of arr
+    var updatedOpts = opts.filter((_elem, index) => {
+      return index != count - 1;
+    });
+    setOpts(updatedOpts);
 
-    const minBool = count > minCount;
-    if (minBool) {
-      setOpts(opts.slice(0, -1));
-      const tmpOpts = opts;
-      tmpOpts.pop();
-      if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-        optChange(msgName, Array.from(new Set(Object.values(tmpOpts))));
-      } else {
-        optChange(msgName, Array.from(Object.values(tmpOpts)));
-      }
+    //validate data
+    const errCheck = validateOptDataElem(config, optData, updatedOpts);
+    setErrMsg(errCheck);
+
+    //update data
+    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+      updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
     } else {
-      setisValid('Error: Minimum of ' + minCount)
+      updatedOpts = Array.from(Object.values(updatedOpts));
     }
 
-    setCount(minBool ? count => count - 1 : count);
-    setMin(!minBool);
-    setMax(false);
+    optChange(msgName, updatedOpts);
+    setCount(count - 1);
   }
 
   const onChange = (k: string, v: any, i: number) => {
@@ -134,11 +154,16 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     setOpts(updatedOpts);
 
     //send up arrayOf data
+    const errCheck = validateOptDataElem(config, optData, updatedOpts);
+    setErrMsg(errCheck);
+
     if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-      optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+      updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
     } else {
-      optChange(msgName, Array.from(Object.values(updatedOpts)));
+      updatedOpts = Array.from(Object.values(updatedOpts));
     }
+
+    optChange(msgName, updatedOpts);
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -166,7 +191,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const fields: any[] = [];
   for (let i = 0; i < count; ++i) {
-    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} />);
+    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />);
   }
 
   return (
@@ -191,7 +216,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
             <FontAwesomeIcon icon={faPlusSquare} size="lg" />
           </Button>
           {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          <div><small className='form-text' style={{ color: 'red' }}> {isValid}</small></div>
+          <div><small className='form-text' style={{ color: 'red' }}> {errMsg.msg}</small></div>
         </div>
 
         <div className='card-body mx-2'>

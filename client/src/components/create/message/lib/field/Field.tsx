@@ -3,6 +3,7 @@ import {
   BasicField, EnumeratedField, ChoiceField, RecordField, MapField, ArrayOfField, ArrayField, MapOfField
 } from './types/Types';
 import {
+  InfoConfig,
   SchemaJADN, StandardFieldArray
 } from '../../../schema/interface';
 import { useAppSelector } from '../../../../../reducers';
@@ -13,12 +14,13 @@ interface FieldProps {
   optChange: (k: string, v: any, i?: number) => void;
   idx?: number;
   parent?: string;
+  config: InfoConfig;
 }
 
 // Component
 const Field = (props: FieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN
-  const { def, idx, optChange, parent } = props;
+  const { def, idx, optChange, parent, config } = props;
 
   const parentName = parent || '';
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
@@ -26,6 +28,7 @@ const Field = (props: FieldProps) => {
   const args = {
     def,
     parent: parentName,
+    config,
     optChange: (k: string, v: any) => optChange(k, v, idx)
   };
 
@@ -36,7 +39,6 @@ const Field = (props: FieldProps) => {
   }
 
   switch (typeDef) {
-    //Binary?
     case 'Enumerated':
       return <EnumeratedField {...args} />;
     case 'Choice':

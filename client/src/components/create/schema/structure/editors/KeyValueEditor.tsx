@@ -40,6 +40,9 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
   }
 
   if (type === 'select' && options) {
+    if (options[0] != '') {
+      options.unshift('');
+    }
     inputArgs.children = options.map(opt => <option key={opt} value={opt} >{opt}</option>);
   }
 
