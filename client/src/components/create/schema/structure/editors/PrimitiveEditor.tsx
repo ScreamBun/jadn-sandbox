@@ -45,30 +45,13 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
       }
       const regex = new RegExp(config.$TypeName, "g");
       if (!regex.test(value)) {
-        sbToastError('Error: TypeName does not match regex');
+        sbToastError('Error: TypeName format is not permitted');
       }
     }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }
     change(updatevalue, dataIndex);
   }
-
-  /*   initState() {
-      const { value } = this.props;
-      if (value && Array.isArray(value)) {
-        const updatevalue = zip(TypeKeys, value);
-  
-        // eslint-disable-next-line react/destructuring-assignment
-        if (!equal(updatevalue, this.state.value)) {
-          this.setState(prevState => ({
-            value: {
-              ...prevState.value,
-              ...updatevalue
-            }
-          }));
-        }
-      }
-    } */
 
   const removeAll = () => {
     const { dataIndex, remove } = props;

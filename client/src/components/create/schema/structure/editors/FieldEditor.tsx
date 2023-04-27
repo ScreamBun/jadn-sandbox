@@ -51,7 +51,7 @@ const FieldEditor = (props: FieldEditorProps) => {
       }
       const regex = new RegExp(config.$FieldName, "g");
       if (!regex.test(value)) {
-        sbToastError('Error: FieldName does not match regex');
+        sbToastError('Error: FieldName format is not permitted');
       }
     }
     if (enumerated) {
@@ -70,24 +70,6 @@ const FieldEditor = (props: FieldEditorProps) => {
     const updatevalue = { ...valueObj, [key]: value }
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
-
-  /* initState() {
-    const { value } = this.props;
-    if (value && Array.isArray(value)) {
-      const updatevalue = zip(this.fieldKeys, value);
-
-      // eslint-disable-next-line react/destructuring-assignment
-      if (!equal(updatevalue, this.state.value)) {
-        this.setState(prevState => ({
-          value: {
-            ...prevState.value,
-            ...updatevalue
-          }
-        }));
-      }
-    }
-  }
- */
 
   const removeAll = () => {
     const { dataIndex, remove } = props;

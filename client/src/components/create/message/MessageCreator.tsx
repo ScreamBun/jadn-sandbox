@@ -34,8 +34,8 @@ const MessageCreator = (props: any) => {
     const configDefs = schemaObj.info && schemaObj.info.config ? schemaObj.info.config : [];
     if (configDefs) {
         for (const [key, value] of Object.entries(configDefs)) {
-            const parsedVal = /\d/.test(value) ? parseInt(value) : value;
-            if (key in configOpt && configOpt[key] != value) {
+            const parsedVal = /\d+$/.test(value) ? parseInt(value) : value;
+            if (key in configOpt && configOpt[key] != value && value != '') {
                 setConfigOpt({
                     ...configOpt,
                     [key]: parsedVal

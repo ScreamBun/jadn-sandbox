@@ -30,12 +30,10 @@ const KeyObjectEditor = (props: KeyObjectEditorProps) => {
     const idx = parseInt(dataset.index || '', 10);
     const type = dataset.type as keyof Pair;
 
-    //TODO:A Namespace Identifier (NSID) is, by default, a 1-8 character string beginning with a letter and containing only letters and numbers. 
-    //Default formatting can be overridden by inserting an alternative definition into a JADN schema.
     if (type == 'key' && value) {
       const regex = new RegExp(config.$NSID, "g");
       if (!regex.test(value)) {
-        sbToastError('Error: Namespace Identifier does not match regex');
+        sbToastError('Error: Namespace Identifier format is not permitted');
       }
     }
 
