@@ -56,8 +56,6 @@ const SchemaVisualizer = () => {
             try {
                 dispatch(validateSchema(schemaObj))
                     .then((validateSchemaVal) => {
-
-                        //create ability to convert schema into all formats
                         if (validateSchemaVal.payload.valid_bool == true && conversion != 'all') {
                             try {
                                 dispatch(convertSchema(schemaObj, conversion))
