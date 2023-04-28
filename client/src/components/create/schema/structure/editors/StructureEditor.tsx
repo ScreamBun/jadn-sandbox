@@ -90,7 +90,7 @@ const StructureEditor = (props: StructureEditorProps) => {
       fieldName = 'field_value_' + fieldCount;
       field = [fieldCount, fieldName, ''] as EnumeratedFieldArray;
     } else {
-      //TODO: default field type is String ? Fix line in field.tsx too.
+      //default field type is String
       fieldName = 'field_name_' + fieldCount;
       field = [fieldCount, fieldName, 'String', [], ''] as StandardFieldArray;
     }

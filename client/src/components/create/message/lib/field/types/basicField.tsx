@@ -1,6 +1,6 @@
 //basic
 import React, { useState } from 'react';
-import { Button, Input } from 'reactstrap';
+import { Button, Input, Label } from 'reactstrap';
 import dayjs from 'dayjs'
 import { v4 as uuid4 } from 'uuid';
 
@@ -8,9 +8,9 @@ import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from 'reducers';
-import { $MAX_STRING, $MINV } from 'components/create/consts';
+import { validateOptData } from '../../utils';
+import { hasProperty } from 'react-json-editor/dist/utils';
 
 // Interface
 interface BasicFieldProps {
@@ -34,84 +34,18 @@ const BasicField = (props: BasicFieldProps) => {
   let typeDef = typeDefs.length === 1 ? typeDefs[0][1] : 'text';
   if (typeDef) {
     optData = (opts2obj(opts));
-    //TODO type opts : format
   }
 
   const [value, setValue] = useState('');
-  const [isValid, setisValid] = useState({
+  const [isValid, setisValid] = useState<{ color: string, msg: string[] }>({
     color: '',
     msg: []
-  })
+  });
 
   const createID = () => {
     const randomID = uuid4();
     setValue(randomID);
     optChange(msgName.join('.'), randomID, arr);
-  }
-
-  const validate = (data: any) => {
-    let valc = '';
-    let valm = [];
-    if (optData && data) {
-      if (hasProperty(optData, 'minf')) {
-        if (data < optData.minf) {
-          valc = 'red';
-          valm.push('Minf Error: must be greater than ' + optData.minf);
-        }
-      }
-      if (hasProperty(optData, 'maxf')) {
-        if (data > optData.maxf) {
-          valc = 'red';
-          valm.push('Maxf Error: must be less than ' + optData.maxf);
-        }
-      }
-      if (hasProperty(optData, 'minv')) {
-        if (typeof data == 'string') {
-          if (data.length < optData.minv) {
-            valc = 'red';
-            valm.push('Minv Error: must be greater than ' + optData.minv + ' characters');
-          }
-        } else {
-          if (data < optData.minv) {
-            valc = 'red';
-            valm.push('Minv Error: must be greater than ' + optData.minv);
-          }
-        }
-      } else {
-        optData.minv = $MINV;
-        if (data < optData.minv) {
-          valc = 'red';
-          valm.push('Minv Error: must be greater than ' + optData.minv);
-        }
-      }
-      if (hasProperty(optData, 'maxv')) {
-        if (typeof data == 'string') {
-          if (data.length > optData.maxv) {
-            valc = 'red';
-            valm.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
-          }
-        } else {
-          if (data > optData.maxv) {
-            valc = 'red';
-            valm.push('Maxv Error: must be less than ' + optData.maxv);
-          }
-        }
-      } else {
-        optData.maxv = $MAX_STRING;
-        if (data.length > optData.maxv) {
-          valc = 'red';
-          valm.push('Maxv Error: must be less than ' + optData.maxv);
-        }
-      }
-      if (hasProperty(optData, 'pattern') && typeof data == 'string') {
-        if (!optData.pattern.test(data)) {
-          valc = 'red';
-          valm.push('Pattern Error: must match regular expression specified by pattern: ' + optData.pattern);
-        }
-      }
-    }
-    //TODO: check format
-    setisValid({ color: valc, msg: valm });
   }
 
   let err: any[] = [];
@@ -122,6 +56,8 @@ const BasicField = (props: BasicFieldProps) => {
   if (name >= 0) { // name is type if not field    
     return (<Field def={def} parent={msgName.join('.')} optChange={optChange} />);
   }
+
+  //NOTE this is OC2 specific 
   if (name == 'command_id') {
     return (
       <div className='form-group'>
@@ -136,14 +72,22 @@ const BasicField = (props: BasicFieldProps) => {
               value={value}
               type={typeDef}
               name={name}
-              onChange={e => { setValue(e.target.value); validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
+              onChange={e => {
+                setValue(e.target.value);
+                const validMsg = validateOptData(optData, e.target.value);
+                setisValid(validMsg);
+                optChange(msgName.join('.'), e.target.value, arr);
+              }}
             />
           </div>
           {err}
         </div>
       </div>
     );
-  } else if (typeDefName.toLowerCase() == 'date-time') {
+  }
+
+  //MOVE to integer/numeric --- NOTE this is OC2 specific --- changes to milliseconds
+  if (typeDefName.toLowerCase() == 'date-time') {
     return (
       <div className='form-group'>
         <div className='card'>
@@ -158,15 +102,82 @@ const BasicField = (props: BasicFieldProps) => {
               step="any"
               min={dayjs().format('YYYY-MM-DD HH:mm:ss')}
               pattern='/[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]/'
-              onChange={e => { validate(dayjs(e.target.value).valueOf()); optChange(msgName.join('.'), dayjs(e.target.value).valueOf(), arr); }}
+              onChange={e => {
+                const validMsg = validateOptData(optData, dayjs(e.target.value).valueOf());
+                setisValid(validMsg);
+                optChange(msgName.join('.'), dayjs(e.target.value).valueOf(), arr);
+              }}
             />
           </div>
           {err}
         </div>
       </div>
     );
+  }
 
-  } else if (typeDef.toLowerCase() == 'number' || typeDef.toLowerCase() == 'integer') {
+  if (typeDef.toLowerCase() == 'boolean') {
+    return (
+      <div className='form-group'>
+        <Label check>
+          <Input
+            type={'checkbox'}
+            name={name}
+            onChange={e => {
+              const validMsg = validateOptData(optData, e.target.value);
+              setisValid(validMsg);
+              optChange(msgName.join('.'), e.target.checked, arr);
+            }}
+          />
+          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+        </Label>
+        {err}
+      </div>
+    );
+  }
+
+  if (typeDef.toLowerCase() == 'binary') {
+    return (
+      <div className='form-group'>
+        <div className='card'>
+          <div className='card-header p-2'>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
+          <div className='card-body m-0 p-0'>
+            <Input
+              type={typeDef}
+              name={name}
+              defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+              placeholder={optData.format ? optData.format : ''}
+              onChange={e => {
+                if (e.target.value.match(/^[0-1]{1,}$/g)) {
+                  const validMsg = validateOptData(optData, e.target.value);
+                  setisValid(validMsg);
+                  optChange(msgName.join('.'), e.target.value, arr);
+                } else {
+                  if (e.target.value != '') {
+                    //validation: only allow 1 and 0 input
+                    setisValid(validMsg => ({
+                      color: 'red',
+                      msg: [...validMsg.msg,
+                      validMsg.msg.includes("Error: Invalid Binary value") ? '' :
+                        "Error: Invalid Binary value"]
+                    }))
+                  }
+                  optChange(msgName.join('.'), '', arr);
+                }
+              }}
+              style={{ borderColor: isValid.color }}
+            />
+          </div>
+          {err}
+        </div>
+      </div>
+    );
+  }
+
+  if (typeDef.toLowerCase() == 'number' || typeDef.toLowerCase() == 'integer') {
     return (
       <div className='form-group'>
         <div className='card'>
@@ -179,47 +190,12 @@ const BasicField = (props: BasicFieldProps) => {
               type={'number'}
               step='any'
               name={name}
-              onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
-            />
-          </div>
-          {err}
-        </div>
-      </div>
-    );
-
-  } else if (typeDef.toLowerCase() == 'boolean') {
-    return (
-      <div className='form-group'>
-        <div className='card'>
-          <div className='card-header p-2'>
-            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          </div>
-          <div className='card-body m-0 p-0'>
-            <Input
-              type={'checkbox'}
-              name={name}
-              onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.checked, arr); }}
-            />
-          </div>
-          {err}
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div className='form-group'>
-        <div className='card'>
-          <div className='card-header p-2'>
-            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          </div>
-          <div className='card-body m-0 p-0'>
-            <Input
-              type={typeDef}
-              name={name}
-              onChange={e => { validate(e.target.value); optChange(msgName.join('.'), e.target.value, arr); }}
-              style={{ borderColor: isValid.color }}
+              placeholder={optData.format ? optData.format : ''}
+              onChange={e => {
+                const validMsg = validateOptData(optData, e.target.value);
+                setisValid(validMsg);
+                optChange(msgName.join('.'), e.target.value, arr);
+              }}
             />
           </div>
           {err}
@@ -227,6 +203,33 @@ const BasicField = (props: BasicFieldProps) => {
       </div>
     );
   }
+
+  return (
+    <div className='form-group'>
+      <div className='card'>
+        <div className='card-header p-2'>
+          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+        </div>
+        <div className='card-body m-0 p-0'>
+          <Input
+            type={typeDef}
+            name={name}
+            defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+            placeholder={optData.format ? optData.format : ''}
+            onChange={e => {
+              const validMsg = validateOptData(optData, e.target.value);
+              setisValid(validMsg);
+              optChange(msgName.join('.'), e.target.value, arr);
+            }}
+            style={{ borderColor: isValid.color }}
+          />
+        </div>
+        {err}
+      </div>
+    </div>
+  );
+
 }
 
 export default BasicField;

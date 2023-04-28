@@ -53,7 +53,7 @@ const SchemaTranslator = () => {
             try {
                 dispatch(validateSchema(schemaObj))
                     .then((validateSchemaVal) => {
-                        if (validateSchemaVal.payload.valid_bool == true && translation) {
+                        if (validateSchemaVal.payload.valid_bool == true && translation != 'all') {
                             try {
                                 dispatch(convertSchema(schemaObj, translation))
                                     .then((convertSchemaVal) => {
