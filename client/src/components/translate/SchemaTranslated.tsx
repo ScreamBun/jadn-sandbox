@@ -9,6 +9,7 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
+import SBCollapseViewer from "components/common/SBCollapseViewer";
 const validTranslations = ['JSON', 'Relax', 'XSD'];
 
 const SchemaTranslated = (props: any) => {
@@ -91,7 +92,9 @@ const SchemaTranslated = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={translatedSchema} isReadOnly={true} convertTo={translation}></SBEditor>
+                {translation == 'all' && translatedSchema ? <SBCollapseViewer data={translatedSchema} /> :
+                    <SBEditor data={translatedSchema} isReadOnly={true} convertTo={translation}></SBEditor>
+                }
             </div>
         </div>
     )

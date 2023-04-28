@@ -10,7 +10,7 @@ import { sbToastError } from "./SBToast";
 //toggle each view
 //allow user to download or copy to clipboard
 const SBCollapseViewer = (props: any) => {
-    const { data } = props;
+    //const { data } = props;
     const [toggle, setToggle] = useState('');
 
     const onToggle = (index: number) => {
@@ -25,7 +25,7 @@ const SBCollapseViewer = (props: any) => {
     const onDownload = (index: number) => {
         //TODO: change filename ext
         try {
-            const item = data[index];
+            const item = data[index].schema;
             const filename = `schema.json`;
 
             const blob = new Blob([item], { type: "application/json" });
@@ -42,26 +42,33 @@ const SBCollapseViewer = (props: any) => {
             sbToastError(`File cannot be downloaded`);
         }
     }
+    let data = [
+        { language: "html", schema: 'schema data for html' },
+        { language: "html", schema: 'schema data for html' },
+        { language: "html", schema: 'schema data for html' },
+    ]
 
-    const listData = data.map((message: string, i: number) => {
-        <div className="card" key={i}>
-            <div className="card-header">
-                <h5 className="mb-0">
-                    <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
-                        Schema #{i}
-                    </button>
-                    <SBCopyToClipboard buttonId={`copy${i}`} data={message} customClass='float-right' />
-                    <Button id={`download${i}`} title="Download" color="info" className='btn-sm mr-1 float-right' onClick={() => onDownload(i)}>
-                        <FontAwesomeIcon icon={faFileDownload} />
-                    </Button>
-                </h5>
+    const listData = data.map((obj: any, i: number) => {
+        return (
+            <div className="card" key={i}>
+                <div className="card-header">
+                    <h5 className="mb-0">
+                        <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
+                            {obj.language}
+                        </button>
+                        <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-right' />
+                        <Button id={`download${i}`} title="Download" color="info" className='btn-sm mr-1 float-right' onClick={() => onDownload(i)}>
+                            <FontAwesomeIcon icon={faFileDownload} />
+                        </Button>
+                    </h5>
+                </div>
+
+                {toggle == `${i}` ?
+                    <div className="card-body" key={i}>
+                        <SBEditor data={obj.schema} isReadOnly={true} height={'20em'}></SBEditor>
+                    </div> : ''}
             </div>
-
-            {toggle == `${i}` ?
-                <div className="card-body" key={i}>
-                    <SBEditor data={message} isReadOnly={true} height={'20em'}></SBEditor>
-                </div> : ''}
-        </div>
+        );
     });
 
     return (
