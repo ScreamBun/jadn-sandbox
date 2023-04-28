@@ -42,6 +42,8 @@ const SBCollapseViewer = (props: any) => {
             sbToastError(`File cannot be downloaded`);
         }
     }
+
+    //TODO: remove when data props has been properly fixed
     let data = [
         { language: "html", schema: 'schema data for html' },
         { language: "html", schema: 'schema data for html' },
