@@ -74,6 +74,11 @@ const SchemaTranslator = () => {
                                     sbToastError(err.message);
                                 }
                             }
+                        } else if (validateSchemaVal.payload.valid_bool == true && translation == 'all') {
+                            //dispatch make-all-formats
+                            //.then setConvertedSchema([])
+                            //conversion check 
+                            //.catch
                         } else if (validateSchemaVal.payload.valid_bool == false) {
                             sbToastError("Invalid Schema");
                         } else if (translation == '') {
