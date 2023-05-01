@@ -7,6 +7,8 @@ class FormatType(Enum):
     JADN = 'JADN Formats'
     BINARY = 'Binary'
     INTEGER = 'Integer'
+    NUMBER = 'Number'
+    ARRAY = 'Array'
     STRING = 'String'
 
 

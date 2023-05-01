@@ -41,6 +41,7 @@ class FormatOptions(Resource):
 
     def get(self):
 
+        #get_formats of given format type from parameters
         format_options = current_app.formatOptionLogic.get_formats()
         
         try:
