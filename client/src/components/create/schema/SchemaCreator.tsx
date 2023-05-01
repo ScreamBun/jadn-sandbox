@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem, Input } from 'reactstrap'
 import { Draggable, Droppable } from 'react-drag-and-drop';
 import { Info, Types } from './structure/structure';
@@ -21,6 +21,7 @@ const SchemaCreator = (props: any) => {
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
     const schemaOpts = useSelector(getAllSchemas);
+    const ref = useRef('');
 
     const [configOpt, setConfigOpt] = useState({
         $MaxBinary: $MAX_BINARY,
@@ -113,7 +114,7 @@ const SchemaCreator = (props: any) => {
         e.preventDefault();
         setSelectedFile('');
         setGeneratedSchema('');
-        document.getElementById("schema-file").value = '';
+        ref.current.value = '';
     }
 
     const schemaDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -272,7 +273,7 @@ const SchemaCreator = (props: any) => {
                             </select>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <input type="file" id="schema-file" name="schema-file" accept=".jadn" onChange={onFileChange} className='form-control-sm' />
+                            <input type="file" id="schema-file" name="schema-file" accept=".jadn" ref={ref} onChange={onFileChange} className='form-control-sm' />
                             <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload}>
                                 <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
                             </Button>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -19,6 +19,7 @@ const JADNSchemaLoader = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
+    const ref = useRef('');
 
     useEffect(() => {
         dispatch(info());
@@ -211,9 +212,9 @@ const JADNSchemaLoader = (props: any) => {
 
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        ref.current.value = '';
         setSelectedFile('');
         setLoadedSchema('');
-        document.getElementById("schema-file").value = '';
     }
 
     return (
@@ -233,7 +234,7 @@ const JADNSchemaLoader = (props: any) => {
                             </select>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <input type="file" id="schema-file" name="schema-file" accept=".jadn" onChange={onFileChange} className='form-control-sm' />
+                            <input type="file" id="schema-file" name="schema-file" accept=".jadn" ref={ref} onChange={onFileChange} className='form-control-sm' />
                             <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload}>
                                 <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
                             </Button>
