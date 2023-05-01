@@ -39,10 +39,10 @@ class FormatOptions(Resource):
     Endpoint for api/format/options
     """
 
-    def get(self):
+    def get(self, type):
 
         #get_formats of given format type from parameters
-        format_options = current_app.formatOptionLogic.get_formats()
+        format_options = current_app.formatOptionLogic.get_formats_by_type(type)
         
         try:
             j = jsonify({
@@ -57,7 +57,7 @@ class FormatOptions(Resource):
 # Register resources (APIs)
 resources = {
     Format: {"urls": ("/", )},
-    FormatOptions: {"urls": ("/options", )}
+    FormatOptions: {"urls": ("/options/<string:type>", )}
 }
 
 def add_resources(bp, url_prefix=""):

@@ -1,3 +1,4 @@
+import json
 from ..models.format_option_model import FormatOptionModel, FormatType
 
 
@@ -83,7 +84,7 @@ class FormatOptionLogic:
 
         formats_returned = []
         for format in formats:
-            if format.type.value.lower() == type.lower():
+            if format['type'].lower() == type.lower():
                 formats_returned.append(format)
 
         return formats_returned      
