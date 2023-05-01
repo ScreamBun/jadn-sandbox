@@ -5,6 +5,9 @@ import json
 class FormatType(Enum):
     JSON = 'JSON Formats'
     JADN = 'JADN Formats'
+    BINARY = 'Binary'
+    INTEGER = 'Integer'
+    STRING = 'String'
 
 
 class FormatOptionModel():  
