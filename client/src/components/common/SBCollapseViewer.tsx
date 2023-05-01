@@ -1,10 +1,7 @@
-import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
-import { Button } from "reactstrap";
 import SBCopyToClipboard from "./SBCopyToClipboard";
 import SBEditor from "./SBEditor";
-import { sbToastError } from "./SBToast";
+import SBDownloadFile from "./SBDownloadFile";
 
 //given a list of data
 //toggle each view
@@ -19,27 +16,6 @@ const SBCollapseViewer = (props: any) => {
 
         } else {
             setToggle(`${index}`);
-        }
-    }
-
-    const onDownload = (index: number) => {
-        //TODO: change filename ext
-        try {
-            const item = data[index].schema;
-            const filename = `schema.json`;
-
-            const blob = new Blob([item], { type: "application/json" });
-            const elem = document.createElement('a');
-            elem.href = URL.createObjectURL(blob);
-            elem.download = filename;
-            document.body.appendChild(elem);
-            elem.click();
-
-            elem.remove();
-            URL.revokeObjectURL(elem.href);
-        } catch (err) {
-            console.log(err);
-            sbToastError(`File cannot be downloaded`);
         }
     }
 
@@ -59,9 +35,7 @@ const SBCollapseViewer = (props: any) => {
                             {obj.language}
                         </button>
                         <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-right' />
-                        <Button id={`download${i}`} title="Download" color="info" className='btn-sm mr-1 float-right' onClick={() => onDownload(i)}>
-                            <FontAwesomeIcon icon={faFileDownload} />
-                        </Button>
+                        <SBDownloadFile buttonId={`download${i}`} customClass='mr-1 float-right' data={obj.schema} ext={obj.language} />
                     </h5>
                 </div>
 

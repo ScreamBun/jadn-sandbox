@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileDownload, faFilePdf, faWindowMaximize, faTableColumns, faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { faFilePdf, faWindowMaximize, faTableColumns, faFileImage } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
@@ -14,6 +14,7 @@ import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onDownloadSVGClick, onGVPopOutClick } from "components/common/SBGvPreviewer";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
+import SBDownloadFile from "components/common/SBDownloadFile";
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
@@ -45,32 +46,6 @@ const SchemaVisualized = (props: any) => {
         setConversion(e.target.value);
         setConvertedSchema('');
         setSplitViewFlag(false);
-    }
-
-    const onDownloadSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (convertedSchema != '') {
-            try {
-                const data = convertedSchema;
-                const fmt = conversion;
-                const filename = `schema.${fmt}`;
-
-                const blob = new Blob([data], { type: "application/json" });
-                const elem = document.createElement('a');
-                elem.href = URL.createObjectURL(blob);
-                elem.download = filename;
-                document.body.appendChild(elem);
-                elem.click();
-
-                elem.remove();
-                URL.revokeObjectURL(elem.href);
-            } catch (err) {
-                console.log(err);
-                sbToastError(`File cannot be downloaded`);
-            }
-        } else {
-            sbToastError(`No Converted Schema Exists`);
-        }
     }
 
     const onDownloadPDFClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -138,9 +113,7 @@ const SchemaVisualized = (props: any) => {
                     <div className='col-md-9'>
                         <div className={`${conversion == 'all' && convertedSchema ? ' d-none' : ''}`}>
                             <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
-                            <Button id='schemaDownload' title="Download converted schema" color="info" className={`btn-sm mr-1 float-right${convertedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
-                                <FontAwesomeIcon icon={faFileDownload} />
-                            </Button>
+                            <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema ? '' : ' d-none'}`} data={convertedSchema} ext={conversion} />
                         </div>
 
                         <div className={`${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>

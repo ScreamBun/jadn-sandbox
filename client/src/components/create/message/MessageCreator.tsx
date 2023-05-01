@@ -4,11 +4,9 @@ import { TabContent, TabPane, Button, FormText } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib/GenMsgLib'
 import { getSelectedSchema } from 'reducers/util'
 import { StandardFieldArray } from '../schema/interface'
-import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { sbToastError } from 'components/common/SBToast'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
+import SBDownloadFile from 'components/common/SBDownloadFile'
 
 const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
@@ -67,31 +65,6 @@ const MessageCreator = (props: any) => {
         );
     }
 
-    const msgDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (generatedMessage != '{}') {
-            try {
-                const data = JSON.stringify(generatedMessage, null, 2);
-                const filename = `message.json`;
-
-                const blob = new Blob([data], { type: "application/json" });
-                const elem = document.createElement('a');
-                elem.href = URL.createObjectURL(blob);
-                elem.download = filename;
-                document.body.appendChild(elem);
-                elem.click();
-
-                elem.remove();
-                URL.revokeObjectURL(elem.href);
-            } catch (err) {
-                console.log(err);
-                sbToastError(`File cannot be downloaded`);
-            }
-        } else {
-            sbToastError(`No Message Generated`);
-        }
-    }
-
     return (
         <div className="card">
             <div className="card-header p-2">
@@ -105,9 +78,8 @@ const MessageCreator = (props: any) => {
                     </div>
                     <div className='col'>
                         <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' shouldStringify={true} />
-                        <Button id='msgDownload' title="Download message" color="info" className='btn-sm float-right mr-1' onClick={msgDownload}>
-                            <FontAwesomeIcon icon={faFileDownload} />
-                        </Button>
+                        <SBDownloadFile buttonId='msgDownload' customClass='float-right mr-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
+
                         <Button onClick={() => setActiveView('message')} className={`float-right btn-sm mr-1 ${activeView == 'message' ? ' d-none' : ''}`} color="info">View Message</Button>
                         <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
                     </div>
