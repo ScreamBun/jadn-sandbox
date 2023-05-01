@@ -42,9 +42,9 @@ class FormatOptionLogic:
     f32 = FormatOptionModel("f32", "float32", "Serialize as IEEE 754 Single-Precision Float (#7.26)", FormatType.NUMBER.value, "").__dict__
 
     def get_formats(self):
+
         formats = []
-        #iterate list
-        #append format if formatType matches
+
         formats.append(self.date_time)
         formats.append(self.date)
         formats.append(self.time)
@@ -76,3 +76,14 @@ class FormatOptionLogic:
         formats.append(self.f32)
 
         return formats  
+    
+    def get_formats_by_type(self, type: str):
+
+        formats = self.get_formats()
+
+        formats_returned = []
+        for format in formats:
+            if format.type.value == type:
+                formats_returned.append(format)
+
+        return formats_returned      
