@@ -81,10 +81,13 @@ class FormatOptionLogic:
     def get_formats_by_type(self, type: str):
 
         formats = self.get_formats()
-
         formats_returned = []
-        for format in formats:
-            if format['type'].lower() == type.lower():
-                formats_returned.append(format)
+
+        if type:
+            for format in formats:
+                if format['type'].lower() == type.lower():
+                    formats_returned.append(format)
+        else:
+            formats_returned = formats
 
         return formats_returned      
