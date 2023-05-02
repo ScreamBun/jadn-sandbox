@@ -55,8 +55,12 @@ const MessageValidator = () => {
                         if (submitVal && submitVal.payload.valid_bool) {
                             sbToastSuccess(submitVal.payload.valid_msg)
                         } else {
-                            for (const index in submitVal.payload.valid_msg) {
-                                sbToastError(submitVal.payload.valid_msg[index])
+                            if (submitVal.payload.valid_msg.length != 1 && typeof submitVal.payload.valid_msg == 'object') {
+                                for (const index in submitVal.payload.valid_msg) {
+                                    sbToastError(submitVal.payload.valid_msg[index])
+                                }
+                            } else {
+                                sbToastError(submitVal.payload.valid_msg)
                             }
                         }
                     })
