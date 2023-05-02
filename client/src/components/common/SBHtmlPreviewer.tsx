@@ -1,20 +1,31 @@
 import React from "react";
+import SBEditor from "./SBEditor";
+
+export const onHTMLPopOutClick = (convertedSchema) => {
+    const blob = new Blob([convertedSchema], { type: "text/html" });
+    const data = URL.createObjectURL(blob);
+    window.open(data);
+}
 
 const SBHtmlPreviewer = (props: any) => {
 
-    const { htmlText, showPreviewer, height = "20em" } = props;
+    const { htmlText, showPreviewer, conversion } = props;
     const previewerClassName = "previewer " + (showPreviewer ? "hide" : "");
 
     return (
-        <div className="card bg-secondary" style={{ 'height': height, 'overflow': 'auto' }}>
-            <div className={previewerClassName}>
-                <div id="preview"
-                    className="previewer-content"
-                    dangerouslySetInnerHTML={{ __html: htmlText }}
-                >
+        <>
+            <SBEditor data={htmlText} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
+
+            <div className="card bg-secondary" style={{ 'height': "20em", 'overflow': 'auto' }}>
+                <div className={previewerClassName}>
+                    <div id="preview"
+                        className="previewer-content"
+                        dangerouslySetInnerHTML={{ __html: htmlText }}
+                    >
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 export default SBHtmlPreviewer;
