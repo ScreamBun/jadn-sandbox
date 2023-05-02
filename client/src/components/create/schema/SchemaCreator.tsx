@@ -11,11 +11,8 @@ import { getAllSchemas } from 'reducers/util';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import { format } from 'actions/format';
 import SBEditor from 'components/common/SBEditor';
-<<<<<<< HEAD
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../consts';
-=======
 import SBDownloadFile from 'components/common/SBDownloadFile';
->>>>>>> makeArtifacts
 
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();

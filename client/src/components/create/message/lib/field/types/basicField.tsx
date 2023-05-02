@@ -33,10 +33,14 @@ const BasicField = (props: BasicFieldProps) => {
   const typeDefs = schema.types.filter(t => t[0] === type);
   let typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
   if (typeDefs.length === 1) {     //primitive field
-    optData = (opts2obj(typeDef[2]));
+    if (typeDef[2].length != 0) {
+      optData = (opts2obj(typeDef[2]));
+    }
     baseType = typeDef[1];
   } else {     //structured field
-    optData = (opts2obj(opts));
+    if (opts.length != 0) {
+      optData = (opts2obj(opts));
+    }
     baseType = type;
   }
 

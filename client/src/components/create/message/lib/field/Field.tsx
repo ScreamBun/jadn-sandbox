@@ -24,7 +24,7 @@ const Field = (props: FieldProps) => {
 
   const parentName = parent || '';
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
-  var typeDef = typeDefs.length === 1 ? typeDefs[0][1] : def[2];
+  var typeDef = typeDefs.length === 1 ? typeDefs[0][1] : def[2]; //find type otherwise, type is JADN type
   const args = {
     def,
     parent: parentName,
