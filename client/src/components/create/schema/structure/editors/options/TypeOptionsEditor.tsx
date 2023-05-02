@@ -24,9 +24,9 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
   const ref = useRef(true);
   useEffect(() => {
     const firstRender = ref.current;
-    if (firstRender) {
+    if (firstRender && optionType != undefined) {
       ref.current = false;
-      dispatch(getValidFormatOpts())
+      dispatch(getValidFormatOpts(optionType))
       //TODO: get format options based on type
         .then((val) => {
           setFormatOpts(val.payload.format_options.map(obj => obj.ui_name));

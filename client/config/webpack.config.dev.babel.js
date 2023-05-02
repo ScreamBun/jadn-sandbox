@@ -36,12 +36,13 @@ module.exports = merge(baseConfig, {
     compress: true,
     port: 3000,
     hot: true,
-    open: false,
+    open: true,
     historyApiFallback: true,
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:8080',
-        secure: false
+        secure: false,
+        changeOrigin: true
       }
     },
     static: {

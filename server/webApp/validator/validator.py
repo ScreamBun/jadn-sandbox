@@ -14,6 +14,8 @@ from jadnschema.convert.message import Message, SerialFormats
 from unittest import TextTestRunner
 
 from pydantic import ValidationError
+
+from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
 from .profiles import get_profile_suite, load_test_suite, tests_in_suite, TestResults
 
 
@@ -95,30 +97,18 @@ class Validator:
                 return True, random.choice(self.validMsgs), json.dumps(msg), msg
 
             except Exception as err: 
+                errorMsgs=[]
                 if isinstance(err, ValidationError):
-                    err_msg = self.getValidationErrorMsg(err)
-                    err_path = self.getValidationErrorPath(err)
-                    return False, f"{err_msg} \n {err_path}", "", msg
+                    for error in err.errors():
+                        err_msg = getValidationErrorMsg(error)
+                        err_path = getValidationErrorPath(error)
+                        errorMsgs.append(err_msg + " at " +  err_path)
+                    return False, errorMsgs, "", msg
                 else:
-                    return False, f"{err}", "", msg
+                    return False, err, "", msg
 
         else:
             return False, "Decode Invalid - The decode message type was not found in the schema", "", msg
-
-    # TODO: Move to Utils
-    def getValidationErrorMsg(err: ValidationError):
-        errs = err.errors()
-        err = errs[0]
-        err_msg = err['msg']
-        return err_msg
-    
-    # TODO: Move to Utils
-    def getValidationErrorPath(err: ValidationError):
-        err_loc_tuple = err['loc']
-        err_loc_list = list(err_loc_tuple)
-        err_loc_list.remove('__root__')
-        err_path = " / ".join(err_loc_list)
-        return err_path
 
     # Profile test validation
     def getProfileTests(self, profile: str = None) -> dict:

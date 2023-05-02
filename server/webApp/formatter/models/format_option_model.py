@@ -3,8 +3,11 @@ import json
 
 
 class FormatType(Enum):
-    JSON = 'JSON Formats'
-    JADN = 'JADN Formats'
+    BINARY = 'Binary'
+    INTEGER = 'Integer'
+    NUMBER = 'Number'
+    ARRAY = 'Array'
+    STRING = 'String'
 
 
 class FormatOptionModel():  
