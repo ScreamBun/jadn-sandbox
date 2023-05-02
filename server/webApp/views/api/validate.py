@@ -41,7 +41,7 @@ class Validate(Resource):
             "message_format": args["message-format"],
             "message_type": args["message-decode"],
             "valid_bool": val,
-            "valid_msg": valMsg
+            "valid_msg": [valMsg]
         }
 
         return jsonify(page_data)
