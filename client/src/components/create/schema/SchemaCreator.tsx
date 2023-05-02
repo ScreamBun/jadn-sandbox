@@ -4,14 +4,18 @@ import { Draggable, Droppable } from 'react-drag-and-drop';
 import { Info, Types } from './structure/structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faFileDownload, faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { sbToastError } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import { format } from 'actions/format';
 import SBEditor from 'components/common/SBEditor';
+<<<<<<< HEAD
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../consts';
+=======
+import SBDownloadFile from 'components/common/SBDownloadFile';
+>>>>>>> makeArtifacts
 
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -117,28 +121,6 @@ const SchemaCreator = (props: any) => {
         setSelectedFile('');
         setGeneratedSchema('');
         ref.current.value = '';
-    }
-
-    const schemaDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        try {
-            const formattedSchema = data;
-            const filename = `schema.jadn`; //convert to jadn??
-
-            const blob = new Blob([formattedSchema], { type: "application/json" });
-            //content: `data:application/json;charset=utf-8,${encodeURIComponent(FormatJADN(prevState.schema))}`
-            const elem = document.createElement('a');
-            elem.href = URL.createObjectURL(blob);
-            elem.download = filename;
-            document.body.appendChild(elem);
-            elem.click();
-
-            elem.remove();
-            URL.revokeObjectURL(elem.href);
-        } catch (err) {
-            console.log(err);
-            sbToastError(`File cannot be downloaded`);
-        }
     }
 
     let infoKeys;
@@ -283,9 +265,7 @@ const SchemaCreator = (props: any) => {
                     </div>
                     <div className='col-md-9'>
                         <SBCopyToClipboard buttonId='copyMessage' data={data} customClass='float-right' />
-                        <Button id='schemaDownload' title="Download generated schema" color="info" className='btn-sm float-right mr-1' onClick={schemaDownload}>
-                            <FontAwesomeIcon icon={faFileDownload} />
-                        </Button>
+                        <SBDownloadFile buttonId='schemaDownload' customClass='float-right mr-1' data={data} />
                         <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="info">View Schema</Button>
                         <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
                     </div>

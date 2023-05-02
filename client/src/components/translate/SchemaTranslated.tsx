@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
-import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
+import SBCollapseViewer from "components/common/SBCollapseViewer";
+import SBDownloadFile from "components/common/SBDownloadFile";
 const validTranslations = ['JSON', 'Relax', 'XSD'];
 
 const SchemaTranslated = (props: any) => {
@@ -35,32 +34,6 @@ const SchemaTranslated = (props: any) => {
         setTranslatedSchema('');
     }
 
-    const onDownloadSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (translatedSchema != '') {
-            try {
-                const data = translatedSchema;
-                const fmt = translation;
-                const filename = `schema.${fmt}`;
-
-                const blob = new Blob([data], { type: "application/json" });
-                const elem = document.createElement('a');
-                elem.href = URL.createObjectURL(blob);
-                elem.download = filename;
-                document.body.appendChild(elem);
-                elem.click();
-
-                elem.remove();
-                URL.revokeObjectURL(elem.href);
-            } catch (err) {
-                console.log(err);
-                sbToastError(`File cannot be downloaded`);
-            }
-        } else {
-            sbToastError(`No Translated Schema Exists`);
-        }
-    }
-
     return (
         <div className="card">
             <div className="card-header p-2">
@@ -74,9 +47,7 @@ const SchemaTranslated = (props: any) => {
                     </div>
                     <div className='col-md-9'>
                         <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema} customClass='float-right' />
-                        <Button id='schemaDownload' title="Download translated schema" color="info" className={`btn-sm mr-1 float-right${translatedSchema ? '' : ' d-none'}`} onClick={onDownloadSchemaClick}>
-                            <FontAwesomeIcon icon={faFileDownload} />
-                        </Button>
+                        <SBDownloadFile buttonId='schemaDownload' data={translatedSchema} ext={translation} customClass={`mr-1 float-right${translatedSchema ? '' : ' d-none'}`} />
 
                         <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                             disabled={loadedSchema && translation ? false : true}
@@ -91,7 +62,9 @@ const SchemaTranslated = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={translatedSchema} isReadOnly={true} convertTo={translation}></SBEditor>
+                {translation == 'all' && translatedSchema ? <SBCollapseViewer data={translatedSchema} /> :
+                    <SBEditor data={translatedSchema} isReadOnly={true} convertTo={translation}></SBEditor>
+                }
             </div>
         </div>
     )
