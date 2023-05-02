@@ -55,7 +55,10 @@ const MessageValidator = () => {
                         if (submitVal && submitVal.payload.valid_bool) {
                             sbToastSuccess(submitVal.payload.valid_msg)
                         } else {
-                            sbToastError(submitVal.payload.valid_msg)
+                            console.log(typeof submitVal.payload.valid_msg)
+                            for (const index in submitVal.payload.valid_msg) {
+                                sbToastError(submitVal.payload.valid_msg[index])
+                            }
                         }
                     })
                     .catch((submitErr) => {

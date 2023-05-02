@@ -1,11 +1,13 @@
 import * as format from '../actions/format';
 
 export interface FormatState {
+    error: Record<string, any>;
     schema: string;
     format_options: Array<any>;
 }
 
 const initialState: FormatState = {
+    error: {},
     schema: '',
     format_options: []
 };

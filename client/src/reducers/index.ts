@@ -5,6 +5,7 @@ import convert, { ConvertState } from './convert';
 import util, { UtilState } from './util';
 import validate, { ValidateState } from './validate';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
+import format, { FormatState } from './format';
 
 interface RootState {
   router: Reducer<RouterState<History>, LocationChangeAction<History>>; // MUST BE 'router'
@@ -12,6 +13,7 @@ interface RootState {
   Convert: ConvertState;
   Util: UtilState;
   Validate: ValidateState;
+  Format: FormatState;
 }
 
 export default (history: History) => combineReducers({
@@ -19,7 +21,8 @@ export default (history: History) => combineReducers({
   // Custom Reducers
   Convert: convert,
   Util: util,
-  Validate: validate
+  Validate: validate,
+  Format: format
 });
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector

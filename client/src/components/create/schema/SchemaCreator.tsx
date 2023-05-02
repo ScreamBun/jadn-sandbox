@@ -39,10 +39,12 @@ const SchemaCreator = (props: any) => {
         dispatch(format(schemaStr))
             .then(val => {
                 if (val.error) {
-                    sbToastError(val.payload.message); //TODO: get pydantic err
+                    for (const index in val.payload.response) {
+                        sbToastError(val.payload.response[index]); 
+                    }
                 }
                 setData(val.payload.schema);
-            });
+            })
 
         //set configuration data
         const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
