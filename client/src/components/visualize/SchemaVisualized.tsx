@@ -167,10 +167,7 @@ const SchemaVisualized = (props: any) => {
                         <div>
                             <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
                                 disabled={loadedSchema && conversion ? false : true}
-                                title={!loadedSchema && !conversion ? "Please select schema and language for conversion" :
-                                    !loadedSchema && conversion ? "Please select a schema" :
-                                        loadedSchema && !conversion ? 'Please select a language to convert to' :
-                                            loadedSchema && conversion ? "Convert the given JADN schema to the selected format" : "Convert the given JADN schema to the selected format"}>
+                                title={"Convert the given JADN schema to the selected format"}>
 
                                 Convert
                             </Button>

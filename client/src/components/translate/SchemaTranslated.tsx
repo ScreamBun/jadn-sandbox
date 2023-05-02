@@ -51,10 +51,7 @@ const SchemaTranslated = (props: any) => {
 
                         <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                             disabled={loadedSchema && translation ? false : true}
-                            title={!loadedSchema && !translation ? "Please select schema and language for translation" :
-                                !loadedSchema && translation ? "Please select a schema" :
-                                    loadedSchema && !translation ? 'Please select a language to translate to' :
-                                        loadedSchema && translation ? "Translate the given JADN schema to the selected format" : "Translate the given JADN schema to the selected format"}
+                            title={"Translate the given JADN schema to the selected format"}
                         >
                             Translate
                         </Button>

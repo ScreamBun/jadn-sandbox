@@ -41,7 +41,7 @@ const ExampleCreator = (props: any) => {
             <div className="card-header p-2">
                 <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                     disabled={loadedSchema ? false : true}
-                    title={loadedSchema ? "Generate example messages based on selected schema" : "Please select schema"}>
+                    title={"Generate example messages based on selected schema"}>
                     Generate
                 </Button>
             </div>
