@@ -6,8 +6,10 @@ import MapField from './map';
 import ArrayOfField from './arrayOf';
 import ArrayField from './array';
 import MapOfField from './mapOf';
+import FormattedField from './formattedField';
 
 export {
+  FormattedField,
   // Primitive Field
   BasicField,
   // Structure Field

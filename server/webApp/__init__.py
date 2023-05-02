@@ -1,15 +1,19 @@
 from flask import Flask
-from .config import DefaultConfig
+from flask_cors import CORS
+from .config import DevConfig
 from .validator import Validator
+from .formatter.logic import FormatOptionLogic
 
 
 # Initialize the app
 app = Flask(__name__, static_url_path="/static")
-app.config.from_object(DefaultConfig)
+app.config.from_object(DevConfig)
+CORS(app)
 app.url_map.strict_slashes = False
 
 print("Starting OpenC2 Flask Server")
 app.validator = Validator()
+app.formatOptionLogic = FormatOptionLogic()
 
 from .views import *  # pylint: disable=wrong-import-position
 register_all(app)

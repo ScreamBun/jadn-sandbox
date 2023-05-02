@@ -1,133 +1,99 @@
 
 //ArrayOf
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
-import { SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
+import { InfoConfig, SchemaJADN, StandardFieldArray, TypeArray } from '../../../../schema/interface';
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
-import { hasProperty } from '../../../../../utils';
 import { useAppSelector } from '../../../../../../reducers';
-import { merge } from 'lodash';
-import { $MAX_ELEMENTS, $MINV } from 'components/create/consts';
+import { validateOptDataElem } from '../../utils';
+import { hasProperty } from 'components/utils';
+import { $MINV } from 'components/create/consts';
 
 // Interface
 interface MapOfFieldProps {
     def: StandardFieldArray;
     optChange: (n: string, v: any, i?: number) => void;
     parent?: string;
+    config: InfoConfig;
 }
 
 // MapOf Field Component
 const MapOfField = (props: MapOfFieldProps) => {
-    const { def, parent, optChange } = props;
+    const { def, parent, optChange, config } = props;
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
+
+    const [count, setCount] = useState(1);
     const [min, setMin] = useState(false);
     const [max, setMax] = useState(false);
-    const [count, setCount] = useState(1);
-    const [opts, setOpts] = useState<any[]>([]);
-    const [isValid, setisValid] = useState('');
+    const [opts, setOpts] = useState<any[]>([]); //opts: let every obj have a key and value [{key: '', value:''}, ...]
+    const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
+        color: '',
+        msg: []
+    });
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
     const msgName = (parent ? [parent, name] : [name]).join('.');
 
+    const ref = useRef(true);
+    useEffect(() => {
+        const firstRender = ref.current;
+        if (firstRender) {
+            ref.current = false;
+            const validMsg = validateOptDataElem(config, optData, opts);
+            setErrMsg(validMsg);
+        }
+    });
+
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setisValid('');
-        const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : $MAX_ELEMENTS;
-        const maxBool = count < maxCount;
-        if (!maxBool) {
-            setisValid('Error: Cannot add fields - Maximum of ' + maxCount)
-        }
-        setCount(maxBool ? count => count + 1 : count);
-        setMax(!maxBool);
-        setMin(false);
+        //check if max fields has been created
+        const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
+        setMax(maxCount <= count);
+        setCount(count + 1);
     }
 
     const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setisValid('');
-        const minCount = hasProperty(optData, 'minv') ? optData.minv : $MINV;
-
-        const minBool = count > minCount;
-        if (minBool) {
-            setOpts(
-                opts.filter((_opt, index) =>
-                    index !== opts.length - 1
-                )
-            );
-
-            const tmpOpts = [...opts];
-            tmpOpts.pop();
-            const filteredOpts = tmpOpts.filter(data => {
-                return data != null;
-            });
-            optChange(msgName, Array.from(new Set(Object.values(filteredOpts))));
-        } else {
-            setisValid('Error: Cannot remove fields - Minimum of ' + minCount)
+        //check if min fields exist
+        const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
+        setMin(count <= minCount);
+        if (count <= minCount) {
+            return;
         }
+        //remove from end of arr
+        var updatedOpts = opts.filter((_obj, index) => {
+            return index != count - 1;
+        });
+        setOpts(updatedOpts);
+        //TODO? filter null values?
+        //validate data
+        const errCheck = validateOptDataElem(config, optData, updatedOpts);
+        setErrMsg(errCheck);
 
-        setCount(minBool ? count => count - 1 : count);
-        setMin(!minBool);
-        setMax(false);
+        //update data
+        optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+        setCount(count - 1);
     }
 
     const onChange = (k: string, v: any, i: number) => {
-        //opts: let every obj have a key and value [{key: '', value:''}, ...]
-        //data : then reduce object to key:value pairs 
-        const ktype = msgName + "." + optData.ktype.toLowerCase();
-        const vtype = msgName + "." + optData.vtype.toLowerCase();
-
+        //data : reduce opts to key:value pairs 
         if (Number.isNaN(v)) {
             v = undefined;
         }
 
-        const arrKeys = msgName.split(".");
-        const valKeys = k.split(".");
+        //determine if key is of key or value type
+        const ktype = msgName + "." + optData.ktype.toLowerCase();
+        const vtype = msgName + "." + optData.vtype.toLowerCase();
 
-        if (valKeys.length == 1 && v == undefined) {
-            //reset
-            setOpts([]);
-        } else if ((arrKeys.length < valKeys.length)) {
-            //create nested obj based on keys
-            const nestedKeys = valKeys.slice(arrKeys.length);
-            let nestedObj = {};
-            nestedKeys.reduce((obj, key, index) => {
-                if (index == nestedKeys.length - 1) {
-                    return obj[key] = v;
-                } else {
-                    return obj[key] = {};
-                }
-            }, nestedObj);
-
-            v = nestedObj;
-
-            if (opts.length != 0) {
-                //merge and update v obj at opt[i] key or value 
-                let oldV;
-                if (k == ktype && opts[i]['key']) {
-                    oldV = opts[i]['key'];
-                } else if (k == vtype && opts[i]['value']) {
-                    oldV = opts[i]['value'];
-                }
-                if (oldV) {
-                    if (typeof oldV[valKeys[valKeys.length - 1]] != 'object' && v == '') {
-                        v = undefined;
-                    } else if (typeof oldV[valKeys[valKeys.length - 1]] == 'object' && oldV[valKeys[valKeys.length - 1]].length >= v[valKeys[valKeys.length - 1]].length) {
-                        oldV[valKeys[valKeys.length - 1]] = v[valKeys[valKeys.length - 1]]; //TODO: delete
-                        v = oldV;
-                    } else {
-                        v = merge(oldV, v);
-                    }
-                }//else no data to merge
-            }//else no data to merge
-        } //else v is not an obj
-
-        let updatedOpts;
+        //add obj {[key/value]: v} at i 
+        //update v if obj exists at i 
+        let updatedOpts = [];
         if (i <= opts.length - 1) {
             //update
             updatedOpts = opts.map((opt, index) => {
@@ -158,6 +124,12 @@ const MapOfField = (props: MapOfFieldProps) => {
             }
         }
 
+        //TODO?: filter - remove null values.
+        const errCheck = validateOptDataElem(config, optData, updatedOpts);
+        setErrMsg(errCheck);
+
+        //TODO?: fix JSON --- currently {key: value} rather than {[keyName: key] : [valueName: value]}
+        //TODO: check for nested MapOf
         //JSON object if ktype is a String type
         //JSON array if ktype is not a String type. 
         let data;
@@ -233,8 +205,8 @@ const MapOfField = (props: MapOfFieldProps) => {
                         </p>
                     </div>
                     <div className='card-body mx-2'>
-                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChange} idx={i} />
-                        <Field key={"value"} def={valField} parent={msgName} optChange={onChange} idx={i} />
+                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChange} idx={i} config={config} />
+                        <Field key={"value"} def={valField} parent={msgName} optChange={onChange} idx={i} config={config} />
                     </div>
                 </div>
             </div >
@@ -263,7 +235,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                         <FontAwesomeIcon icon={faPlusSquare} size="lg" />
                     </Button>
                     {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                    <div><small className='form-text' style={{ color: 'red' }}> {isValid}</small></div>
+                    <div><small className='form-text' style={{ color: 'red' }}> {errMsg.msg}</small></div>
                 </div>
 
                 <div className='card-body mx-2'>

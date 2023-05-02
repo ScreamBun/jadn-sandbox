@@ -10,7 +10,7 @@ import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options/OptionsModal';
 import FieldEditor from './FieldEditor';
 import {
-  EnumeratedFieldArray, FieldArray, StandardFieldArray, TypeArray
+  EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
 } from '../../interface';
 import { zip } from '../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
@@ -23,11 +23,12 @@ interface StructureEditorProps {
   value: TypeArray;
   change: (v: PrimitiveTypeObject, i: number) => void;
   remove: (i: number) => void;
+  config: InfoConfig;
 }
 
 // Structure Editor
 const StructureEditor = (props: StructureEditorProps) => {
-  const { value, change, dataIndex } = props;
+  const { value, change, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -36,42 +37,27 @@ const StructureEditor = (props: StructureEditorProps) => {
   let fieldCount = 1;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //check type name
     const { placeholder, value } = e.target;
-    if (placeholder == "Name") {
+    if (placeholder == "Name" && value) {
       if (predefinedTypes.includes(value.toLowerCase())) {
         sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
-        return;
       }
       if (value.length >= 64) {
         sbToastError('Error: Max length reached');
         return;
+      }
+      if (value.includes(config.$Sys)) {
+        sbToastError('Error: TypeNames SHOULD NOT contain the System character');
+      }
+      const regex = new RegExp(config.$TypeName, "g");
+      if (!regex.test(value)) {
+        sbToastError('Error: TypeName format is not permitted');
       }
     }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }
     change(updatevalue, dataIndex);
   }
-
-  /*   initState() {
-      const { value } = this.props;
-      if (value && Array.isArray(value)) {
-        const updatevalue = zip(TypeKeys, value);
-  
-        // eslint-disable-next-line react/destructuring-assignment
-        if (!equal(updatevalue, this.state.value)) {
-          this.setState(prevState => ({
-            value: {
-              ...prevState.value,
-              ...updatevalue
-            }
-          }));
-          this.setState(prevState => ({
-            fields: prevState.value.fields.map((f, i) => this.makeField(f, i))
-          }));
-        }
-      }
-    } */
 
   const removeAll = () => {
     const { dataIndex, remove } = props;
@@ -203,6 +189,7 @@ const StructureEditor = (props: StructureEditorProps) => {
         value={valueObj.fields[i]}
         change={fieldChange}
         remove={fieldRemove}
+        config={config}
       />);
     }
   }

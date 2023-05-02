@@ -12,6 +12,10 @@ from jadnschema import jadn
 from jadnschema.schema import Schema
 from jadnschema.convert.message import Message, SerialFormats
 from unittest import TextTestRunner
+
+from pydantic import ValidationError
+
+from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
 from .profiles import get_profile_suite, load_test_suite, tests_in_suite, TestResults
 
 
@@ -62,39 +66,47 @@ class Validator:
 
         if isinstance(s, str):
             return False, "Schema Invalid - The schema failed to load", "", msg
-                 
-        if fmt in SerialFormats:
-            serial = SerialFormats(fmt)
 
-            if fmt == "cbor":
-                try:
-                    msg_hex_string = msg
-                    msg_binary_string = binascii.unhexlify(msg_hex_string)
-                    msg_native_json = cbor_json.native_from_cbor(msg_binary_string)
+        if fmt not in SerialFormats:
+            return False, "Serialization Format not found", "", msg
+        
+        
+        serial = SerialFormats(fmt)
+        if fmt == "cbor":
+            try:
+                msg_hex_string = msg
+                msg_binary_string = binascii.unhexlify(msg_hex_string)
+                msg_native_json = cbor_json.native_from_cbor(msg_binary_string)
 
-                    serial = SerialFormats('json')
-                    message = Message.oc2_loads(msg_native_json, serial)
-                except Exception as e:
-                    return "Error: " + e
-            else:
-                try:
-                    message = Message.oc2_loads(msg, serial)
-                except Exception as e:  # pylint: disable=broad-except
-                    # TODO: pick better exception
-                    return False, f"OpenC2 Message Invalid - {e}", "", msg
-
+                serial = SerialFormats('json')
+                message = Message.oc2_loads(msg_native_json, serial)
+            except Exception as e:
+                return "Error: " + e
         else:
-            return False, random.choice(self.invalidMsgs), "", msg 
+            try:
+                message = Message.oc2_loads(msg, serial)
+            except Exception as e: 
+                err_msg = e
+                return False, f"OpenC2 Message Invalid - {err_msg}", "", msg
             
         records = list(s.types.keys())
         if decode in records:
+
             try:
                 s.validate_as(decode, message.content)
                 return True, random.choice(self.validMsgs), json.dumps(msg), msg
 
-            except Exception as err:  # pylint: disable=broad-except
-                # TODO: pick better exception
-                return False, f"Message Invalid - {err}", "", msg
+            except Exception as err: 
+                errorMsgs=[]
+                if isinstance(err, ValidationError):
+                    for error in err.errors():
+                        err_msg = getValidationErrorMsg(error)
+                        err_path = getValidationErrorPath(error)
+                        errorMsgs.append(err_msg + " at " +  err_path)
+                    return False, errorMsgs, "", msg
+                else:
+                    return False, err, "", msg
+
         else:
             return False, "Decode Invalid - The decode message type was not found in the schema", "", msg
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
 import {
@@ -24,6 +24,7 @@ const MessageValidated = (props: any) => {
     const decodeExports = decodeSchemaTypes.exports.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
     //const decodeAll = decodeSchemaTypes.all.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
     const dispatch = useDispatch();
+    const ref = useRef('');
 
     useEffect(() => {
         if (!isNull(navMsgFormat)) {
@@ -103,7 +104,7 @@ const MessageValidated = (props: any) => {
         setLoadedMsg('');
         //setDecodeMsg('');
         //setMsgFormat('');
-        document.getElementById("message-file").value = '';
+        ref.current.value = '';
     }
 
     return (
@@ -123,7 +124,7 @@ const MessageValidated = (props: any) => {
                             </select>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <input type="file" id="message-file" name="message-file" accept=".json,.jadn,.xml,.cbor" onChange={onFileChange} className='form-control-sm' />
+                            <input type="file" id="message-file" name="message-file" accept=".json,.jadn,.xml,.cbor" ref={ref} onChange={onFileChange} className='form-control-sm' />
                             <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload} style={{ display: 'inline' }}>
                                 <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
                             </Button>
@@ -153,7 +154,7 @@ const MessageValidated = (props: any) => {
                         </select>
                     </div>
 
-                    <div className={`${msgFormat == '' ? 'col-md-3' : ' col-md-6'}`}>
+                    <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
                             title={`${loadedSchema && loadedMsg && decodeMsg && msgFormat ? 'Validate the message against the given schema' : 'Cannot validate'}`}>

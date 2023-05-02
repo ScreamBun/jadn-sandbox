@@ -3,6 +3,7 @@ import {
   ConfigObjectEditor, KeyArrayEditor, KeyObjectEditor, KeyValueEditor
 } from './editors/editors';
 import { InfoDef } from './interfaces';
+import { InfoConfig } from '../interface';
 
 interface EditorProps {
   key?: number | string | undefined;  // eslint-disable-line react/require-default-props
@@ -12,6 +13,7 @@ interface EditorProps {
   value: any;
   change?: (val: string | Record<string, any>, idx: number) => void;  // eslint-disable-line react/require-default-props
   remove?: (idx: number) => void;  // eslint-disable-line react/require-default-props
+  config: InfoConfig;
 }
 
 const metaDef = ({ k = 'key', v = '' }: InfoDef) => ({ [k]: v } as Record<string, any>);
