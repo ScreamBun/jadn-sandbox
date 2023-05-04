@@ -8,10 +8,10 @@ import { validateSchema } from "../../actions/validate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sbToastError, sbToastSuccess } from "./SBToast";
 import SBCopyToClipboard from "./SBCopyToClipboard";
-import { format } from "actions/format";
 import SBEditor from "./SBEditor";
 import { LANG_JSON } from "components/utils/constants";
 import SBFileUploader from "./SBFileUploader";
+import { FormatJADN } from "components/utils";
 
 
 const JADNSchemaLoader = (props: any) => {
@@ -39,10 +39,7 @@ const JADNSchemaLoader = (props: any) => {
                             let schemaObj = loadFileVal.payload.data;
                             let schemaStr = JSON.stringify(schemaObj);
                             validateJADN(schemaStr);
-                            dispatch(format(schemaStr))
-                                .then(formatVal => {
-                                    setLoadedSchema(formatVal.payload.schema);
-                                })
+                            setLoadedSchema(FormatJADN(schemaObj));
                             dispatch(setSchema(schemaObj));
 
                             if (setDecodeSchemaTypes && setDecodeMsg) {
@@ -96,30 +93,13 @@ const JADNSchemaLoader = (props: any) => {
     }
 
     const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
-        formatJSON(loadedSchema);
-    }
-
-    const formatJSON = (jsonToFormat: string) => {
-        if (!jsonToFormat) {
-            sbToastError(`Nothing to format`)
-            return;
+        try {
+            const schemaObj = JSON.parse(loadedSchema);
+            const schemaStr = FormatJADN(schemaObj);
+            setLoadedSchema(schemaStr);
+        } catch {
+            sbToastError('Failed to format')
         }
-
-        jsonToFormat = jsonToFormat.trim();
-        dispatch(format(jsonToFormat))
-            .then(formatVal => {
-                if (formatVal.error) {
-                    sbToastError(`Unable to format: ${formatVal.payload.response.message}`)
-                    return;
-                }
-                setLoadedSchema(formatVal.payload.schema);
-                sbToastSuccess(`Data Formatted`);
-
-            })
-            .catch(formatFail => {
-                sbToastError(`Unable to format: ${formatFail}`)
-                return;
-            })
     }
 
     const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {

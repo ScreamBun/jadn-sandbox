@@ -9,11 +9,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { sbToastError } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
-import { format } from 'actions/format';
 import SBEditor from 'components/common/SBEditor';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../consts';
 import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
+import { FormatJADN } from 'components/utils';
 
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -36,18 +36,9 @@ const SchemaCreator = (props: any) => {
     })
 
     useEffect(() => {
-        const schemaStr = JSON.stringify(generatedSchema);
+        const schemaStr = FormatJADN(generatedSchema);
         dispatch(setSchema(generatedSchema));
-        dispatch(format(schemaStr))
-            .then(val => {
-                if (val.error) {
-                    for (const index in val.payload.response) {
-                        sbToastError(val.payload.response[index]);
-                    }
-                }
-                setData(val.payload.schema);
-            })
-
+        setData(schemaStr);
         //set configuration data
         const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
         if (configDefs) {
@@ -228,29 +219,12 @@ const SchemaCreator = (props: any) => {
                 if (generatedSchema.types.length >= idx) {
                     const tmpTypes = [...generatedSchema.types];
                     tmpTypes.splice(idx, 1);
-                    //check if references is resolved
-                    const tmpData = {
+                    //set data, even if references is unresolved
+                    setGeneratedSchema(generatedSchema => ({
                         ...generatedSchema,
                         types: tmpTypes
-                    };
-                    dispatch(format(tmpData))
-                        .then(val => {
-                            if (!val.error) {
-                                setGeneratedSchema(generatedSchema => ({
-                                    ...generatedSchema,
-                                    types: tmpTypes
-                                }));
-                            } else {
-                                //prompt user here
-                                var confirmation = confirm("Are you sure you want to remove this?");
-                                if (confirmation) {
-                                    setGeneratedSchema(generatedSchema => ({
-                                        ...generatedSchema,
-                                        types: tmpTypes
-                                    }));
-                                }
-                            };
-                        })
+                    }));
+
                 }
             },
             config: configOpt
