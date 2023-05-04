@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem, Input } from 'reactstrap'
+import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem } from 'reactstrap'
 import { Draggable, Droppable } from 'react-drag-and-drop';
 import { Info, Types } from './structure/structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { sbToastError } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
@@ -13,6 +13,7 @@ import { format } from 'actions/format';
 import SBEditor from 'components/common/SBEditor';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../consts';
 import SBDownloadFile from 'components/common/SBDownloadFile';
+import SBFileUploader from 'components/common/SBFileUploader';
 
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const SchemaCreator = (props: any) => {
             .then(val => {
                 if (val.error) {
                     for (const index in val.payload.response) {
-                        sbToastError(val.payload.response[index]); 
+                        sbToastError(val.payload.response[index]);
                     }
                 }
                 setData(val.payload.schema);
@@ -113,11 +114,9 @@ const SchemaCreator = (props: any) => {
         }
     }
 
-    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
+    const onCancelFileUpload = (_e: React.MouseEvent<HTMLButtonElement>) => {
         setSelectedFile('');
         setGeneratedSchema('');
-        ref.current.value = '';
     }
 
     let infoKeys;
@@ -254,10 +253,7 @@ const SchemaCreator = (props: any) => {
                             </select>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <input type="file" id="schema-file" name="schema-file" accept=".jadn" ref={ref} onChange={onFileChange} className='form-control-sm' />
-                            <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload}>
-                                <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
-                            </Button>
+                            <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
                     <div className='col-md-9'>

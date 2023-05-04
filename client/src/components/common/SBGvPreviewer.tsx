@@ -21,15 +21,17 @@ export const convertToGvFullView = (data: any) => {
 
 export const onGVPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    var newWindowContent = document.getElementById('fullGV').innerHTML;
+    var newWindowContent = document.getElementById('fullGV')?.innerHTML;
     var newWindow = window.open("");
-    newWindow.document.write(newWindowContent);
+    newWindow?.document.write(newWindowContent || 'Error: Cannot display Graphviz');
 }
 
 export const onDownloadSVGClick = () => {
     const svg = document.getElementById("fullGV")?.innerHTML;
-    var blob = new Blob([svg], { type: "image/svg+xml" });
-    saveAs(blob, "graphViz.svg");
+    if (svg) {
+        var blob = new Blob([svg], { type: "image/svg+xml" });
+        saveAs(blob, "graphViz.svg");
+    }
 }
 
 const SBGvPreviewer = (props: any) => {

@@ -80,7 +80,7 @@ const SBMultiSchemaLoader = (props: any) => {
             <div className="card-header p-2">
                 <Input type="file" id="schema-files" name="schema-files" accept=".jadn" onChange={onFileUpload} multiple hidden />
                 {/*<a className='btn-sm btn-primary mr-1' style={{ display: 'inline-block' }}> Upload Files </a> */}
-                <Button color="info" id="triggerFileLoader" className="btn-sm mr-1 float-right" onClick={() => document.getElementById('schema-files').click()}> Upload Files </Button>
+                <Button color="info" id="triggerFileLoader" className="btn-sm mr-1 float-right" onClick={() => document.getElementById('schema-files')?.click()}> Upload Files </Button>
             </div>
             <div className="card-body p-0" style={{ height: '40em' }}>
                 <h5 className="p-2"> Pre-populated List of Files to Choose from </h5>
