@@ -114,9 +114,11 @@ const SchemaCreator = (props: any) => {
         }
     }
 
-    const onCancelFileUpload = (_e: React.MouseEvent<HTMLButtonElement>) => {
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         setSelectedFile('');
         setGeneratedSchema('');
+        ref.current = '';
     }
 
     let infoKeys;
