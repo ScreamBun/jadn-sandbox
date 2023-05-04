@@ -21,23 +21,36 @@ export const format = (schema: string) => createAction({
 
 export interface FormatSuccessAction extends ActionSuccessResult {
     type: typeof FORMAT_SUCCESS;
-    payload: {
-        schema: string;
-    };
+}
+
+// GET - /api/format/options - get valid format options
+const VALID_FORMAT_OPTIONS_REQUEST = '@@util/VALID_FORMAT_OPTIONS_REQUEST';
+export const VALID_FORMAT_OPTIONS_SUCCESS = '@@util/VALID_FORMAT_OPTIONS_SUCCESS';
+export const VALID_FORMAT_OPTIONS_FAILURE = '@@util/VALID_FORMAT_OPTIONS_FAILURE';
+export const getValidFormatOpts = (type: string) => createAction({
+    endpoint: `${baseAPI}/options/${type}`,
+    method: 'GET',
+    types: [
+        VALID_FORMAT_OPTIONS_REQUEST, VALID_FORMAT_OPTIONS_SUCCESS, VALID_FORMAT_OPTIONS_FAILURE
+    ]
+});
+
+export interface getValidFormatSuccessAction extends ActionSuccessResult {
+    type: typeof VALID_FORMAT_OPTIONS_SUCCESS;
 }
 
 // Request Actions
 export interface FormatRequestActions extends ActionRequestResult {
-    type: typeof FORMAT_REQUEST
+    type: typeof FORMAT_REQUEST | typeof VALID_FORMAT_OPTIONS_REQUEST;
 }
 
 // Failure Actions
 export interface FormatFailureActions extends ActionFailureResult {
-    type: typeof FORMAT_FAILURE
+    type: typeof FORMAT_FAILURE | typeof VALID_FORMAT_OPTIONS_FAILURE;
 }
 
 export type FormatActions = (
     FormatRequestActions | FormatFailureActions |
     // Success Actions
-    FormatSuccessAction
+    FormatSuccessAction | getValidFormatSuccessAction
 );

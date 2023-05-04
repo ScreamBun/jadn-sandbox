@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import { Button } from 'reactstrap'
-import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { sbToastError } from 'components/common/SBToast'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
+import SBDownloadFile from 'components/common/SBDownloadFile'
 
 const ExampleCreator = (props: any) => {
     const { generatedMessages, loadedSchema } = props;
@@ -19,37 +17,15 @@ const ExampleCreator = (props: any) => {
         }
     }
 
-    const msgDownload = (index: number) => {
-        try {
-            const data = generatedMessages[index];
-            const filename = `message_example_${index}.json`;
-
-            const blob = new Blob([data], { type: "application/json" });
-            const elem = document.createElement('a');
-            elem.href = URL.createObjectURL(blob);
-            elem.download = filename;
-            document.body.appendChild(elem);
-            elem.click();
-
-            elem.remove();
-            URL.revokeObjectURL(elem.href);
-        } catch (err) {
-            console.log(err);
-            sbToastError(`File cannot be downloaded`);
-        }
-    }
-
     const msgList = generatedMessages.map((message: string, i: number) => (
         <div className="card" key={i}>
             <div className="card-header">
                 <h5 className="mb-0">
-                    <button className="btn btn-link" id ={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
+                    <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
                         Message Example #{i}
                     </button>
                     <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-right' />
-                    <Button id={`downloadMsgExample${i}`} title="Download generated message" color="info" className='btn-sm mr-1 float-right' onClick={() => msgDownload(i)}>
-                        <FontAwesomeIcon icon={faFileDownload} />
-                    </Button>
+                    <SBDownloadFile buttonId={`downloadMsgExample${i}`} customClass='mr-1 float-right' data={message} ext={'json'} />
                 </h5>
             </div>
 
@@ -65,7 +41,7 @@ const ExampleCreator = (props: any) => {
             <div className="card-header p-2">
                 <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                     disabled={loadedSchema ? false : true}
-                    title={loadedSchema ? "Generate example messages based on selected schema" : "Please select schema"}>
+                    title={"Generate example messages based on selected schema"}>
                     Generate
                 </Button>
             </div>

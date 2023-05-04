@@ -6,7 +6,7 @@ import { ConfigOptions } from './consts';
 import KeyValueEditor from './KeyValueEditor';
 
 // Interfaces
-interface ConfigEditorProps {
+interface ConfigObjectEditorProps {
   name: string;
   placeholder?: string;
   description?: string;
@@ -16,7 +16,7 @@ interface ConfigEditorProps {
 }
 
 // Config Editor
-const ConfigEditor = (props: ConfigEditorProps) => {
+const ConfigObjectEditor = (props: ConfigObjectEditorProps) => {
   const { name, description, value, change, remove } = props;
 
   const onChange = (k: string, v: any) => {
@@ -59,10 +59,10 @@ const ConfigEditor = (props: ConfigEditorProps) => {
   );
 }
 
-ConfigEditor.defaultProps = {
+ConfigObjectEditor.defaultProps = {
   placeholder: 'ConfigObjectEditor',
   description: ''
 };
 
-export default ConfigEditor;
+export default ConfigObjectEditor;
 

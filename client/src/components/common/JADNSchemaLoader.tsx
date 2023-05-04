@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +11,7 @@ import SBCopyToClipboard from "./SBCopyToClipboard";
 import { format } from "actions/format";
 import SBEditor from "./SBEditor";
 import { LANG_JSON } from "components/utils/constants";
+import SBFileUploader from "./SBFileUploader";
 
 
 const JADNSchemaLoader = (props: any) => {
@@ -19,6 +20,7 @@ const JADNSchemaLoader = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
+    const ref = useRef('');
 
     useEffect(() => {
         dispatch(info());
@@ -41,7 +43,7 @@ const JADNSchemaLoader = (props: any) => {
                                 .then(formatVal => {
                                     setLoadedSchema(formatVal.payload.schema);
                                 })
-                            dispatch(setSchema(schemaObj))
+                            dispatch(setSchema(schemaObj));
 
                             if (setDecodeSchemaTypes && setDecodeMsg) {
                                 loadDecodeTypes(schemaObj);
@@ -57,6 +59,7 @@ const JADNSchemaLoader = (props: any) => {
                     .catch((loadFileErr) => {
                         setSelectedFile('');
                         setLoadedSchema(JSON.stringify(loadFileErr.payload));
+                        sbToastError(loadFileErr);
                     })
             } catch (err) {
                 setLoadedSchema(null);
@@ -136,7 +139,7 @@ const JADNSchemaLoader = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
-                        dispatch(setSchema(jsonObj))
+                        dispatch(setSchema(jsonObj));
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
                         sbToastError(validateSchemaVal.payload.valid_msg);
@@ -178,7 +181,7 @@ const JADNSchemaLoader = (props: any) => {
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsValidJADN(false);
         setLoadedSchema('');
-        if (e.target.files) {
+        if (e.target.files && e.target.files.length != 0) {
             const file = e.target.files[0];
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -208,11 +211,9 @@ const JADNSchemaLoader = (props: any) => {
         }
     }
 
-    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
+    const onCancelFileUpload = (_e: React.MouseEvent<HTMLButtonElement>) => {
         setSelectedFile('');
         setLoadedSchema('');
-        document.getElementById("schema-file").value = '';
     }
 
     return (
@@ -232,10 +233,7 @@ const JADNSchemaLoader = (props: any) => {
                             </select>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <input type="file" id="schema-file" name="schema-file" accept=".jadn" onChange={onFileChange} className='form-control-sm' />
-                            <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload}>
-                                <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
-                            </Button>
+                            <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
                     <div className="col">
