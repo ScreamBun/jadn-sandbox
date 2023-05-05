@@ -15,6 +15,16 @@ import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $
 import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
 
+const configInitialState = {
+    $MaxBinary: $MAX_BINARY,
+    $MaxString: $MAX_STRING,
+    $MaxElements: $MAX_ELEMENTS,
+    $Sys: $SYS,
+    $TypeName: $TYPENAME,
+    $FieldName: $FIELDNAME,
+    $NSID: $NSID
+}
+
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
@@ -25,15 +35,7 @@ const SchemaCreator = (props: any) => {
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef('');
 
-    const [configOpt, setConfigOpt] = useState({
-        $MaxBinary: $MAX_BINARY,
-        $MaxString: $MAX_STRING,
-        $MaxElements: $MAX_ELEMENTS,
-        $Sys: $SYS,
-        $TypeName: $TYPENAME,
-        $FieldName: $FIELDNAME,
-        $NSID: $NSID
-    })
+    const [configOpt, setConfigOpt] = useState(configInitialState);
 
     useEffect(() => {
         const schemaStr = JSON.stringify(generatedSchema);
@@ -52,7 +54,7 @@ const SchemaCreator = (props: any) => {
         const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
         if (configDefs) {
             for (const [key, value] of Object.entries(configDefs)) {
-                const parsedVal = /\d+$/.test(value) ? parseInt(value) : value;
+                const parsedVal = /\d+$/.test(value) ? parseInt(value) : value; //if numeric
                 if (key in configOpt && configOpt[key] != value && value != '') {
                     setConfigOpt({
                         ...configOpt,
@@ -203,7 +205,7 @@ const SchemaCreator = (props: any) => {
                         }));
                     }
                 },
-                config: configOpt
+                config: configInitialState
             });
         }
         return null;
