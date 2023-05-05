@@ -12,7 +12,6 @@ interface KeyValueEditorProps {
   description?: string;
   placeholder?: string;
   value: boolean | number | string;
-  defaultValue: boolean | number | string; //from config object editor
   type?: InputType;
   options?: Array<string>; // only for type='select'
   change: (_v: boolean | number | string) => void;
@@ -23,7 +22,7 @@ interface KeyValueEditorProps {
 // Key Value Editor
 const KeyValueEditor = (props: KeyValueEditorProps) => {
   const {
-    name, value, defaultValue, description, options, placeholder, type, change, remove, required
+    name, value, description, options, placeholder, type, change, remove, required
   } = props;
 
   const shadowless: Array<InputType> = [
@@ -32,7 +31,6 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
 
   const inputArgs: Record<string, any> = {
     value,
-    defaultValue,
     checked: type && value,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => change(e.target.value)
   };

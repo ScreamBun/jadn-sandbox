@@ -49,7 +49,6 @@ const ConfigObjectEditor = (props: ConfigObjectEditorProps) => {
       ...ConfigOptions[key],
       placeholder: key,
       value: value[key],
-      defaultValue: config[key],
       change: (v: any) => onChange(k, v),
       removable: false
     };

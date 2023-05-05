@@ -49,20 +49,6 @@ const SchemaCreator = (props: any) => {
                 }
                 setData(val.payload.schema);
             })
-
-        //set configuration data
-        const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
-        if (configDefs) {
-            for (const [key, value] of Object.entries(configDefs)) {
-                const parsedVal = /\d+$/.test(value) ? parseInt(value) : value; //if numeric
-                if (key in configOpt && configOpt[key] != value && value != '') {
-                    setConfigOpt({
-                        ...configOpt,
-                        [key]: parsedVal
-                    })
-                }
-            }
-        }
     }, [generatedSchema])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -184,17 +170,30 @@ const SchemaCreator = (props: any) => {
         if (generatedSchema.info && k in generatedSchema.info) {
             return Info[key].editor({
                 key: i,
-                value: generatedSchema.info[key],
-                placeholder: k,
-                change: val =>
-                    setGeneratedSchema(generatedSchema => ({
-                        ...generatedSchema,
-                        info: {
-                            ...generatedSchema.info,
-                            ...Info[key].edit(val)
-                        }
-                    }))
+                value: key == 'config' ? configOpt :
+                    generatedSchema.info[key]
                 ,
+                placeholder: k,
+                change: val => {
+                    if (key == 'config') {
+                        setConfigOpt(val);
+                        setGeneratedSchema(generatedSchema => ({
+                            ...generatedSchema,
+                            info: {
+                                ...generatedSchema.info,
+                                ...Info[key].edit(val)
+                            }
+                        }));
+                    } else {
+                        setGeneratedSchema(generatedSchema => ({
+                            ...generatedSchema,
+                            info: {
+                                ...generatedSchema.info,
+                                ...Info[key].edit(val)
+                            }
+                        }));
+                    }
+                },
                 remove: (id: string) => {
                     if (generatedSchema.info && id in generatedSchema.info) {
                         const tmpInfo = { ...generatedSchema.info };
