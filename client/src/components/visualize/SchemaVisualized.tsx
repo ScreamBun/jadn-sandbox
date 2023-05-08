@@ -22,7 +22,7 @@ const SchemaVisualized = (props: any) => {
     const location = useLocation();
     const { navConvertTo } = location.state;
 
-    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag } = props;
+    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, convertAll, setConvertAll, spiltViewFlag, setSplitViewFlag } = props;
     const [pumlURL, setPumlURL] = useState('');
 
     useEffect(() => {
@@ -45,6 +45,7 @@ const SchemaVisualized = (props: any) => {
     const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);
         setConvertedSchema('');
+        setConvertAll([]);
         setSplitViewFlag(false);
     }
 
@@ -111,7 +112,7 @@ const SchemaVisualized = (props: any) => {
                         </select>
                     </div>
                     <div className='col-md-9'>
-                        <div className={`${conversion == 'all' && convertedSchema ? ' d-none' : ''}`}>
+                        <div className={`${conversion == 'all' || !convertedSchema ? ' d-none' : ''}`}>
                             <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
                             <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema ? '' : ' d-none'}`} data={convertedSchema} ext={conversion} />
                         </div>
@@ -180,7 +181,7 @@ const SchemaVisualized = (props: any) => {
             </div>
 
             <div className={`card-body p-0 ${spiltViewFlag ? 'd-none' : ''}`}>
-                {conversion == 'all' && convertedSchema ? <SBCollapseViewer data={convertedSchema} /> :
+                {conversion == 'all' && convertAll.length != 0 ? <SBCollapseViewer data={convertAll} /> :
                     <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
                 }
             </div>

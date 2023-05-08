@@ -14,7 +14,7 @@ const SchemaTranslated = (props: any) => {
     const location = useLocation()
     const { navConvertTo } = location.state
 
-    const { loadedSchema, translation, setTranslation, translatedSchema, setTranslatedSchema } = props;
+    const { loadedSchema, translation, setTranslation, translatedSchema, convertAll, setConvertAll, setTranslatedSchema } = props;
     const data = useSelector(getConversions);
     let translateOpts = {};
     for (let i = 0; i < Object.keys(data).length; i++) {
@@ -32,6 +32,7 @@ const SchemaTranslated = (props: any) => {
     const handleTranslation = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setTranslation(e.target.value);
         setTranslatedSchema('');
+        setConvertAll([]);
     }
 
     return (
@@ -46,8 +47,10 @@ const SchemaTranslated = (props: any) => {
                         </select>
                     </div>
                     <div className='col-md-9'>
-                        <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema} customClass='float-right' />
-                        <SBDownloadFile buttonId='schemaDownload' data={translatedSchema} ext={translation} customClass={`mr-1 float-right${translatedSchema ? '' : ' d-none'}`} />
+                        <div className={`${translation == 'all' || !translatedSchema ? ' d-none' : ''}`}>
+                            <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema} customClass='float-right' />
+                            <SBDownloadFile buttonId='schemaDownload' data={translatedSchema} ext={translation} customClass={`mr-1 float-right${translatedSchema ? '' : ' d-none'}`} />
+                        </div>
 
                         <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                             disabled={loadedSchema && translation ? false : true}
@@ -62,7 +65,7 @@ const SchemaTranslated = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                {translation == 'all' && translatedSchema ? <SBCollapseViewer data={translatedSchema} /> :
+                {translation == 'all' && convertAll.length != 0 ? <SBCollapseViewer data={convertAll} /> :
                     <SBEditor data={translatedSchema} isReadOnly={true} convertTo={translation}></SBEditor>
                 }
             </div>

@@ -7,7 +7,7 @@ import SBDownloadFile from "./SBDownloadFile";
 //toggle each view
 //allow user to download or copy to clipboard
 const SBCollapseViewer = (props: any) => {
-    //const { data } = props;
+    const { data } = props;
     const [toggle, setToggle] = useState('');
 
     const onToggle = (index: number) => {
@@ -19,23 +19,16 @@ const SBCollapseViewer = (props: any) => {
         }
     }
 
-    //TODO: remove when data props has been properly fixed
-    let data = [
-        { language: "html", schema: 'schema data for html' },
-        { language: "html", schema: 'schema data for html' },
-        { language: "html", schema: 'schema data for html' },
-    ]
-
     const listData = data.map((obj: any, i: number) => {
         return (
             <div className="card" key={i}>
                 <div className="card-header">
                     <h5 className="mb-0">
                         <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
-                            {obj.language}
+                            {obj.fmt}
                         </button>
                         <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-right' />
-                        <SBDownloadFile buttonId={`download${i}`} customClass='mr-1 float-right' data={obj.schema} ext={obj.language} />
+                        <SBDownloadFile buttonId={`download${i}`} customClass='mr-1 float-right' data={obj.schema} ext={obj.fmt} />
                     </h5>
                 </div>
 

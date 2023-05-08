@@ -47,25 +47,56 @@ export const convertSchema = (schema: Record<string, any>, t: string) => createA
   ]
 });
 
+// POST - /api/convert/all - convert the given schema to a different format
+const CONVERTTOALL_REQUEST = '@@convert/CONVERTTOALL_REQUEST';
+export const CONVERTTOALL_SUCCESS = '@@convert/CONVERTTOALL_SUCCESS';
+export const CONVERTTOALL_FAILURE = '@@convert/CONVERTTOALL_FAILURE';
+export const convertToAll = (schema: Record<string, any>, convertType: string) => createAction({
+  endpoint: `${baseAPI}/all`,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    schema,
+    convertType
+  }),
+  types: [
+    CONVERTTOALL_REQUEST, CONVERTTOALL_SUCCESS, CONVERTTOALL_FAILURE
+  ]
+});
+
 export interface ConvertSchemaSuccessAction extends ActionSuccessResult {
   type: typeof CONVERT_SUCCESS;
   payload: {
-    schema: string;
+    schema: {
+      base: string;
+      convert: string;
+    };
   };
 }
 
+export interface ConvertToAllSchemaSuccessAction extends ActionSuccessResult {
+  type: typeof CONVERTTOALL_SUCCESS;
+  payload: {
+    schema: {
+      base: string;
+      convert: Array<any>;
+    };
+  }
+}
 // Request Actions
 export interface ConvertRequestActions extends ActionRequestResult {
-  type: typeof INFO_REQUEST | typeof CONVERT_REQUEST;
+  type: typeof INFO_REQUEST | typeof CONVERT_REQUEST | typeof CONVERTTOALL_REQUEST;
 }
 
 // Failure Actions
 export interface ConvertFailureActions extends ActionFailureResult {
-  type: typeof INFO_FAILURE | typeof CONVERT_FAILURE;
+  type: typeof INFO_FAILURE | typeof CONVERT_FAILURE | typeof CONVERTTOALL_FAILURE;
 }
 
 export type ConvertActions = (
   ConvertRequestActions | ConvertFailureActions |
   // Success Actions
-  InfoSuccessAction | ConvertSchemaSuccessAction
+  InfoSuccessAction | ConvertSchemaSuccessAction | ConvertToAllSchemaSuccessAction
 );
