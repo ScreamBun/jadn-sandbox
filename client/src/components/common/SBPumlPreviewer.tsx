@@ -10,7 +10,7 @@ export const convertToPuml = (data: any) => {
     return url;
 }
 
-export const onDownloadPNGClick = (pumlURL) => {
+export const onDownloadPNGClick = (pumlURL: any) => {
     saveAs(pumlURL, 'puml.png');
 }
 
