@@ -19,14 +19,14 @@ const SBCollapseViewer = (props: any) => {
     const [toggle, setToggle] = useState('');
 
     useEffect(() => {
-        data.map((obj: any) => {
+        for (const obj of data) {
             if (obj.fmt == "PlantUML") {
                 setPumlURL(convertToPuml(obj.schema));
             }
             if (obj.fmt == "GraphViz") {
                 convertToGvFullView(obj.schema);
             }
-        })
+        }
     }, [data]);
 
     const onToggle = (index: number) => {
