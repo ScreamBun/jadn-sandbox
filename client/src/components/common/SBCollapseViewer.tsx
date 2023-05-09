@@ -10,12 +10,13 @@ import { onHTMLPopOutClick } from "./SBHtmlPreviewer";
 import { onMDPopOutClick } from "./SBMarkdownPreviewer";
 import { convertToPuml, onDownloadPNGClick } from "./SBPumlPreviewer";
 import { sbToastError } from "./SBToast";
+import SBDownloadPDF from "./SBDownloadPDF";
 
 //given a list of data
 //toggle each view
 //allow user to download or copy to clipboard
 const SBCollapseViewer = (props: any) => {
-    const { data, pumlURL, setPumlURL, onDownloadPDFClick } = props;
+    const { data, pumlURL, setPumlURL, loadedSchema } = props;
     const [toggle, setToggle] = useState('');
 
     useEffect(() => {
@@ -60,18 +61,14 @@ const SBCollapseViewer = (props: any) => {
                         <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-right' />
                         <SBDownloadFile buttonId={`download${i}`} customClass='mr-1 float-right' data={obj.schema} ext={obj.fmt} />
                         <span className={`${obj.fmt == 'HTML' ? '' : ' d-none'}`}>
-                            <Button id="htmlPdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
-                                <FontAwesomeIcon icon={faFilePdf} />
-                            </Button>
+                            <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
                             <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>
                         </span>
 
                         <span className={`${obj.fmt == 'MarkDown' ? '' : ' d-none'}`}>
-                            <Button id="mdPdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
-                                <FontAwesomeIcon icon={faFilePdf} />
-                            </Button>
+                            <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
                             <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </Button>

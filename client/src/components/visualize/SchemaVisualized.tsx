@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf, faWindowMaximize, faTableColumns, faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { faWindowMaximize, faTableColumns, faFileImage } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
@@ -15,6 +15,7 @@ import { useLocation } from "react-router-dom";
 import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onDownloadSVGClick, onGVPopOutClick } from "components/common/SBGvPreviewer";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
+import SBDownloadPDF from "components/common/SBDownloadPDF";
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
@@ -58,40 +59,6 @@ const SchemaVisualized = (props: any) => {
         }
     }
 
-    const onDownloadPDFClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        const data = JSON.parse(loadedSchema)
-        try {
-            fetch('/api/convert/pdf', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    schema: data
-                })
-            }).then(
-                rsp => rsp.blob()
-            ).then(blob => {
-                const elem = document.createElement('a');
-                elem.href = URL.createObjectURL(blob);
-                elem.download = "schema.pdf";
-                document.body.appendChild(elem);
-                elem.click();
-
-                elem.remove();
-                URL.revokeObjectURL(elem.href);
-            }).catch(err => {
-                console.log(err);
-                sbToastError(`PDF cannot be downloaded`);
-            });
-
-        } catch (err) {
-            console.log(err);
-            sbToastError(`PDF cannot be downloaded`);
-        }
-    }
-
     const toggleSplitView = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSplitViewFlag(splitView => !splitView);
@@ -122,18 +89,14 @@ const SchemaVisualized = (props: any) => {
                             <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema ? '' : ' d-none'}`} data={convertedSchema} ext={conversion} />
 
                             <div className={`${conversion == 'html' ? '' : ' d-none'}`}>
-                                <Button id="htmlPdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
-                                    <FontAwesomeIcon icon={faFilePdf} />
-                                </Button>
+                                <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
                                 <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(convertedSchema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </Button>
                             </div>
 
                             <div className={`${conversion == 'md' ? '' : ' d-none'}`}>
-                                <Button id="mdPdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
-                                    <FontAwesomeIcon icon={faFilePdf} />
-                                </Button>
+                                <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
                                 <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(convertedSchema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </Button>
@@ -183,7 +146,7 @@ const SchemaVisualized = (props: any) => {
             </div>
 
             <div className={`card-body p-0 ${spiltViewFlag ? 'd-none' : ''}`}>
-                {conversion == 'all' && convertAll.length != 0 ? <SBCollapseViewer data={convertAll} pumlURL={pumlURL} setPumlURL={setPumlURL} onDownloadPDFClick={onDownloadPDFClick} /> :
+                {conversion == 'all' && convertAll.length != 0 ? <SBCollapseViewer data={convertAll} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
                     <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
                 }
             </div>
