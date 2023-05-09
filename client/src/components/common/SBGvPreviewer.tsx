@@ -23,23 +23,17 @@ export const convertToGvFullView = (data: any) => {
 export const onGVPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     var newWindowContent = document.getElementById('fullGV')?.innerHTML;
-    try {
-        var newWindow = window.open("");
-        newWindow?.document.write(newWindowContent);
-    } catch {
-        sbToastError('Error: Unable to open GraphViz in pop out.')
-    }
+    var newWindow = window.open("");
+    newWindow?.document.write(newWindowContent || 'Error: Cannot display Graphviz');
 }
 
 export const onDownloadSVGClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const svg = document.getElementById("fullGV")?.innerHTML;
-    try {
-        if (svg) {
-            var blob = new Blob([svg], { type: "image/svg+xml" });
-            saveAs(blob, "graphViz.svg");
-        }
-    } catch {
+    if (svg) {
+        var blob = new Blob([svg], { type: "image/svg+xml" });
+        saveAs(blob, "graphViz.svg");
+    } else {
         sbToastError('Error: Unable to download GraphViz file.')
     }
 }

@@ -77,13 +77,17 @@ const OptionsModal = (props: OptionsModalProps) => {
     setData(updatedData);
   }
 
-  const saveData = () => {
+  const saveData = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     //check for required fields
     let errCount = 0;
-    for (let i = 0; i < RequiredOptions[optionType].length; i++) {
-      if ((!Object.keys(data['type']).includes(RequiredOptions[optionType][i])) || (Object.keys(data['type']).includes(RequiredOptions[optionType][i]) && data['type'][RequiredOptions[optionType][i]] == undefined)) {
-        sbToastError(RequiredOptions[optionType][i] + ' is required');
-        errCount += 1;
+
+    if (RequiredOptions[optionType] && optionType in RequiredOptions) {
+      for (let i = 0; i < RequiredOptions[optionType].length; i++) {
+        if ((!Object.keys(data['type']).includes(RequiredOptions[optionType][i])) || (Object.keys(data['type']).includes(RequiredOptions[optionType][i]) && data['type'][RequiredOptions[optionType][i]] == undefined)) {
+          sbToastError(RequiredOptions[optionType][i] + ' is required');
+          errCount += 1;
+        }
       }
     }
     if (errCount >= 1) {

@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem, Input } from 'reactstrap'
+import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem } from 'reactstrap'
 import { Draggable, Droppable } from 'react-drag-and-drop';
 import { Info, Types } from './structure/structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faGripLines } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { sbToastError } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
@@ -13,6 +13,17 @@ import { format } from 'actions/format';
 import SBEditor from 'components/common/SBEditor';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../consts';
 import SBDownloadFile from 'components/common/SBDownloadFile';
+import SBFileUploader from 'components/common/SBFileUploader';
+
+const configInitialState = {
+    $MaxBinary: $MAX_BINARY,
+    $MaxString: $MAX_STRING,
+    $MaxElements: $MAX_ELEMENTS,
+    $Sys: $SYS,
+    $TypeName: $TYPENAME,
+    $FieldName: $FIELDNAME,
+    $NSID: $NSID
+}
 
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -24,15 +35,7 @@ const SchemaCreator = (props: any) => {
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef('');
 
-    const [configOpt, setConfigOpt] = useState({
-        $MaxBinary: $MAX_BINARY,
-        $MaxString: $MAX_STRING,
-        $MaxElements: $MAX_ELEMENTS,
-        $Sys: $SYS,
-        $TypeName: $TYPENAME,
-        $FieldName: $FIELDNAME,
-        $NSID: $NSID
-    })
+    const [configOpt, setConfigOpt] = useState(configInitialState);
 
     useEffect(() => {
         const schemaStr = JSON.stringify(generatedSchema);
@@ -41,25 +44,11 @@ const SchemaCreator = (props: any) => {
             .then(val => {
                 if (val.error) {
                     for (const index in val.payload.response) {
-                        sbToastError(val.payload.response[index]); 
+                        sbToastError(val.payload.response[index]);
                     }
                 }
                 setData(val.payload.schema);
             })
-
-        //set configuration data
-        const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
-        if (configDefs) {
-            for (const [key, value] of Object.entries(configDefs)) {
-                const parsedVal = /\d+$/.test(value) ? parseInt(value) : value;
-                if (key in configOpt && configOpt[key] != value && value != '') {
-                    setConfigOpt({
-                        ...configOpt,
-                        [key]: parsedVal
-                    })
-                }
-            }
-        }
     }, [generatedSchema])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -117,7 +106,7 @@ const SchemaCreator = (props: any) => {
         e.preventDefault();
         setSelectedFile('');
         setGeneratedSchema('');
-        document.getElementById("schema-file").value = '';
+        ref.current = '';
     }
 
     let infoKeys;
@@ -181,17 +170,30 @@ const SchemaCreator = (props: any) => {
         if (generatedSchema.info && k in generatedSchema.info) {
             return Info[key].editor({
                 key: i,
-                value: generatedSchema.info[key],
-                placeholder: k,
-                change: val =>
-                    setGeneratedSchema(generatedSchema => ({
-                        ...generatedSchema,
-                        info: {
-                            ...generatedSchema.info,
-                            ...Info[key].edit(val)
-                        }
-                    }))
+                value: key == 'config' ? configOpt :
+                    generatedSchema.info[key]
                 ,
+                placeholder: k,
+                change: val => {
+                    if (key == 'config') {
+                        setConfigOpt(val);
+                        setGeneratedSchema(generatedSchema => ({
+                            ...generatedSchema,
+                            info: {
+                                ...generatedSchema.info,
+                                ...Info[key].edit(val)
+                            }
+                        }));
+                    } else {
+                        setGeneratedSchema(generatedSchema => ({
+                            ...generatedSchema,
+                            info: {
+                                ...generatedSchema.info,
+                                ...Info[key].edit(val)
+                            }
+                        }));
+                    }
+                },
                 remove: (id: string) => {
                     if (generatedSchema.info && id in generatedSchema.info) {
                         const tmpInfo = { ...generatedSchema.info };
@@ -202,7 +204,7 @@ const SchemaCreator = (props: any) => {
                         }));
                     }
                 },
-                config: configOpt
+                config: configInitialState
             });
         }
         return null;
@@ -254,10 +256,7 @@ const SchemaCreator = (props: any) => {
                             </select>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <input type="file" id="schema-file" name="schema-file" accept=".jadn" ref={ref} onChange={onFileChange} className='form-control-sm' />
-                            <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload}>
-                                <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
-                            </Button>
+                            <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
                     <div className='col-md-9'>

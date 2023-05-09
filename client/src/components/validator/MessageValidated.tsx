@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Input } from "reactstrap";
+import { Button } from "reactstrap";
 import {
     escaped2cbor, format, hexify
 } from '../utils';
@@ -11,8 +11,7 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
 import { isNull } from "lodash";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SBFileUploader from "components/common/SBFileUploader";
 
 const MessageValidated = (props: any) => {
     const location = useLocation()
@@ -102,9 +101,9 @@ const MessageValidated = (props: any) => {
         e.preventDefault();
         setSelectedFile('');
         setLoadedMsg('');
+        ref.current = '';
         //setDecodeMsg('');
         //setMsgFormat('');
-        ref.current.value = '';
     }
 
     return (
@@ -124,10 +123,7 @@ const MessageValidated = (props: any) => {
                             </select>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <input type="file" id="message-file" name="message-file" accept=".json,.jadn,.xml,.cbor" ref={ref} onChange={onFileChange} className='form-control-sm' />
-                            <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancelFileUpload} style={{ display: 'inline' }}>
-                                <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
-                            </Button>
+                            <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
 
@@ -157,7 +153,7 @@ const MessageValidated = (props: any) => {
                     <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
-                            title={`${loadedSchema && loadedMsg && decodeMsg && msgFormat ? 'Validate the message against the given schema' : 'Cannot validate'}`}>
+                            title={'Validate the message against the given schema'}>
                             Validate Message
                         </Button>
                     </div>

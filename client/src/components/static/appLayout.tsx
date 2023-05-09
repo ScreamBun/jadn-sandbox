@@ -50,19 +50,19 @@ const AppLayout = () => {
               </DropdownMenu>
             </UncontrolledDropdown>
             <NavItem>
-              <NavLink className='nav-link px-0' to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }} onClick={onNavClick} title='Schema Visualization: Convert a Schema into a visual representation'>Visualization</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }} onClick={onNavClick} title='Convert a Schema into a visual representation'>Visualization</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link px-0' to={NAV_TRANSLATE} state={{ navConvertTo: "" }} onClick={onNavClick} title='Schema Translation: Translate between JADN Schemas and other data types'>Translation</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_TRANSLATE} state={{ navConvertTo: "" }} onClick={onNavClick} title='Translate between JADN Schemas and other data types'>Translation</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} state={{ navMsgFormat: "" }} title='Message Validation: Validate a message against a provided schema'>Validation</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} state={{ navMsgFormat: "" }} title='Validate a message against a provided schema'>Validation</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link px-0' to={NAV_TRANSFORM} state={{ navConvertTo: "" }} onClick={onNavClick} title='Schema Transformation: Merge two or more schemas into one'>Transformation</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_TRANSFORM} state={{ navConvertTo: "" }} onClick={onNavClick} title='Merge two or more schemas into one'>Transformation</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink className='nav-link px-0' to={NAV_GENERATE} onClick={onNavClick} title='Example Message Generation: Generate example messages based on a provided schema'>Generation</NavLink>
+              <NavLink className='nav-link px-0' to={NAV_GENERATE} onClick={onNavClick} title='Generate example messages based on a provided schema'>Generation</NavLink>
             </NavItem>
           </ul>
           <ul className="nav navbar-nav navbar-right ml-auto">

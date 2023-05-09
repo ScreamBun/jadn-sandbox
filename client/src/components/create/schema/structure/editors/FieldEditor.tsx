@@ -99,7 +99,7 @@ const FieldEditor = (props: FieldEditorProps) => {
 
     const options = Object.keys(types).map(optGroup => (
       <optgroup key={optGroup} label={splitCamel(optGroup)} >
-        {types[optGroup as 'base' | 'schema'].map((opt: any) => <option key={opt} value={opt} >{opt}</option>)}
+        {types[optGroup as 'base' | 'schema'].map((opt: any) => opt != '' ? <option key={opt} value={opt} >{opt}</option> : '')}
       </optgroup>
     ));
 
