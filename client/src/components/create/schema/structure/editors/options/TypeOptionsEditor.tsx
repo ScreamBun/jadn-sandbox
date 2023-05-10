@@ -29,7 +29,7 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
       dispatch(getValidFormatOpts(optionType))
       //TODO: get format options based on type
         .then((val) => {
-          setFormatOpts(val.payload.format_options.map(obj => obj.ui_name));
+          setFormatOpts(val.payload.format_options.map(obj => obj.name));
         })
         .catch((val) => {
           console.log("ERROR: " + val.payload.err);
