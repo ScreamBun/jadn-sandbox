@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SBCopyToClipboard from "./SBCopyToClipboard";
 import SBEditor from "./SBEditor";
 import SBDownloadFile from "./SBDownloadFile";
-import { faFilePdf, faWindowMaximize, faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { faWindowMaximize, faFileImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "reactstrap";
 import { convertToGvFullView, onDownloadSVGClick, onGVPopOutClick } from "./SBGvPreviewer";
