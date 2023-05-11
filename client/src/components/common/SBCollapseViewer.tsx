@@ -43,7 +43,7 @@ const SBCollapseViewer = (props: any) => {
         try {
             var newWindow = window.open(url);
             if (data) {
-                newWindow?.document.write(data);
+                newWindow?.document.write('<html><body><pre>' + data + '</pre></body></html>');
             }
         } catch {
             sbToastError('Error: Unable to open data in pop out.');

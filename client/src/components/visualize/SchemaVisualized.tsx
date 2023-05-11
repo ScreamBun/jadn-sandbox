@@ -53,7 +53,7 @@ const SchemaVisualized = (props: any) => {
         e.preventDefault();
         try {
             var newWindow = window.open("");
-            newWindow?.document.write(convertedSchema);
+            newWindow?.document.write('<html><body><pre>' + convertedSchema + '</pre></body></html>');
         } catch {
             sbToastError('Error: Unable to open schema in pop out');
         }
