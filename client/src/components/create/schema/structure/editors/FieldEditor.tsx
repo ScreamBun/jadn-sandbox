@@ -38,30 +38,31 @@ const FieldEditor = (props: FieldEditorProps) => {
   let valueObj = zip(fieldKeys, value) as FieldObject;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
     const { placeholder, value } = e.target;
-    if (placeholder == "Name" && value) {
-      if (value.includes('/')) {
-        sbToastError('Error: FieldNames MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension.');
-        return;
-      }
-      if (value.length >= 64) {
-        sbToastError('Error: Max length reached');
-        return;
-      }
-      const regex = new RegExp(config.$FieldName, "g");
-      if (!regex.test(value)) {
-        sbToastError('Error: FieldName format is not permitted');
-      }
-    }
     if (enumerated) {
-      if (!valueObj.value) {
+      if (!value) {
         sbToastError('Value required for Enum');
       }
     }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
+  }
+
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.includes('/')) {
+      sbToastError('Error: FieldNames MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension.');
+      return;
+    }
+    if (value.length >= 64) {
+      sbToastError('Error: Max length reached');
+      return;
+    }
+    const regex = new RegExp(config.$FieldName, "g");
+    if (!regex.test(value)) {
+      sbToastError('Error: FieldName format is not permitted');
+    }
   }
 
   const onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -111,7 +112,7 @@ const FieldEditor = (props: FieldEditorProps) => {
       <div className="col-md-10 p-0 m-0">
         <FormGroup className="col-md-4 d-inline-block">
           <Label>Name</Label>
-          <Input type="text" placeholder="Name" maxLength={64} value={val.name} onChange={onChange} />
+          <Input type="text" placeholder="Name" maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
         </FormGroup>
 
         <FormGroup className="col-md-4 d-inline-block">
