@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SBCopyToClipboard from "./SBCopyToClipboard";
 import SBEditor from "./SBEditor";
 import SBDownloadFile from "./SBDownloadFile";
-import { faFilePdf, faWindowMaximize, faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { faWindowMaximize, faFileImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "reactstrap";
 import { convertToGvFullView, onDownloadSVGClick, onGVPopOutClick } from "./SBGvPreviewer";
@@ -43,7 +43,7 @@ const SBCollapseViewer = (props: any) => {
         try {
             var newWindow = window.open(url);
             if (data) {
-                newWindow?.document.write(data);
+                newWindow?.document.write('<html><body><pre>' + data + '</pre></body></html>');
             }
         } catch {
             sbToastError('Error: Unable to open data in pop out.');

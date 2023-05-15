@@ -15,8 +15,15 @@ export const convertToGvSplitView = (data: any, height = 320, width = 920) => {
 }
 
 export const convertToGvFullView = (data: any) => {
+    var margin = 20; // to avoid scrollbars
+    var width = window.innerWidth - margin;
+    var height = window.innerHeight - margin;
+
     d3.graphviz("#fullGV")
         .fit(true)
+        .height(height)
+        .width(width)
+        .zoom(true)
         .renderDot(data);
 }
 
