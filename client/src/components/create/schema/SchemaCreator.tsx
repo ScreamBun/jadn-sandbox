@@ -15,6 +15,16 @@ import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
 import { FormatJADN } from 'components/utils';
 
+const configInitialState = {
+    $MaxBinary: $MAX_BINARY,
+    $MaxString: $MAX_STRING,
+    $MaxElements: $MAX_ELEMENTS,
+    $Sys: $SYS,
+    $TypeName: $TYPENAME,
+    $FieldName: $FIELDNAME,
+    $NSID: $NSID
+}
+
 const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
@@ -25,15 +35,7 @@ const SchemaCreator = (props: any) => {
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef('');
 
-    const [configOpt, setConfigOpt] = useState({
-        $MaxBinary: $MAX_BINARY,
-        $MaxString: $MAX_STRING,
-        $MaxElements: $MAX_ELEMENTS,
-        $Sys: $SYS,
-        $TypeName: $TYPENAME,
-        $FieldName: $FIELDNAME,
-        $NSID: $NSID
-    })
+    const [configOpt, setConfigOpt] = useState(configInitialState);
 
     useEffect(() => {
         const schemaStr = FormatJADN(generatedSchema);
@@ -173,17 +175,30 @@ const SchemaCreator = (props: any) => {
         if (generatedSchema.info && k in generatedSchema.info) {
             return Info[key].editor({
                 key: i,
-                value: generatedSchema.info[key],
-                placeholder: k,
-                change: val =>
-                    setGeneratedSchema(generatedSchema => ({
-                        ...generatedSchema,
-                        info: {
-                            ...generatedSchema.info,
-                            ...Info[key].edit(val)
-                        }
-                    }))
+                value: key == 'config' ? configOpt :
+                    generatedSchema.info[key]
                 ,
+                placeholder: k,
+                change: val => {
+                    if (key == 'config') {
+                        setConfigOpt(val);
+                        setGeneratedSchema(generatedSchema => ({
+                            ...generatedSchema,
+                            info: {
+                                ...generatedSchema.info,
+                                ...Info[key].edit(val)
+                            }
+                        }));
+                    } else {
+                        setGeneratedSchema(generatedSchema => ({
+                            ...generatedSchema,
+                            info: {
+                                ...generatedSchema.info,
+                                ...Info[key].edit(val)
+                            }
+                        }));
+                    }
+                },
                 remove: (id: string) => {
                     if (generatedSchema.info && id in generatedSchema.info) {
                         const tmpInfo = { ...generatedSchema.info };
@@ -194,7 +209,7 @@ const SchemaCreator = (props: any) => {
                         }));
                     }
                 },
-                config: configOpt
+                config: configInitialState
             });
         }
         return null;

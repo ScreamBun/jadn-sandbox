@@ -3,7 +3,7 @@ import json
 import logging
 import traceback
 
-from flask import current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, request, render_template
 from flask_restful import Resource, reqparse
 from jadnschema.convert import dumps
 from pydantic import ValidationError
@@ -41,7 +41,7 @@ class Format(Resource):
                 return err, 500
         
         return jsonify({
-            "schema": output
+        "schema": output
         })
     
 
@@ -60,7 +60,7 @@ class FormatOptions(Resource):
                 "format_options": format_options
             }) 
         except:
-            raise  traceback.print_exc()
+            raise traceback.print_exc()
 
         return j
          

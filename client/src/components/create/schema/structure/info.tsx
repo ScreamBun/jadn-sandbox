@@ -13,7 +13,7 @@ interface EditorProps {
   value: any;
   change?: (val: string | Record<string, any>, idx: number) => void;  // eslint-disable-line react/require-default-props
   remove?: (idx: number) => void;  // eslint-disable-line react/require-default-props
-  config: InfoConfig;
+  config: InfoConfig; //defaults for Config Object Editor
 }
 
 const metaDef = ({ k = 'key', v = '' }: InfoDef) => ({ [k]: v } as Record<string, any>);
