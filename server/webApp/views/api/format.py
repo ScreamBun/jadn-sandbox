@@ -5,7 +5,7 @@ import traceback
 
 from flask import Blueprint, current_app, jsonify, request, render_template
 from flask_restful import Resource, reqparse
-from jadnschema.convert import dumps
+from jadnschema.jadn import dumps
 from pydantic import ValidationError
 
 from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
@@ -25,7 +25,7 @@ class Format(Resource):
         request_json = request.json
 
         try:
-            output = dumps(request_json)
+            output = dumps(request_json) # type: ignore
 
         except (TypeError, ValueError) as err:
             tb = traceback.format_exc()
