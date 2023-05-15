@@ -68,6 +68,12 @@ const StructureEditor = (props: StructureEditorProps) => {
 
   const addField = () => {
     let field: EnumeratedFieldArray | StandardFieldArray;
+    //check field count
+    if (config.$MaxElements && fields.length >= config.$MaxElements) {
+      sbToastError('Error: Cannot add more fields due to $MaxElements.');
+      return;
+    }
+
     //create unique ID
     const currMaxID = Math.max(...listID);
     if (currMaxID && fieldCount <= currMaxID) {
