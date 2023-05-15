@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
-import { convertSchema, info } from 'actions/convert'
+import { convertSchema, convertToAll, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -15,6 +15,7 @@ const SchemaTranslator = () => {
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
     const [translatedSchema, setTranslatedSchema] = useState('');
+    const [convertAll, setConvertAll] = useState<any[]>([]);
     const [translation, setTranslation] = useState('');
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Translation'
@@ -25,12 +26,14 @@ const SchemaTranslator = () => {
 
     useEffect(() => {
         setTranslatedSchema('');
+        setConvertAll([]);
     }, [loadedSchema])
 
     const onReset = () => {
         setSelectedFile('');
         setLoadedSchema('');
         setTranslation('');
+        setConvertAll([]);
         setTranslatedSchema('');
     }
 
@@ -79,6 +82,29 @@ const SchemaTranslator = () => {
                             //.then setConvertedSchema([])
                             //conversion check 
                             //.catch
+                            try {
+                                dispatch(convertToAll(schemaObj, 'translation'))
+                                    .then((convertSchemaVal) => {
+                                        setConvertAll(convertSchemaVal.payload.schema.convert);
+                                        for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
+                                            const conversionCheck = convertSchemaVal.payload.schema.convert[i].schema;
+                                            if (conversionCheck.startsWith('Error')) {
+                                                sbToastError(conversionCheck);
+                                            } else {
+                                                sbToastSuccess(`Schema conversion to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                                            }
+                                        }
+                                    })
+                                    .catch((convertSchemaErr: string) => {
+                                        sbToastError(convertSchemaErr);
+                                    })
+
+                            } catch (err) {
+                                if (err instanceof Error) {
+                                    sbToastError(err.message);
+                                }
+                            }
+
                         } else if (validateSchemaVal.payload.valid_bool == false) {
                             sbToastError("Invalid Schema");
                         } else if (translation == '') {
@@ -124,6 +150,7 @@ const SchemaTranslator = () => {
                                         <SchemaTranslated
                                             translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
                                             translation={translation} setTranslation={setTranslation}
+                                            convertAll={convertAll} setConvertAll={setConvertAll}
                                             loadedSchema={loadedSchema} />
                                     </div>
                                 </div>

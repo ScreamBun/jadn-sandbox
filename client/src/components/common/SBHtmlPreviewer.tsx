@@ -1,7 +1,7 @@
 import React from "react";
 import SBEditor from "./SBEditor";
 
-export const onHTMLPopOutClick = (convertedSchema) => {
+export const onHTMLPopOutClick = (convertedSchema: any) => {
     const blob = new Blob([convertedSchema], { type: "text/html" });
     const data = URL.createObjectURL(blob);
     window.open(data);

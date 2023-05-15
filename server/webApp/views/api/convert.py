@@ -79,7 +79,67 @@ class Convert(Resource):
                 "fmt": args["convert-to"]
             }
         })
+    
+class ConvertToAll(Resource):
+    """
+    Endpoint for api/convert/all
+    """
 
+    def post(self):
+        args = parser.parse_args()
+        conv = "Valid Base Schema"
+        request_json = request.json
+
+        is_valid, schema = current_app.validator.validateSchema(request_json["schema"], False)
+        if is_valid:
+            convertedData = []
+            visualizeFmt = ['gv', 'html', 'jidl', 'md', 'puml']
+            translateFmt = ['json', 'rng']
+
+            if request_json['convertType'] == 'translation':
+                validFmt = translateFmt
+            else: 
+                validFmt = visualizeFmt
+
+            for i in validFmt:
+                try:
+                    conv_fmt = SchemaFormats(i)
+                except Exception:  
+                    raise Exception("Error: Invalid Conversion Type")
+    
+                kwargs = {
+                    "fmt": conv_fmt,
+                }
+
+                if conv_fmt == "html":
+                    kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
+                
+                try:
+                    data = request_json["schema"]
+                    schema_checked = jadn.check(data) 
+                    if conv_fmt == "puml":
+                        convertedSchema = jadn.convert.plant_dumps(schema_checked, style={'links': True, 'detail': 'information'})
+                    elif conv_fmt == "json":
+                        convertedSchema = jadn.translate.json_schema_dumps(schema_checked)
+                    elif conv_fmt == "jadn":
+                        convertedSchema = dumps(schema_checked, **kwargs)
+                    else:
+                        convertedSchema = dumps(schema, **kwargs)
+                        
+                    convertedData.append({'fmt': conv_fmt.name, 'schema': convertedSchema})
+                            
+                except:
+                    tb = traceback.format_exc()
+                    raise Exception("Error: " + tb)
+        else:
+            convertedData = "Error: Fix the base schema errors before converting..."
+
+        return jsonify({
+            "schema": {
+                "base": args["schema"],
+                "convert": convertedData
+            }
+        })
 
 class ConvertPDF(Resource):
     """
@@ -103,6 +163,7 @@ class ConvertPDF(Resource):
 
 resources = {
     Convert: {"urls": ("/", )},
+    ConvertToAll: {"urls": ("/all", )},
     ConvertPDF: {"urls": ("/pdf",)}
 }
 

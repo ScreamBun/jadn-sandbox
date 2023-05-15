@@ -3,6 +3,7 @@ import { Button } from "reactstrap";
 import * as d3 from "d3-graphviz";
 import SBEditor from "./SBEditor";
 import saveAs from "file-saver";
+import { sbToastError } from "./SBToast";
 
 export const convertToGvSplitView = (data: any, height = 320, width = 920) => {
     d3.graphviz("#gv")
@@ -14,8 +15,15 @@ export const convertToGvSplitView = (data: any, height = 320, width = 920) => {
 }
 
 export const convertToGvFullView = (data: any) => {
+    var margin = 20; // to avoid scrollbars
+    var width = window.innerWidth - margin;
+    var height = window.innerHeight - margin;
+
     d3.graphviz("#fullGV")
         .fit(true)
+        .height(height)
+        .width(width)
+        .zoom(true)
         .renderDot(data);
 }
 
@@ -26,11 +34,14 @@ export const onGVPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     newWindow?.document.write(newWindowContent || 'Error: Cannot display Graphviz');
 }
 
-export const onDownloadSVGClick = () => {
+export const onDownloadSVGClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     const svg = document.getElementById("fullGV")?.innerHTML;
     if (svg) {
         var blob = new Blob([svg], { type: "image/svg+xml" });
         saveAs(blob, "graphViz.svg");
+    } else {
+        sbToastError('Error: Unable to download GraphViz file.')
     }
 }
 
@@ -51,7 +62,7 @@ const SBGvPreviewer = (props: any) => {
                 <Button id="diagramReset" title="Reset the View" color="info" className="btn-sm m-1" style={{ zIndex: '1', position: 'absolute' }} onClick={onDiagramReset}>Reset</Button>
                 <div id="gv" style={{ 'height': "20em", textAlign: 'center', zIndex: '0' }}>
                 </div>
-                <div id="fullGV" style={{ visibility: 'hidden' }}>
+                <div id="fullGV" style={{ visibility: 'hidden', overflow: 'hidden' }}>
                 </div>
             </div>
         </>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf, faWindowMaximize, faTableColumns, faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { faWindowMaximize, faTableColumns, faFileImage } from "@fortawesome/free-solid-svg-icons";
 import { getConversions } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
@@ -15,6 +15,7 @@ import { useLocation } from "react-router-dom";
 import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onDownloadSVGClick, onGVPopOutClick } from "components/common/SBGvPreviewer";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
+import SBDownloadPDF from "components/common/SBDownloadPDF";
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
@@ -22,7 +23,7 @@ const SchemaVisualized = (props: any) => {
     const location = useLocation();
     const { navConvertTo } = location.state;
 
-    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag } = props;
+    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, convertAll, setConvertAll, spiltViewFlag, setSplitViewFlag } = props;
     const [pumlURL, setPumlURL] = useState('');
 
     useEffect(() => {
@@ -41,48 +42,20 @@ const SchemaVisualized = (props: any) => {
         }
     }, [convertedSchema]);
 
-
     const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setConversion(e.target.value);
         setConvertedSchema('');
+        setConvertAll([]);
         setSplitViewFlag(false);
     }
 
-    const onDownloadPDFClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const data = JSON.parse(loadedSchema)
-        if (convertedSchema != '') {
-            try {
-                fetch('/api/convert/pdf', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        schema: data
-                    })
-                }).then(
-                    rsp => rsp.blob()
-                ).then(blob => {
-                    const elem = document.createElement('a');
-                    elem.href = URL.createObjectURL(blob);
-                    elem.download = "schema.pdf";
-                    document.body.appendChild(elem);
-                    elem.click();
-
-                    elem.remove();
-                    URL.revokeObjectURL(elem.href);
-                }).catch(err => {
-                    console.log(err);
-                    sbToastError(`PDF cannot be downloaded`);
-                });
-
-            } catch (err) {
-                console.log(err);
-                sbToastError(`PDF cannot be downloaded`);
-            }
-        } else {
-            sbToastError(`No Converted Schema Exists`);
+        try {
+            var newWindow = window.open("");
+            newWindow?.document.write('<html><body><pre>' + convertedSchema + '</pre></body></html>');
+        } catch {
+            sbToastError('Error: Unable to open schema in pop out');
         }
     }
 
@@ -111,57 +84,53 @@ const SchemaVisualized = (props: any) => {
                         </select>
                     </div>
                     <div className='col-md-9'>
-                        <div className={`${conversion == 'all' && convertedSchema ? ' d-none' : ''}`}>
+                        <div className={`${convertedSchema ? '' : ' d-none'}`}>
                             <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
                             <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema ? '' : ' d-none'}`} data={convertedSchema} ext={conversion} />
-                        </div>
 
-                        <div className={`${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
-                            <Button id="htmlPdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
-                                <FontAwesomeIcon icon={faFilePdf} />
-                            </Button>
-                            <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(convertedSchema)}>
-                                <FontAwesomeIcon icon={faWindowMaximize} />
-                            </Button>
-                            <Button id="htmlSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
-                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
-                            </Button>
-                        </div>
+                            <div className={`${conversion == 'html' ? '' : ' d-none'}`}>
+                                <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
+                                <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(convertedSchema)}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </Button>
+                            </div>
 
-                        <div className={`${conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
-                            <Button id="mdPdfDownload" title="Download PDF of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadPDFClick}>
-                                <FontAwesomeIcon icon={faFilePdf} />
-                            </Button>
-                            <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(convertedSchema)}>
-                                <FontAwesomeIcon icon={faWindowMaximize} />
-                            </Button>
-                            <Button id="mdSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
-                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
-                            </Button>
-                        </div>
+                            <div className={`${conversion == 'md' ? '' : ' d-none'}`}>
+                                <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
+                                <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(convertedSchema)}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </Button>
+                            </div>
 
-                        <div className={`${conversion == 'puml' && convertedSchema ? '' : ' d-none'}`}>
-                            <Button id="pumlPngDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={() => onDownloadPNGClick(pumlURL)}>
-                                <FontAwesomeIcon icon={faFileImage} />
-                            </Button>
-                            <Button id="pumlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" target="_blank" href={pumlURL}>
-                                <FontAwesomeIcon icon={faWindowMaximize} />
-                            </Button>
-                            <Button id="pumlSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
-                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
-                            </Button>
-                        </div>
+                            <div className={`${conversion == 'jidl' ? '' : ' d-none'}`}>
+                                <Button id="jidlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </Button>
+                            </div>
 
-                        <div className={`${conversion == 'gv' && convertedSchema ? '' : ' d-none'}`}>
-                            <Button id="gvSvgDownload" title="Download SVG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadSVGClick}>
-                                <FontAwesomeIcon icon={faFileImage} />
-                            </Button>
-                            <Button id="gvPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onGVPopOutClick}>
-                                <FontAwesomeIcon icon={faWindowMaximize} />
-                            </Button>
-                            <Button id="gvSplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
-                                <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
-                            </Button>
+                            <div className={`${conversion == 'puml' ? '' : ' d-none'}`}>
+                                <Button id="pumlPngDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={() => onDownloadPNGClick(pumlURL)}>
+                                    <FontAwesomeIcon icon={faFileImage} />
+                                </Button>
+                                <Button id="pumlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" target="_blank" href={pumlURL}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </Button>
+                            </div>
+
+                            <div className={`${conversion == 'gv' ? '' : ' d-none'}`}>
+                                <Button id="gvSvgDownload" title="Download SVG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadSVGClick}>
+                                    <FontAwesomeIcon icon={faFileImage} />
+                                </Button>
+                                <Button id="gvPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onGVPopOutClick}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </Button>
+                            </div>
+
+                            <div className={`${conversion != 'jidl' ? '' : ' d-none'}`}>
+                                <Button id="SplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
+                                    <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
+                                </Button>
+                            </div>
                         </div>
 
                         <div>
@@ -177,7 +146,7 @@ const SchemaVisualized = (props: any) => {
             </div>
 
             <div className={`card-body p-0 ${spiltViewFlag ? 'd-none' : ''}`}>
-                {conversion == 'all' && convertedSchema ? <SBCollapseViewer data={convertedSchema} /> :
+                {conversion == 'all' && convertAll.length != 0 ? <SBCollapseViewer data={convertAll} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
                     <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
                 }
             </div>
