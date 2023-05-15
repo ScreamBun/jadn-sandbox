@@ -196,6 +196,9 @@ const SchemaCreator = (props: any) => {
                 },
                 remove: (id: string) => {
                     if (generatedSchema.info && id in generatedSchema.info) {
+                        if (id == 'config') {
+                            setConfigOpt(configInitialState);
+                        }
                         const tmpInfo = { ...generatedSchema.info };
                         delete tmpInfo[id];
                         setGeneratedSchema(generatedSchema => ({
