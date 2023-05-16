@@ -69,8 +69,11 @@ const StructureEditor = (props: StructureEditorProps) => {
   const addField = () => {
     let field: EnumeratedFieldArray | StandardFieldArray;
     //check field count
-    if (config.$MaxElements && fields.length >= config.$MaxElements) {
-      sbToastError('Error: Cannot add more fields due to $MaxElements.');
+    if (config.$MaxElements && fields.length > config.$MaxElements) {
+      sbToastError(`Error: Field count exceeds $MaxElements. Please remove ${fields.length - config.$MaxElements} field(s).`);
+      return;
+    } else if (config.$MaxElements && fields.length == config.$MaxElements) {
+      sbToastError('Error: Field count meets $MaxElements. Cannot add more fields.');
       return;
     }
 

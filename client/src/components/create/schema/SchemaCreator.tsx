@@ -184,6 +184,7 @@ const SchemaCreator = (props: any) => {
                                 ...Info[key].edit(val)
                             }
                         }));
+                        //TODO: Add validation for new config?
                     } else {
                         setGeneratedSchema(generatedSchema => ({
                             ...generatedSchema,

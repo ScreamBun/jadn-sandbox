@@ -206,8 +206,12 @@ const JADNSchemaLoader = (props: any) => {
         dispatch(setSchema(data));
         setIsValidJADN(false);
         setLoadedSchema(data);
-        if (setDecodeSchemaTypes && setDecodeMsg) {
-            loadDecodeTypes(JSON.parse(data));
+        try {
+            if (setDecodeSchemaTypes && setDecodeMsg) {
+                loadDecodeTypes(JSON.parse(data));
+            }
+        } catch {
+            return;
         }
     }
 
