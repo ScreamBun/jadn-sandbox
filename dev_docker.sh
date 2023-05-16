@@ -25,4 +25,4 @@ if [ $? -eq 0 ]; then
 fi
 
 docker build -t $IMG -f Dockerfile .
-docker run --name $IMG -p 8080:8080 $IMG
+docker run --name $IMG -p 8082:8082 $IMG

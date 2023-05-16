@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-curl -XPOST 'localhost:8080/validate' -H "Content-Type: application/json" --data @curl.json
+curl -XPOST 'localhost:8082/validate' -H "Content-Type: application/json" --data @curl.json

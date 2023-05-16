@@ -17,7 +17,7 @@
                 "run",
                 "--no-debugger",
                 "--no-reload",
-                "--port=8080"
+                "--port=8082"
             ],
             "jinja": true,
             "justMyCode": false
