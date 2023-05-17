@@ -33,7 +33,7 @@ const SchemaCreator = (props: any) => {
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
     const schemaOpts = useSelector(getAllSchemas);
-    const ref = useRef('');
+    const ref = useRef<HTMLInputElement | null>(null);
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
 
@@ -106,7 +106,9 @@ const SchemaCreator = (props: any) => {
         e.preventDefault();
         setSelectedFile('');
         setGeneratedSchema('');
-        ref.current = '';
+        if (ref.current) {
+            ref.current.value = '';
+        }
     }
 
     let infoKeys;

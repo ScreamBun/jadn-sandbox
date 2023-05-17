@@ -20,7 +20,7 @@ const JADNSchemaLoader = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
-    const ref = useRef('');
+    const ref = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         dispatch(info());
@@ -219,7 +219,9 @@ const JADNSchemaLoader = (props: any) => {
         e.preventDefault();
         setSelectedFile('');
         setLoadedSchema('');
-        ref.current = '';
+        if (ref.current) {
+            ref.current.value = '';
+        }
     }
 
     return (
