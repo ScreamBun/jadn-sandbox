@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
@@ -30,15 +30,10 @@ const MapField = (props: MapFieldProps) => {
     msg: []
   });
 
-  const ref = useRef(true);
   useEffect(() => {
-    const firstRender = ref.current;
-    if (firstRender) {
-      ref.current = false;
-      const validMsg = validateOptDataElem(config, optData, data);
-      setErrMsg(validMsg);
-    }
-  });
+    const validMsg = validateOptDataElem(config, optData, data);
+    setErrMsg(validMsg);
+  }, []);
 
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {
@@ -47,7 +42,7 @@ const MapField = (props: MapFieldProps) => {
       setData(updatedData);
       const validMsg = validateOptDataElem(config, optData, updatedData);
       setErrMsg(validMsg);
-    } else {
+    } else if (!v) {
       //remove
       const updatedData = data.filter((elem) => {
         return elem != k;
@@ -66,16 +61,12 @@ const MapField = (props: MapFieldProps) => {
 
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
-    console.log(optData)
   }
-
-  console.log(typeDef)
-  console.log(typeDef[typeDef.length - 1])
 
   //Expected: fields (typeDef.length  == 5)
   const fieldDef = typeDef.length == $FIELDS_LENGTH ?
     typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} config={config} />)
-    : <div> No fields </div> ;
+    : <div> No fields </div>;
 
   let err: any[] = [];
   (errMsg.msg).forEach(msg => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
@@ -29,15 +29,10 @@ const RecordField = (props: RecordFieldProps) => {
     msg: []
   });
 
-  const ref = useRef(true);
   useEffect(() => {
-    const firstRender = ref.current;
-    if (firstRender) {
-      ref.current = false;
-      const errCheck = validateOptDataElem(config, optData, data);
-      setErrMsg(errCheck);
-    }
-  });
+    const errCheck = validateOptDataElem(config, optData, data);
+    setErrMsg(errCheck);
+  }), [];
 
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {
@@ -47,7 +42,7 @@ const RecordField = (props: RecordFieldProps) => {
       const validMsg = validateOptDataElem(config, optData, updatedData);
       setErrMsg(validMsg);
     } else {
-      if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v)) {
+      if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v) || !v) {
         //remove
         const updatedData = data.filter((elem) => {
           return elem != k;
