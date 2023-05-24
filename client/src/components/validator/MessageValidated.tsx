@@ -23,7 +23,7 @@ const MessageValidated = (props: any) => {
     const decodeExports = decodeSchemaTypes.exports.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
     //const decodeAll = decodeSchemaTypes.all.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
     const dispatch = useDispatch();
-    const ref = useRef('');
+    const ref = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         if (!isNull(navMsgFormat)) {
@@ -101,7 +101,9 @@ const MessageValidated = (props: any) => {
         e.preventDefault();
         setSelectedFile('');
         setLoadedMsg('');
-        ref.current = '';
+        if (ref.current) {
+            ref.current.value = '';
+        }
         //setDecodeMsg('');
         //setMsgFormat('');
     }

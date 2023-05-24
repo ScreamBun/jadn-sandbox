@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
@@ -30,15 +30,10 @@ const ArrayField = (props: ArrayFieldProps) => {
     msg: []
   });
 
-  const ref = useRef(true);
   useEffect(() => {
-    const firstRender = ref.current;
-    if (firstRender) {
-      ref.current = false;
-      const validMsg = validateOptDataElem(config, optData, data);
-      setErrMsg(validMsg);
-    }
-  });
+    const validMsg = validateOptDataElem(config, optData, data);
+    setErrMsg(validMsg);
+  }, []);
 
   const onChange = (_k: string, v: any, i: number) => {
     var updatedArr;

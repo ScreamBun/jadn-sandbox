@@ -1,6 +1,6 @@
 
 //ArrayOf
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -41,15 +41,10 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const [_idx, name, type, args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
-  const ref = useRef(true);
   useEffect(() => {
-    const firstRender = ref.current;
-    if (firstRender) {
-      ref.current = false;
-      const validMsg = validateOptDataElem(config, optData, opts);
-      setErrMsg(validMsg);
-    }
-  });
+    const validMsg = validateOptDataElem(config, optData, opts);
+    setErrMsg(validMsg);
+  }, []);
 
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {

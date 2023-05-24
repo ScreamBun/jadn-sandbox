@@ -38,25 +38,27 @@ const StructureEditor = (props: StructureEditorProps) => {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
-    if (placeholder == "Name" && value) {
-      if (predefinedTypes.includes(value.toLowerCase())) {
-        sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
-      }
-      if (value.length >= 64) {
-        sbToastError('Error: Max length reached');
-        return;
-      }
-      if (value.includes(config.$Sys)) {
-        sbToastError('Error: TypeNames SHOULD NOT contain the System character');
-      }
-      const regex = new RegExp(config.$TypeName, "g");
-      if (!regex.test(value)) {
-        sbToastError('Error: TypeName format is not permitted');
-      }
-    }
     const key = placeholder.toLowerCase();
     const updatevalue = { ...valueObj, [key]: value }
     change(updatevalue, dataIndex);
+  }
+
+  const onBlur = (e: any) => {
+    const value = e.target.value;
+    if (predefinedTypes.includes(value.toLowerCase())) {
+      sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
+    }
+    if (value.length >= 64) {
+      sbToastError('Error: Max length reached');
+      return;
+    }
+    if (value.includes(config.$Sys)) {
+      sbToastError('Error: TypeNames SHOULD NOT contain the System character');
+    }
+    const regex = new RegExp(config.$TypeName, "g");
+    if (!regex.test(value)) {
+      sbToastError('Error: TypeName format is not permitted');
+    }
   }
 
   const removeAll = () => {
@@ -66,6 +68,15 @@ const StructureEditor = (props: StructureEditorProps) => {
 
   const addField = () => {
     let field: EnumeratedFieldArray | StandardFieldArray;
+    //check field count
+    if (config.$MaxElements && fields.length > config.$MaxElements) {
+      sbToastError(`Error: Field count exceeds $MaxElements. Please remove ${fields.length - config.$MaxElements} field(s).`);
+      return;
+    } else if (config.$MaxElements && fields.length == config.$MaxElements) {
+      sbToastError('Error: Field count meets $MaxElements. Cannot add more fields.');
+      return;
+    }
+
     //create unique ID
     const currMaxID = Math.max(...listID);
     if (currMaxID && fieldCount <= currMaxID) {
@@ -151,7 +162,7 @@ const StructureEditor = (props: StructureEditorProps) => {
         <div className="row m-0">
           <FormGroup className="col-md-4">
             <Label>Name</Label>
-            <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} />
+            <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
           </FormGroup>
 
           <FormGroup className="col-md-2">
@@ -210,7 +221,7 @@ const StructureEditor = (props: StructureEditorProps) => {
       <div className="row m-0">
         <FormGroup className="col-md-4">
           <Label>Name</Label>
-          <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} />
+          <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
         </FormGroup>
 
         <FormGroup className="col-md-2">

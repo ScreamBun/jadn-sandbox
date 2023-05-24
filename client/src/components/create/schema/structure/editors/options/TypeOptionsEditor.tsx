@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
@@ -21,13 +21,10 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
   const dispatch = useDispatch();
   const [formatOpts, setFormatOpts] = useState<string[]>([]);
 
-  const ref = useRef(true);
   useEffect(() => {
-    const firstRender = ref.current;
-    if (firstRender && optionType != undefined) {
-      ref.current = false;
+    if (optionType != undefined) {
       dispatch(getValidFormatOpts(optionType))
-      //TODO: get format options based on type
+        //TODO: get format options based on type
         .then((val) => {
           setFormatOpts(val.payload.format_options.map(obj => obj.name));
         })
