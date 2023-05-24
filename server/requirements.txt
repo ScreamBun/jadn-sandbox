@@ -1,4 +1,4 @@
- ./jadnschema-0.2.5-py2.py3-none-any.whl
+ ./jadnschema-0.2.6-py2.py3-none-any.whl
 # -e /home/matt/screamingbunny/Schema/jadnschema
 # -e /home/kaitlyn_hsu/ScreamingBunnyRepo/Schema/jadnschema
 cbor-json==0.0.4
