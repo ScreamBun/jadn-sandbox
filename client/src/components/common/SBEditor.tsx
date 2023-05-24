@@ -44,6 +44,7 @@ const SBEditor = (props: any) => {
         <CodeMirror
             value={data}
             height={height}
+            maxHeight='100%'
             readOnly={isReadOnly}
             theme={githubLight}
             extensions={extensions}

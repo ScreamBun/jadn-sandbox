@@ -42,6 +42,22 @@ body {
     right: 1em;
 }
 
+//ALLOW CARD RESIZE; ADD 'ITEM' TO CLASS
+//REMOVE COL SIZE
+/* .card {
+    display: flex;
+    flex-basis: auto;
+}
+
+.card.item {
+    resize: horizontal;
+    overflow: auto;
+    min-width: 10%;
+    max-width: 99%;
+    height: 100%;
+}  */
+
+
 .code,
 textarea {
     font-family: 'Roboto', Consolas, monaco, monospace;
