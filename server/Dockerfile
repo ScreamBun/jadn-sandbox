@@ -53,7 +53,7 @@ apk del build-base python3-dev && \
 rm -rf /var/cache/apk/* *.tar.gz* /usr/src /root/.gnupg /tmp/*
 
 # Ports
-EXPOSE 8080/tcp
+EXPOSE 8082/tcp
 
 # Orchestrator Core Working Directory
 WORKDIR /opt/jadn_lint/

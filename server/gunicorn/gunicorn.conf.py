@@ -5,7 +5,7 @@ from pathlib import Path
 
 localVars = locals()
 GunicornEnv = {
-    'bind': ':8080',
+    'bind': ':8082',
     'workers': multiprocessing.cpu_count() * 2 + 1,
     'preload_app': True
 }
