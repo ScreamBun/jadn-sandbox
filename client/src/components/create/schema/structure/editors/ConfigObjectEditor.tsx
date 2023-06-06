@@ -35,7 +35,8 @@ const ConfigObjectEditor = (props: ConfigObjectEditorProps) => {
     } else {
       clearTimeout(timeOut.current);
     }
-    tmpValues[k] = v;
+    const parsedVal = /\d+$/.test(v) ? parseInt(v) : v;
+    tmpValues[k] = parsedVal;
     change(tmpValues);
   }
 

@@ -4,9 +4,9 @@ import { Draggable, Droppable } from 'react-drag-and-drop';
 import { Info, Types } from './structure/structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faGripLines } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { sbToastError } from 'components/common/SBToast';
+import { dismissAllToast, sbToastError, sbToastErrorFreeze, sbToastSuccess } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBEditor from 'components/common/SBEditor';
@@ -14,6 +14,7 @@ import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $
 import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
 import { FormatJADN } from 'components/utils';
+import { validateSchema } from 'actions/validate';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -30,6 +31,7 @@ const SchemaCreator = (props: any) => {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
     const [data, setData] = useState('');
+    const [isValidJADN, setIsValidJADN] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
     const schemaOpts = useSelector(getAllSchemas);
@@ -45,11 +47,10 @@ const SchemaCreator = (props: any) => {
         const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
         if (configDefs) {
             for (const [key, value] of Object.entries(configDefs)) {
-                const parsedVal = /\d+$/.test(value) ? parseInt(value) : value;
                 if (key in configOpt && configOpt[key] != value && value != '') {
                     setConfigOpt({
                         ...configOpt,
-                        [key]: parsedVal
+                        [key]: value
                     })
                 }
             }
@@ -57,6 +58,8 @@ const SchemaCreator = (props: any) => {
     }, [generatedSchema])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        dismissAllToast();
+        setIsValidJADN(false);
         setSelectedFile(e.target.value);
         if (e.target.value == "file") {
             setGeneratedSchema({
@@ -89,6 +92,8 @@ const SchemaCreator = (props: any) => {
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        dismissAllToast();
+        setIsValidJADN(false);
         if (e.target.files) {
             const file = e.target.files[0];
             const fileReader = new FileReader();
@@ -109,11 +114,70 @@ const SchemaCreator = (props: any) => {
 
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        dismissAllToast();
+        setIsValidJADN(false);
         setSelectedFile('');
         setGeneratedSchema('');
         if (ref.current) {
             ref.current.value = '';
         }
+    }
+
+    const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
+        validateJADN(data);
+    }
+
+    const validateJADN = (jsonToValidate: any) => {
+        dismissAllToast();
+        setIsValidJADN(false);
+        let jsonObj = validateJSON(jsonToValidate);
+        if (!jsonObj) {
+            sbToastError(`Invalid JSON. Cannot validate JADN`);
+            return;
+        }
+
+        try {
+            dispatch(validateSchema(jsonObj))
+                .then((validateSchemaVal: any) => {
+                    if (validateSchemaVal.payload.valid_bool == true) {
+                        setIsValidJADN(true);
+                        dispatch(setSchema(jsonObj));
+                        sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                    } else {
+                        sbToastErrorFreeze(validateSchemaVal.payload.valid_msg);
+                    }
+                })
+                .catch((validateSchemaErr) => {
+                    sbToastErrorFreeze(validateSchemaErr.payload.valid_msg)
+                })
+        } catch (err) {
+            if (err instanceof Error) {
+                sbToastErrorFreeze(err.message)
+            }
+        }
+    }
+
+    const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
+        let jsonObj = null;
+
+        if (!jsonToValidate) {
+            sbToastError(`No data found`)
+            return jsonObj;
+        }
+
+        try {
+            jsonObj = JSON.parse(jsonToValidate);
+        } catch (err: any) {
+            if (showErrorPopup) {
+                sbToastError(`Invalid Format: ${err.message}`)
+            }
+        }
+
+        if (onErrorReturnOrig && !jsonObj) {
+            jsonObj = jsonToValidate
+        }
+
+        return jsonObj;
     }
 
     let infoKeys;
@@ -182,6 +246,7 @@ const SchemaCreator = (props: any) => {
                 ,
                 placeholder: k,
                 change: val => {
+                    setIsValidJADN(false);
                     if (key == 'config') {
                         setConfigOpt(val);
                         setGeneratedSchema(generatedSchema => ({
@@ -191,7 +256,6 @@ const SchemaCreator = (props: any) => {
                                 ...Info[key].edit(val)
                             }
                         }));
-                        //TODO: Add validation for new config?
                     } else {
                         setGeneratedSchema(generatedSchema => ({
                             ...generatedSchema,
@@ -228,6 +292,7 @@ const SchemaCreator = (props: any) => {
             value: def,
             dataIndex: i,
             change: (val, idx: number) => {
+                setIsValidJADN(false);
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
                 setGeneratedSchema(generatedSchema => ({
@@ -277,6 +342,17 @@ const SchemaCreator = (props: any) => {
                         <SBDownloadFile buttonId='schemaDownload' customClass='float-right mr-1' data={data} />
                         <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="info">View Schema</Button>
                         <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
+                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title={isValidJADN ? "JADN schema is valid" : "Click to validate JADN"} onClick={onValidateJADNClick}>
+                            <span className="m-1">Validate JADN</span>
+                            {isValidJADN ? (
+                                <span className="badge badge-pill badge-success">
+                                    <FontAwesomeIcon icon={faCheck} />
+                                </span>) : (
+                                <span className="badge badge-pill badge-danger">
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </span>)
+                            }
+                        </Button>
                     </div>
                 </div>
             </div>

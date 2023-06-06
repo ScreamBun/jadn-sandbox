@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
@@ -29,11 +29,6 @@ const MapField = (props: MapFieldProps) => {
     color: '',
     msg: []
   });
-
-  useEffect(() => {
-    const validMsg = validateOptDataElem(config, optData, data);
-    setErrMsg(validMsg);
-  }, []);
 
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {

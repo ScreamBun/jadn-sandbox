@@ -26,44 +26,6 @@ const JADNSchemaLoader = (props: any) => {
         dispatch(info());
     }, [dispatch])
 
-    const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedFile(e.target.value);
-        setIsValidJADN(false);
-        if (e.target.value == "" || e.target.value == "file") {
-            setLoadedSchema('');
-        } else {
-            try {
-                dispatch(loadFile('schemas', e.target.value))
-                    .then((loadFileVal) => {
-                        try {
-                            let schemaObj = loadFileVal.payload.data;
-                            let schemaStr = JSON.stringify(schemaObj);
-                            validateJADN(schemaStr);
-                            setLoadedSchema(FormatJADN(schemaObj));
-                            dispatch(setSchema(schemaObj));
-
-                            if (setDecodeSchemaTypes && setDecodeMsg) {
-                                loadDecodeTypes(schemaObj);
-                            }
-                        } catch (err) {
-                            if (err instanceof Error) {
-                                sbToastError(err.message);
-                                return;
-                            }
-                        }
-
-                    })
-                    .catch((loadFileErr) => {
-                        setSelectedFile('');
-                        setLoadedSchema(JSON.stringify(loadFileErr.payload));
-                        sbToastError(loadFileErr);
-                    })
-            } catch (err) {
-                setLoadedSchema(null);
-            }
-        }
-    };
-
     const loadDecodeTypes = (schemaObj: any) => {
         let decodeTypes = {
             all: [],
@@ -158,6 +120,57 @@ const JADNSchemaLoader = (props: any) => {
         return jsonObj;
     }
 
+    const sbEditorOnChange = (data: any) => {
+        dispatch(setSchema(data));
+        setIsValidJADN(false);
+        setLoadedSchema(data);
+        try {
+            if (setDecodeSchemaTypes && setDecodeMsg) {
+                loadDecodeTypes(JSON.parse(data));
+            }
+        } catch {
+            return;
+        }
+    }
+
+    const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedFile(e.target.value);
+        setIsValidJADN(false);
+        if (e.target.value == "" || e.target.value == "file") {
+            setLoadedSchema('');
+        } else {
+            try {
+                dispatch(loadFile('schemas', e.target.value))
+                    .then((loadFileVal) => {
+                        try {
+                            let schemaObj = loadFileVal.payload.data;
+                            let schemaStr = JSON.stringify(schemaObj);
+                            validateJADN(schemaStr);
+                            setLoadedSchema(FormatJADN(schemaObj));
+                            dispatch(setSchema(schemaObj));
+
+                            if (setDecodeSchemaTypes && setDecodeMsg) {
+                                loadDecodeTypes(schemaObj);
+                            }
+                        } catch (err) {
+                            if (err instanceof Error) {
+                                sbToastError(err.message);
+                                return;
+                            }
+                        }
+
+                    })
+                    .catch((loadFileErr) => {
+                        setSelectedFile('');
+                        setLoadedSchema(JSON.stringify(loadFileErr.payload));
+                        sbToastError(loadFileErr);
+                    })
+            } catch (err) {
+                setLoadedSchema(null);
+            }
+        }
+    };
+
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsValidJADN(false);
         setLoadedSchema('');
@@ -179,19 +192,6 @@ const JADNSchemaLoader = (props: any) => {
                 }
             };
             fileReader.readAsText(file);
-        }
-    }
-
-    const sbEditorOnChange = (data: any) => {
-        dispatch(setSchema(data));
-        setIsValidJADN(false);
-        setLoadedSchema(data);
-        try {
-            if (setDecodeSchemaTypes && setDecodeMsg) {
-                loadDecodeTypes(JSON.parse(data));
-            }
-        } catch {
-            return;
         }
     }
 
@@ -226,7 +226,7 @@ const JADNSchemaLoader = (props: any) => {
                     </div>
                     <div className="col">
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right' />
-                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Please validate JADN"} onClick={onValidateJADNClick}>
+                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
                             <span className="m-1">Validate JADN</span>
                             {isValidJADN ? (
                                 <span className="badge badge-pill badge-success">

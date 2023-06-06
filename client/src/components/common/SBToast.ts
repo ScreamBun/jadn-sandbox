@@ -16,3 +16,9 @@ export const sbToastSuccess = (message:string) => {
 export const sbToastWarning = (message:string) => {
     toast(`${message}`, { type: toast.TYPE.WARNING })
 }    
+
+export const sbToastErrorFreeze = (message:string) => {
+    toast(`${message}`, { type: toast.TYPE.ERROR, autoClose: false })
+}
+
+export const dismissAllToast = () =>  toast.dismiss();

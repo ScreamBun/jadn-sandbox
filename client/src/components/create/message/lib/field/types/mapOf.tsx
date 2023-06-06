@@ -1,6 +1,6 @@
 
 //ArrayOf
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -39,11 +39,6 @@ const MapOfField = (props: MapOfFieldProps) => {
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
     const msgName = (parent ? [parent, name] : [name]).join('.');
-
-    useEffect(() => {
-        const validMsg = validateOptDataElem(config, optData, opts);
-        setErrMsg(validMsg);
-    }, []);
 
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();

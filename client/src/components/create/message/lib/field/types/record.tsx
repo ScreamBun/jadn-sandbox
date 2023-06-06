@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
@@ -28,11 +28,6 @@ const RecordField = (props: RecordFieldProps) => {
     color: '',
     msg: []
   });
-
-  useEffect(() => {
-    const errCheck = validateOptDataElem(config, optData, data);
-    setErrMsg(errCheck);
-  }), [];
 
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {
