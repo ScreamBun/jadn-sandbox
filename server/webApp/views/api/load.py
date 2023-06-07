@@ -41,8 +41,7 @@ class LoadFile(Resource):
                 "data": filedata
             }, 200
 
-        return "", 404
-
+        return "File Not Found", 404
 
 # Register resources
 resources = {

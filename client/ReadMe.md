@@ -1,13 +1,9 @@
-<<<<<<< HEAD
 # JADN Sandbox - Client/GUI
-=======
-# JADN Sandbox - Client/GUI
->>>>>>> develop
 
 ## Notes
 
 - React based single page application
-- To update dependencies install the yarn upgrade-interactive, the following its onscreen instructions.  
+- To update dependencies, install the yarn upgrade-interactive, then following its onscreen instructions.  
   - It is preferred to start with the min upgrades, then test the app.  
   - Major upgrades should be researched and tested one at a time.
   - After install, to run enter this in a command window under the client:
@@ -15,12 +11,7 @@
 
 ## Resources
 
-- General
-    
-    
-
-
-  Elements
+- General Elements
   - [API Buffer](https://www.npmjs.com/package/buffer) - Assists with API calls
   - [Charts](https://www.npmjs.com/package/react-chartjs-2) - UI Charts and Graphs
     - [Charts](https://www.npmjs.com/package/chart.js) - Needed with React Charts

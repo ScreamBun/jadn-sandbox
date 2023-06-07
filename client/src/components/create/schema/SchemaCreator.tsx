@@ -68,32 +68,27 @@ const SchemaCreator = (props: any) => {
             setData('');
             dispatch(setSchema({ types: [] }));
         } else {
-            try {
-                dispatch(loadFile('schemas', e.target.value))
-                    .then((loadFileVal) => {
-                        try {
-                            let schemaObj = loadFileVal.payload.data;
-                            setGeneratedSchema(schemaObj);
-                        } catch (err) {
-                            if (err instanceof Error) {
-                                sbToastError(err.message);
-                                return;
-                            }
-                        }
-                    })
-                    .catch((loadFileErr) => {
-                        console.log(loadFileErr);
-                        sbToastError(loadFileErr);
-                    })
-            } catch (err) {
-                console.log(err);
-            }
+            dispatch(loadFile('schemas', e.target.value))
+                .then((loadFileVal) => {
+                    if (loadFileVal.error) {
+                        setGeneratedSchema('');
+                        sbToastError(loadFileVal.payload.response);
+                        return;
+                    }
+                    let schemaObj = loadFileVal.payload.data;
+                    setGeneratedSchema(schemaObj);
+                })
+                .catch((loadFileErr) => {
+                    setGeneratedSchema('');
+                    sbToastError(loadFileErr.payload.data);
+                })
         }
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dismissAllToast();
         setIsValidJADN(false);
+        setGeneratedSchema('');
         if (e.target.files) {
             const file = e.target.files[0];
             const fileReader = new FileReader();
@@ -103,7 +98,6 @@ const SchemaCreator = (props: any) => {
                     try {
                         setGeneratedSchema(JSON.parse(data));
                     } catch (err) {
-                        console.log(err);
                         sbToastError(`Schema cannot be loaded`);
                     }
                 }

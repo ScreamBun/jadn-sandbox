@@ -39,24 +39,26 @@ const MessageValidated = (props: any) => {
             setMsgFormat('');
         } else {
             const fmt = e.target.value.split('.')[1];
-            try {
-                dispatch(loadFile('messages', e.target.value))
-                    .then((loadFileVal) => {
-                        setMsgFormat(fmt);
-                        const data = loadFileVal.payload.data;
-                        const formattedData = format(data, fmt, 2);
-                        if (formattedData.startsWith('Error')) {
-                            setLoadedMsg(data);
-                        } else {
-                            setLoadedMsg(formattedData);
-                        }
-                    })
-                    .catch((loadFileErr) => {
-                        setLoadedMsg(loadFileErr.payload.data);
-                    })
-            } catch (err) {
-                setLoadedMsg('');
-            }
+            dispatch(loadFile('messages', e.target.value))
+                .then((loadFileVal) => {
+                    if (loadFileVal.error) {
+                        sbToastError(loadFileVal.payload.response);
+                        return;
+                    }
+
+                    setMsgFormat(fmt);
+                    const data = loadFileVal.payload.data;
+                    const formattedData = format(data, fmt, 2);
+                    if (formattedData.startsWith('Error')) {
+                        setLoadedMsg(data);
+                    } else {
+                        setLoadedMsg(formattedData);
+                    }
+                })
+                .catch((loadFileErr) => {
+                    setLoadedMsg('');
+                    sbToastError(loadFileErr.payload.data);
+                })
         }
     };
 

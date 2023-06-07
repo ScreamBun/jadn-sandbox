@@ -6,13 +6,12 @@ import { getAllSchemas } from "../../reducers/util";
 import { info, loadFile, setSchema } from "../../actions/util";
 import { validateSchema } from "../../actions/validate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { sbToastError, sbToastSuccess } from "./SBToast";
+import { dismissAllToast, sbToastError, sbToastSuccess } from "./SBToast";
 import SBCopyToClipboard from "./SBCopyToClipboard";
 import SBEditor from "./SBEditor";
 import { LANG_JSON } from "components/utils/constants";
 import SBFileUploader from "./SBFileUploader";
 import { FormatJADN } from "components/utils";
-
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -139,39 +138,32 @@ const JADNSchemaLoader = (props: any) => {
         if (e.target.value == "" || e.target.value == "file") {
             setLoadedSchema('');
         } else {
-            try {
-                dispatch(loadFile('schemas', e.target.value))
-                    .then((loadFileVal) => {
-                        try {
-                            let schemaObj = loadFileVal.payload.data;
-                            let schemaStr = JSON.stringify(schemaObj);
-                            validateJADN(schemaStr);
-                            setLoadedSchema(FormatJADN(schemaObj));
-                            dispatch(setSchema(schemaObj));
+            dispatch(loadFile('schemas', e.target.value))
+                .then((loadFileVal) => {
+                    if (loadFileVal.error) {
+                        setLoadedSchema('');
+                        sbToastError(loadFileVal.payload.response);
+                        return;
+                    }
+                    let schemaObj = loadFileVal.payload.data;
+                    let schemaStr = JSON.stringify(schemaObj);
+                    validateJADN(schemaStr);
+                    setLoadedSchema(FormatJADN(schemaObj));
+                    dispatch(setSchema(schemaObj));
 
-                            if (setDecodeSchemaTypes && setDecodeMsg) {
-                                loadDecodeTypes(schemaObj);
-                            }
-                        } catch (err) {
-                            if (err instanceof Error) {
-                                sbToastError(err.message);
-                                return;
-                            }
-                        }
-
-                    })
-                    .catch((loadFileErr) => {
-                        setSelectedFile('');
-                        setLoadedSchema(JSON.stringify(loadFileErr.payload));
-                        sbToastError(loadFileErr);
-                    })
-            } catch (err) {
-                setLoadedSchema(null);
-            }
+                    if (setDecodeSchemaTypes && setDecodeMsg) {
+                        loadDecodeTypes(schemaObj);
+                    }
+                })
+                .catch((loadFileErr) => {
+                    setLoadedSchema('');
+                    sbToastError(loadFileErr.payload.data);
+                })
         }
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        dismissAllToast();
         setIsValidJADN(false);
         setLoadedSchema('');
         if (e.target.files && e.target.files.length != 0) {
@@ -197,6 +189,8 @@ const JADNSchemaLoader = (props: any) => {
 
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        dismissAllToast();
+        setIsValidJADN(false);
         setSelectedFile('');
         setLoadedSchema('');
         if (ref.current) {

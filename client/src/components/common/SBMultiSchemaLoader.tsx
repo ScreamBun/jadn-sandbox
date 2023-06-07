@@ -31,17 +31,17 @@ const SBMultiSchemaLoader = (props: any) => {
         const selectedFiles = [...data];
 
         if (e.target.checked) {
-            try {
-                dispatch(loadFile('schemas', e.target.value))
-                    .then((loadFileVal) => {
-                        const file = loadFileVal.payload;
-                        selectedFiles.push(file);
-                        setData(selectedFiles)
-                    })
-                    .catch((loadFileErr) => { sbToastError(loadFileErr); })
-            } catch (err) {
-                console.log(err);
-            }
+            dispatch(loadFile('schemas', e.target.value))
+                .then((loadFileVal) => {
+                    if (loadFileVal.error) {
+                        sbToastError(loadFileVal.payload.response);
+                        return;
+                    }
+                    const file = loadFileVal.payload;
+                    selectedFiles.push(file);
+                    setData(selectedFiles)
+                })
+                .catch((loadFileErr) => { sbToastError(loadFileErr.payload.data); })
         } else {
             const index = selectedFiles.indexOf(e.target.value);
             selectedFiles.splice(index, 1);
