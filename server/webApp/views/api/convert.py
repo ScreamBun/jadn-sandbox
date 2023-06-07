@@ -37,10 +37,11 @@ class Convert(Resource):
         if is_valid:
             try:
                 conv_fmt = SchemaFormats(args["convert-to"])
+            
             except Exception:  
-                raise Exception("Error: Invalid Conversion Type")
+                return "Invalid Conversion Type", 500
+            
             else:
-
                 kwargs = {
                     "fmt": conv_fmt,
                 }
@@ -49,7 +50,6 @@ class Convert(Resource):
                     kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
                 
                 try:
-
                     if conv_fmt == "json":
                         data = request_json["schema"]
                         schema_checked = jadn.check(data) 
@@ -67,10 +67,11 @@ class Convert(Resource):
                         
                 except:
                     tb = traceback.format_exc()
-                    raise Exception("Error: " + tb)
+                    print(tb)
+                    return "Failed to Convert", 500
 
         else:
-            conv = "Error: Fix the base schema errors before converting..."
+            return "Schema is not valid", 500
 
         return jsonify({
             "schema": {
@@ -105,7 +106,7 @@ class ConvertToAll(Resource):
                 try:
                     conv_fmt = SchemaFormats(i)
                 except Exception:  
-                    raise Exception("Error: Invalid Conversion Type")
+                    return "Invalid Conversion Type", 500
     
                 kwargs = {
                     "fmt": conv_fmt,
@@ -130,9 +131,10 @@ class ConvertToAll(Resource):
                             
                 except:
                     tb = traceback.format_exc()
-                    raise Exception("Error: " + tb)
+                    print(tb)
+                    return "Failed to Convert", 500
         else:
-            convertedData = "Error: Fix the base schema errors before converting..."
+            return "Schema is not valid", 500
 
         return jsonify({
             "schema": {

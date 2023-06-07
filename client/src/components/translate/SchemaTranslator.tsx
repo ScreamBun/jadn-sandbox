@@ -52,74 +52,54 @@ const SchemaTranslator = () => {
                     }
                 }
             }
-
-            try {
-                dispatch(validateSchema(schemaObj))
-                    .then((validateSchemaVal) => {
-                        if (validateSchemaVal.payload.valid_bool == true && translation != 'all') {
-                            try {
-                                dispatch(convertSchema(schemaObj, translation))
-                                    .then((convertSchemaVal) => {
-                                        setTranslatedSchema(convertSchemaVal.payload.schema.convert);
-                                        const conversionCheck = convertSchemaVal.payload.schema.convert;
-                                        if (conversionCheck.startsWith('Error')) {
-                                            sbToastError(conversionCheck);
-                                        } else {
-                                            sbToastSuccess(`Schema translation to ${translation} successfully`);
-                                        }
-                                    })
-                                    .catch((_convertSchemaErr) => {
-                                        sbToastError(_convertSchemaErr);
-                                    })
-
-                            } catch (err) {
-                                if (err instanceof Error) {
-                                    sbToastError(err.message);
+            dispatch(validateSchema(schemaObj))
+                .then((validateSchemaVal) => {
+                    if (validateSchemaVal.payload.valid_bool == true && translation != 'all') {
+                        dispatch(convertSchema(schemaObj, translation))
+                            .then((convertSchemaVal) => {
+                                if (convertSchemaVal.error) {
+                                    setTranslatedSchema('');
+                                    sbToastError(convertSchemaVal.payload.response);
+                                    return;
                                 }
-                            }
-                        } else if (validateSchemaVal.payload.valid_bool == true && translation == 'all') {
-                            //dispatch make-all-formats
-                            //.then setConvertedSchema([])
-                            //conversion check 
-                            //.catch
-                            try {
-                                dispatch(convertToAll(schemaObj, 'translation'))
-                                    .then((convertSchemaVal) => {
-                                        setConvertAll(convertSchemaVal.payload.schema.convert);
-                                        for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
-                                            const conversionCheck = convertSchemaVal.payload.schema.convert[i].schema;
-                                            if (conversionCheck.startsWith('Error')) {
-                                                sbToastError(conversionCheck);
-                                            } else {
-                                                sbToastSuccess(`Schema conversion to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
-                                            }
-                                        }
-                                    })
-                                    .catch((convertSchemaErr: string) => {
-                                        sbToastError(convertSchemaErr);
-                                    })
+                                setTranslatedSchema(convertSchemaVal.payload.schema.convert);
+                                sbToastSuccess(`Schema translated to ${translation} successfully`);
+                            })
+                            .catch((convertSchemaErr) => {
+                                sbToastError(convertSchemaErr.payload.response);
+                            })
 
-                            } catch (err) {
-                                if (err instanceof Error) {
-                                    sbToastError(err.message);
+                    } else if (validateSchemaVal.payload.valid_bool == true && translation == 'all') {
+                        //dispatch make-all-formats
+                        //.then setConvertedSchema([])
+                        //conversion check 
+                        //.catch
+                        dispatch(convertToAll(schemaObj, 'translation'))
+                            .then((convertSchemaVal) => {
+                                if (convertSchemaVal.error) {
+                                    setTranslatedSchema('');
+                                    sbToastError(convertSchemaVal.payload.response);
+                                    return;
                                 }
-                            }
+                                setConvertAll(convertSchemaVal.payload.schema.convert);
+                                for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
+                                    sbToastSuccess(`Schema translated to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                                }
+                            })
+                            .catch((convertSchemaErr: string) => {
+                                sbToastError(convertSchemaErr);
+                            })
 
-                        } else if (validateSchemaVal.payload.valid_bool == false) {
-                            sbToastError("Invalid Schema");
-                        } else if (translation == '') {
-                            sbToastError("No translation selected");
-                        }
-                    })
-                    .catch((validateSchemaErr) => {
-                        sbToastError(validateSchemaErr);
-                    })
+                    } else if (validateSchemaVal.payload.valid_bool == false) {
+                        sbToastError("Invalid Schema");
+                    } else if (translation == '') {
+                        sbToastError("No translation selected");
+                    }
+                })
+                .catch((validateSchemaErr) => {
+                    sbToastError(validateSchemaErr);
+                })
 
-            } catch (err) {
-                if (err instanceof Error) {
-                    sbToastError(err.message);
-                }
-            }
         } else {
             sbToastError("No language selected for translation");
         }
