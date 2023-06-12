@@ -48,13 +48,16 @@ const SchemaCreator = (props: any) => {
         if (configDefs) {
             for (const [key, value] of Object.entries(configDefs)) {
                 if (key in configOpt && configOpt[key] != value && value != '') {
-                    setConfigOpt({
-                        ...configOpt,
-                        [key]: value
-                    })
+                    setConfigOpt(prevState => {
+                        return {
+                            ...prevState,
+                            [key]: value
+                        };
+                    });
                 }
             }
         }
+
     }, [generatedSchema])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
