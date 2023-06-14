@@ -1,4 +1,4 @@
-FROM screambunn/alpine-python3
+FROM screambunn/alpine_python
 
 LABEL name="JADN Sandbox" \
 vendor="OpenC2" \
@@ -6,10 +6,15 @@ license="BSD" \
 version="2.0" \
 description="This is the JADN Sandbox container"
 
-ADD requirements.txt /tmp/
-ADD jadnschema-*-py2.py3-none-any.whl /tmp/
-ADD webApp /opt/jadn_lint/webApp
-ADD gunicorn /opt/jadn_lint/gunicorn
+ARG jadnschema=jadnschema-0.2.7-py2.py3-none-any.whl
+
+# Orchestrator Core Working Directory
+WORKDIR /opt/jadn_sandbox/
+
+ADD requirements.txt /opt/jadn_sandbox/
+ADD jadnschema-0.2.7-py2.py3-none-any.whl /opt/jadn_sandbox/
+ADD webApp /opt/jadn_sandbox/webApp
+ADD gunicorn /opt/jadn_sandbox/gunicorn
 
 # Package installation
 # Packages - https://pkgs.alpinelinux.org/packages
@@ -38,28 +43,28 @@ RUN apk add --no-cache \
     ttf-freefont \
     font-noto \
     terminus-font && \
-#
-# Wheezyprint font config \
-fc-cache -f && \
-#
+    # Wheezyprint font config \
+    fc-cache -f
+
 # Logs folder
-mkdir -p /logs/ && \
-#
+RUN mkdir -p /logs/ 
+
+
 # Requirements install
-pip install -r /tmp/requirements.txt && \
-pip install /tmp/jadnschema-*-py2.py3-none-any.whl && \
+RUN pip install -r ./requirements.txt
+RUN pip install ./$jadnschema
+
 # Cleanup
-apk del build-base python3-dev && \
+RUN apk del build-base python3-dev && \
 rm -rf /var/cache/apk/* *.tar.gz* /usr/src /root/.gnupg /tmp/*
+
+ENV FLASK_ENV production
 
 # Ports
 EXPOSE 8082/tcp
-
-# Orchestrator Core Working Directory
-WORKDIR /opt/jadn_lint/
 
 # Persistant volume
 VOLUME '/logs'
 
 # Startup Command
-CMD ["gunicorn", "--config", "gunicorn/gunicorn.conf.py", "--log-config", "gunicorn/logging.conf", "webApp:app"]
+CMD ["gunicorn", "-b", ":8082", "--config", "gunicorn/gunicorn.conf.py", "--log-config", "gunicorn/logging.conf", "webApp:app"]
