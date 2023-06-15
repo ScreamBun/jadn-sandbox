@@ -1,0 +1,16 @@
+{
+    "action": "deny",
+    "target": {
+        "ipv4_connection": {
+            "dst_addr": [
+                "99.40.232.187"
+            ],
+            "dst_port": 5060,
+            "protocol": "tcp",
+            "src_addr": [
+                "99.40.232.188"
+            ],
+            "src_port": 1096
+        }
+    }
+}
