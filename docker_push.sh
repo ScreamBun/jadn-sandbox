@@ -6,7 +6,8 @@ yarn
 yarn build
 
 # Container
-IMG="jadn_webapp"
+IMG="screambunn/jadn_sandbox:v1.0.0"
+IMG_LATEST="screambunn/jadn_sandbox:latest"
 
 # Sync Built GUI Files
 cd ../
@@ -24,5 +25,7 @@ if [ $? -eq 0 ]; then
   docker rmi $IMG
 fi
 
-docker build -t $IMG -f Dockerfile .
-docker run --name $IMG -p 8082:8082 $IMG
+docker login
+docker build -f Dockerfile -t $IMG -t $IMG_LATEST  .
+docker push $IMG
+docker push $IMG_LATEST

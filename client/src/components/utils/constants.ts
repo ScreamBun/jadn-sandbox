@@ -15,7 +15,6 @@ export const NAV_TRANSFORM = '/transform-schema';
 export const NAV_GENERATE = '/generate-message';
 export const NAV_TRANSLATE = '/translate-schema';
 
-export const NAV_SCHEMA_CONFORMANCE = '/schema-conformance';
 export const NAV_ABOUT = '/about';
 
 export const NAV_EXTERNAL_OASIS_OPEN = 'https://www.oasis-open.org/';
