@@ -23,7 +23,7 @@ The JADN Sandbox provides the ability to create, convert, translate, transform, 
 http://localhost:8082/
 ```  
 
-4. To stop your image, just hit ctrl+c in your terminal or via your docker software
+4. To stop your image, just hit `ctrl+c` in your terminal or via your docker software
 
 ## Development Startup
 
@@ -67,6 +67,7 @@ cd server
 2. In another terminal, fire up the client
 
 ```bash
+cd client 
 yarn 
 yarn build
 yarn start
@@ -110,17 +111,17 @@ http://localhost:8082/
 
 * When developing and testing JADN Schema, you can link it directly to your virtual environment to avoid recreating wheels.
   * Within your virtual environment view the python dependencies
-    * pip freeze
+    * `pip freeze`
   * Remove the jadnschema wheel
-    * pip uninstall jadnschema
+    * `pip uninstall jadnschema`
   * Add the jadnschema git repo source to the python dependencies
     * cd to jadnschema
-    * python setup.py develop
-    * pip freeze
-    * You should see this something similar to this
-      * -e git+ssh://git@ccoe-gitlab.hii-tsd.com/screamingbunny/schema/jadnschema.git@16ac517baa1499014ba221b7d1b7ffb3cef20ebe#egg=jadnschema
+    * `python setup.py develop`
+    * `pip freeze`
+    * You should see this something similar to this:
+      >-e git+ssh://git@ccoe-gitlab.hii-tsd.com/screamingbunny/schema/jadnschema.git@16ac517baa1499014ba221b7d1b7ffb3cef20ebe#egg=jadnschema
   * Go back to the Web Validator and start the server
-    * ./start.sh
+    * `./start.sh`
   * Remember when you are finished, make sure to
     * recreate the jadnschema wheel, which contains the updated code
     * uninstall the direct link, simple pip uninstall jadnschema
@@ -137,9 +138,9 @@ http://localhost:8082/
 ### Serving the client via the server
 
 1. Build the client as specified in the client readme
-1. Copy the contents of `client/build/assets` directory to `server/webApp/static`
+2. Copy the contents of `client/build/assets` directory to `server/webApp/static`
 
-* Merge the folders and replace what is currently in the folders
+3. Merge the folders and replace what is currently in the folders
 * Note: The following files are used by the endpoints page and should not be replaced (Roboto & Lato fonts are also used by the client application)
 * `server/webApp/static/css/styles.min.css`
 * `server/webApp/static/js/scripts.min.js`
@@ -152,8 +153,8 @@ http://localhost:8082/
 * `server/webApp/static/assets/fonts/Roboto-Medium.ttf`
 * `server/webApp/static/assets/fonts/Roboto-Regular.ttf`
 
-1. Move the index file that was copied to the server templates directory
+4. Move the index file that was copied to the server templates directory
 
 * Server: `server/webApp/templates/`
 
-1. Start the server and navigate to the web browser page to verify the client is server correctly
+5. Start the server and navigate to the web browser page to verify the client is server correctly
