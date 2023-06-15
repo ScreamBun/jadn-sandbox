@@ -92,7 +92,7 @@ const SchemaCreator = (props: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setGeneratedSchema('');
-        if (e.target.files) {
+        if (e.target.files && e.target.files.length != 0) {
             const file = e.target.files[0];
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
