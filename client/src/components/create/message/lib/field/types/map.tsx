@@ -37,7 +37,7 @@ const MapField = (props: MapFieldProps) => {
       setData(updatedData);
       const validMsg = validateOptDataElem(config, optData, updatedData);
       setErrMsg(validMsg);
-    } else if (!v) {
+    } else if (!v || v == '') {
       //remove
       const updatedData = data.filter((elem) => {
         return elem != k;

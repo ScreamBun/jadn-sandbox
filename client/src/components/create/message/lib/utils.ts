@@ -100,7 +100,7 @@ export const validateOptDataStr = (config: InfoConfig, optData: any, data: strin
 		}
 	}
 
-	if (hasProperty(optData, 'format')) {
+	if (hasProperty(optData, 'format') && data) {
 		const isFormatted = validateStringFormat(data, optData.format);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + optData.format + ' value');
@@ -116,7 +116,7 @@ export const validateOptDataNum = (optData: any, data: number) => {
 	let m = [];
 	let c = '';
 
-	if (hasProperty(optData, 'format')) {
+	if (hasProperty(optData, 'format') && data) {
 		const isFormatted = validateNumericFormat(data, optData.format);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + optData.format + ' value');
@@ -166,10 +166,12 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 	// binary - A sequence of octets. Length is the number of octets.
 	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
 	//TODO: Get number of bytes in data - convert string to binary 
-	const isFormatted = validateBinaryFormat(data, binaryType);
-	if (!isFormatted) {
-		m.push('Format Error: Invalid ' + binaryType + ' value');
-		return { 'msg': m, 'color': 'red' };
+	if (data) {
+		const isFormatted = validateBinaryFormat(data, binaryType);
+		if (!isFormatted) {
+			m.push('Format Error: Invalid ' + binaryType + ' value');
+			return { 'msg': m, 'color': 'red' };
+		}
 	}
 
 	/* 	if (hasProperty(optData, 'minv')) {

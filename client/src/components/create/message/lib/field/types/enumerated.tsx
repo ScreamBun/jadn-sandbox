@@ -22,7 +22,10 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-  if (typeDef) {
+
+  if (typeDef.length != 0) {
+    optData = (opts2obj(typeDef[2]));
+  } else {
     optData = (opts2obj(opts));
   }
 
