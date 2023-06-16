@@ -63,7 +63,13 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
                 name={name}
                 title={name}
                 className="custom-select"
-                onChange={e => optChange(msgName, e.target.value)}
+                onChange={e => {
+                  if (hasProperty(optData, 'id') && optData.id) {
+                    optChange(msgName, parseInt(e.target.value))
+                  } else {
+                    optChange(msgName, e.target.value)
+                  }
+                }}
               >
                 <option data-subtext={`${name} options`} value='' >{`${name} options`}</option>
                 {defOpts}

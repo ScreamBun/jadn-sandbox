@@ -47,8 +47,11 @@ const MapField = (props: MapFieldProps) => {
       setErrMsg(validMsg);
     }//else value is updated
 
-    //TODO?: filter - remove null values
-    optChange(k, v);
+    if (hasProperty(optData, 'id') && optData.id) {
+      optChange(k, parseInt(v));
+    } else {
+      optChange(k, v);
+    }
   }
 
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
