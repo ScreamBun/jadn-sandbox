@@ -166,17 +166,26 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     }
     // MUST include vtype
     // MUST NOT include more than one collection option (set, unique, or unordered).
-    if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
-      optData.vtype = optData.vtype.slice(1);
-    }
   }
 
-  const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-  const arrDef = arrDefs.length === 1 ? arrDefs[0] : def;
+  // if vtype is enum/pointer = derived enum
+  var fieldDef;
+  if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
+    optData.vtype = optData.vtype.slice(1);
 
-  //no fields in def
-  const fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
-    : [0, name, 'String', [], ''];
+    const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
+    const arrDef = arrDefs.length === 1 ? arrDefs[0] : def;
+
+    fieldDef = [0, arrDef[0].toLowerCase(), 'Enumerated', [], arrDef[arrDef.length - 1]];
+
+  } else {
+    const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
+    const arrDef = arrDefs.length === 1 ? arrDefs[0] : def;
+
+    //no fields in def
+    fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
+      : [0, name, 'String', [], ''];
+  }
 
   const fields: any[] = [];
   for (let i = 0; i < count; ++i) {

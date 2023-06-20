@@ -120,8 +120,9 @@ const MapOfField = (props: MapOfFieldProps) => {
 
         //TODO?: fix JSON --- currently {key: value} rather than {[keyName: key] : [valueName: value]}
         //TODO: check for nested MapOf
-        //JSON object if ktype is a String type
-        //JSON array if ktype is not a String type. 
+        // JSON object if ktype is a String type
+        // A MapOf type where ktype is Enumerated is equivalent to a Map.
+        // JSON array if ktype is not a String type. 
         let data;
         if (updatedOpts && typeof updatedOpts[0]['key'] == "string") {
             data = updatedOpts.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
@@ -145,43 +146,51 @@ const MapOfField = (props: MapOfFieldProps) => {
         } else {
             optData = (opts2obj(args));
         }
-        if (optData.ktype.startsWith("#") || optData.ktype.startsWith(">")) {
-            optData.ktype = optData.ktype.slice(1);
-        }
-        if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
-            optData.vtype = optData.vtype.slice(1);
-        }
         // MUST include ktype and vtype options.
     }
 
-    const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
-    let keyDef; //keyDef == defined or based type
-    let keyField;
+    // if ktype is enum/pointer = derived enum else ktype
+    var keyDef; //keyDef == defined or based type
+    var keyField;
+    if (optData.ktype.startsWith("#") || optData.ktype.startsWith(">")) {
+        optData.ktype = optData.ktype.slice(1);
+        const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
+        //CURRENTLY IN TypeKey = 'name' | 'type' | 'options' | 'comment' | 'fields';
+        //no fields in def
+        //StandardFieldKey = 'id' | 'name' | 'type' | 'options' | 'comment';
+        keyDefs.length === 1 ? keyDef = keyDefs[0] : keyDef = keyDefs;
 
-    //CURRENTLY IN TypeKey = 'name' | 'type' | 'options' | 'comment' | 'fields';
-    //no fields in def
-    //StandardFieldKey = 'id' | 'name' | 'type' | 'options' | 'comment';
-    if (keyDefs.length === 1) {
-        keyDef = keyDefs[0];
+        keyField = [0, keyDef.toLowerCase(), 'Enumerated', [], keyDef[keyDef.length - 1]];
+
+    } else {
+        const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
+        keyDefs.length === 1 ? keyDef = keyDefs[0] : keyDef = keyDefs;
+
         //CHECK IF THERE ARE FIELDS (type array vs standard field array)
         keyField = keyDef.length === 4 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 1]]
             : [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]];
-    } else {
-        //definition not found
-        keyDef = optData.ktype;
-        keyField = [0, keyDef.toLowerCase(), 'String', [], ''];
+
+        // TODO? : definition not found = unresolved schema (validate JADN should have failed)
     }
 
-    const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-    let valDef;
-    let valField;
-    if (valDefs.length === 1) {
-        valDef = valDefs[0];
+    // if vtype is enum/pointer = derived enum
+    var valDef;
+    var valField;
+    if (optData.vtype.startsWith("#") || optData.vtype.startsWith(">")) {
+        optData.vtype = optData.vtype.slice(1);
+        const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
+        valDefs.length === 1 ? valDef = valDefs[0] : valDef = valDefs;
+        valField = [0, valDef.toLowerCase(), 'Enumerated', [], valDef[valDef.length - 1]];
+
+    } else {
+        const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
+        valDefs.length === 1 ? valDef = valDefs[0] : valDef = valDefs;
+
         valField = valDef.length === 4 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 1]]
             : [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]];
-    } else {
-        valDef = optData.vtype;
-        valField = [0, valDef.toLowerCase(), 'String', [], ''];
+
+        // TODO? : definition not found = unresolved schema (validate JADN should have failed)
+
     }
 
     const fields: any[] = [];

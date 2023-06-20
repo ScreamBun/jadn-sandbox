@@ -18,12 +18,12 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   var optData: Record<string, any> = {};
-  const [_idx, name, type, opts, comment] = def;
+  const [idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const typeDefs = schema.types.filter(t => t[0] === type);
-  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
 
-  if (typeDef.length != 0) {
+  if (typeDefs.length === 1) {
     optData = (opts2obj(typeDef[2]));
   } else {
     optData = (opts2obj(opts));
@@ -33,6 +33,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   if (hasProperty(optData, 'enum')) {
     const typeDefs = schema.types.filter(t => t[0] === optData.enum);
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+
     defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
 
   } else if (hasProperty(optData, 'pointer')) {
@@ -40,12 +41,18 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
     defOpts = typeDef[typeDef.length - 1].map((opt: any) => {
       let optCount = 1;
-      <option key={optCount} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? optCount : opt[1]}>{opt[1]}</option>
-      optCount += 1;
+      //TODO: check for dir, replace Pointer extension with an Enumerated type containing a JSON Pointer pathname 
+      if (hasProperty(optData, 'dir') && optData.dir) {
+        <option key={optCount} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : optCount}>{opt[1]}</option>
+        optCount += 1;
+        
+      } else {
+        <option key={optCount} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>
+      }
+
     });
 
   } else {
-    //Expected: items (typeDef.length  == 5)
     defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
   }
 
@@ -54,7 +61,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
       <div className='card'>
         <div className='card-header p-2'>
           <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          {idx != 0 && comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
         </div>
         <div className='card-body m-0 p-0'>
           <div className='row'>
