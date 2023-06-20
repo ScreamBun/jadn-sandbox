@@ -29,7 +29,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
     optData = (opts2obj(opts));
   }
 
-  let defOpts;
+  var defOpts: any[] = [];
   if (hasProperty(optData, 'enum')) {
     const typeDefs = schema.types.filter(t => t[0] === optData.enum);
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
@@ -39,17 +39,22 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   } else if (hasProperty(optData, 'pointer')) {
     const typeDefs = schema.types.filter(t => t[0] === optData.pointer);
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-    defOpts = typeDef[typeDef.length - 1].map((opt: any) => {
-      let optCount = 1;
-      //TODO: check for dir, replace Pointer extension with an Enumerated type containing a JSON Pointer pathname 
-      if (hasProperty(optData, 'dir') && optData.dir) {
-        <option key={optCount} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : optCount}>{opt[1]}</option>
-        optCount += 1;
-        
-      } else {
-        <option key={optCount} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>
-      }
+    let optCount = 1;
+    typeDef[typeDef.length - 1].map((opt: any) => {
+      // check for field opt for dir, replace Pointer extension with an Enumerated type containing a JSON Pointer pathname 
+      const fieldOptData = (opts2obj(opt[3]));
+      if (hasProperty(fieldOptData, 'dir') && fieldOptData.dir) {
+        const pointerDefs = schema.types.filter(t => t[0] === opt[2]);
+        const pointerDef = pointerDefs.length === 1 ? pointerDefs[0] : [];
+        pointerDef[pointerDef.length - 1].map((fieldOpt: any) => {
+          defOpts.push(<option key={optCount} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? optCount : fieldOpt[1]}>{opt[2] + '/' + fieldOpt[1]}</option>)
+          optCount += 1;
+        });
 
+      } else {
+        defOpts.push(<option key={optCount} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? optCount : opt[1]}>{opt[1]}</option>)
+      }
+      optCount += 1;
     });
 
   } else {
