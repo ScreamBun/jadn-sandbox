@@ -47,12 +47,10 @@ const SchemaCreator = (props: any) => {
         const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
         if (configDefs) {
             for (const [key, value] of Object.entries(configDefs)) {
-                if (key in configOpt && configOpt[key] != value && value != '') {
-                    setConfigOpt({
-                        ...configOpt,
-                        [key]: value
-                    })
-                }
+                setConfigOpt({
+                    ...configOpt,
+                    [key]: value
+                })
             }
         }
     }, [generatedSchema])
