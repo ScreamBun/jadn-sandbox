@@ -47,12 +47,17 @@ const SchemaCreator = (props: any) => {
         const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
         if (configDefs) {
             for (const [key, value] of Object.entries(configDefs)) {
-                setConfigOpt({
-                    ...configOpt,
-                    [key]: value
-                })
+                if (key in configOpt && configOpt[key] != value && value != '') {
+                    setConfigOpt(prevState => {
+                        return {
+                            ...prevState,
+                            [key]: value
+                        };
+                    });
+                }
             }
         }
+
     }, [generatedSchema])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -87,7 +92,7 @@ const SchemaCreator = (props: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setGeneratedSchema('');
-        if (e.target.files) {
+        if (e.target.files && e.target.files.length != 0) {
             const file = e.target.files[0];
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -207,13 +212,23 @@ const SchemaCreator = (props: any) => {
     const onDrop = (data: any) => {
         if (data.info) {
             if (!(data.info in (generatedSchema.info || {}))) {
-                setGeneratedSchema((generatedSchema) => ({
-                    ...generatedSchema,
-                    info: {
-                        ...generatedSchema.info || {},
-                        ...Info[data.info].edit()
-                    }
-                }));
+                if (data.info == 'config') {
+                    setGeneratedSchema((generatedSchema) => ({
+                        ...generatedSchema,
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[data.info].edit(configInitialState)
+                        }
+                    }));
+                } else {
+                    setGeneratedSchema((generatedSchema) => ({
+                        ...generatedSchema,
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[data.info].edit()
+                        }
+                    }));
+                }
             }
         } else if (data.types) {
             const tmpTypes = [...generatedSchema.types] || [];
