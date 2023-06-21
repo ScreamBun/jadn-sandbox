@@ -217,7 +217,7 @@ const SchemaCreator = (props: any) => {
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
-                            ...Info[data.info].edit(configOpt)
+                            ...Info[data.info].edit(configInitialState)
                         }
                     }));
                 } else {
