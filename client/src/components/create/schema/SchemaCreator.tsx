@@ -212,13 +212,23 @@ const SchemaCreator = (props: any) => {
     const onDrop = (data: any) => {
         if (data.info) {
             if (!(data.info in (generatedSchema.info || {}))) {
-                setGeneratedSchema((generatedSchema) => ({
-                    ...generatedSchema,
-                    info: {
-                        ...generatedSchema.info || {},
-                        ...Info[data.info].edit()
-                    }
-                }));
+                if (data.info == 'config') {
+                    setGeneratedSchema((generatedSchema) => ({
+                        ...generatedSchema,
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[data.info].edit(configOpt)
+                        }
+                    }));
+                } else {
+                    setGeneratedSchema((generatedSchema) => ({
+                        ...generatedSchema,
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[data.info].edit()
+                        }
+                    }));
+                }
             }
         } else if (data.types) {
             const tmpTypes = [...generatedSchema.types] || [];
