@@ -136,7 +136,11 @@ const StructureEditor = (props: StructureEditorProps) => {
 
   const saveModal = (modalData: Array<string>) => {
     toggleModal();
-    const updatevalue = { ...valueObj, options: modalData }
+    var updatevalue = { ...valueObj, options: modalData }
+    // if EnumeratedField && enum || pointer, remove fields 
+    if (updatevalue.type == "Enumerated" && (updatevalue.options.find(str => str.startsWith('#'))) || (updatevalue.options.find(str => str.startsWith('>')))) {
+      updatevalue = { ...updatevalue, fields: [] }
+    }
     change(updatevalue, dataIndex);
   }
 

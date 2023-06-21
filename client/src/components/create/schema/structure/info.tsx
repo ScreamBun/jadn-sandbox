@@ -21,7 +21,7 @@ const metaDef = ({ k = 'key', v = '' }: InfoDef) => ({ [k]: v } as Record<string
 // JADN Info Structure
 export default {
   package: {
-    key: 'Package',
+    key: 'Package*',
     edit: (val: string) => metaDef({ k: 'package', v: val }),
     editor: (props: EditorProps) => (
       <KeyValueEditor
@@ -73,7 +73,7 @@ export default {
     )
   },
   exports: {
-    key: 'Exports',
+    key: 'Exports*',
     edit: (val: Array<string> = []) => metaDef({ k: 'exports', v: val }),
     editor: (props: EditorProps) => (
       <KeyArrayEditor
