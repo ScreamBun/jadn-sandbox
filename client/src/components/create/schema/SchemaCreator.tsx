@@ -214,19 +214,19 @@ const SchemaCreator = (props: any) => {
             if (!(data.info in (generatedSchema.info || {}))) {
                 if (data.info == 'config') {
                     setGeneratedSchema((generatedSchema) => ({
-                        ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
                             ...Info[data.info].edit(configInitialState)
-                        }
+                        },                        
+                        ...generatedSchema
                     }));
                 } else {
                     setGeneratedSchema((generatedSchema) => ({
-                        ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
                             ...Info[data.info].edit()
-                        }
+                        },                        
+                        ...generatedSchema
                     }));
                 }
             }
