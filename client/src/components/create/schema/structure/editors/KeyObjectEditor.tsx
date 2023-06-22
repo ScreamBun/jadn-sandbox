@@ -9,6 +9,7 @@ import { sbToastError } from 'components/common/SBToast';
 
 // Interface
 interface KeyObjectEditorProps {
+  id: string;
   name: string;
   description: string;
   placeholder?: string;

@@ -103,7 +103,6 @@ export default {
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
     type: 'primitive'
   },
-  // null
   string: {
     key: 'String',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'String' }),

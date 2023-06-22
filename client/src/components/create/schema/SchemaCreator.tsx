@@ -214,34 +214,43 @@ const SchemaCreator = (props: any) => {
             if (!(data.info in (generatedSchema.info || {}))) {
                 if (data.info == 'config') {
                     setGeneratedSchema((generatedSchema) => ({
+                        ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
                             ...Info[data.info].edit(configInitialState)
-                        },                        
-                        ...generatedSchema
+                        }
                     }));
                 } else {
-                    setGeneratedSchema((generatedSchema) => ({
+                    setGeneratedSchema((generatedSchema) => ({       
+                        ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
                             ...Info[data.info].edit()
-                        },                        
-                        ...generatedSchema
+                        }
                     }));
                 }
+                handleScroll(data.info)
             }
         } else if (data.types) {
             const tmpTypes = [...generatedSchema.types] || [];
             const tmpDef = Types[data.types].edit();
-            tmpTypes.push(tmpDef);
+            tmpTypes.unshift(tmpDef);
             setGeneratedSchema(generatedSchema => ({
                 ...generatedSchema,
                 types: tmpTypes
             }));
+            handleScroll("types")
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
         }
     }
+
+    const handleScroll = (id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      };    
 
     const infoEditors = Object.keys(Info).map((k, i) => {
         const key = k as keyof typeof Info;
@@ -365,71 +374,76 @@ const SchemaCreator = (props: any) => {
             </div>
             <TabContent activeTab={activeView}>
                 <TabPane tabId='creator'>
-                    <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
-                        <div className='row no-gutters'>
-                            <div id="schema-options" className='col-sm-3'>
-                                <Nav pills>
-                                    <NavItem>
-                                        <NavLink
-                                            className={activeOpt == 'info' ? ' active' : ''}
-                                            onClick={() => setActiveOpt('info')}
-                                            title="meta data (about a schema package)"
-                                        >
-                                            Info
-                                        </NavLink>
-                                    </NavItem>
-                                    <NavItem>
-                                        <NavLink
-                                            className={activeOpt == 'types' ? ' active' : ''}
-                                            onClick={() => setActiveOpt('types')}
-                                            title="schema content (the information model)"
-                                        >
-                                            Types
-                                        </NavLink>
-                                    </NavItem>
-                                </Nav>
-                                <TabContent activeTab={activeOpt}>
-                                    <TabPane tabId='info'>
-                                        <ListGroup>
-                                            {infoKeys.length != 0 ? infoKeys : <div className='col'>No more Info to add</div>}
-                                        </ListGroup>
-                                    </TabPane>
-                                    <TabPane tabId='types'>
-                                        <ListGroup>
-                                            {typesKeys}
-                                        </ListGroup>
-                                    </TabPane>
-                                </TabContent>
-                            </div>
-                            <div id="schema-editor" className='col-md-9'>
-                                <Droppable
-                                    types={['info', 'types']} // <= allowed drop types
-                                    onDrop={onDrop}
-                                    className='col-12 mt-1'
-                                    style={{
-                                        minHeight: '20em',
-                                    }}
-                                >
-                                    <div className="col pt-2">
-                                        <h5>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
-                                        {infoEditors}
+                    <div className='card'>                    
+                        <div className='card-body p-0'>
+                            <div className='row no-gutters'>
+                                <div id="schema-options" className='col-sm-3'>
+                                    <div className='sticky-top sticky-offset'>
+                                        <Nav pills>
+                                            <NavItem>
+                                                <NavLink
+                                                    className={activeOpt == 'info' ? ' active' : ''}
+                                                    onClick={() => setActiveOpt('info')}
+                                                    title="meta data (about a schema package)"
+                                                >
+                                                    Info
+                                                </NavLink>
+                                            </NavItem>
+                                            <NavItem>
+                                                <NavLink
+                                                    className={activeOpt == 'types' ? ' active' : ''}
+                                                    onClick={() => setActiveOpt('types')}
+                                                    title="schema content (the information model)"
+                                                >
+                                                    Types
+                                                </NavLink>
+                                            </NavItem>
+                                        </Nav>
+                                        <TabContent activeTab={activeOpt}>
+                                            <TabPane tabId='info'>
+                                                <ListGroup>
+                                                    {infoKeys.length != 0 ? infoKeys : <div className='col'>No more Info to add</div>}
+                                                </ListGroup>
+                                            </TabPane>
+                                            <TabPane tabId='types'>
+                                                <ListGroup>
+                                                    {typesKeys}
+                                                </ListGroup>
+                                            </TabPane>
+                                        </TabContent>
                                     </div>
-                                    <hr />
-                                    <div className="col">
-                                        <h5>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                        {typesEditors}
-                                    </div>
-                                </Droppable>
+                                </div>
+                                <div id="schema-editor" className='col-md-9'>
+                                    <Droppable
+                                        types={['info', 'types']} // <= allowed drop types
+                                        onDrop={onDrop}
+                                        className='col-12 mt-1'
+                                        style={{
+                                            minHeight: '20em',
+                                        }}
+                                    >
+                                        <div className="col pt-2">
+                                            <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                            {infoEditors}
+                                        </div>
+                                        <hr />
+                                        <div className="col">
+                                            <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                            {typesEditors}
+                                        </div>
+                                    </Droppable>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </TabPane>
 
                 <TabPane tabId='schema'>
-                    <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
-                        <SBEditor data={data} isReadOnly={true}></SBEditor>
+                    <div className='card'>                    
+                        <div className='card-body p-0'>
+                            <SBEditor data={data} isReadOnly={true}></SBEditor>
+                        </div>
                     </div>
-
                 </TabPane>
             </TabContent >
         </div>
