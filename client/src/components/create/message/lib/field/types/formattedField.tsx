@@ -4,6 +4,7 @@ import { Button, Input } from "reactstrap";
 import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
 import { v4 as uuid4 } from 'uuid';
 import dayjs from 'dayjs';
+import { Buffer } from 'buffer';
 
 //This component is used to help users format/serialize data into valid JSON
 //input fields, basic input validation, and parsing
@@ -35,8 +36,8 @@ const FormattedField = (props: any) => {
             }
         });
         setIpValue(newArr);
-
-        const newValue = `${newArr[0]}${newArr[1] ? `/${newArr[1]}` : ``}`;
+        const encoded = Buffer.from(newArr[0]).toString('base64');
+        const newValue = `${encoded}${newArr[1] ? `/${newArr[1]}` : ``}`;
 
         const errCheck = validateOptDataElem(config, optData, newArr, optData.format ? true : false);
         setErrMsg(errCheck);
@@ -165,9 +166,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
+                                    const encoded = Buffer.from(e.target.value).toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
+                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), encoded, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}
                             />
@@ -190,8 +192,9 @@ const FormattedField = (props: any) => {
                                 type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e =>
-                                    ipvNetOnchg(msgName.join('.'), e.target.value, 0)}
+                                onChange={e => {
+                                    ipvNetOnchg(msgName.join('.'), e.target.value, 0)
+                                }}
                                 style={{ borderColor: errMsg.color }}
                             />
                             <span className="input-group-text"> / </span>
@@ -202,7 +205,8 @@ const FormattedField = (props: any) => {
                                 max={128}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e =>
-                                    ipvNetOnchg(msgName.join('.'), e.target.value, 1)}
+                                    ipvNetOnchg(msgName.join('.'), e.target.value, 1)
+                                }
                                 style={{ borderColor: errMsg.color }}
                             />
                         </div>
@@ -226,9 +230,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
+                                    const encoded = Buffer.from(e.target.value).toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
+                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), encoded, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}
                             />
@@ -251,8 +256,9 @@ const FormattedField = (props: any) => {
                                 type={'text'}
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                                onChange={e =>
-                                    ipvNetOnchg(msgName.join('.'), e.target.value, 0)}
+                                onChange={e => {
+                                    ipvNetOnchg(msgName.join('.'), e.target.value, 0);
+                                }}
                                 style={{ borderColor: errMsg.color }}
                             />
                             <span className="input-group-text"> / </span>
@@ -263,7 +269,8 @@ const FormattedField = (props: any) => {
                                 max={128}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e =>
-                                    ipvNetOnchg(msgName.join('.'), e.target.value, 1)}
+                                    ipvNetOnchg(msgName.join('.'), e.target.value, 1)
+                                }
                                 style={{ borderColor: errMsg.color }}
                             />
                         </div>
@@ -454,9 +461,12 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
+                                    //TODO : JSON string containing Base16 (hex) encoding of a binary value as defined in RFC 4648 Section 8. 
+                                    //Note that the Base16 alphabet does not include lower-case letters.
+                                    const encoded = Buffer.from(e.target.value).toString('hex').toUpperCase();
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), e.target.value, arr) : optChange(msgName.join('.'), '', arr);
+                                    errCheck.msg.length == 0 ? optChange(msgName.join('.'), encoded, arr) : optChange(msgName.join('.'), '', arr);
                                 }}
                                 style={{ borderColor: errMsg.color }}
                             />

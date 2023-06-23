@@ -16,15 +16,14 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 	}
 };
 
-//TYPE OPTION VALIDATION
-// possibly change count to data.length
+// TYPE OPTION VALIDATION
 // optData validation for Array, ArrayOf, Map, MapOf, or Record
+// TODO CONSIDERATION : leave the format validation to server side...
 export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[], formatCheck: boolean = false) => {
 	let isFormatted: boolean = false;
 	let m = [];
 	let c = '';
-	let count = data.length;
-	console.log(data, count)
+
 	//ARRAY
 	if (formatCheck && data) {
 		isFormatted = validateArrayFormat(data, optData.format);
@@ -42,22 +41,22 @@ export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[
 
 	//check # of elements
 	if (hasProperty(optData, 'minv')) {
-		if (count < optData.minv) {
+		if (data.length < optData.minv) {
 			m.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
 		}
 	} else {
 		optData.minv = $MINV;
-		if (count < optData.minv) {
+		if (data.length < optData.minv) {
 			m.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
 		}
 	}
 	if (hasProperty(optData, 'maxv')) {
-		if (count > optData.maxv) {
+		if (data.length > optData.maxv) {
 			m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
 		}
 	} else {
 		optData.maxv = config.$MaxElements;
-		if (count > optData.maxv) {
+		if (data.length > optData.maxv) {
 			m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
 		}
 	}
@@ -159,14 +158,16 @@ export const validateOptDataNum = (optData: any, data: number) => {
 
 // optData validation for Binary
 export const validateOptDataBinary = (config: InfoConfig, optData: any, data: string) => {
+	// JADN Binary - A sequence of octets. Length is the number of octets. --- 0101 0101 (1 octet/byte)
+	// data : JSON string containing Base64url encoding of the binary value as defined in Section 5 of RFC 4648.
 	const binaryType = optData.format ?? 'binary';
 
 	let m: string[] = [];
 	let c = '';
-	// binary - A sequence of octets. Length is the number of octets.
-	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
-	//TODO: Get number of bytes in data - convert string to binary 
+
 	if (data) {
+		// TODO: Validate encoded data (JSON serialized user input = base64  // formatted binary) or user input (JADN definition = binary) ??
+		// user input can be octet, decimal, hex, etc...
 		const isFormatted = validateBinaryFormat(data, binaryType);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + binaryType + ' value');
@@ -174,27 +175,31 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 		}
 	}
 
-	/* 	if (hasProperty(optData, 'minv')) {
-			if (data < optData.minv) {
-				m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
-			}
-	
-		} else {
-			optData.minv = $MINV;
-			if (data < optData.minv) {
-				m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
-			}
+	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
+	// TODO: Get number of bytes in data - convert to binary and get byte length ???
+
+	//var minv = optData.minv || $MINV;
+	if (hasProperty(optData, 'minv')) {
+		if (data.length < optData.minv) {
+			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
 		}
-		if (hasProperty(optData, 'maxv')) {
-			if (data > optData.maxv) {
-				m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
-			}
-		} else {
-			optData.maxv = config.$MaxBinary;
-			if (data.length > optData.maxv) {
-				m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
-			}
-		} */
+
+	} else {
+		optData.minv = $MINV;
+		if (data.length < optData.minv) {
+			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
+		}
+	}
+	if (hasProperty(optData, 'maxv')) {
+		if (data.length > optData.maxv) {
+			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
+		}
+	} else {
+		optData.maxv = config.$MaxBinary;
+		if (data.length > optData.maxv) {
+			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
+		}
+	}
 	if (m.length != 0) {
 		c = 'red';
 	}
@@ -205,10 +210,10 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 //FORMAT TYPE OPTION VALIDATION: given [type of value/format] and [data], validate
 //binary: eui, ipv4-addr, ipv6-addr
 export const validateBinaryFormat = (data: string, type: string) => {
-	if (type == 'binary' && data.match(/^[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}$/)) { //Base64url encoding
+	if (type == 'binary' && data.match(/^[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}$/)) { //Base64url encoding (JSON serialized)
 		return true;
 	}
-	if (type == 'x' && data.match(/(0x)?[0-9A-F]+/)) { //hex
+	if (type == 'x' && data.match(/(0x)?[0-9A-F]+/)) { //hex encoding (JSON serialized)
 		return true;
 	}
 	if (type == 'eui' && data.match(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$/)) { //MAC-addr

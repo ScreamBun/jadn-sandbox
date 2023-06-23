@@ -10,6 +10,7 @@ import { useAppSelector } from 'reducers';
 import { validateOptDataNum, validateOptDataBinary, validateOptDataStr } from '../../utils';
 import { hasProperty } from 'components/utils';
 import { FormattedField } from './Types';
+import { Buffer } from 'buffer';
 
 // Interface
 interface BasicFieldProps {
@@ -87,7 +88,6 @@ const BasicField = (props: BasicFieldProps) => {
       );
     }
 
-    //TODO: Binary minv/maxv check
     if (baseType.toLowerCase() == 'binary') {
       return (
         <div className='form-group'>
@@ -102,10 +102,11 @@ const BasicField = (props: BasicFieldProps) => {
                 name={name}
                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                 onChange={e => {
-                  const errCheck = validateOptDataBinary(config, optData, e.target.value);
+                  //encode into base64 for valid JSON
+                  const encoded = Buffer.from(e.target.value).toString('base64')
+                  const errCheck = validateOptDataBinary(config, optData, encoded);
                   setErrMsg(errCheck);
-                  //encode into base64?
-                  optChange(msgName.join('.'), e.target.value, arr);
+                  optChange(msgName.join('.'), encoded, arr);
                 }}
                 style={{ borderColor: errMsg.color }}
               />
