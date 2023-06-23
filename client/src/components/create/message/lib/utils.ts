@@ -3,6 +3,7 @@
 import { $MINV } from 'components/create/consts';
 import { hasProperty } from 'components/utils';
 import { FieldArray, InfoConfig, TypeArray } from '../../schema/interface';
+import { Buffer } from 'buffer';
 
 export const isOptional = (def: TypeArray | FieldArray) => {
 	switch (def.length) {
@@ -18,7 +19,6 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 
 // TYPE OPTION VALIDATION
 // optData validation for Array, ArrayOf, Map, MapOf, or Record
-// TODO CONSIDERATION : leave the format validation to server side...
 export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[], formatCheck: boolean = false) => {
 	let isFormatted: boolean = false;
 	let m = [];
@@ -158,16 +158,13 @@ export const validateOptDataNum = (optData: any, data: number) => {
 
 // optData validation for Binary
 export const validateOptDataBinary = (config: InfoConfig, optData: any, data: string) => {
-	// JADN Binary - A sequence of octets. Length is the number of octets. --- 0101 0101 (1 octet/byte)
-	// data : JSON string containing Base64url encoding of the binary value as defined in Section 5 of RFC 4648.
+	// JADN Binary - A sequence of octets. Length is the number of octets.
 	const binaryType = optData.format ?? 'binary';
 
 	let m: string[] = [];
 	let c = '';
 
 	if (data) {
-		// TODO: Validate encoded data (JSON serialized user input = base64  // formatted binary) or user input (JADN definition = binary) ??
-		// user input can be octet, decimal, hex, etc...
 		const isFormatted = validateBinaryFormat(data, binaryType);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + binaryType + ' value');
@@ -177,26 +174,28 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 
 	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
 	// TODO: Get number of bytes in data - convert to binary and get byte length ???
-
+	const encoded = Buffer.from(data).toString('base64');
+	const paddingCount = encoded.match(/=/g) != null ? encoded.match(/=/g).length : 0;
+	const length = (3 * (encoded.length / 4)) - (paddingCount);
 	//var minv = optData.minv || $MINV;
 	if (hasProperty(optData, 'minv')) {
-		if (data.length < optData.minv) {
+		if (length < optData.minv) {
 			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
 		}
 
 	} else {
 		optData.minv = $MINV;
-		if (data.length < optData.minv) {
+		if (length < optData.minv) {
 			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
 		}
 	}
 	if (hasProperty(optData, 'maxv')) {
-		if (data.length > optData.maxv) {
+		if (length > optData.maxv) {
 			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
 		}
 	} else {
 		optData.maxv = config.$MaxBinary;
-		if (data.length > optData.maxv) {
+		if (length > optData.maxv) {
 			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
 		}
 	}
@@ -210,10 +209,11 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 //FORMAT TYPE OPTION VALIDATION: given [type of value/format] and [data], validate
 //binary: eui, ipv4-addr, ipv6-addr
 export const validateBinaryFormat = (data: string, type: string) => {
-	if (type == 'binary' && data.match(/^[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}$/)) { //Base64url encoding (JSON serialized)
+	//data.match(/^[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}$/) //Base64url encoding (JSON serialized)
+	if (type == 'binary' && data.match(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)) {
 		return true;
 	}
-	if (type == 'x' && data.match(/(0x)?[0-9A-F]+/)) { //hex encoding (JSON serialized)
+	if (type == 'x' && data.match(/(0x)?[0-9A-F]+/)) { //hex encoding
 		return true;
 	}
 	if (type == 'eui' && data.match(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$/)) { //MAC-addr
