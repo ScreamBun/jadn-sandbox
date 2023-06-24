@@ -11,7 +11,7 @@ The JADN Sandbox provides the ability to create, convert, translate, transform, 
 ## Quick Startup
 
 1. Install docker [Docker](https://docs.docker.com/get-docker/)
-1. Run the docker image
+2. Run the docker image
 
   ```bash
   docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
@@ -35,21 +35,21 @@ Prerequisites:
 
 1. Clone the JADN Sandbox from GitHub to your local workstation
 
-1. From commandline, go to the directory where you would like the application to live, here's an example:
+2. From commandline, go to the directory where you would like the application to live, here's an example:
 
   ```bash
   cd /home/username/workspace
   ```
 
-1. Using git, clone the jadn-sandbox repo to your local directory
+3. Using git, clone the jadn-sandbox repo to your local directory
 
 ```bash
 git clone https://github.com/ScreamBun/jadn-sandbox.git
 ```
 
-1. (Optional, specific to Linux and Mac) Create a [virtual environment](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for the app
+4. (Optional, specific to Linux and Mac) Create a [virtual environment](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for the app
 
-1. Run the startup script to install the app's dependencies and fire up it's servers
+5. Run the startup script to install the app's dependencies and fire up it's servers
 
 ```bash
 ./startup.sh
@@ -91,13 +91,13 @@ Important Notes:
 ./docker_push.sh
 ```
 
-1. To start your image, enter the following, this will start the image without rebuilding
+2. To start your image, enter the following, this will start the image without rebuilding
 
 ```bash
 ./docker_run.sh
 ```
 
-1. Once the build is complete go to here in your browser to verify and run smoke tests
+3. Once the build is complete go to here in your browser to verify and run smoke tests
 
 ```bash
 http://localhost:8082/
@@ -139,8 +139,8 @@ http://localhost:8082/
 
 1. Build the client as specified in the client readme
 2. Copy the contents of `client/build/assets` directory to `server/webApp/static`
-
 3. Merge the folders and replace what is currently in the folders
+
 * Note: The following files are used by the endpoints page and should not be replaced (Roboto & Lato fonts are also used by the client application)
 * `server/webApp/static/css/styles.min.css`
 * `server/webApp/static/js/scripts.min.js`
