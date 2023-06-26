@@ -32,10 +32,8 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const [min, setMin] = useState(false);
   const [max, setMax] = useState(false);
   const [opts, setOpts] = useState<any[]>([]); //track elem of vtype
-  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
-    color: '',
-    msg: []
-  });
+  const [errMsg, setErrMsg] = useState<string[]>([]);
+
 
   var optData: Record<string, any> = {};
   const [_idx, name, type, args, comment] = def;
@@ -192,6 +190,10 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />);
   }
 
+  const err = errMsg.map((msg, index) =>
+    <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
+  );
+
   return (
     <div className='form-group'>
       <div className='card'>
@@ -214,7 +216,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
             <FontAwesomeIcon icon={faPlusSquare} size="lg" />
           </Button>
           {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          <div><small className='form-text' style={{ color: 'red' }}> {errMsg.msg}</small></div>
+          {err}
         </div>
 
         <div className='card-body mx-2'>

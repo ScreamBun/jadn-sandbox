@@ -24,10 +24,8 @@ const RecordField = (props: RecordFieldProps) => {
   const [_idx, name, type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState<string[]>([]); //track elements
-  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
-    color: '',
-    msg: []
-  });
+  const [errMsg, setErrMsg] = useState<string[]>([]);
+
 
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {
@@ -62,10 +60,9 @@ const RecordField = (props: RecordFieldProps) => {
     typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} />)
     : <div> No fields </div>;
 
-  let err: any[] = [];
-  (errMsg.msg).forEach(msg => {
-    err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
-  });
+  const err = errMsg.map((msg, index) =>
+    <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
+  );
 
   return (
     <div className='form-group'>

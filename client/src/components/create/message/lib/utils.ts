@@ -22,7 +22,6 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[], formatCheck: boolean = false) => {
 	let isFormatted: boolean = false;
 	let m = [];
-	let c = '';
 
 	//ARRAY
 	if (formatCheck && data) {
@@ -61,15 +60,11 @@ export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[
 		}
 	}
 
-	if (m.length != 0) {
-		c = 'red';
-	}
-	return { 'msg': m, 'color': c };
+	return m;
 }
 // optData validation for String
 export const validateOptDataStr = (config: InfoConfig, optData: any, data: string) => {
 	let m = [];
-	let c = '';
 
 	if (hasProperty(optData, 'minv')) {
 		if (data.length < optData.minv) {
@@ -105,15 +100,12 @@ export const validateOptDataStr = (config: InfoConfig, optData: any, data: strin
 			m.push('Format Error: Invalid ' + optData.format + ' value');
 		}
 	}
-	if (m.length != 0) {
-		c = 'red';
-	}
-	return { 'msg': m, 'color': c };
+
+	return m;
 }
 // optData validation for Number, Integer
 export const validateOptDataNum = (optData: any, data: number) => {
 	let m = [];
-	let c = '';
 
 	if (hasProperty(optData, 'format') && data) {
 		const isFormatted = validateNumericFormat(data, optData.format);
@@ -150,10 +142,8 @@ export const validateOptDataNum = (optData: any, data: number) => {
 			m.push('Maxf Error: must be less than ' + optData.maxf);
 		}
 	}
-	if (m.length != 0) {
-		c = 'red';
-	}
-	return { 'msg': m, 'color': c };
+
+	return m;
 }
 
 // optData validation for Binary
@@ -162,13 +152,12 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 	const binaryType = optData.format ?? 'binary';
 
 	let m: string[] = [];
-	let c = '';
 
 	if (data) {
 		const isFormatted = validateBinaryFormat(data, binaryType);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + binaryType + ' value');
-			return { 'msg': m, 'color': 'red' };
+			return m;
 		}
 	}
 
@@ -199,10 +188,8 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
 		}
 	}
-	if (m.length != 0) {
-		c = 'red';
-	}
-	return { 'msg': m, 'color': c };
+
+	return m;
 }
 
 

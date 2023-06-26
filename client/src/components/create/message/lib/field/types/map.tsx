@@ -25,10 +25,8 @@ const MapField = (props: MapFieldProps) => {
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState<string[]>([]); //track elements
-  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
-    color: '',
-    msg: []
-  });
+  const [errMsg, setErrMsg] = useState<string[]>([]);
+
 
   const onChange = (k: string, v: any) => {
     if (!data.includes(k)) {
@@ -48,8 +46,16 @@ const MapField = (props: MapFieldProps) => {
     }//else value is updated
 
     if (hasProperty(optData, 'id') && optData.id) {
+      const updatedData = [...data, v];
+      setData(updatedData);
+      const validMsg = validateOptDataElem(config, optData, updatedData);
+      setErrMsg(validMsg);
       optChange(k, parseInt(v));
     } else {
+      const updatedData = [...data, v];
+      setData(updatedData);
+      const validMsg = validateOptDataElem(config, optData, updatedData);
+      setErrMsg(validMsg);
       optChange(k, v);
     }
   }
@@ -66,10 +72,9 @@ const MapField = (props: MapFieldProps) => {
     typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} config={config} />)
     : <div> No fields </div>;
 
-  let err: any[] = [];
-  (errMsg.msg).forEach(msg => {
-    err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
-  });
+  const err = errMsg.map((msg, index) =>
+    <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
+  );
 
   return (
     <div className='form-group'>

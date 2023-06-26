@@ -45,15 +45,11 @@ const BasicField = (props: BasicFieldProps) => {
     baseType = type;
   }
 
-  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
-    color: '',
-    msg: []
-  });
+  const [errMsg, setErrMsg] = useState<string[]>([]);
 
-  let err: any[] = [];
-  (errMsg.msg).forEach(msg => {
-    err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
-  });
+  const err = errMsg.map((msg, index) =>
+    <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
+  );
 
   if (name >= 0) { // name is type if not field    
     return (<Field key={def[1]} def={def} parent={msgName.join('.')} optChange={optChange} />);
@@ -63,7 +59,7 @@ const BasicField = (props: BasicFieldProps) => {
     return (<FormattedField
       basicProps={props} optData={optData}
       errMsg={errMsg} setErrMsg={setErrMsg} config={config}
-      err={err} />);
+    />);
   }
 
   if (baseType) {
@@ -78,7 +74,7 @@ const BasicField = (props: BasicFieldProps) => {
               onChange={e => {
                 optChange(msgName.join('.'), e.target.checked, arr);
               }}
-              style={{ borderColor: errMsg.color }}
+              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
             />
             <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
             {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
@@ -108,7 +104,7 @@ const BasicField = (props: BasicFieldProps) => {
                   setErrMsg(errCheck);
                   optChange(msgName.join('.'), encoded, arr);
                 }}
-                style={{ borderColor: errMsg.color }}
+                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
             </div>
             {err}
@@ -136,7 +132,7 @@ const BasicField = (props: BasicFieldProps) => {
                   setErrMsg(errCheck);
                   optChange(msgName.join('.'), parseInt(e.target.value), arr);
                 }}
-                style={{ borderColor: errMsg.color }}
+                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
             </div>
             {err}
@@ -164,7 +160,7 @@ const BasicField = (props: BasicFieldProps) => {
                   setErrMsg(errCheck);
                   optChange(msgName.join('.'), parseInt(e.target.value), arr);
                 }}
-                style={{ borderColor: errMsg.color }}
+                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
             </div>
             {err}
@@ -192,7 +188,7 @@ const BasicField = (props: BasicFieldProps) => {
               setErrMsg(errCheck);
               optChange(msgName.join('.'), e.target.value, arr);
             }}
-            style={{ borderColor: errMsg.color }} />
+            style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} />
         </div>
         {err}
       </div>

@@ -31,10 +31,8 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [min, setMin] = useState(false);
     const [max, setMax] = useState(false);
     const [opts, setOpts] = useState<any[]>([]); //opts: let every obj have a key and value [{key: '', value:''}, ...]
-    const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
-        color: '',
-        msg: []
-    });
+    const [errMsg, setErrMsg] = useState<string[]>([]);
+
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
@@ -212,6 +210,10 @@ const MapOfField = (props: MapOfFieldProps) => {
         );
     }
 
+    const err = errMsg.map((msg, index) =>
+        <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
+    );
+
     return (
         <div className='form-group'>
             <div className='card'>
@@ -234,7 +236,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                         <FontAwesomeIcon icon={faPlusSquare} size="lg" />
                     </Button>
                     {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                    <div><small className='form-text' style={{ color: 'red' }}> {errMsg.msg}</small></div>
+                    {err}
                 </div>
 
                 <div className='card-body mx-2'>

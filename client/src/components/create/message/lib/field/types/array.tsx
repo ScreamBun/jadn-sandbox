@@ -25,10 +25,8 @@ const ArrayField = (props: ArrayFieldProps) => {
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState<string[]>([]); //track elements
-  const [errMsg, setErrMsg] = useState<{ color: string, msg: string[] }>({
-    color: '',
-    msg: []
-  });
+  const [errMsg, setErrMsg] = useState<string[]>([]);
+
 
   const onChange = (_k: string, v: any, i: number) => {
     var updatedArr;
@@ -61,16 +59,15 @@ const ArrayField = (props: ArrayFieldProps) => {
     optData = (opts2obj(typeDef[2]));
   }
 
-  let err: any[] = [];
-  (errMsg.msg).forEach(msg => {
-    err.push(<div><small className='form-text' style={{ color: 'red' }}> {msg}</small></div>)
-  });
+  const err = errMsg.map((msg, index) =>
+    <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
+  );
 
   if (hasProperty(optData, 'format')) {
     return (<FormattedField
       basicProps={props} optData={optData} config={config}
       errMsg={errMsg} setErrMsg={setErrMsg}
-      err={err} />);
+    />);
   }
 
   //Expected: fields (typeDef.length  == 5)
