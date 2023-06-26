@@ -50,7 +50,7 @@ export const delMultiKey = (obj: Record<string, any>, key: string): void => {
   const k = key.replace(/\[\]$/, '');
   const keys = k.split('.');
 
-  if (keys.length > 1) {
+  if (obj && keys.length > 1) {
     delMultiKey(obj[keys[0]], keys.slice(1).join('.'));
   } else if (obj && keys[0] in obj) {
     // eslint-disable-next-line no-param-reassign

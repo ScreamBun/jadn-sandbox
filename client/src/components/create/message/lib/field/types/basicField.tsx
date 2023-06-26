@@ -99,7 +99,7 @@ const BasicField = (props: BasicFieldProps) => {
                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                 onChange={e => {
                   //encode into base64 for valid JSON
-                  const encoded = Buffer.from(e.target.value).toString('base64')
+                  const encoded = Buffer.from(e.target.value).toString('base64');
                   const errCheck = validateOptDataBinary(config, optData, encoded);
                   setErrMsg(errCheck);
                   optChange(msgName.join('.'), encoded, arr);

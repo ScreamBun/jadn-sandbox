@@ -48,18 +48,17 @@ const MessageCreator = (props: any) => {
 
     const optChange = (k: string, v: any) => {
         console.log(k, v)
+        const keys = k.split('.');
 
-        //TODO?: if v == undefined/ empty/ null /nothing in obj ===> delete
-
-        if (k.length > 1 && generatedMessage[k[0]] && !generatedMessage[k[0]][k[1]]) {
-            delMultiKey(generatedMessage, k[0].toString());
-        }
-
-        if (!['', ' ', null, undefined, [], {}].includes(v)) {
+        if (v) {
             setMultiKey(generatedMessage, k.toString(), v);
         } else {
             delMultiKey(generatedMessage, k.toString());
+            if (keys.length > 1 && generatedMessage[keys[0]] && !generatedMessage[keys[0]][keys[1]]) {
+                delMultiKey(generatedMessage, keys[0].toString());
+            }
         }
+
         setGeneratedMessage(generatedMessage);
     }
 

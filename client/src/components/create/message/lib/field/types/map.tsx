@@ -24,38 +24,21 @@ const MapField = (props: MapFieldProps) => {
   var optData: Record<string, any> = {};
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-  const [data, setData] = useState<string[]>([]); //track elements
+  const [data, setData] = useState({}); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
 
 
   const onChange = (k: string, v: any) => {
-    if (!data.includes(k)) {
-      //add
-      const updatedData = [...data, k];
-      setData(updatedData);
-      const validMsg = validateOptDataElem(config, optData, updatedData);
-      setErrMsg(validMsg);
-    } else if (!v || v == '') {
-      //remove
-      const updatedData = data.filter((elem) => {
-        return elem != k;
-      });
-      setData(updatedData);
-      const validMsg = validateOptDataElem(config, optData, updatedData);
-      setErrMsg(validMsg);
-    }//else value is updated
-
+    if (!v) {
+      v = '';
+    }
+    const updatedData = { ...data, [k]: v };
+    setData(updatedData);
+    const validMsg = validateOptDataElem(config, optData, Object.entries(updatedData));
+    setErrMsg(validMsg);
     if (hasProperty(optData, 'id') && optData.id) {
-      const updatedData = [...data, v];
-      setData(updatedData);
-      const validMsg = validateOptDataElem(config, optData, updatedData);
-      setErrMsg(validMsg);
       optChange(k, parseInt(v));
     } else {
-      const updatedData = [...data, v];
-      setData(updatedData);
-      const validMsg = validateOptDataElem(config, optData, updatedData);
-      setErrMsg(validMsg);
       optChange(k, v);
     }
   }

@@ -162,7 +162,7 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 	}
 
 	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
-	// TODO: Get number of bytes in data - convert to binary and get byte length ???
+	// TODO: Get number of bytes in data ----> GET LENGTH FROM ISFORMATTED
 	const encoded = Buffer.from(data).toString('base64');
 	const paddingCount = encoded.match(/=/g) != null ? encoded.match(/=/g).length : 0;
 	const length = (3 * (encoded.length / 4)) - (paddingCount);
@@ -195,6 +195,7 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 
 //FORMAT TYPE OPTION VALIDATION: given [type of value/format] and [data], validate
 //binary: eui, ipv4-addr, ipv6-addr
+//TODO : if valid, return binary length
 export const validateBinaryFormat = (data: string, type: string) => {
 	//data.match(/^[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}$/) //Base64url encoding (JSON serialized)
 	if (type == 'binary' && data.match(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)) {
