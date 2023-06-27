@@ -6,6 +6,7 @@ import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { validateOptDataElem } from '../../utils';
 import { $FIELDS_LENGTH } from 'components/create/consts';
+import { hasProperty } from 'react-json-editor/dist/utils';
 
 // Interface
 interface RecordFieldProps {
@@ -22,7 +23,7 @@ const RecordField = (props: RecordFieldProps) => {
   var optData: Record<string, any> = {};
 
   const [_idx, name, type, _args, comment] = def;
-  const msgName = (parent ? [parent, name] : [name]).join('.');
+  let msgName: any = parent ? [parent, name] : [name];
   const [data, setData] = useState<string[]>([]); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
 
@@ -53,6 +54,11 @@ const RecordField = (props: RecordFieldProps) => {
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
+    if (hasProperty(optData, 'key')) {
+      msgName = msgName[0];
+    } else {
+      msgName = msgName.join('.');
+    }
   }
 
   //Expected: fields (typeDef.length == 5)

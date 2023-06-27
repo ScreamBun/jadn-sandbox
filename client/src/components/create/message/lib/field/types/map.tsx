@@ -23,7 +23,7 @@ const MapField = (props: MapFieldProps) => {
 
   var optData: Record<string, any> = {};
   const [_idx, name, _type, _args, comment] = def;
-  const msgName = (parent ? [parent, name] : [name]).join('.');
+  let msgName: any = parent ? [parent, name] : [name];
   const [data, setData] = useState({}); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
 
@@ -48,6 +48,11 @@ const MapField = (props: MapFieldProps) => {
 
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
+    if (hasProperty(optData, 'key')) {
+      msgName = msgName[0];
+    } else {
+      msgName = msgName.join('.');
+    }
   }
 
   //Expected: fields (typeDef.length  == 5)

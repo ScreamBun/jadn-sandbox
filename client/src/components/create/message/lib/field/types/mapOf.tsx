@@ -36,7 +36,7 @@ const MapOfField = (props: MapOfFieldProps) => {
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
-    const msgName = (parent ? [parent, name] : [name]).join('.');
+    const msgName = parent ? [parent, name] : [name];
 
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -143,6 +143,11 @@ const MapOfField = (props: MapOfFieldProps) => {
             optData = (opts2obj(typeDef[2]));
         } else {
             optData = (opts2obj(args));
+        }
+        if (hasProperty(optData, 'key')) {
+            msgName = msgName[0];
+        } else {
+            msgName = msgName.join('.');
         }
         // MUST include ktype and vtype options.
     }

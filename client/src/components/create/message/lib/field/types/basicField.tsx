@@ -26,7 +26,7 @@ const BasicField = (props: BasicFieldProps) => {
 
   const { arr, def, optChange, parent, config } = props;
   const [_idx, name, type, opts, comment] = def;
-  const msgName = parent ? [parent, name] : [name];
+  let msgName: any = parent ? [parent, name] : [name];
 
   var optData: Record<string, any> = {};
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
@@ -34,6 +34,11 @@ const BasicField = (props: BasicFieldProps) => {
   let typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
   if (typeDef) {
     optData = (opts2obj(opts));
+    if (hasProperty(optData, 'key')) {
+      msgName = msgName[0];
+    } else {
+      msgName = msgName.join('.');
+    }
   }
 
   const [errMsg, setErrMsg] = useState<string[]>([]);
@@ -50,19 +55,32 @@ const BasicField = (props: BasicFieldProps) => {
       const foptData = (opts2obj(fopts));
       if (hasProperty(foptData, 'key')) {
         //create field based on key
-        return linkField = (<Field key={fname} def={field} parent={msgName.join('.')} optChange={optChange} config={config} />);
+        return linkField = (
+          <div className='form-group'>
+            <div className='card'>
+              <div className='card-header p-2'>
+                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              </div>
+              <div className='card-body'>
+                <Field key={fname} def={field} parent={msgName} optChange={optChange} config={config} />
+              </div>
+              {err}
+            </div>
+          </div>
+        );
       }
     });
 
     if (linkField) {
       return linkField;
     } else {
-      return (<div style={{ color: 'red' }}> No Key Found </div>);
+      return (<div style={{ color: 'red' }}> No Link Found </div>);
     }
   }
 
   if (name >= 0) { // name is type if not field    
-    return (<Field key={def[1]} def={def} parent={msgName.join('.')} optChange={optChange} config={config} />);
+    return (<Field key={def[1]} def={def} parent={msgName} optChange={optChange} config={config} />);
   }
 
   if (hasProperty(optData, 'format')) {
@@ -81,7 +99,7 @@ const BasicField = (props: BasicFieldProps) => {
             name={name}
             defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
             onChange={e => {
-              optChange(msgName.join('.'), e.target.checked, arr);
+              optChange(msgName, e.target.checked, arr);
             }}
             style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
           />
@@ -111,7 +129,7 @@ const BasicField = (props: BasicFieldProps) => {
                 const encoded = Buffer.from(e.target.value).toString('base64');
                 const errCheck = validateOptDataBinary(config, optData, encoded);
                 setErrMsg(errCheck);
-                optChange(msgName.join('.'), encoded, arr);
+                optChange(msgName, encoded, arr);
               }}
               style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
             />
@@ -139,7 +157,7 @@ const BasicField = (props: BasicFieldProps) => {
               onChange={e => {
                 const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                 setErrMsg(errCheck);
-                optChange(msgName.join('.'), parseInt(e.target.value), arr);
+                optChange(msgName, parseInt(e.target.value), arr);
               }}
               style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
             />
@@ -166,7 +184,7 @@ const BasicField = (props: BasicFieldProps) => {
               onChange={e => {
                 const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                 setErrMsg(errCheck);
-                optChange(msgName.join('.'), parseInt(e.target.value), arr);
+                optChange(msgName, parseInt(e.target.value), arr);
               }}
               style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
             />
@@ -194,7 +212,7 @@ const BasicField = (props: BasicFieldProps) => {
             onChange={e => {
               const errCheck = validateOptDataStr(config, optData, e.target.value);
               setErrMsg(errCheck);
-              optChange(msgName.join('.'), e.target.value, arr);
+              optChange(msgName, e.target.value, arr);
             }}
             style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} />
         </div>
