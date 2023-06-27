@@ -7,6 +7,8 @@ import {
   SchemaJADN, StandardFieldArray
 } from '../../../schema/interface';
 import { useAppSelector } from '../../../../../reducers';
+import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
+import { hasProperty } from 'react-json-editor/dist/utils';
 
 // Interfaces
 interface FieldProps {
@@ -21,10 +23,11 @@ interface FieldProps {
 const Field = (props: FieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN
   const { def, idx, optChange, parent, config } = props;
+  const [_idx, name, type, opts, _comment] = def;
 
   const parentName = parent || '';
-  const typeDefs = schema.types.filter(t => t[0] === def[2]);
-  var typeDef = typeDefs.length === 1 ? typeDefs[0][1] : def[2]; //find type otherwise, type is JADN type
+  const typeDefs = schema.types.filter(t => t[0] === type);
+  var typeDef = typeDefs.length === 1 ? typeDefs[0][1] : type; //find type otherwise, type is JADN type
   const args = {
     def,
     parent: parentName,
@@ -32,10 +35,17 @@ const Field = (props: FieldProps) => {
     optChange: (k: string, v: any) => optChange(k, v, idx)
   };
 
-  //circular dependency check: make field primitive
-  if (parent && parent.split(".")[parent.split(".").length - 1] == def[1]) {
-    //handle L opt in typeDef..?
+  //Circular Dependency Check: Create Primitive Field
+  if (parent && parent.split(".")[parent.split(".").length - 1] == name) {
     return <BasicField {...args} />;
+  }
+
+  //Link Check
+  if (opts) {
+    const foptData = (opts2obj(opts));
+    if (hasProperty(foptData, 'link')) {
+      return <BasicField {...args} />;
+    }
   }
 
   switch (typeDef) {

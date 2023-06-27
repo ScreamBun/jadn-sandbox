@@ -29,20 +29,11 @@ const BasicField = (props: BasicFieldProps) => {
   const msgName = parent ? [parent, name] : [name];
 
   var optData: Record<string, any> = {};
-  let baseType: string;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const typeDefs = schema.types.filter(t => t[0] === type);
   let typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
-  if (typeDefs.length === 1) {     //primitive field
-    if (typeDef[2].length != 0) {
-      optData = (opts2obj(typeDef[2]));
-    }
-    baseType = typeDef[1];
-  } else {     //structured field
-    if (opts && opts.length != 0) {
-      optData = (opts2obj(opts));
-    }
-    baseType = type;
+  if (typeDef) {
+    optData = (opts2obj(opts));
   }
 
   const [errMsg, setErrMsg] = useState<string[]>([]);
@@ -51,8 +42,27 @@ const BasicField = (props: BasicFieldProps) => {
     <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
   );
 
+  if (hasProperty(optData, 'link')) {
+    //find key
+    let linkField = undefined;
+    typeDef[typeDef.length - 1].every((field: StandardFieldArray) => {
+      const [_fidx, fname, _ftype, fopts, _fcomment] = field;
+      const foptData = (opts2obj(fopts));
+      if (hasProperty(foptData, 'key')) {
+        //create field based on key
+        return linkField = (<Field key={fname} def={field} parent={msgName.join('.')} optChange={optChange} config={config} />);
+      }
+    });
+
+    if (linkField) {
+      return linkField;
+    } else {
+      return (<div style={{ color: 'red' }}> No Key Found </div>);
+    }
+  }
+
   if (name >= 0) { // name is type if not field    
-    return (<Field key={def[1]} def={def} parent={msgName.join('.')} optChange={optChange} />);
+    return (<Field key={def[1]} def={def} parent={msgName.join('.')} optChange={optChange} config={config} />);
   }
 
   if (hasProperty(optData, 'format')) {
@@ -62,114 +72,112 @@ const BasicField = (props: BasicFieldProps) => {
     />);
   }
 
-  if (baseType) {
-    if (baseType.toLowerCase() == 'boolean') {
-      return (
-        <div className='form-group m-3'>
-          <Label check>
+  if (type.toLowerCase() == 'boolean') {
+    return (
+      <div className='form-group m-3'>
+        <Label check>
+          <Input
+            type={'checkbox'}
+            name={name}
+            defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+            onChange={e => {
+              optChange(msgName.join('.'), e.target.checked, arr);
+            }}
+            style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+          />
+          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+        </Label>
+        {err}
+      </div>
+    );
+  }
+
+  if (type.toLowerCase() == 'binary') {
+    return (
+      <div className='form-group'>
+        <div className='card'>
+          <div className='card-header p-2'>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
+          <div className='card-body m-0 p-0'>
             <Input
-              type={'checkbox'}
+              type={'text'}
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                optChange(msgName.join('.'), e.target.checked, arr);
+                //encode into base64 for valid JSON
+                const encoded = Buffer.from(e.target.value).toString('base64');
+                const errCheck = validateOptDataBinary(config, optData, encoded);
+                setErrMsg(errCheck);
+                optChange(msgName.join('.'), encoded, arr);
               }}
               style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
             />
-            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          </Label>
+          </div>
           {err}
         </div>
-      );
-    }
-
-    if (baseType.toLowerCase() == 'binary') {
-      return (
-        <div className='form-group'>
-          <div className='card'>
-            <div className='card-header p-2'>
-              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-            </div>
-            <div className='card-body m-0 p-0'>
-              <Input
-                type={'text'}
-                name={name}
-                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                onChange={e => {
-                  //encode into base64 for valid JSON
-                  const encoded = Buffer.from(e.target.value).toString('base64');
-                  const errCheck = validateOptDataBinary(config, optData, encoded);
-                  setErrMsg(errCheck);
-                  optChange(msgName.join('.'), encoded, arr);
-                }}
-                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
-              />
-            </div>
-            {err}
-          </div>
-        </div>
-      );
-    }
-
-    if (baseType.toLowerCase() == 'number') {
-      return (
-        <div className='form-group'>
-          <div className='card'>
-            <div className='card-header p-2'>
-              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-            </div>
-            <div className='card-body m-0 p-0'>
-              <Input
-                type={'number'}
-                step='any'
-                name={name}
-                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                onChange={e => {
-                  const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
-                  setErrMsg(errCheck);
-                  optChange(msgName.join('.'), parseInt(e.target.value), arr);
-                }}
-                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
-              />
-            </div>
-            {err}
-          </div>
-        </div>
-      );
-    }
-
-
-    if (baseType.toLowerCase() == 'integer') {
-      return (
-        <div className='form-group'>
-          <div className='card'>
-            <div className='card-header p-2'>
-              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-            </div>
-            <div className='card-body m-0 p-0'>
-              <Input
-                type={'number'}
-                name={name}
-                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-                onChange={e => {
-                  const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
-                  setErrMsg(errCheck);
-                  optChange(msgName.join('.'), parseInt(e.target.value), arr);
-                }}
-                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
-              />
-            </div>
-            {err}
-          </div>
-        </div>
-      );
-    }
+      </div>
+    );
   }
 
+  if (type.toLowerCase() == 'number') {
+    return (
+      <div className='form-group'>
+        <div className='card'>
+          <div className='card-header p-2'>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
+          <div className='card-body m-0 p-0'>
+            <Input
+              type={'number'}
+              step='any'
+              name={name}
+              defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+              onChange={e => {
+                const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
+                setErrMsg(errCheck);
+                optChange(msgName.join('.'), parseInt(e.target.value), arr);
+              }}
+              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+            />
+          </div>
+          {err}
+        </div>
+      </div>
+    );
+  }
+
+  if (type.toLowerCase() == 'integer') {
+    return (
+      <div className='form-group'>
+        <div className='card'>
+          <div className='card-header p-2'>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
+          <div className='card-body m-0 p-0'>
+            <Input
+              type={'number'}
+              name={name}
+              defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+              onChange={e => {
+                const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
+                setErrMsg(errCheck);
+                optChange(msgName.join('.'), parseInt(e.target.value), arr);
+              }}
+              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+            />
+          </div>
+          {err}
+        </div>
+      </div>
+    );
+  }
+
+  //DEFAULT: STRING 
   return (
     <div className='form-group'>
       <div className='card'>
@@ -194,7 +202,6 @@ const BasicField = (props: BasicFieldProps) => {
       </div>
     </div>
   );
-
 }
 
 export default BasicField;
