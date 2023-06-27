@@ -40,7 +40,7 @@ const Field = (props: FieldProps) => {
   if (parent && parent.split(".")[parent.split(".").length - 1] == name) {
     return <BasicField {...args} />;
   }
-console.log(opts)
+
   //Link Check
   if (opts) {
     const foptData = (opts2obj(opts));
