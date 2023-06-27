@@ -14,12 +14,7 @@ const FormattedField = (props: any) => {
     const { basicProps, config, optData, errMsg, setErrMsg } = props;
     const { arr, def, optChange, parent } = basicProps;
     const [_idx, name, _type, _opts, comment] = def;
-    let msgName: any = parent ? [parent, name] : [name];
-    if (hasProperty(optData, 'key')) {
-        msgName = msgName[0];
-    } else {
-        msgName = msgName.join('.');
-    }
+    const msgName = (parent ? [parent, name] : [name]).join('.');
 
     const err = errMsg.map((msg, index) =>
         <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
@@ -302,9 +297,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
+                                    const encoded = Buffer.from(e.target.value, 'hex').toString('base64').toUpperCase();
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    optChange(msgName, e.target.value, arr);
+                                    optChange(msgName, encoded, arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -472,7 +468,7 @@ const FormattedField = (props: any) => {
                                 onChange={e => {
                                     //TODO : JSON string containing Base16 (hex) encoding of a binary value as defined in RFC 4648 Section 8. 
                                     //Note that the Base16 alphabet does not include lower-case letters.
-                                    const encoded = Buffer.from(e.target.value).toString('hex').toUpperCase();
+                                    const encoded = Buffer.from(e.target.value, 'hex').toString('base64').toUpperCase();
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName, encoded, arr);

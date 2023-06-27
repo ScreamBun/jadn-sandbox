@@ -32,18 +32,13 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   }
 
   const [_idx, name, type, _args, comment] = def;
-  let msgName: any = parent ? [parent, name] : [name];
+  const msgName = (parent ? [parent, name] : [name]).join('.');
   var optData: Record<string, any> = {};
 
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
-    if (hasProperty(optData, 'key')) {
-      msgName = msgName[0];
-    } else {
-      msgName = msgName.join('.');
-    }
   }
 
   let defOpts; //select dropdown options

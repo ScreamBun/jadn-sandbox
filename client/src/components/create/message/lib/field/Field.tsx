@@ -9,6 +9,7 @@ import {
 import { useAppSelector } from '../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
+import LinkField from './types/linkField';
 
 // Interfaces
 interface FieldProps {
@@ -39,12 +40,12 @@ const Field = (props: FieldProps) => {
   if (parent && parent.split(".")[parent.split(".").length - 1] == name) {
     return <BasicField {...args} />;
   }
-
+console.log(opts)
   //Link Check
   if (opts) {
     const foptData = (opts2obj(opts));
     if (hasProperty(foptData, 'link')) {
-      return <BasicField {...args} />;
+      return <LinkField {...args} />;
     }
   }
 

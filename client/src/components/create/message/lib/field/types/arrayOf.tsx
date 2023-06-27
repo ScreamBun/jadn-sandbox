@@ -37,7 +37,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   var optData: Record<string, any> = {};
   const [_idx, name, type, args, comment] = def;
-  let msgName: any = parent ? [parent, name] : [name];
+  const msgName = (parent ? [parent, name] : [name]).join('.');
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -161,11 +161,6 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       optData = (opts2obj(args));
     } else {
       optData = (opts2obj(typeDef[2]));
-    }
-    if (hasProperty(optData, 'key')) {
-      msgName = msgName[0];
-    } else {
-      msgName = msgName.join('.');
     }
     // MUST include vtype
     // MUST NOT include more than one collection option (set, unique, or unordered).

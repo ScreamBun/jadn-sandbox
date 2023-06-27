@@ -23,7 +23,7 @@ const ArrayField = (props: ArrayFieldProps) => {
 
   const { def, optChange, parent, config } = props;
   const [_idx, name, _type, _args, comment] = def;
-  let msgName: any = parent ? [parent, name] : [name];
+  const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState<string[]>([]); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
 
@@ -57,11 +57,6 @@ const ArrayField = (props: ArrayFieldProps) => {
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef) {
     optData = (opts2obj(typeDef[2]));
-    if (hasProperty(optData, 'key')) {
-      msgName = msgName[0];
-    } else {
-      msgName = msgName.join('.');
-    }
   }
 
   const err = errMsg.map((msg, index) =>

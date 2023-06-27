@@ -39,25 +39,13 @@ export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[
 	}
 
 	//check # of elements
-	if (hasProperty(optData, 'minv')) {
-		if (data.length < optData.minv) {
-			m.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
-		}
-	} else {
-		optData.minv = $MINV;
-		if (data.length < optData.minv) {
-			m.push('Minv Error: must include at least ' + optData.minv + ' element(s)');
-		}
+	var minv = optData.minv || $MINV;
+	var maxv = optData.maxv || config.$MaxElements;
+	if (data.length < minv) {
+		m.push('Minv Error: must include at least ' + minv + ' element(s)');
 	}
-	if (hasProperty(optData, 'maxv')) {
-		if (data.length > optData.maxv) {
-			m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
-		}
-	} else {
-		optData.maxv = config.$MaxElements;
-		if (data.length > optData.maxv) {
-			m.push('Maxv Error: must not include more than ' + optData.maxv + ' element(s)');
-		}
+	if (data.length > maxv) {
+		m.push('Maxv Error: must not include more than ' + maxv + ' element(s)');
 	}
 
 	return m;
@@ -66,25 +54,13 @@ export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[
 export const validateOptDataStr = (config: InfoConfig, optData: any, data: string) => {
 	let m = [];
 
-	if (hasProperty(optData, 'minv')) {
-		if (data.length < optData.minv) {
-			m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
-		}
-	} else {
-		optData.minv = $MINV;
-		if (data.length < optData.minv) {
-			m.push('Minv Error: must be greater than ' + optData.minv + ' characters');
-		}
+	var minv = optData.minv || $MINV;
+	var maxv = optData.maxv || config.$MaxString;
+	if (data.length < minv) {
+		m.push('Minv Error: must be greater than ' + minv + ' characters');
 	}
-	if (hasProperty(optData, 'maxv')) {
-		if (data.length > optData.maxv) {
-			m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
-		}
-	} else {
-		optData.maxv = config.$MaxString;
-		if (data.length > optData.maxv) {
-			m.push('Maxv Error: must be less than ' + optData.maxv + ' characters');
-		}
+	if (data.length > maxv) {
+		m.push('Maxv Error: must be less than ' + maxv + ' characters');
 	}
 
 	if (hasProperty(optData, 'pattern') && typeof data == 'string') {
@@ -114,33 +90,24 @@ export const validateOptDataNum = (optData: any, data: number) => {
 		}
 	}
 	//INTEGER
-	if (hasProperty(optData, 'minv')) {
-		if (data < optData.minv) {
-			m.push('Minv Error: must be greater than ' + optData.minv);
-		}
+	var minv = optData.minv || $MINV;
+	var maxv = optData.maxv;
+	if (minv && data < minv) {
+		m.push('Minv Error: must be greater than ' + minv);
+	}
+	if (maxv && data > maxv) {
+		m.push('Maxv Error: must be less than ' + maxv);
+	}
 
-	} else {
-		optData.minv = $MINV;
-		if (data < optData.minv) {
-			m.push('Minv Error: must be greater than ' + optData.minv);
-		}
-	}
-	if (hasProperty(optData, 'maxv')) {
-		if (data > optData.maxv) {
-			m.push('Maxv Error: must be less than ' + optData.maxv);
-		}
-	}
 	//NUMBER
 	//TODO: check for minf/maxf defaults
-	if (hasProperty(optData, 'minf')) {
-		if (data < optData.minf) {
-			m.push('Minf Error: must be greater than ' + optData.minf);
-		}
+	var minf = optData.minf;
+	var maxf = optData.maxf;
+	if (minf && data < minf) {
+		m.push('Minf Error: must be greater than ' + minf);
 	}
-	if (hasProperty(optData, 'maxf')) {
-		if (data > optData.maxf) {
-			m.push('Maxf Error: must be less than ' + optData.maxf);
-		}
+	if (maxf && data > maxf) {
+		m.push('Maxf Error: must be less than ' + maxf);
 	}
 
 	return m;
@@ -152,41 +119,33 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 	const binaryType = optData.format ?? 'binary';
 
 	let m: string[] = [];
-
-	if (data) {
+	let length: number = 0;
+	console.log(binaryType)
+	if (data && optData.format) {
 		const isFormatted = validateBinaryFormat(data, binaryType);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + binaryType + ' value');
 			return m;
 		}
+	} else {
+		if (!data.match(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)) {
+			m.push('Invalid Binary value');
+			return m;
+		}
+		// Get length of binary value where length is sequence of octets
+		const binArr = data.split('.');
+		length = binArr.length;
 	}
 
 	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
-	// TODO: Get number of bytes in data ----> GET LENGTH FROM ISFORMATTED
-	const encoded = Buffer.from(data).toString('base64');
-	const paddingCount = encoded.match(/=/g) != null ? encoded.match(/=/g).length : 0;
-	const length = (3 * (encoded.length / 4)) - (paddingCount);
-	//var minv = optData.minv || $MINV;
-	if (hasProperty(optData, 'minv')) {
-		if (length < optData.minv) {
-			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
-		}
+	var minv = optData.minv || $MINV;
+	var maxv = optData.maxv || config.$MaxBinary;
 
-	} else {
-		optData.minv = $MINV;
-		if (length < optData.minv) {
-			m.push('Minv Error: must be greater than ' + optData.minv + ' bytes');
-		}
+	if (length < minv) {
+		m.push('Minv Error: must be greater than ' + minv + ' bytes');
 	}
-	if (hasProperty(optData, 'maxv')) {
-		if (length > optData.maxv) {
-			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
-		}
-	} else {
-		optData.maxv = config.$MaxBinary;
-		if (length > optData.maxv) {
-			m.push('Maxv Error: must be less than ' + optData.maxv + ' bytes');
-		}
+	if (length > maxv) {
+		m.push('Maxv Error: must be less than ' + maxv + ' bytes');
 	}
 
 	return m;
@@ -195,25 +154,23 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 
 //FORMAT TYPE OPTION VALIDATION: given [type of value/format] and [data], validate
 //binary: eui, ipv4-addr, ipv6-addr
-//TODO : if valid, return binary length
+//TODO : if valid, return binary length of formatted data
 export const validateBinaryFormat = (data: string, type: string) => {
-	//data.match(/^[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}$/) //Base64url encoding (JSON serialized)
-	if (type == 'binary' && data.match(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)) {
-		return true;
-	}
 	if (type == 'x' && data.match(/(0x)?[0-9A-F]+/)) { //hex encoding
-		return true;
+		return Buffer.byteLength(data, 'hex');;
 	}
 	if (type == 'eui' && data.match(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$/)) { //MAC-addr
-		return true;
+		return Buffer.byteLength(data, 'hex');
 	}
 	if ((type == 'ipv4' || type == 'ipv4-addr') && data.match(
 		/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)) {
-		return true;
+		// Get length of binary value where length is sequence of octets
+		const binArr = data.split('.');
+		return binArr.length;
 	}
 	if ((type == 'ipv6' || type == 'ipv6-addr') && data.match(
 		/^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/)) {
-		return true;
+		return Buffer.byteLength(data, 'hex');
 	}
 	return false;
 }

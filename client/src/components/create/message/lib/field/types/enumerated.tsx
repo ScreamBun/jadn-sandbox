@@ -19,7 +19,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
 
   var optData: Record<string, any> = {};
   const [idx, name, type, opts, comment] = def;
-  let msgName: any = parent ? [parent, name] : [name];
+  const msgName = (parent ? [parent, name] : [name]).join('.');
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
 
@@ -27,12 +27,6 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
     optData = (opts2obj(typeDef[2]));
   } else {
     optData = (opts2obj(opts));
-  }
-
-  if (hasProperty(optData, 'key')) {
-    msgName = msgName[0];
-  } else {
-    msgName = msgName.join('.');
   }
 
   var defOpts: any[] = [];
