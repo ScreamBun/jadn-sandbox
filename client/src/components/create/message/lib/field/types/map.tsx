@@ -6,7 +6,6 @@ import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'components/utils';
 import { validateOptDataElem } from '../../utils';
-import { $FIELDS_LENGTH } from 'components/create/consts';
 
 // Interface
 interface MapFieldProps {
@@ -50,10 +49,9 @@ const MapField = (props: MapFieldProps) => {
     optData = (opts2obj(typeDef[2]));
   }
 
-  //Expected: fields (typeDef.length  == 5)
-  const fieldDef = typeDef.length == $FIELDS_LENGTH ?
-    typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} config={config} />)
-    : <div> No fields </div>;
+  const fieldDef = (!Array.isArray(typeDef[typeDef.length - 1]) || typeDef[typeDef.length - 1].length == 0) ?
+    <div> No fields </div> :
+    typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} config={config} />);
 
   const err = errMsg.map((msg, index) =>
     <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
