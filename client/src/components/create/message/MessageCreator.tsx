@@ -75,6 +75,7 @@ const MessageCreator = (props: any) => {
     }
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
+    // Note: Might need to fix if tagID in field
     if (commandType) {
         if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
             const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;

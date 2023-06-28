@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BasicField, EnumeratedField, ChoiceField, RecordField, MapField, ArrayOfField, ArrayField, MapOfField
+  BasicField, EnumeratedField, ChoiceField, RecordField, MapField, ArrayOfField, ArrayField, MapOfField, LinkField
 } from './types/Types';
 import {
   InfoConfig,
@@ -8,8 +8,7 @@ import {
 } from '../../../schema/interface';
 import { useAppSelector } from '../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { hasProperty } from 'react-json-editor/dist/utils';
-import LinkField from './types/linkField';
+import { hasProperty } from 'components/utils';
 
 // Interfaces
 interface FieldProps {

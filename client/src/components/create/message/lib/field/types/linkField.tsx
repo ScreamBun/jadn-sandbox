@@ -18,7 +18,7 @@ interface LinkFieldProps {
 const LinkField = (props: LinkFieldProps) => {
 
     const { def, optChange, parent, config } = props;
-    const [_idx, name, type, opts, _comment] = def;
+    const [_idx, name, type, opts, comment] = def;
 
     var optData: Record<string, any> = {};
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
@@ -33,7 +33,7 @@ const LinkField = (props: LinkFieldProps) => {
     if (Array.isArray(typeDef[typeDef.length - 1])) {
         for (let field of (typeDef[typeDef.length - 1])) {
             const [_fidx, _fname, _ftype, fopts, _fcomment] = field;
-            const newField = [_fidx, name, _ftype, fopts, _fcomment];
+            const newField = [_fidx, name, _ftype, opts, comment];
             const foptData = (opts2obj(fopts));
             if (hasProperty(foptData, 'key')) {
                 //create field based on key

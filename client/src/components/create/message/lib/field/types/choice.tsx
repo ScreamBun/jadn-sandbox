@@ -20,7 +20,6 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const [selected, setSelected] = useState('-1');
 
-
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     //const { optChange, def } = props;
     setSelected(e.target.value);

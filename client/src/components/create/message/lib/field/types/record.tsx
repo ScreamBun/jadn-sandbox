@@ -5,6 +5,8 @@ import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/i
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { validateOptDataElem } from '../../utils';
+import { hasProperty } from 'components/utils';
+import { TagIDField } from './Types';
 
 // Interface
 interface RecordFieldProps {
@@ -20,32 +22,20 @@ const RecordField = (props: RecordFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   var optData: Record<string, any> = {};
 
-  const [_idx, name, type, _args, comment] = def;
+  const [idx, name, type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-  const [data, setData] = useState<string[]>([]); //track elements
+  const [data, setData] = useState({}); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
 
-
   const onChange = (k: string, v: any) => {
-    if (!data.includes(k)) {
-      //add
-      const updatedData = [...data, k];
-      setData(updatedData);
-      const validMsg = validateOptDataElem(config, optData, updatedData);
-      setErrMsg(validMsg);
-    } else {
-      if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v) || !v) {
-        //remove
-        const updatedData = data.filter((elem) => {
-          return elem != k;
-        });
-        setData(updatedData);
-        const validMsg = validateOptDataElem(config, optData, updatedData);
-        setErrMsg(validMsg);
-      }//else value is updated
+    if (!v) {
+      v = '';
     }
-    //TODO?: filter - remove null values
-    optChange(k, v)
+    const updatedData = { ...data, [k]: v };
+    setData(updatedData);
+    const validMsg = validateOptDataElem(config, optData, Object.entries(updatedData));
+    setErrMsg(validMsg);
+    optChange(k, v);
   }
 
   const typeDefs = schema.types.filter(t => t[0] === type);
@@ -56,14 +46,59 @@ const RecordField = (props: RecordFieldProps) => {
 
   const fieldDef = (!Array.isArray(typeDef[typeDef.length - 1]) || typeDef[typeDef.length - 1].length == 0) ?
     <div> No fields </div> :
-    typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} />);
+    typeDef[typeDef.length - 1].map((d: any) => {
+      const [didx, dname, _dtype, dargs, dcomment] = d;
+      const fieldOptData = opts2obj(dargs);
+
+      //if field has tagID
+      if (hasProperty(fieldOptData, 'tagid')) {
+        const enumField = getTagField(fieldOptData.tagid);
+        if (enumField && Object.keys(data).includes(enumField)) {
+          //create choice field based on selected enum
+          const selected = data[enumField];
+          return (<TagIDField key={didx} def={d} parent={msgName} optChange={onChange} selectedEnum={selected} config={config} />);
+
+        } else {
+          //please select enum
+          return (
+            <div className='form-group' key={didx}>
+              <div className='card'>
+                <div className='card-header p-2'>
+                  <p className='card-title m-0'>{`${dname}${isOptional(d) ? '' : '*'}`}</p>
+                  {dcomment ? <small className='card-subtitle form-text text-muted'>{dcomment}</small> : ''}
+                  {err}
+                </div>
+
+                <div className='card-body mx-2'>
+                  <span className='text-muted'> {`Please select enum from ${enumField?.split('.')[enumField.split('.').length - 1]}`} </span>
+                </div>
+              </div>
+            </div>
+          );
+        }
+      } else {
+        //field with no tagID
+        return (<Field key={didx} def={d} parent={msgName} optChange={onChange} config={config} />);
+      }
+    });
+
+  function getTagField(fieldID: string) {
+    // get field name based on tagID
+    for (let field of typeDef[typeDef.length - 1]) {
+      const [fidx, fname, _ftype, _fargs, _fcomment] = field;
+      if (fidx.toString() == fieldID) {
+        return [msgName, fname].join('.');
+      }
+    }
+    return null;
+  }
 
   const err = errMsg.map((msg, index) =>
     <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
   );
 
   return (
-    <div className='form-group'>
+    <div className='form-group' key={idx}>
       <div className='card'>
         <div className='card-header p-2'>
           <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
