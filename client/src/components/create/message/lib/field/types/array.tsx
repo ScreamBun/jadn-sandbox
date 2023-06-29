@@ -4,9 +4,10 @@ import { isOptional } from '../../GenMsgLib';
 import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { validateOptDataElem } from '../../utils';
+import { getTagField, validateOptDataElem } from '../../utils';
 import FormattedField from './formattedField';
 import { hasProperty } from 'components/utils';
+import { TagIDField } from './Types';
 
 // Interface
 interface ArrayFieldProps {
@@ -24,32 +25,19 @@ const ArrayField = (props: ArrayFieldProps) => {
   const { def, optChange, parent, config } = props;
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-  const [data, setData] = useState<string[]>([]); //track elements
+  const [data, setData] = useState({}); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
 
-
   const onChange = (_k: string, v: any, i: number) => {
-    var updatedArr;
-    if (data.length - 1 < i) {
-      //add 
-      setData([...data, v]);
-      updatedArr = [...data, v];
-
-    } else {
-      //update arr at index
-      updatedArr = data.map((field, idx) => {
-        if (idx === i) {
-          return v;
-        } else {
-          return field;
-        }
-      });
-      setData(updatedArr);
+    if (!v) {
+      v = null;
     }
-    //remove empty fields?
+    const updatedData = { ...data, [i + 1]: v };
+    setData(updatedData);
+    const updatedArr = Object.values(updatedData);
+
     const errCheck = validateOptDataElem(config, optData, updatedArr, optData.format ? true : false);
     setErrMsg(errCheck);
-
     optChange(msgName, updatedArr);
   }
 
@@ -70,12 +58,54 @@ const ArrayField = (props: ArrayFieldProps) => {
     />);
   }
 
-  //Expected: fields (typeDef.length  == 5)
-  const fieldDef = typeDef[typeDef.length - 1].map((d: any, i: number) =>
-    <div className="col my-1 px-0">
-      <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config} />
-    </div>
-  )
+  const fieldDef = (!Array.isArray(typeDef[typeDef.length - 1]) || typeDef[typeDef.length - 1].length == 0) ?
+    <div> No fields </div> :
+    typeDef[typeDef.length - 1].map((d: any, i: number) => {
+      const [didx, dname, _dtype, dargs, dcomment] = d;
+      const fieldOptData = opts2obj(dargs);
+
+      //if field has tagID
+      if (hasProperty(fieldOptData, 'tagid')) {
+        const enumField = getTagField(typeDef, msgName, fieldOptData.tagid.toString());
+        const enumFieldIndex = fieldOptData.tagid.toString();
+        if (enumFieldIndex && Object.keys(data).includes(enumFieldIndex)) {
+          //create choice field based on selected enum
+          const selected = data[enumFieldIndex];
+          return (
+            <div className="col my-1 px-0">
+              <TagIDField key={didx} def={d} parent={msgName} optChange={onChange} idx={i} selectedEnum={selected} config={config} />
+            </div>
+          );
+
+        } else {
+          //please select enum
+          return (
+            <div className="col my-1 px-0">
+              <div className='form-group' key={didx}>
+                <div className='card'>
+                  <div className='card-header p-2'>
+                    <p className='card-title m-0'>{`${dname}${isOptional(d) ? '' : '*'}`}</p>
+                    {dcomment ? <small className='card-subtitle form-text text-muted'>{dcomment}</small> : ''}
+                    {err}
+                  </div>
+
+                  <div className='card-body mx-2'>
+                    <span className='text-muted'> {`Please select enum from ${enumField?.split('.')[enumField.split('.').length - 1]}`} </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+      } else {
+        //field with no tagID
+        return (
+          <div className="col my-1 px-0">
+            <Field key={didx} def={d} parent={msgName} optChange={onChange} idx={i} config={config} />
+          </div>
+        );
+      }
+    });
 
   return (
     <div className='form-group'>

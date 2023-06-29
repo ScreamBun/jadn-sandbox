@@ -17,6 +17,17 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 	}
 };
 
+// get field name based on tagID
+export const getTagField = (typeDef: any[], msgName: string, fieldID: string) => {
+	for (let field of typeDef[typeDef.length - 1]) {
+		const [fidx, fname, _ftype, _fargs, _fcomment] = field;
+		if (fidx.toString() == fieldID) {
+			return [msgName, fname].join('.');
+		}
+	}
+	return null;
+}
+
 // TYPE OPTION VALIDATION
 // optData validation for Array, ArrayOf, Map, MapOf, or Record
 export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[], formatCheck: boolean = false) => {

@@ -4,7 +4,7 @@ import { isOptional } from '../../GenMsgLib';
 import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { validateOptDataElem } from '../../utils';
+import { getTagField, validateOptDataElem } from '../../utils';
 import { hasProperty } from 'components/utils';
 import { TagIDField } from './Types';
 
@@ -52,7 +52,7 @@ const RecordField = (props: RecordFieldProps) => {
 
       //if field has tagID
       if (hasProperty(fieldOptData, 'tagid')) {
-        const enumField = getTagField(fieldOptData.tagid);
+        const enumField = getTagField(typeDef, msgName, fieldOptData.tagid.toString());
         if (enumField && Object.keys(data).includes(enumField)) {
           //create choice field based on selected enum
           const selected = data[enumField];
@@ -81,17 +81,6 @@ const RecordField = (props: RecordFieldProps) => {
         return (<Field key={didx} def={d} parent={msgName} optChange={onChange} config={config} />);
       }
     });
-
-  function getTagField(fieldID: string) {
-    // get field name based on tagID
-    for (let field of typeDef[typeDef.length - 1]) {
-      const [fidx, fname, _ftype, _fargs, _fcomment] = field;
-      if (fidx.toString() == fieldID) {
-        return [msgName, fname].join('.');
-      }
-    }
-    return null;
-  }
 
   const err = errMsg.map((msg, index) =>
     <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
