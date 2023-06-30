@@ -9,6 +9,11 @@ export const $NSID = '^[A-Za-z][A-Za-z0-9]{0,7}$' // String{1..127} optional    
 //For Binary, String, Array, ArrayOf, Map, MapOf, and Record types: if minv is not present, it defaults to zero.
 export const $MINV = 0;
 
+export const EXPORT = 'Schema' // Default Export Type Name
+export const EXPORT_TYPE = 'Record' // Default Export Type 
+export const PACKAGE = 'http://oasis-open.org/jadn/v1.0/schema' // Default Package
+export const TITLE = 'JADN Metaschema' // Default Title
+
 /* Unimplemented defaults:
 if minc is not present, it defaults to 1.
 if maxc is not present, it defaults to the greater of 1 or minc.
