@@ -9,6 +9,7 @@ import { sbToastInfo } from 'components/common/SBToast';
 
 // Interfaces
 interface ConfigObjectEditorProps {
+  id: string;
   name: string;
   placeholder?: string;
   description?: string;

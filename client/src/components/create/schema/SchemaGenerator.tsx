@@ -5,6 +5,7 @@ import { Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { info } from 'actions/util'
 import SchemaCreator from './SchemaCreator'
+import { EXPORT, EXPORT_TYPE, PACKAGE, TITLE } from '../consts';
 
 
 const SchemaGenerator = () => {
@@ -13,7 +14,14 @@ const SchemaGenerator = () => {
     const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
     const [generatedSchema, setGeneratedSchema] = useState(
         {
-            types: []
+            info: {
+                title: TITLE,
+                package : PACKAGE,
+                exports : [EXPORT]
+            },
+            types: [
+                [EXPORT, EXPORT_TYPE, [], ""]                
+            ]
         });
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Creation'
@@ -26,7 +34,14 @@ const SchemaGenerator = () => {
         e.preventDefault();
         setSelectedSchemaFile('');
         setGeneratedSchema({
-            types: []
+            info: {
+                title: TITLE,
+                package : PACKAGE,
+                exports : [EXPORT]
+            },
+            types: [
+                [EXPORT, EXPORT_TYPE, [], ""]                
+            ]
         });
     }
 

@@ -9,7 +9,7 @@ export const $NSID = '^[A-Za-z][A-Za-z0-9]{0,7}$' // String{1..127} optional    
 //For Binary, String, Array, ArrayOf, Map, MapOf, and Record types: if minv is not present, it defaults to zero.
 export const $MINV = 0;
 
-/* 
+/* Unimplemented defaults:
 if minc is not present, it defaults to 1.
 if maxc is not present, it defaults to the greater of 1 or minc.
 if maxc is 0, it defaults to the MaxElements

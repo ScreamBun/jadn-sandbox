@@ -7,6 +7,7 @@ import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-so
 
 // Interface
 interface KeyArrayEditorProps {
+  id: string;
   name: string;
   description: string;
   placeholder?: string;

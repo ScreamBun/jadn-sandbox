@@ -8,6 +8,7 @@ import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 
 // Interface
 interface KeyValueEditorProps {
+  id: string;
   name: string;
   description?: string;
   placeholder?: string;
