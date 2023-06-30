@@ -234,7 +234,7 @@ const SchemaCreator = (props: any) => {
         } else if (data.types) {
             const tmpTypes = [...generatedSchema.types] || [];
             const tmpDef = Types[data.types].edit();
-            tmpTypes.unshift(tmpDef);
+            tmpTypes.push(tmpDef);  // unshift drops items at the bottom
             setGeneratedSchema(generatedSchema => ({
                 ...generatedSchema,
                 types: tmpTypes
