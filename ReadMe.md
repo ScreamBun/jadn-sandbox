@@ -11,19 +11,25 @@ The JADN Sandbox provides the ability to create, convert, translate, transform, 
 ## Quick Startup
 
 1. Install docker [Docker](https://docs.docker.com/get-docker/)
-2. Run the docker image
+2. Pull the latest JADN Sandbox Docker Image (Note: this is needed each time to ensure you are using the very latest version of the JADN Sandbox)
+
+```bash
+docker pull screambunn/jadn_sandbox
+```
+
+3. Run the docker image
 
   ```bash
   docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
   ```
 
-3. Enter the url below in your browser
+4. Enter the url below in your browser
 
 ```bash
 http://localhost:8082/
 ```  
 
-4. To stop your image, just hit `ctrl+c` in your terminal or via your docker software
+5. To stop your image, just hit `ctrl+c` in your terminal or via your docker software
 
 ## Development Startup
 
