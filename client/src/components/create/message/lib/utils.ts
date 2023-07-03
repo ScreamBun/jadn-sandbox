@@ -120,13 +120,13 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 
 	let m: string[] = [];
 	let length: number = 0;
-	console.log(binaryType)
 	if (data && optData.format) {
 		const isFormatted = validateBinaryFormat(data, binaryType);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + binaryType + ' value');
 			return m;
 		}
+		length = isFormatted;
 	} else {
 		if (!data.match(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)) {
 			m.push('Invalid Binary value');
