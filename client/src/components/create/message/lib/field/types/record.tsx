@@ -20,7 +20,7 @@ const RecordField = (props: RecordFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   var optData: Record<string, any> = {};
 
-  const [_idx, name, type, _args, comment] = def;
+  const [_idx, name, type, args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState<string[]>([]); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
@@ -50,7 +50,10 @@ const RecordField = (props: RecordFieldProps) => {
 
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-  if (typeDef) {
+  if (typeDef.length == 0) {
+    optData = (opts2obj(args));
+
+  } else {
     optData = (opts2obj(typeDef[2]));
   }
 
