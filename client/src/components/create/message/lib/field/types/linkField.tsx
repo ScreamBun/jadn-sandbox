@@ -18,14 +18,14 @@ interface LinkFieldProps {
 const LinkField = (props: LinkFieldProps) => {
 
     const { def, optChange, parent, config } = props;
-    const [_idx, name, type, opts, _comment] = def;
+    const [_idx, name, type, _opts, _comment] = def;
 
     var optData: Record<string, any> = {};
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
     const typeDefs = schema.types.filter(t => t[0] === type);
-    let typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
-    if (typeDef) {
-        optData = (opts2obj(opts));
+    const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+    if (typeDef.length != 0) {
+        optData = (opts2obj(typeDef[2]));
     }
 
     //find key

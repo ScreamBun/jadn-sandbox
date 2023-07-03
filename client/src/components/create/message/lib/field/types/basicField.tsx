@@ -25,19 +25,15 @@ interface BasicFieldProps {
 const BasicField = (props: BasicFieldProps) => {
 
   const { arr, def, optChange, parent, config } = props;
-  const [_idx, name, type, opts, comment] = def;
+  const [_idx, name, type, _opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
   var optData: Record<string, any> = {};
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const typeDefs = schema.types.filter(t => t[0] === type);
-  let typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
-  if (typeDef) {
-    if (typeDefs.length === 1) {
-      optData = (opts2obj(typeDef[2]));
-    } else {
-      optData = (opts2obj(opts));
-    }
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  if (typeDef.length != 0) {
+    optData = (opts2obj(typeDef[2]));
   }
 
   const [errMsg, setErrMsg] = useState<string[]>([]);

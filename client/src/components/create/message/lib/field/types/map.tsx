@@ -44,8 +44,7 @@ const MapField = (props: MapFieldProps) => {
 
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-
-  if (typeDef) {
+  if (typeDef.length != 0) {
     optData = (opts2obj(typeDef[2]));
   }
 

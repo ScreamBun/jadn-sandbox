@@ -50,10 +50,7 @@ const RecordField = (props: RecordFieldProps) => {
 
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-  if (typeDef.length == 0) {
-    optData = (opts2obj(args));
-
-  } else {
+  if (typeDef.length != 0) {
     optData = (opts2obj(typeDef[2]));
   }
 
