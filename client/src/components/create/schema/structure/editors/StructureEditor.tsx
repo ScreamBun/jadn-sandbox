@@ -114,6 +114,7 @@ const StructureEditor = (props: StructureEditorProps) => {
     if (typeof val[0] != 'number') {
       val[0] = parseInt(val[0]); //force index to type number
     }
+    
     const tmpFieldValues = [...valueObj.fields];
     tmpFieldValues[idx] = val;
 

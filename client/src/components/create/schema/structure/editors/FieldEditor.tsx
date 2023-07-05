@@ -68,7 +68,12 @@ const FieldEditor = (props: FieldEditorProps) => {
   const onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     const key = name.toLowerCase();
-    const updatevalue = { ...valueObj, [key]: value }
+    var updatevalue;
+    if (name == 'Type') {
+      updatevalue = { ...valueObj, options: [], [key]: value };
+    } else {
+      updatevalue = { ...valueObj, [key]: value };
+    }
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
