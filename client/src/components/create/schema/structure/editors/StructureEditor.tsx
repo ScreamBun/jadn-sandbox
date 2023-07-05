@@ -114,7 +114,7 @@ const StructureEditor = (props: StructureEditorProps) => {
     if (typeof val[0] != 'number') {
       val[0] = parseInt(val[0]); //force index to type number
     }
-    
+
     const tmpFieldValues = [...valueObj.fields];
     tmpFieldValues[idx] = val;
 
@@ -225,27 +225,30 @@ const StructureEditor = (props: StructureEditorProps) => {
 
       <div className="row m-0">
         <FormGroup className="col-md-4">
-          <Label>Name</Label>
-          <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+          <Label>Name
+            <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+          </Label>
         </FormGroup>
 
         <FormGroup className="col-md-2">
-          <Label>&nbsp;</Label>
-          <InputGroup>
-            <Button outline color="info" onClick={toggleModal}>Type Options</Button>
-            <OptionsModal
-              optionValues={valueObj.options}
-              isOpen={modal}
-              optionType={valueObj.type}
-              toggleModal={toggleModal}
-              saveModal={saveModal}
-            />
-          </InputGroup>
+          <Label>&nbsp;
+            <InputGroup>
+              <Button outline color="info" onClick={toggleModal}>Type Options</Button>
+              <OptionsModal
+                optionValues={valueObj.options}
+                isOpen={modal}
+                optionType={valueObj.type}
+                toggleModal={toggleModal}
+                saveModal={saveModal}
+              />
+            </InputGroup>
+          </Label>
         </FormGroup>
 
         <FormGroup className="col-md-6">
-          <Label>Comment</Label>
-          <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} />
+          <Label>Comment
+            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} />
+          </Label>
         </FormGroup>
 
         <FormGroup tag="fieldset" className="col-12 border">
