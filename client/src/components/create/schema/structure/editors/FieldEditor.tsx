@@ -70,6 +70,7 @@ const FieldEditor = (props: FieldEditorProps) => {
     const key = name.toLowerCase();
     var updatevalue;
     if (name == 'Type') {
+      //clear type options 
       updatevalue = { ...valueObj, options: [], [key]: value };
     } else {
       updatevalue = { ...valueObj, [key]: value };
@@ -122,7 +123,7 @@ const FieldEditor = (props: FieldEditorProps) => {
 
         <FormGroup className="col-md-4 d-inline-block">
           <Label>Type</Label>
-          <select id="Type" name="Type" className="form-control form-control-sm" value={v} onChange={onSelectChange}>
+          <select name="Type" className="form-control form-control-sm" value={v} onChange={onSelectChange}>
             {options}
           </select>
         </FormGroup>
