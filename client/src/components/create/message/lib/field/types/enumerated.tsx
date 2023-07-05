@@ -18,12 +18,14 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   var optData: Record<string, any> = {};
-  const [idx, name, type, _opts, comment] = def;
+  const [idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const typeDefs = schema.types.filter(t => t[0] === type);
-  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-  if (typeDef.length != 0) {
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
+  if (typeDefs.length === 1) {
     optData = (opts2obj(typeDef[2]));
+  } else {
+    optData = (opts2obj(opts));
   }
 
   var defOpts: any[] = [];
