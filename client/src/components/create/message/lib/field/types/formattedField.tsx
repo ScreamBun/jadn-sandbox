@@ -40,7 +40,7 @@ const FormattedField = (props: any) => {
             }
         });
         setIpValue(newArr);
-        const encoded = Buffer.from(newArr[0]).toString('base64');
+        const encoded = Buffer.from(newArr[0], "utf8").toString('base64');
         const newValue = `${encoded}${newArr[1] ? `/${newArr[1]}` : ``}`;
 
         const errCheck = validateOptDataElem(config, optData, newArr, optData.format ? true : false);
@@ -170,7 +170,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const encoded = Buffer.from(e.target.value).toString('base64');
+                                    const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName, encoded, arr);
@@ -234,7 +234,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const encoded = Buffer.from(e.target.value).toString('base64');
+                                    const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName, encoded, arr);
@@ -297,7 +297,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                                 onChange={e => {
-                                    const encoded = Buffer.from(e.target.value, 'hex').toString('base64').toUpperCase();
+                                    const encoded = Buffer.from(e.target.value, "utf8").toString('base64').toUpperCase();
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName, encoded, arr);
@@ -468,7 +468,7 @@ const FormattedField = (props: any) => {
                                 onChange={e => {
                                     //TODO : JSON string containing Base16 (hex) encoding of a binary value as defined in RFC 4648 Section 8. 
                                     //Note that the Base16 alphabet does not include lower-case letters.
-                                    const encoded = Buffer.from(e.target.value, 'hex').toString('base64').toUpperCase();
+                                    const encoded = Buffer.from(e.target.value, "utf8").toString('base64').toUpperCase();
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName, encoded, arr);
