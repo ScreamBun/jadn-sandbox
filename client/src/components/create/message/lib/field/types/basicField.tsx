@@ -25,19 +25,15 @@ interface BasicFieldProps {
 const BasicField = (props: BasicFieldProps) => {
 
   const { arr, def, optChange, parent, config } = props;
-  const [_idx, name, type, opts, comment] = def;
+  const [_idx, name, type, _opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
   var optData: Record<string, any> = {};
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const typeDefs = schema.types.filter(t => t[0] === type);
-  let typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
-  if (typeDef) {
-    if (typeDefs.length === 1) {
-      optData = (opts2obj(typeDef[2]));
-    } else {
-      optData = (opts2obj(opts));
-    }
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  if (typeDef.length != 0) {
+    optData = (opts2obj(typeDef[2]));
   }
 
   const [errMsg, setErrMsg] = useState<string[]>([]);
@@ -57,109 +53,111 @@ const BasicField = (props: BasicFieldProps) => {
     />);
   }
 
-  if (type.toLowerCase() == 'boolean') {
-    return (
-      <div className='form-group m-3'>
-        <Label check>
-          <Input
-            type={'checkbox'}
-            name={name}
-            defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-            onChange={e => {
-              optChange(msgName, e.target.checked, arr);
-            }}
-            style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
-          />
-          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-        </Label>
-        {err}
-      </div>
-    );
-  }
-
-  if (type.toLowerCase() == 'binary') {
-    return (
-      <div className='form-group'>
-        <div className='card'>
-          <div className='card-header p-2'>
-            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          </div>
-          <div className='card-body m-0 p-0'>
+  if (type) {
+    if (type.toLowerCase() == 'boolean') {
+      return (
+        <div className='form-group m-3'>
+          <Label check>
             <Input
-              type={'text'}
+              type={'checkbox'}
               name={name}
               defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
               onChange={e => {
-                //encode into base64 for valid JSON
-                const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
-                const errCheck = validateOptDataBinary(config, optData, encoded);
-                setErrMsg(errCheck);
-                optChange(msgName, encoded, arr);
+                optChange(msgName, e.target.checked, arr);
               }}
               style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
             />
-          </div>
-          {err}
-        </div>
-      </div>
-    );
-  }
-
-  if (type.toLowerCase() == 'number') {
-    return (
-      <div className='form-group'>
-        <div className='card'>
-          <div className='card-header p-2'>
             <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
             {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          </div>
-          <div className='card-body m-0 p-0'>
-            <Input
-              type={'number'}
-              step='any'
-              name={name}
-              defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-              onChange={e => {
-                const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
-                setErrMsg(errCheck);
-                optChange(msgName, parseInt(e.target.value), arr);
-              }}
-              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
-            />
-          </div>
+          </Label>
           {err}
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  if (type.toLowerCase() == 'integer') {
-    return (
-      <div className='form-group'>
-        <div className='card'>
-          <div className='card-header p-2'>
-            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+    if (type.toLowerCase() == 'binary') {
+      return (
+        <div className='form-group'>
+          <div className='card'>
+            <div className='card-header p-2'>
+              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+            </div>
+            <div className='card-body m-0 p-0'>
+              <Input
+                type={'text'}
+                name={name}
+                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                onChange={e => {
+                  //encode into base64 for valid JSON
+                  const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
+                  const errCheck = validateOptDataBinary(config, optData, encoded);
+                  setErrMsg(errCheck);
+                  optChange(msgName, encoded, arr);
+                }}
+                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+              />
+            </div>
+            {err}
           </div>
-          <div className='card-body m-0 p-0'>
-            <Input
-              type={'number'}
-              name={name}
-              defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-              onChange={e => {
-                const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
-                setErrMsg(errCheck);
-                optChange(msgName, parseInt(e.target.value), arr);
-              }}
-              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
-            />
-          </div>
-          {err}
         </div>
-      </div>
-    );
+      );
+    }
+
+    if (type.toLowerCase() == 'number') {
+      return (
+        <div className='form-group'>
+          <div className='card'>
+            <div className='card-header p-2'>
+              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+            </div>
+            <div className='card-body m-0 p-0'>
+              <Input
+                type={'number'}
+                step='any'
+                name={name}
+                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                onChange={e => {
+                  const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
+                  setErrMsg(errCheck);
+                  optChange(msgName, parseInt(e.target.value), arr);
+                }}
+                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+              />
+            </div>
+            {err}
+          </div>
+        </div>
+      );
+    }
+
+    if (type.toLowerCase() == 'integer') {
+      return (
+        <div className='form-group'>
+          <div className='card'>
+            <div className='card-header p-2'>
+              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+            </div>
+            <div className='card-body m-0 p-0'>
+              <Input
+                type={'number'}
+                name={name}
+                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                onChange={e => {
+                  const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
+                  setErrMsg(errCheck);
+                  optChange(msgName, parseInt(e.target.value), arr);
+                }}
+                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+              />
+            </div>
+            {err}
+          </div>
+        </div>
+      );
+    }
   }
 
   //DEFAULT: STRING 
