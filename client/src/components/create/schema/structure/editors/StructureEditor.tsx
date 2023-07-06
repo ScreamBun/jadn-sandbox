@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
@@ -30,6 +30,7 @@ interface StructureEditorProps {
 const StructureEditor = (props: StructureEditorProps) => {
   const { value, change, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
+  const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
   const [modal, setModal] = useState(false);
@@ -93,6 +94,7 @@ const StructureEditor = (props: StructureEditorProps) => {
     }
     const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
     change(updatevalue, dataIndex);
+    scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
     fieldCount = fieldCount + 1;
   }
 
@@ -274,7 +276,9 @@ const StructureEditor = (props: StructureEditorProps) => {
             </ButtonGroup>
           </legend>
 
-          {!fieldCollapse && fields}
+          <div ref={scrollToFieldRef}>
+            {!fieldCollapse && fields}
+          </div>
 
           {fieldCollapse && fields.length > 0 ? <p>Expand to view/edit fields</p> :
             !fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}

@@ -241,7 +241,7 @@ const SchemaCreator = (props: any) => {
                 ...generatedSchema,
                 types: tmpTypes
             }));
-            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
+            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
