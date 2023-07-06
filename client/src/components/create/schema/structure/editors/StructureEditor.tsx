@@ -116,6 +116,11 @@ const StructureEditor = (props: StructureEditorProps) => {
     const tmpFieldValues = [...valueObj.fields];
     tmpFieldValues[idx] = val;
 
+    //sort fields
+    tmpFieldValues.sort(function (a, b) {
+      return a[0] - b[0];
+    });
+
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
     change(updatevalue, dataIndex)
   };
