@@ -103,12 +103,10 @@ const StructureEditor = (props: StructureEditorProps) => {
       return;
     }
 
-    for (let i = 0; i < fields.length; i++) {
-      var name = fields[i].props.value[1];
-      if (name == val[1] && i != idx) {
-        sbToastError('Error: FieldName must be unique');
-        return;
-      }
+    const filterName = fields.filter(field => field.props.value[1] == val[1]);
+    if (filterName.length > 1) {
+      sbToastError('Error: FieldName must be unique');
+      return;
     }
 
     if (typeof val[0] != 'number') {
@@ -148,7 +146,6 @@ const StructureEditor = (props: StructureEditorProps) => {
   const toggleModal = () => {
     setModal(modal => !modal);
   }
-
 
   //If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
   if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
@@ -209,6 +206,10 @@ const StructureEditor = (props: StructureEditorProps) => {
       />);
     }
   }
+  //sort fields
+  fields.sort(function (a, b) {
+    return a.key - b.key;
+  });
   const listID = fields.map(field => field.key);
 
   return (
