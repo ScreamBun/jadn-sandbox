@@ -31,7 +31,7 @@ const SchemaCreator = (props: any) => {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
-    const [data, setData] = useState('');
+    const [data, setData] = useState(''); //generatedSchema JSON
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
@@ -324,6 +324,30 @@ const SchemaCreator = (props: any) => {
                     }));
 
                 }
+            },
+            changeIndex: (val, dataIndex: number, idx: number) => {
+                setIsValidJADN(false);
+
+                if (idx < 0) {
+                    sbToastError('Error: Cannot move Type up anymore')
+                    return;
+                } else if (idx >= generatedSchema.types.length) {
+                    sbToastError('Error: Cannot move Type down anymore')
+                    return;
+                }
+
+                let tmpTypes = [...generatedSchema.types];
+                tmpTypes.splice(dataIndex, 1)
+                tmpTypes = [
+                    ...tmpTypes.slice(0, idx),
+                    Types[val.type.toLowerCase()].edit(val),
+                    ...tmpTypes.slice(idx)
+                ];
+
+                setGeneratedSchema(generatedSchema => ({
+                    ...generatedSchema,
+                    types: tmpTypes
+                }))
             },
             config: configOpt
         });

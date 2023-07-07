@@ -4,7 +4,7 @@ import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options/OptionsModal';
@@ -18,12 +18,13 @@ interface PrimitiveEditorProps {
   value: Array<any>;
   change: (v: any, i: number) => void;
   remove: (i: number) => void;
+  changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
   config: InfoConfig;
 }
 
 // Primitive Editor
 const PrimitiveEditor = (props: PrimitiveEditorProps) => {
-  const { value, change, dataIndex, config } = props;
+  const { value, change, changeIndex, dataIndex, config } = props;
   let valueObj: StandardFieldObject | PrimitiveTypeObject;
   if (Number.isInteger(value[0])) {
     valueObj = zip(StandardFieldKeys, value) as StandardFieldObject;
@@ -75,6 +76,14 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
       <ButtonGroup size="sm" className="float-right">
         <Button color="danger" onClick={removeAll} >
           <FontAwesomeIcon icon={faMinusCircle} />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup size="sm" className="float-right mr-1">
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)} >
+          <FontAwesomeIcon icon={faSquareCaretUp} />
+        </Button>
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
+          <FontAwesomeIcon icon={faSquareCaretDown} />
         </Button>
       </ButtonGroup>
 

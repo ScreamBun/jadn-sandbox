@@ -4,7 +4,7 @@ import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faPlusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faPlusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options/OptionsModal';
@@ -23,12 +23,13 @@ interface StructureEditorProps {
   value: TypeArray;
   change: (v: PrimitiveTypeObject, i: number) => void;
   remove: (i: number) => void;
+  changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
   config: InfoConfig;
 }
 
 // Structure Editor
 const StructureEditor = (props: StructureEditorProps) => {
-  const { value, change, dataIndex, config } = props;
+  const { value, change, changeIndex, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
   const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -224,6 +225,14 @@ const StructureEditor = (props: StructureEditorProps) => {
       <ButtonGroup size="sm" className="float-right">
         <Button color="danger" onClick={removeAll} >
           <FontAwesomeIcon icon={faMinusCircle} />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup size="sm" className="float-right mr-1">
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)} >
+          <FontAwesomeIcon icon={faSquareCaretUp} />
+        </Button>
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
+          <FontAwesomeIcon icon={faSquareCaretDown} />
         </Button>
       </ButtonGroup>
 
