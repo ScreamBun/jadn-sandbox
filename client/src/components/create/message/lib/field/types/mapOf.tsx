@@ -136,16 +136,12 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
-    const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
-
-    if (typeDef) {
-        if (typeDefs.length === 1) {
-            optData = (opts2obj(typeDef[2]));
-        } else {
-            optData = (opts2obj(args));
-        }
-        // MUST include ktype and vtype options.
+    const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+    if (typeDef.length != 0) {
+        optData = (opts2obj(typeDef[2]));
     }
+    // MUST include ktype and vtype options.
+
 
     // if ktype is enum/pointer = derived enum else ktype
     var keyDef; //keyDef == defined or based type

@@ -155,16 +155,12 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-
-  if (typeDef) {
-    if (type.toLowerCase() == 'arrayof') {
-      optData = (opts2obj(args));
-    } else {
-      optData = (opts2obj(typeDef[2]));
-    }
-    // MUST include vtype
-    // MUST NOT include more than one collection option (set, unique, or unordered).
+  if (typeDef.length != 0) {
+    optData = (opts2obj(typeDef[2]));
   }
+  // MUST include vtype
+  // MUST NOT include more than one collection option (set, unique, or unordered).
+
 
   // if vtype is enum/pointer = derived enum
   var fieldDef;

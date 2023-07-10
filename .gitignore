@@ -241,3 +241,4 @@ yarn.lock
 .vscode
 .vscode/
 client/.yarn/install-state.gz
+test.json
