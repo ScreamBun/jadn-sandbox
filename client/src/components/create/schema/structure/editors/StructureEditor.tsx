@@ -289,8 +289,8 @@ const StructureEditor = (props: StructureEditorProps) => {
             {!fieldCollapse && fields}
           </div>
 
-          {fieldCollapse && fields.length > 0 ? <p>Expand to view/edit fields</p> :
-            !fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
+          {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
+
         </FormGroup>
       </div>
     </div>
