@@ -211,6 +211,7 @@ const SchemaCreator = (props: any) => {
     ));
 
     const onDrop = (data: any) => {
+        document.getElementById('schema-editor').style.backgroundColor = '';
         if (data.info) {
             if (!(data.info in (generatedSchema.info || {}))) {
                 if (data.info == 'config') {
@@ -437,6 +438,12 @@ const SchemaCreator = (props: any) => {
                                     <Droppable
                                         types={['info', 'types']} // <= allowed drop types
                                         onDrop={onDrop}
+                                        onDragOver={() => {
+                                            document.getElementById('schema-editor').style.backgroundColor = 'rgba(0,0,0,.5)';
+                                        }}
+                                        onDragLeave={() => {
+                                            document.getElementById('schema-editor').style.backgroundColor = '';
+                                        }}
                                         className='col-12 mt-1'
                                         style={{
                                             minHeight: '20em',
