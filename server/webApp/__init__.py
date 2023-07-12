@@ -11,9 +11,11 @@ app.config.from_object(DevConfig)
 CORS(app)
 app.url_map.strict_slashes = False
 
-print("Starting OpenC2 Flask Server")
+print("Starting JADN Sandbox...")
 app.validator = Validator()
 app.formatOptionLogic = FormatOptionLogic()
 
 from .views import *  # pylint: disable=wrong-import-position
 register_all(app)
+
+print("JADN Sandbox ready for work!")
