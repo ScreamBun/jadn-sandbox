@@ -178,11 +178,13 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   } else {
     const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-    const arrDef = arrDefs.length === 1 ? arrDefs[0] : def;
+    const arrDef = arrDefs.length === 1 ? arrDefs[0] : optData.vtype;
 
-    //no fields in def
+    //vtype is defined
+    //vtype is primitive or vtype is not found (create string field)
+    // TODO? : definition not found = unresolved schema (validate JADN should have failed)
     fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
-      : [0, name, 'String', [], ''];
+      : [0, arrDef.toLowerCase(), arrDef, [], ''];
   }
 
   const fields: any[] = [];
