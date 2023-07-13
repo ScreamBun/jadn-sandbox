@@ -33,7 +33,6 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [opts, setOpts] = useState<any[]>([]); //opts: let every obj have a key and value [{key: '', value:''}, ...]
     const [errMsg, setErrMsg] = useState<string[]>([]);
 
-
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
     const msgName = (parent ? [parent, name] : [name]).join('.');
@@ -136,9 +135,11 @@ const MapOfField = (props: MapOfFieldProps) => {
     }
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
-    const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-    if (typeDef.length != 0) {
+    const typeDef = typeDefs.length === 1 ? typeDefs[0] : []; //type is not model defined; mapOf
+    if (typeDef) {
         optData = (opts2obj(typeDef[2]));
+    } else {
+        optData = (opts2obj(args));
     }
     // MUST include ktype and vtype options.
 
