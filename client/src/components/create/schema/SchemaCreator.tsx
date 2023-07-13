@@ -30,14 +30,15 @@ const SchemaCreator = (props: any) => {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
+    const [configOpt, setConfigOpt] = useState(configInitialState);
     const [data, setData] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
-
-    const [configOpt, setConfigOpt] = useState(configInitialState);
+    const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
+    const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         const schemaStr = FormatJADN(generatedSchema);
@@ -221,7 +222,7 @@ const SchemaCreator = (props: any) => {
                         }
                     }));
                 } else {
-                    setGeneratedSchema((generatedSchema) => ({       
+                    setGeneratedSchema((generatedSchema) => ({
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
@@ -229,8 +230,9 @@ const SchemaCreator = (props: any) => {
                         }
                     }));
                 }
-                handleScroll(data.info)
+                scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
             }
+
         } else if (data.types) {
             const tmpTypes = [...generatedSchema.types] || [];
             const tmpDef = Types[data.types].edit();
@@ -239,18 +241,12 @@ const SchemaCreator = (props: any) => {
                 ...generatedSchema,
                 types: tmpTypes
             }));
-            handleScroll("types")
+            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
+
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
         }
     }
-
-    const handleScroll = (id: string) => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      };    
 
     const infoEditors = Object.keys(Info).map((k, i) => {
         const key = k as keyof typeof Info;
@@ -374,7 +370,7 @@ const SchemaCreator = (props: any) => {
             </div>
             <TabContent activeTab={activeView}>
                 <TabPane tabId='creator'>
-                    <div className='card'>                    
+                    <div className='card'>
                         <div className='card-body p-0'>
                             <div className='row no-gutters'>
                                 <div id="schema-options" className='col-sm-3'>
@@ -422,12 +418,12 @@ const SchemaCreator = (props: any) => {
                                             minHeight: '20em',
                                         }}
                                     >
-                                        <div className="col pt-2">
+                                        <div className="col pt-2" ref={scrollToInfoRef}>
                                             <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
                                             {infoEditors}
                                         </div>
                                         <hr />
-                                        <div className="col">
+                                        <div className="col" ref={scrollToTypeRef}>
                                             <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
                                             {typesEditors}
                                         </div>
@@ -439,7 +435,7 @@ const SchemaCreator = (props: any) => {
                 </TabPane>
 
                 <TabPane tabId='schema'>
-                    <div className='card'>                    
+                    <div className='card'>
                         <div className='card-body p-0'>
                             <SBEditor data={data} isReadOnly={true}></SBEditor>
                         </div>

@@ -16,11 +16,11 @@ const SchemaGenerator = () => {
         {
             info: {
                 title: TITLE,
-                package : PACKAGE,
-                exports : [EXPORT]
+                package: PACKAGE,
+                exports: [EXPORT]
             },
             types: [
-                [EXPORT, EXPORT_TYPE, [], ""]                
+                [EXPORT, EXPORT_TYPE, [], "", []]
             ]
         });
 
@@ -36,11 +36,11 @@ const SchemaGenerator = () => {
         setGeneratedSchema({
             info: {
                 title: TITLE,
-                package : PACKAGE,
-                exports : [EXPORT]
+                package: PACKAGE,
+                exports: [EXPORT]
             },
             types: [
-                [EXPORT, EXPORT_TYPE, [], ""]                
+                [EXPORT, EXPORT_TYPE, [], ""]
             ]
         });
     }

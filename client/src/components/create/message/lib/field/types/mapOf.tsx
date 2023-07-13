@@ -154,7 +154,6 @@ const MapOfField = (props: MapOfFieldProps) => {
         //no fields in def
         //StandardFieldKey = 'id' | 'name' | 'type' | 'options' | 'comment';
         keyDefs.length === 1 ? keyDef = keyDefs[0] : keyDef = keyDefs;
-
         keyField = [0, keyDef.toLowerCase(), 'Enumerated', [], keyDef[keyDef.length - 1]];
 
     } else {
@@ -178,14 +177,17 @@ const MapOfField = (props: MapOfFieldProps) => {
         valField = [0, valDef.toLowerCase(), 'Enumerated', [], valDef[valDef.length - 1]];
 
     } else {
+        //vtype is an def
         const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
-        valDefs.length === 1 ? valDef = valDefs[0] : valDef = valDefs;
-
-        valField = valDef.length === 4 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 1]]
-            : [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]];
-
-        // TODO? : definition not found = unresolved schema (validate JADN should have failed)
-
+        const valDef = valDefs.length === 1 ? valDefs[0] : optData.vtype;
+        if (valDefs.length != 0) {
+            valField = valDef.length === 4 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 1]]
+                : [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]];
+        } else {
+            //vtype is a primitive type or undefined (create string field)
+            // TODO? : definition not found = unresolved schema (validate JADN should have failed)
+            valField = [0, valDef.toLowerCase(), valDef, [], ''];
+        }
     }
 
     const fields: any[] = [];
