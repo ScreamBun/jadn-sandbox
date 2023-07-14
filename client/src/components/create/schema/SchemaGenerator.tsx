@@ -40,7 +40,7 @@ const SchemaGenerator = () => {
                 exports: [EXPORT]
             },
             types: [
-                [EXPORT, EXPORT_TYPE, [], ""]
+                [EXPORT, EXPORT_TYPE, [], "", []]
             ]
         });
     }

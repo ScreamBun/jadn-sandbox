@@ -31,7 +31,7 @@ const SchemaCreator = (props: any) => {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
-    const [data, setData] = useState('');
+    const [data, setData] = useState(''); //generatedSchema JSON
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
@@ -81,6 +81,7 @@ const SchemaCreator = (props: any) => {
                     }
                     let schemaObj = loadFileVal.payload.data;
                     setGeneratedSchema(schemaObj);
+                    validateJADN(JSON.stringify(schemaObj));
                 })
                 .catch((loadFileErr) => {
                     setGeneratedSchema('');
@@ -101,6 +102,7 @@ const SchemaCreator = (props: any) => {
                     let data = ev.target.result;
                     try {
                         setGeneratedSchema(JSON.parse(data));
+                        validateJADN(data);
                     } catch (err) {
                         sbToastError(`Schema cannot be loaded`);
                     }
@@ -139,7 +141,6 @@ const SchemaCreator = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
-                        dispatch(setSchema(jsonObj));
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
                         sbToastErrorFreeze(validateSchemaVal.payload.valid_msg);
@@ -211,6 +212,7 @@ const SchemaCreator = (props: any) => {
     ));
 
     const onDrop = (data: any) => {
+        document.getElementById('schema-editor').style.backgroundColor = '';
         if (data.info) {
             if (!(data.info in (generatedSchema.info || {}))) {
                 if (data.info == 'config') {
@@ -241,7 +243,7 @@ const SchemaCreator = (props: any) => {
                 ...generatedSchema,
                 types: tmpTypes
             }));
-            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
+            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -324,6 +326,30 @@ const SchemaCreator = (props: any) => {
                     }));
 
                 }
+            },
+            changeIndex: (val, dataIndex: number, idx: number) => {
+                setIsValidJADN(false);
+
+                if (idx < 0) {
+                    sbToastError('Error: Cannot move Type up anymore')
+                    return;
+                } else if (idx >= generatedSchema.types.length) {
+                    sbToastError('Error: Cannot move Type down anymore')
+                    return;
+                }
+
+                let tmpTypes = [...generatedSchema.types];
+                tmpTypes.splice(dataIndex, 1)
+                tmpTypes = [
+                    ...tmpTypes.slice(0, idx),
+                    Types[val.type.toLowerCase()].edit(val),
+                    ...tmpTypes.slice(idx)
+                ];
+
+                setGeneratedSchema(generatedSchema => ({
+                    ...generatedSchema,
+                    types: tmpTypes
+                }))
             },
             config: configOpt
         });
@@ -413,6 +439,12 @@ const SchemaCreator = (props: any) => {
                                     <Droppable
                                         types={['info', 'types']} // <= allowed drop types
                                         onDrop={onDrop}
+                                        onDragOver={() => {
+                                            document.getElementById('schema-editor').style.backgroundColor = 'rgba(0,0,0,.5)';
+                                        }}
+                                        onDragLeave={() => {
+                                            document.getElementById('schema-editor').style.backgroundColor = '';
+                                        }}
                                         className='col-12 mt-1'
                                         style={{
                                             minHeight: '20em',

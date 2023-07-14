@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faPlusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faPlusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options/OptionsModal';
@@ -23,13 +23,15 @@ interface StructureEditorProps {
   value: TypeArray;
   change: (v: PrimitiveTypeObject, i: number) => void;
   remove: (i: number) => void;
+  changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
   config: InfoConfig;
 }
 
 // Structure Editor
 const StructureEditor = (props: StructureEditorProps) => {
-  const { value, change, dataIndex, config } = props;
+  const { value, change, changeIndex, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
+  const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
   const [modal, setModal] = useState(false);
@@ -93,6 +95,7 @@ const StructureEditor = (props: StructureEditorProps) => {
     }
     const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
     change(updatevalue, dataIndex);
+    scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
     fieldCount = fieldCount + 1;
   }
 
@@ -103,12 +106,10 @@ const StructureEditor = (props: StructureEditorProps) => {
       return;
     }
 
-    for (let i = 0; i < fields.length; i++) {
-      var name = fields[i].props.value[1];
-      if (name == val[1] && i != idx) {
-        sbToastError('Error: FieldName must be unique');
-        return;
-      }
+    const filterName = fields.filter(field => field.props.value[1] == val[1]);
+    if (filterName.length > 1) {
+      sbToastError('Error: FieldName must be unique');
+      return;
     }
 
     if (typeof val[0] != 'number') {
@@ -117,6 +118,11 @@ const StructureEditor = (props: StructureEditorProps) => {
 
     const tmpFieldValues = [...valueObj.fields];
     tmpFieldValues[idx] = val;
+
+    //sort fields
+    tmpFieldValues.sort(function (a, b) {
+      return a[0] - b[0];
+    });
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
     change(updatevalue, dataIndex)
@@ -148,7 +154,6 @@ const StructureEditor = (props: StructureEditorProps) => {
   const toggleModal = () => {
     setModal(modal => !modal);
   }
-
 
   //If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
   if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
@@ -209,6 +214,10 @@ const StructureEditor = (props: StructureEditorProps) => {
       />);
     }
   }
+  //sort fields
+  fields.sort(function (a, b) {
+    return a.key - b.key;
+  });
   const listID = fields.map(field => field.key);
 
   return (
@@ -216,6 +225,14 @@ const StructureEditor = (props: StructureEditorProps) => {
       <ButtonGroup size="sm" className="float-right">
         <Button color="danger" onClick={removeAll} >
           <FontAwesomeIcon icon={faMinusCircle} />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup size="sm" className="float-right mr-1">
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)} >
+          <FontAwesomeIcon icon={faSquareCaretUp} />
+        </Button>
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
+          <FontAwesomeIcon icon={faSquareCaretDown} />
         </Button>
       </ButtonGroup>
 
@@ -268,10 +285,12 @@ const StructureEditor = (props: StructureEditorProps) => {
             </ButtonGroup>
           </legend>
 
-          {!fieldCollapse && fields}
+          <div ref={scrollToFieldRef}>
+            {!fieldCollapse && fields}
+          </div>
 
-          {fieldCollapse && fields.length > 0 ? <p>Expand to view/edit fields</p> :
-            !fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
+          {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
+
         </FormGroup>
       </div>
     </div>
