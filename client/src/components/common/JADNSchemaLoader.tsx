@@ -172,7 +172,7 @@ const JADNSchemaLoader = (props: any) => {
                 if (ev.target) {
                     let dataStr = ev.target.result;
                     try {
-                        dispatch(setSchema(dataStr));
+                        dispatch(setSchema(JSON.parse(dataStr)));
                         setLoadedSchema(dataStr);
                         validateJADN(dataStr);
                         if (setDecodeSchemaTypes && setDecodeMsg) {
