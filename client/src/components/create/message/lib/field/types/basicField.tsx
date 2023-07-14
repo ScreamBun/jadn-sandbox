@@ -25,7 +25,7 @@ interface BasicFieldProps {
 const BasicField = (props: BasicFieldProps) => {
 
   const { arr, def, optChange, parent, config } = props;
-  const [_idx, name, type, _opts, comment] = def;
+  var [_idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
   var optData: Record<string, any> = {};
@@ -34,6 +34,9 @@ const BasicField = (props: BasicFieldProps) => {
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef.length != 0) {
     optData = (opts2obj(typeDef[2]));
+    type = typeDef[1];
+  } else {
+    optData = (opts2obj(opts));
   }
 
   const [errMsg, setErrMsg] = useState<string[]>([]);
