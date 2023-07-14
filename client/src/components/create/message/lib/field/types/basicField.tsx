@@ -36,7 +36,7 @@ const BasicField = (props: BasicFieldProps) => {
     optData = (opts2obj(typeDef[2]));
     type = typeDef[1];
   } else {
-    optData = (opts2obj(opts));
+    optData = (opts ? opts2obj(opts) : []);
   }
 
   const [errMsg, setErrMsg] = useState<string[]>([]);
@@ -118,6 +118,7 @@ const BasicField = (props: BasicFieldProps) => {
             <div className='card-body m-0 p-0'>
               <Input
                 type={'number'}
+                onWheel={(e) => { e.target.blur(); }}
                 step='any'
                 name={name}
                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
@@ -146,6 +147,7 @@ const BasicField = (props: BasicFieldProps) => {
             <div className='card-body m-0 p-0'>
               <Input
                 type={'number'}
+                onWheel={(e) => { e.target.blur(); }}
                 name={name}
                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                 onChange={e => {

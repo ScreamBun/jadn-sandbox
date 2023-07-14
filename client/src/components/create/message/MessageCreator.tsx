@@ -75,14 +75,15 @@ const MessageCreator = (props: any) => {
     }
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
-    if (commandType != '') {
-        if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0
-            && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { //check not choice or enum type
-            const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
-            fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} config={configOpt} />);
-        } else if (typeof recordDef[1] == 'string' && recordDef[1].toLowerCase() == 'choice' || recordDef[1].toLowerCase() == 'enumerated') {
-            const field = [0, recordDef[0], recordDef[0], recordDef[2], recordDef[3], recordDef[4]];
-            fieldDefs = <Field key={field[0]} def={field} optChange={optChange} config={configOpt} />;
+    if (commandType) {
+        if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
+            if (recordDef[1] && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { //check not choice or enum type
+                const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
+                fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} config={configOpt} />);
+            } else if (recordDef[1] && recordDef[1].toLowerCase() == 'choice' || recordDef[1].toLowerCase() == 'enumerated') {
+                const field = [0, recordDef[0], recordDef[0], recordDef[2], recordDef[3], recordDef[4]];
+                fieldDefs = <Field key={field[0]} def={field} optChange={optChange} config={configOpt} />;
+            }
         } else { //baseType = Primitive type, ArrayOf , MapOf --- convert TypeArray to FieldArray
             const field = [0, recordDef[0], recordDef[1], recordDef[2], recordDef[3], recordDef[4]];
             fieldDefs = <Field key={field[0]} def={field} optChange={optChange} config={configOpt} />;
