@@ -42,7 +42,7 @@ const BasicField = (props: BasicFieldProps) => {
   if (typeDefs.length === 1) {
     dataType = typeDef[1].toLowerCase();
   } else {
-    dataType = type.toLowerCase();
+    dataType = type ? type.toLowerCase() : type;
   }
 
   const [errMsg, setErrMsg] = useState<string[]>([]);
