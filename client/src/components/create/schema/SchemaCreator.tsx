@@ -81,6 +81,7 @@ const SchemaCreator = (props: any) => {
                     }
                     let schemaObj = loadFileVal.payload.data;
                     setGeneratedSchema(schemaObj);
+                    validateJADN(JSON.stringify(schemaObj));
                 })
                 .catch((loadFileErr) => {
                     setGeneratedSchema('');
@@ -101,6 +102,7 @@ const SchemaCreator = (props: any) => {
                     let data = ev.target.result;
                     try {
                         setGeneratedSchema(JSON.parse(data));
+                        validateJADN(data);
                     } catch (err) {
                         sbToastError(`Schema cannot be loaded`);
                     }
@@ -139,7 +141,6 @@ const SchemaCreator = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
-                        dispatch(setSchema(jsonObj));
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
                         sbToastErrorFreeze(validateSchemaVal.payload.valid_msg);

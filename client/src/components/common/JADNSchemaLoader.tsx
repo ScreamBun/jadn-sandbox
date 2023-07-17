@@ -80,7 +80,6 @@ const JADNSchemaLoader = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
-                        dispatch(setSchema(jsonObj));
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
                         sbToastError(validateSchemaVal.payload.valid_msg);
@@ -173,8 +172,9 @@ const JADNSchemaLoader = (props: any) => {
                 if (ev.target) {
                     let dataStr = ev.target.result;
                     try {
-                        dispatch(setSchema(dataStr));
+                        dispatch(setSchema(JSON.parse(dataStr)));
                         setLoadedSchema(dataStr);
+                        validateJADN(dataStr);
                         if (setDecodeSchemaTypes && setDecodeMsg) {
                             loadDecodeTypes(JSON.parse(dataStr));
                         }

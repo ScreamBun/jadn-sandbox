@@ -154,9 +154,11 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
-  const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+  const typeDef = typeDefs.length === 1 ? typeDefs[0] : []; //type is not model defined; arrayOf
   if (typeDef.length != 0) {
     optData = (opts2obj(typeDef[2]));
+  } else {
+    optData = (opts2obj(args));
   }
   // MUST include vtype
   // MUST NOT include more than one collection option (set, unique, or unordered).

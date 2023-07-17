@@ -204,6 +204,7 @@ const FormattedField = (props: any) => {
                             <span className="input-group-text"> / </span>
                             <Input
                                 type={'number'}
+                                onWheel={(e) => { e.target.blur(); }}
                                 name={name}
                                 min={0}
                                 max={128}
@@ -268,6 +269,7 @@ const FormattedField = (props: any) => {
                             <span className="input-group-text"> / </span>
                             <Input
                                 type={'number'}
+                                onWheel={(e) => { e.target.blur(); }}
                                 name={name}
                                 min={0}
                                 max={128}
@@ -349,6 +351,7 @@ const FormattedField = (props: any) => {
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'number'}
+                                onWheel={(e) => { e.target.blur(); }}
                                 min={-128}
                                 max={127}
                                 name={name}
@@ -377,6 +380,7 @@ const FormattedField = (props: any) => {
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'number'}
+                                onWheel={(e) => { e.target.blur(); }}
                                 min={-32768}
                                 max={32767}
                                 name={name}
@@ -405,6 +409,7 @@ const FormattedField = (props: any) => {
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'number'}
+                                onWheel={(e) => { e.target.blur(); }}
                                 name={name}
                                 min={-2147483648}
                                 max={2147483647}
@@ -435,6 +440,7 @@ const FormattedField = (props: any) => {
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'number'}
+                                onWheel={(e) => { e.target.blur(); }}
                                 min={0}
                                 max={2 ** (parseInt(n) - 1)}
                                 name={name}

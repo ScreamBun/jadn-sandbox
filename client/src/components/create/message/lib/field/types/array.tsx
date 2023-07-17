@@ -72,9 +72,7 @@ const ArrayField = (props: ArrayFieldProps) => {
 
   //Expected: fields (typeDef.length  == 5)
   const fieldDef = typeDef[typeDef.length - 1].map((d: any, i: number) =>
-    <div className="col my-1 px-0">
-      <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config} />
-    </div>
+    <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config} />
   )
 
   return (
@@ -86,9 +84,7 @@ const ArrayField = (props: ArrayFieldProps) => {
           {err}
         </div>
         <div className='card-body mx-2'>
-          <div className='row'>
-            {fieldDef}
-          </div>
+          {fieldDef}
         </div>
       </div>
     </div>

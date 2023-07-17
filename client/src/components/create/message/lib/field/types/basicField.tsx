@@ -25,7 +25,7 @@ interface BasicFieldProps {
 const BasicField = (props: BasicFieldProps) => {
 
   const { arr, def, optChange, parent, config } = props;
-  const [_idx, name, type, _opts, comment] = def;
+  const [_idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
   var optData: Record<string, any> = {};
@@ -34,6 +34,15 @@ const BasicField = (props: BasicFieldProps) => {
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef.length != 0) {
     optData = (opts2obj(typeDef[2]));
+  } else {
+    optData = (opts ? opts2obj(opts) : []);
+  }
+
+  let dataType;
+  if (typeDefs.length === 1) {
+    dataType = typeDef[1].toLowerCase();
+  } else {
+    dataType = type ? type.toLowerCase() : type;
   }
 
   const [errMsg, setErrMsg] = useState<string[]>([]);
@@ -53,8 +62,8 @@ const BasicField = (props: BasicFieldProps) => {
     />);
   }
 
-  if (type) {
-    if (type.toLowerCase() == 'boolean') {
+  if (dataType) {
+    if (dataType == 'boolean') {
       return (
         <div className='form-group m-3'>
           <Label check>
@@ -75,7 +84,7 @@ const BasicField = (props: BasicFieldProps) => {
       );
     }
 
-    if (type.toLowerCase() == 'binary') {
+    if (dataType == 'binary') {
       return (
         <div className='form-group'>
           <div className='card'>
@@ -104,7 +113,7 @@ const BasicField = (props: BasicFieldProps) => {
       );
     }
 
-    if (type.toLowerCase() == 'number') {
+    if (dataType == 'number') {
       return (
         <div className='form-group'>
           <div className='card'>
@@ -115,6 +124,7 @@ const BasicField = (props: BasicFieldProps) => {
             <div className='card-body m-0 p-0'>
               <Input
                 type={'number'}
+                onWheel={(e) => { e.target.blur(); }}
                 step='any'
                 name={name}
                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
@@ -132,7 +142,7 @@ const BasicField = (props: BasicFieldProps) => {
       );
     }
 
-    if (type.toLowerCase() == 'integer') {
+    if (dataType == 'integer') {
       return (
         <div className='form-group'>
           <div className='card'>
@@ -143,6 +153,7 @@ const BasicField = (props: BasicFieldProps) => {
             <div className='card-body m-0 p-0'>
               <Input
                 type={'number'}
+                onWheel={(e) => { e.target.blur(); }}
                 name={name}
                 defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
                 onChange={e => {

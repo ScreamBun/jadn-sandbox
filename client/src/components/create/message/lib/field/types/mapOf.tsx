@@ -11,7 +11,7 @@ import { InfoConfig, SchemaJADN, StandardFieldArray, TypeArray } from '../../../
 import { opts2obj } from '../../../../schema/structure/editors/options/consts';
 import { useAppSelector } from '../../../../../../reducers';
 import { validateOptDataElem } from '../../utils';
-import { hasProperty } from 'components/utils';
+import { delMultiKey, hasProperty, setMultiKey } from 'components/utils';
 import { $MINV } from 'components/create/consts';
 
 // Interface
@@ -31,8 +31,9 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [min, setMin] = useState(false);
     const [max, setMax] = useState(false);
     const [opts, setOpts] = useState<any[]>([]); //opts: let every obj have a key and value [{key: '', value:''}, ...]
+    const [kopts, setkOpts] = useState<any[]>([]);
+    const [vopts, setvOpts] = useState<any[]>([]);
     const [errMsg, setErrMsg] = useState<string[]>([]);
-
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
@@ -69,83 +70,133 @@ const MapOfField = (props: MapOfFieldProps) => {
         setCount(count - 1);
     }
 
-    const onChange = (k: string, v: any, i: number) => {
-        //data : reduce opts to key:value pairs 
-        if (Number.isNaN(v)) {
-            v = undefined;
+    const onChangeKey = (k: string, v: any, i: number) => {
+        if (!v) {
+            v = '';
         }
-
-        //determine if key is of key or value type
         const ktype = msgName + "." + optData.ktype.toLowerCase();
-        const vtype = msgName + "." + optData.vtype.toLowerCase();
+        const arrKeys = ktype.split(".");
+        const valKeys = k.split(".");
+        const nestedKeys = valKeys.slice(arrKeys.length);
 
-        //add obj {[key/value]: v} at i 
-        //update v if obj exists at i 
-        let updatedOpts = [];
-        if (i <= opts.length - 1) {
-            //update
-            updatedOpts = opts.map((opt, index) => {
-                if (i === index) {
-                    if (k == ktype) {
-                        //change key
-                        return { ...opt, ['key']: v };
-                    } else if (k == vtype) {
-                        //change val
-                        return { ...opt, ['value']: v };
-                    }
-                } else {
-                    return opt;
+        let updatedVal = v;
+        if (nestedKeys.length != 0) {
+            updatedVal = { ...kopts[i] };
+            if (v) {
+                setMultiKey(updatedVal, k.toString(), v);
+            } else {
+                delMultiKey(updatedVal, k.toString());
+                if (nestedKeys.length > 1 && updatedVal[nestedKeys[0]] && !updatedVal[nestedKeys[0]][nestedKeys[1]]) {
+                    delMultiKey(updatedVal, nestedKeys[0].toString());
                 }
-            });
-            setOpts(updatedOpts);
-
-        } else {
-            //add 
-            if (k == ktype) {
-                //add key
-                setOpts([...opts, { ['key']: v, ['value']: '' }]);
-                updatedOpts = [...opts, { ['key']: v, ['value']: '' }];
-            } else if (k == vtype) {
-                //add val
-                setOpts([...opts, { ['key']: '', ['value']: v }]);
-                updatedOpts = [...opts, { ['key']: '', ['value']: v }];
             }
         }
 
-        //TODO?: filter - remove null values.
+        var updatedOpts;
+        if (kopts.length - 1 < i) {
+            updatedOpts = [...kopts, updatedVal];
+        } else {
+            updatedOpts = kopts.map((obj, idx) => {
+                if (idx === i) {
+                    return updatedVal;
+                } else {
+                    return obj;
+                }
+            });
+        }
+
+        setkOpts(updatedOpts);
+        onChange('key', updatedOpts, i);
+    }
+
+    const onChangeValue = (k: string, v: any, i: number) => {
+        if (!v) {
+            v = '';
+        }
+        const vtype = msgName + "." + optData.vtype.toLowerCase();
+        const arrKeys = vtype.split(".");
+        const valKeys = k.split(".");
+        const nestedKeys = valKeys.slice(arrKeys.length);
+
+        let updatedVal = v;
+        if (nestedKeys.length != 0) {
+            updatedVal = { ...vopts[i] };
+            if (v) {
+                setMultiKey(updatedVal, nestedKeys.join('.').toString(), v);
+            } else {
+                delMultiKey(updatedVal, nestedKeys.join('.').toString());
+                if (nestedKeys.length > 1 && updatedVal[nestedKeys[0]] && !updatedVal[nestedKeys[0]][nestedKeys[1]]) {
+                    delMultiKey(updatedVal, nestedKeys[0].toString());
+                }
+            }
+        }
+
+        var updatedOpts;
+        if (vopts.length - 1 < i) {
+            updatedOpts = [...vopts, updatedVal];
+        } else {
+            updatedOpts = vopts.map((obj, idx) => {
+                if (idx === i) {
+                    return updatedVal;
+                } else {
+                    return obj;
+                }
+            });
+        }
+
+        setvOpts(updatedOpts);
+        onChange('val', updatedOpts, i);
+    }
+
+    const onChange = (k: string, v: any, i: number) => {
+        var updatedOpts;
+        //add to key or value type
+        if (opts.length - 1 < i) {
+            updatedOpts = [...opts, { [k]: v[i] }];
+            setOpts(updatedOpts);
+        } else {
+            updatedOpts = opts.map((obj, idx) => {
+                if (idx === i) {
+                    return { ...obj, [k]: v[i] };
+                } else {
+                    return obj;
+                }
+            });
+            setOpts(updatedOpts);
+        }
+
         const errCheck = validateOptDataElem(config, optData, updatedOpts);
         setErrMsg(errCheck);
 
-        //TODO?: fix JSON --- currently {key: value} rather than {[keyName: key] : [valueName: value]}
-        //TODO: check for nested MapOf
-        // JSON object if ktype is a String type
-        // A MapOf type where ktype is Enumerated is equivalent to a Map.
-        // JSON array if ktype is not a String type. 
+        // TODO: FINISH REDUCE ARR OF OBJ ...
+        // A MapOf type where ktype is Enumerated is equivalent to a Map. 
+        // JSON object if ktype is a String type 
+        // JSON array if ktype is not a String type.  
         let data;
-        if (updatedOpts && typeof updatedOpts[0]['key'] == "string") {
-            data = updatedOpts.reduce((opts, obj) => ({ ...opts, [obj.key]: obj.value }), {});
+        const ktypeDefs = schema.types.filter(t => t[0] === keyField[2]);
+        var ktypeDef = ktypeDefs.length === 1 ? ktypeDefs[0][1] : keyField[2];
+        if (ktypeDef == 'Enumerated' || ktypeDef == 'String') {
+            data = updatedOpts.reduce((opts, obj) => { return Object.assign(opts, { [obj.key]: obj.val }) }, {});
         } else {
-            //data = updatedOpts;
-            data = [];
-            updatedOpts?.forEach(obj => {
-                data.push(obj.key);
-                data.push(obj.value);
-            });
+            data = updatedOpts.reduce((opts, obj) => { return opts.concat([obj.key], [obj.val]) }, []);
         }
+
         optChange(msgName, data);
     }
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
-    const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
+    const typeDef = typeDefs.length === 1 ? typeDefs[0] : []; //type is not model defined; mapOf
     if (typeDef.length != 0) {
         optData = (opts2obj(typeDef[2]));
+    } else {
+        optData = (opts2obj(args));
     }
     // MUST include ktype and vtype options.
 
 
     // if ktype is enum/pointer = derived enum else ktype
     var keyDef; //keyDef == defined or based type
-    var keyField;
+    var keyField: any[];
     if (optData.ktype.startsWith("#") || optData.ktype.startsWith(">")) {
         optData.ktype = optData.ktype.slice(1);
         const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
@@ -157,13 +208,16 @@ const MapOfField = (props: MapOfFieldProps) => {
 
     } else {
         const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
-        keyDefs.length === 1 ? keyDef = keyDefs[0] : keyDef = keyDefs;
+        const keyDef = keyDefs.length === 1 ? keyDefs[0] : optData.ktype;
 
-        //CHECK IF THERE ARE FIELDS (type array vs standard field array)
-        keyField = keyDef.length === 4 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 1]]
-            : [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]];
-
-        // TODO? : definition not found = unresolved schema (validate JADN should have failed)
+        if (keyDefs.length != 0) {
+            keyField = keyDef.length === 4 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 1]]
+                : [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]];
+        } else {
+            //vtype is a primitive type or undefined (create string field)
+            // TODO? : definition not found = unresolved schema (validate JADN should have failed)
+            keyField = [0, keyDef.toLowerCase(), keyDef, [], ''];
+        }
     }
 
     // if vtype is enum/pointer = derived enum
@@ -200,8 +254,8 @@ const MapOfField = (props: MapOfFieldProps) => {
                         </p>
                     </div>
                     <div className='card-body mx-2'>
-                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChange} idx={i} config={config} />
-                        <Field key={"value"} def={valField} parent={msgName} optChange={onChange} idx={i} config={config} />
+                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChangeKey} idx={i} config={config} />
+                        <Field key={"value"} def={valField} parent={msgName} optChange={onChangeValue} idx={i} config={config} />
                     </div>
                 </div>
             </div >
