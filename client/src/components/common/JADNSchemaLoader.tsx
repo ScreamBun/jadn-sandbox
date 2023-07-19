@@ -179,7 +179,7 @@ const JADNSchemaLoader = (props: any) => {
                             loadDecodeTypes(JSON.parse(dataStr));
                         }
                     } catch (err) {
-                        sbToastError(`File cannot be loaded`)
+                        sbToastError(`File cannot be loaded: Invalid JSON`)
                     }
                 }
             };

@@ -6,7 +6,7 @@ import SBDownloadFile from "components/common/SBDownloadFile";
 
 const SchemaTransformed = (props: any) => {
 
-    const { transformedSchema } = props;
+    const { transformedSchema, data } = props;
 
     return (
         <div className="card">
@@ -19,7 +19,9 @@ const SchemaTransformed = (props: any) => {
                         <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema} customClass='float-right' />
                         <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${transformedSchema ? '' : ' d-none'}`} data={transformedSchema} />
 
-                        <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right">
+                        <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
+                            disabled={data.length != 0 ? false : true}
+                            title={"Process JADN schema(s) to produce another JADN schema"}>
                             Transform
                         </Button>
                     </div>
