@@ -15,7 +15,7 @@ from unittest import TextTestRunner
 
 from pydantic import ValidationError
 
-from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
+from server.webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
 from .profiles import get_profile_suite, load_test_suite, tests_in_suite, TestResults
 
 
