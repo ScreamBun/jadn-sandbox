@@ -6,13 +6,15 @@ import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import ExampleCreator from './ExampleCreator'
+import { sbToastError, sbToastInfo } from 'components/common/SBToast'
+import { generateExamples } from 'actions/generate'
 
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [generatedMessages, setGeneratedMessages] = useState(["Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "]);
+    const [generatedMessages, setGeneratedMessages] = useState([]);
 
     const meta_title = useSelector(getPageTitle) + ' | Message Generation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -20,9 +22,9 @@ const ExampleGenerator = () => {
         dispatch(info());
     }, [dispatch])
 
-/*     useEffect(() => {
+    useEffect(() => {
         setGeneratedMessages([]);
-    }, [loadedSchema]) */
+    }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -37,6 +39,14 @@ const ExampleGenerator = () => {
         e.preventDefault();
         //call make_examples.py
         //set generated example messages 
+        dispatch(generateExamples(loadedSchema))
+            .then((val) => {
+                sbToastInfo('Examples generated successfully');
+                setGeneratedMessages(val.payload);
+            })
+            .catch((err) => {
+                sbToastError(err);
+            })
     }
 
     return (

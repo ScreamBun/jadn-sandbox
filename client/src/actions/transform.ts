@@ -8,7 +8,7 @@ const baseAPI = '/api/transform';
 // Helper Functions
 // None
 
-// POST - /api/transform/ - transform the list of schemas 
+// POST - /api/transform/ - transform list of schemas 
 const TRANSFORM_REQUEST = '@@transform/TRANSFORM_REQUEST';
 export const TRANSFORM_SUCCESS = '@@transform/TRANSFORM_SUCCESS';
 export const TRANSFORM_FAILURE = '@@transform/TRANSFORM_FAILURE';
