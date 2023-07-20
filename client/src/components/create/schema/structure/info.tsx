@@ -36,12 +36,12 @@ export default {
     key: 'Version',
     edit: (val: string) => metaDef({ k: 'version', v: val }),
     editor: (props: EditorProps) => <KeyValueEditor {...props} id="Version" name="Version" />
-  },  
+  },
   title: {
     key: 'Title',
     edit: (val: string) => metaDef({ k: 'title', v: val }),
     editor: (props: EditorProps) => <KeyValueEditor {...props} id="Title" name="Title" />
-  },  
+  },
   description: {
     key: 'Description',
     edit: (val: string) => metaDef({ k: 'description', v: val }),
@@ -75,7 +75,7 @@ export default {
     )
   },
   exports: {
-    key: 'Exports*',
+    key: 'Exports',
     edit: (val: Array<string> = []) => metaDef({ k: 'exports', v: val }),
     editor: (props: EditorProps) => (
       <KeyArrayEditor
