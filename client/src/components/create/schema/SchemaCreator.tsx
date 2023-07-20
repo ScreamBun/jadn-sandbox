@@ -15,6 +15,7 @@ import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
 import { FormatJADN } from 'components/utils';
 import { validateSchema } from 'actions/validate';
+import { initialGeneratedSchemaState } from './SchemaGenerator';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -67,9 +68,7 @@ const SchemaCreator = (props: any) => {
         setIsValidJADN(false);
         setSelectedFile(e.target.value);
         if (e.target.value == "file" || e.target.value == "blank_schema") {
-            setGeneratedSchema({
-                types: []
-            });
+            setGeneratedSchema('');
             setData('');
             dispatch(setSchema({ types: [] }));
         } else {
@@ -119,7 +118,7 @@ const SchemaCreator = (props: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setSelectedFile('');
-        setGeneratedSchema('');
+        setGeneratedSchema(initialGeneratedSchemaState);
         if (ref.current) {
             ref.current.value = '';
         }
@@ -261,7 +260,7 @@ const SchemaCreator = (props: any) => {
             scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else if (data.types) {
-            const tmpTypes = [...generatedSchema.types] || [];
+            const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const tmpDef = Types[data.types].edit();
             tmpTypes.push(tmpDef);  // unshift drops items at the bottom
             setGeneratedSchema(generatedSchema => ({
@@ -352,11 +351,17 @@ const SchemaCreator = (props: any) => {
                     const tmpTypes = [...generatedSchema.types];
                     tmpTypes.splice(idx, 1);
                     //set data, even if references is unresolved
-                    setGeneratedSchema(generatedSchema => ({
-                        ...generatedSchema,
-                        types: tmpTypes
-                    }));
-
+                    //remove types if empty
+                    if (tmpTypes.length == 0) {
+                        const tmpData = { ...generatedSchema };
+                        delete tmpData['types'];
+                        setGeneratedSchema(tmpData);
+                    } else {
+                        setGeneratedSchema(generatedSchema => ({
+                            ...generatedSchema,
+                            types: tmpTypes
+                        }));
+                    }
                 }
             },
             changeIndex: (val, dataIndex: number, idx: number) => {
