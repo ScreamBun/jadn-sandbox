@@ -41,8 +41,12 @@ const ExampleGenerator = () => {
         //set generated example messages 
         dispatch(generateExamples(loadedSchema))
             .then((val) => {
-                sbToastInfo('Examples generated successfully');
-                setGeneratedMessages(val.payload);
+                if (val.error) {
+                    sbToastError(val.payload.response);
+                } else {
+                    sbToastInfo('Examples generated successfully');
+                    setGeneratedMessages(val.payload);
+                }
             })
             .catch((err) => {
                 sbToastError(err);
