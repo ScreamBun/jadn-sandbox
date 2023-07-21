@@ -16,7 +16,6 @@ class Generate(Resource):
     """
 
     def post(self):
-        # schema is already validated, call make_examples                    
         request_json = request.json
         
         try:
@@ -24,9 +23,10 @@ class Generate(Resource):
             generated = make_ex(schema_checked)
 
         except:
+            tb = traceback.format_exc()
+            print(tb)
             return 'Failed to generate examples', 500
 
-        #return list of generated examples
         return generated, 200
 
 
