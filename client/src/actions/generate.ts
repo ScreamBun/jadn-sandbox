@@ -12,13 +12,13 @@ const baseAPI = '/api/generate';
 const GENERATE_REQUEST = '@@generate/GENERATE_REQUEST';
 export const GENERATE_SUCCESS = '@@generate/GENERATE_SUCCESS';
 export const GENERATE_FAILURE = '@@generate/GENERATE_FAILURE';
-export const generateExamples = (schema: Record<string, any>) => createAction({
+export const generateExamples = (schema: string) => createAction({
     endpoint: `${baseAPI}/`,
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
     },
-    body: JSON.stringify(schema),
+    body: schema,
     types: [
         GENERATE_REQUEST, GENERATE_SUCCESS, GENERATE_FAILURE
     ]

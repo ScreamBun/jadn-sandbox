@@ -19,7 +19,7 @@ class Generate(Resource):
         request_json = request.json
         
         try:
-            schema_checked = check(request_json)  # type: ignore
+            schema_checked = jadn.check(request_json) 
             generated = make_ex(schema_checked)
 
         except:
