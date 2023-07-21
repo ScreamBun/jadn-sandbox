@@ -5,10 +5,10 @@ import SBDownloadFile from "./SBDownloadFile";
 import { faWindowMaximize, faFileImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "reactstrap";
-import { convertToGvFullView, onDownloadSVGClick, onGVPopOutClick } from "./SBGvPreviewer";
-import { onHTMLPopOutClick } from "./SBHtmlPreviewer";
-import { onMDPopOutClick } from "./SBMarkdownPreviewer";
-import { convertToPuml, onDownloadPNGClick } from "./SBPumlPreviewer";
+import { convertToGvFullView, onDownloadSVGClick, onGVPopOutClick } from "../visualize/SBGvPreviewer";
+import { onHTMLPopOutClick } from "../visualize/SBHtmlPreviewer";
+import { onMDPopOutClick } from "../visualize/SBMarkdownPreviewer";
+import { convertToPuml, onDownloadPNGClick } from "../visualize/SBPumlPreviewer";
 import { sbToastError } from "./SBToast";
 import SBDownloadPDF from "./SBDownloadPDF";
 

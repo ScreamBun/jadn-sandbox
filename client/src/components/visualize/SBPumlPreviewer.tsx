@@ -1,7 +1,7 @@
 import React from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import encoder from "plantuml-encoder";
-import SBEditor from "./SBEditor";
+import SBEditor from "../common/SBEditor";
 import saveAs from "file-saver";
 
 export const convertToPuml = (data: any) => {

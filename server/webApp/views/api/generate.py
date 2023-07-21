@@ -5,6 +5,7 @@ import traceback
 import jadn
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource, reqparse
+from jadnschema.generate.make_examples import make_ex
 
 
 logger = logging.getLogger(__name__)
@@ -16,6 +17,7 @@ class Generate(Resource):
 
     def post(self):
         #request_json = request.json
+       # make_ex(request.json)
 
         # schema is already validated, call make_examples                    
         generated = ['test msg 1', 'test msg 2']
