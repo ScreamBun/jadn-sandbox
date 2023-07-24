@@ -11,7 +11,7 @@ const baseAPI = '/api';
 export const SCHEMA_DEFINE = '@@util/SCHEMA_DEFINE';
 export const SCHEMA_SUCCESS = '@@util/SCHEMA_SUCCESS';
 export const SCHEMA_FAILURE = '@@util/SCHEMA_FAILURE';
-export const setSchema = (schema: SchemaJADN) => createAction({
+export const setSchema = (schema: SchemaJADN | string) => createAction({
   endpoint: '',
   method: 'OPTIONS',
   types: [

@@ -42,6 +42,7 @@ const SchemaCreator = (props: any) => {
     const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
+        setIsValidJADN(false);
         if (generatedSchema) {
             const schemaStr = FormatJADN(generatedSchema);
             dispatch(setSchema(generatedSchema));
@@ -288,7 +289,6 @@ const SchemaCreator = (props: any) => {
                 ,
                 placeholder: k,
                 change: val => {
-                    setIsValidJADN(false);
                     if (key == 'config') {
                         setConfigOpt(val);
                         setGeneratedSchema(generatedSchema => ({
@@ -341,7 +341,6 @@ const SchemaCreator = (props: any) => {
             value: def,
             dataIndex: i,
             change: (val, idx: number) => {
-                setIsValidJADN(false);
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
                 setGeneratedSchema(generatedSchema => ({
@@ -369,8 +368,6 @@ const SchemaCreator = (props: any) => {
                 }
             },
             changeIndex: (val, dataIndex: number, idx: number) => {
-                setIsValidJADN(false);
-
                 if (idx < 0) {
                     sbToastError('Error: Cannot move Type up anymore')
                     return;
