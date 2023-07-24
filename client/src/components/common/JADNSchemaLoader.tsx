@@ -205,7 +205,7 @@ const JADNSchemaLoader = (props: any) => {
                     <div className="col-md-6">
                         <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
                             <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
-                                <option value="">Select a Schema...</option>
+                                <option value="" disabled>Select a Schema...</option>
                                 <optgroup label="Testers">
                                     {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
                                 </optgroup>

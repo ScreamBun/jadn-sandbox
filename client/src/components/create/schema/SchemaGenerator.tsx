@@ -7,22 +7,22 @@ import { info } from 'actions/util'
 import SchemaCreator from './SchemaCreator'
 import { EXPORT, EXPORT_TYPE, PACKAGE, TITLE } from '../consts';
 
+export const initialGeneratedSchemaState = {
+    info: {
+        title: TITLE,
+        package: PACKAGE,
+        exports: [EXPORT]
+    },
+    types: [
+        [EXPORT, EXPORT_TYPE, [], "", []]
+    ]
+}
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
-    const [generatedSchema, setGeneratedSchema] = useState(
-        {
-            info: {
-                title: TITLE,
-                package: PACKAGE,
-                exports: [EXPORT]
-            },
-            types: [
-                [EXPORT, EXPORT_TYPE, [], "", []]
-            ]
-        });
+    const [generatedSchema, setGeneratedSchema] = useState(initialGeneratedSchemaState);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -33,16 +33,7 @@ const SchemaGenerator = () => {
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedSchemaFile('');
-        setGeneratedSchema({
-            info: {
-                title: TITLE,
-                package: PACKAGE,
-                exports: [EXPORT]
-            },
-            types: [
-                [EXPORT, EXPORT_TYPE, [], "", []]
-            ]
-        });
+        setGeneratedSchema(initialGeneratedSchemaState);
     }
 
     return (
