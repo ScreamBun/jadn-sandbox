@@ -11,8 +11,9 @@ import { transformSchema } from 'actions/transform'
 const SchemaTransformer = () => {
     const dispatch = useDispatch();
 
-    const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: {name of schema, schema data}
+    const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
     const [transformedSchema, setTransformedSchema] = useState('');
+    const [transformationType, setTransformationType] = useState('');
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -40,7 +41,7 @@ const SchemaTransformer = () => {
         //validate all selected files
         //call resolve_references.py
         //set transformed Schema
-        dispatch(transformSchema(selectedFiles))
+        dispatch(transformSchema(selectedFiles, transformationType))
             .then((val) => {
                 if (val.error == true) {
                     val.payload.response.forEach((schema) => {
@@ -90,7 +91,8 @@ const SchemaTransformer = () => {
                                         <SBMultiSchemaLoader data={selectedFiles} setData={setSelectedFiles} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles} />
+                                        <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}
+                                            transformationType={transformationType} setTransformationType={setTransformationType} />
                                     </div>
                                 </div>
                             </Form>

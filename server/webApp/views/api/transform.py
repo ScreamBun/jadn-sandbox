@@ -31,7 +31,7 @@ class Transform(Resource):
         # else load all schemas
         #resolve + transform
         else:
-            transformed = "I AM HIT"
+            transformed = request_json["transformation_type"]
 
             #return transformed schema
             return transformed, 200

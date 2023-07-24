@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "reactstrap";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
@@ -6,8 +6,7 @@ import SBDownloadFile from "components/common/SBDownloadFile";
 
 const SchemaTransformed = (props: any) => {
 
-    const { transformedSchema, data } = props;
-    const [transformationType, setTransformationType] = useState('');
+    const { transformedSchema, data, transformationType, setTransformationType } = props;
 
     return (
         <div className="card">

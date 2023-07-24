@@ -12,14 +12,15 @@ const baseAPI = '/api/transform';
 const TRANSFORM_REQUEST = '@@transform/TRANSFORM_REQUEST';
 export const TRANSFORM_SUCCESS = '@@transform/TRANSFORM_SUCCESS';
 export const TRANSFORM_FAILURE = '@@transform/TRANSFORM_FAILURE';
-export const transformSchema = (schema_list: Array<Record<string, any>>) => createAction({
+export const transformSchema = (schema_list_data: Array<Record<string, any>>, transformationType: string) => createAction({
     endpoint: `${baseAPI}/`,
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-        schema_list
+        schema_list: schema_list_data, 
+        transformation_type: transformationType
     }),
     types: [
         TRANSFORM_REQUEST, TRANSFORM_SUCCESS, TRANSFORM_FAILURE
