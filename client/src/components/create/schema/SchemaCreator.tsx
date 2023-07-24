@@ -213,8 +213,8 @@ const SchemaCreator = (props: any) => {
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <Draggable type="types" data={k} key={Types[k].key}>
-            <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>
+        <Draggable type="types" data={k} key={Types[k].key} onDragStart={selectedFile == 'file' ? (e) => e.preventDefault() : ''}>
+            <ListGroupItem style={{ color: `${selectedFile == 'file' ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile == 'file' ? false : true}>
                 {Types[k].key}
                 <FontAwesomeIcon icon={faGripLines} className='float-right' />
             </ListGroupItem>
