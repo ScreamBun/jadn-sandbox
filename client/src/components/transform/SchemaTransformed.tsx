@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "reactstrap";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
@@ -7,13 +7,18 @@ import SBDownloadFile from "components/common/SBDownloadFile";
 const SchemaTransformed = (props: any) => {
 
     const { transformedSchema, data } = props;
+    const [transformationType, setTransformationType] = useState('');
 
     return (
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-9'>
-                        Specify transformation type here..
+                        <select id="transformation-type" name="transformation-type" className="form-control form-control-sm" value={transformationType} onChange={(e) => setTransformationType(e.target.value)}>
+                            <option value="" disabled>Select a Transformation Type...</option>
+                            <option value="resolve-refs">Resolve references</option>
+                            <option value="strip-comments">Strip comments</option>
+                        </select>
                     </div>
                     <div className='col-md-3'>
                         <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema} customClass='float-right' />
