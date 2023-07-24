@@ -32,7 +32,7 @@ const SchemaCreator = (props: any) => {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
-    const [data, setData] = useState(''); //generatedSchema JSON
+    const [data, setData] = useState(''); //generatedSchema JSON string
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
@@ -42,22 +42,28 @@ const SchemaCreator = (props: any) => {
     const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        const schemaStr = FormatJADN(generatedSchema);
-        dispatch(setSchema(generatedSchema));
-        setData(schemaStr);
-        //set configuration data
-        const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
-        if (configDefs) {
-            for (const [key, value] of Object.entries(configDefs)) {
-                if (key in configOpt && configOpt[key] != value && value != '') {
-                    setConfigOpt(prevState => {
-                        return {
-                            ...prevState,
-                            [key]: value
-                        };
-                    });
+        if (generatedSchema) {
+            const schemaStr = FormatJADN(generatedSchema);
+            dispatch(setSchema(generatedSchema));
+            setData(schemaStr);
+
+            //set configuration data
+            const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
+            if (configDefs.length != 0) {
+                for (const [key, value] of Object.entries(configDefs)) {
+                    if (key in configOpt && configOpt[key] != value && value != '') {
+                        setConfigOpt(prevState => {
+                            return {
+                                ...prevState,
+                                [key]: value
+                            };
+                        });
+                    }
                 }
             }
+        } else {
+            dispatch(setSchema({}));
+            setData("{}");
         }
 
     }, [generatedSchema])
@@ -69,8 +75,6 @@ const SchemaCreator = (props: any) => {
         setSelectedFile(e.target.value);
         if (e.target.value == "file" || e.target.value == "blank_schema") {
             setGeneratedSchema('');
-            setData('');
-            dispatch(setSchema({ types: [] }));
         } else {
             dispatch(loadFile('schemas', e.target.value))
                 .then((loadFileVal) => {
