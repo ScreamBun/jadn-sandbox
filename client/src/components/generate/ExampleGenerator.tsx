@@ -6,15 +6,16 @@ import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import ExampleCreator from './ExampleCreator'
-import { sbToastError, sbToastInfo } from 'components/common/SBToast'
-import { generateExamples } from 'actions/generate'
+import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { JSONSchemaFaker } from 'json-schema-faker';
+import { convertSchema } from 'actions/convert'
 
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [generatedMessages, setGeneratedMessages] = useState([]);
+    const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
 
     const meta_title = useSelector(getPageTitle) + ' | Message Generation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -31,21 +32,54 @@ const ExampleGenerator = () => {
         setSelectedFile('');
         setLoadedSchema('');
         setGeneratedMessages([]);
-
         dispatch(setSchema({ types: [] }));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        //call make_examples.py
-        //set generated example messages 
-        dispatch(generateExamples(loadedSchema))
-            .then((val) => {
-                sbToastInfo('Examples generated successfully');
-                setGeneratedMessages(val.payload);
+        let schemaObj = loadedSchema;
+
+        if (typeof schemaObj == 'string') {
+            try {
+                schemaObj = JSON.parse(loadedSchema);
+            } catch (err) {
+                if (err instanceof Error) {
+                    sbToastError(err.message);
+                }
+            }
+        }
+        dispatch(convertSchema(schemaObj, 'json'))
+            .then((convertSchemaVal) => {
+                if (convertSchemaVal.error) {
+                    console.error(convertSchemaVal.payload.response);
+                    sbToastError('Failed to generate examples: Invalid JSON data');
+                    return;
+                }
+                //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
+                const schema = JSON.parse(convertSchemaVal.payload.schema.convert);
+                var generated: any[] = []
+                const num = Math.floor(Math.random() * 11); // GENERATE A RANDOM NUM (1-10) OF EXAMPLES
+                let i = 0;
+                while (i < num) {
+                    let ex = JSONSchemaFaker.generate(schema);
+                    if (Object.values(ex).length != 0) {
+                        if (Object.values(ex).length > 1) {
+                            for (let j in Object.values(ex)) {
+                                generated.push(JSON.stringify(Object.values(ex)[j], null, 2));
+                            }
+                        } else {
+                            generated.push(JSON.stringify(ex, null, 2));
+                        }
+                        i += 1
+                    }
+                }
+                if (generated.length != 0) {
+                    sbToastSuccess('Examples generated successfully');
+                    setGeneratedMessages(generated);
+                }
             })
-            .catch((err) => {
-                sbToastError(err);
+            .catch((convertSchemaErr) => {
+                sbToastError(convertSchemaErr.payload.response);
             })
     }
 
