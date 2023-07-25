@@ -4,6 +4,7 @@ import * as util from '../actions/util';
 export interface UtilState {
   site_title: string;
   site_desc: string;
+  version_info: string;
   error: string;
   loaded: {
     messages: Record<string, any>;
@@ -20,6 +21,7 @@ export interface UtilState {
 const initialState: UtilState = {
   site_title: 'JADN Sandbox',
   site_desc: '',
+  version_info: '',
   error: '',
   loaded: {
     messages: {},
@@ -45,6 +47,7 @@ export default (state = initialState, action: util.UtilActions) => {
         ...state,
         site_title: action.payload.title,
         site_desc: action.payload.message,
+        version_info: action.payload.version_info,
         loaded: {
           ...state.loaded,
           messages: action.payload.messages,
