@@ -38,7 +38,7 @@ const ExampleGenerator = () => {
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let schemaObj = loadedSchema;
-
+        let schemaProps: any[] = [];
         if (typeof schemaObj == 'string') {
             try {
                 schemaObj = JSON.parse(loadedSchema);
@@ -48,6 +48,7 @@ const ExampleGenerator = () => {
                 }
             }
         }
+
         dispatch(convertSchema(schemaObj, 'json'))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
@@ -57,35 +58,45 @@ const ExampleGenerator = () => {
                 }
                 //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
                 const schema = JSON.parse(convertSchemaVal.payload.schema.convert);
-                var generated: any[] = []
-                const num = Math.floor(Math.random() * 11); // GENERATE A RANDOM NUM (1-10) OF EXAMPLES
+                schemaProps = schema.properties ? Object.keys(schema.properties) : [];
+                var generated: any[] = [] // LIST OF GENERATED EXAMPLES
+                const num = Math.floor(Math.random() * 6); // GENERATE A RANDOM NUM (1-5) OF EXAMPLES
                 let i = 0;
                 while (i < num) {
                     let ex = JSONSchemaFaker.generate(schema);
-                    if (Object.values(ex).length != 0) { // CHECK GENERATED DATA IS NOT EMPTY
-                        if (Object.values(ex).length > 1) { // IF GENERATED DATA HAS MULTIPLE OBJECTS
-                            for (let j in Object.values(ex)) {
-                                if (Object.values(ex)[j].length != 0) { // CHECK IF EACH OBJ HAS DATA
-                                    generated.push(JSON.stringify(Object.values(ex)[j], null, 2));
+                    if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
+                        for (const [k, v] of Object.entries(ex)) {
+                            if (Object.keys(v).length != 0) { // CHECK IF EACH OBJ HAS DATA
+                                if (schemaProps && schemaProps.includes(k)) {
+                                    generated.push(JSON.stringify(v, null, 2));
+                                } else {
+                                    generated.push(JSON.stringify({ [k]: v }, null, 2));
                                 }
                             }
-                        } else {
-                            // GENERATED DATA ONLY HAS 1 OBJECT
-                            // TODO: if key is in exports, return Object.values(ex)
-                            // ISSUE: JSON translated key is != export 
-                            generated.push(JSON.stringify(ex, null, 2));
                         }
-                        i += 1
+                    } else {
+                        if (Object.values(ex).length != 0) { // CHECK IF GENERATED DATA OBJ HAS DATA
+                            if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {
+                                generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
+                            } else {
+                                generated.push(JSON.stringify(ex, null, 2));
+                            }
+                        }
                     }
+                    i += 1
                 }
+
                 if (generated.length != 0) {
                     sbToastSuccess('Examples generated successfully');
                     setGeneratedMessages(generated);
+                } else {
+                    sbToastError('Failed to generate examples');
                 }
             })
             .catch((convertSchemaErr) => {
-                sbToastError(convertSchemaErr.payload.response);
-            })
+                sbToastError('Failed to generate examples: JADN TO JSON conversion failed');
+                console.error(convertSchemaErr);
+            });
     }
 
     return (
