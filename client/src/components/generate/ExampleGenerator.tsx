@@ -60,11 +60,10 @@ const ExampleGenerator = () => {
                 const schema = JSON.parse(convertSchemaVal.payload.schema.convert);
                 schemaProps = schema.properties ? Object.keys(schema.properties) : [];
                 var generated: any[] = [] // LIST OF GENERATED EXAMPLES
-                const num = Math.floor(Math.random() * 6); // GENERATE A RANDOM NUM (1-5) OF EXAMPLES
+                const num = Math.floor(Math.random() * 11); // GENERATE A RANDOM NUM (1-10) OF EXAMPLES
                 let i = 0;
                 while (i < num || (i >= num && generated.length == 0)) {
                     let ex = JSONSchemaFaker.generate(schema);
-                    console.log(ex)
                     if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
                         for (const [k, v] of Object.entries(ex)) {
                             if (Object.keys(v).length != 0) { // CHECK IF EACH OBJ HAS DATA
