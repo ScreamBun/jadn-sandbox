@@ -49,6 +49,7 @@ export interface InfoSuccessAction extends ActionSuccessResult {
     message: string;
     schemas: Array<any>;
     messages: Record<string, any>;
+    version_info: string;
   };
 }
 

@@ -93,13 +93,13 @@ Ref: [Docker Image on DockerHub](https://hub.docker.com/repository/docker/scream
 Important Notes:
 
 * You will need to know the screambunn DockerHub login in order to push a new image.
-* A new version tag and image should be pushed after each major update.  
-* Make sure to update the docker_push.sh's IMG version # (v[Major].[Minor].[Bug])
+* A new version tag and image should be pushed after each docker build and push.  
+* When you run docker_push.py it will askf for the version # (v[Major].[Minor].[Bug])
 
 1. Run this command once to build the image and push to Dockhub/
 
 ```bash
-./docker_push.sh
+./docker_push.py
 ```
 
 2. To start your image, enter the following, this will start the image without rebuilding
@@ -137,6 +137,8 @@ http://localhost:8082/
     * recreate the jadnschema wheel, which contains the updated code
     * uninstall the direct link, simple pip uninstall jadnschema
     * install the updated jadnschema wheel
+
+  Note: If you update the whl filename/version, then the Dockerfile will need to be updated to use this new filename as well.
 
 ## Client
 

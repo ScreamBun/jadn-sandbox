@@ -7,11 +7,13 @@ import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { toast, ToastContainer } from 'react-toastify';
 import favicon from '../dependencies/assets/img/jadn-favicon.png';
 import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE, NAV_ABOUT } from 'components/utils/constants';
+import { useAppSelector } from '../../reducers';
 
 const AppLayout = () => {
 
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const [navActive, setNavActive] = useState('home');
+  const version_info = useAppSelector((state => state.Util.version_info));
 
   const onToggleNav = () => {
     setIsNavCollapsed(isNavCollapsed => !isNavCollapsed);
@@ -81,7 +83,7 @@ const AppLayout = () => {
 
       <nav className='navbar navbar-dark bg-secondary fixed-bottom py-1'>
         <ThemeChooser size='sm' />
-        <small>v1.0.0</small>
+        <small>{version_info}</small>
       </nav>
 
       <ToastContainer position={toast.POSITION.TOP_RIGHT} autoClose={4000} theme='colored' />
