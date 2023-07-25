@@ -62,12 +62,17 @@ const ExampleGenerator = () => {
                 let i = 0;
                 while (i < num) {
                     let ex = JSONSchemaFaker.generate(schema);
-                    if (Object.values(ex).length != 0) {
-                        if (Object.values(ex).length > 1) {
+                    if (Object.values(ex).length != 0) { // CHECK GENERATED DATA IS NOT EMPTY
+                        if (Object.values(ex).length > 1) { // IF GENERATED DATA HAS MULTIPLE OBJECTS
                             for (let j in Object.values(ex)) {
-                                generated.push(JSON.stringify(Object.values(ex)[j], null, 2));
+                                if (Object.values(ex)[j].length != 0) { // CHECK IF EACH OBJ HAS DATA
+                                    generated.push(JSON.stringify(Object.values(ex)[j], null, 2));
+                                }
                             }
                         } else {
+                            // GENERATED DATA ONLY HAS 1 OBJECT
+                            // TODO: if key is in exports, return Object.values(ex)
+                            // ISSUE: JSON translated key is != export 
                             generated.push(JSON.stringify(ex, null, 2));
                         }
                         i += 1
