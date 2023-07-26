@@ -34,10 +34,12 @@ const MessageValidated = (props: any) => {
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedFile(e.target.value);
-        if (e.target.value == "" || e.target.value == "file") {
+        if (e.target.value == "file") {
             setLoadedMsg('');
             setDecodeMsg('');
             setMsgFormat('');
+            ref.current.click();
+
         } else {
             const fmt = e.target.value.split('.')[1];
             dispatch(loadFile('messages', e.target.value))
@@ -118,7 +120,7 @@ const MessageValidated = (props: any) => {
                     <div className={`${selectedFile == 'file' ? 'col-md-6' : ' col-md-3'}`}>
                         <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
                             <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
-                                <option value="">Message</option>
+                                <option value="" disabled>Message</option>
                                 <optgroup label="Testers">
                                     {Object.entries(msgOpts).map(([n, t]) => <option key={n} value={n} data-decode={t} >{n}</option>)}
                                 </optgroup>
@@ -135,7 +137,7 @@ const MessageValidated = (props: any) => {
                     <div className={`col-md-3 ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
                         <select className="form-control form-control-sm" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)}
                             title="Select programming language of message">
-                            <option value="">Message Format</option>
+                            <option value="" disabled>Message Format</option>
                             <option value="json">json</option>
                             <option value="cbor">cbor</option>
                             <option value="xml">xml</option>
@@ -145,7 +147,7 @@ const MessageValidated = (props: any) => {
                     <div className='col-md-3'>
                         <select className="form-control form-control-sm" id="message-decode" name="message-decode" required value={decodeMsg} onChange={(e) => setDecodeMsg(e.target.value)}
                             title="Select message type to validate against">
-                            <option value="">Message Type</option>
+                            <option value="" disabled>Message Type</option>
                             <optgroup label="Exports">
                                 {decodeExports}
                             </optgroup>

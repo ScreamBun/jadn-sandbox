@@ -76,6 +76,9 @@ const SchemaCreator = (props: any) => {
         setSelectedFile(e.target.value);
         if (e.target.value == "file" || e.target.value == "blank_schema") {
             setGeneratedSchema('');
+            if (e.target.value == "file") {
+                ref.current.click();
+            }
         } else {
             dispatch(loadFile('schemas', e.target.value))
                 .then((loadFileVal) => {
