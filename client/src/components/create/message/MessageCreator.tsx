@@ -101,7 +101,7 @@ const MessageCreator = (props: any) => {
                     <div className='col-md-3'>
                         <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} disabled={exportRecords ? false : true} onChange={handleSelection}
                             title={exportRecords ? "Select message type to create based on valid JADN Schema" : "No Message Type Found. Please define exports in info section of schema."}>
-                            <option value=''>Message Type</option>
+                            <option value='' disabled>Message Type</option>
                             {exportRecords ? exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>) : []}
                         </select>
                     </div>

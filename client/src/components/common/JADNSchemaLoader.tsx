@@ -134,8 +134,10 @@ const JADNSchemaLoader = (props: any) => {
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedFile(e.target.value);
         setIsValidJADN(false);
-        if (e.target.value == "" || e.target.value == "file") {
+        if (e.target.value == "file") {
             setLoadedSchema('');
+            ref.current.click();
+
         } else {
             dispatch(loadFile('schemas', e.target.value))
                 .then((loadFileVal) => {
