@@ -59,7 +59,7 @@ const SBCollapseViewer = (props: any) => {
                             {obj.fmt}
                         </button>
                         <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-right' />
-                        <SBDownloadFile buttonId={`download${i}`} customClass='mr-1 float-right' data={obj.schema} ext={obj.fmt} />
+                        <SBDownloadFile buttonId={`download${i}`} customClass='mr-1 float-right' data={obj.schema} ext={obj.fmt_ext} />
                         <span className={`${obj.fmt == 'HTML' ? '' : ' d-none'}`}>
                             <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
                             <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(obj.schema)}>

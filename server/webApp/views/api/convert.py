@@ -128,7 +128,7 @@ class ConvertToAll(Resource):
                     else:
                         convertedSchema = dumps(schema, **kwargs)
                         
-                    convertedData.append({'fmt': conv_fmt.name, 'schema': convertedSchema})
+                    convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': convertedSchema})
                             
                 except:
                     tb = traceback.format_exc()
