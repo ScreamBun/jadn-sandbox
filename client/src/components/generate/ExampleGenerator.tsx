@@ -16,6 +16,7 @@ const ExampleGenerator = () => {
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Message Generation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -37,6 +38,7 @@ const ExampleGenerator = () => {
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
         let schemaObj = loadedSchema;
         let schemaProps: any[] = [];
         if (typeof schemaObj == 'string') {
@@ -45,6 +47,7 @@ const ExampleGenerator = () => {
             } catch (err) {
                 if (err instanceof Error) {
                     sbToastError(err.message);
+                    setIsLoading(false);
                 }
             }
         }
@@ -54,6 +57,7 @@ const ExampleGenerator = () => {
                 if (convertSchemaVal.error) {
                     console.error(convertSchemaVal.payload.response);
                     sbToastError('Failed to generate examples: Invalid JSON data');
+                    setIsLoading(false);
                     return;
                 }
                 //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
@@ -89,8 +93,10 @@ const ExampleGenerator = () => {
                 if (generated.length != 0) {
                     sbToastSuccess('Examples generated successfully');
                     setGeneratedMessages(generated);
+                    setIsLoading(false);
                 } else {
                     sbToastError('Failed to generate examples');
+                    setIsLoading(false);
                 }
             })
             .catch((convertSchemaErr) => {
@@ -124,6 +130,7 @@ const ExampleGenerator = () => {
                                         <ExampleCreator
                                             generatedMessages={generatedMessages}
                                             loadedSchema={loadedSchema}
+                                            isLoading={isLoading}
                                         />
                                     </div>
                                 </div>

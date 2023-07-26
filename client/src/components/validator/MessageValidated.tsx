@@ -12,12 +12,13 @@ import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
 import { isNull } from "lodash";
 import SBFileUploader from "components/common/SBFileUploader";
+import Spinner from "components/common/Spinner";
 
 const MessageValidated = (props: any) => {
     const location = useLocation()
     const { navMsgFormat } = location.state
 
-    const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, loadedSchema } = props;
+    const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, loadedSchema, isLoading } = props;
 
     const msgOpts = useSelector(getMsgFiles);
     const decodeExports = decodeSchemaTypes.exports.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
@@ -156,10 +157,10 @@ const MessageValidated = (props: any) => {
 
                     <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
-                        <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
+                        {isLoading ? <Spinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
                             title={'Validate the message against the given schema'}>
                             Validate Message
-                        </Button>
+                        </Button>}
                     </div>
                 </div>
             </div>

@@ -8,13 +8,14 @@ import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
+import Spinner from "components/common/Spinner";
 const validTranslations = ['JSON', 'Relax', 'XSD'];
 
 const SchemaTranslated = (props: any) => {
     const location = useLocation()
     const { navConvertTo } = location.state
 
-    const { loadedSchema, translation, setTranslation, translatedSchema, convertAll, setConvertAll, setTranslatedSchema } = props;
+    const { loadedSchema, translation, setTranslation, translatedSchema, convertAll, setConvertAll, setTranslatedSchema, isLoading } = props;
     const data = useSelector(getConversions);
     let translateOpts = {};
     for (let i = 0; i < Object.keys(data).length; i++) {
@@ -52,12 +53,12 @@ const SchemaTranslated = (props: any) => {
                             <SBDownloadFile buttonId='schemaDownload' data={translatedSchema} ext={translation} customClass={`mr-1 float-right${translatedSchema ? '' : ' d-none'}`} />
                         </div>
 
-                        <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
+                        {isLoading ? <Spinner action={'Translating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                             disabled={loadedSchema && translation ? false : true}
                             title={"Translate the given JADN schema to the selected format"}
                         >
                             Translate
-                        </Button>
+                        </Button>}
                     </div>
                 </div>
             </div>

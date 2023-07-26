@@ -18,6 +18,7 @@ const SchemaVisualizer = () => {
     const [convertAll, setConvertAll] = useState<any[]>([]);
     const [conversion, setConversion] = useState('');
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Visualization'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -42,6 +43,7 @@ const SchemaVisualizer = () => {
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
 
         if (conversion) {
             let schemaObj = loadedSchema;
@@ -52,6 +54,7 @@ const SchemaVisualizer = () => {
                 } catch (err) {
                     if (err instanceof Error) {
                         sbToastError(err.message);
+                        setIsLoading(false);
                     }
                 }
             }
@@ -64,13 +67,16 @@ const SchemaVisualizer = () => {
                                 if (convertSchemaVal.error) {
                                     setConvertedSchema('');
                                     sbToastError(convertSchemaVal.payload.response);
+                                    setIsLoading(false);
                                     return;
                                 }
                                 setConvertedSchema(convertSchemaVal.payload.schema.convert);
                                 sbToastSuccess(`Schema converted to ${conversion} successfully`);
+                                setIsLoading(false);
                             })
                             .catch((convertSchemaErr: string) => {
                                 sbToastError(convertSchemaErr.payload.response);
+                                setIsLoading(false);
                             })
 
                     } else if (validateSchemaVal.payload.valid_bool == true && conversion == 'all') {
@@ -83,29 +89,36 @@ const SchemaVisualizer = () => {
                                 if (convertSchemaVal.error) {
                                     setConvertedSchema('');
                                     sbToastError(convertSchemaVal.payload.response);
+                                    setIsLoading(false);
                                     return;
                                 }
                                 setConvertAll(convertSchemaVal.payload.schema.convert);
                                 for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
                                     sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                                 }
+                                setIsLoading(false);
                             })
                             .catch((convertSchemaErr: string) => {
                                 sbToastError(convertSchemaErr);
+                                setIsLoading(false);
                             })
 
                     } else if (validateSchemaVal.payload.valid_bool == false) {
                         sbToastError("Invalid Schema");
+                        setIsLoading(false);
                     } else if (conversion == '') {
                         sbToastError("No conversion selected");
+                        setIsLoading(false);
                     }
                 })
                 .catch((validateSchemaErr: string) => {
                     sbToastError(validateSchemaErr);
+                    setIsLoading(false);
                 })
 
         } else {
             sbToastError("No language selected for conversion");
+            setIsLoading(false);
         }
     }
 
@@ -136,7 +149,7 @@ const SchemaVisualizer = () => {
                                             convertAll={convertAll} setConvertAll={setConvertAll}
                                             conversion={conversion} setConversion={setConversion}
                                             spiltViewFlag={spiltViewFlag} setSplitViewFlag={setSplitViewFlag}
-                                            loadedSchema={loadedSchema} />
+                                            loadedSchema={loadedSchema} isLoading={isLoading} />
                                     </div>
                                 </div>
                             </Form>

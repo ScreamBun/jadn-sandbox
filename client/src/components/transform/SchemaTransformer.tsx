@@ -14,6 +14,7 @@ const SchemaTransformer = () => {
     const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
     const [transformedSchema, setTransformedSchema] = useState('');
     const [transformationType, setTransformationType] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -38,6 +39,7 @@ const SchemaTransformer = () => {
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
         //validate all selected files
         //call resolve_references.py
         //set transformed Schema
@@ -61,13 +63,16 @@ const SchemaTransformer = () => {
                             }
                         })
                     })
+                    setIsLoading(false);
                 } else {
                     sbToastSuccess('Transformed Schema successfully');
                     setTransformedSchema(val.payload);
+                    setIsLoading(false);
                 }
             })
             .catch((err) => {
                 sbToastError(err);
+                setIsLoading(false);
             })
     }
 
@@ -92,7 +97,9 @@ const SchemaTransformer = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}
-                                            transformationType={transformationType} setTransformationType={setTransformationType} />
+                                            transformationType={transformationType} setTransformationType={setTransformationType}
+                                            isLoading={isLoading}
+                                        />
                                     </div>
                                 </div>
                             </Form>

@@ -13,6 +13,7 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 const MessageValidator = () => {
     const dispatch = useDispatch();
 
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
     const [selectedMsgFile, setSelectedMsgFile] = useState('');
@@ -47,6 +48,7 @@ const MessageValidator = () => {
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
 
         if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
             try {
@@ -54,23 +56,28 @@ const MessageValidator = () => {
                     .then((submitVal: any) => {
                         if (submitVal && submitVal.payload.valid_bool) {
                             sbToastSuccess(submitVal.payload.valid_msg)
+                            setIsLoading(false);
                         } else {
                             if (submitVal.payload.valid_msg.length != 1 && typeof submitVal.payload.valid_msg == 'object') {
                                 for (const index in submitVal.payload.valid_msg) {
                                     sbToastError(submitVal.payload.valid_msg[index])
                                 }
+                                setIsLoading(false);
                             } else {
                                 sbToastError(submitVal.payload.valid_msg)
+                                setIsLoading(false);
                             }
                         }
                     })
                     .catch((submitErr) => {
                         sbToastError(submitErr.message)
+                        setIsLoading(false);
                         return false;
                     })
             } catch (err) {
                 if (err instanceof Error) {
                     sbToastError(err.message)
+                    setIsLoading(false);
                 }
             }
         } else {
@@ -88,6 +95,7 @@ const MessageValidator = () => {
                 err += ', message type';
             }
             sbToastError('ERROR: Validation failed - Please select ' + err)
+            setIsLoading(false);
         }
     }
 
@@ -121,7 +129,7 @@ const MessageValidator = () => {
                                             msgFormat={msgFormat} setMsgFormat={setMsgFormat}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes}
-                                            loadedSchema={loadedSchema}
+                                            loadedSchema={loadedSchema} isLoading={isLoading}
                                         />
                                     </div>
                                 </div>

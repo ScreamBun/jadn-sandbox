@@ -16,6 +16,7 @@ import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onDownloadSVG
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
 import SBDownloadPDF from "components/common/SBDownloadPDF";
+import Spinner from "components/common/Spinner";
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
@@ -23,7 +24,7 @@ const SchemaVisualized = (props: any) => {
     const location = useLocation();
     const { navConvertTo } = location.state;
 
-    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, convertAll, setConvertAll, spiltViewFlag, setSplitViewFlag } = props;
+    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, convertAll, setConvertAll, spiltViewFlag, setSplitViewFlag, isLoading } = props;
     const [pumlURL, setPumlURL] = useState('');
 
     useEffect(() => {
@@ -134,12 +135,12 @@ const SchemaVisualized = (props: any) => {
                         </div>
 
                         <div>
-                            <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
+                            {isLoading ? <Spinner action={'Converting'} /> : <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
                                 disabled={loadedSchema && conversion ? false : true}
                                 title={"Convert the given JADN schema to the selected format"}>
 
                                 Convert
-                            </Button>
+                            </Button>}
                         </div>
                     </div>
                 </div>
