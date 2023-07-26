@@ -19,3 +19,5 @@ from .views import *  # pylint: disable=wrong-import-position
 register_all(app)
 
 print("JADN Sandbox ready for work!")
+print("Go to the URL below in your browser:")
+print("http://localhost:8082/")
