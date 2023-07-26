@@ -15,7 +15,6 @@ import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
 import { FormatJADN } from 'components/utils';
 import { validateSchema } from 'actions/validate';
-import { initialGeneratedSchemaState } from './SchemaGenerator';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -74,8 +73,9 @@ const SchemaCreator = (props: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setSelectedFile(e.target.value);
-        if (e.target.value == "file" || e.target.value == "blank_schema") {
+        if (e.target.value == "file") {
             setGeneratedSchema('');
+            ref.current.click();
         } else {
             dispatch(loadFile('schemas', e.target.value))
                 .then((loadFileVal) => {
@@ -123,7 +123,7 @@ const SchemaCreator = (props: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setSelectedFile('');
-        setGeneratedSchema(initialGeneratedSchemaState);
+        setGeneratedSchema('');
         if (ref.current) {
             ref.current.value = '';
         }
@@ -401,7 +401,6 @@ const SchemaCreator = (props: any) => {
                         <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
                             <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
                                 <option value="" disabled>Select a Schema...</option>
-                                <option value="blank_schema">New Schema...</option>
                                 <optgroup label="Testers">
                                     {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
                                 </optgroup>

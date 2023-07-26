@@ -79,7 +79,7 @@ const SchemaVisualized = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
                         <select id="convert-to" name="convert-to" className="form-control form-control-sm" value={conversion} onChange={handleConversion}>
-                            <option value=""> Convert To... </option>
+                            <option value="" disabled> Convert To... </option>
                             <option value="all"> All </option>
                             {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
                         </select>

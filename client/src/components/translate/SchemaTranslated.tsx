@@ -42,7 +42,7 @@ const SchemaTranslated = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
                         <select id="translate-to" name="translate-to" className="form-control form-control-sm" value={translation} onChange={handleTranslation}>
-                            <option value=""> Translate To... </option>
+                            <option value="" disabled> Translate To... </option>
                             <option value="all"> All </option>
                             {Object.entries(translateOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
                         </select>
