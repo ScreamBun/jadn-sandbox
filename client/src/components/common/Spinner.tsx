@@ -10,7 +10,7 @@ const Spinner = (props: any) => {
             <span className="spinner-border spinner-border-sm" color="inherit" role="status">
                 <span className="sr-only">Loading...</span>
             </span>
-            {action}...
+            <span className="ml-1">{action}...</span>
         </Button>
     );
 }
