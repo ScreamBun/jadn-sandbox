@@ -89,7 +89,7 @@ const MessageValidated = (props: any) => {
                                 data = escaped2cbor(hexify(data));
                                 break;
                             default:
-                                sbToastError(`File cannot be loaded`);
+                                sbToastError(`File cannot be loaded: Invalid JSON`);
                         }
                     }
                 }

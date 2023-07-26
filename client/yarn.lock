@@ -5537,6 +5537,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"call-me-maybe@npm:^1.0.1":
+  version: 1.0.2
+  resolution: "call-me-maybe@npm:1.0.2"
+  checksum: 42ff2d0bed5b207e3f0122589162eaaa47ba618f79ad2382fe0ba14d9e49fbf901099a6227440acc5946f86a4953e8aa2d242b330b0a5de4d090bb18f8935cae
+  languageName: node
+  linkType: hard
+
 "callsites@npm:^3.0.0":
   version: 3.1.0
   resolution: "callsites@npm:3.1.0"
@@ -5801,6 +5808,7 @@ __metadata:
     html-react-parser: ^3.0.16
     html-webpack-plugin: ^5.5.1
     jest: ^29.5.0
+    json-schema-faker: ^0.5.3
     lodash: ^4.17.21
     marked: ^4.3.0
     min-document: ^2.19.0
@@ -7775,6 +7783,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"format-util@npm:^1.0.3":
+  version: 1.0.5
+  resolution: "format-util@npm:1.0.5"
+  checksum: 0c8622e54ad899ca184ff0b4999e9ff9567965051bade140911209d60554c2ea4d43075763c1cf574d2f740966afe46469c9284357919505cdddf1a0b65ff85c
+  languageName: node
+  linkType: hard
+
 "forwarded@npm:0.2.0":
   version: 0.2.0
   resolution: "forwarded@npm:0.2.0"
@@ -9615,7 +9630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^3.13.1":
+"js-yaml@npm:^3.12.1, js-yaml@npm:^3.13.1":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
   dependencies:
@@ -9660,6 +9675,29 @@ __metadata:
   version: 2.3.1
   resolution: "json-parse-even-better-errors@npm:2.3.1"
   checksum: 798ed4cf3354a2d9ccd78e86d2169515a0097a5c133337807cdf7f1fc32e1391d207ccfc276518cc1d7d8d4db93288b8a50ba4293d212ad1336e52a8ec0a941f
+  languageName: node
+  linkType: hard
+
+"json-schema-faker@npm:^0.5.3":
+  version: 0.5.3
+  resolution: "json-schema-faker@npm:0.5.3"
+  dependencies:
+    json-schema-ref-parser: ^6.1.0
+    jsonpath-plus: ^7.2.0
+  bin:
+    jsf: bin/gen.cjs
+  checksum: ff06e563da6e95afde8a0b9115141e8be6358efa2d58f6577096b9f70b906f73f28ee1fc1d947a7742d5b5082b243b95ec60a4795baf394a2b16e4e1a7678281
+  languageName: node
+  linkType: hard
+
+"json-schema-ref-parser@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "json-schema-ref-parser@npm:6.1.0"
+  dependencies:
+    call-me-maybe: ^1.0.1
+    js-yaml: ^3.12.1
+    ono: ^4.0.11
+  checksum: 03944fcb5b3d73181b5c90ec06a8b0fd1f744f366b6f956e1df9d42117172427b7476ff82c3def0e932272dfdfec77c14e024ca67a5dfc36175eb272e87421dd
   languageName: node
   linkType: hard
 
@@ -9721,6 +9759,13 @@ __metadata:
     graceful-fs:
       optional: true
   checksum: 7af3b8e1ac8fe7f1eccc6263c6ca14e1966fcbc74b618d3c78a0a2075579487547b94f72b7a1114e844a1e15bb00d440e5d1720bfc4612d790a6f285d5ea8354
+  languageName: node
+  linkType: hard
+
+"jsonpath-plus@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "jsonpath-plus@npm:7.2.0"
+  checksum: 05f447339d29be861e307d6e812aec1b9b88a3ba6bba286966a4e8bed3e752bee3d715eabfc21dce968be85ccb48bf79d2c1af78da7b9b74cd1b446d4d5d02f5
   languageName: node
   linkType: hard
 
@@ -10745,6 +10790,15 @@ __metadata:
   dependencies:
     mimic-fn: ^2.1.0
   checksum: 2478859ef817fc5d4e9c2f9e5728512ddd1dbc9fb7829ad263765bb6d3b91ce699d6e2332eef6b7dff183c2f490bd3349f1666427eaba4469fba0ac38dfd0d34
+  languageName: node
+  linkType: hard
+
+"ono@npm:^4.0.11":
+  version: 4.0.11
+  resolution: "ono@npm:4.0.11"
+  dependencies:
+    format-util: ^1.0.3
+  checksum: fabfdddb2e5e9875098e628871c86daf2fe0d1cbbfcdcc33093f47911eb4c386444410bc2bd3f6af9ff484deed46c6f9d88c8d49107ddec5350a9b089b283dd6
   languageName: node
   linkType: hard
 

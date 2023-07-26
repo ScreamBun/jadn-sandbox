@@ -5,7 +5,8 @@ import traceback
 import jadn
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource, reqparse
-from jadnschema.convert import SchemaFormats, dumps, html_dumps
+from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps
+from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
 
@@ -53,7 +54,7 @@ class Convert(Resource):
                     if conv_fmt == "json":
                         data = request_json["schema"]
                         schema_checked = jadn.check(data) 
-                        conv = jadn.translate.json_schema_dumps(schema_checked)
+                        conv = json_schema_dumps(schema_checked)
                     elif conv_fmt == "jadn":
                         data = request_json["schema"]
                         schema_checked = jadn.check(data) 
@@ -61,7 +62,7 @@ class Convert(Resource):
                     elif conv_fmt == "puml":
                         data = request_json["schema"]
                         schema_checked = jadn.check(data) 
-                        conv = jadn.convert.plant_dumps(schema_checked, style={'links': True, 'detail': 'information'})                                      
+                        conv = plant_dumps(schema_checked, style={'links': True, 'detail': 'information'})                                      
                     else:
                         conv = dumps(schema, **kwargs)
                         
@@ -119,15 +120,15 @@ class ConvertToAll(Resource):
                     data = request_json["schema"]
                     schema_checked = jadn.check(data) 
                     if conv_fmt == "puml":
-                        convertedSchema = jadn.convert.plant_dumps(schema_checked, style={'links': True, 'detail': 'information'})
+                        convertedSchema = plant_dumps(schema_checked, style={'links': True, 'detail': 'information'})
                     elif conv_fmt == "json":
-                        convertedSchema = jadn.translate.json_schema_dumps(schema_checked)
+                        convertedSchema = json_schema_dumps(schema_checked)
                     elif conv_fmt == "jadn":
                         convertedSchema = dumps(schema_checked, **kwargs)
                     else:
                         convertedSchema = dumps(schema, **kwargs)
                         
-                    convertedData.append({'fmt': conv_fmt.name, 'schema': convertedSchema})
+                    convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': convertedSchema})
                             
                 except:
                     tb = traceback.format_exc()

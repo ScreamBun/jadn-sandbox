@@ -15,6 +15,7 @@ import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
 import { FormatJADN } from 'components/utils';
 import { validateSchema } from 'actions/validate';
+import { initialGeneratedSchemaState } from './SchemaGenerator';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -31,7 +32,7 @@ const SchemaCreator = (props: any) => {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
-    const [data, setData] = useState(''); //generatedSchema JSON
+    const [data, setData] = useState(''); //generatedSchema JSON string
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
@@ -41,36 +42,40 @@ const SchemaCreator = (props: any) => {
     const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        const schemaStr = FormatJADN(generatedSchema);
-        dispatch(setSchema(generatedSchema));
-        setData(schemaStr);
-        //set configuration data
-        const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
-        if (configDefs) {
-            for (const [key, value] of Object.entries(configDefs)) {
-                if (key in configOpt && configOpt[key] != value && value != '') {
-                    setConfigOpt(prevState => {
-                        return {
-                            ...prevState,
-                            [key]: value
-                        };
-                    });
+        setIsValidJADN(false);
+        if (generatedSchema) {
+            const schemaStr = FormatJADN(generatedSchema);
+            dispatch(setSchema(generatedSchema));
+            setData(schemaStr);
+
+            //set configuration data
+            const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
+            if (configDefs.length != 0) {
+                for (const [key, value] of Object.entries(configDefs)) {
+                    if (key in configOpt && configOpt[key] != value && value != '') {
+                        setConfigOpt(prevState => {
+                            return {
+                                ...prevState,
+                                [key]: value
+                            };
+                        });
+                    }
                 }
             }
+        } else {
+            dispatch(setSchema({}));
+            setData("{}");
         }
 
     }, [generatedSchema])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
         setSelectedFile(e.target.value);
-        if (e.target.value == "file") {
-            setGeneratedSchema({
-                types: []
-            });
-            setData('');
-            dispatch(setSchema({ types: [] }));
+        if (e.target.value == "file" || e.target.value == "blank_schema") {
+            setGeneratedSchema('');
         } else {
             dispatch(loadFile('schemas', e.target.value))
                 .then((loadFileVal) => {
@@ -91,6 +96,7 @@ const SchemaCreator = (props: any) => {
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
         setGeneratedSchema('');
@@ -117,13 +123,14 @@ const SchemaCreator = (props: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setSelectedFile('');
-        setGeneratedSchema('');
+        setGeneratedSchema(initialGeneratedSchemaState);
         if (ref.current) {
             ref.current.value = '';
         }
     }
 
-    const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
+    const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         validateJADN(data);
     }
 
@@ -187,16 +194,18 @@ const SchemaCreator = (props: any) => {
         const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
 
         infoKeys = Object.keys(unusedInfo).map(k => (
-            <Draggable type="info" data={k} key={unusedInfo[k].key} >
-                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{unusedInfo[k].key}
+            <Draggable type="info" data={k} key={unusedInfo[k].key} onDragStart={selectedFile == 'file' ? (e) => e.preventDefault() : ''}>
+                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action={selectedFile == 'file' ? false : true}>
+                    {unusedInfo[k].key}
                     <FontAwesomeIcon icon={faGripLines} className='float-right' />
                 </ListGroupItem>
             </Draggable>
         ));
     } else {
         infoKeys = Object.keys(Info).map(k => (
-            <Draggable type="info" data={k} key={Info[k].key} >
-                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Info[k].key}
+            <Draggable type="info" data={k} key={Info[k].key} onDragStart={selectedFile == 'file' ? (e) => e.preventDefault() : ''}>
+                <ListGroupItem style={{ color: `${selectedFile == 'file' ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile == 'file' ? false : true}>
+                    {Info[k].key}
                     <FontAwesomeIcon icon={faGripLines} className='float-right' />
                 </ListGroupItem>
             </Draggable>
@@ -204,8 +213,9 @@ const SchemaCreator = (props: any) => {
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <Draggable type="types" data={k} key={Types[k].key}>
-            <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action>{Types[k].key}
+        <Draggable type="types" data={k} key={Types[k].key} onDragStart={selectedFile == 'file' ? (e) => e.preventDefault() : ''}>
+            <ListGroupItem style={{ color: `${selectedFile == 'file' ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile == 'file' ? false : true}>
+                {Types[k].key}
                 <FontAwesomeIcon icon={faGripLines} className='float-right' />
             </ListGroupItem>
         </Draggable>
@@ -214,14 +224,33 @@ const SchemaCreator = (props: any) => {
     const onDrop = (data: any) => {
         document.getElementById('schema-editor').style.backgroundColor = '';
         if (data.info) {
-            if (!(data.info in (generatedSchema.info || {}))) {
+            if (!generatedSchema.info) {
+                let newSchema = { ...generatedSchema };
+                if (data.info == 'config') {
+                    newSchema = Object.assign({
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[data.info].edit(configInitialState)
+                        }
+                    }, newSchema);
+                    setGeneratedSchema(newSchema);
+                } else {
+                    newSchema = Object.assign({
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[data.info].edit()
+                        }
+                    }, newSchema);
+                    setGeneratedSchema(newSchema);
+                }
+            } else if (generatedSchema.info && !(data.info in generatedSchema.info)) {
                 if (data.info == 'config') {
                     setGeneratedSchema((generatedSchema) => ({
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
                             ...Info[data.info].edit(configInitialState)
-                        }
+                        },
                     }));
                 } else {
                     setGeneratedSchema((generatedSchema) => ({
@@ -232,11 +261,11 @@ const SchemaCreator = (props: any) => {
                         }
                     }));
                 }
-                scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
             }
+            scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else if (data.types) {
-            const tmpTypes = [...generatedSchema.types] || [];
+            const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const tmpDef = Types[data.types].edit();
             tmpTypes.push(tmpDef);  // unshift drops items at the bottom
             setGeneratedSchema(generatedSchema => ({
@@ -260,7 +289,6 @@ const SchemaCreator = (props: any) => {
                 ,
                 placeholder: k,
                 change: val => {
-                    setIsValidJADN(false);
                     if (key == 'config') {
                         setConfigOpt(val);
                         setGeneratedSchema(generatedSchema => ({
@@ -287,10 +315,17 @@ const SchemaCreator = (props: any) => {
                         }
                         const tmpInfo = { ...generatedSchema.info };
                         delete tmpInfo[id];
-                        setGeneratedSchema(generatedSchema => ({
-                            ...generatedSchema,
-                            info: tmpInfo
-                        }));
+                        //remove info if empty
+                        if (Object.keys(tmpInfo).length == 0) {
+                            const tmpData = { ...generatedSchema };
+                            delete tmpData['info'];
+                            setGeneratedSchema(tmpData);
+                        } else {
+                            setGeneratedSchema(generatedSchema => ({
+                                ...generatedSchema,
+                                info: tmpInfo
+                            }));
+                        }
                     }
                 },
                 config: configInitialState
@@ -306,7 +341,6 @@ const SchemaCreator = (props: any) => {
             value: def,
             dataIndex: i,
             change: (val, idx: number) => {
-                setIsValidJADN(false);
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
                 setGeneratedSchema(generatedSchema => ({
@@ -320,16 +354,20 @@ const SchemaCreator = (props: any) => {
                     const tmpTypes = [...generatedSchema.types];
                     tmpTypes.splice(idx, 1);
                     //set data, even if references is unresolved
-                    setGeneratedSchema(generatedSchema => ({
-                        ...generatedSchema,
-                        types: tmpTypes
-                    }));
-
+                    //remove types if empty
+                    if (tmpTypes.length == 0) {
+                        const tmpData = { ...generatedSchema };
+                        delete tmpData['types'];
+                        setGeneratedSchema(tmpData);
+                    } else {
+                        setGeneratedSchema(generatedSchema => ({
+                            ...generatedSchema,
+                            types: tmpTypes
+                        }));
+                    }
                 }
             },
             changeIndex: (val, dataIndex: number, idx: number) => {
-                setIsValidJADN(false);
-
                 if (idx < 0) {
                     sbToastError('Error: Cannot move Type up anymore')
                     return;
@@ -362,7 +400,8 @@ const SchemaCreator = (props: any) => {
                     <div className='col-md-3'>
                         <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
                             <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
-                                <option value="">Select a Schema...</option>
+                                <option value="" disabled>Select a Schema...</option>
+                                <option value="blank_schema">New Schema...</option>
                                 <optgroup label="Testers">
                                     {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
                                 </optgroup>
@@ -404,7 +443,8 @@ const SchemaCreator = (props: any) => {
                                         <Nav pills>
                                             <NavItem>
                                                 <NavLink
-                                                    className={activeOpt == 'info' ? ' active' : ''}
+                                                    className={activeOpt == 'info' && selectedFile != 'file' ? ' active' : ''}
+                                                    disabled={selectedFile == 'file' ? true : false}
                                                     onClick={() => setActiveOpt('info')}
                                                     title="meta data (about a schema package)"
                                                 >
@@ -413,11 +453,12 @@ const SchemaCreator = (props: any) => {
                                             </NavItem>
                                             <NavItem>
                                                 <NavLink
-                                                    className={activeOpt == 'types' ? ' active' : ''}
+                                                    className={activeOpt == 'types' && selectedFile != 'file' ? ' active' : ''}
+                                                    disabled={selectedFile == 'file' ? true : false}
                                                     onClick={() => setActiveOpt('types')}
                                                     title="schema content (the information model)"
                                                 >
-                                                    Types
+                                                    Types*
                                                 </NavLink>
                                             </NavItem>
                                         </Nav>

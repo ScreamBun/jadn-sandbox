@@ -13,7 +13,7 @@ export interface InfoConfig {
 }
 
 export interface Info {
-  package?: string;
+  package: string;
   version?: string;
   title?: string;
   description?: string;

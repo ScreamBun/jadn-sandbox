@@ -6,13 +6,16 @@ import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import ExampleCreator from './ExampleCreator'
+import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { JSONSchemaFaker } from 'json-schema-faker';
+import { convertSchema } from 'actions/convert'
 
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [generatedMessages, setGeneratedMessages] = useState(["Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "]);
+    const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
 
     const meta_title = useSelector(getPageTitle) + ' | Message Generation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -20,23 +23,80 @@ const ExampleGenerator = () => {
         dispatch(info());
     }, [dispatch])
 
-/*     useEffect(() => {
+    useEffect(() => {
         setGeneratedMessages([]);
-    }, [loadedSchema]) */
+    }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedFile('');
         setLoadedSchema('');
         setGeneratedMessages([]);
-
         dispatch(setSchema({ types: [] }));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        //call make_examples.py
-        //set generated example messages 
+        let schemaObj = loadedSchema;
+        let schemaProps: any[] = [];
+        if (typeof schemaObj == 'string') {
+            try {
+                schemaObj = JSON.parse(loadedSchema);
+            } catch (err) {
+                if (err instanceof Error) {
+                    sbToastError(err.message);
+                }
+            }
+        }
+
+        dispatch(convertSchema(schemaObj, 'json'))
+            .then((convertSchemaVal) => {
+                if (convertSchemaVal.error) {
+                    console.error(convertSchemaVal.payload.response);
+                    sbToastError('Failed to generate examples: Invalid JSON data');
+                    return;
+                }
+                //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
+                const schema = JSON.parse(convertSchemaVal.payload.schema.convert);
+                schemaProps = schema.properties ? Object.keys(schema.properties) : [];
+                var generated: any[] = [] // LIST OF GENERATED EXAMPLES
+                const num = Math.floor(Math.random() * 11); // GENERATE A RANDOM NUM (1-10) OF EXAMPLES
+                let i = 0;
+                while (i < num || (i >= num && generated.length == 0)) {
+                    let ex = JSONSchemaFaker.generate(schema);
+                    if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
+                        for (const [k, v] of Object.entries(ex)) {
+                            if (Object.keys(v).length != 0) { // CHECK IF EACH OBJ HAS DATA
+                                if (schemaProps && schemaProps.includes(k)) {
+                                    generated.push(JSON.stringify(v, null, 2));
+                                } else {
+                                    generated.push(JSON.stringify({ [k]: v }, null, 2));
+                                }
+                            }
+                        }
+                    } else {
+                        if (Object.values(ex).length != 0) { // CHECK IF GENERATED DATA OBJ HAS DATA
+                            if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {
+                                generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
+                            } else {
+                                generated.push(JSON.stringify(ex, null, 2));
+                            }
+                        }
+                    }
+                    i += 1
+                }
+
+                if (generated.length != 0) {
+                    sbToastSuccess('Examples generated successfully');
+                    setGeneratedMessages(generated);
+                } else {
+                    sbToastError('Failed to generate examples');
+                }
+            })
+            .catch((convertSchemaErr) => {
+                sbToastError('Failed to generate examples: JADN TO JSON conversion failed');
+                console.error(convertSchemaErr);
+            });
     }
 
     return (

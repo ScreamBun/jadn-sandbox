@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "reactstrap";
 import * as d3 from "d3-graphviz";
-import SBEditor from "./SBEditor";
+import SBEditor from "../common/SBEditor";
 import saveAs from "file-saver";
-import { sbToastError } from "./SBToast";
+import { sbToastError } from "../common/SBToast";
 
 export const convertToGvSplitView = (data: any, height = 320, width = 920) => {
     d3.graphviz("#gv")

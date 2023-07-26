@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
 import { getAllSchemas } from "reducers/util";
 import { sbToastError } from "./SBToast";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { info, loadFile } from "actions/util";
 
@@ -17,16 +17,32 @@ const SBMultiSchemaLoader = (props: any) => {
     }, [dispatch])
 
 
+    //onFileUpload : upload file(s) to uploaded file list
     const onFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
-        const chosenFiles = Array.prototype.slice.call(e.target.files);
-        const uploadedFiles = [...data];
-        chosenFiles.forEach((file) => {
-            uploadedFiles.push(file);
-        })
-        setData(uploadedFiles);
+        if (e.target.files && e.target.files.length != 0) {
+            const chosenFiles = Array.prototype.slice.call(e.target.files);
+            const uploadedFiles = [...data];
+            chosenFiles.forEach((file) => {
+                const fileReader = new FileReader();
+                fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+                    if (ev.target) {
+                        let dataStr = ev.target.result;
+                        try {
+                            let dataObj = JSON.parse(dataStr);
+                            uploadedFiles.push({ 'name': file['name'], 'type': 'schemas', 'data': dataObj });
+                            setData(uploadedFiles);
+                        } catch (err) {
+                            sbToastError(`File cannot be loaded: Invalid JSON`);
+                        }
+                    }
+                };
+                fileReader.readAsText(file);
+            });
+        }
     }
 
+    //onFileCheck : add selected file from prepopulated list to uploaded file list
     const onFileCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = [...data];
 
@@ -43,12 +59,14 @@ const SBMultiSchemaLoader = (props: any) => {
                 })
                 .catch((loadFileErr) => { sbToastError(loadFileErr.payload.data); })
         } else {
+            //remove file if not selected
             const index = selectedFiles.indexOf(e.target.value);
             selectedFiles.splice(index, 1);
             setData(selectedFiles);
         }
     }
 
+    //removeFile : remove selected uploaded file
     const removeFile = (index: number, filename: string) => {
         //uncheck box 
         var inputElem = document.getElementsByTagName('input');
@@ -62,6 +80,7 @@ const SBMultiSchemaLoader = (props: any) => {
         setData(data.filter((_file: File, fileIndex: number) => fileIndex !== index));
     }
 
+    //removeAll : remove all uploaded files
     const removeAll = () => {
         setData([]);
         //clear checkboxes
@@ -79,7 +98,6 @@ const SBMultiSchemaLoader = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <Input type="file" id="schema-files" name="schema-files" accept=".jadn" onChange={onFileUpload} multiple hidden />
-                {/*<a className='btn-sm btn-primary mr-1' style={{ display: 'inline-block' }}> Upload Files </a> */}
                 <Button color="info" id="triggerFileLoader" className="btn-sm mr-1 float-right" onClick={() => document.getElementById('schema-files')?.click()}> Upload Files </Button>
             </div>
             <div className="card-body p-0" style={{ height: '40em' }}>
@@ -107,9 +125,9 @@ const SBMultiSchemaLoader = (props: any) => {
                     </div>
                     <div style={{ height: '20em' }}>
                         <ul className="list-group">
-                            {data.map((file: File, index: number) => (
+                            {data.map((file: any, index: number) => (
                                 <li className="list-group-item" key={index}>
-                                    {file.name}
+                                    {file.name} {file.data == 'err' ? <FontAwesomeIcon style={{ color: 'red' }} title={'Invalid JADN. Please remove or fix schema.'} icon={faExclamationCircle}></FontAwesomeIcon> : ''}
                                     <Button id='removeFile' color="danger" className='btn-sm float-right' onClick={() => removeFile(index, file.name)}>
                                         <FontAwesomeIcon icon={faTrash} />
                                     </Button>

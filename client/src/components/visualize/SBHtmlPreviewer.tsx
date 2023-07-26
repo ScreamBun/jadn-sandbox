@@ -1,5 +1,5 @@
 import React from "react";
-import SBEditor from "./SBEditor";
+import SBEditor from "../common/SBEditor";
 
 export const onHTMLPopOutClick = (convertedSchema: any) => {
     const blob = new Blob([convertedSchema], { type: "text/html" });

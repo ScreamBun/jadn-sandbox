@@ -5,6 +5,7 @@ export interface ConvertState {
   converted: {
     convert: string;
     fmt: string;
+    fmt_ext: string;
   }
 }
 
@@ -12,7 +13,8 @@ const initialState: ConvertState = {
   conversions: {},
   converted: {
     convert: '',
-    fmt: ''
+    fmt: '',
+    fmt_ext: ''
   },
 };
 

@@ -1,20 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
-import { validateSchema } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
 import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
+import { transformSchema } from 'actions/transform'
 
 const SchemaTransformer = () => {
+    const dispatch = useDispatch();
 
-    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
     const [transformedSchema, setTransformedSchema] = useState('');
+    const [transformationType, setTransformationType] = useState('');
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+
+    useEffect(() => {
+        setTransformedSchema('');
+    }, [selectedFiles])
 
     const onReset = () => {
         setSelectedFiles([]);
@@ -35,6 +41,34 @@ const SchemaTransformer = () => {
         //validate all selected files
         //call resolve_references.py
         //set transformed Schema
+        dispatch(transformSchema(selectedFiles, transformationType))
+            .then((val) => {
+                if (val.error == true) {
+                    val.payload.response.forEach((schema) => {
+                        sbToastError(`${schema.name} : ${schema.err}`);
+                        //invalidate selectedFiles 
+                        let invalidFiles;
+                        selectedFiles.forEach((file, index) => {
+                            if (file.name == schema.name) {
+                                invalidFiles = selectedFiles.map((f, i) => {
+                                    if (i == index) {
+                                        return { ...f, 'data': 'err' };
+                                    } else {
+                                        return f;
+                                    }
+                                })
+                                setSelectedFiles(invalidFiles);
+                            }
+                        })
+                    })
+                } else {
+                    sbToastSuccess('Transformed Schema successfully');
+                    setTransformedSchema(val.payload);
+                }
+            })
+            .catch((err) => {
+                sbToastError(err);
+            })
     }
 
     return (
@@ -57,7 +91,8 @@ const SchemaTransformer = () => {
                                         <SBMultiSchemaLoader data={selectedFiles} setData={setSelectedFiles} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <SchemaTransformed transformedSchema={transformedSchema} />
+                                        <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}
+                                            transformationType={transformationType} setTransformationType={setTransformationType} />
                                     </div>
                                 </div>
                             </Form>

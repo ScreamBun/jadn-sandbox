@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { TabContent, TabPane, Button, FormText } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib/GenMsgLib'
-import { getSelectedSchema } from 'reducers/util'
 import { StandardFieldArray } from '../schema/interface'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
@@ -10,10 +8,8 @@ import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPE
 import SBDownloadFile from 'components/common/SBDownloadFile'
 
 const MessageCreator = (props: any) => {
-    const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
-
+    const { generatedMessage, setGeneratedMessage, commandType, setCommandType, loadedSchema } = props
     const [activeView, setActiveView] = useState('creator');
-
     const [configOpt, setConfigOpt] = useState({
         $MaxBinary: $MAX_BINARY,
         $MaxString: $MAX_STRING,
@@ -24,7 +20,7 @@ const MessageCreator = (props: any) => {
         $NSID: $NSID
     })
 
-    let schemaObj = useSelector(getSelectedSchema);
+    let schemaObj = loadedSchema ? JSON.parse(loadedSchema) : '';
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType) : [];
 

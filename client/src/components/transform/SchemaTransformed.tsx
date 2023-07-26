@@ -6,20 +6,26 @@ import SBDownloadFile from "components/common/SBDownloadFile";
 
 const SchemaTransformed = (props: any) => {
 
-    const { transformedSchema } = props;
+    const { transformedSchema, data, transformationType, setTransformationType } = props;
 
     return (
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-9'>
-                        Specify transformation type here..
+                        <select id="transformation-type" name="transformation-type" className="form-control form-control-sm" value={transformationType} onChange={(e) => setTransformationType(e.target.value)}>
+                            <option value="" disabled>Select a Transformation Type...</option>
+                            <option value="resolve-refs">Resolve references</option>
+                            <option value="strip-comments">Strip comments</option>
+                        </select>
                     </div>
                     <div className='col-md-3'>
                         <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema} customClass='float-right' />
                         <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${transformedSchema ? '' : ' d-none'}`} data={transformedSchema} />
 
-                        <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right">
+                        <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
+                            disabled={data.length != 0 ? false : true}
+                            title={"Process JADN schema(s) to produce another JADN schema"}>
                             Transform
                         </Button>
                     </div>

@@ -31,7 +31,6 @@ const MessageGenerator = () => {
         setSelectedFile('');
         setLoadedSchema('');
         setGeneratedMessage({});
-
         dispatch(setSchema({ types: [] }));
     }
 
@@ -58,7 +57,7 @@ const MessageGenerator = () => {
                                 <div className='col-md-6 pl-1'>
                                     <MessageCreator
                                         generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                        commandType={commandType} setCommandType={setCommandType} />
+                                        commandType={commandType} setCommandType={setCommandType} loadedSchema={loadedSchema} />
                                 </div>
                             </div>
                         </div>

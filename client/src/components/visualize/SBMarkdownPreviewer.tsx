@@ -1,5 +1,5 @@
 import React from "react";
-import SBEditor from "./SBEditor";
+import SBEditor from "../common/SBEditor";
 import { marked } from "marked";
 
 // markdownToHTML: ALLOWS LINE BREAKS WITH RETURN BUTTON
