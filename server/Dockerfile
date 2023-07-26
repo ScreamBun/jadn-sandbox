@@ -6,7 +6,7 @@ license="BSD" \
 version="2.0" \
 description="This is the JADN Sandbox container"
 
-ARG jadnschema=jadnschema-0.2.9-py2.py3-none-any.whl
+ARG jadnschema=jadnschema-0.2.10-py2.py3-none-any.whl
 
 # Orchestrator Core Working Directory
 WORKDIR /opt/jadn_sandbox/
