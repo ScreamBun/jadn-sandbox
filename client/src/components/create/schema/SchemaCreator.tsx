@@ -6,7 +6,7 @@ import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCheck, faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { dismissAllToast, sbToastError, sbToastErrorFreeze, sbToastSuccess } from 'components/common/SBToast';
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBEditor from 'components/common/SBEditor';
@@ -150,15 +150,15 @@ const SchemaCreator = (props: any) => {
                         setIsValidJADN(true);
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
-                        sbToastErrorFreeze(validateSchemaVal.payload.valid_msg);
+                        sbToastError(validateSchemaVal.payload.valid_msg);
                     }
                 })
                 .catch((validateSchemaErr) => {
-                    sbToastErrorFreeze(validateSchemaErr.payload.valid_msg)
+                    sbToastError(validateSchemaErr.payload.valid_msg)
                 })
         } catch (err) {
             if (err instanceof Error) {
-                sbToastErrorFreeze(err.message)
+                sbToastError(err.message)
             }
         }
     }
