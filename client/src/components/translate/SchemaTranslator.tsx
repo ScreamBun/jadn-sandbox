@@ -17,6 +17,7 @@ const SchemaTranslator = () => {
     const [translatedSchema, setTranslatedSchema] = useState('');
     const [convertAll, setConvertAll] = useState<any[]>([]);
     const [translation, setTranslation] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Translation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -39,6 +40,7 @@ const SchemaTranslator = () => {
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
 
         if (translation) {
             let schemaObj = loadedSchema;
@@ -49,6 +51,7 @@ const SchemaTranslator = () => {
                 } catch (err) {
                     if (err instanceof Error) {
                         sbToastError(err.message);
+                        setIsLoading(false);
                     }
                 }
             }
@@ -60,10 +63,12 @@ const SchemaTranslator = () => {
                                 if (convertSchemaVal.error) {
                                     setTranslatedSchema('');
                                     sbToastError(convertSchemaVal.payload.response);
+                                    setIsLoading(false);
                                     return;
                                 }
                                 setTranslatedSchema(convertSchemaVal.payload.schema.convert);
                                 sbToastSuccess(`Schema translated to ${translation} successfully`);
+                                setIsLoading(false);
                             })
                             .catch((convertSchemaErr) => {
                                 sbToastError(convertSchemaErr.payload.response);
@@ -79,12 +84,14 @@ const SchemaTranslator = () => {
                                 if (convertSchemaVal.error) {
                                     setTranslatedSchema('');
                                     sbToastError(convertSchemaVal.payload.response);
+                                    setIsLoading(false);
                                     return;
                                 }
                                 setConvertAll(convertSchemaVal.payload.schema.convert);
                                 for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
                                     sbToastSuccess(`Schema translated to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                                 }
+                                setIsLoading(false);
                             })
                             .catch((convertSchemaErr: string) => {
                                 sbToastError(convertSchemaErr);
@@ -92,12 +99,15 @@ const SchemaTranslator = () => {
 
                     } else if (validateSchemaVal.payload.valid_bool == false) {
                         sbToastError("Invalid Schema");
+                        setIsLoading(false);
                     } else if (translation == '') {
                         sbToastError("No translation selected");
+                        setIsLoading(false);
                     }
                 })
                 .catch((validateSchemaErr) => {
                     sbToastError(validateSchemaErr);
+                    setIsLoading(false);
                 })
 
         } else {
@@ -131,7 +141,7 @@ const SchemaTranslator = () => {
                                             translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
                                             translation={translation} setTranslation={setTranslation}
                                             convertAll={convertAll} setConvertAll={setConvertAll}
-                                            loadedSchema={loadedSchema} />
+                                            loadedSchema={loadedSchema} isLoading={isLoading} />
                                     </div>
                                 </div>
                             </Form>

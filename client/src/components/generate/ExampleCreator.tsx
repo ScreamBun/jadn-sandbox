@@ -3,9 +3,10 @@ import { Button } from 'reactstrap'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
 import SBDownloadFile from 'components/common/SBDownloadFile'
+import Spinner from 'components/common/Spinner'
 
 const ExampleCreator = (props: any) => {
-    const { generatedMessages, loadedSchema } = props;
+    const { generatedMessages, loadedSchema, isLoading } = props;
     const [toggle, setToggle] = useState('');
 
     const onToggle = (index: number) => {
@@ -22,7 +23,7 @@ const ExampleCreator = (props: any) => {
             <div className="card-header">
                 <h5 className="mb-0">
                     <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
-                        Message Example #{i+1}
+                        Message Example #{i + 1}
                     </button>
                     <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-right' />
                     <SBDownloadFile buttonId={`downloadMsgExample${i}`} customClass='mr-1 float-right' data={message} ext={'json'} />
@@ -39,11 +40,11 @@ const ExampleCreator = (props: any) => {
     return (
         <div className="card">
             <div className="card-header p-2">
-                <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
+                {isLoading ? <Spinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                     disabled={loadedSchema ? false : true}
                     title={"Generate example messages based on selected schema"}>
                     Generate
-                </Button>
+                </Button>}
             </div>
             <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
                 {msgList}
