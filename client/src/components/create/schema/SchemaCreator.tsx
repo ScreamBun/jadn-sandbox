@@ -110,7 +110,7 @@ const SchemaCreator = (props: any) => {
                         setGeneratedSchema(JSON.parse(data));
                         validateJADN(data);
                     } catch (err) {
-                        sbToastError(`Schema cannot be loaded`);
+                        sbToastError(`Schema cannot be loaded: Invalid JSON`);
                     }
                 }
             };

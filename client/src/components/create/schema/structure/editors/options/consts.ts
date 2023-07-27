@@ -191,7 +191,7 @@ export const TypeOptionInputArgs = {
   },
   set: {
     type: 'checkbox',
-    description: '(optional) If present, an ArrayOf instance is unordered and uniques'
+    description: '(optional) If present, an ArrayOf instance is unordered and unique'
   },
   unordered: {
     type: 'checkbox',
