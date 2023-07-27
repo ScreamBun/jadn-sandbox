@@ -1,25 +1,28 @@
 import json
 import os
+import toml
 
 from jadnschema.utils import FrozenDict
 from jadnschema.convert import SchemaFormats
 
 
 class Config:
+
     APP_DIR = os.path.realpath(os.path.dirname(__file__))
     APP_DATA = os.path.join(APP_DIR, "data")
-    with open(os.path.join(APP_DATA, "version.json"), "r", encoding="utf-8") as f:
-        VERSION_INFO = json.load(f)
+
+    path_to_toml = os.path.join(APP_DATA, "version.toml")
+    version_data = toml.load(path_to_toml)
+
+    VERSION_INFO = version_data["full_version"]
     APPLICATION_ROOT = "/"
     STATIC_FOLDER = os.path.join(APP_DIR, "static")
     TEMPLATE_FOLDER = os.path.join(APP_DIR, "templates")
     SECRET_KEY = "openc2openc2"
     DEBUG = False
     INIT = True
-    # Logger
-    LOGGER_NAME = "OpenC2_JADN"
     LOG_LEVEL = "INFO"
-    VERSION = "1.1.1"
+    
     # Allowed Headers/Methods
     HEADERS = [
         "Authorization",

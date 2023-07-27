@@ -11,3 +11,4 @@ gunicorn==20.1.0
 jadn==0.6.17
 lxml  # Use version from JADNSchema
 weasyprint==57.0
+toml==0.10.2
