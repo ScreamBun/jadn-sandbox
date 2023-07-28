@@ -10,6 +10,7 @@ from .load import add_resources as add_load
 from .validate import add_resources as add_validate
 from .format import add_resources as add_format
 from .transform import add_resources as add_transform
+from .uploader import add_resources as add_upload
 
 log = logging.getLogger()
 api = Blueprint("api", __name__)
@@ -49,3 +50,4 @@ add_load(api_root, url_prefix="/load")
 add_validate(api_root, url_prefix="/validate")
 add_format(api_root, url_prefix="/format")
 add_transform(api_root, url_prefix="/transform")
+add_upload(api_root, url_prefix="/upload")
