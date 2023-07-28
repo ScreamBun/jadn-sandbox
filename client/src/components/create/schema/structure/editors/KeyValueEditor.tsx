@@ -5,6 +5,8 @@ import {
 import { InputType } from 'reactstrap/es/Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
+import { option } from 'yargs';
+import { splitCamel } from 'components/utils';
 
 // Interface
 interface KeyValueEditorProps {
@@ -41,10 +43,18 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
   }
 
   if (type === 'select' && options) {
-    if (options[0] != '') {
-      options.unshift('');
+    let filtered;
+    if (placeholder == 'vtype' || placeholder == 'ktype') {
+      inputArgs.children = Object.keys(options).map(optGroup => (
+        <optgroup key={optGroup} label={splitCamel(optGroup)} >
+          {options[optGroup as 'base' | 'schema'].map((opt: any) => opt != '' ? <option key={opt} value={opt} >{opt}</option> : <option key={opt} value={opt} disabled selected>{opt}</option>)}
+        </optgroup>
+      ));
+    } else {
+      filtered = options.filter((opt) => opt != ''); //remove empty strings
+      filtered.unshift('Please select...'); //begin select on a blank option
+      inputArgs.children = filtered.map((opt, i) => <option key={opt} value={i == 0 ? '' : opt} disabled={i == 0 ? true : false} selected={i == 0 ? true : false}>{opt}</option>);
     }
-    inputArgs.children = options.map(opt => <option key={opt} value={opt} >{opt}</option>);
   }
 
   return (

@@ -151,9 +151,11 @@ export const TypeOptionInputArgs = {
     description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName'
   },
   vtype: {
+    type: 'select',
     description: 'Value type for ArrayOf and MapOf'
   },
   ktype: {
+    type: 'select',
     description: 'Key type for MapOf'
   },
   enum: {

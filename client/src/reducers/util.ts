@@ -13,7 +13,6 @@ export interface UtilState {
   selectedSchema: SchemaJADN;
   types: {
     base: Array<string>;
-    fieldTypes: Array<string>;
     schema: Array<string>;
   }
 }
@@ -32,8 +31,7 @@ const initialState: UtilState = {
   },
   types: {
     /*     FieldType MUST be a Primitive type, ArrayOf, MapOf, or a model-defined type. */
-    base: ['binary', 'boolean', 'integer', 'number', 'string', 'enumerated', 'choice', 'array', 'arrayof', 'map', 'mapof', 'record'],
-    fieldTypes: ['Binary', 'Boolean', 'Integer', 'Number', 'String', 'ArrayOf', 'MapOf'],
+    base: ['Array', 'ArrayOf', 'Binary', 'Boolean', 'Choice', 'Enumerated', 'Integer', 'Map', 'MapOf', 'Number', 'Record', 'String'],
     schema: []
   }
 };
