@@ -13,13 +13,15 @@ const SBSaveFile = (props: any) => {
     const { buttonId, data, customClass, filename, ext, loc } = props;
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleSaveDialog, setToggleSaveDialog] = useState(false);
+    const [toggleOverwriteDialog, setToggleOverwriteDialog] = useState(false); //nestedModal
+
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFileNameInput(e.target.value);
     }
 
-    const onSaveFile = (dataStr: string, fmt: string = 'jadn') => {
-        if (!dataStr) {
+    const onSaveFile = (dataStr: string, fmt: string = 'jadn', overwrite: boolean = false) => {
+        if (dataStr == '{}') {
             sbToastError('Error: No data to save.');
             return;
         }
@@ -30,22 +32,29 @@ const SBSaveFile = (props: any) => {
         }
 
         const filename = `${fileNameInput}.${fmt}`;
-        setToggleSaveDialog(false);
 
         try {
-            dispatch(uploadSchema(filename, dataStr, loc))
+            dispatch(uploadSchema(filename, dataStr, loc, overwrite))
                 .then((val) => {
                     if (val.error) {
+                        if (val.payload.status == 409) {
+                            setToggleOverwriteDialog(true);
+                            return;
+                        }
                         sbToastError(`Error: ${val.payload.response}`);
+                        setToggleSaveDialog(false);
                         return;
                     }
                     sbToastSuccess(val.payload);
+                    setToggleSaveDialog(false);
                 })
                 .catch((err) => {
                     sbToastError(`Error: ${err.payload.response}`);
+                    setToggleSaveDialog(false);
                 });
         } catch (err) {
             sbToastError(`Error: ${err.payload.response}`);
+            setToggleSaveDialog(false);
         }
     }
 
@@ -75,6 +84,18 @@ const SBSaveFile = (props: any) => {
                             {ext ? ext : 'jadn'}
                         </div>
                     </div>
+
+                    <Modal
+                        isOpen={toggleOverwriteDialog}
+                    >
+                        <ModalHeader>Confirm Overwrite</ModalHeader>
+                        <ModalBody>File {filename} already exists. Please confirm that you would like to overwrite this file? </ModalBody>
+                        <ModalFooter>
+                            <Button color="success" onClick={() => onSaveFile(data, ext, true)}>Confirm</Button>
+                            <Button color="secondary" onClick={() => setToggleOverwriteDialog(false)}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
+
                 </ModalBody>
                 <ModalFooter>
                     <Button color="success" onClick={() => onSaveFile(data, ext)}>Save</Button>

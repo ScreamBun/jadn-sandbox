@@ -18,7 +18,7 @@ class DropFile(Resource):
         filename = request.json['filename']
         file = request.json['filedata']
         location = request.json['loc']
-        #overwrite = request.json['overwrite']
+        overwrite = request.json['overwrite']
         if not file:
             return 'No data to write to file', 500
 
@@ -26,12 +26,12 @@ class DropFile(Resource):
         UPLOAD_FOLDER = os.path.join(path, location)
 
         #check if file exists
-        # if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)) and not overwrite:
-        #             return 500, 'File name already exists'
-        # else:
+        if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)) and not overwrite:
+                     return 'File name already exists', 409
+        else:
         #write file
-        with open(os.path.join(UPLOAD_FOLDER, filename), "w") as fp:
-            fp.write(file)
+            with open(os.path.join(UPLOAD_FOLDER, filename), "w") as fp:
+                fp.write(file)
         
         #check file is in directory
         if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):

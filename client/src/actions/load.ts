@@ -12,7 +12,7 @@ const baseAPI = '/api/upload';
 const LOAD_REQUEST = '@@load/LOAD_REQUEST';
 export const LOAD_SUCCESS = '@@load/LOAD_SUCCESS';
 export const LOAD_FAILURE = '@@load/LOAD_FAILURE';
-export const uploadSchema = (name: string, file_data: string, loc: 'schemas' | 'messages') => createAction({
+export const uploadSchema = (name: string, file_data: string, loc: 'schemas' | 'messages', overwrite: boolean) => createAction({
     endpoint: `${baseAPI}/`,
     method: 'POST',
     headers: {
@@ -21,7 +21,8 @@ export const uploadSchema = (name: string, file_data: string, loc: 'schemas' | '
     body: JSON.stringify({
         'filename': name,
         'filedata': file_data,
-        'loc': loc
+        'loc': loc,
+        'overwrite': overwrite
     }),
     types: [
         LOAD_REQUEST, LOAD_SUCCESS, LOAD_FAILURE
