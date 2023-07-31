@@ -15,6 +15,7 @@ import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
 import { FormatJADN } from 'components/utils';
 import { validateSchema } from 'actions/validate';
+import SBSaveFile from 'components/common/SBSaveFile';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -32,6 +33,7 @@ const SchemaCreator = (props: any) => {
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
     const [data, setData] = useState(''); //generatedSchema JSON string
+    const [fileName, setFileName] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
@@ -72,6 +74,7 @@ const SchemaCreator = (props: any) => {
         e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
+        setFileName(e.target.value.split('.')[0]);
         setSelectedFile(e.target.value);
         if (e.target.value == "file") {
             setGeneratedSchema('');
@@ -102,6 +105,7 @@ const SchemaCreator = (props: any) => {
         setGeneratedSchema('');
         if (e.target.files && e.target.files.length != 0) {
             const file = e.target.files[0];
+            setFileName(file.name.split('.')[0]);
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
@@ -122,6 +126,7 @@ const SchemaCreator = (props: any) => {
         e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
+        setFileName('');
         setSelectedFile('');
         setGeneratedSchema('');
         if (ref.current) {
@@ -414,8 +419,9 @@ const SchemaCreator = (props: any) => {
                         </div>
                     </div>
                     <div className='col-md-9'>
-                        <SBCopyToClipboard buttonId='copyMessage' data={data} customClass='float-right' />
-                        <SBDownloadFile buttonId='schemaDownload' customClass='float-right mr-1' data={data} />
+                        <SBCopyToClipboard buttonId='copyMessage' data={data} customClass='float-right mr-1' />
+                        <SBSaveFile data={data} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} />
+                        <SBDownloadFile buttonId='schemaDownload' customClass='float-right mr-1' filename={fileName} data={data} />
                         <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="info">View Schema</Button>
                         <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
                         <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title={isValidJADN ? "JADN schema is valid" : "Click to validate JADN"} onClick={onValidateJADNClick}>

@@ -7,6 +7,7 @@ import { ActionFailureResult, ActionRequestResult, ActionSuccessResult } from '.
 const baseAPI = '/api';
 
 // Helper Functions
+//TODO: remove setSchema -- replace with local state
 // OPTIONS - set schema locally for generating messages
 export const SCHEMA_DEFINE = '@@util/SCHEMA_DEFINE';
 export const SCHEMA_SUCCESS = '@@util/SCHEMA_SUCCESS';

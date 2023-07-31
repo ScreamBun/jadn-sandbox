@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import {
@@ -13,12 +13,14 @@ import { useLocation } from "react-router-dom";
 import { isNull } from "lodash";
 import SBFileUploader from "components/common/SBFileUploader";
 import Spinner from "components/common/Spinner";
+import SBSaveFile from "components/common/SBSaveFile";
 
 const MessageValidated = (props: any) => {
     const location = useLocation()
     const { navMsgFormat } = location.state
 
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, loadedSchema, isLoading } = props;
+    const [fileName, setFileName] = useState('');
 
     const msgOpts = useSelector(getMsgFiles);
     const decodeExports = decodeSchemaTypes.exports.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
@@ -33,11 +35,12 @@ const MessageValidated = (props: any) => {
     }, [])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setFileName(e.target.value.split('.')[0]);
         setSelectedFile(e.target.value);
+        setLoadedMsg('');
+        setDecodeMsg('');
+        setMsgFormat('');
         if (e.target.value == "file") {
-            setLoadedMsg('');
-            setDecodeMsg('');
-            setMsgFormat('');
             ref.current.click();
 
         } else {
@@ -59,7 +62,6 @@ const MessageValidated = (props: any) => {
                     }
                 })
                 .catch((loadFileErr) => {
-                    setLoadedMsg('');
                     sbToastError(loadFileErr.payload.data);
                 })
         }
@@ -75,8 +77,8 @@ const MessageValidated = (props: any) => {
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0];
-            //const prefix = file.name.split('.')[0];
             const type = file.name.split('.')[1];
+            setFileName(file.name.split('.')[0]);
 
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -105,6 +107,7 @@ const MessageValidated = (props: any) => {
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedFile('');
+        setFileName('');
         setLoadedMsg('');
         if (ref.current) {
             ref.current.value = '';
@@ -159,6 +162,7 @@ const MessageValidated = (props: any) => {
 
                     <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
+                        <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat || 'json'} />
                         {isLoading ? <Spinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
                             title={'Validate the message against the given schema'}>
                             Validate Message

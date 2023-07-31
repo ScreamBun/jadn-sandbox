@@ -6,6 +6,7 @@ import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
 import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPENAME } from '../consts'
 import SBDownloadFile from 'components/common/SBDownloadFile'
+import SBSaveFile from 'components/common/SBSaveFile'
 
 const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType, loadedSchema } = props
@@ -107,6 +108,7 @@ const MessageCreator = (props: any) => {
                     </div>
                     <div className='col'>
                         <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' shouldStringify={true} />
+                        <SBSaveFile data={generatedMessage} loc={'messages'} customClass={"float-right mr-1"} ext={'json'} />
                         <SBDownloadFile buttonId='msgDownload' customClass='float-right mr-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
 
                         <Button onClick={() => setActiveView('message')} className={`float-right btn-sm mr-1 ${activeView == 'message' ? ' d-none' : ''}`} color="info">View Message</Button>
