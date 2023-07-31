@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { sbToastError, sbToastSuccess } from "./SBToast";
+import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 //TODO: Add ability to save in other extensions ? 
 const SBDownloadFile = (props: any) => {
 
@@ -17,8 +17,10 @@ const SBDownloadFile = (props: any) => {
 
     const onDownloadClick = (fmt: string = 'jadn') => {
         if (fileNameInput == '') {
-            alert('Please enter a file name.');
+            sbToastWarning('Please enter a file name.');
             return;
+        } else if (fileNameInput.match(/^(?!.{256,})(?!(aux|clock\$|con|nul|prn|com[1-9]|lpt[1-9])(?:$|\.))[^ ][ \.\w-$()+=[\];#@~,&amp;']+[^\. ]$/i)) {
+            sbToastWarning("Please do not use special characters in file name.");
         }
         try {
             const filename = `${fileNameInput}.${fmt}`;

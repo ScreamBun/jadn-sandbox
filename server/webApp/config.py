@@ -48,12 +48,14 @@ class Config:
     OPEN_C2_SCHEMA_THEME = os.path.join(OPEN_C2_DATA, "openc2_schema_theme.css")
     PROFILE_TEST_DATA = os.path.join(APP_DATA, "test_messages")
 
-    try:
-        with open(os.path.join(APP_DATA, "openc2_files", "messages", "_default_types.json"), "r", encoding="utf-8") as f:
-            DEFAULT_MESSAGE_TYPES = json.load(f)
-    except Exception:  # pylint: disable=broad-except
-        # TODO: pick better exception
-        DEFAULT_MESSAGE_TYPES = {}
+
+    #TODO: remove?
+    # try:
+    #     with open(os.path.join(APP_DATA, "openc2_files", "messages", "_default_types.json"), "r", encoding="utf-8") as f:
+    #         DEFAULT_MESSAGE_TYPES = json.load(f)
+    # except Exception:  # pylint: disable=broad-except
+    #     # TODO: pick better exception
+    #     DEFAULT_MESSAGE_TYPES = {}
 
     VALID_SCHEMAS = ["jadn", ]
     VALID_SCHEMA_CONV = FrozenDict({fmt.name: fmt.value for fmt in SchemaFormats})

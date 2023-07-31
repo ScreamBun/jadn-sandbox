@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
-import { getAllSchemas } from "reducers/util";
+import { getAllSchemasList } from "reducers/util";
 import { sbToastError } from "./SBToast";
 import { faExclamationCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +11,7 @@ const SBMultiSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
     const { data, setData } = props;
 
-    const schemaOpts = useSelector(getAllSchemas);
+    const schemaOpts = useSelector(getAllSchemasList);
     useEffect(() => {
         dispatch(info());
     }, [dispatch])

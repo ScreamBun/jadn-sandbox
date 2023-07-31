@@ -35,6 +35,7 @@ const MessageValidated = (props: any) => {
     }, [])
 
     const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        e.preventDefault();
         setFileName(e.target.value.split('.')[0]);
         setSelectedFile(e.target.value);
         setLoadedMsg('');
@@ -125,9 +126,10 @@ const MessageValidated = (props: any) => {
                             <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
                                 <option value="" disabled>Message</option>
                                 <optgroup label="Testers">
-                                    {Object.entries(msgOpts).map(([n, t]) => <option key={n} value={n} data-decode={t} >{n}</option>)}
+                                    {msgOpts['testers'].map((s: any) => <option key={s} value={s}>{s}</option>)}
                                 </optgroup>
                                 <optgroup label="Custom">
+                                    {msgOpts['custom']?.map((s: any) => <option key={s} value={s} >{s}</option>)}
                                     <option value="file">File...</option>
                                 </optgroup>
                             </select>

@@ -26,17 +26,43 @@ class API(Resource):
 
         schemas = re.compile(r"\.(" + "|".join(current_app.config.get("VALID_SCHEMAS")) + ")$")
         messages = re.compile(fr"\.({'|'.join(current_app.config.get('VALID_MESSAGES'))})$")
+        schema_files = {}
         message_files = {}
         version_info = current_app.config.get("VERSION_INFO")
 
-        for msg in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "messages")):
-            if messages.search(msg) and not msg.startswith("_"):
-                message_files[msg] = current_app.config.get("DEFAULT_MESSAGE_TYPES").get(msg, "")
+        #TODO: remove? 
+        # for msg in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "messages")):
+        #   if messages.search(msg) and not msg.startswith("_"):
+        #       message_files[msg] = current_app.config.get("DEFAULT_MESSAGE_TYPES").get(msg, "")
+
+        msg_list = []
+        for m in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "messages")):
+            if messages.search(m) and not m.startswith("_"):
+                msg_list.append(m)
+        message_files['testers'] = msg_list
+        
+        msg_list = []
+        for m in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "custom", "messages")):
+            if messages.search(m) and not m.startswith("_"):
+                msg_list.append(m)
+            message_files['custom'] = msg_list
+
+        schema_list = []
+        for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "schemas")):
+            if schemas.search(s):
+                schema_list.append(s)
+        schema_files['testers'] = schema_list
+        
+        schema_list = []
+        for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "custom", "schemas")):
+            if schemas.search(s):
+                schema_list.append(s)
+            schema_files['custom'] = schema_list
 
         rsp = dict(
             title="JADN Sandbox",
             message="MESSAGE",
-            schemas=[s for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "schemas")) if schemas.search(s)],
+            schemas=schema_files,
             messages=message_files,
             version_info=version_info
         )

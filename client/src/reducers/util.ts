@@ -7,8 +7,14 @@ export interface UtilState {
   version_info: string;
   error: string;
   loaded: {
-    messages: Record<string, any>;
-    schemas: Record<string, any>;
+    messages: {
+      testers: Record<string, any>;
+      custom?: Record<string, any>;
+    };
+    schemas: {
+      testers: Record<string, any>;
+      custom?: Record<string, any>;
+    };
   },
   selectedSchema: SchemaJADN;
   types: {
@@ -23,14 +29,19 @@ const initialState: UtilState = {
   version_info: '',
   error: '',
   loaded: {
-    messages: {},
-    schemas: []
+    messages: {
+      testers: [],
+      custom: []
+    },
+    schemas: {
+      testers: [],
+      custom: []
+    }
   },
   selectedSchema: {
     types: []
   },
   types: {
-    /*     FieldType MUST be a Primitive type, ArrayOf, MapOf, or a model-defined type. */
     base: ['Array', 'ArrayOf', 'Binary', 'Boolean', 'Choice', 'Enumerated', 'Integer', 'Map', 'MapOf', 'Number', 'Record', 'String'],
     schema: []
   }
@@ -84,3 +95,4 @@ export default (state = initialState, action: util.UtilActions) => {
 export const getPageTitle = (state: { Util: { site_title: any; }; }) => state.Util.site_title;
 export const getAllSchemas = (state: { Util: { loaded: { schemas: any; }; }; }) => state.Util.loaded.schemas;
 export const getMsgFiles = (state: { Util: { loaded: { messages: any; }; }; }) => state.Util.loaded.messages;
+export const getAllSchemasList = (state: { Util: { loaded: { schemas: { testers: any; custom: any; }; }; }; }) => [...state.Util.loaded.schemas.testers, ...state.Util.loaded.schemas.custom]

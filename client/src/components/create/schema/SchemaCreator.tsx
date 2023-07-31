@@ -407,9 +407,10 @@ const SchemaCreator = (props: any) => {
                             <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
                                 <option value="" disabled>Select a Schema...</option>
                                 <optgroup label="Testers">
-                                    {schemaOpts.map((s: any) => <option key={s} value={s} >{s}</option>)}
+                                    {schemaOpts['testers'].map((s: any) => <option key={s} value={s} >{s}</option>)}
                                 </optgroup>
                                 <optgroup label="Custom">
+                                    {schemaOpts['custom']?.map((s: any) => <option key={s} value={s} >{s}</option>)}
                                     <option value="file">File...</option>
                                 </optgroup>
                             </select>

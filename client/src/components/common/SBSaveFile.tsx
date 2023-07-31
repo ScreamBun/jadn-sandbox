@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { saveSchema } from "actions/save";
+import { saveFile } from "actions/save";
 import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import { useDispatch } from "react-redux";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
@@ -29,12 +29,14 @@ const SBSaveFile = (props: any) => {
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
             return;
+        } else if (fileNameInput.match(/^(?!.{256,})(?!(aux|clock\$|con|nul|prn|com[1-9]|lpt[1-9])(?:$|\.))[^ ][ \.\w-$()+=[\];#@~,&amp;']+[^\. ]$/i)) {
+            sbToastWarning("Please do not use special characters in file name.");
         }
 
         const filename = `${fileNameInput}.${fmt}`;
 
         try {
-            dispatch(saveSchema(filename, dataStr, loc, overwrite))
+            dispatch(saveFile(filename, dataStr, loc, overwrite))
                 .then((val) => {
                     if (val.error) {
                         if (val.payload.status == 409) {

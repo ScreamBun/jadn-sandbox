@@ -19,7 +19,12 @@ class LoadFile(Resource):
         :param filename: name of the file to attempt to load
         :return: file or 404
         """
-        filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
+        customSplit = filename.split('/')
+        if customSplit[0] == 'custom' :
+            filename = customSplit[1]
+            filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), 'custom', filetype, filename)
+        else:
+            filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
         print(f'Load: {filePath}', flush=True)
 
         if os.path.isfile(filePath):
