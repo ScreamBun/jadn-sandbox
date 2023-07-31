@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { uploadSchema } from "actions/load";
+import { saveSchema } from "actions/save";
 import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import { useDispatch } from "react-redux";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
@@ -34,7 +34,7 @@ const SBSaveFile = (props: any) => {
         const filename = `${fileNameInput}.${fmt}`;
 
         try {
-            dispatch(uploadSchema(filename, dataStr, loc, overwrite))
+            dispatch(saveSchema(filename, dataStr, loc, overwrite))
                 .then((val) => {
                     if (val.error) {
                         if (val.payload.status == 409) {
