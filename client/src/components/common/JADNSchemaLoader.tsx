@@ -13,6 +13,7 @@ import { LANG_JSON } from "components/utils/constants";
 import SBFileUploader from "./SBFileUploader";
 import { FormatJADN } from "components/utils";
 import SBSaveFile from "./SBSaveFile";
+import SBSelect, { Option } from "./SBSelect";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -142,18 +143,22 @@ const JADNSchemaLoader = (props: any) => {
         }
     }
 
-    const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        e.preventDefault();
-        setFileName(e.target.value.split('.')[0]);
-        setSelectedFile(e.target.value);
+    const onFileSelect = (e: Option) => {
         setIsValidJADN(false);
         setLoadedSchema('');
         setCurrSchema('');
-        if (e.target.value == "file") {
+        if (e == null) {
+            setSelectedFile('');
+            return;
+        }
+        setSelectedFile(e.value);
+        if (e.value == "file") {
             ref.current.click();
 
         } else {
-            dispatch(loadFile('schemas', e.target.value))
+            setFileName(e.value.split('.')[0]);
+
+            dispatch(loadFile('schemas', e.value))
                 .then((loadFileVal) => {
                     if (loadFileVal.error) {
                         sbToastError(loadFileVal.payload.response);
@@ -222,17 +227,9 @@ const JADNSchemaLoader = (props: any) => {
                 <div className="row no-gutters">
                     <div className="col-md-6">
                         <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
-                            <select id="schema-list" name="schema-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
-                                <option value="" disabled>Select a Schema...</option>
-                                <optgroup label="Testers">
-                                    {schemaOpts['testers'].map((s: any) => <option key={s} value={s} >{s}</option>)}
-                                </optgroup>
-                                <optgroup label="Custom">
-                                    {schemaOpts['custom']?.map((s: any) => <option key={s} value={`custom/${s}`} >{s}
-                                    </option>)}
-                                    <option value="file">File...</option>
-                                </optgroup>
-                            </select>
+                            <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
+                                placeholder={'Select a schema...'}
+                                isGrouped />
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />

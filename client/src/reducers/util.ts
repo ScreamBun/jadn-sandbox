@@ -48,8 +48,6 @@ const initialState: UtilState = {
 };
 
 export default (state = initialState, action: util.UtilActions) => {
-  const tmpState: UtilState = { ...state };
-
   switch (action.type) {
     case util.INFO_SUCCESS:
       return {
@@ -65,8 +63,10 @@ export default (state = initialState, action: util.UtilActions) => {
       };
 
     case util.LOAD_SUCCESS:
-      tmpState.loaded[action.payload.type][action.payload.name] = action.payload.data;
-      return tmpState;
+      return {
+        ...state,
+        selectedSchema: action.payload.data
+      }
 
     case util.SCHEMA_SUCCESS:
       return {
