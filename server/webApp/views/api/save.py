@@ -54,12 +54,26 @@ class DeleteFile(Resource):
         UPLOAD_FOLDER = os.path.join(path, 'custom', location)
 
         #check file is in directory
-        if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
-            os.remove(os.path.join(UPLOAD_FOLDER, filename))
-            if not os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
-                return 'File removed successfully', 200
+        if isinstance(filename, str):
+             if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
+                os.remove(os.path.join(UPLOAD_FOLDER, filename))
+                if not os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
+                    return 'File removed successfully', 200
+                else:
+                    return 'Failed to remove file', 500
+        else:
+            failed_files = []
+            for file in filename:
+                if os.path.isfile(os.path.join(UPLOAD_FOLDER, file)):
+                    os.remove(os.path.join(UPLOAD_FOLDER, file))
+                if os.path.isfile(os.path.join(UPLOAD_FOLDER, file)):
+                    failed_files.append(file)
+
+            if failed_files:
+                    return 'Failed to remove files: {failed_files}', 500
             else:
-                return 'Failed to remove file', 500
+                return 'File(s) removed successfully', 200
+            
         
         return 'File does not exist', 404
         

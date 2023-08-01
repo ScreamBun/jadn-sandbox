@@ -229,6 +229,7 @@ const JADNSchemaLoader = (props: any) => {
                         <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
+                                loc={'schemas'}
                                 isGrouped />
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>

@@ -1,6 +1,9 @@
+import { deleteFile } from 'actions/save';
 import React, { CSSProperties, Fragment, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { sbToastError, sbToastSuccess } from './SBToast';
 
 const groupStyles = {
     display: 'flex',
@@ -38,8 +41,17 @@ interface GroupedOption {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc } = props;
     const [toggleModal, setToggleModal] = useState(false);
+
+    const dispatch = useDispatch();
+
+    const formatGroupLabel = (data: GroupedOption) => (
+        <div style={groupStyles}>
+            <span>{data.label}</span>
+            <span style={groupBadgeStyles}>{data.options.length}</span>
+        </div>
+    );
 
     const Menu = (props: any) => {
         return (
@@ -90,10 +102,13 @@ const SBSelect = (props: any) => {
                 }
             }
         }
-        //TODO: select multiple files
-        customOptList = customOpts.map((opt) =>
-            <button type="button" className="list-group-item list-group-item-action" key={opt.value}> {opt.label} </button>
-        );
+
+        customOptList = customOpts.map((opt, index) => (
+            <label className="list-group-item" style={{ textAlign: 'center' }} key={index}>
+                <input className="form-check-input me-1" type="checkbox" name={'custom-file'} value={opt.label} />
+                {opt.label}
+            </label>
+        ));
 
     } else {
         opts = data.map((opt: string) => ({
@@ -101,12 +116,41 @@ const SBSelect = (props: any) => {
         }));
     }
 
-    const formatGroupLabel = (data: GroupedOption) => (
-        <div style={groupStyles}>
-            <span>{data.label}</span>
-            <span style={groupBadgeStyles}>{data.options.length}</span>
-        </div>
-    );
+
+
+    const deleteFiles = () => {
+        var checkboxes = document.getElementsByName('custom-file');
+        var deletionList = [];
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                deletionList.push(checkboxes[i].value);
+            }
+        }
+        if (deletionList.length == 0) {
+            setToggleModal(false);
+            return;
+        } else {
+            try {
+                dispatch(deleteFile(deletionList, loc))
+                    .then((val) => {
+                        if (val.error) {
+                            sbToastError(`Error: ${val.payload.response}`);
+                            setToggleModal(false);
+                            return;
+                        }
+                        sbToastSuccess(val.payload);
+                        setToggleModal(false);
+                    })
+                    .catch((err) => {
+                        sbToastError(`Error: ${err.payload.response}`);
+                        setToggleModal(false);
+                    });
+            } catch (err) {
+                sbToastError(`Error: ${err.payload.response}`);
+                setToggleModal(false);
+            }
+        }
+    }
 
     return (
         <>
@@ -135,7 +179,7 @@ const SBSelect = (props: any) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="danger" onClick={() => alert("YE")}>Confirm Delete</Button>
+                    <Button color="danger" onClick={deleteFiles}> Delete</Button>
                     <Button color="secondary" onClick={() => setToggleModal(false)}>Cancel</Button>
                 </ModalFooter>
             </Modal >

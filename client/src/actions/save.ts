@@ -33,8 +33,8 @@ export const saveFile = (name: string, file_data: string, loc: 'schemas' | 'mess
 const DELETE_REQUEST = '@@save/DELETE_REQUEST';
 export const DELETE_SUCCESS = '@@save/DELETE_SUCCESS';
 export const DELETE_FAILURE = '@@save/DELETE_FAILURE';
-export const deleteFile = (name: string, loc: 'schemas' | 'messages') => createAction({
-    endpoint: `${baseAPI}/`,
+export const deleteFile = (name: string | string[], loc: 'schemas' | 'messages') => createAction({
+    endpoint: `${baseAPI}/delete`,
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
