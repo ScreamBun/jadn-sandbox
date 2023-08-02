@@ -5,7 +5,7 @@ import {
     escaped2cbor, format, hexify
 } from '../utils';
 import { loadFile } from "actions/util";
-import { getMsgFiles } from "reducers/util";
+import { getMsgFiles, getValidMsgTypes } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
@@ -14,6 +14,7 @@ import { isNull } from "lodash";
 import SBFileUploader from "components/common/SBFileUploader";
 import Spinner from "components/common/Spinner";
 import SBSaveFile from "components/common/SBSaveFile";
+import SBSelect, { Option } from "components/common/SBSelect";
 
 const MessageValidated = (props: any) => {
     const location = useLocation()
@@ -21,10 +22,8 @@ const MessageValidated = (props: any) => {
 
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, loadedSchema, isLoading } = props;
     const [fileName, setFileName] = useState('');
-
     const msgOpts = useSelector(getMsgFiles);
-    const decodeExports = decodeSchemaTypes.exports.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
-    //const decodeAll = decodeSchemaTypes.all.map((dt: any) => <option key={dt} value={dt} >{dt}</option>);
+    const validMsgFormat = useSelector(getValidMsgTypes)
     const dispatch = useDispatch();
     const ref = useRef<HTMLInputElement | null>(null);
 
@@ -34,19 +33,23 @@ const MessageValidated = (props: any) => {
         }
     }, [])
 
-    const onFileSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        e.preventDefault();
-        setFileName(e.target.value.split('.')[0]);
-        setSelectedFile(e.target.value);
+    const onFileSelect = (e: Option) => {
         setLoadedMsg('');
         setDecodeMsg('');
         setMsgFormat('');
-        if (e.target.value == "file") {
+        if (e == null) {
+            setSelectedFile('');
+            return;
+        }
+        setSelectedFile(e.value);
+        if (e.value == "file") {
             ref.current.click();
 
         } else {
-            const fmt = e.target.value.split('.')[1];
-            dispatch(loadFile('messages', e.target.value))
+            setFileName(e.value.split('.')[0]);
+
+            const fmt = e.value.split('.')[1];
+            dispatch(loadFile('messages', e.value))
                 .then((loadFileVal) => {
                     if (loadFileVal.error) {
                         sbToastError(loadFileVal.payload.response);
@@ -123,16 +126,10 @@ const MessageValidated = (props: any) => {
                 <div className='row no-gutters'>
                     <div className={`${selectedFile == 'file' ? 'col-md-6' : ' col-md-3'}`}>
                         <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
-                            <select id="message-list" name="message-list" className="form-control form-control-sm" value={selectedFile} onChange={onFileSelect}>
-                                <option value="" disabled>Message</option>
-                                <optgroup label="Testers">
-                                    {msgOpts['testers'].map((s: any) => <option key={s} value={s}>{s}</option>)}
-                                </optgroup>
-                                <optgroup label="Custom">
-                                    {msgOpts['custom']?.map((s: any) => <option key={s} value={s} >{s}</option>)}
-                                    <option value="file">File...</option>
-                                </optgroup>
-                            </select>
+                            <SBSelect id={"message-list"} data={msgOpts} onChange={onFileSelect}
+                                placeholder={'Select a message...'}
+                                loc={'messages'}
+                                isGrouped isFileUploader />
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
@@ -140,26 +137,15 @@ const MessageValidated = (props: any) => {
                     </div>
 
                     <div className={`col-md-3 ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
-                        <select className="form-control form-control-sm" id="message-format" name="message-format" required value={msgFormat} onChange={(e) => setMsgFormat(e.target.value)}
-                            title="Select programming language of message">
-                            <option value="" disabled>Message Format</option>
-                            <option value="json">json</option>
-                            <option value="cbor">cbor</option>
-                            <option value="xml">xml</option>
-                        </select>
+                        <SBSelect id={"message-format-list"} data={validMsgFormat} onChange={(e: Option) => setMsgFormat(e.value)}
+                            placeholder={'Message format...'}
+                        />
                     </div>
 
                     <div className='col-md-3'>
-                        <select className="form-control form-control-sm" id="message-decode" name="message-decode" required value={decodeMsg} onChange={(e) => setDecodeMsg(e.target.value)}
-                            title="Select message type to validate against">
-                            <option value="" disabled>Message Type</option>
-                            <optgroup label="Exports">
-                                {decodeExports}
-                            </optgroup>
-                            {/* <optgroup label="All">
-                                {decodeAll}
-                            </optgroup> */}
-                        </select>
+                        <SBSelect id={"message-decode-list"} data={decodeSchemaTypes.exports} onChange={(e: Option) => setDecodeMsg(e.value)}
+                            placeholder={'Message type...'}
+                        />
                     </div>
 
                     <div className='col-md float-end'>

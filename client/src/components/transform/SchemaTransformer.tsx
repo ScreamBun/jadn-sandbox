@@ -97,7 +97,7 @@ const SchemaTransformer = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}
-                                            transformationType={transformationType} setTransformationType={setTransformationType}
+                                            setTransformationType={setTransformationType}
                                             isLoading={isLoading}
                                         />
                                     </div>

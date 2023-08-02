@@ -4,21 +4,20 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import SBDownloadFile from "components/common/SBDownloadFile";
 import Spinner from "components/common/Spinner";
+import SBSelect, { Option } from "components/common/SBSelect";
 
 const SchemaTransformed = (props: any) => {
 
-    const { transformedSchema, data, transformationType, setTransformationType, isLoading } = props;
+    const { transformedSchema, data, setTransformationType, isLoading } = props;
 
     return (
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-9'>
-                        <select id="transformation-type" name="transformation-type" className="form-control form-control-sm" value={transformationType} onChange={(e) => setTransformationType(e.target.value)}>
-                            <option value="" disabled>Select a Transformation Type...</option>
-                            <option value="resolve-refs">Resolve references</option>
-                            <option value="strip-comments">Strip comments</option>
-                        </select>
+                        <SBSelect id={"transformation-list"} data={['Resolve references', 'Strip comments']} onChange={(e: Option) => setTransformationType(e.value)}
+                            placeholder={'Select transformation type...'}
+                        />
                     </div>
                     <div className='col-md-3'>
                         <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema} customClass='float-right' />

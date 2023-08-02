@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
 import Spinner from "components/common/Spinner";
+import SBSelect, { Option } from "components/common/SBSelect";
 const validTranslations = ['JSON', 'Relax', 'XSD'];
 
 const SchemaTranslated = (props: any) => {
@@ -18,6 +19,7 @@ const SchemaTranslated = (props: any) => {
     const { loadedSchema, translation, setTranslation, translatedSchema, convertAll, setConvertAll, setTranslatedSchema, isLoading } = props;
     const data = useSelector(getConversions);
     let translateOpts = {};
+    translateOpts['All'] = 'all';
     for (let i = 0; i < Object.keys(data).length; i++) {
         if (validTranslations.includes(Object.keys(data)[i])) {
             translateOpts[Object.keys(data)[i]] = Object.values(data)[i];
@@ -30,8 +32,8 @@ const SchemaTranslated = (props: any) => {
         }
     }, [])
 
-    const handleTranslation = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setTranslation(e.target.value);
+    const handleTranslation = (e: Option) => {
+        setTranslation(translateOpts[e.value]);
         setTranslatedSchema('');
         setConvertAll([]);
     }
@@ -40,14 +42,12 @@ const SchemaTranslated = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
-                        <select id="translate-to" name="translate-to" className="form-control form-control-sm" value={translation} onChange={handleTranslation}>
-                            <option value="" disabled> Translate To... </option>
-                            <option value="all"> All </option>
-                            {Object.entries(translateOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
-                        </select>
+                    <div className='col-md-6'>
+                        <SBSelect id={"translation-list"} data={Object.keys(translateOpts)} onChange={handleTranslation}
+                            placeholder={'Translate to...'}
+                        />
                     </div>
-                    <div className='col-md-9'>
+                    <div className='col-md-6'>
                         <div className={`${translation == 'all' || !translatedSchema ? ' d-none' : ''}`}>
                             <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema} customClass='float-right' />
                             <SBDownloadFile buttonId='schemaDownload' data={translatedSchema} ext={translation} customClass={`mr-1 float-right${translatedSchema ? '' : ' d-none'}`} />

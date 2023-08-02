@@ -62,6 +62,7 @@ class API(Resource):
         rsp = dict(
             title="JADN Sandbox",
             message="MESSAGE",
+            valid_msg_types = current_app.config.get('VALID_MESSAGES'),
             schemas=schema_files,
             messages=message_files,
             version_info=version_info

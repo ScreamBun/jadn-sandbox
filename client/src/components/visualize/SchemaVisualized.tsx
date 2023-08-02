@@ -17,6 +17,7 @@ import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
 import SBDownloadPDF from "components/common/SBDownloadPDF";
 import Spinner from "components/common/Spinner";
+import SBSelect, { Option } from "components/common/SBSelect";
 
 const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
 
@@ -43,8 +44,8 @@ const SchemaVisualized = (props: any) => {
         }
     }, [convertedSchema]);
 
-    const handleConversion = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setConversion(e.target.value);
+    const handleConversion = (e: Option) => {
+        setConversion(convertOpts[e.value]);
         setConvertedSchema('');
         setConvertAll([]);
         setSplitViewFlag(false);
@@ -67,6 +68,7 @@ const SchemaVisualized = (props: any) => {
 
     const data = useSelector(getConversions);
     let convertOpts = {};
+    convertOpts['All'] = 'all';
     for (let i = 0; i < Object.keys(data).length; i++) {
         if (validConversions.includes(Object.keys(data)[i])) {
             convertOpts[Object.keys(data)[i]] = Object.values(data)[i];
@@ -77,14 +79,12 @@ const SchemaVisualized = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
-                        <select id="convert-to" name="convert-to" className="form-control form-control-sm" value={conversion} onChange={handleConversion}>
-                            <option value="" disabled> Convert To... </option>
-                            <option value="all"> All </option>
-                            {Object.entries(convertOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
-                        </select>
+                    <div className='col-md-6'>
+                        <SBSelect id={"conversion-list"} data={Object.keys(convertOpts)} onChange={handleConversion}
+                            placeholder={'Convert to...'}
+                        />
                     </div>
-                    <div className='col-md-9'>
+                    <div className='col-md-6'>
                         <div className={`${convertedSchema ? '' : ' d-none'}`}>
                             <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
                             <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema ? '' : ' d-none'}`} data={convertedSchema} ext={conversion} />

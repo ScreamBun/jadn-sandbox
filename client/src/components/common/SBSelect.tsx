@@ -41,7 +41,7 @@ interface GroupedOption {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader } = props;
     const [toggleModal, setToggleModal] = useState(false);
 
     const dispatch = useDispatch();
@@ -153,18 +153,31 @@ const SBSelect = (props: any) => {
     return (
         <>
             <div>
-                <Select<Option, false, GroupedOption>
-                    id={id}
-                    placeholder={placeholder}
-                    options={opts}
-                    formatGroupLabel={formatGroupLabel}
-                    isClearable
-                    onChange={onChange}
-                    menuPortalTarget={document.body}
-                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999, color: '#172B4D' }) }}
-                    isMulti={isMultiSelect}
-                    components={{ Menu }}
-                />
+                {isFileUploader ?
+                    <Select<Option, false, GroupedOption>
+                        id={id}
+                        placeholder={placeholder}
+                        options={opts}
+                        formatGroupLabel={formatGroupLabel}
+                        isClearable
+                        onChange={onChange}
+                        menuPortalTarget={document.body}
+                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999, color: '#172B4D' }) }}
+                        isMulti={isMultiSelect}
+                        components={{ Menu }} /> :
+                    <Select<Option, false, GroupedOption>
+                        id={id}
+                        placeholder={placeholder}
+                        options={opts}
+                        formatGroupLabel={formatGroupLabel}
+                        isClearable
+                        onChange={onChange}
+                        menuPortalTarget={document.body}
+                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999, color: '#172B4D' }) }}
+                        isMulti={isMultiSelect}
+                    />
+                }
+
             </div>
 
             <Modal isOpen={toggleModal}>

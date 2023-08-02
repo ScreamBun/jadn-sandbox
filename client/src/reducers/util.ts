@@ -6,6 +6,7 @@ export interface UtilState {
   site_desc: string;
   version_info: string;
   error: string;
+  valid_msg_types: string[];
   loaded: {
     messages: {
       testers: Record<string, any>;
@@ -28,6 +29,7 @@ const initialState: UtilState = {
   site_desc: '',
   version_info: '',
   error: '',
+  valid_msg_types: [],
   loaded: {
     messages: {
       testers: [],
@@ -55,6 +57,7 @@ export default (state = initialState, action: util.UtilActions) => {
         site_title: action.payload.title,
         site_desc: action.payload.message,
         version_info: action.payload.version_info,
+        valid_msg_types: action.payload.valid_msg_types,
         loaded: {
           ...state.loaded,
           messages: action.payload.messages,
@@ -93,6 +96,7 @@ export default (state = initialState, action: util.UtilActions) => {
 
 //selectors
 export const getPageTitle = (state: { Util: { site_title: any; }; }) => state.Util.site_title;
+export const getValidMsgTypes = (state: { Util: { valid_msg_types: any; }; }) => state.Util.valid_msg_types;
 export const getAllSchemas = (state: { Util: { loaded: { schemas: any; }; }; }) => state.Util.loaded.schemas;
 export const getMsgFiles = (state: { Util: { loaded: { messages: any; }; }; }) => state.Util.loaded.messages;
 export const getAllSchemasList = (state: { Util: { loaded: { schemas: { testers: any; custom: any; }; }; }; }) => {

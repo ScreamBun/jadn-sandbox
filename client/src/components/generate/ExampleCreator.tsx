@@ -42,7 +42,7 @@ const ExampleCreator = (props: any) => {
 
     return (
         <div className="card">
-            <div className="card-header p-2">
+            <div className="card-header p-2.5">
                 {isLoading ? <Spinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                     disabled={loadedSchema ? false : true}
                     title={"Generate example messages based on selected schema"}>

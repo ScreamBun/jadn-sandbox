@@ -7,6 +7,7 @@ import SBEditor from 'components/common/SBEditor'
 import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPENAME } from '../consts'
 import SBDownloadFile from 'components/common/SBDownloadFile'
 import SBSaveFile from 'components/common/SBSaveFile'
+import SBSelect, { Option } from 'components/common/SBSelect'
 
 const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType, loadedSchema } = props
@@ -38,8 +39,8 @@ const MessageCreator = (props: any) => {
         }
     }
 
-    const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setCommandType(e.target.value);
+    const handleSelection = (e: Option) => {
+        setCommandType(e.value);
         setGeneratedMessage({});
     }
 
@@ -99,12 +100,10 @@ const MessageCreator = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
-                        <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} disabled={exportRecords ? false : true} onChange={handleSelection}
-                            title={exportRecords ? "Select message type to create based on valid JADN Schema" : "No Message Type Found. Please define exports in info section of schema."}>
-                            <option value='' disabled>Message Type</option>
-                            {exportRecords ? exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>) : []}
-                        </select>
+                    <div className='col-md-6'>
+                        <SBSelect id={"command-list"} data={exportRecords} onChange={handleSelection}
+                            placeholder={'Select a message type...'}
+                        />
                     </div>
                     <div className='col'>
                         <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' shouldStringify={true} />
