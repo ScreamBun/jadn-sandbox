@@ -80,7 +80,6 @@ const SchemaVisualized = (props: any) => {
         e.preventDefault();
         setSplitViewFlag(splitView => !splitView);
     }
-    console.log(conversion)
 
     return (
         <div className="card">
