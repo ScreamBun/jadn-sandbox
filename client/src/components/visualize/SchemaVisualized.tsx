@@ -25,8 +25,15 @@ const SchemaVisualized = (props: any) => {
     const location = useLocation();
     const { navConvertTo } = location.state;
 
-    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, convertAll, setConvertAll, spiltViewFlag, setSplitViewFlag, isLoading } = props;
+    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag, isLoading } = props;
     const [pumlURL, setPumlURL] = useState('');
+    const data = useSelector(getConversions);
+    let convertOpts = {};
+    for (let i = 0; i < Object.keys(data).length; i++) {
+        if (validConversions.includes(Object.keys(data)[i])) {
+            convertOpts[Object.keys(data)[i]] = Object.values(data)[i];
+        }
+    }
 
     useEffect(() => {
         if (!isNull(navConvertTo)) {
@@ -44,10 +51,18 @@ const SchemaVisualized = (props: any) => {
         }
     }, [convertedSchema]);
 
-    const handleConversion = (e: Option) => {
-        setConversion(convertOpts[e.value]);
+    const handleConversion = (e: Option[]) => {
+        let convertTo;
+        if (e.length == 1) {
+            convertTo = convertOpts[e[0].value];
+        } else {
+            convertTo = [];
+            for (let i = 0; i < Object.values(e).length; i++) {
+                convertTo.push(convertOpts[Object.values(e)[i].value])
+            }
+        }
+        setConversion(convertTo);
         setConvertedSchema('');
-        setConvertAll([]);
         setSplitViewFlag(false);
     }
 
@@ -65,15 +80,7 @@ const SchemaVisualized = (props: any) => {
         e.preventDefault();
         setSplitViewFlag(splitView => !splitView);
     }
-
-    const data = useSelector(getConversions);
-    let convertOpts = {};
-    convertOpts['All'] = 'all';
-    for (let i = 0; i < Object.keys(data).length; i++) {
-        if (validConversions.includes(Object.keys(data)[i])) {
-            convertOpts[Object.keys(data)[i]] = Object.values(data)[i];
-        }
-    }
+    console.log(conversion)
 
     return (
         <div className="card">
@@ -81,7 +88,7 @@ const SchemaVisualized = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-6'>
                         <SBSelect id={"conversion-list"} data={Object.keys(convertOpts)} onChange={handleConversion}
-                            placeholder={'Convert to...'}
+                            placeholder={'Convert to...'} isMultiSelect
                         />
                     </div>
                     <div className='col-md-6'>
@@ -96,20 +103,20 @@ const SchemaVisualized = (props: any) => {
                                 </Button>
                             </div>
 
-                            <div className={`${conversion == 'md' ? '' : ' d-none'}`}>
+                            <div className={`${typeof conversion == 'string' && conversion == 'md' ? '' : ' d-none'}`}>
                                 <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
                                 <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(convertedSchema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </Button>
                             </div>
 
-                            <div className={`${conversion == 'jidl' ? '' : ' d-none'}`}>
+                            <div className={`${typeof conversion == 'string' && conversion == 'jidl' ? '' : ' d-none'}`}>
                                 <Button id="jidlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </Button>
                             </div>
 
-                            <div className={`${conversion == 'puml' ? '' : ' d-none'}`}>
+                            <div className={`${typeof conversion == 'string' && conversion == 'puml' ? '' : ' d-none'}`}>
                                 <Button id="pumlPngDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={() => onDownloadPNGClick(pumlURL)}>
                                     <FontAwesomeIcon icon={faFileImage} />
                                 </Button>
@@ -118,7 +125,7 @@ const SchemaVisualized = (props: any) => {
                                 </Button>
                             </div>
 
-                            <div className={`${conversion == 'gv' ? '' : ' d-none'}`}>
+                            <div className={`${typeof conversion == 'string' && conversion == 'gv' ? '' : ' d-none'}`}>
                                 <Button id="gvSvgDownload" title="Download SVG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadSVGClick}>
                                     <FontAwesomeIcon icon={faFileImage} />
                                 </Button>
@@ -127,7 +134,7 @@ const SchemaVisualized = (props: any) => {
                                 </Button>
                             </div>
 
-                            <div className={`${conversion != 'jidl' ? '' : ' d-none'}`}>
+                            <div className={`${typeof conversion == 'string' && conversion != 'jidl' ? '' : ' d-none'}`}>
                                 <Button id="SplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
                                     <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
                                 </Button>
@@ -145,24 +152,23 @@ const SchemaVisualized = (props: any) => {
                     </div>
                 </div>
             </div>
-
             <div className={`card-body p-0 ${spiltViewFlag ? 'd-none' : ''}`}>
-                {conversion == 'all' && convertAll.length != 0 ? <SBCollapseViewer data={convertAll} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
-                    <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="40em"></SBEditor>
+                {typeof conversion != 'string' && convertedSchema ? <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
+                    <SBEditor data={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} isReadOnly={true} convertTo={typeof conversion == 'object' ? '' : conversion} height="40em"></SBEditor>
                 }
             </div>
             <div className={`card-body p-0 ${spiltViewFlag ? '' : ' d-none'}`}>
-                <div className={`${conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
-                    <SBHtmlPreviewer htmlText={convertedSchema} showPreviewer={true} conversion={conversion}></SBHtmlPreviewer>
+                <div className={`${typeof conversion == 'string' && conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
+                    <SBHtmlPreviewer htmlText={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} showPreviewer={true} conversion={conversion}></SBHtmlPreviewer>
                 </div>
-                <div className={`${conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
-                    <SBMarkdownPreviewer markdownText={convertedSchema} showPreviewer={true}></SBMarkdownPreviewer>
+                <div className={`${typeof conversion == 'string' && conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
+                    <SBMarkdownPreviewer markdownText={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} showPreviewer={true}></SBMarkdownPreviewer>
                 </div>
-                <div className={`${conversion == 'puml' && convertedSchema ? '' : ' d-none'}`}>
-                    <SBPumlPreviewer data={pumlURL} convertedSchema={convertedSchema} conversion={conversion}></SBPumlPreviewer>
+                <div className={`${typeof conversion == 'string' && conversion == 'puml' && convertedSchema ? '' : ' d-none'}`}>
+                    <SBPumlPreviewer data={pumlURL} convertedSchema={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} conversion={conversion}></SBPumlPreviewer>
                 </div>
-                <div className={`${conversion == 'gv' && convertedSchema ? '' : ' d-none'}`}>
-                    <SBGvPreviewer convertedSchema={convertedSchema} conversion={conversion}></SBGvPreviewer>
+                <div className={`${typeof conversion == 'string' && conversion == 'gv' && convertedSchema ? '' : ' d-none'}`}>
+                    <SBGvPreviewer convertedSchema={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} conversion={conversion}></SBGvPreviewer>
                 </div>
             </div>
         </div>

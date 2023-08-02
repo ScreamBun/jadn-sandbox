@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
-import { convertSchema, convertToAll, info } from 'actions/convert'
+import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -15,8 +15,7 @@ const SchemaVisualizer = () => {
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
     const [convertedSchema, setConvertedSchema] = useState('');
-    const [convertAll, setConvertAll] = useState<any[]>([]);
-    const [conversion, setConversion] = useState('');
+    const [conversion, setConversion] = useState<any[] | string>('');
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +27,6 @@ const SchemaVisualizer = () => {
 
     useEffect(() => {
         setConvertedSchema('');
-        setConvertAll([]);
         setSplitViewFlag(false);
     }, [loadedSchema]);
 
@@ -37,14 +35,12 @@ const SchemaVisualizer = () => {
         setLoadedSchema('');
         setConversion('');
         setConvertedSchema('');
-        setConvertAll([]);
         setSplitViewFlag(false);
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-
         if (conversion) {
             let schemaObj = loadedSchema;
 
@@ -58,10 +54,9 @@ const SchemaVisualizer = () => {
                     }
                 }
             }
-
             dispatch(validateSchema(schemaObj))
                 .then((validateSchemaVal) => {
-                    if (validateSchemaVal.payload.valid_bool == true && conversion != 'all') {
+                    if (validateSchemaVal.payload.valid_bool == true) {
                         dispatch(convertSchema(schemaObj, conversion))
                             .then((convertSchemaVal) => {
                                 if (convertSchemaVal.error) {
@@ -71,28 +66,6 @@ const SchemaVisualizer = () => {
                                     return;
                                 }
                                 setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                                sbToastSuccess(`Schema converted to ${conversion} successfully`);
-                                setIsLoading(false);
-                            })
-                            .catch((convertSchemaErr: string) => {
-                                sbToastError(convertSchemaErr.payload.response);
-                                setIsLoading(false);
-                            })
-
-                    } else if (validateSchemaVal.payload.valid_bool == true && conversion == 'all') {
-                        //dispatch make-all-formats
-                        //.then setConvertedSchema([])
-                        //conversion check 
-                        //.catch
-                        dispatch(convertToAll(schemaObj, 'visualization'))
-                            .then((convertSchemaVal) => {
-                                if (convertSchemaVal.error) {
-                                    setConvertedSchema('');
-                                    sbToastError(convertSchemaVal.payload.response);
-                                    setIsLoading(false);
-                                    return;
-                                }
-                                setConvertAll(convertSchemaVal.payload.schema.convert);
                                 for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
                                     sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                                 }
@@ -146,7 +119,6 @@ const SchemaVisualizer = () => {
                                     <div className='col-md-6 pl-1'>
                                         <SchemaVisualized
                                             convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
-                                            convertAll={convertAll} setConvertAll={setConvertAll}
                                             conversion={conversion} setConversion={setConversion}
                                             spiltViewFlag={spiltViewFlag} setSplitViewFlag={setSplitViewFlag}
                                             loadedSchema={loadedSchema} isLoading={isLoading} />

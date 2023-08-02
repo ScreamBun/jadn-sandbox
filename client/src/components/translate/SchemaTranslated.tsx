@@ -16,10 +16,9 @@ const SchemaTranslated = (props: any) => {
     const location = useLocation()
     const { navConvertTo } = location.state
 
-    const { loadedSchema, translation, setTranslation, translatedSchema, convertAll, setConvertAll, setTranslatedSchema, isLoading } = props;
+    const { loadedSchema, translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading } = props;
     const data = useSelector(getConversions);
     let translateOpts = {};
-    translateOpts['All'] = 'all';
     for (let i = 0; i < Object.keys(data).length; i++) {
         if (validTranslations.includes(Object.keys(data)[i])) {
             translateOpts[Object.keys(data)[i]] = Object.values(data)[i];
@@ -32,10 +31,18 @@ const SchemaTranslated = (props: any) => {
         }
     }, [])
 
-    const handleTranslation = (e: Option) => {
-        setTranslation(translateOpts[e.value]);
+    const handleTranslation = (e: Option[]) => {
+        let translateTo;
+        if (e.length == 1) {
+            translateTo = translateOpts[e[0].value];
+        } else {
+            translateTo = [];
+            for (let i = 0; i < Object.values(e).length; i++) {
+                translateTo.push(translateOpts[Object.values(e)[i].value])
+            }
+        }
+        setTranslation(translateTo);
         setTranslatedSchema('');
-        setConvertAll([]);
     }
 
     return (
@@ -44,7 +51,7 @@ const SchemaTranslated = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-6'>
                         <SBSelect id={"translation-list"} data={Object.keys(translateOpts)} onChange={handleTranslation}
-                            placeholder={'Translate to...'}
+                            placeholder={'Translate to...'} isMultiSelect
                         />
                     </div>
                     <div className='col-md-6'>
@@ -63,8 +70,8 @@ const SchemaTranslated = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                {translation == 'all' && convertAll.length != 0 ? <SBCollapseViewer data={convertAll} /> :
-                    <SBEditor data={translatedSchema} isReadOnly={true} convertTo={translation}></SBEditor>
+                {typeof translation != 'string' && translatedSchema ? <SBCollapseViewer data={translatedSchema} /> :
+                    <SBEditor data={typeof translatedSchema == 'object' ? translatedSchema[0].schema : translatedSchema} isReadOnly={true} convertTo={typeof translation == 'object' ? '' : translation}></SBEditor>
                 }
             </div>
         </div>

@@ -27,7 +27,6 @@ export default (state = initialState, action: convert.ConvertActions) => {
       };
 
     case convert.CONVERT_SUCCESS:
-    case convert.CONVERTTOALL_SUCCESS:
       return {
         ...state,
         converted: action.payload.schema || {}
@@ -35,7 +34,6 @@ export default (state = initialState, action: convert.ConvertActions) => {
 
     case convert.INFO_FAILURE:
     case convert.CONVERT_FAILURE:
-    case convert.CONVERTTOALL_FAILURE:
       return {
         ...state,
         error: action.payload.error || 'ERROR'
