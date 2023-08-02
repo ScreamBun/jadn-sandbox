@@ -95,4 +95,10 @@ export default (state = initialState, action: util.UtilActions) => {
 export const getPageTitle = (state: { Util: { site_title: any; }; }) => state.Util.site_title;
 export const getAllSchemas = (state: { Util: { loaded: { schemas: any; }; }; }) => state.Util.loaded.schemas;
 export const getMsgFiles = (state: { Util: { loaded: { messages: any; }; }; }) => state.Util.loaded.messages;
-export const getAllSchemasList = (state: { Util: { loaded: { schemas: { testers: any; custom: any; }; }; }; }) => [...state.Util.loaded.schemas.testers, ...state.Util.loaded.schemas.custom]
+export const getAllSchemasList = (state: { Util: { loaded: { schemas: { testers: any; custom: any; }; }; }; }) => {
+  if (state.Util.loaded.schemas.custom == undefined) {
+    return ([...state.Util.loaded.schemas.testers]);
+  } else {
+    return ([...state.Util.loaded.schemas.testers, ...state.Util.loaded.schemas.custom]);
+  }
+}

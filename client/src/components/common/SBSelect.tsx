@@ -177,7 +177,7 @@ const SBSelect = (props: any) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="danger" onClick={deleteFiles}> Delete</Button>
+                    <Button color="danger" onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</Button>
                     <Button color="secondary" onClick={() => setToggleModal(false)}>Cancel</Button>
                 </ModalFooter>
             </Modal >
