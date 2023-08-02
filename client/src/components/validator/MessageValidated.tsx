@@ -72,7 +72,7 @@ const MessageValidated = (props: any) => {
     };
 
     const onMsgChange = (data: any) => {
-        setSelectedFile('empty');
+        setSelectedFile('');
         // setDecodeMsg('');
         // setMsgFormat('');
         setLoadedMsg(data);
