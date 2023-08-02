@@ -5,7 +5,7 @@ import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
 
-const groupStyles = {
+const groupStyles: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -13,7 +13,6 @@ const groupStyles = {
 const groupBadgeStyles: CSSProperties = {
     backgroundColor: '#EBECF0',
     borderRadius: '2em',
-    color: '#172B4D',
     display: 'inline-block',
     fontSize: 12,
     fontWeight: 'normal',
@@ -26,7 +25,8 @@ const groupBadgeStyles: CSSProperties = {
 const customMenuOptionStyle: CSSProperties = {
     border: 'none',
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+    backgroundColor: 'inherit',
 }
 
 export interface Option {
@@ -116,8 +116,6 @@ const SBSelect = (props: any) => {
         }));
     }
 
-
-
     const deleteFiles = () => {
         var checkboxes = document.getElementsByName('custom-file');
         var deletionList = [];
@@ -163,7 +161,7 @@ const SBSelect = (props: any) => {
                     isClearable
                     onChange={onChange}
                     menuPortalTarget={document.body}
-                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999, color: '#172B4D' }) }}
                     isMulti={isMultiSelect}
                     components={{ Menu }}
                 />
