@@ -17,6 +17,7 @@ import { FormatJADN } from 'components/utils';
 import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
+import Spinner from 'components/common/Spinner';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -38,6 +39,7 @@ const SchemaCreator = (props: any) => {
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+    const [isLoading, setIsLoading] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
     const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
@@ -83,7 +85,8 @@ const SchemaCreator = (props: any) => {
         if (e.value == "file") {
             ref.current.click();
         } else {
-            setFileName(e.value.split('.')[0]);
+            setFileName(e.label.split('.')[0]);
+            setIsLoading(true);
 
             dispatch(loadFile('schemas', e.value))
                 .then((loadFileVal) => {
@@ -94,6 +97,7 @@ const SchemaCreator = (props: any) => {
                     let schemaObj = loadFileVal.payload.data;
                     setGeneratedSchema(schemaObj);
                     validateJADN(JSON.stringify(schemaObj));
+                    setIsLoading(false);
                 })
                 .catch((loadFileErr) => {
                     sbToastError(loadFileErr.payload.data);
@@ -107,6 +111,7 @@ const SchemaCreator = (props: any) => {
         setIsValidJADN(false);
         setGeneratedSchema('');
         if (e.target.files && e.target.files.length != 0) {
+            setIsLoading(true);
             const file = e.target.files[0];
             setFileName(file.name.split('.')[0]);
             const fileReader = new FileReader();
@@ -116,6 +121,7 @@ const SchemaCreator = (props: any) => {
                     try {
                         setGeneratedSchema(JSON.parse(data));
                         validateJADN(data);
+                        setIsLoading(false);
                     } catch (err) {
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
                     }
@@ -410,7 +416,7 @@ const SchemaCreator = (props: any) => {
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
                                 loc={'schemas'}
-                                isGrouped isFileUploader/>
+                                isGrouped isFileUploader />
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
@@ -480,30 +486,32 @@ const SchemaCreator = (props: any) => {
                                     </div>
                                 </div>
                                 <div id="schema-editor" className='col-md-9'>
-                                    <Droppable
-                                        types={['info', 'types']} // <= allowed drop types
-                                        onDrop={onDrop}
-                                        onDragOver={() => {
-                                            document.getElementById('schema-editor').style.backgroundColor = 'rgba(0,0,0,.5)';
-                                        }}
-                                        onDragLeave={() => {
-                                            document.getElementById('schema-editor').style.backgroundColor = '';
-                                        }}
-                                        className='col-12 mt-1'
-                                        style={{
-                                            minHeight: '20em',
-                                        }}
-                                    >
-                                        <div className="col pt-2" ref={scrollToInfoRef}>
-                                            <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
-                                            {infoEditors}
-                                        </div>
-                                        <hr />
-                                        <div className="col" ref={scrollToTypeRef}>
-                                            <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                            {typesEditors}
-                                        </div>
-                                    </Droppable>
+                                    {isLoading ? <Spinner action={'Loading'} div /> :
+                                        <Droppable
+                                            types={['info', 'types']} // <= allowed drop types
+                                            onDrop={onDrop}
+                                            onDragOver={() => {
+                                                document.getElementById('schema-editor').style.backgroundColor = 'rgba(0,0,0,.5)';
+                                            }}
+                                            onDragLeave={() => {
+                                                document.getElementById('schema-editor').style.backgroundColor = '';
+                                            }}
+                                            className='col-12 mt-1'
+                                            style={{
+                                                minHeight: '20em',
+                                            }}
+                                        >
+                                            <div className="col pt-2" ref={scrollToInfoRef}>
+                                                <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                                {infoEditors}
+                                            </div>
+                                            <hr />
+                                            <div className="col" ref={scrollToTypeRef}>
+                                                <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                {typesEditors}
+                                            </div>
+                                        </Droppable>
+                                    }
                                 </div>
                             </div>
                         </div>

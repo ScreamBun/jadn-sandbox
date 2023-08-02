@@ -46,7 +46,7 @@ const MessageValidated = (props: any) => {
             ref.current.click();
 
         } else {
-            setFileName(e.value.split('.')[0]);
+            setFileName(e.label.split('.')[0]);
 
             const fmt = e.value.split('.')[1];
             dispatch(loadFile('messages', e.value))

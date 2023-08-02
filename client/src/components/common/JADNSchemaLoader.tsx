@@ -156,7 +156,7 @@ const JADNSchemaLoader = (props: any) => {
             ref.current.click();
 
         } else {
-            setFileName(e.value.split('.')[0]);
+            setFileName(e.label.split('.')[0]);
 
             dispatch(loadFile('schemas', e.value))
                 .then((loadFileVal) => {
@@ -230,7 +230,7 @@ const JADNSchemaLoader = (props: any) => {
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
                                 loc={'schemas'}
-                                isGrouped isFileUploader/>
+                                isGrouped isFileUploader />
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
