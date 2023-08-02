@@ -61,7 +61,7 @@ const ExampleGenerator = () => {
                     return;
                 }
                 //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
-                const schema = JSON.parse(convertSchemaVal.payload.schema.convert);
+                const schema = JSON.parse(convertSchemaVal.payload.schema.convert[0].schema);
                 schemaProps = schema.properties ? Object.keys(schema.properties) : [];
                 var generated: any[] = [] // LIST OF GENERATED EXAMPLES
                 const num = Math.floor(Math.random() * 11); // GENERATE A RANDOM NUM (1-10) OF EXAMPLES
