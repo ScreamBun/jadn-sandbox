@@ -30,18 +30,12 @@ class API(Resource):
         message_files = {}
         version_info = current_app.config.get("VERSION_INFO")
 
-        #TODO: remove? 
-        # for msg in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "messages")):
-        #   if messages.search(msg) and not msg.startswith("_"):
-        #       message_files[msg] = current_app.config.get("DEFAULT_MESSAGE_TYPES").get(msg, "")
-
         msg_list = []
         for m in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "messages")):
             if messages.search(m) and not m.startswith("_"):
                 msg_list.append(m)
         message_files['testers'] = msg_list
         
-        msg_list = []
         for m in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "custom", "messages")):
             if messages.search(m) and not m.startswith("_"):
                 msg_list.append(m)
@@ -53,7 +47,6 @@ class API(Resource):
                 schema_list.append(s)
         schema_files['testers'] = schema_list
         
-        schema_list = []
         for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "custom", "schemas")):
             if schemas.search(s):
                 schema_list.append(s)
