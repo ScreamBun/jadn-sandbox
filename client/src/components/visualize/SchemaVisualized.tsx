@@ -34,7 +34,8 @@ const SchemaVisualized = (props: any) => {
 
     useEffect(() => {
         if (!isNull(navConvertTo)) {
-            setConversion(navConvertTo);
+            const index = Object.values(data).indexOf(navConvertTo)
+            setConversion({ value: Object.values(data)[index], label: Object.keys(data)[index] });
         }
     }, []);
 

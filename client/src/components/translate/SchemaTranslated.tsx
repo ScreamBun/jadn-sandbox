@@ -25,7 +25,8 @@ const SchemaTranslated = (props: any) => {
 
     useEffect(() => {
         if (!isNull(navConvertTo)) {
-            setTranslation(navConvertTo);
+            const index = Object.values(data).indexOf(navConvertTo)
+            setTranslation({ value: Object.values(data)[index], label: Object.keys(data)[index] });
         }
     }, [])
 

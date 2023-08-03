@@ -29,14 +29,15 @@ const MessageValidated = (props: any) => {
 
     useEffect(() => {
         if (!isNull(navMsgFormat)) {
-            setMsgFormat(navMsgFormat);
+            const index = Object.values(validMsgFormat).indexOf(navMsgFormat)
+            setMsgFormat({ value: Object.values(validMsgFormat)[index], label: Object.values(validMsgFormat)[index] });
         }
     }, [])
 
     const onFileSelect = (e: Option) => {
         setLoadedMsg('');
         //setDecodeMsg('');
-        setMsgFormat('');
+        //setMsgFormat('');
         if (e == null) {
             setSelectedFile('');
             return;
@@ -56,7 +57,7 @@ const MessageValidated = (props: any) => {
                         return;
                     }
 
-                    setMsgFormat(fmt);
+                    setMsgFormat({ value: fmt, label: fmt });
                     const data = loadFileVal.payload.data;
                     const formattedData = format(data, fmt, 2);
                     if (formattedData.startsWith('Error')) {
@@ -90,7 +91,7 @@ const MessageValidated = (props: any) => {
                     let data = ev.target.result;
                     try {
                         //data = JSON.stringify(data, null, 2); // must turn str into obj before str
-                        type == 'jadn' ? setMsgFormat('json') : setMsgFormat(type);
+                        type == 'jadn' ? setMsgFormat({ value: 'json', label: 'json' }) : setMsgFormat({ value: type, label: type });
                         setLoadedMsg(data);
                     } catch (err) {
                         switch (type) {
@@ -124,7 +125,7 @@ const MessageValidated = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className={`${selectedFile.value == 'file' ? 'col-md-6' : ' col-md-3'}`}>
+                    <div className={`${selectedFile.value != 'file' ? 'col-md-3' : ' col-md-6'}`}>
                         <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
                             <SBSelect id={"message-list"} data={msgOpts} onChange={onFileSelect}
                                 placeholder={'Select a message...'}
@@ -137,7 +138,7 @@ const MessageValidated = (props: any) => {
                         </div>
                     </div>
 
-                    <div className={`col-md-3 ${selectedFile.value == '' || selectedFile.value == 'empty' ? '' : ' d-none'}`}>
+                    <div className={`col-md-3 ${selectedFile ? ' d-none' : ''}`}>
                         <SBSelect id={"message-format-list"} data={validMsgFormat} onChange={(e: Option) => setMsgFormat(e)}
                             value={msgFormat}
                             placeholder={'Message format...'}
@@ -153,7 +154,7 @@ const MessageValidated = (props: any) => {
 
                     <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
-                        <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat || 'json'} />
+                        <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} />
                         {isLoading ? <Spinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
                             title={'Validate the message against the given schema'}>
                             Validate Message
@@ -162,7 +163,7 @@ const MessageValidated = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={loadedMsg} convertTo={msgFormat} onChange={onMsgChange}></SBEditor>
+                <SBEditor data={loadedMsg} convertTo={msgFormat ? msgFormat.value : ''} onChange={onMsgChange}></SBEditor>
             </div>
         </div>
     )
