@@ -34,8 +34,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   if (hasProperty(optData, 'enum')) {
     const typeDefs = schema.types.filter(t => t[0] === optData.enum);
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-
-    defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
+    defOpts = typeDef[typeDef.length - 1].map((opt: any) => ({ value: `${hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}`, label: opt[1] }));
 
   } else if (hasProperty(optData, 'pointer')) {
     const typeDefs = schema.types.filter(t => t[0] === optData.pointer);
