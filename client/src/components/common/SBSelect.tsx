@@ -5,12 +5,12 @@ import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
 
-const groupStyles: CSSProperties = {
+export const groupStyles: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
 };
-const groupBadgeStyles: CSSProperties = {
+export const groupBadgeStyles: CSSProperties = {
     backgroundColor: '#EBECF0',
     borderRadius: '2em',
     display: 'inline-block',
@@ -34,7 +34,7 @@ export interface Option {
     readonly label: string;
 }
 
-interface GroupedOption {
+export interface GroupedOption {
     readonly label: string;
     readonly options: readonly Option[];
 }
@@ -152,7 +152,7 @@ const SBSelect = (props: any) => {
 
     return (
         <>
-            <div>
+            <div style={{ width: '100%' }}>
                 {isFileUploader ?
                     <Select<Option, false, GroupedOption>
                         id={id}

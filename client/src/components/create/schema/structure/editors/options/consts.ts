@@ -151,11 +151,11 @@ export const TypeOptionInputArgs = {
     description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName'
   },
   vtype: {
-    type: 'select',
+    type: 'SBCreatableSelect',
     description: 'Value type for ArrayOf and MapOf'
   },
   ktype: {
-    type: 'select',
+    type: 'SBCreatableSelect',
     description: 'Key type for MapOf'
   },
   enum: {
@@ -165,7 +165,7 @@ export const TypeOptionInputArgs = {
     description: 'Extension: Enumerated type containing pointers derived from the specified Array, Choice, Map or Record type'
   },
   format: {
-    type: 'select',
+    type: 'SBSelect',
     description: '(optional) Semantic validation keyword'
   },
   pattern: {
