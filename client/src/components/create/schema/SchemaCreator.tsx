@@ -208,8 +208,8 @@ const SchemaCreator = (props: any) => {
         const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
 
         infoKeys = Object.keys(unusedInfo).map(k => (
-            <Draggable type="info" data={k} key={unusedInfo[k].key} onDragStart={selectedFile == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
-                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action={selectedFile == 'file' && !generatedSchema ? false : true}>
+            <Draggable type="info" data={k} key={unusedInfo[k].key} onDragStart={selectedFile.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
+                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action={selectedFile.value == 'file' && !generatedSchema ? false : true}>
                     {unusedInfo[k].key}
                     <FontAwesomeIcon icon={faGripLines} className='float-right' />
                 </ListGroupItem>
@@ -217,8 +217,8 @@ const SchemaCreator = (props: any) => {
         ));
     } else {
         infoKeys = Object.keys(Info).map(k => (
-            <Draggable type="info" data={k} key={Info[k].key} onDragStart={selectedFile == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
-                <ListGroupItem style={{ color: `${selectedFile == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile == 'file' && !generatedSchema ? false : true}>
+            <Draggable type="info" data={k} key={Info[k].key} onDragStart={selectedFile.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
+                <ListGroupItem style={{ color: `${selectedFile.value == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile.value == 'file' && !generatedSchema ? false : true}>
                     {Info[k].key}
                     <FontAwesomeIcon icon={faGripLines} className='float-right' />
                 </ListGroupItem>
@@ -227,8 +227,8 @@ const SchemaCreator = (props: any) => {
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <Draggable type="types" data={k} key={Types[k].key} onDragStart={selectedFile == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
-            <ListGroupItem style={{ color: `${selectedFile == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile == 'file' && !generatedSchema ? false : true}>
+        <Draggable type="types" data={k} key={Types[k].key} onDragStart={selectedFile.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
+            <ListGroupItem style={{ color: `${selectedFile.value == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile.value == 'file' && !generatedSchema ? false : true}>
                 {Types[k].key}
                 <FontAwesomeIcon icon={faGripLines} className='float-right' />
             </ListGroupItem>
@@ -412,14 +412,14 @@ const SchemaCreator = (props: any) => {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
-                        <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
+                        <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
                                 loc={'schemas'}
                                 value={selectedFile}
                                 isGrouped isFileUploader />
                         </div>
-                        <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
@@ -453,8 +453,8 @@ const SchemaCreator = (props: any) => {
                                         <Nav pills>
                                             <NavItem>
                                                 <NavLink
-                                                    className={activeOpt == 'info' && (selectedFile == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile == 'file' && !generatedSchema ? true : false}
+                                                    className={activeOpt == 'info' && (selectedFile.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    disabled={selectedFile.value == 'file' && !generatedSchema ? true : false}
                                                     onClick={() => setActiveOpt('info')}
                                                     title="meta data (about a schema package)"
                                                 >
@@ -463,8 +463,8 @@ const SchemaCreator = (props: any) => {
                                             </NavItem>
                                             <NavItem>
                                                 <NavLink
-                                                    className={activeOpt == 'types' && (selectedFile == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile == 'file' && !generatedSchema ? true : false}
+                                                    className={activeOpt == 'types' && (selectedFile.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    disabled={selectedFile.value == 'file' && !generatedSchema ? true : false}
                                                     onClick={() => setActiveOpt('types')}
                                                     title="schema content (the information model)"
                                                 >
