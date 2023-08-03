@@ -25,6 +25,8 @@ export interface InfoSuccessAction extends ActionSuccessResult {
   type: typeof INFO_SUCCESS;
   payload: {
     conversions: Record<string, any>;
+    translations: Record<string, any>;
+    visualizations: Record<string, any>;
   };
 }
 

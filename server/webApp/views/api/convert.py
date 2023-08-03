@@ -19,7 +19,9 @@ class Convert(Resource):
 
     def get(self):
         return jsonify({
-            "conversions": current_app.config.get("VALID_SCHEMA_CONV")
+            "conversions": current_app.config.get("VALID_SCHEMA_CONV"),
+            "translations": current_app.config.get("VALID_SCHEMA_TRANSLATIONS"),
+            "visualizations": current_app.config.get("VALID_SCHEMA_VISUALIZATIONS")
         })
 
     def post(self):

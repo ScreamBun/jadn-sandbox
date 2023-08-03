@@ -81,7 +81,7 @@ const SchemaCreator = (props: any) => {
             setSelectedFile('');
             return;
         }
-        setSelectedFile(e.value);
+        setSelectedFile(e);
         if (e.value == "file") {
             ref.current.click();
         } else {
@@ -416,6 +416,7 @@ const SchemaCreator = (props: any) => {
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
                                 loc={'schemas'}
+                                value={selectedFile}
                                 isGrouped isFileUploader />
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>

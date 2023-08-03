@@ -41,7 +41,7 @@ interface GroupedOption {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value } = props;
     const [toggleModal, setToggleModal] = useState(false);
 
     const dispatch = useDispatch();
@@ -111,8 +111,8 @@ const SBSelect = (props: any) => {
         ));
 
     } else {
-        opts = data.map((opt: string) => ({
-            value: opt, label: opt
+        opts = data.map((opt: string | Option) => ({
+            value: (opt.value ? opt.value : opt), label: (opt.label ? opt.label : opt)
         }));
     }
 
@@ -164,7 +164,10 @@ const SBSelect = (props: any) => {
                         menuPortalTarget={document.body}
                         styles={{ menuPortal: base => ({ ...base, zIndex: 9999, color: '#172B4D' }) }}
                         isMulti={isMultiSelect}
-                        components={{ Menu }} /> :
+                        components={{ Menu }}
+                        value={value}
+                    />
+                    :
                     <Select<Option, false, GroupedOption>
                         id={id}
                         placeholder={placeholder}
@@ -175,6 +178,7 @@ const SBSelect = (props: any) => {
                         menuPortalTarget={document.body}
                         styles={{ menuPortal: base => ({ ...base, zIndex: 9999, color: '#172B4D' }) }}
                         isMulti={isMultiSelect}
+                        value={value}
                     />
                 }
 

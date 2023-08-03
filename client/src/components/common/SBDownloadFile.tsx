@@ -76,7 +76,7 @@ const SBDownloadFile = (props: any) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="success" onClick={() => onDownloadClick(ext)}>Save</Button>
+                    <Button color="success" onClick={() => onDownloadClick(ext)}>Download</Button>
                     <Button color="secondary" onClick={() => setToggleDownloadDialog(false)}>Cancel</Button>
                 </ModalFooter>
             </Modal>

@@ -3,7 +3,7 @@ import os
 import toml
 
 from jadnschema.utils import FrozenDict
-from jadnschema.convert import SchemaFormats
+from jadnschema.convert import SchemaFormats, SchemaVisualizationFormats, SchemaTranslationFormats
 
 
 class Config:
@@ -59,6 +59,8 @@ class Config:
 
     VALID_SCHEMAS = ["jadn", ]
     VALID_SCHEMA_CONV = FrozenDict({fmt.name: fmt.value for fmt in SchemaFormats})
+    VALID_SCHEMA_TRANSLATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaTranslationFormats})
+    VALID_SCHEMA_VISUALIZATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaVisualizationFormats})
     VALID_MESSAGES = ["json", "cbor", "xml"]
 
 

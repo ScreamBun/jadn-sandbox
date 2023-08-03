@@ -8,15 +8,15 @@ import SBSelect, { Option } from "components/common/SBSelect";
 
 const SchemaTransformed = (props: any) => {
 
-    const { transformedSchema, data, setTransformationType, isLoading } = props;
+    const { transformedSchema, data, transformationType, setTransformationType, isLoading } = props;
 
     return (
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-9'>
-                        <SBSelect id={"transformation-list"} data={['Resolve references', 'Strip comments']} onChange={(e: Option) => setTransformationType(e.value)}
-                            placeholder={'Select transformation type...'}
+                        <SBSelect id={"transformation-list"} data={['Resolve references', 'Strip comments']} onChange={(e: Option) => setTransformationType(e)}
+                            placeholder={'Select transformation type...'} value={transformationType}
                         />
                     </div>
                     <div className='col-md-3'>

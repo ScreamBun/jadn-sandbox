@@ -7,13 +7,14 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
 import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
 import { transformSchema } from 'actions/transform'
+import { Option } from 'components/common/SBSelect'
 
 const SchemaTransformer = () => {
     const dispatch = useDispatch();
 
     const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
     const [transformedSchema, setTransformedSchema] = useState('');
-    const [transformationType, setTransformationType] = useState('');
+    const [transformationType, setTransformationType] = useState<Option>();
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
@@ -97,7 +98,7 @@ const SchemaTransformer = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}
-                                            setTransformationType={setTransformationType}
+                                            transformationType={transformationType} setTransformationType={setTransformationType}
                                             isLoading={isLoading}
                                         />
                                     </div>

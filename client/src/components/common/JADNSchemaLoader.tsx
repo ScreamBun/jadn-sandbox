@@ -18,7 +18,7 @@ import SBSelect, { Option } from "./SBSelect";
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
 
-    const { selectedFile, setSelectedFile, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
+    const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
     const [currSchema, setCurrSchema] = useState(''); //setLoadedSchema if JADN is valid
@@ -28,6 +28,13 @@ const JADNSchemaLoader = (props: any) => {
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
+
+    useEffect(() => {
+        if (loadedSchema == '') {
+            setCurrSchema('');
+            setIsValidJADN(false);
+        }
+    }, [loadedSchema])
 
     const loadDecodeTypes = (schemaObj: any) => {
         let decodeTypes = {
@@ -54,7 +61,7 @@ const JADNSchemaLoader = (props: any) => {
             }
         }
         setDecodeSchemaTypes(decodeTypes);
-        setDecodeMsg(msgDecode);
+        setDecodeMsg({value: msgDecode, label: msgDecode});
     }
 
     const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
@@ -73,7 +80,6 @@ const JADNSchemaLoader = (props: any) => {
 
     const validateJADN = (jsonToValidate: any) => {
         setIsValidJADN(false);
-        setLoadedSchema('');
         let jsonObj = validateJSON(jsonToValidate);
         if (!jsonObj) {
             sbToastError(`Invalid JSON. Cannot validate JADN`);
@@ -132,7 +138,6 @@ const JADNSchemaLoader = (props: any) => {
     const sbEditorOnChange = (data: any) => {
         dispatch(setSchema(data));
         setIsValidJADN(false);
-        setLoadedSchema('');
         setCurrSchema(data);
         try {
             if (setDecodeSchemaTypes && setDecodeMsg) {
@@ -151,7 +156,7 @@ const JADNSchemaLoader = (props: any) => {
             setSelectedFile('');
             return;
         }
-        setSelectedFile(e.value);
+        setSelectedFile(e);
         if (e.value == "file") {
             ref.current.click();
 
@@ -226,13 +231,14 @@ const JADNSchemaLoader = (props: any) => {
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-md-6">
-                        <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
+                        <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
                                 loc={'schemas'}
+                                value={selectedFile}
                                 isGrouped isFileUploader />
                         </div>
-                        <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>

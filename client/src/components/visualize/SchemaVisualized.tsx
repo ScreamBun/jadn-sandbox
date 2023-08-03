@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWindowMaximize, faTableColumns, faFileImage } from "@fortawesome/free-solid-svg-icons";
-import { getConversions } from "reducers/convert";
+import { getValidVisualizations } from "reducers/convert";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
@@ -18,8 +18,7 @@ import SBDownloadFile from "components/common/SBDownloadFile";
 import SBDownloadPDF from "components/common/SBDownloadPDF";
 import Spinner from "components/common/Spinner";
 import SBSelect, { Option } from "components/common/SBSelect";
-
-const validConversions = ['GraphViz', 'HTML', 'JIDL', 'MarkDown', 'PlantUML'];
+import { initConvertedSchemaState } from "./SchemaVisualizer";
 
 const SchemaVisualized = (props: any) => {
     const location = useLocation();
@@ -27,12 +26,10 @@ const SchemaVisualized = (props: any) => {
 
     const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag, isLoading } = props;
     const [pumlURL, setPumlURL] = useState('');
-    const data = useSelector(getConversions);
-    let convertOpts = {};
+    const data = useSelector(getValidVisualizations);
+    let convertOpts: Option[] = [];
     for (let i = 0; i < Object.keys(data).length; i++) {
-        if (validConversions.includes(Object.keys(data)[i])) {
-            convertOpts[Object.keys(data)[i]] = Object.values(data)[i];
-        }
+        convertOpts.push({ ['label']: Object.keys(data)[i], ['value']: Object.values(data)[i] });
     }
 
     useEffect(() => {
@@ -42,27 +39,22 @@ const SchemaVisualized = (props: any) => {
     }, []);
 
     useEffect(() => {
-        if (conversion == 'puml' && convertedSchema) {
-            setPumlURL(convertToPuml(convertedSchema));
+        if ((conversion.length == 1 ? conversion[0].value : conversion) == 'puml' && convertedSchema.length != 0) {
+            setPumlURL(convertToPuml(convertedSchema[0].schema));
         }
-        if (conversion == 'gv' && convertedSchema) {
-            convertToGvSplitView(convertedSchema);
-            convertToGvFullView(convertedSchema);
+        if ((conversion.length == 1 ? conversion[0].value : conversion) == 'gv' && convertedSchema.length != 0) {
+            convertToGvSplitView(convertedSchema[0].schema);
+            convertToGvFullView(convertedSchema[0].schema);
         }
     }, [convertedSchema]);
 
     const handleConversion = (e: Option[]) => {
-        let convertTo;
-        if (e.length == 1) {
-            convertTo = convertOpts[e[0].value];
-        } else {
-            convertTo = [];
-            for (let i = 0; i < Object.values(e).length; i++) {
-                convertTo.push(convertOpts[Object.values(e)[i].value])
-            }
+        let convertTo = [];
+        for (let i = 0; i < Object.values(e).length; i++) {
+            convertTo.push(Object.values(e)[i])
         }
         setConversion(convertTo);
-        setConvertedSchema('');
+        setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
     }
 
@@ -70,7 +62,7 @@ const SchemaVisualized = (props: any) => {
         e.preventDefault();
         try {
             var newWindow = window.open("");
-            newWindow?.document.write('<html><body><pre>' + convertedSchema + '</pre></body></html>');
+            newWindow?.document.write('<html><body><pre>' + convertedSchema[0].schema + '</pre></body></html>');
         } catch {
             sbToastError('Error: Unable to open schema in pop out');
         }
@@ -86,36 +78,37 @@ const SchemaVisualized = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-6'>
-                        <SBSelect id={"conversion-list"} data={Object.keys(convertOpts)} onChange={handleConversion}
+                        <SBSelect id={"conversion-list"} data={convertOpts} onChange={handleConversion}
+                            value={conversion}
                             placeholder={'Convert to...'} isMultiSelect
                         />
                     </div>
                     <div className='col-md-6'>
-                        <div className={`${convertedSchema ? '' : ' d-none'}`}>
-                            <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema} customClass='float-right' />
-                            <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema ? '' : ' d-none'}`} data={convertedSchema} ext={conversion} />
+                        <div className={`${convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                            <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema[0].schema} customClass='float-right' />
+                            <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema[0].schema ? '' : ' d-none'}`} data={convertedSchema[0].schema} ext={conversion.length == 1 ? conversion[0].value : conversion} />
 
-                            <div className={`${conversion == 'html' ? '' : ' d-none'}`}>
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'html' ? '' : ' d-none'}`}>
                                 <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
-                                <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(convertedSchema)}>
+                                <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(convertedSchema[0].schema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </Button>
                             </div>
 
-                            <div className={`${typeof conversion == 'string' && conversion == 'md' ? '' : ' d-none'}`}>
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'md' ? '' : ' d-none'}`}>
                                 <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
-                                <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(convertedSchema)}>
+                                <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(convertedSchema[0].schema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </Button>
                             </div>
 
-                            <div className={`${typeof conversion == 'string' && conversion == 'jidl' ? '' : ' d-none'}`}>
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'jidl' ? '' : ' d-none'}`}>
                                 <Button id="jidlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onPopOutClick}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </Button>
                             </div>
 
-                            <div className={`${typeof conversion == 'string' && conversion == 'puml' ? '' : ' d-none'}`}>
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'puml' ? '' : ' d-none'}`}>
                                 <Button id="pumlPngDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={() => onDownloadPNGClick(pumlURL)}>
                                     <FontAwesomeIcon icon={faFileImage} />
                                 </Button>
@@ -124,7 +117,7 @@ const SchemaVisualized = (props: any) => {
                                 </Button>
                             </div>
 
-                            <div className={`${typeof conversion == 'string' && conversion == 'gv' ? '' : ' d-none'}`}>
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'gv' ? '' : ' d-none'}`}>
                                 <Button id="gvSvgDownload" title="Download SVG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadSVGClick}>
                                     <FontAwesomeIcon icon={faFileImage} />
                                 </Button>
@@ -133,7 +126,7 @@ const SchemaVisualized = (props: any) => {
                                 </Button>
                             </div>
 
-                            <div className={`${typeof conversion == 'string' && conversion != 'jidl' ? '' : ' d-none'}`}>
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) != 'jidl' ? '' : ' d-none'}`}>
                                 <Button id="SplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
                                     <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
                                 </Button>
@@ -142,7 +135,7 @@ const SchemaVisualized = (props: any) => {
 
                         <div>
                             {isLoading ? <Spinner action={'Converting'} /> : <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
-                                disabled={loadedSchema && conversion ? false : true}
+                                disabled={loadedSchema && conversion.length != 0 ? false : true}
                                 title={"Convert the given JADN schema to the selected format"}>
 
                                 Convert
@@ -152,22 +145,22 @@ const SchemaVisualized = (props: any) => {
                 </div>
             </div>
             <div className={`card-body p-0 ${spiltViewFlag ? 'd-none' : ''}`}>
-                {typeof conversion != 'string' && convertedSchema ? <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
-                    <SBEditor data={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} isReadOnly={true} convertTo={typeof conversion == 'object' ? '' : conversion} height="40em"></SBEditor>
+                {conversion.length > 1 && convertedSchema.length > 1 ? <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
+                    <SBEditor data={convertedSchema[0].schema} isReadOnly={true} convertTo={(conversion.length == 1 ? conversion[0].value : conversion)} height="40em"></SBEditor>
                 }
             </div>
             <div className={`card-body p-0 ${spiltViewFlag ? '' : ' d-none'}`}>
-                <div className={`${typeof conversion == 'string' && conversion == 'html' && convertedSchema ? '' : ' d-none'}`}>
-                    <SBHtmlPreviewer htmlText={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} showPreviewer={true} conversion={conversion}></SBHtmlPreviewer>
+                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'html' && convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                    <SBHtmlPreviewer htmlText={convertedSchema[0].schema} showPreviewer={true} conversion={(conversion.length == 1 ? conversion[0].value : conversion)}></SBHtmlPreviewer>
                 </div>
-                <div className={`${typeof conversion == 'string' && conversion == 'md' && convertedSchema ? '' : ' d-none'}`}>
-                    <SBMarkdownPreviewer markdownText={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} showPreviewer={true}></SBMarkdownPreviewer>
+                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'md' && convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                    <SBMarkdownPreviewer markdownText={convertedSchema[0].schema} showPreviewer={true}></SBMarkdownPreviewer>
                 </div>
-                <div className={`${typeof conversion == 'string' && conversion == 'puml' && convertedSchema ? '' : ' d-none'}`}>
-                    <SBPumlPreviewer data={pumlURL} convertedSchema={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} conversion={conversion}></SBPumlPreviewer>
+                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'puml' && convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                    <SBPumlPreviewer data={pumlURL} convertedSchema={convertedSchema[0].schema} conversion={(conversion.length == 1 ? conversion[0].value : conversion)}></SBPumlPreviewer>
                 </div>
-                <div className={`${typeof conversion == 'string' && conversion == 'gv' && convertedSchema ? '' : ' d-none'}`}>
-                    <SBGvPreviewer convertedSchema={typeof convertedSchema == 'object' ? convertedSchema[0].schema : convertedSchema} conversion={conversion}></SBGvPreviewer>
+                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'gv' && convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                    <SBGvPreviewer convertedSchema={convertedSchema[0].schema} conversion={(conversion.length == 1 ? conversion[0].value : conversion)}></SBGvPreviewer>
                 </div>
             </div>
         </div>

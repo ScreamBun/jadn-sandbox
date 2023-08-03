@@ -8,14 +8,21 @@ import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaVisualized from './SchemaVisualized'
+import { Option } from 'components/common/SBSelect'
+
+export const initConvertedSchemaState = [{
+    schema: '',
+    fmt: '',
+    fmt_ext: ''
+}]
 
 const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [convertedSchema, setConvertedSchema] = useState('');
-    const [conversion, setConversion] = useState<any[] | string>('');
+    const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
+    const [conversion, setConversion] = useState<Option[]>([]);
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -26,15 +33,15 @@ const SchemaVisualizer = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setConvertedSchema('');
+        setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
     }, [loadedSchema]);
 
     const onReset = () => {
         setSelectedFile('');
         setLoadedSchema('');
-        setConversion('');
-        setConvertedSchema('');
+        setConversion([]);
+        setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
     }
 
@@ -57,10 +64,12 @@ const SchemaVisualizer = () => {
             dispatch(validateSchema(schemaObj))
                 .then((validateSchemaVal) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
-                        dispatch(convertSchema(schemaObj, conversion))
+                        //convertSchema takes in an array of values
+                        const arr = conversion.map(obj => obj.value);
+                        dispatch(convertSchema(schemaObj, arr))
                             .then((convertSchemaVal) => {
                                 if (convertSchemaVal.error) {
-                                    setConvertedSchema('');
+                                    setConvertedSchema(initConvertedSchemaState);
                                     sbToastError(convertSchemaVal.payload.response);
                                     setIsLoading(false);
                                     return;
@@ -79,7 +88,7 @@ const SchemaVisualizer = () => {
                     } else if (validateSchemaVal.payload.valid_bool == false) {
                         sbToastError("Invalid Schema");
                         setIsLoading(false);
-                    } else if (conversion == '') {
+                    } else if (conversion.length == 0) {
                         sbToastError("No conversion selected");
                         setIsLoading(false);
                     }
@@ -114,7 +123,7 @@ const SchemaVisualizer = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            setLoadedSchema={setLoadedSchema} />
+                                            loadedSchema={loadedSchema}  setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaVisualized

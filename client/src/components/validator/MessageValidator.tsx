@@ -52,7 +52,7 @@ const MessageValidator = () => {
 
         if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
             try {
-                dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
+                dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat.value, decodeMsg.value))
                     .then((submitVal: any) => {
                         if (submitVal && submitVal.payload.valid_bool) {
                             sbToastSuccess(submitVal.payload.valid_msg)
@@ -118,7 +118,7 @@ const MessageValidator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
-                                            setLoadedSchema={setLoadedSchema}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes} setDecodeSchemaTypes={setDecodeSchemaTypes} />
                                     </div>

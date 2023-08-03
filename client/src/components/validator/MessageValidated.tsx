@@ -35,13 +35,13 @@ const MessageValidated = (props: any) => {
 
     const onFileSelect = (e: Option) => {
         setLoadedMsg('');
-        setDecodeMsg('');
+        //setDecodeMsg('');
         setMsgFormat('');
         if (e == null) {
             setSelectedFile('');
             return;
         }
-        setSelectedFile(e.value);
+        setSelectedFile(e);
         if (e.value == "file") {
             ref.current.click();
 
@@ -124,26 +124,29 @@ const MessageValidated = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className={`${selectedFile == 'file' ? 'col-md-6' : ' col-md-3'}`}>
-                        <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
+                    <div className={`${selectedFile.value == 'file' ? 'col-md-6' : ' col-md-3'}`}>
+                        <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
                             <SBSelect id={"message-list"} data={msgOpts} onChange={onFileSelect}
                                 placeholder={'Select a message...'}
                                 loc={'messages'}
+                                value={selectedFile}
                                 isGrouped isFileUploader />
                         </div>
-                        <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
 
-                    <div className={`col-md-3 ${selectedFile == '' || selectedFile == 'empty' ? '' : ' d-none'}`}>
-                        <SBSelect id={"message-format-list"} data={validMsgFormat} onChange={(e: Option) => setMsgFormat(e.value)}
+                    <div className={`col-md-3 ${selectedFile.value == '' || selectedFile.value == 'empty' ? '' : ' d-none'}`}>
+                        <SBSelect id={"message-format-list"} data={validMsgFormat} onChange={(e: Option) => setMsgFormat(e)}
+                            value={msgFormat}
                             placeholder={'Message format...'}
                         />
                     </div>
 
                     <div className='col-md-3'>
-                        <SBSelect id={"message-decode-list"} data={decodeSchemaTypes.exports} onChange={(e: Option) => setDecodeMsg(e.value)}
+                        <SBSelect id={"message-decode-list"} data={decodeSchemaTypes.exports} onChange={(e: Option) => setDecodeMsg(e)}
+                            value={decodeMsg}
                             placeholder={'Message type...'}
                         />
                     </div>

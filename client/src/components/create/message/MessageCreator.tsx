@@ -24,7 +24,7 @@ const MessageCreator = (props: any) => {
 
     let schemaObj = loadedSchema ? JSON.parse(loadedSchema) : '';
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
-    const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType) : [];
+    const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType.value) : [];
 
     //set configuration data
     const configDefs = schemaObj.info && schemaObj.info.config ? schemaObj.info.config : [];
@@ -40,7 +40,7 @@ const MessageCreator = (props: any) => {
     }
 
     const handleSelection = (e: Option) => {
-        setCommandType(e.value);
+        setCommandType(e);
         setGeneratedMessage({});
     }
 
@@ -73,7 +73,7 @@ const MessageCreator = (props: any) => {
     }
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
-    if (commandType) {
+    if (commandType.value) {
         if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
             if (recordDef[1] && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { //check not choice or enum type
                 const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
@@ -91,7 +91,7 @@ const MessageCreator = (props: any) => {
             <FormText color="muted">
                 Message generator will appear here after selecting a message type
                 &nbsp;
-                {commandType}
+                {commandType.value}
             </FormText>
         );
     }
@@ -103,6 +103,7 @@ const MessageCreator = (props: any) => {
                     <div className='col-md-6'>
                         <SBSelect id={"command-list"} data={exportRecords} onChange={handleSelection}
                             placeholder={'Select a message type...'}
+                            value={commandType}
                         />
                     </div>
                     <div className='col'>

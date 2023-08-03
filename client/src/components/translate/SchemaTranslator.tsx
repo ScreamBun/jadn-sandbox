@@ -8,14 +8,16 @@ import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTranslated from './SchemaTranslated'
+import { initConvertedSchemaState } from 'components/visualize/SchemaVisualizer'
+import { Option } from 'components/common/SBSelect'
 
 const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [translatedSchema, setTranslatedSchema] = useState('');
-    const [translation, setTranslation] = useState<any[] | string>('');
+    const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
+    const [translation, setTranslation] = useState<Option[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Translation'
@@ -25,14 +27,14 @@ const SchemaTranslator = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setTranslatedSchema('');
+        setTranslatedSchema(initConvertedSchemaState);
     }, [loadedSchema])
 
     const onReset = () => {
         setSelectedFile('');
         setLoadedSchema('');
-        setTranslation('');
-        setTranslatedSchema('');
+        setTranslation([]);
+        setTranslatedSchema(initConvertedSchemaState);
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -54,10 +56,12 @@ const SchemaTranslator = () => {
             dispatch(validateSchema(schemaObj))
                 .then((validateSchemaVal) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
-                        dispatch(convertSchema(schemaObj, translation))
+                         //convertSchema takes in an array of values
+                         const arr = translation.map(obj => obj.value);
+                        dispatch(convertSchema(schemaObj, arr))
                             .then((convertSchemaVal) => {
                                 if (convertSchemaVal.error) {
-                                    setTranslatedSchema('');
+                                    setTranslatedSchema([]);
                                     sbToastError(convertSchemaVal.payload.response);
                                     setIsLoading(false);
                                     return;
@@ -109,7 +113,7 @@ const SchemaTranslator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            setLoadedSchema={setLoadedSchema} />
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTranslated
