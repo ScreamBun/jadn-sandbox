@@ -25,7 +25,7 @@ interface KeyValueEditorProps {
 // Key Value Editor
 const KeyValueEditor = (props: KeyValueEditorProps) => {
   const { name, value, description, options, placeholder, type, change, remove, required } = props;
-  const [val, setVal] = useState({ value: value, label: value });
+  const [val, setVal] = useState(value ? { value: value, label: value } : '');
   const onSelectChange = (e: Option) => {
     if (e == null) {
       setVal('');
@@ -46,7 +46,7 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
             data={options}
             onChange={onSelectChange}
             value={val}
-            isGrouped={typeof Object.keys(options)[0] == 'string' ? true : false}
+            isGrouped={Array.isArray(options) ? false : true}
           />
           {remove ?
             <div className="input-group-append">
@@ -61,6 +61,7 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
   }
 
   if (type === 'SBSelect' && options) {
+    console.log(options)
     return (
       <FormGroup row className="border m-1 p-1">
         <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
@@ -70,7 +71,7 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
             data={options}
             onChange={onSelectChange}
             value={val}
-            isGrouped={typeof Object.keys(options)[0] == 'string' ? true : false}
+            isGrouped={Array.isArray(options) ? false : true}
           />
           {remove ?
             <div className="input-group-append">
