@@ -64,7 +64,8 @@ const SchemaTranslated = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                {translation.length > 1 && translatedSchema.length > 1 ? <SBCollapseViewer data={translatedSchema} /> :
+                {translation.length > 1 && translatedSchema.length > 1 ?
+                    <SBCollapseViewer data={translatedSchema} /> :
                     <SBEditor data={translatedSchema[0].schema} isReadOnly={true} convertTo={(translation.length == 1 ? translation[0].value : translation)}></SBEditor>
                 }
             </div>

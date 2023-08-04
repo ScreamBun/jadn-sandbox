@@ -70,7 +70,7 @@ const SchemaVisualized = (props: any) => {
 
     const toggleSplitView = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setSplitViewFlag(splitView => !splitView);
+        setSplitViewFlag(!spiltViewFlag);
     }
 
     return (
@@ -84,9 +84,9 @@ const SchemaVisualized = (props: any) => {
                         />
                     </div>
                     <div className='col-md-6'>
-                        <div className={`${convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                        <div className={`${conversion.length == 1 && convertedSchema[0].schema ? '' : ' d-none'}`}>
                             <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema[0].schema} customClass='float-right' />
-                            <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema[0].schema ? '' : ' d-none'}`} data={convertedSchema[0].schema} ext={conversion.length == 1 ? conversion[0].value : conversion} />
+                            <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema[0].schema && conversion.length <= 1 ? '' : ' d-none'}`} data={convertedSchema[0].schema} ext={conversion.length == 1 ? conversion[0].value : conversion} />
 
                             <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'html' ? '' : ' d-none'}`}>
                                 <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
@@ -126,7 +126,7 @@ const SchemaVisualized = (props: any) => {
                                 </Button>
                             </div>
 
-                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) != 'jidl' ? '' : ' d-none'}`}>
+                            <div className={`${((conversion.length == 1 ? conversion[0].value : conversion) != 'jidl') ? '' : ' d-none'}`}>
                                 <Button id="SplitView" title="View Schema and Preview together" color="info" className="btn-sm mr-1 float-right" onClick={toggleSplitView}>
                                     <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
                                 </Button>
@@ -145,7 +145,8 @@ const SchemaVisualized = (props: any) => {
                 </div>
             </div>
             <div className={`card-body p-0 ${spiltViewFlag ? 'd-none' : ''}`}>
-                {conversion.length > 1 && convertedSchema.length > 1 ? <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
+                {conversion.length > 1 && convertedSchema.length > 1 ?
+                    <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
                     <SBEditor data={convertedSchema[0].schema} isReadOnly={true} convertTo={(conversion.length == 1 ? conversion[0].value : conversion)} height="40em"></SBEditor>
                 }
             </div>

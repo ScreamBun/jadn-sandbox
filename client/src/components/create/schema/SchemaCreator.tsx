@@ -83,7 +83,7 @@ const SchemaCreator = (props: any) => {
         }
         setSelectedFile(e);
         if (e.value == "file") {
-            ref.current.click();
+            ref.current?.click();
         } else {
             setFileName(e.label.split('.')[0]);
             setIsLoading(true);
@@ -259,7 +259,7 @@ const SchemaCreator = (props: any) => {
                 }
             } else if (generatedSchema.info && !(data.info in generatedSchema.info)) {
                 if (data.info == 'config') {
-                    setGeneratedSchema((generatedSchema) => ({
+                    setGeneratedSchema((generatedSchema: any) => ({
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
@@ -282,7 +282,7 @@ const SchemaCreator = (props: any) => {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const tmpDef = Types[data.types].edit();
             tmpTypes.push(tmpDef);  // unshift drops items at the bottom
-            setGeneratedSchema(generatedSchema => ({
+            setGeneratedSchema((generatedSchema: any) => ({
                 ...generatedSchema,
                 types: tmpTypes
             }));
@@ -302,10 +302,10 @@ const SchemaCreator = (props: any) => {
                     generatedSchema.info[key]
                 ,
                 placeholder: k,
-                change: val => {
+                change: (val: any) => {
                     if (key == 'config') {
                         setConfigOpt(val);
-                        setGeneratedSchema(generatedSchema => ({
+                        setGeneratedSchema((generatedSchema: { info: any; }) => ({
                             ...generatedSchema,
                             info: {
                                 ...generatedSchema.info,
@@ -313,7 +313,7 @@ const SchemaCreator = (props: any) => {
                             }
                         }));
                     } else {
-                        setGeneratedSchema(generatedSchema => ({
+                        setGeneratedSchema((generatedSchema: { info: any; }) => ({
                             ...generatedSchema,
                             info: {
                                 ...generatedSchema.info,
@@ -335,7 +335,7 @@ const SchemaCreator = (props: any) => {
                             delete tmpData['info'];
                             setGeneratedSchema(tmpData);
                         } else {
-                            setGeneratedSchema(generatedSchema => ({
+                            setGeneratedSchema((generatedSchema: any) => ({
                                 ...generatedSchema,
                                 info: tmpInfo
                             }));
@@ -357,7 +357,7 @@ const SchemaCreator = (props: any) => {
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
-                setGeneratedSchema(generatedSchema => ({
+                setGeneratedSchema((generatedSchema: any) => ({
                     ...generatedSchema,
                     types: tmpTypes
                 }))
@@ -374,7 +374,7 @@ const SchemaCreator = (props: any) => {
                         delete tmpData['types'];
                         setGeneratedSchema(tmpData);
                     } else {
-                        setGeneratedSchema(generatedSchema => ({
+                        setGeneratedSchema((generatedSchema: any) => ({
                             ...generatedSchema,
                             types: tmpTypes
                         }));
@@ -398,7 +398,7 @@ const SchemaCreator = (props: any) => {
                     ...tmpTypes.slice(idx)
                 ];
 
-                setGeneratedSchema(generatedSchema => ({
+                setGeneratedSchema((generatedSchema: any) => ({
                     ...generatedSchema,
                     types: tmpTypes
                 }))

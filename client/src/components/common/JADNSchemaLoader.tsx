@@ -61,7 +61,7 @@ const JADNSchemaLoader = (props: any) => {
             }
         }
         setDecodeSchemaTypes(decodeTypes);
-        setDecodeMsg({value: msgDecode, label: msgDecode});
+        setDecodeMsg({ value: msgDecode, label: msgDecode });
     }
 
     const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
@@ -158,7 +158,7 @@ const JADNSchemaLoader = (props: any) => {
         }
         setSelectedFile(e);
         if (e.value == "file") {
-            ref.current.click();
+            ref.current?.click();
 
         } else {
             setFileName(e.label.split('.')[0]);

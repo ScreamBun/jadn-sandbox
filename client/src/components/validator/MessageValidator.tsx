@@ -69,7 +69,7 @@ const MessageValidator = () => {
                             }
                         }
                     })
-                    .catch((submitErr) => {
+                    .catch((submitErr: { message: string }) => {
                         sbToastError(submitErr.message)
                         setIsLoading(false);
                         return false;

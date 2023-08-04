@@ -43,7 +43,7 @@ const MessageValidated = (props: any) => {
         }
         setSelectedFile(e);
         if (e.value == "file") {
-            ref.current.click();
+            ref.current?.click();
 
         } else {
             setFileName(e.label.split('.')[0]);
