@@ -44,7 +44,7 @@ const SchemaTransformer = () => {
         //validate all selected files
         //call resolve_references.py
         //set transformed Schema
-        dispatch(transformSchema(selectedFiles, transformationType))
+        dispatch(transformSchema(selectedFiles, transformationType.value))
             .then((val) => {
                 if (val.error == true) {
                     val.payload.response.forEach((schema) => {
