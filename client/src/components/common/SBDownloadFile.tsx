@@ -19,7 +19,7 @@ const SBDownloadFile = (props: any) => {
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
             return;
-        } else if (fileNameInput.match(/[$&+,:;=?@#|'<>.-^*()%!]/g)) {
+        } else if (fileNameInput.match(/[$&+,:;=?@#|'<>.^*()%!\\//]/)) {
             sbToastWarning("Please do not use special characters in file name.");
             return;
         }

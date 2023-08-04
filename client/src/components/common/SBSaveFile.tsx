@@ -10,7 +10,7 @@ const SBSaveFile = (props: any) => {
 
     const dispatch = useDispatch();
 
-    const { buttonId, data, customClass, filename, ext, loc } = props;
+    const { buttonId, data, customClass, filename, ext, loc, setDropdown } = props;
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleSaveDialog, setToggleSaveDialog] = useState(false);
     const [toggleOverwriteDialog, setToggleOverwriteDialog] = useState(false); //nestedModal
@@ -29,7 +29,7 @@ const SBSaveFile = (props: any) => {
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
             return;
-        } else if (fileNameInput.match(/[$&+,:;=?@#|'<>.-^*()%!]/g)) {
+        } else if (fileNameInput.match(/[$&+,:;=?@#|'<>.^*()%!\\//]/)) {
             sbToastWarning("Please do not use special characters in file name.");
             return;
         }
@@ -50,6 +50,7 @@ const SBSaveFile = (props: any) => {
                     }
                     sbToastSuccess(val.payload);
                     setToggleSaveDialog(false);
+                    setDropdown({ label: filename, value: filename });
                 })
                 .catch((err) => {
                     sbToastError(`Error: ${err.payload.response}`);

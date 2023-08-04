@@ -108,7 +108,7 @@ const MessageCreator = (props: any) => {
                     </div>
                     <div className='col'>
                         <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' shouldStringify={true} />
-                        <SBSaveFile data={generatedMessage} loc={'messages'} customClass={"float-right mr-1"} ext={'json'} />
+                        <SBSaveFile data={generatedMessage} loc={'messages'} customClass={"float-right mr-1"} ext={'json'} setDropdown={setCommandType} />
                         <SBDownloadFile buttonId='msgDownload' customClass='float-right mr-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
 
                         <Button onClick={() => setActiveView('message')} className={`float-right btn-sm mr-1 ${activeView == 'message' ? ' d-none' : ''}`} color="info">View Message</Button>

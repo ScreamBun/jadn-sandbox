@@ -36,10 +36,11 @@ class API(Resource):
                 msg_list.append(m)
         message_files['testers'] = msg_list
         
+        custom_msg_list = []
         for m in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "custom", "messages")):
             if messages.search(m) and not m.startswith("_"):
-                msg_list.append(m)
-            message_files['custom'] = msg_list
+                custom_msg_list.append(m)
+        message_files['custom'] = custom_msg_list
 
         schema_list = []
         for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "schemas")):
@@ -47,10 +48,11 @@ class API(Resource):
                 schema_list.append(s)
         schema_files['testers'] = schema_list
         
+        custom_schema_list = []
         for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "custom", "schemas")):
             if schemas.search(s):
-                schema_list.append(s)
-            schema_files['custom'] = schema_list
+                custom_schema_list.append(s)
+        schema_files['custom'] = custom_schema_list
 
         rsp = dict(
             title="JADN Sandbox",

@@ -244,7 +244,7 @@ const JADNSchemaLoader = (props: any) => {
                     </div>
                     <div className="col">
                         <SBCopyToClipboard buttonId='copySchema' data={currSchema} customClass='float-right mr-1' />
-                        <SBSaveFile data={currSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} />
+                        <SBSaveFile data={currSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={setSelectedFile} />
                         <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
                             <span className="m-1">Validate JADN</span>
                             {isValidJADN ? (
