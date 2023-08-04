@@ -9,11 +9,11 @@ export interface UtilState {
   valid_msg_types: string[];
   loaded: {
     messages: {
-      testers: Record<string, any>;
+      examples: Record<string, any>;
       custom?: Record<string, any>;
     };
     schemas: {
-      testers: Record<string, any>;
+      examples: Record<string, any>;
       custom?: Record<string, any>;
     };
   },
@@ -32,11 +32,11 @@ const initialState: UtilState = {
   valid_msg_types: [],
   loaded: {
     messages: {
-      testers: [],
+      examples: [],
       custom: []
     },
     schemas: {
-      testers: [],
+      examples: [],
       custom: []
     }
   },
@@ -99,10 +99,10 @@ export const getPageTitle = (state: { Util: { site_title: any; }; }) => state.Ut
 export const getValidMsgTypes = (state: { Util: { valid_msg_types: any; }; }) => state.Util.valid_msg_types;
 export const getAllSchemas = (state: { Util: { loaded: { schemas: any; }; }; }) => state.Util.loaded.schemas;
 export const getMsgFiles = (state: { Util: { loaded: { messages: any; }; }; }) => state.Util.loaded.messages;
-export const getAllSchemasList = (state: { Util: { loaded: { schemas: { testers: any; custom: any; }; }; }; }) => {
+export const getAllSchemasList = (state: { Util: { loaded: { schemas: { examples: any; custom: any; }; }; }; }) => {
   if (state.Util.loaded.schemas.custom == undefined) {
-    return ([...state.Util.loaded.schemas.testers]);
+    return ([...state.Util.loaded.schemas.examples]);
   } else {
-    return ([...state.Util.loaded.schemas.testers, ...state.Util.loaded.schemas.custom]);
+    return ([...state.Util.loaded.schemas.examples, ...state.Util.loaded.schemas.custom]);
   }
 }

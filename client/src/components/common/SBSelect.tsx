@@ -5,6 +5,7 @@ import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
 
+
 export const groupStyles: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
@@ -18,7 +19,7 @@ export const groupBadgeStyles: CSSProperties = {
     fontWeight: 'normal',
     lineHeight: '1',
     minWidth: 1,
-    padding: '0.16666666666667em 0.5em',
+    padding: '0.2em 0.5em',
     textAlign: 'center',
 };
 
@@ -26,7 +27,7 @@ const customMenuOptionStyle: CSSProperties = {
     border: 'none',
     fontWeight: 'bold',
     textAlign: 'center',
-    backgroundColor: 'inherit',
+    backgroundColor: 'inherit'
 }
 
 export interface Option {
@@ -38,6 +39,40 @@ export interface GroupedOption {
     readonly label: string;
     readonly options: readonly Option[];
 }
+
+const customStyles = {
+    control: base => ({
+      ...base,
+      height: 30,
+      minHeight: 30
+    }),
+
+    valueContainer: (provided, state) => ({
+        ...provided,
+        height: '30px',
+        padding: '0 6px'
+    }),
+  
+    input: (provided, state) => ({
+        ...provided,
+        margin: '0px',
+    }),
+
+    indicatorSeparator: state => ({
+        display: 'none',
+    }),
+
+    indicatorsContainer: (provided, state) => ({
+        ...provided,
+        height: '30px',
+    }),    
+
+    menuPortal: base => ({ 
+        ...base, 
+        zIndex: 9999, 
+        color: '#172B4D' 
+    })    
+  };
 
 const SBSelect = (props: any) => {
 
@@ -60,14 +95,14 @@ const SBSelect = (props: any) => {
                     <div>
                         <div>{props.children}</div>
                         <hr />
-                        <button type="button" className="list-group-item list-group-item-action"
+                        <button type="button" className="list-group-item p-1 m-1 list-group-item-action"
                             onClick={() => onChange({ value: 'file' })}
                             style={customMenuOptionStyle}
                         >
                             Upload New File ...
                         </button>
                         <hr />
-                        <button type="button" className="list-group-item list-group-item-action"
+                        <button type="button" className="list-group-item p-1 m-1 list-group-item-action"
                             onClick={() => setToggleModal(true)}
                             style={customMenuOptionStyle}
                         >
@@ -162,7 +197,7 @@ const SBSelect = (props: any) => {
                         isClearable
                         onChange={onChange}
                         menuPortalTarget={document.body}
-                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999, color: '#172B4D' }) }}
+                        styles={customStyles}
                         isMulti={isMultiSelect}
                         components={{ Menu }}
                         value={value}
@@ -176,7 +211,7 @@ const SBSelect = (props: any) => {
                         isClearable
                         onChange={onChange}
                         menuPortalTarget={document.body}
-                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999, color: '#172B4D' }) }}
+                        styles={customStyles}
                         isMulti={isMultiSelect}
                         value={value}
                     />

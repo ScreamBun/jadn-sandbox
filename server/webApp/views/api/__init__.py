@@ -34,7 +34,7 @@ class API(Resource):
         for m in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "messages")):
             if messages.search(m) and not m.startswith("_"):
                 msg_list.append(m)
-        message_files['testers'] = msg_list
+        message_files['examples'] = msg_list
         
         custom_msg_list = []
         for m in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "custom", "messages")):
@@ -46,7 +46,7 @@ class API(Resource):
         for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "schemas")):
             if schemas.search(s):
                 schema_list.append(s)
-        schema_files['testers'] = schema_list
+        schema_files['examples'] = schema_list
         
         custom_schema_list = []
         for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "custom", "schemas")):
