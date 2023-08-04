@@ -13,7 +13,7 @@ const SchemaTransformer = () => {
     const dispatch = useDispatch();
 
     const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
-    const [transformedSchema, setTransformedSchema] = useState('');
+    const [transformedSchema, setTransformedSchema] = useState([]);
     const [transformationType, setTransformationType] = useState<Option>();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -21,12 +21,12 @@ const SchemaTransformer = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
 
     useEffect(() => {
-        setTransformedSchema('');
+        setTransformedSchema([]);
     }, [selectedFiles])
 
     const onReset = () => {
         setSelectedFiles([]);
-        setTransformedSchema('');
+        setTransformedSchema([]);
         //clear checkboxes 
         var inputElem = document.getElementsByTagName('input');
         for (var i = 0; i < inputElem.length; i++) {

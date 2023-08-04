@@ -5,6 +5,7 @@ import traceback
 import jadn
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource, reqparse
+from jadnschema import transform
 
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,15 @@ class Transform(Resource):
         #resolve + transform
         else:
             transformed = request_json["transformation_type"]
+            output = []
+            if transformed == 'Strip comments':
+                for schema in request_json["schema_list"]:
+                    schema_output = transform.strip_comments(schema['data'])
+                    output.append({
+                        'schema_name': schema['name'],
+                        'schema': schema_output,
+                        })
+                return output
 
             #return transformed schema
             return transformed, 200
