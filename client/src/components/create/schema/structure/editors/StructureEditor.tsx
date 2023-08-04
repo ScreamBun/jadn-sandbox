@@ -41,7 +41,7 @@ const StructureEditor = (props: StructureEditorProps) => {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
-    const updatevalue = { ...valueObj, [key]: value }
+    const updatevalue = { ...valueObj, [key]: value };
     change(updatevalue, dataIndex);
   }
 
@@ -95,8 +95,34 @@ const StructureEditor = (props: StructureEditorProps) => {
     }
     const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
     change(updatevalue, dataIndex);
+    setFieldCollapse(false);
     scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
     fieldCount = fieldCount + 1;
+  }
+
+  const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
+    let tmpFieldValues = [...valueObj.fields];
+    if (newIndex < 0) {
+      sbToastError('Error: Cannot move Type up anymore')
+      return;
+    } else if (newIndex >= tmpFieldValues.length) {
+      sbToastError('Error: Cannot move Type down anymore')
+      return;
+    }
+    //get other field to be moved
+    const prevField = tmpFieldValues[newIndex];
+
+    //switch IDs
+    const valID = val[0];
+    const prevID = prevField[0];
+    prevField[0] = valID;
+    val[0] = prevID;
+
+    //switch fields
+    tmpFieldValues[oldIndex] = prevField;
+    tmpFieldValues[newIndex] = val;
+    const updatevalue = { ...valueObj, fields: tmpFieldValues };
+    change(updatevalue, dataIndex);
   }
 
   const fieldChange = (val: FieldArray, idx: number) => {
@@ -125,7 +151,7 @@ const StructureEditor = (props: StructureEditorProps) => {
     });
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
-    change(updatevalue, dataIndex)
+    change(updatevalue, dataIndex);
   };
 
   const fieldRemove = (idx: number) => {
@@ -210,6 +236,7 @@ const StructureEditor = (props: StructureEditorProps) => {
         value={valueObj.fields[i]}
         change={fieldChange}
         remove={fieldRemove}
+        changeIndex={moveField}
         config={config}
       />);
     }
@@ -270,7 +297,7 @@ const StructureEditor = (props: StructureEditorProps) => {
 
         <FormGroup tag="fieldset" className="col-12 border">
           <legend>
-            {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'}
+            {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
             <ButtonGroup className="float-right">
               <Button color={fieldCollapse ? 'success' : 'warning'} onClick={() => setFieldCollapse(!fieldCollapse)}>
                 <FontAwesomeIcon icon={fieldCollapse ? faPlusCircle : faMinusCircle} />

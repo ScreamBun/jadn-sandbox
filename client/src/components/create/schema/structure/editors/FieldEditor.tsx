@@ -4,7 +4,7 @@ import {
   Button, ButtonGroup, FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 import {
   FieldObject, EnumeratedFieldObject, EnumeratedFieldKeys, StandardFieldKeys, StandardFieldObject
 } from './consts';
@@ -14,6 +14,7 @@ import { objectValues, zip } from '../../../../utils';
 import { useAppSelector } from '../../../../../reducers';
 import { sbToastError } from 'components/common/SBToast';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
+import { Option } from 'components/common/SBSelect';
 
 // Interface
 interface FieldEditorProps {
@@ -23,11 +24,12 @@ interface FieldEditorProps {
   change: (_v: EnumeratedFieldArray | StandardFieldArray, _i: number) => void;
   remove: (_i: number) => void;
   config: InfoConfig;
+  changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
 }
 
 // Field Editor
 const FieldEditor = (props: FieldEditorProps) => {
-  const { enumerated, value, dataIndex, change, config } = props;
+  const { enumerated, value, dataIndex, change, config, changeIndex } = props;
   //const allTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]);
   const types = useAppSelector((state) => ({
     base: state.Util.types.base,
@@ -144,7 +146,14 @@ const FieldEditor = (props: FieldEditorProps) => {
           <FontAwesomeIcon icon={faMinusCircle} />
         </Button>
       </ButtonGroup>
-
+      <ButtonGroup size="sm" className="float-right mr-1">
+        <Button color="info" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)} >
+          <FontAwesomeIcon icon={faSquareCaretUp} />
+        </Button>
+        <Button color="info" onClick={() => changeIndex(value, dataIndex, dataIndex + 1)} >
+          <FontAwesomeIcon icon={faSquareCaretDown} />
+        </Button>
+      </ButtonGroup>
       <div className="border-bottom mb-2">
         <p className="col-sm-4 my-1">
           <strong>
