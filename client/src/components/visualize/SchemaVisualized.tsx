@@ -10,7 +10,6 @@ import SBEditor from "components/common/SBEditor";
 import SBHtmlPreviewer, { onHTMLPopOutClick } from "components/visualize/SBHtmlPreviewer";
 import SBMarkdownPreviewer, { onMDPopOutClick } from "components/visualize/SBMarkdownPreviewer";
 import SBPumlPreviewer, { convertToPuml, onDownloadPNGClick } from "components/visualize/SBPumlPreviewer";
-import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onDownloadSVGClick, onGVPopOutClick } from "components/visualize/SBGvPreviewer";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
@@ -33,7 +32,7 @@ const SchemaVisualized = (props: any) => {
     }
 
     useEffect(() => {
-        if (!isNull(navConvertTo)) {
+        if (navConvertTo != '') {
             const index = Object.values(data).indexOf(navConvertTo)
             setConversion({ value: Object.values(data)[index], label: Object.keys(data)[index] });
         }

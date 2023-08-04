@@ -10,7 +10,6 @@ import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
-import { isNull } from "lodash";
 import SBFileUploader from "components/common/SBFileUploader";
 import Spinner from "components/common/Spinner";
 import SBSaveFile from "components/common/SBSaveFile";
@@ -28,7 +27,7 @@ const MessageValidated = (props: any) => {
     const ref = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        if (!isNull(navMsgFormat)) {
+        if (navMsgFormat != '') {
             const index = Object.values(validMsgFormat).indexOf(navMsgFormat)
             setMsgFormat({ value: Object.values(validMsgFormat)[index], label: Object.values(validMsgFormat)[index] });
         }

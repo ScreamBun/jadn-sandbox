@@ -4,7 +4,6 @@ import { Button } from "reactstrap";
 import { getValidTranslations } from "reducers/convert";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
-import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
@@ -24,7 +23,7 @@ const SchemaTranslated = (props: any) => {
     }
 
     useEffect(() => {
-        if (!isNull(navConvertTo)) {
+        if (navConvertTo != '') {
             const index = Object.values(data).indexOf(navConvertTo)
             setTranslation({ value: Object.values(data)[index], label: Object.keys(data)[index] });
         }
