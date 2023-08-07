@@ -5,6 +5,8 @@ import os
 from flask import current_app
 from flask_restful import Resource
 
+from webApp.utils import utils
+
 logger = logging.getLogger()
 
 
@@ -22,18 +24,20 @@ class LoadFile(Resource):
 
         if "custom/" in filename:
           filename = filename.split('/')[-1]
-          filePath = os.path.join(current_app.config.get("OPEN_C2_CUSTOM_DATA"), filetype, filename)
-        else:
-            filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
 
-        if not os.path.isfile(filePath):
-            filePath = os.path.join(current_app.config.get("OPEN_C2_CUSTOM_DATA"), filetype, filename)
-            if not os.path.isfile(filePath):
-                return "File not found", 404
+        path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_DATA"))
+
+        file_found_info = utils.find_file_by_name(filename, path)
+
+        if file_found_info is None:
+            return "File not found", 404
         
-        print(f'Load: {filePath}', flush=True)
+        fp = file_found_info['path'] 
+        print(f'Load: {fp}', flush=True)
+
         _, ext = os.path.splitext(filename)
-        with open(filePath, "rb") as f:
+
+        with open(fp, "rb") as f:
             filedata = ""
 
             if ext in [".jadn", ".json"]:
