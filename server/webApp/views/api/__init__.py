@@ -1,9 +1,10 @@
 import logging
 import os
-import re
 
 from flask import Blueprint, current_app, jsonify
 from flask_restful import Api, Resource
+
+from webApp.utils import utils
 
 from .convert import add_resources as add_convert
 from .load import add_resources as add_load
@@ -24,35 +25,26 @@ class API(Resource):
 
     def get(self):
 
-        schemas = re.compile(r"\.(" + "|".join(current_app.config.get("VALID_SCHEMAS")) + ")$")
-        messages = re.compile(fr"\.({'|'.join(current_app.config.get('VALID_MESSAGES'))})$")
-        schema_files = {}
-        message_files = {}
+        schema_files = { 'custom': [], 'examples': [] }
+        message_files = { 'custom': [], 'examples': [] }
+
+        jadn_ext = "jadn"
+        all_ext = "*"
+        isReturnNamesOnly = True
+
+        custom_msg_path = os.path.join(current_app.config.get("OPEN_C2_MESSAGE_CUSTOM_DATA"))
+        message_files['custom'] = utils.find_file_names_by_extension(all_ext, custom_msg_path, isReturnNamesOnly)
+
+        example_msg_path = os.path.join(current_app.config.get("OPEN_C2_MESSAGE_EXAMPLE_DATA"))
+        message_files['examples'] = utils.find_file_names_by_extension(all_ext, example_msg_path, isReturnNamesOnly)
+
+        custom_schema_path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_CUSTOM_DATA"))
+        schema_files['custom'] = utils.find_file_names_by_extension(jadn_ext, custom_schema_path, isReturnNamesOnly)
+
+        example_schema_path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_EXAMPLE_DATA"))
+        schema_files['examples'] = utils.find_file_names_by_extension(jadn_ext, example_schema_path, isReturnNamesOnly)  
+
         version_info = current_app.config.get("VERSION_INFO")
-
-        msg_list = []
-        for m in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "messages")):
-            if messages.search(m) and not m.startswith("_"):
-                msg_list.append(m)
-        message_files['examples'] = msg_list
-        
-        custom_msg_list = []
-        for m in os.listdir(os.path.join(current_app.config.get("OPEN_C2_CUSTOM_DATA"), "messages")):
-            if messages.search(m) and not m.startswith("_"):
-                custom_msg_list.append(m)
-        message_files['custom'] = custom_msg_list
-
-        schema_list = []
-        for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_DATA"), "schemas")):
-            if schemas.search(s):
-                schema_list.append(s)
-        schema_files['examples'] = schema_list
-        
-        custom_schema_list = []
-        for s in os.listdir(os.path.join(current_app.config.get("OPEN_C2_CUSTOM_DATA"), "schemas")):
-            if schemas.search(s):
-                custom_schema_list.append(s)
-        schema_files['custom'] = custom_schema_list
 
         rsp = dict(
             title="JADN Sandbox",

@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 
@@ -17,22 +18,28 @@ class SaveFile(Resource):
         """
     def post(self):
         filename = request.json['filename']
-        file = request.json['filedata']
+        file_data = request.json['filedata']
         location = request.json['loc']
         overwrite = request.json['overwrite']
-        if not file:
+        if not file_data:
             return 'No data to write to file', 500
 
-        path = current_app.config.get("OPEN_C2_DATA")
-        UPLOAD_FOLDER = os.path.join(path, 'custom', location)
+        if location == 'schemas':
+            UPLOAD_FOLDER = current_app.config.get("OPEN_C2_SCHEMA_CUSTOM_DATA")
+        elif location == 'messages':
+            UPLOAD_FOLDER = current_app.config.get("OPEN_C2_MESSAGE_CUSTOM_DATA")
+        else:
+             return 'Unable to find save location', 500
 
         #check if file exists
         if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)) and not overwrite:
                      return 'File name already exists', 409
         else:
         #write file
-            with open(os.path.join(UPLOAD_FOLDER, filename), "w") as fp:
-                fp.write(file)
+            json_object = json.dumps(file_data, indent=4)
+            fp = os.path.join(UPLOAD_FOLDER, filename)
+            with open(fp, "w") as outfile:
+                outfile.write(json_object)
         
         #check file is in directory
         if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
