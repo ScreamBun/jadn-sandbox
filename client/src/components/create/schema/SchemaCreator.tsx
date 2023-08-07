@@ -429,9 +429,10 @@ const SchemaCreator = (props: any) => {
                         </div>
                     </div>
                     <div className='col-md-9'>
-                        <SBCopyToClipboard buttonId='copyMessage' data={data} customClass='float-right mr-1' />
-                        
-                        <SBDownloadFile buttonId='schemaDownload' customClass='float-right mr-1' filename={fileName} data={data} />
+                        <div className="btn-group float-right" role="group" aria-label="Copy or Download">
+                            <SBCopyToClipboard buttonId='copyMessage' data={data} />
+                            <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={data} />
+                        </div>
                         <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="info">View Schema</Button>
                         <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
                         <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title={isValidJADN ? "JADN schema is valid" : "Click to validate JADN"} onClick={onValidateJADNClick}>
