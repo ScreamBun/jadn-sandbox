@@ -45,6 +45,7 @@ class Config:
     OPTIONS = None
     # OpenC2 Options
     OPEN_C2_DATA = os.path.join(APP_DATA, "openc2_files")
+    OPEN_C2_CUSTOM_DATA = os.path.join(APP_DATA, "openc2_files", "custom")
     OPEN_C2_SCHEMA_THEME = os.path.join(OPEN_C2_DATA, "openc2_schema_theme.css")
     PROFILE_TEST_DATA = os.path.join(APP_DATA, "test_messages")
 
@@ -62,7 +63,7 @@ class Config:
     VALID_SCHEMA_TRANSLATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaTranslationFormats})
     VALID_SCHEMA_VISUALIZATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaVisualizationFormats})
     VALID_MESSAGES = ["json", "cbor", "xml"]
-
+    VALID_TRANSFORMATIONS = ["resolve references", "strip comments"]
 
 class DefaultConfig(Config):
     DEBUG = False

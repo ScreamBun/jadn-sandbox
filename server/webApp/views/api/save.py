@@ -9,6 +9,7 @@ logger = logging.getLogger()
 class SaveFile(Resource):
     """
         add file to prepopulated list of schemas or messages
+        data/openc2_files/custom directory
         :param filename: name of the file 
         :param filedata: file contents to write to file
         :param loc: location to save file - schemas or messages folder
@@ -42,6 +43,7 @@ class SaveFile(Resource):
 class DeleteFile(Resource):
     """
         remove file from prepopulated list of schemas or messages
+        data/openc2_files/custom directory
         :param filename: name of the file 
         :param loc: type of file - schemas or messages folder
         :return: 200 or 500

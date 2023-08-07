@@ -6,7 +6,7 @@ import { getPageTitle } from 'reducers/util'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
 import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
-import { transformSchema } from 'actions/transform'
+import { info, transformSchema } from 'actions/transform'
 import { Option } from 'components/common/SBSelect'
 
 const SchemaTransformer = () => {
@@ -19,6 +19,10 @@ const SchemaTransformer = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+
+    useEffect(() => {
+        dispatch(info());
+    }, [dispatch])
 
     useEffect(() => {
         setTransformedSchema([]);
