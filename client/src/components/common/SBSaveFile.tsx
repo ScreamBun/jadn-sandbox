@@ -15,6 +15,8 @@ const SBSaveFile = (props: any) => {
     const [toggleSaveDialog, setToggleSaveDialog] = useState(false);
     const [toggleOverwriteDialog, setToggleOverwriteDialog] = useState(false); //nestedModal
 
+    const fileNameRule = "/^\w+$/";
+
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFileNameInput(e.target.value);
@@ -29,7 +31,7 @@ const SBSaveFile = (props: any) => {
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
             return;
-        } else if (fileNameInput.match(/[$&+,:;=?@#|'<>.^*()%!\\//]/)) {
+        } else if (fileNameInput.match(fileNameRule)) {
             sbToastWarning("Please do not use special characters in file name.");
             return;
         }
