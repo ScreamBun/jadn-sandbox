@@ -27,7 +27,9 @@ class LoadFile(Resource):
             filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
 
         if not os.path.isfile(filePath):
-            return "File not found", 404
+            filePath = os.path.join(current_app.config.get("OPEN_C2_CUSTOM_DATA"), filetype, filename)
+            if not os.path.isfile(filePath):
+                return "File not found", 404
         
         print(f'Load: {filePath}', flush=True)
         _, ext = os.path.splitext(filename)
