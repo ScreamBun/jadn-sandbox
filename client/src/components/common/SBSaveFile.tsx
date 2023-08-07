@@ -49,20 +49,24 @@ const SBSaveFile = (props: any) => {
                         }
                         sbToastError(`Error: ${val.payload.response}`);
                         setToggleSaveDialog(false);
+                        setToggleOverwriteDialog(false);
                         return;
                     }
                     sbToastSuccess(val.payload);
                     setToggleSaveDialog(false);
+                    setToggleOverwriteDialog(false);
                     setDropdown({ label: filename, value: filename });
                     dispatch(info());
                 })
                 .catch((err) => {
                     sbToastError(`Error: ${err.payload.response}`);
                     setToggleSaveDialog(false);
+                    setToggleOverwriteDialog(false);
                 });
         } catch (err) {
             sbToastError(`Error: ${err.payload.response}`);
             setToggleSaveDialog(false);
+            setToggleOverwriteDialog(false);
         }
     }
 

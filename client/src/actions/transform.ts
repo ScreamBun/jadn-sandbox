@@ -31,7 +31,7 @@ export interface InfoSuccessAction extends ActionSuccessResult {
 const TRANSFORM_REQUEST = '@@transform/TRANSFORM_REQUEST';
 export const TRANSFORM_SUCCESS = '@@transform/TRANSFORM_SUCCESS';
 export const TRANSFORM_FAILURE = '@@transform/TRANSFORM_FAILURE';
-export const transformSchema = (schema_list_data: Array<Record<string, any>>, transformationType: string) => createAction({
+export const transformSchema = (schema_list_data: Array<Record<string, any>>, transformationType: string, schema_base?: string) => createAction({
     endpoint: `${baseAPI}/`,
     method: 'POST',
     headers: {
@@ -39,7 +39,8 @@ export const transformSchema = (schema_list_data: Array<Record<string, any>>, tr
     },
     body: JSON.stringify({
         schema_list: schema_list_data,
-        transformation_type: transformationType
+        transformation_type: transformationType,
+        schema_base: schema_base
     }),
     types: [
         TRANSFORM_REQUEST, TRANSFORM_SUCCESS, TRANSFORM_FAILURE
@@ -49,7 +50,7 @@ export const transformSchema = (schema_list_data: Array<Record<string, any>>, tr
 export interface TransformSchemaSuccessAction extends ActionSuccessResult {
     type: typeof TRANSFORM_SUCCESS;
     payload: {
-        transformed_schema: string
+        transformed_schema: Record<string, any>;
     };
 }
 

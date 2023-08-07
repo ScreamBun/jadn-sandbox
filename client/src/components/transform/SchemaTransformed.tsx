@@ -12,9 +12,10 @@ import { getValidTransformations } from "reducers/transform";
 
 const SchemaTransformed = (props: any) => {
 
-    const { transformedSchema, data, transformationType, setTransformationType, isLoading } = props;
+    const { transformedSchema, data, transformationType, setTransformationType, isLoading, baseFile, setBaseFile, selectedFiles } = props;
     const [toggle, setToggle] = useState('');
     const transformationOpts = useSelector(getValidTransformations);
+    const baseFileOpts = selectedFiles.map((file: { name: any; }) => { return (file.name); });
 
     const onToggle = (index: number) => {
         if (toggle == index.toString()) {
@@ -33,13 +34,18 @@ const SchemaTransformed = (props: any) => {
                         <SBSelect id={"transformation-list"} data={transformationOpts} onChange={(e: Option) => setTransformationType(e)}
                             placeholder={'Select transformation type...'} value={transformationType}
                         />
+                        {transformationType && transformationType.value == 'resolve references' ?
+                            <SBSelect id={"base-file"} data={baseFileOpts} onChange={(e: Option) => setBaseFile(e)}
+                                placeholder={'Select base file...'} value={baseFile}
+                            /> : ""}
                     </div>
                     <div className='col-md-3'>
-                        <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema} customClass='float-right' />
-                        <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${transformedSchema ? '' : ' d-none'}`} data={transformedSchema} />
+                        <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema.length == 1 ? FormatJADN(transformedSchema[0].schema) : transformedSchema.schema} customClass={`float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} />
+                        <SBSaveFile data={transformedSchema.length == 1 ? FormatJADN(transformedSchema[0].schema) : transformedSchema.schema} loc={'schemas'} customClass={`mr-1 float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} filename={transformedSchema.length == 1 ? transformedSchema[0].schema_name : baseFile} ext={transformedSchema.length == 1 ? transformedSchema[0].schema_fmt : 'jadn'} />
+                        <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} filename={transformedSchema.length == 1 ? transformedSchema[0].schema_name : baseFile} data={transformedSchema.length == 1 ? FormatJADN(transformedSchema[0].schema) : transformedSchema.schema} ext={transformedSchema.length == 1 ? transformedSchema[0].schema_fmt : 'jadn'} />
 
                         {isLoading ? <Spinner action={'Transforming'} /> : <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
-                            disabled={data.length != 0 && transformationType ? false : true}
+                            disabled={data.length != 0 && transformationType && (transformationType.value == 'resolve references' ? baseFile : true) ? false : true}
                             title={"Process JADN schema(s) to produce another JADN schema"}>
                             Transform
                         </Button>}
