@@ -19,34 +19,34 @@ class LoadFile(Resource):
         :param filename: name of the file to attempt to load
         :return: file or 404
         """
-        customSplit = filename.split('/')
-        if customSplit[0] == 'custom' :
-            filename = customSplit[1]
-            filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), 'custom', filetype, filename)
+
+        if "custom/" in filename:
+          filename = filename.split('/')[-1]
+          filePath = os.path.join(current_app.config.get("OPEN_C2_CUSTOM_DATA"), filetype, filename)
         else:
             filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
+
+        if not os.path.isfile(filePath):
+            return "File not found", 404
+        
         print(f'Load: {filePath}', flush=True)
+        _, ext = os.path.splitext(filename)
+        with open(filePath, "rb") as f:
+            filedata = ""
 
-        if os.path.isfile(filePath):
-            _, ext = os.path.splitext(filename)
-            with open(filePath, "rb") as f:
-                filedata = ""
+            if ext in [".jadn", ".json"]:
+                filedata = json.load(f)
+            else:
+                for c in f.read():
+                    asciiNum = c if isinstance(c, int) else ord(c)
+                    asciiChr = c if isinstance(c, str) else chr(c)
+                    filedata += asciiChr if asciiNum <= 128 else f"\\x{asciiNum:02X}"
 
-                if ext in [".jadn", ".json"]:
-                    filedata = json.load(f)
-                else:
-                    for c in f.read():
-                        asciiNum = c if isinstance(c, int) else ord(c)
-                        asciiChr = c if isinstance(c, str) else chr(c)
-                        filedata += asciiChr if asciiNum <= 128 else f"\\x{asciiNum:02X}"
-
-            return {
-                "name": filename,
-                "type": filetype,
-                "data": filedata
-            }, 200
-
-        return "File Not Found", 404
+        return {
+            "name": filename,
+            "type": filetype,
+            "data": filedata
+        }, 200
 
 # Register resources
 resources = {
