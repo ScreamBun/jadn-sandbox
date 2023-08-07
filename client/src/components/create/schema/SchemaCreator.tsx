@@ -422,10 +422,11 @@ const SchemaCreator = (props: any) => {
                         <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
+                        <SBSaveFile data={data} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={onFileSelect}/>                        
                     </div>
                     <div className='col-md-9'>
                         <SBCopyToClipboard buttonId='copyMessage' data={data} customClass='float-right mr-1' />
-                        <SBSaveFile data={data} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={onFileSelect}/>
+                        
                         <SBDownloadFile buttonId='schemaDownload' customClass='float-right mr-1' filename={fileName} data={data} />
                         <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="info">View Schema</Button>
                         <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
