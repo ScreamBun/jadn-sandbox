@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
+import { info } from 'actions/util';
 
 
 export const groupStyles: CSSProperties = {
@@ -42,9 +43,9 @@ export interface GroupedOption {
 
 const customStyles = {
     control: base => ({
-      ...base,
-      height: 30,
-      minHeight: 30
+        ...base,
+        height: 30,
+        minHeight: 30
     }),
 
     valueContainer: (provided, state) => ({
@@ -52,7 +53,7 @@ const customStyles = {
         height: '30px',
         padding: '0 6px'
     }),
-  
+
     input: (provided, state) => ({
         ...provided,
         margin: '0px',
@@ -65,14 +66,14 @@ const customStyles = {
     indicatorsContainer: (provided, state) => ({
         ...provided,
         height: '30px',
-    }),    
+    }),
 
-    menuPortal: base => ({ 
-        ...base, 
-        zIndex: 9999, 
-        color: '#172B4D' 
-    })    
-  };
+    menuPortal: base => ({
+        ...base,
+        zIndex: 9999,
+        color: '#172B4D'
+    })
+};
 
 const SBSelect = (props: any) => {
 
@@ -171,6 +172,7 @@ const SBSelect = (props: any) => {
                             setToggleModal(false);
                             return;
                         }
+                        dispatch(info());
                         sbToastSuccess(val.payload);
                         setToggleModal(false);
                     })

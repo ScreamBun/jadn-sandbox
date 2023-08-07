@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { info } from "actions/util";
 
 const SBSaveFile = (props: any) => {
 
@@ -53,6 +54,7 @@ const SBSaveFile = (props: any) => {
                     sbToastSuccess(val.payload);
                     setToggleSaveDialog(false);
                     setDropdown({ label: filename, value: filename });
+                    dispatch(info());
                 })
                 .catch((err) => {
                     sbToastError(`Error: ${err.payload.response}`);

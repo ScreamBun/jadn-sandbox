@@ -7,11 +7,14 @@ import Spinner from "components/common/Spinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import SBSaveFile from "components/common/SBSaveFile";
 import { FormatJADN } from "components/utils";
+import { useSelector } from "react-redux";
+import { getValidTransformations } from "reducers/transform";
 
 const SchemaTransformed = (props: any) => {
 
     const { transformedSchema, data, transformationType, setTransformationType, isLoading } = props;
     const [toggle, setToggle] = useState('');
+    const transformationOpts = useSelector(getValidTransformations);
 
     const onToggle = (index: number) => {
         if (toggle == index.toString()) {
@@ -21,13 +24,13 @@ const SchemaTransformed = (props: any) => {
             setToggle(`${index}`);
         }
     }
-    console.log(transformedSchema)
+
     return (
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-9'>
-                        <SBSelect id={"transformation-list"} data={['Resolve references', 'Strip comments']} onChange={(e: Option) => setTransformationType(e)}
+                        <SBSelect id={"transformation-list"} data={transformationOpts} onChange={(e: Option) => setTransformationType(e)}
                             placeholder={'Select transformation type...'} value={transformationType}
                         />
                     </div>
@@ -45,16 +48,16 @@ const SchemaTransformed = (props: any) => {
             </div>
             <div className="card-body p-0">
 
-                {transformedSchema.length > 1 ? transformedSchema.map((output: string, i: number) => (
+                {transformedSchema.length > 1 ? transformedSchema.map((output: { schema_name: string; schema: Record<string, any>; }, i: number) => (
                     <div className="card" key={i}>
                         <div className="card-header">
                             <h5 className="mb-0">
-                                <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
+                                <button className="btn btn-link" id={`toggleSchema#${i}`} type="button" onClick={() => onToggle(i)} >
                                     {output.schema_name}
                                 </button>
-                                <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={output.schema} customClass='float-right' />
-                                <SBSaveFile data={output.schema} loc={'messages'} customClass={"float-right mr-1"} filename={`MessageExample${i + 1}`} ext={'json'} />
-                                <SBDownloadFile buttonId={`downloadMsgExample${i}`} customClass='mr-1 float-right' filename={`MessageExample${i + 1}`} data={output.schema} ext={'json'} />
+                                <SBCopyToClipboard buttonId={`copySchema${i}`} data={output.schema} customClass='float-right' />
+                                <SBSaveFile data={output.schema} loc={'messages'} customClass={"float-right mr-1"} filename={`${output.schema_name}`} ext={'json'} />
+                                <SBDownloadFile buttonId={`downloadSchema${i}`} customClass='mr-1 float-right' filename={`${output.schema_name}`} data={output.schema} ext={'json'} />
                             </h5>
                         </div>
 
