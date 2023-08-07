@@ -5,6 +5,7 @@ import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
 import { info } from 'actions/util';
+import SBSaveFile from './SBSaveFile';
 
 
 export const groupStyles: CSSProperties = {
@@ -45,8 +46,11 @@ const customStyles = {
     control: base => ({
         ...base,
         height: 30,
-        minHeight: 30
+        minHeight: 30,
+        borderRadius: 0 
     }),
+
+    container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
 
     valueContainer: (provided, state) => ({
         ...provided,
@@ -77,7 +81,7 @@ const customStyles = {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, fileName, onFileSelect } = props;
     const [toggleModal, setToggleModal] = useState(false);
 
     const dispatch = useDispatch();
@@ -189,7 +193,7 @@ const SBSelect = (props: any) => {
 
     return (
         <>
-            <div style={{ width: '100%' }}>
+            <div>
                 {isFileUploader ?
                     <Select<Option, false, GroupedOption>
                         id={id}
@@ -203,7 +207,7 @@ const SBSelect = (props: any) => {
                         isMulti={isMultiSelect}
                         components={{ Menu }}
                         value={value}
-                    />
+                    />                       
                     :
                     <Select<Option, false, GroupedOption>
                         id={id}

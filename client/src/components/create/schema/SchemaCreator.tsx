@@ -412,17 +412,21 @@ const SchemaCreator = (props: any) => {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
-                        <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
-                            <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
-                                placeholder={'Select a schema...'}
-                                loc={'schemas'}
-                                value={selectedFile}
-                                isGrouped isFileUploader />
+                        <div className="input-group">
+                            <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
+                                <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
+                                    placeholder={'Select a schema...'}
+                                    loc={'schemas'}
+                                    value={selectedFile}
+                                    isGrouped isFileUploader />
+                            </div>
+                            <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                                <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
+                            </div>
+                            <div className="input-group-append">
+                                <SBSaveFile data={data} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={onFileSelect}/>                        
+                            </div>
                         </div>
-                        <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
-                        </div>
-                        <SBSaveFile data={data} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={onFileSelect}/>                        
                     </div>
                     <div className='col-md-9'>
                         <SBCopyToClipboard buttonId='copyMessage' data={data} customClass='float-right mr-1' />

@@ -37,21 +37,21 @@ class LoadFile(Resource):
 
         _, ext = os.path.splitext(filename)
 
-        with open(fp, "rb") as f:
-            filedata = ""
+        with open(fp, 'rb') as f:
+            file_data = ""
 
             if ext in [".jadn", ".json"]:
-                filedata = json.load(f)
+                file_data = json.load(f)
             else:
                 for c in f.read():
                     asciiNum = c if isinstance(c, int) else ord(c)
                     asciiChr = c if isinstance(c, str) else chr(c)
-                    filedata += asciiChr if asciiNum <= 128 else f"\\x{asciiNum:02X}"
+                    file_data += asciiChr if asciiNum <= 128 else f"\\x{asciiNum:02X}"
 
         return {
             "name": filename,
             "type": filetype,
-            "data": filedata
+            "data": file_data
         }, 200
 
 # Register resources
