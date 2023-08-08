@@ -50,7 +50,7 @@ const SBDownloadFile = (props: any) => {
 
     return (
         <>
-            <Button id={buttonId || 'downloadFile'} title="Download File" color="info" className={'btn-sm ' + customClass} onClick={() => { setToggleDownloadDialog(true); setFileNameInput(filename); }}>
+            <Button id={buttonId || 'downloadFile'} title="Download File" color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleDownloadDialog(true); setFileNameInput(filename); }}>
                 <FontAwesomeIcon icon={faFileDownload} />
             </Button>
 

@@ -20,7 +20,7 @@ const SBCopyToClipboard = (props: any) => {
     }    
 
     return (
-        <Button id={buttonId || 'copyToClipboard'} title="Copy to clipboard" color="info" className={'btn-sm ' + customClass} onClick={onCopyClick}>
+        <Button id={buttonId || 'copyToClipboard'} title="Copy to clipboard" color="primary" className={'btn-sm ' + customClass} onClick={onCopyClick}>
             <FontAwesomeIcon icon={faCopy} />
         </Button>                              
     )
