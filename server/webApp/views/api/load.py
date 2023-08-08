@@ -25,7 +25,12 @@ class LoadFile(Resource):
         if "custom/" in filename:
           filename = filename.split('/')[-1]
 
-        path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_DATA"))
+        if filetype == 'schemas':
+            path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_DATA"))
+        elif filetype == 'messages':
+            path = os.path.join(current_app.config.get("OPEN_C2_MESSAGE_DATA"))
+        else:
+             return 'Unable to find save location', 500            
 
         file_found_info = utils.find_file_by_name(filename, path)
 
