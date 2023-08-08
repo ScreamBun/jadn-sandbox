@@ -421,9 +421,8 @@ const SchemaCreator = (props: any) => {
                                     loc={'schemas'}
                                     value={selectedFile}
                                     isGrouped isFileUploader />
-                                <div className="input-group-append">
+                                <div className="input-group-btn ml-1">
                                     <SBSaveFile 
-                                        customClass={"rounded-right"} 
                                         data={data} 
                                         loc={'schemas'} 
                                         filename={fileName} 
