@@ -72,7 +72,7 @@ const SBSaveFile = (props: any) => {
 
     return (
         <>
-            <Button id={buttonId || 'saveFile'} title="Save File" color="info" className={'btn btn-sm ' + customClass} onClick={() => { setToggleSaveDialog(true); setFileNameInput(filename); }}>
+            <Button id={buttonId || 'saveFile'} title="Save File" color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleSaveDialog(true); setFileNameInput(filename); }}>
                 <FontAwesomeIcon icon={faSave} />
             </Button>
 

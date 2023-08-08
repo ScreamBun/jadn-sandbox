@@ -5,7 +5,6 @@ import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
 import { info } from 'actions/util';
-import SBSaveFile from './SBSaveFile';
 
 
 export const groupStyles: CSSProperties = {
@@ -47,7 +46,7 @@ const customStyles = {
         ...base,
         height: 30,
         minHeight: 30,
-        borderRadius: 0 
+        borderRadius: 0
     }),
 
     container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
@@ -71,6 +70,12 @@ const customStyles = {
         ...provided,
         height: '30px',
     }),
+
+//     menu: ({ width, ...css }) => ({
+//         ...css,
+//         width: "max-content",
+//         minWidth: "100%"
+//    }),    
 
     menuPortal: base => ({
         ...base,
@@ -193,10 +198,11 @@ const SBSelect = (props: any) => {
 
     return (
         <>
-            <div>
+            <>
                 {isFileUploader ?
                     <Select<Option, false, GroupedOption>
                         id={id}
+                        className=''
                         placeholder={placeholder}
                         options={opts}
                         formatGroupLabel={formatGroupLabel}
@@ -223,7 +229,7 @@ const SBSelect = (props: any) => {
                     />
                 }
 
-            </div>
+            </>
 
             <Modal isOpen={toggleModal}>
                 <ModalHeader>

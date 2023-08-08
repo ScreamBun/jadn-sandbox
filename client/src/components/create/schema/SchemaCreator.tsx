@@ -411,31 +411,39 @@ const SchemaCreator = (props: any) => {
         <div className='card'>
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
+                    <div className='col-sm-3'>
                         <div className="input-group">
-                            <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
-                                <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
-                                    placeholder={'Select a schema...'}
-                                    loc={'schemas'}
-                                    value={selectedFile}
-                                    isGrouped isFileUploader />
+                            <SBSelect id={"schema-list"} 
+                                className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}
+                                customClass={"rounded-left"} 
+                                data={schemaOpts} 
+                                onChange={onFileSelect}
+                                placeholder={'Select a schema...'}
+                                loc={'schemas'}
+                                value={selectedFile}
+                                isGrouped isFileUploader />
+                            <div className="input-group-append">
+                                <SBSaveFile 
+                                    className={`${selectedFile.value == 'file' ? ' d-none' : ''}`} 
+                                    customClass={"float-right mr-1 rounded-right"} 
+                                    data={data} 
+                                    loc={'schemas'} 
+                                    filename={fileName} 
+                                    setDropdown={onFileSelect}/>                        
                             </div>
                             <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                                 <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
-                            </div>
-                            <div className="input-group-append">
-                                <SBSaveFile data={data} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={onFileSelect}/>                        
-                            </div>
+                            </div>                            
                         </div>
                     </div>
-                    <div className='col-md-9'>
+                    <div className='col-sm-9'>
                         <div className="btn-group float-right" role="group" aria-label="Copy or Download">
                             <SBCopyToClipboard buttonId='copyMessage' data={data} />
                             <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={data} />
                         </div>
-                        <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="info">View Schema</Button>
-                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
-                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title={isValidJADN ? "JADN schema is valid" : "Click to validate JADN"} onClick={onValidateJADNClick}>
+                        <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="primary">View Schema</Button>
+                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary">View Creator</Button>
+                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN schema is valid" : "Click to validate JADN"} onClick={onValidateJADNClick}>
                             <span className="m-1">Validate JADN</span>
                             {isValidJADN ? (
                                 <span className="badge badge-pill badge-success">
