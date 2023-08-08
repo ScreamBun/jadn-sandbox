@@ -11,7 +11,7 @@ const SBSaveFile = (props: any) => {
 
     const dispatch = useDispatch();
 
-    const { buttonId, data, customClass, filename, ext, loc, setDropdown } = props;
+    const { buttonId, toolTip, data, customClass, filename, ext, loc, setDropdown } = props;
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleSaveDialog, setToggleSaveDialog] = useState(false);
     const [toggleOverwriteDialog, setToggleOverwriteDialog] = useState(false); //nestedModal
@@ -72,7 +72,7 @@ const SBSaveFile = (props: any) => {
 
     return (
         <>
-            <Button id={buttonId || 'saveFile'} title="Save File" color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleSaveDialog(true); setFileNameInput(filename); }}>
+            <Button id={buttonId || 'saveFile'} title={toolTip ||"Save File"} color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleSaveDialog(true); setFileNameInput(filename); }}>
                 <FontAwesomeIcon icon={faSave} />
             </Button>
 

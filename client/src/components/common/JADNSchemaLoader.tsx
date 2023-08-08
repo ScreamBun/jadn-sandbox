@@ -232,11 +232,16 @@ const JADNSchemaLoader = (props: any) => {
                 <div className="row no-gutters">
                     <div className="col-md-6">
                         <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
-                            <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
-                                placeholder={'Select a schema...'}
-                                loc={'schemas'}
-                                value={selectedFile}
-                                isGrouped isFileUploader />
+                            <div className="input-group">
+                                <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
+                                    placeholder={'Select a schema...'}
+                                    loc={'schemas'}
+                                    value={selectedFile}
+                                    isGrouped isFileUploader />
+                                <div className="input-group-btn ml-1">
+                                    <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={currSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={setSelectedFile} />
+                                </div>                                
+                            </div>
                         </div>
                         <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
@@ -244,8 +249,7 @@ const JADNSchemaLoader = (props: any) => {
                     </div>
                     <div className="col">
                         <SBCopyToClipboard buttonId='copySchema' data={currSchema} customClass='float-right mr-1' />
-                        <SBSaveFile data={currSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={setSelectedFile} />
-                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="info" title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
+                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
                             <span className="m-1">Validate JADN</span>
                             {isValidJADN ? (
                                 <span className="badge badge-pill badge-success">
@@ -256,7 +260,7 @@ const JADNSchemaLoader = (props: any) => {
                                 </span>)
                             }
                         </Button>
-                        <Button id='formatButton' className="float-right btn-sm mr-1" color="info" onClick={onFormatClick}
+                        <Button id='formatButton' className="float-right btn-sm mr-1" color="primary" onClick={onFormatClick}
                             title='Attempts to Parse and Format.'>
                             <span className="m-1">Format JADN</span>
                         </Button>

@@ -423,6 +423,8 @@ const SchemaCreator = (props: any) => {
                                     isGrouped isFileUploader />
                                 <div className="input-group-btn ml-1">
                                     <SBSaveFile 
+                                        buttonId={'saveSchema'}
+                                        toolTip={'Save Schema'}
                                         data={data} 
                                         loc={'schemas'} 
                                         filename={fileName} 
@@ -435,10 +437,8 @@ const SchemaCreator = (props: any) => {
                         </div>                         
                     </div>
                     <div className='col-sm-9'>
-                        <div className="btn-group float-right" role="group" aria-label="Copy or Download">
-                            <SBCopyToClipboard buttonId='copyMessage' data={data} />
-                            <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={data} />
-                        </div>
+                        <SBCopyToClipboard buttonId='copyMessage' data={data} customClass={'float-right'} />
+                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={data} customClass={'float-right mr-1'} />
                         <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="primary">View Schema</Button>
                         <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary">View Creator</Button>
                         <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN schema is valid" : "Click to validate JADN"} onClick={onValidateJADNClick}>
