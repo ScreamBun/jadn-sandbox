@@ -46,7 +46,6 @@ const customStyles = {
         ...base,
         height: 30,
         minHeight: 30,
-        borderRadius: 0,
         cursor: 'pointer'
     }),
 
