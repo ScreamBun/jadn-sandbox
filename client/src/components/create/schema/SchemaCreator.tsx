@@ -439,9 +439,9 @@ const SchemaCreator = (props: any) => {
                     <div className='col-sm-9'>
                         <SBCopyToClipboard buttonId='copyMessage' data={data} customClass={'float-right'} />
                         <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={data} customClass={'float-right mr-1'} />
-                        <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="primary">View Schema</Button>
-                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary">View Creator</Button>
-                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN schema is valid" : "Click to validate JADN"} onClick={onValidateJADNClick}>
+                        <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="primary" title="View in JSON">View JSON</Button>
+                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary" title="View via Input Form">View Form</Button>
+                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
                             <span className="m-1">Validate JADN</span>
                             {isValidJADN ? (
                                 <span className="badge badge-pill badge-success">

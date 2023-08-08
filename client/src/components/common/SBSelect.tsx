@@ -85,7 +85,7 @@ const customStyles = {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass } = props;
     const [toggleModal, setToggleModal] = useState(false);
 
     const dispatch = useDispatch();
@@ -207,6 +207,7 @@ const SBSelect = (props: any) => {
                         isClearable
                         onChange={onChange}
                         menuPortalTarget={document.body}
+                        className={customClass}
                         styles={customStyles}
                         isMulti={isMultiSelect}
                         components={{ Menu }}
@@ -221,6 +222,7 @@ const SBSelect = (props: any) => {
                         isClearable
                         onChange={onChange}
                         menuPortalTarget={document.body}
+                        className={customClass}
                         styles={customStyles}
                         isMulti={isMultiSelect}
                         value={value}

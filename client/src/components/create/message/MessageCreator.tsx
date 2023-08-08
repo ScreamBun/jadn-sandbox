@@ -102,7 +102,9 @@ const MessageCreator = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-6'>
                         <div className="input-group">
-                            <SBSelect id={"command-list"} data={exportRecords} onChange={handleSelection}
+                            <SBSelect id={"command-list"} 
+                                data={exportRecords} 
+                                onChange={handleSelection}
                                 placeholder={'Select a message type...'}
                                 value={commandType}
                             />

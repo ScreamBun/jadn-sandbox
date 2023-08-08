@@ -126,7 +126,10 @@ const MessageValidated = (props: any) => {
                 <div className='row no-gutters'>
                     <div className={`${selectedFile.value != 'file' ? 'col-md-3' : ' col-md-6'}`}>
                         <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
-                            <SBSelect id={"message-list"} data={msgOpts} onChange={onFileSelect}
+                            <SBSelect id={"message-list"} 
+                                customClass={'mr-1'}
+                                data={msgOpts} 
+                                onChange={onFileSelect}
                                 placeholder={'Select a message...'}
                                 loc={'messages'}
                                 value={selectedFile}
@@ -138,7 +141,10 @@ const MessageValidated = (props: any) => {
                     </div>
 
                     <div className={`col-md-3 ${selectedFile ? ' d-none' : ''}`}>
-                        <SBSelect id={"message-format-list"} data={validMsgFormat} onChange={(e: Option) => setMsgFormat(e)}
+                        <SBSelect id={"message-format-list"} 
+                            customClass={'mr-1'}
+                            data={validMsgFormat} 
+                            onChange={(e: Option) => setMsgFormat(e)}
                             value={msgFormat}
                             placeholder={'Message format...'}
                         />
