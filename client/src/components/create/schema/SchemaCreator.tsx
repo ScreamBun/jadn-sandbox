@@ -415,7 +415,6 @@ const SchemaCreator = (props: any) => {
                         <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
                             <div className="input-group">
                                 <SBSelect id={"schema-list"} 
-                                    className={"rounded-left"}
                                     data={schemaOpts} 
                                     onChange={onFileSelect}
                                     placeholder={'Select a schema...'}
