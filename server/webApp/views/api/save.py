@@ -30,21 +30,26 @@ class SaveFile(Resource):
             UPLOAD_FOLDER = current_app.config.get("OPEN_C2_MESSAGE_CUSTOM_DATA")
         else:
              return 'Unable to find save location', 500
+        
+        # Check if dir exists
+        isExist = os.path.exists(UPLOAD_FOLDER)
+        if not isExist:
+             os.mkdir(UPLOAD_FOLDER)
 
-        #check if file exists
+        # Check if file already exists
         if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)) and not overwrite:
-                     return 'File name already exists', 409
+            return 'File name already exists', 409
         else:
-        #write file
-            json_object = json.dumps(file_data, indent=4)
+            # write file
             fp = os.path.join(UPLOAD_FOLDER, filename)
             with open(fp, "w") as outfile:
-                outfile.write(json_object)
+                outfile.writelines(file_data)
         
-        #check file is in directory
-        if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
-            return 'File saved successfully', 200
-        return 'Failed to save file', 500
+        # Check if file has been saved to the dir
+        if not os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
+            return 'Failed to save file', 500
+        
+        return 'File saved successfully', 200
     
 
 class DeleteFile(Resource):
