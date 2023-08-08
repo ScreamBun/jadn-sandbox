@@ -412,29 +412,29 @@ const SchemaCreator = (props: any) => {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-sm-3'>
-                        <div className="input-group">
-                            <SBSelect id={"schema-list"} 
-                                className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}
-                                customClass={"rounded-left"} 
-                                data={schemaOpts} 
-                                onChange={onFileSelect}
-                                placeholder={'Select a schema...'}
-                                loc={'schemas'}
-                                value={selectedFile}
-                                isGrouped isFileUploader />
-                            <div className="input-group-append">
-                                <SBSaveFile 
-                                    className={`${selectedFile.value == 'file' ? ' d-none' : ''}`} 
-                                    customClass={"float-right mr-1 rounded-right"} 
-                                    data={data} 
-                                    loc={'schemas'} 
-                                    filename={fileName} 
-                                    setDropdown={onFileSelect}/>                        
+                        <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
+                            <div className="input-group">
+                                <SBSelect id={"schema-list"} 
+                                    className={"rounded-left"}
+                                    data={schemaOpts} 
+                                    onChange={onFileSelect}
+                                    placeholder={'Select a schema...'}
+                                    loc={'schemas'}
+                                    value={selectedFile}
+                                    isGrouped isFileUploader />
+                                <div className="input-group-append">
+                                    <SBSaveFile 
+                                        customClass={"rounded-right"} 
+                                        data={data} 
+                                        loc={'schemas'} 
+                                        filename={fileName} 
+                                        setDropdown={onFileSelect}/>                        
+                                </div>                           
                             </div>
-                            <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                                <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
-                            </div>                            
                         </div>
+                        <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                            <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
+                        </div>                         
                     </div>
                     <div className='col-sm-9'>
                         <div className="btn-group float-right" role="group" aria-label="Copy or Download">

@@ -46,7 +46,8 @@ const customStyles = {
         ...base,
         height: 30,
         minHeight: 30,
-        borderRadius: 0
+        borderRadius: 0,
+        cursor: 'pointer'
     }),
 
     container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
@@ -69,13 +70,12 @@ const customStyles = {
     indicatorsContainer: (provided, state) => ({
         ...provided,
         height: '30px',
-    }),
+    }),   
 
-//     menu: ({ width, ...css }) => ({
-//         ...css,
-//         width: "max-content",
-//         minWidth: "100%"
-//    }),    
+    option: (styles, state) => ({
+        ...styles,
+        cursor: 'pointer',
+    }),    
 
     menuPortal: base => ({
         ...base,
@@ -86,7 +86,7 @@ const customStyles = {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, fileName, onFileSelect } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value } = props;
     const [toggleModal, setToggleModal] = useState(false);
 
     const dispatch = useDispatch();
@@ -103,7 +103,7 @@ const SBSelect = (props: any) => {
             <Fragment>
                 <components.Menu {...props}>
                     <div>
-                        <div>{props.children}</div>
+                        <div className='cursor-pointer'>{props.children}</div>
                         <hr />
                         <button type="button" className="list-group-item p-1 m-1 list-group-item-action"
                             onClick={() => onChange({ value: 'file' })}
@@ -202,7 +202,6 @@ const SBSelect = (props: any) => {
                 {isFileUploader ?
                     <Select<Option, false, GroupedOption>
                         id={id}
-                        className=''
                         placeholder={placeholder}
                         options={opts}
                         formatGroupLabel={formatGroupLabel}
