@@ -4,7 +4,9 @@ import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
 import SBDownloadFile from 'components/common/SBDownloadFile'
 import Spinner from 'components/common/Spinner'
-
+import SBSaveFile from 'components/common/SBSaveFile'
+//TODO: create messages in other languages ?
+//TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
     const { generatedMessages, loadedSchema, isLoading } = props;
     const [toggle, setToggle] = useState('');
@@ -26,7 +28,8 @@ const ExampleCreator = (props: any) => {
                         Message Example #{i + 1}
                     </button>
                     <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-right' />
-                    <SBDownloadFile buttonId={`downloadMsgExample${i}`} customClass='mr-1 float-right' data={message} ext={'json'} />
+                    <SBSaveFile data={message} loc={'messages'} customClass={"float-right mr-1"} filename={`MessageExample${i + 1}`} ext={'json'} />
+                    <SBDownloadFile buttonId={`downloadMsgExample${i}`} customClass='mr-1 float-right' filename={`MessageExample${i + 1}`} data={message} ext={'json'} />
                 </h5>
             </div>
 
@@ -39,7 +42,7 @@ const ExampleCreator = (props: any) => {
 
     return (
         <div className="card">
-            <div className="card-header p-2">
+            <div className="card-header p-2.5">
                 {isLoading ? <Spinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                     disabled={loadedSchema ? false : true}
                     title={"Generate example messages based on selected schema"}>

@@ -3,20 +3,21 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
-import { convertSchema, convertToAll, info } from 'actions/convert'
+import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTranslated from './SchemaTranslated'
+import { initConvertedSchemaState } from 'components/visualize/SchemaVisualizer'
+import { Option } from 'components/common/SBSelect'
 
 const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [translatedSchema, setTranslatedSchema] = useState('');
-    const [convertAll, setConvertAll] = useState<any[]>([]);
-    const [translation, setTranslation] = useState('');
+    const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
+    const [translation, setTranslation] = useState<Option[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Translation'
@@ -26,22 +27,19 @@ const SchemaTranslator = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setTranslatedSchema('');
-        setConvertAll([]);
+        setTranslatedSchema(initConvertedSchemaState);
     }, [loadedSchema])
 
     const onReset = () => {
         setSelectedFile('');
         setLoadedSchema('');
-        setTranslation('');
-        setConvertAll([]);
-        setTranslatedSchema('');
+        setTranslation([]);
+        setTranslatedSchema(initConvertedSchemaState);
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-
         if (translation) {
             let schemaObj = loadedSchema;
 
@@ -50,67 +48,50 @@ const SchemaTranslator = () => {
                     schemaObj = JSON.parse(loadedSchema);
                 } catch (err) {
                     if (err instanceof Error) {
-                        sbToastError(err.message);
                         setIsLoading(false);
+                        sbToastError(err.message);
                     }
                 }
             }
             dispatch(validateSchema(schemaObj))
                 .then((validateSchemaVal) => {
-                    if (validateSchemaVal.payload.valid_bool == true && translation != 'all') {
-                        dispatch(convertSchema(schemaObj, translation))
+                    if (validateSchemaVal.payload.valid_bool == true) {
+                        //convertSchema takes in an array of values
+                        const arr = translation.map(obj => obj.value);
+                        dispatch(convertSchema(schemaObj, arr))
                             .then((convertSchemaVal) => {
                                 if (convertSchemaVal.error) {
-                                    setTranslatedSchema('');
-                                    sbToastError(convertSchemaVal.payload.response);
                                     setIsLoading(false);
+                                    setTranslatedSchema([]);
+                                    sbToastError(convertSchemaVal.payload.response);
                                     return;
                                 }
-                                setTranslatedSchema(convertSchemaVal.payload.schema.convert);
-                                sbToastSuccess(`Schema translated to ${translation} successfully`);
                                 setIsLoading(false);
-                            })
-                            .catch((convertSchemaErr) => {
-                                sbToastError(convertSchemaErr.payload.response);
-                            })
-
-                    } else if (validateSchemaVal.payload.valid_bool == true && translation == 'all') {
-                        //dispatch make-all-formats
-                        //.then setConvertedSchema([])
-                        //conversion check 
-                        //.catch
-                        dispatch(convertToAll(schemaObj, 'translation'))
-                            .then((convertSchemaVal) => {
-                                if (convertSchemaVal.error) {
-                                    setTranslatedSchema('');
-                                    sbToastError(convertSchemaVal.payload.response);
-                                    setIsLoading(false);
-                                    return;
-                                }
-                                setConvertAll(convertSchemaVal.payload.schema.convert);
+                                setTranslatedSchema(convertSchemaVal.payload.schema.convert);
                                 for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
                                     sbToastSuccess(`Schema translated to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                                 }
-                                setIsLoading(false);
                             })
                             .catch((convertSchemaErr: string) => {
+                                setIsLoading(false);
                                 sbToastError(convertSchemaErr);
                             })
 
                     } else if (validateSchemaVal.payload.valid_bool == false) {
+                        setIsLoading(false);
                         sbToastError("Invalid Schema");
+                    } else if (translation.length == 0) {
                         setIsLoading(false);
-                    } else if (translation == '') {
                         sbToastError("No translation selected");
-                        setIsLoading(false);
                     }
                 })
                 .catch((validateSchemaErr) => {
-                    sbToastError(validateSchemaErr);
                     setIsLoading(false);
+                    sbToastError(validateSchemaErr);
                 })
 
         } else {
+            setIsLoading(false);
             sbToastError("No language selected for translation");
         }
     }
@@ -140,7 +121,6 @@ const SchemaTranslator = () => {
                                         <SchemaTranslated
                                             translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
                                             translation={translation} setTranslation={setTranslation}
-                                            convertAll={convertAll} setConvertAll={setConvertAll}
                                             loadedSchema={loadedSchema} isLoading={isLoading} />
                                     </div>
                                 </div>

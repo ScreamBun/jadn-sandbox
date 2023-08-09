@@ -46,6 +46,7 @@ export interface InfoSuccessAction extends ActionSuccessResult {
   type: typeof INFO_SUCCESS;
   payload: {
     title: string;
+    valid_msg_types: string[];
     message: string;
     schemas: Array<any>;
     messages: Record<string, any>;

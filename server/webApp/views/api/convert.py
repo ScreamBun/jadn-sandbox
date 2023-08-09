@@ -12,13 +12,6 @@ from weasyprint import HTML
 
 logger = logging.getLogger(__name__)
 
-parser = reqparse.RequestParser()
-parser.add_argument("schema", type=dict)
-parser.add_argument("schema-list", type=str)
-parser.add_argument("convert", type=str)
-parser.add_argument("convert-to", type=str)
-
-
 class Convert(Resource):
     """
     Endpoint for api/convert
@@ -26,123 +19,75 @@ class Convert(Resource):
 
     def get(self):
         return jsonify({
-            "conversions": current_app.config.get("VALID_SCHEMA_CONV")
+            "conversions": current_app.config.get("VALID_SCHEMA_CONV"),
+            "translations": current_app.config.get("VALID_SCHEMA_TRANSLATIONS"),
+            "visualizations": current_app.config.get("VALID_SCHEMA_VISUALIZATIONS")
         })
 
     def post(self):
-        args = parser.parse_args()
         conv = "Valid Base Schema"
-        request_json = request.json
+        request_json = request.json      
 
         is_valid, schema = current_app.validator.validateSchema(request_json["schema"], False)
-        if is_valid:
-            try:
-                conv_fmt = SchemaFormats(args["convert-to"])
-            
-            except Exception:  
-                return "Invalid Conversion Type", 500
-            
-            else:
-                kwargs = {
-                    "fmt": conv_fmt,
-                }
-
-                if conv_fmt == "html":
-                    kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
-                
-                try:
-                    if conv_fmt == "json":
-                        data = request_json["schema"]
-                        schema_checked = jadn.check(data) 
-                        conv = json_schema_dumps(schema_checked)
-                    elif conv_fmt == "jadn":
-                        data = request_json["schema"]
-                        schema_checked = jadn.check(data) 
-                        conv = dumps(schema_checked, **kwargs)
-                    elif conv_fmt == "puml":
-                        data = request_json["schema"]
-                        schema_checked = jadn.check(data) 
-                        conv = plant_dumps(schema_checked, style={'links': True, 'detail': 'information'})                                      
-                    else:
-                        conv = dumps(schema, **kwargs)
-                        
-                except:
-                    tb = traceback.format_exc()
-                    print(tb)
-                    return "Failed to Convert", 500
-
-        else:
-            return "Schema is not valid", 500
-
-        return jsonify({
-            "schema": {
-                "base": args["schema"],
-                "convert": conv,
-                "fmt": args["convert-to"]
-            }
-        })
-    
-class ConvertToAll(Resource):
-    """
-    Endpoint for api/convert/all
-    """
-
-    def post(self):
-        args = parser.parse_args()
-        conv = "Valid Base Schema"
-        request_json = request.json
-
-        is_valid, schema = current_app.validator.validateSchema(request_json["schema"], False)
+        data = request_json["schema"]
+        schema_checked = jadn.check(data) 
+        
         if is_valid:
             convertedData = []
-            visualizeFmt = ['gv', 'html', 'jidl', 'md', 'puml']
-            translateFmt = ['json', 'rng']
-
-            if request_json['convertType'] == 'translation':
-                validFmt = translateFmt
-            else: 
-                validFmt = visualizeFmt
-
-            for i in validFmt:
+            if isinstance(request_json["convert-to"], str):
                 try:
-                    conv_fmt = SchemaFormats(i)
+                    conv_fmt = SchemaFormats(request_json["convert-to"])
                 except Exception:  
                     return "Invalid Conversion Type", 500
-    
-                kwargs = {
-                    "fmt": conv_fmt,
-                }
-
-                if conv_fmt == "html":
-                    kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
                 
                 try:
-                    data = request_json["schema"]
-                    schema_checked = jadn.check(data) 
-                    if conv_fmt == "puml":
-                        convertedSchema = plant_dumps(schema_checked, style={'links': True, 'detail': 'information'})
-                    elif conv_fmt == "json":
-                        convertedSchema = json_schema_dumps(schema_checked)
-                    elif conv_fmt == "jadn":
-                        convertedSchema = dumps(schema_checked, **kwargs)
-                    else:
-                        convertedSchema = dumps(schema, **kwargs)
-                        
-                    convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': convertedSchema})
-                            
+                    conv = self.convertTo(schema_checked, conv_fmt)
+                    convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv})
                 except:
                     tb = traceback.format_exc()
                     print(tb)
                     return "Failed to Convert", 500
+            
+            else:     
+                for i in request_json["convert-to"]:
+                    try:
+                        conv_fmt = SchemaFormats(i)
+                    except Exception:  
+                        return "Invalid Conversion Type", 500
+                    
+                    try:
+                        conv = self.convertTo(schema_checked, conv_fmt)
+                        convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv})
+                    except:
+                        tb = traceback.format_exc()
+                        print(tb)
+                        return "Failed to Convert", 500
         else:
             return "Schema is not valid", 500
 
         return jsonify({
             "schema": {
-                "base": args["schema"],
+                "base": request_json["schema"],
                 "convert": convertedData
             }
         })
+    
+    def convertTo(self, schema, lang):
+        kwargs = { "fmt": lang,}
+
+        if lang == "html":
+            kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
+
+        if lang == "json":
+            return json_schema_dumps(schema)
+        elif lang == "jadn":
+            return dumps(schema, **kwargs)
+        elif lang == "puml":
+            return plant_dumps(schema, style={'links': True, 'detail': 'information'})                                      
+        else:
+            return dumps(schema, **kwargs)
+        
+
 
 class ConvertPDF(Resource):
     """
@@ -166,7 +111,6 @@ class ConvertPDF(Resource):
 
 resources = {
     Convert: {"urls": ("/", )},
-    ConvertToAll: {"urls": ("/all", )},
     ConvertPDF: {"urls": ("/pdf",)}
 }
 

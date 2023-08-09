@@ -22,8 +22,7 @@ const SBEditor = (props: any) => {
     } = props;
 
     let extensions = [langs.json()]
-
-    if (convertTo != null) {
+    if (convertTo != null && typeof convertTo != 'object') {
         switch (convertTo.toLowerCase()) {
             case LANG_HTML:
                 extensions = [langs.html()];

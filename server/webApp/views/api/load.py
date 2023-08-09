@@ -5,6 +5,8 @@ import os
 from flask import current_app
 from flask_restful import Resource
 
+from webApp.utils import utils
+
 logger = logging.getLogger()
 
 
@@ -19,29 +21,43 @@ class LoadFile(Resource):
         :param filename: name of the file to attempt to load
         :return: file or 404
         """
-        filePath = os.path.join(current_app.config.get("OPEN_C2_DATA"), filetype, filename)
-        print(f'Load: {filePath}', flush=True)
 
-        if os.path.isfile(filePath):
-            _, ext = os.path.splitext(filename)
-            with open(filePath, "rb") as f:
-                filedata = ""
+        if "custom/" in filename:
+          filename = filename.split('/')[-1]
 
-                if ext in [".jadn", ".json"]:
-                    filedata = json.load(f)
-                else:
-                    for c in f.read():
-                        asciiNum = c if isinstance(c, int) else ord(c)
-                        asciiChr = c if isinstance(c, str) else chr(c)
-                        filedata += asciiChr if asciiNum <= 128 else f"\\x{asciiNum:02X}"
+        if filetype == 'schemas':
+            path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_DATA"))
+        elif filetype == 'messages':
+            path = os.path.join(current_app.config.get("OPEN_C2_MESSAGE_DATA"))
+        else:
+             return 'Unable to find save location', 500            
 
-            return {
-                "name": filename,
-                "type": filetype,
-                "data": filedata
-            }, 200
+        file_found_info = utils.find_file_by_name(filename, path)
 
-        return "File Not Found", 404
+        if file_found_info is None:
+            return "File not found", 404
+        
+        fp = file_found_info['path'] 
+        print(f'Load: {fp}', flush=True)
+
+        _, ext = os.path.splitext(filename)
+
+        with open(fp, 'rb') as f:
+            file_data = ""
+
+            if ext in [".jadn", ".json"]:
+                file_data = json.load(f)
+            else:
+                for c in f.read():
+                    asciiNum = c if isinstance(c, int) else ord(c)
+                    asciiChr = c if isinstance(c, str) else chr(c)
+                    file_data += asciiChr if asciiNum <= 128 else f"\\x{asciiNum:02X}"
+
+        return {
+            "name": filename,
+            "type": filetype,
+            "data": file_data
+        }, 200
 
 # Register resources
 resources = {
