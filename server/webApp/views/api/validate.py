@@ -64,6 +64,7 @@ class ValidateSchema(Resource):
             schema = json.dumps(ast.literal_eval(args["schema"]))
             jadn.check(ast.literal_eval(args["schema"])) 
         except Exception as ex:
+            print(traceback.print_exc())
             print(f"Error: {ex}")
             err_msg = str(ex)
 

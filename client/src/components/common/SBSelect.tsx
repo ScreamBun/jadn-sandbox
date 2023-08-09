@@ -69,12 +69,12 @@ const customStyles = {
     indicatorsContainer: (provided, state) => ({
         ...provided,
         height: '30px',
-    }),   
+    }),
 
     option: (styles, state) => ({
         ...styles,
         cursor: 'pointer',
-    }),    
+    }),
 
     menuPortal: base => ({
         ...base,
@@ -155,7 +155,7 @@ const SBSelect = (props: any) => {
         ));
 
     } else {
-        opts = data.map((opt: string | Option) => ({
+        opts = data?.map((opt: string | Option) => ({
             value: (opt.value ? opt.value : opt), label: (opt.label ? opt.label : opt)
         }));
     }
@@ -212,7 +212,7 @@ const SBSelect = (props: any) => {
                         isMulti={isMultiSelect}
                         components={{ Menu }}
                         value={value}
-                    />                       
+                    />
                     :
                     <Select<Option, false, GroupedOption>
                         id={id}

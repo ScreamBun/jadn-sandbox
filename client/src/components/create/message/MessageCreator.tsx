@@ -22,7 +22,7 @@ const MessageCreator = (props: any) => {
         $NSID: $NSID
     })
 
-    let schemaObj = loadedSchema ? JSON.parse(loadedSchema) : '';
+    const schemaObj = loadedSchema && typeof loadedSchema == 'string' ? JSON.parse(loadedSchema) : loadedSchema;
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType.value) : [];
 
@@ -102,14 +102,14 @@ const MessageCreator = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-6'>
                         <div className="input-group">
-                            <SBSelect id={"command-list"} 
-                                data={exportRecords} 
+                            <SBSelect id={"command-list"}
+                                data={exportRecords}
                                 onChange={handleSelection}
                                 placeholder={'Select a message type...'}
                                 value={commandType}
                             />
                             <div className="input-group-btn ml-1">
-                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-right mr-1"} ext={'json'} setDropdown={setCommandType} />
+                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-right mr-1"} ext={'json'} />
                             </div>
                         </div>
                     </div>
