@@ -108,7 +108,7 @@ const SBSelect = (props: any) => {
                             onClick={() => onChange({ value: 'file' })}
                             style={customMenuOptionStyle}
                         >
-                            Upload New File ...
+                            Upload Custom File ...
                         </button>
                         <hr />
                         <button type="button" className="list-group-item p-1 m-1 list-group-item-action"
