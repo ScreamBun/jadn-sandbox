@@ -1,3 +1,4 @@
+import json
 import os
 
 from flask import current_app
@@ -81,8 +82,8 @@ def remove_files(path: str, filenames: []):
 
 def write_file(path: str, filename: str, data):
     fp = os.path.join(path, filename)
-    with open(fp, "w") as outfile:
-        outfile.writelines(data)
+    with open(fp, 'w') as outfile:
+        outfile.write(json.dumps(data))        
 
     if is_file_in_dir(path, filename):
         return True
