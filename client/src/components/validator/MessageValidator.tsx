@@ -55,29 +55,29 @@ const MessageValidator = () => {
                 dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat.value, decodeMsg.value))
                     .then((submitVal: any) => {
                         if (submitVal && submitVal.payload.valid_bool) {
-                            sbToastSuccess(submitVal.payload.valid_msg)
                             setIsLoading(false);
+                            sbToastSuccess(submitVal.payload.valid_msg)
                         } else {
                             if (submitVal.payload.valid_msg.length != 1 && typeof submitVal.payload.valid_msg == 'object') {
+                                setIsLoading(false);
                                 for (const index in submitVal.payload.valid_msg) {
                                     sbToastError(submitVal.payload.valid_msg[index])
                                 }
-                                setIsLoading(false);
                             } else {
-                                sbToastError(submitVal.payload.valid_msg)
                                 setIsLoading(false);
+                                sbToastError(submitVal.payload.valid_msg)
                             }
                         }
                     })
                     .catch((submitErr: { message: string }) => {
-                        sbToastError(submitErr.message)
                         setIsLoading(false);
+                        sbToastError(submitErr.message)
                         return false;
                     })
             } catch (err) {
                 if (err instanceof Error) {
-                    sbToastError(err.message)
                     setIsLoading(false);
+                    sbToastError(err.message)
                 }
             }
         } else {

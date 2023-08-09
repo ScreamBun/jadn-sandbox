@@ -55,6 +55,7 @@ const SchemaTransformer = () => {
         dispatch(transformSchema(selectedFiles, transformationType.value, baseFile.value))
             .then((val) => {
                 if (val.error == true) {
+                    setIsLoading(false);
                     if (typeof val.payload.response == "object") {
                         val.payload.response.forEach((schema) => {
                             sbToastError(`${schema.name} : ${schema.err}`);
@@ -74,18 +75,18 @@ const SchemaTransformer = () => {
                             })
                         })
                     } else {
+                        setIsLoading(false);
                         sbToastError(val.payload.response);
                     }
-                    setIsLoading(false);
                 } else {
+                    setIsLoading(false);
                     sbToastSuccess('Transformed Schema successfully');
                     setTransformedSchema(val.payload);
-                    setIsLoading(false);
                 }
             })
             .catch((err) => {
-                sbToastError(err);
                 setIsLoading(false);
+                sbToastError(err);
             })
     }
 

@@ -91,15 +91,17 @@ const SchemaCreator = (props: any) => {
             dispatch(loadFile('schemas', e.value))
                 .then((loadFileVal) => {
                     if (loadFileVal.error) {
+                        setIsLoading(false);
                         sbToastError(loadFileVal.payload.response);
                         return;
                     }
+                    setIsLoading(false);
                     let schemaObj = loadFileVal.payload.data;
                     setGeneratedSchema(schemaObj);
                     validateJADN(JSON.stringify(schemaObj));
-                    setIsLoading(false);
                 })
                 .catch((loadFileErr) => {
+                    setIsLoading(false);
                     sbToastError(loadFileErr.payload.data);
                 })
         }
@@ -120,10 +122,11 @@ const SchemaCreator = (props: any) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
+                        setIsLoading(false);
                         setGeneratedSchema(JSON.parse(data));
                         validateJADN(data);
-                        setIsLoading(false);
                     } catch (err) {
+                        setIsLoading(false);
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
                     }
                 }

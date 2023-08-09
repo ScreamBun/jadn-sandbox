@@ -56,8 +56,8 @@ const SchemaVisualizer = () => {
                     schemaObj = JSON.parse(loadedSchema);
                 } catch (err) {
                     if (err instanceof Error) {
-                        sbToastError(err.message);
                         setIsLoading(false);
+                        sbToastError(err.message);
                     }
                 }
             }
@@ -69,38 +69,38 @@ const SchemaVisualizer = () => {
                         dispatch(convertSchema(schemaObj, arr))
                             .then((convertSchemaVal) => {
                                 if (convertSchemaVal.error) {
+                                    setIsLoading(false);
                                     setConvertedSchema(initConvertedSchemaState);
                                     sbToastError(convertSchemaVal.payload.response);
-                                    setIsLoading(false);
                                     return;
                                 }
+                                setIsLoading(false);
                                 setConvertedSchema(convertSchemaVal.payload.schema.convert);
                                 for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
                                     sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                                 }
-                                setIsLoading(false);
                             })
                             .catch((convertSchemaErr: string) => {
-                                sbToastError(convertSchemaErr);
                                 setIsLoading(false);
+                                sbToastError(convertSchemaErr);
                             })
 
                     } else if (validateSchemaVal.payload.valid_bool == false) {
+                        setIsLoading(false);
                         sbToastError("Invalid Schema");
-                        setIsLoading(false);
                     } else if (conversion.length == 0) {
-                        sbToastError("No conversion selected");
                         setIsLoading(false);
+                        sbToastError("No conversion selected");
                     }
                 })
                 .catch((validateSchemaErr: string) => {
-                    sbToastError(validateSchemaErr);
                     setIsLoading(false);
+                    sbToastError(validateSchemaErr);
                 })
 
         } else {
-            sbToastError("No language selected for conversion");
             setIsLoading(false);
+            sbToastError("No language selected for conversion");
         }
     }
 
@@ -123,7 +123,7 @@ const SchemaVisualizer = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            loadedSchema={loadedSchema}  setLoadedSchema={setLoadedSchema} />
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaVisualized

@@ -46,8 +46,8 @@ const ExampleGenerator = () => {
                 schemaObj = JSON.parse(loadedSchema);
             } catch (err) {
                 if (err instanceof Error) {
-                    sbToastError(err.message);
                     setIsLoading(false);
+                    sbToastError(err.message);
                 }
             }
         }
@@ -56,8 +56,8 @@ const ExampleGenerator = () => {
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
                     console.error(convertSchemaVal.payload.response);
-                    sbToastError('Failed to generate examples: Invalid JSON data');
                     setIsLoading(false);
+                    sbToastError('Failed to generate examples: Invalid JSON data');
                     return;
                 }
                 //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
@@ -91,12 +91,12 @@ const ExampleGenerator = () => {
                 }
 
                 if (generated.length != 0) {
+                    setIsLoading(false);
                     sbToastSuccess('Examples generated successfully');
                     setGeneratedMessages(generated);
-                    setIsLoading(false);
                 } else {
-                    sbToastError('Failed to generate examples');
                     setIsLoading(false);
+                    sbToastError('Failed to generate examples');
                 }
             })
             .catch((convertSchemaErr) => {
