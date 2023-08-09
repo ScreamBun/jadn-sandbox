@@ -115,7 +115,7 @@ const SchemaCreator = (props: any) => {
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
             const file = e.target.files[0];
-            setSelectedFile({ 'value': file.name, 'label': file.name })
+            setSelectedFile({ 'value': file.name, 'label': file.name });
             setFileName(file.name.split('.')[0]);
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {

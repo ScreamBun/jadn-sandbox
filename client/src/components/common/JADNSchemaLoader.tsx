@@ -192,6 +192,7 @@ const JADNSchemaLoader = (props: any) => {
         setLoadedSchema('');
         if (e.target.files && e.target.files.length != 0) {
             const file = e.target.files[0];
+            setSelectedFile({ 'value': file.name, 'label': file.name });
             setFileName(file.name.split('.')[0]);
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -240,7 +241,7 @@ const JADNSchemaLoader = (props: any) => {
                                     isGrouped isFileUploader />
                                 <div className="input-group-btn ml-1">
                                     <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={currSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={setSelectedFile} />
-                                </div>                                
+                                </div>
                             </div>
                         </div>
                         <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
