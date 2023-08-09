@@ -6,14 +6,20 @@ export interface UtilState {
   site_desc: string;
   version_info: string;
   error: string;
+  valid_msg_types: string[];
   loaded: {
-    messages: Record<string, any>;
-    schemas: Record<string, any>;
+    messages: {
+      examples: Record<string, any>;
+      custom?: Record<string, any>;
+    };
+    schemas: {
+      examples: Record<string, any>;
+      custom?: Record<string, any>;
+    };
   },
   selectedSchema: SchemaJADN;
   types: {
     base: Array<string>;
-    fieldTypes: Array<string>;
     schema: Array<string>;
   }
 }
@@ -23,24 +29,27 @@ const initialState: UtilState = {
   site_desc: '',
   version_info: '',
   error: '',
+  valid_msg_types: [],
   loaded: {
-    messages: {},
-    schemas: []
+    messages: {
+      examples: [],
+      custom: []
+    },
+    schemas: {
+      examples: [],
+      custom: []
+    }
   },
   selectedSchema: {
     types: []
   },
   types: {
-    /*     FieldType MUST be a Primitive type, ArrayOf, MapOf, or a model-defined type. */
-    base: ['binary', 'boolean', 'integer', 'number', 'string', 'enumerated', 'choice', 'array', 'arrayof', 'map', 'mapof', 'record'],
-    fieldTypes: ['Binary', 'Boolean', 'Integer', 'Number', 'String', 'ArrayOf', 'MapOf'],
+    base: ['Array', 'ArrayOf', 'Binary', 'Boolean', 'Choice', 'Enumerated', 'Integer', 'Map', 'MapOf', 'Number', 'Record', 'String'],
     schema: []
   }
 };
 
 export default (state = initialState, action: util.UtilActions) => {
-  const tmpState: UtilState = { ...state };
-
   switch (action.type) {
     case util.INFO_SUCCESS:
       return {
@@ -48,6 +57,7 @@ export default (state = initialState, action: util.UtilActions) => {
         site_title: action.payload.title,
         site_desc: action.payload.message,
         version_info: action.payload.version_info,
+        valid_msg_types: action.payload.valid_msg_types,
         loaded: {
           ...state.loaded,
           messages: action.payload.messages,
@@ -56,8 +66,10 @@ export default (state = initialState, action: util.UtilActions) => {
       };
 
     case util.LOAD_SUCCESS:
-      tmpState.loaded[action.payload.type][action.payload.name] = action.payload.data;
-      return tmpState;
+      return {
+        ...state,
+        selectedSchema: action.payload.data
+      }
 
     case util.SCHEMA_SUCCESS:
       return {
@@ -84,5 +96,13 @@ export default (state = initialState, action: util.UtilActions) => {
 
 //selectors
 export const getPageTitle = (state: { Util: { site_title: any; }; }) => state.Util.site_title;
+export const getValidMsgTypes = (state: { Util: { valid_msg_types: any; }; }) => state.Util.valid_msg_types;
 export const getAllSchemas = (state: { Util: { loaded: { schemas: any; }; }; }) => state.Util.loaded.schemas;
 export const getMsgFiles = (state: { Util: { loaded: { messages: any; }; }; }) => state.Util.loaded.messages;
+export const getAllSchemasList = (state: { Util: { loaded: { schemas: { examples: any; custom: any; }; }; }; }) => {
+  if (state.Util.loaded.schemas.custom == undefined) {
+    return ([...state.Util.loaded.schemas.examples]);
+  } else {
+    return ([...state.Util.loaded.schemas.examples, ...state.Util.loaded.schemas.custom]);
+  }
+}

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { sbToastError, sbToastSuccess } from "./SBToast";
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 //TODO: Add ability to save in other extensions ? 
 const SBDownloadFile = (props: any) => {
 
-    const { buttonId, data, customClass, ext } = props;
+    const { buttonId, data, customClass, filename, ext } = props;
 
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleDownloadDialog, setToggleDownloadDialog] = useState(false);
@@ -17,7 +17,10 @@ const SBDownloadFile = (props: any) => {
 
     const onDownloadClick = (fmt: string = 'jadn') => {
         if (fileNameInput == '') {
-            alert('Please enter a file name.');
+            sbToastWarning('Please enter a file name.');
+            return;
+        } else if (fileNameInput.match(/[$&+,:;=?@#|'<>.^*()%!\\//]/)) {
+            sbToastWarning("Please do not use special characters in file name.");
             return;
         }
         try {
@@ -47,19 +50,22 @@ const SBDownloadFile = (props: any) => {
 
     return (
         <>
-            <Button id={buttonId || 'downloadFile'} title="Download File" color="info" className={'btn-sm ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
+            <Button id={buttonId || 'downloadFile'} title="Download File" color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleDownloadDialog(true); setFileNameInput(filename); }}>
                 <FontAwesomeIcon icon={faFileDownload} />
             </Button>
 
-            <Modal isOpen={toggleDownloadDialog}>
+            <Modal isOpen={toggleDownloadDialog} autoFocus={false}>
                 <ModalHeader>
-                    Save File As...
+                    Download File As...
+                    <div>
+                        <small className="text-muted"> {`Download file to local computer`}</small>
+                    </div>
                 </ModalHeader>
                 <ModalBody>
                     <div className="form-row">
                         <label htmlFor="filename" className="col-sm-4 col-form-label">File name:</label>
                         <div className="col-sm-8">
-                            <Input id='filename' className="form-control" type="text" onChange={onChange}></Input>
+                            <input id='filename' className="form-control" type="text" autoFocus={true} value={fileNameInput} onChange={onChange} />
                         </div>
                     </div>
                     <div className="form-row">
@@ -70,7 +76,7 @@ const SBDownloadFile = (props: any) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="success" onClick={() => onDownloadClick(ext)}>Save</Button>
+                    <Button color="success" onClick={() => onDownloadClick(ext)}>Download</Button>
                     <Button color="secondary" onClick={() => setToggleDownloadDialog(false)}>Cancel</Button>
                 </ModalFooter>
             </Modal>

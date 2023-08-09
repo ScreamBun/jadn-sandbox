@@ -6,26 +6,35 @@ import { getPageTitle } from 'reducers/util'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
 import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
-import { transformSchema } from 'actions/transform'
+import { info, transformSchema } from 'actions/transform'
+import { Option } from 'components/common/SBSelect'
 
 const SchemaTransformer = () => {
     const dispatch = useDispatch();
 
     const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
-    const [transformedSchema, setTransformedSchema] = useState('');
-    const [transformationType, setTransformationType] = useState('');
+    const [baseFile, setBaseFile] = useState('')
+    const [transformedSchema, setTransformedSchema] = useState([]);
+    const [transformationType, setTransformationType] = useState<Option | null>();
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
 
     useEffect(() => {
-        setTransformedSchema('');
+        dispatch(info());
+    }, [dispatch])
+
+    useEffect(() => {
+        setTransformedSchema([]);
+        setBaseFile('');
     }, [selectedFiles])
 
     const onReset = () => {
+        setBaseFile('');
+        setTransformationType(null);
         setSelectedFiles([]);
-        setTransformedSchema('');
+        setTransformedSchema([]);
         //clear checkboxes 
         var inputElem = document.getElementsByTagName('input');
         for (var i = 0; i < inputElem.length; i++) {
@@ -43,36 +52,41 @@ const SchemaTransformer = () => {
         //validate all selected files
         //call resolve_references.py
         //set transformed Schema
-        dispatch(transformSchema(selectedFiles, transformationType))
+        dispatch(transformSchema(selectedFiles, transformationType.value, baseFile.value))
             .then((val) => {
                 if (val.error == true) {
-                    val.payload.response.forEach((schema) => {
-                        sbToastError(`${schema.name} : ${schema.err}`);
-                        //invalidate selectedFiles 
-                        let invalidFiles;
-                        selectedFiles.forEach((file, index) => {
-                            if (file.name == schema.name) {
-                                invalidFiles = selectedFiles.map((f, i) => {
-                                    if (i == index) {
-                                        return { ...f, 'data': 'err' };
-                                    } else {
-                                        return f;
-                                    }
-                                })
-                                setSelectedFiles(invalidFiles);
-                            }
-                        })
-                    })
                     setIsLoading(false);
+                    if (typeof val.payload.response == "object") {
+                        val.payload.response.forEach((schema) => {
+                            sbToastError(`${schema.name} : ${schema.err}`);
+                            //invalidate selectedFiles 
+                            let invalidFiles;
+                            selectedFiles.forEach((file, index) => {
+                                if (file.name == schema.name) {
+                                    invalidFiles = selectedFiles.map((f, i) => {
+                                        if (i == index) {
+                                            return { ...f, 'data': 'err' };
+                                        } else {
+                                            return f;
+                                        }
+                                    })
+                                    setSelectedFiles(invalidFiles);
+                                }
+                            })
+                        })
+                    } else {
+                        setIsLoading(false);
+                        sbToastError(val.payload.response);
+                    }
                 } else {
+                    setIsLoading(false);
                     sbToastSuccess('Transformed Schema successfully');
                     setTransformedSchema(val.payload);
-                    setIsLoading(false);
                 }
             })
             .catch((err) => {
-                sbToastError(err);
                 setIsLoading(false);
+                sbToastError(err);
             })
     }
 
@@ -98,7 +112,7 @@ const SchemaTransformer = () => {
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}
                                             transformationType={transformationType} setTransformationType={setTransformationType}
-                                            isLoading={isLoading}
+                                            isLoading={isLoading} baseFile={baseFile} setBaseFile={setBaseFile} selectedFiles={selectedFiles}
                                         />
                                     </div>
                                 </div>

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
-import { getAllSchemas } from "reducers/util";
+import { getAllSchemasList } from "reducers/util";
 import { sbToastError } from "./SBToast";
 import { faExclamationCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +11,7 @@ const SBMultiSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
     const { data, setData } = props;
 
-    const schemaOpts = useSelector(getAllSchemas);
+    const schemaOpts = useSelector(getAllSchemasList);
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
@@ -98,7 +98,7 @@ const SBMultiSchemaLoader = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <Input type="file" id="schema-files" name="schema-files" accept=".jadn" onChange={onFileUpload} multiple hidden />
-                <Button color="info" id="triggerFileLoader" className="btn-sm mr-1 float-right" onClick={() => document.getElementById('schema-files')?.click()}> Upload Files </Button>
+                <Button color="primary" id="triggerFileLoader" className="btn-sm mr-1 float-right" onClick={() => document.getElementById('schema-files')?.click()}> Upload Files </Button>
             </div>
             <div className="card-body p-0" style={{ height: '40em' }}>
                 <h5 className="p-2"> Pre-populated List of Files to Choose from </h5>

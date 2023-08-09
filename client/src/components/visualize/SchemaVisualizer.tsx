@@ -3,20 +3,26 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
-import { convertSchema, convertToAll, info } from 'actions/convert'
+import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaVisualized from './SchemaVisualized'
+import { Option } from 'components/common/SBSelect'
+
+export const initConvertedSchemaState = [{
+    schema: '',
+    fmt: '',
+    fmt_ext: ''
+}]
 
 const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState('');
     const [loadedSchema, setLoadedSchema] = useState('');
-    const [convertedSchema, setConvertedSchema] = useState('');
-    const [convertAll, setConvertAll] = useState<any[]>([]);
-    const [conversion, setConversion] = useState('');
+    const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
+    const [conversion, setConversion] = useState<Option[]>([]);
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -27,24 +33,21 @@ const SchemaVisualizer = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setConvertedSchema('');
-        setConvertAll([]);
+        setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
     }, [loadedSchema]);
 
     const onReset = () => {
         setSelectedFile('');
         setLoadedSchema('');
-        setConversion('');
-        setConvertedSchema('');
-        setConvertAll([]);
+        setConversion([]);
+        setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-
         if (conversion) {
             let schemaObj = loadedSchema;
 
@@ -53,72 +56,51 @@ const SchemaVisualizer = () => {
                     schemaObj = JSON.parse(loadedSchema);
                 } catch (err) {
                     if (err instanceof Error) {
-                        sbToastError(err.message);
                         setIsLoading(false);
+                        sbToastError(err.message);
                     }
                 }
             }
-
             dispatch(validateSchema(schemaObj))
                 .then((validateSchemaVal) => {
-                    if (validateSchemaVal.payload.valid_bool == true && conversion != 'all') {
-                        dispatch(convertSchema(schemaObj, conversion))
+                    if (validateSchemaVal.payload.valid_bool == true) {
+                        //convertSchema takes in an array of values
+                        const arr = conversion.map(obj => obj.value);
+                        dispatch(convertSchema(schemaObj, arr))
                             .then((convertSchemaVal) => {
                                 if (convertSchemaVal.error) {
-                                    setConvertedSchema('');
-                                    sbToastError(convertSchemaVal.payload.response);
                                     setIsLoading(false);
+                                    setConvertedSchema(initConvertedSchemaState);
+                                    sbToastError(convertSchemaVal.payload.response);
                                     return;
                                 }
+                                setIsLoading(false);
                                 setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                                sbToastSuccess(`Schema converted to ${conversion} successfully`);
-                                setIsLoading(false);
-                            })
-                            .catch((convertSchemaErr: string) => {
-                                sbToastError(convertSchemaErr.payload.response);
-                                setIsLoading(false);
-                            })
-
-                    } else if (validateSchemaVal.payload.valid_bool == true && conversion == 'all') {
-                        //dispatch make-all-formats
-                        //.then setConvertedSchema([])
-                        //conversion check 
-                        //.catch
-                        dispatch(convertToAll(schemaObj, 'visualization'))
-                            .then((convertSchemaVal) => {
-                                if (convertSchemaVal.error) {
-                                    setConvertedSchema('');
-                                    sbToastError(convertSchemaVal.payload.response);
-                                    setIsLoading(false);
-                                    return;
-                                }
-                                setConvertAll(convertSchemaVal.payload.schema.convert);
                                 for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
                                     sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                                 }
-                                setIsLoading(false);
                             })
                             .catch((convertSchemaErr: string) => {
-                                sbToastError(convertSchemaErr);
                                 setIsLoading(false);
+                                sbToastError(convertSchemaErr);
                             })
 
                     } else if (validateSchemaVal.payload.valid_bool == false) {
+                        setIsLoading(false);
                         sbToastError("Invalid Schema");
+                    } else if (conversion.length == 0) {
                         setIsLoading(false);
-                    } else if (conversion == '') {
                         sbToastError("No conversion selected");
-                        setIsLoading(false);
                     }
                 })
                 .catch((validateSchemaErr: string) => {
-                    sbToastError(validateSchemaErr);
                     setIsLoading(false);
+                    sbToastError(validateSchemaErr);
                 })
 
         } else {
-            sbToastError("No language selected for conversion");
             setIsLoading(false);
+            sbToastError("No language selected for conversion");
         }
     }
 
@@ -146,7 +128,6 @@ const SchemaVisualizer = () => {
                                     <div className='col-md-6 pl-1'>
                                         <SchemaVisualized
                                             convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
-                                            convertAll={convertAll} setConvertAll={setConvertAll}
                                             conversion={conversion} setConversion={setConversion}
                                             spiltViewFlag={spiltViewFlag} setSplitViewFlag={setSplitViewFlag}
                                             loadedSchema={loadedSchema} isLoading={isLoading} />

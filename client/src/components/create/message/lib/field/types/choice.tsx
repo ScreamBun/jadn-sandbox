@@ -5,6 +5,7 @@ import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/i
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'components/utils';
+import SBSelect, { Option } from 'components/common/SBSelect';
 
 // Interface
 interface ChoiceFieldProps {
@@ -18,12 +19,16 @@ interface ChoiceFieldProps {
 const ChoiceField = (props: ChoiceFieldProps) => {
   const { def, optChange, parent, config } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const [selected, setSelected] = useState('-1');
+  const [selectedValue, setSelectedValue] = useState<Option | string>('');
 
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = (e: Option) => {
     //const { optChange, def } = props;
-    setSelected(e.target.value);
+    if (e == null) {
+      setSelectedValue('');
+    } else {
+      setSelectedValue(e);
+    }
     optChange(def[1], undefined);
     //target is undefined 
     //this resets selected choice
@@ -41,19 +46,17 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   }
 
   let defOpts; //select dropdown options
-  if (!Array.isArray(typeDef[typeDef.length - 1]) || typeDef[typeDef.length - 1].length == 0) {
-    defOpts = <option value="-1">No Options Available</option>;
-  } else {
-    defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
+  if (Array.isArray(typeDef[typeDef.length - 1])) {
+    defOpts = typeDef[typeDef.length - 1].map((opt: any) => ({ value: `${hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}`, label: opt[1] }));
   }
 
   let selectedOpts;
-  if (selected >= '0') {
+  if (selectedValue >= '0') {
     let selectedDefs; //get opt where the key = selected
     if (hasProperty(optData, 'id') && optData.id) {
-      selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[0] === selected);
+      selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[0] === selectedValue.value);
     } else {
-      selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[1] === selected);
+      selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[1] === selectedValue.value);
     }
     const selectedDef = selectedDefs.length === 1 ? selectedDefs[0] : [];
     selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={optChange} config={config} />;
@@ -69,10 +72,11 @@ const ChoiceField = (props: ChoiceFieldProps) => {
         <div className='card-body m-0 p-0'>
           <div className='row'>
             <div className="col mb-2">
-              <select name={name} title={name} className="custom-select" onChange={handleChange}>
-                <option data-subtext={`${name} options`} value='-1'> {name} options </option>
-                {defOpts}
-              </select>
+              <SBSelect id={name} name={name} data={defOpts}
+                onChange={handleChange}
+                placeholder={`${name} options`}
+                value={selectedValue}
+              />
             </div>
           </div>
           <div className='row'>

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'react-json-editor/dist/utils';
+import SBSelect, { Option } from 'components/common/SBSelect';
 
 // Interface
 interface EnumeratedFieldProps {
@@ -16,6 +17,7 @@ interface EnumeratedFieldProps {
 const EnumeratedField = (props: EnumeratedFieldProps) => {
   const { def, optChange, parent } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
+  const [selectedValue, setSelectedValue] = useState<Option | string>('');
 
   var optData: Record<string, any> = {};
   const [idx, name, type, opts, comment] = def;
@@ -32,8 +34,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   if (hasProperty(optData, 'enum')) {
     const typeDefs = schema.types.filter(t => t[0] === optData.enum);
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
-
-    defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
+    defOpts = typeDef[typeDef.length - 1].map((opt: any) => ({ value: `${hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}`, label: opt[1] }));
 
   } else if (hasProperty(optData, 'pointer')) {
     const typeDefs = schema.types.filter(t => t[0] === optData.pointer);
@@ -46,18 +47,18 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
         const pointerDefs = schema.types.filter(t => t[0] === opt[2]);
         const pointerDef = pointerDefs.length === 1 ? pointerDefs[0] : [];
         pointerDef[pointerDef.length - 1].map((fieldOpt: any) => {
-          defOpts.push(<option key={optCount} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? optCount : fieldOpt[1]}>{opt[2] + '/' + fieldOpt[1]}</option>)
+          defOpts.push({ value: `${hasProperty(optData, 'id') && optData.id ? optCount : fieldOpt[1]}`, label: opt[2] + '/' + fieldOpt[1] });
           optCount += 1;
         });
 
       } else {
-        defOpts.push(<option key={optCount} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? optCount : opt[1]}>{opt[1]}</option>)
+        defOpts.push({ value: `${hasProperty(optData, 'id') && optData.id ? optCount : opt[1]}`, label: opt[1] });
       }
       optCount += 1;
     });
 
   } else {
-    defOpts = typeDef[typeDef.length - 1].map((opt: any) => <option key={opt[0]} data-subtext={opt[2]} value={hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}>{opt[1]}</option>);
+    defOpts = typeDef[typeDef.length - 1].map((opt: any) => ({ value: `${hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}`, label: opt[1] }));
   }
 
   return (
@@ -70,21 +71,23 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
         <div className='card-body m-0 p-0'>
           <div className='row'>
             <div className="col">
-              <select
-                name={name}
-                title={name}
-                className="custom-select"
-                onChange={e => {
-                  if (hasProperty(optData, 'id') && optData.id) {
-                    optChange(msgName, parseInt(e.target.value))
+              <SBSelect id={name} name={name} data={defOpts}
+                onChange={(e: Option) => {
+                  if (e == null) {
+                    setSelectedValue('');
+                    optChange(msgName, '')
                   } else {
-                    optChange(msgName, e.target.value)
+                    setSelectedValue(e);
+                    if (hasProperty(optData, 'id') && optData.id) {
+                      optChange(msgName, parseInt(e.value))
+                    } else {
+                      optChange(msgName, e.value)
+                    }
                   }
                 }}
-              >
-                <option data-subtext={`${name} options`} value='' >{`${name} options`}</option>
-                {defOpts}
-              </select>
+                placeholder={`${name} options`}
+                value={selectedValue}
+              />
             </div>
           </div>
         </div>

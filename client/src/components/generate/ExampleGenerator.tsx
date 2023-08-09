@@ -46,8 +46,8 @@ const ExampleGenerator = () => {
                 schemaObj = JSON.parse(loadedSchema);
             } catch (err) {
                 if (err instanceof Error) {
-                    sbToastError(err.message);
                     setIsLoading(false);
+                    sbToastError(err.message);
                 }
             }
         }
@@ -56,12 +56,12 @@ const ExampleGenerator = () => {
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
                     console.error(convertSchemaVal.payload.response);
-                    sbToastError('Failed to generate examples: Invalid JSON data');
                     setIsLoading(false);
+                    sbToastError('Failed to generate examples: Invalid JSON data');
                     return;
                 }
                 //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
-                const schema = JSON.parse(convertSchemaVal.payload.schema.convert);
+                const schema = JSON.parse(convertSchemaVal.payload.schema.convert[0].schema);
                 schemaProps = schema.properties ? Object.keys(schema.properties) : [];
                 var generated: any[] = [] // LIST OF GENERATED EXAMPLES
                 const num = Math.floor(Math.random() * 11); // GENERATE A RANDOM NUM (1-10) OF EXAMPLES
@@ -91,12 +91,12 @@ const ExampleGenerator = () => {
                 }
 
                 if (generated.length != 0) {
+                    setIsLoading(false);
                     sbToastSuccess('Examples generated successfully');
                     setGeneratedMessages(generated);
-                    setIsLoading(false);
                 } else {
-                    sbToastError('Failed to generate examples');
                     setIsLoading(false);
+                    sbToastError('Failed to generate examples');
                 }
             })
             .catch((convertSchemaErr) => {
@@ -124,7 +124,7 @@ const ExampleGenerator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                            setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <ExampleCreator

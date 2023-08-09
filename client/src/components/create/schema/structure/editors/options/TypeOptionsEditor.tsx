@@ -4,10 +4,10 @@ import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
 import { useDispatch } from 'react-redux';
 import { getValidFormatOpts } from 'actions/format';
+import { useAppSelector } from 'reducers';
 
 // Interfaces
 interface TypeOptionsEditorProps {
-  schemaTypes: Array<string>;
   id: string;
   placeholder?: string;
   change: OptionChange;
@@ -17,9 +17,13 @@ interface TypeOptionsEditorProps {
 
 // Type Options Editor
 const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
-  const { change, deserializedState, id, optionType, schemaTypes } = props;
+  const { change, deserializedState, id, optionType } = props;
   const dispatch = useDispatch();
   const [formatOpts, setFormatOpts] = useState<string[]>([]);
+  const schemaTypes = useAppSelector((state) => ({
+    base: state.Util.types.base,
+    schema: Object.keys(state.Util.types.schema) || {}
+  }));
 
   useEffect(() => {
     if (optionType != undefined) {
@@ -38,7 +42,7 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
   const getOptions = (key: string) => {
     switch (key) {
       case 'ktype':
-        return [];
+        return schemaTypes;
       case 'vtype':
         return schemaTypes;
       case 'format':
