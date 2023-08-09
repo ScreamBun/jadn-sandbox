@@ -1,9 +1,9 @@
-import json
 import logging
-import os
 
-from flask import current_app, request
+from flask import request
 from flask_restful import Resource
+
+from webApp.utils import utils
 
 logger = logging.getLogger()
 
@@ -24,29 +24,22 @@ class SaveFile(Resource):
         if not file_data:
             return 'No data to write to file', 500
 
-        if location == 'schemas':
-            UPLOAD_FOLDER = current_app.config.get("OPEN_C2_SCHEMA_CUSTOM_DATA")
-        elif location == 'messages':
-            UPLOAD_FOLDER = current_app.config.get("OPEN_C2_MESSAGE_CUSTOM_DATA")
-        else:
-             return 'Unable to find save location', 500
+        upload_folder = utils.get_upload_loc(location)
+        if upload_folder == False:
+             return 'Unable to find folder location', 500
         
-        # Check if dir exists
-        isExist = os.path.exists(UPLOAD_FOLDER)
-        if not isExist:
-             os.mkdir(UPLOAD_FOLDER)
+        # Check if dir exists, if not try to make it
+        create_dir_if_missing = True
+        utils.does_dir_exist(upload_folder, create_dir_if_missing)
 
         # Check if file already exists
-        if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)) and not overwrite:
+        if utils.is_file_in_dir(upload_folder, filename) and not overwrite:
             return 'File name already exists', 409
         else:
             # write file
-            fp = os.path.join(UPLOAD_FOLDER, filename)
-            with open(fp, "w") as outfile:
-                outfile.writelines(file_data)
+            is_saved = utils.write_file(upload_folder, filename, file_data)
         
-        # Check if file has been saved to the dir
-        if not os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
+        if not is_saved:
             return 'Failed to save file', 500
         
         return 'File saved successfully', 200
@@ -64,32 +57,34 @@ class DeleteFile(Resource):
         filename = request.json['filename']
         location = request.json['loc']
 
-        path = current_app.config.get("OPEN_C2_DATA")
-        UPLOAD_FOLDER = os.path.join(path, 'custom', location)
+        upload_folder = utils.get_upload_loc(location)
+        if upload_folder == False:
+             return 'Unable to find folder location', 500
 
-        #check file is in directory
+        # Check if dir exists, if not try to make it
+        create_dir_if_missing = True
+        utils.does_dir_exist(upload_folder, create_dir_if_missing)
+
+        # Is one file or multiple
         if isinstance(filename, str):
-             if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
-                os.remove(os.path.join(UPLOAD_FOLDER, filename))
-                if not os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
-                    return 'File removed successfully', 200
-                else:
-                    return 'Failed to remove file', 500
-        else:
-            failed_files = []
-            for file in filename:
-                if os.path.isfile(os.path.join(UPLOAD_FOLDER, file)):
-                    os.remove(os.path.join(UPLOAD_FOLDER, file))
-                if os.path.isfile(os.path.join(UPLOAD_FOLDER, file)):
-                    failed_files.append(file)
+             
+            # Remove file
+            is_removed = utils.remove_file(upload_folder, filename)
+            if is_removed:
+                return 'File removed successfully', 200
+            else:
+                return 'Failed to remove file', 500
+                
+        elif isinstance(filename, list | dict):
+
+            # Remove files
+            failed_files = utils.remove_files(upload_folder, filename)
 
             if failed_files:
-                    return 'Failed to remove files: {failed_files}', 500
+                return 'Failed to remove files: {failed_files}', 500
             else:
                 return 'File(s) removed successfully', 200
-            
-        
-        return 'File does not exist', 404
+
         
 resources = {
     SaveFile: {"urls": ("/", )},
