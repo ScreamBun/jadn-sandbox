@@ -3,7 +3,7 @@ import { Button } from 'reactstrap'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
 import SBDownloadFile from 'components/common/SBDownloadFile'
-import Spinner from 'components/common/Spinner'
+import SBSpinner from 'components/common/SBSpinner'
 import SBSaveFile from 'components/common/SBSaveFile'
 //TODO: create messages in other languages ?
 //TODO: create messages with specific requirements - filter ?
@@ -42,8 +42,8 @@ const ExampleCreator = (props: any) => {
 
     return (
         <div className="card">
-            <div className="card-header p-2.5">
-                {isLoading ? <Spinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
+            <div className="card-header p-2">
+                {isLoading ? <SBSpinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                     disabled={loadedSchema ? false : true}
                     title={"Generate example messages based on selected schema"}>
                     Generate

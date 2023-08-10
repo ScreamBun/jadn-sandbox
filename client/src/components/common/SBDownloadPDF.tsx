@@ -3,6 +3,7 @@ import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { sbToastError, sbToastInfo } from "./SBToast";
+import SBSpinner from "./SBSpinner";
 
 const SBDownloadPDF = (props: any) => {
 
@@ -10,6 +11,7 @@ const SBDownloadPDF = (props: any) => {
 
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleDownloadDialog, setToggleDownloadDialog] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFileNameInput(e.target.value);
@@ -23,6 +25,7 @@ const SBDownloadPDF = (props: any) => {
         }
         const filename = `${fileNameInput}.pdf`;
         const dataObj = JSON.parse(data)
+        setIsLoading(true);
         try {
             fetch('/api/convert/pdf', {
                 method: 'POST',
@@ -44,23 +47,27 @@ const SBDownloadPDF = (props: any) => {
                 elem.remove();
                 URL.revokeObjectURL(elem.href);
             }).catch(err => {
+                setIsLoading(false);
                 console.log(err);
                 sbToastError(`PDF cannot be downloaded`);
             });
 
         } catch (err) {
+            setIsLoading(false);
             console.log(err);
             sbToastError(`PDF cannot be downloaded`);
         }
+        setIsLoading(false);
         sbToastInfo('Downloading PDF...');
         setToggleDownloadDialog(false);
     }
 
     return (
         <>
-            <Button id={buttonId || 'downloadPDF'} title="Download PDF" color="info" className={'btn-sm ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
-                <FontAwesomeIcon icon={faFilePdf} />
-            </Button>
+            {isLoading ? <SBSpinner color={'info'} /> :
+                <Button id={buttonId || 'downloadPDF'} title="Download PDF" color="info" className={'btn-sm ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
+                    <FontAwesomeIcon icon={faFilePdf} />
+                </Button>}
 
             <Modal isOpen={toggleDownloadDialog}>
                 <ModalHeader>
@@ -76,7 +83,7 @@ const SBDownloadPDF = (props: any) => {
                 </ModalBody>
                 <ModalFooter>
                     <Button color="success" onClick={onDownloadClick}>Save</Button>
-                    <Button color="secondary" onClick={() => setToggleDownloadDialog(false)}>Cancel</Button>
+                    <Button color="secondary" onClick={() => { setIsLoading(false); setToggleDownloadDialog(false); }}>Cancel</Button>
                 </ModalFooter>
             </Modal>
         </>

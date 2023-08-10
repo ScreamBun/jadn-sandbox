@@ -6,6 +6,7 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { info } from "actions/util";
+import SBSpinner from "./SBSpinner";
 
 const SBSaveFile = (props: any) => {
 
@@ -15,11 +16,13 @@ const SBSaveFile = (props: any) => {
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleSaveDialog, setToggleSaveDialog] = useState(false);
     const [toggleOverwriteDialog, setToggleOverwriteDialog] = useState(false); //nestedModal
+    const [isLoading, setIsLoading] = useState(false);
 
     const fileNameRule = "/^\w+$/";
 
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
         setFileNameInput(e.target.value);
     }
 
@@ -38,20 +41,23 @@ const SBSaveFile = (props: any) => {
         }
 
         const filename = `${fileNameInput}.${fmt}`;
-
+        setIsLoading(true);
         try {
             dispatch(saveFile(filename, dataStr, loc, overwrite))
                 .then((val) => {
                     if (val.error) {
                         if (val.payload.status == 409) {
+                            setIsLoading(false);
                             setToggleOverwriteDialog(true);
                             return;
                         }
+                        setIsLoading(false);
                         sbToastError(`Error: ${val.payload.response}`);
                         setToggleSaveDialog(false);
                         setToggleOverwriteDialog(false);
                         return;
                     }
+                    setIsLoading(false);
                     sbToastSuccess(val.payload);
                     setToggleSaveDialog(false);
                     setToggleOverwriteDialog(false);
@@ -59,11 +65,13 @@ const SBSaveFile = (props: any) => {
                     dispatch(info());
                 })
                 .catch((err) => {
+                    setIsLoading(false);
                     sbToastError(`Error: ${err.payload.response}`);
                     setToggleSaveDialog(false);
                     setToggleOverwriteDialog(false);
                 });
         } catch (err) {
+            setIsLoading(false);
             sbToastError(`Error: ${err.payload.response}`);
             setToggleSaveDialog(false);
             setToggleOverwriteDialog(false);
@@ -72,9 +80,10 @@ const SBSaveFile = (props: any) => {
 
     return (
         <>
-            <Button id={buttonId || 'saveFile'} title={toolTip || "Save File"} color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleSaveDialog(true); setFileNameInput(filename); }}>
+            {isLoading ? <SBSpinner color={"primary"} /> : <Button id={buttonId || 'saveFile'} title={toolTip || "Save File"} color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleSaveDialog(true); setFileNameInput(filename); }}>
                 <FontAwesomeIcon icon={faSave} />
             </Button>
+            }
 
             <Modal isOpen={toggleSaveDialog} autoFocus={false} >
                 <ModalHeader>
@@ -104,7 +113,7 @@ const SBSaveFile = (props: any) => {
                         <ModalBody>File {filename} already exists. Please confirm that you would like to overwrite this file? </ModalBody>
                         <ModalFooter>
                             <Button color="success" onClick={() => onSaveFile(data, ext, true)}>Confirm</Button>
-                            <Button color="secondary" onClick={() => setToggleOverwriteDialog(false)}>Cancel</Button>
+                            <Button color="secondary" onClick={() => { setIsLoading(false); setToggleOverwriteDialog(false); }}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
 

@@ -17,7 +17,7 @@ import { FormatJADN } from 'components/utils';
 import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
-import Spinner from 'components/common/Spinner';
+import SBSpinner from 'components/common/SBSpinner';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -37,6 +37,7 @@ const SchemaCreator = (props: any) => {
     const [data, setData] = useState(''); //generatedSchema JSON string
     const [fileName, setFileName] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
+    const [isValidating, setIsValidating] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
     const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +48,7 @@ const SchemaCreator = (props: any) => {
 
     useEffect(() => {
         setIsValidJADN(false);
+        setIsValidating(false);
         if (generatedSchema) {
             const schemaStr = FormatJADN(generatedSchema);
             dispatch(setSchema(generatedSchema));
@@ -155,8 +157,10 @@ const SchemaCreator = (props: any) => {
     const validateJADN = (jsonToValidate: any) => {
         dismissAllToast();
         setIsValidJADN(false);
+        setIsValidating(true);
         let jsonObj = validateJSON(jsonToValidate);
         if (!jsonObj) {
+            setIsValidating(false);
             sbToastError(`Invalid JSON. Cannot validate JADN`);
             return;
         }
@@ -166,16 +170,20 @@ const SchemaCreator = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
+                        setIsValidating(false);
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
+                        setIsValidating(false);
                         sbToastError(validateSchemaVal.payload.valid_msg);
                     }
                 })
                 .catch((validateSchemaErr) => {
+                    setIsValidating(false);
                     sbToastError(validateSchemaErr.payload.valid_msg)
                 })
         } catch (err) {
             if (err instanceof Error) {
+                setIsValidating(false);
                 sbToastError(err.message)
             }
         }
@@ -445,17 +453,19 @@ const SchemaCreator = (props: any) => {
                         <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={data} customClass={'float-right mr-1'} />
                         <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="primary" title="View in JSON">View JSON</Button>
                         <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary" title="View via Input Form">View Form</Button>
-                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
-                            <span className="m-1">Validate JADN</span>
-                            {isValidJADN ? (
-                                <span className="badge badge-pill badge-success">
-                                    <FontAwesomeIcon icon={faCheck} />
-                                </span>) : (
-                                <span className="badge badge-pill badge-danger">
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </span>)
-                            }
-                        </Button>
+                        {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
+                            <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
+                                <span className="m-1">Validate JADN</span>
+                                {isValidJADN ? (
+                                    <span className="badge badge-pill badge-success">
+                                        <FontAwesomeIcon icon={faCheck} />
+                                    </span>) : (
+                                    <span className="badge badge-pill badge-danger">
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </span>)
+                                }
+                            </Button>
+                        }
                     </div>
                 </div>
             </div>
@@ -503,7 +513,7 @@ const SchemaCreator = (props: any) => {
                                     </div>
                                 </div>
                                 <div id="schema-editor" className='col-md-9'>
-                                    {isLoading ? <Spinner action={'Loading'} div /> :
+                                    {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                                         <Droppable
                                             types={['info', 'types']} // <= allowed drop types
                                             onDrop={onDrop}

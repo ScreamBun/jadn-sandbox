@@ -1,11 +1,11 @@
 import React from "react";
 import { Button } from "reactstrap";
 
-const Spinner = (props: any) => {
+const SBSpinner = (props: any) => {
 
-    const { action, div } = props;
+    const { action, color, isDiv } = props;
 
-    if (div) {
+    if (isDiv) {
         return (
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <div className="spinner-border spinner-border-lg" color="inherit" role="status">
@@ -17,13 +17,13 @@ const Spinner = (props: any) => {
     }
 
     return (
-        <Button color="success" id="loadingBtn" className="btn-sm mr-1 float-right" disabled>
+        <Button color={color || "success"} id="loadingBtn" className="btn-sm mr-1 float-right" disabled>
             <span className="spinner-border spinner-border-sm" color="inherit" role="status">
                 <span className="sr-only">Loading...</span>
             </span>
-            <span className="ml-1">{action}...</span>
+            <span className="ml-1">{action ? `${action} ...` : ''}</span>
         </Button>
     );
 }
 
-export default Spinner;
+export default SBSpinner;

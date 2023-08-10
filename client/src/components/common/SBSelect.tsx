@@ -5,6 +5,7 @@ import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
 import { info } from 'actions/util';
+import SBSpinner from './SBSpinner';
 
 
 export const groupStyles: CSSProperties = {
@@ -87,6 +88,7 @@ const SBSelect = (props: any) => {
 
     const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass } = props;
     const [toggleModal, setToggleModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -170,25 +172,31 @@ const SBSelect = (props: any) => {
         }
         if (deletionList.length == 0) {
             setToggleModal(false);
+            sbToastError('No files selected for deletion');
             return;
         } else {
+            setIsLoading(true);
             try {
                 dispatch(deleteFile(deletionList, loc))
                     .then((val) => {
                         if (val.error) {
+                            setIsLoading(false);
                             sbToastError(`Error: ${val.payload.response}`);
                             setToggleModal(false);
                             return;
                         }
                         dispatch(info());
+                        setIsLoading(false);
                         sbToastSuccess(val.payload);
                         setToggleModal(false);
                     })
                     .catch((err) => {
+                        setIsLoading(false);
                         sbToastError(`Error: ${err.payload.response}`);
                         setToggleModal(false);
                     });
             } catch (err) {
+                setIsLoading(false);
                 sbToastError(`Error: ${err.payload.response}`);
                 setToggleModal(false);
             }
@@ -241,8 +249,8 @@ const SBSelect = (props: any) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="danger" onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</Button>
-                    <Button color="secondary" onClick={() => setToggleModal(false)}>Cancel</Button>
+                    {isLoading ? <SBSpinner action={"Deleting"} /> : <Button color="danger" onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</Button>}
+                    <Button color="secondary" onClick={() => { setIsLoading(false); setToggleModal(false); }}>Cancel</Button>
                 </ModalFooter>
             </Modal >
         </>

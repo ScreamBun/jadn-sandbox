@@ -7,7 +7,7 @@ import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
-import Spinner from "components/common/Spinner";
+import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { initConvertedSchemaState } from "components/visualize/SchemaVisualizer";
 
@@ -54,7 +54,7 @@ const SchemaTranslated = (props: any) => {
                             <SBDownloadFile buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`mr-1 float-right${translatedSchema[0].schema ? '' : ' d-none'}`} />
                         </div>
 
-                        {isLoading ? <Spinner action={'Translating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
+                        {isLoading ? <SBSpinner action={'Translating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
                             disabled={loadedSchema && translation.length != 0 ? false : true}
                             title={"Translate the given JADN schema to the selected format"}
                         >

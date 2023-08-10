@@ -15,7 +15,7 @@ import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onDownloadSVG
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
 import SBDownloadPDF from "components/common/SBDownloadPDF";
-import Spinner from "components/common/Spinner";
+import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { initConvertedSchemaState } from "./SchemaVisualizer";
 
@@ -134,7 +134,7 @@ const SchemaVisualized = (props: any) => {
                         </div>
 
                         <div>
-                            {isLoading ? <Spinner action={'Converting'} /> : <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
+                            {isLoading ? <SBSpinner action={'Converting'} /> : <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
                                 disabled={loadedSchema && conversion.length != 0 ? false : true}
                                 title={"Convert the given JADN schema to the selected format"}>
 

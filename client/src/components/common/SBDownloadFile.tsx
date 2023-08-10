@@ -10,6 +10,7 @@ const SBDownloadFile = (props: any) => {
 
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleDownloadDialog, setToggleDownloadDialog] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFileNameInput(e.target.value);
@@ -23,6 +24,8 @@ const SBDownloadFile = (props: any) => {
             sbToastWarning("Please do not use special characters in file name.");
             return;
         }
+
+        setIsLoading(true);
         try {
             const filename = `${fileNameInput}.${fmt}`;
 
@@ -40,11 +43,14 @@ const SBDownloadFile = (props: any) => {
                 elem.remove();
                 URL.revokeObjectURL(elem.href);
             }, 0);
+            setIsLoading(false);
             sbToastSuccess('File downloaded')
         } catch (err) {
             console.log(err);
+            setIsLoading(false);
             sbToastError(`File cannot be downloaded`);
         }
+        setIsLoading(false);
         setToggleDownloadDialog(false);
     }
 
@@ -77,7 +83,7 @@ const SBDownloadFile = (props: any) => {
                 </ModalBody>
                 <ModalFooter>
                     <Button color="success" onClick={() => onDownloadClick(ext)}>Download</Button>
-                    <Button color="secondary" onClick={() => setToggleDownloadDialog(false)}>Cancel</Button>
+                    <Button color="secondary" onClick={() => { setIsLoading(false); setToggleDownloadDialog(false); }}>Cancel</Button>
                 </ModalFooter>
             </Modal>
         </>

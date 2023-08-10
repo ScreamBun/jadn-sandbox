@@ -11,7 +11,7 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
 import SBFileUploader from "components/common/SBFileUploader";
-import Spinner from "components/common/Spinner";
+import SBSpinner from "components/common/SBSpinner";
 import SBSaveFile from "components/common/SBSaveFile";
 import SBSelect, { Option } from "components/common/SBSelect";
 
@@ -160,7 +160,7 @@ const MessageValidated = (props: any) => {
                     <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
-                        {isLoading ? <Spinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
+                        {isLoading ? <SBSpinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
                             title={'Validate the message against the given schema'}>
                             Validate Message
                         </Button>}

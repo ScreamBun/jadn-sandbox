@@ -14,12 +14,14 @@ import SBFileUploader from "./SBFileUploader";
 import { FormatJADN } from "components/utils";
 import SBSaveFile from "./SBSaveFile";
 import SBSelect, { Option } from "./SBSelect";
+import SBSpinner from "./SBSpinner";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
 
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
+    const [isValidating, setIsValidating] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
     const [currSchema, setCurrSchema] = useState(''); //setLoadedSchema if JADN is valid
     const [fileName, setFileName] = useState('');
@@ -32,6 +34,7 @@ const JADNSchemaLoader = (props: any) => {
     useEffect(() => {
         if (loadedSchema == '') {
             setCurrSchema('');
+            setIsValidating(false);
             setIsValidJADN(false);
         }
     }, [loadedSchema])
@@ -80,8 +83,10 @@ const JADNSchemaLoader = (props: any) => {
 
     const validateJADN = (jsonToValidate: any) => {
         setIsValidJADN(false);
+        setIsValidating(true);
         let jsonObj = validateJSON(jsonToValidate);
         if (!jsonObj) {
+            setIsValidating(false);
             sbToastError(`Invalid JSON. Cannot validate JADN`);
             return false;
         }
@@ -92,19 +97,23 @@ const JADNSchemaLoader = (props: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
                         setLoadedSchema(JSON.stringify(jsonObj));
+                        setIsValidating(false);
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                         return true;
                     } else {
+                        setIsValidating(false);
                         sbToastError(validateSchemaVal.payload.valid_msg);
                         return false;
                     }
                 })
                 .catch((validateSchemaErr) => {
+                    setIsValidating(false);
                     sbToastError(validateSchemaErr.payload.valid_msg)
                     return false;
                 })
         } catch (err) {
             if (err instanceof Error) {
+                setIsValidating(false);
                 sbToastError(err.message)
                 return false;
             }
@@ -218,6 +227,7 @@ const JADNSchemaLoader = (props: any) => {
         e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
+        setIsValidating(false);
         setSelectedFile('');
         setFileName('');
         setCurrSchema('');
@@ -250,7 +260,7 @@ const JADNSchemaLoader = (props: any) => {
                     </div>
                     <div className="col">
                         <SBCopyToClipboard buttonId='copySchema' data={currSchema} customClass='float-right mr-1' />
-                        <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
+                        {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> : <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
                             <span className="m-1">Validate JADN</span>
                             {isValidJADN ? (
                                 <span className="badge badge-pill badge-success">
@@ -261,6 +271,7 @@ const JADNSchemaLoader = (props: any) => {
                                 </span>)
                             }
                         </Button>
+                        }
                         <Button id='formatButton' className="float-right btn-sm mr-1" color="primary" onClick={onFormatClick}
                             title='Attempts to Parse and Format.'>
                             <span className="m-1">Format JADN</span>
