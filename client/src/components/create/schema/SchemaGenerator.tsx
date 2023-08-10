@@ -6,11 +6,12 @@ import { getPageTitle } from 'reducers/util'
 import { info } from 'actions/util'
 import SchemaCreator from './SchemaCreator'
 import { dismissAllToast } from 'components/common/SBToast'
+import { Option } from 'components/common/SBSelect'
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
 
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
+    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
     const [generatedSchema, setGeneratedSchema] = useState('');
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Creation'
@@ -22,7 +23,7 @@ const SchemaGenerator = () => {
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setSelectedSchemaFile('');
+        setSelectedSchemaFile(null);
         setGeneratedSchema('');
     }
 

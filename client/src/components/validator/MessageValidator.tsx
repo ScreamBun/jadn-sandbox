@@ -8,13 +8,14 @@ import { info } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { Option } from 'components/common/SBSelect'
 
 
 const MessageValidator = () => {
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
+    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
     const [loadedSchema, setLoadedSchema] = useState('');
     const [selectedMsgFile, setSelectedMsgFile] = useState('');
     const [loadedMsg, setLoadedMsg] = useState('');
@@ -36,7 +37,7 @@ const MessageValidator = () => {
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsLoading(false);
-        setSelectedSchemaFile('');
+        setSelectedSchemaFile(null);
         setLoadedSchema('');
         setSelectedMsgFile('');
         setLoadedMsg('');

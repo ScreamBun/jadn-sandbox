@@ -67,7 +67,8 @@ const JADNSchemaLoader = (props: any) => {
         setDecodeMsg({ value: msgDecode, label: msgDecode });
     }
 
-    const onFormatClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
+    const onFormatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         try {
             const schemaObj = JSON.parse(currSchema);
             const schemaStr = FormatJADN(schemaObj);
@@ -161,14 +162,11 @@ const JADNSchemaLoader = (props: any) => {
         setIsValidJADN(false);
         setLoadedSchema('');
         setCurrSchema('');
-        if (e == null) {
-            setSelectedFile('');
-            return;
-        }
         setSelectedFile(e);
-        if (e.value == "file") {
+        if (e == null) {
+            return;
+        } else if (e.value == "file") {
             ref.current?.click();
-
         } else {
             setFileName(e.label.split('.')[0]);
 
@@ -228,7 +226,7 @@ const JADNSchemaLoader = (props: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
-        setSelectedFile('');
+        setSelectedFile(null);
         setFileName('');
         setCurrSchema('');
         setLoadedSchema('');
@@ -242,7 +240,7 @@ const JADNSchemaLoader = (props: any) => {
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-md-6">
-                        <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
+                        <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
                             <div className="input-group">
                                 <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                     placeholder={'Select a schema...'}
@@ -254,7 +252,7 @@ const JADNSchemaLoader = (props: any) => {
                                 </div>
                             </div>
                         </div>
-                        <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>

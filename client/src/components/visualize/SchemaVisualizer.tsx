@@ -19,7 +19,7 @@ export const initConvertedSchemaState = [{
 const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState('');
+    const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [loadedSchema, setLoadedSchema] = useState('');
     const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
     const [conversion, setConversion] = useState<Option[]>([]);
@@ -40,7 +40,7 @@ const SchemaVisualizer = () => {
 
     const onReset = () => {
         setIsLoading(false);
-        setSelectedFile('');
+        setSelectedFile(null);
         setLoadedSchema('');
         setConversion([]);
         setConvertedSchema(initConvertedSchemaState);
@@ -87,7 +87,7 @@ const SchemaVisualizer = () => {
                                 sbToastError(convertSchemaErr);
                             })
 
-                    // validateSchemaVal.payload.valid_bool == false
+                        // validateSchemaVal.payload.valid_bool == false
                     } else {
                         setIsLoading(false);
                         sbToastError("Invalid Schema");

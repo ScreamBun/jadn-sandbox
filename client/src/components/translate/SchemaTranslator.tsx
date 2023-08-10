@@ -14,7 +14,7 @@ import { Option } from 'components/common/SBSelect'
 const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState('');
+    const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [loadedSchema, setLoadedSchema] = useState('');
     const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [translation, setTranslation] = useState<Option[]>([]);
@@ -33,7 +33,7 @@ const SchemaTranslator = () => {
 
     const onReset = () => {
         setIsLoading(false);
-        setSelectedFile('');
+        setSelectedFile(null);
         setLoadedSchema('');
         setTranslation([]);
         setTranslatedSchema(initConvertedSchemaState);

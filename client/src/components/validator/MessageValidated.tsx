@@ -37,12 +37,10 @@ const MessageValidated = (props: any) => {
         setLoadedMsg('');
         //setDecodeMsg('');
         //setMsgFormat('');
-        if (e == null) {
-            setSelectedFile('');
-            return;
-        }
         setSelectedFile(e);
-        if (e.value == "file") {
+        if (e == null) {
+            return;
+        } else if (e.value == "file") {
             ref.current?.click();
 
         } else {
@@ -124,8 +122,8 @@ const MessageValidated = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className={`${selectedFile.value != 'file' ? 'col-md-3' : ' col-md-6'}`}>
-                        <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
+                    <div className={`${selectedFile?.value != 'file' ? 'col-md-3' : ' col-md-6'}`}>
+                        <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
                             <SBSelect id={"message-list"}
                                 customClass={'mr-1'}
                                 data={msgOpts}
@@ -135,7 +133,7 @@ const MessageValidated = (props: any) => {
                                 value={selectedFile}
                                 isGrouped isFileUploader />
                         </div>
-                        <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>

@@ -3,6 +3,7 @@ import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
+import SBSpinner from "./SBSpinner";
 //TODO: Add ability to save in other extensions ? 
 const SBDownloadFile = (props: any) => {
 
@@ -56,9 +57,9 @@ const SBDownloadFile = (props: any) => {
 
     return (
         <>
-            <Button id={buttonId || 'downloadFile'} title="Download File" color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleDownloadDialog(true); setFileNameInput(filename); }}>
+            {isLoading ? <SBSpinner color={"primary"} /> : <Button id={buttonId || 'downloadFile'} title="Download File" color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleDownloadDialog(true); setFileNameInput(filename); }}>
                 <FontAwesomeIcon icon={faFileDownload} />
-            </Button>
+            </Button>}
 
             <Modal isOpen={toggleDownloadDialog} autoFocus={false}>
                 <ModalHeader>

@@ -9,11 +9,12 @@ import ExampleCreator from './ExampleCreator'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { JSONSchemaFaker } from 'json-schema-faker';
 import { convertSchema } from 'actions/convert'
+import { Option } from 'components/common/SBSelect'
 
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState('');
+    const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [loadedSchema, setLoadedSchema] = useState('');
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +33,7 @@ const ExampleGenerator = () => {
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsLoading(false);
-        setSelectedFile('');
+        setSelectedFile(null);
         setLoadedSchema('');
         setGeneratedMessages([]);
         dispatch(setSchema({ types: [] }));

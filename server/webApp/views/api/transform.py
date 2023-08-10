@@ -34,10 +34,10 @@ class Transform(Resource):
 
         # validate all schemas
         invalid_schema_list = []
-        # for schema in request_json["schema_list"]:
-        #      is_valid, msg = current_app.validator.validateSchema(schema['data'], False)
-        #      if not is_valid:
-        #          invalid_schema_list.append({'name': schema['name'], 'err': msg})
+        for schema in request_json["schema_list"]:
+            is_valid, msg = current_app.validator.validateSchema(schema['data'], False)
+            if not is_valid:
+                invalid_schema_list.append({'name': schema['name'], 'err': msg})
         
         # if not valid, return invalid schema list 
         if len(invalid_schema_list) != 0:
@@ -56,7 +56,7 @@ class Transform(Resource):
                         })
                 return output
             
-            if transformed == "resolve references":
+            elif transformed == "resolve references":
                 # get base schema
                 schema_base = ''
                 schema_list = []

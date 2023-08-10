@@ -7,14 +7,15 @@ import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast } from 'components/common/SBToast'
+import { Option } from 'components/common/SBSelect'
 
 const MessageGenerator = () => {
     const dispatch = useDispatch()
 
-    const [selectedFile, setSelectedFile] = useState('');
+    const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [loadedSchema, setLoadedSchema] = useState('');
     const [generatedMessage, setGeneratedMessage] = useState({});
-    const [commandType, setCommandType] = useState('');
+    const [commandType, setCommandType] = useState<Option | null>();
 
     const meta_title = useSelector(getPageTitle) + ' | Message Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -25,12 +26,13 @@ const MessageGenerator = () => {
 
     useEffect(() => {
         setGeneratedMessage({});
-        setCommandType('');
+        setCommandType(null);
     }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setSelectedFile('');
+        setSelectedFile(null);
+        setCommandType(null);
         setLoadedSchema('');
         setGeneratedMessage({});
         dispatch(setSchema({ types: [] }));

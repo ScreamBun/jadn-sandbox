@@ -20,18 +20,14 @@ const SchemaTransformed = (props: any) => {
     const onToggle = (index: number) => {
         if (toggle == index.toString()) {
             setToggle('');
-
         } else {
             setToggle(`${index}`);
         }
     }
 
     const onSelectChange = (e: Option) => {
-        if (e == null) {
-            setTransformationType(null);
-            setTransformedSchema([]);
-            return;
-        }
+        setBaseFile(null);
+        setTransformedSchema([]);
         setTransformationType(e);
     }
 
@@ -43,8 +39,8 @@ const SchemaTransformed = (props: any) => {
                         <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectChange}
                             placeholder={'Select transformation type...'} value={transformationType}
                         />
-                        {transformationType && transformationType.value == 'resolve references' ?
-                            <SBSelect id={"base-file"} data={baseFileOpts} onChange={(e: Option) => setBaseFile(e)}
+                        {transformationType?.value == 'resolve references' ?
+                            <SBSelect id={"base-file"} data={baseFileOpts} onChange={(e: Option) => { setTransformedSchema([]); setBaseFile(e); }}
                                 placeholder={'Select base file...'} value={baseFile}
                             /> : ""}
                     </div>
@@ -54,7 +50,7 @@ const SchemaTransformed = (props: any) => {
                         <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} filename={transformedSchema.length == 1 ? transformedSchema[0].schema_name : baseFile} data={transformedSchema.length == 1 ? FormatJADN(transformedSchema[0].schema) : transformedSchema.schema} ext={transformedSchema.length == 1 ? transformedSchema[0].schema_fmt : 'jadn'} />
 
                         {isLoading ? <SBSpinner action={'Transforming'} /> : <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
-                            disabled={data.length != 0 && transformationType && (transformationType.value == 'resolve references' ? baseFile : true) ? false : true}
+                            disabled={data.length != 0 && (transformationType?.value == 'resolve references' ? baseFile : true) ? false : true}
                             title={"Process JADN schema(s) to produce another JADN schema"}>
                             Transform
                         </Button>}
