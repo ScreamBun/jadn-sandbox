@@ -97,8 +97,9 @@ const SchemaCreator = (props: any) => {
                     }
                     setIsLoading(false);
                     let schemaObj = loadFileVal.payload.data;
+                    let schemaStr = JSON.stringify(schemaObj);
+                    validateJADN(schemaStr);
                     setGeneratedSchema(schemaObj);
-                    validateJADN(JSON.stringify(schemaObj));
                 })
                 .catch((loadFileErr) => {
                     setIsLoading(false);
@@ -139,6 +140,8 @@ const SchemaCreator = (props: any) => {
         e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
+        setIsValidating(false);
+        setIsLoading(false);
         setFileName('');
         setSelectedFile(null);
         setGeneratedSchema('');

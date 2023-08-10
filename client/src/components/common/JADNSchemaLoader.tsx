@@ -22,6 +22,7 @@ const JADNSchemaLoader = (props: any) => {
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
     const [currSchema, setCurrSchema] = useState(''); //setLoadedSchema if JADN is valid
     const [fileName, setFileName] = useState('');
@@ -34,6 +35,7 @@ const JADNSchemaLoader = (props: any) => {
     useEffect(() => {
         if (loadedSchema == '') {
             setCurrSchema('');
+            setIsLoading(false);
             setIsValidating(false);
             setIsValidJADN(false);
         }
@@ -169,13 +171,16 @@ const JADNSchemaLoader = (props: any) => {
             ref.current?.click();
         } else {
             setFileName(e.label.split('.')[0]);
+            setIsLoading(true);
 
             dispatch(loadFile('schemas', e.value))
                 .then((loadFileVal) => {
                     if (loadFileVal.error) {
+                        setIsLoading(false);
                         sbToastError(loadFileVal.payload.response);
                         return;
                     }
+                    setIsLoading(false);
                     let schemaObj = loadFileVal.payload.data;
                     let schemaStr = JSON.stringify(schemaObj);
                     validateJADN(schemaStr);
@@ -187,17 +192,20 @@ const JADNSchemaLoader = (props: any) => {
                     }
                 })
                 .catch((loadFileErr) => {
+                    setIsLoading(false);
                     sbToastError(loadFileErr.payload.data);
                 })
         }
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
         setCurrSchema('');
         setLoadedSchema('');
         if (e.target.files && e.target.files.length != 0) {
+            setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
             setFileName(file.name.split('.')[0]);
@@ -206,6 +214,7 @@ const JADNSchemaLoader = (props: any) => {
                 if (ev.target) {
                     let dataStr = ev.target.result;
                     try {
+                        setIsLoading(false);
                         dispatch(setSchema(JSON.parse(dataStr)));
                         validateJADN(dataStr);
                         setCurrSchema(dataStr);
@@ -213,7 +222,8 @@ const JADNSchemaLoader = (props: any) => {
                             loadDecodeTypes(JSON.parse(dataStr));
                         }
                     } catch (err) {
-                        sbToastError(`File cannot be loaded: Invalid JSON`)
+                        setIsLoading(false);
+                        sbToastError(`File cannot be loaded: Invalid JSON`);
                     }
                 }
             };
@@ -226,6 +236,7 @@ const JADNSchemaLoader = (props: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
+        setIsLoading(false);
         setSelectedFile(null);
         setFileName('');
         setCurrSchema('');
@@ -278,7 +289,8 @@ const JADNSchemaLoader = (props: any) => {
                 </div>
             </div>
             <div className="card-body p-0">
-                <SBEditor data={currSchema} onChange={sbEditorOnChange} convertTo={LANG_JSON}></SBEditor>
+                {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
+                    <SBEditor data={currSchema} onChange={sbEditorOnChange} convertTo={LANG_JSON}></SBEditor>}
             </div>
         </div>
     )
