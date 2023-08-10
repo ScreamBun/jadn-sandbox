@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
-import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
 import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
 import { info, transformSchema } from 'actions/transform'
@@ -23,6 +23,7 @@ const SchemaTransformer = () => {
 
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     useEffect(() => {
@@ -31,6 +32,7 @@ const SchemaTransformer = () => {
     }, [selectedFiles])
 
     const onReset = () => {
+        setIsLoading(false);
         setBaseFile('');
         setTransformationType(null);
         setSelectedFiles([]);
@@ -112,6 +114,7 @@ const SchemaTransformer = () => {
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}
                                             transformationType={transformationType} setTransformationType={setTransformationType}
+                                            setTransformedSchema={setTransformedSchema}
                                             isLoading={isLoading} baseFile={baseFile} setBaseFile={setBaseFile} selectedFiles={selectedFiles}
                                         />
                                     </div>

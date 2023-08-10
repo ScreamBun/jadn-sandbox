@@ -6,7 +6,7 @@ import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import ExampleCreator from './ExampleCreator'
-import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { JSONSchemaFaker } from 'json-schema-faker';
 import { convertSchema } from 'actions/convert'
 
@@ -22,6 +22,7 @@ const ExampleGenerator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     useEffect(() => {
@@ -30,6 +31,7 @@ const ExampleGenerator = () => {
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setIsLoading(false);
         setSelectedFile('');
         setLoadedSchema('');
         setGeneratedMessages([]);

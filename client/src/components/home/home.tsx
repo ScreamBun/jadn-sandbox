@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getPageTitle } from 'reducers/util';
 import { info } from 'actions/util';
+import { dismissAllToast } from 'components/common/SBToast';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const Home = () => {
   const meta_title = useSelector(getPageTitle) + ' | Home ';
   const meta_canonical = `${window.location.origin}${window.location.pathname}`;
   useEffect(() => {
+    dismissAllToast();
     dispatch(info());
   }, [meta_title])
 

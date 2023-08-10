@@ -7,7 +7,7 @@ import { validateMessage } from 'actions/validate'
 import { info } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
-import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 
 
 const MessageValidator = () => {
@@ -30,10 +30,12 @@ const MessageValidator = () => {
 
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setIsLoading(false);
         setSelectedSchemaFile('');
         setLoadedSchema('');
         setSelectedMsgFile('');
