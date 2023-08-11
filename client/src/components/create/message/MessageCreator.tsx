@@ -22,7 +22,7 @@ const MessageCreator = (props: any) => {
         $NSID: $NSID
     })
 
-    const schemaObj = loadedSchema && typeof loadedSchema == 'string' ? JSON.parse(loadedSchema) : loadedSchema;
+    const schemaObj = loadedSchema && typeof loadedSchema == 'string' ? JSON.parse(loadedSchema) : '';
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
 
