@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
@@ -16,7 +16,7 @@ interface TypeOptionsEditorProps {
 }
 
 // Type Options Editor
-const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
+const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEditorProps) {
   const { change, deserializedState, id, optionType } = props;
   const dispatch = useDispatch();
   const [formatOpts, setFormatOpts] = useState<string[]>([]);
@@ -86,7 +86,7 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
     </div>);
   }
   return '';
-};
+});
 
 TypeOptionsEditor.defaultProps = {
   placeholder: 'Set Type Options',

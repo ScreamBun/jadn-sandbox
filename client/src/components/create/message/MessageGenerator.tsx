@@ -35,7 +35,7 @@ const MessageGenerator = () => {
         setCommandType(null);
         setLoadedSchema('');
         setGeneratedMessage({});
-        dispatch(setSchema({ types: [] }));
+        //dispatch(setSchema({ types: [] }));
     }
 
     return (

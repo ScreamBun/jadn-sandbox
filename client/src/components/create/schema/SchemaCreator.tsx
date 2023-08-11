@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem } from 'reactstrap'
 import { Draggable, Droppable } from 'react-drag-and-drop';
 import { Info, Types } from './structure/structure';
@@ -29,7 +29,7 @@ const configInitialState = {
     $NSID: $NSID
 }
 
-const SchemaCreator = (props: any) => {
+const SchemaCreator = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
@@ -51,7 +51,7 @@ const SchemaCreator = (props: any) => {
         setIsValidating(false);
         if (generatedSchema) {
             const schemaStr = FormatJADN(generatedSchema);
-            dispatch(setSchema(generatedSchema));
+            //dispatch(setSchema(generatedSchema));
             setData(schemaStr);
 
             //set configuration data
@@ -69,7 +69,7 @@ const SchemaCreator = (props: any) => {
                 }
             }
         } else {
-            dispatch(setSchema({}));
+            //dispatch(setSchema({}));
             setData("{}");
         }
 
@@ -556,5 +556,5 @@ const SchemaCreator = (props: any) => {
             </TabContent >
         </div>
     )
-}
+});
 export default SchemaCreator 

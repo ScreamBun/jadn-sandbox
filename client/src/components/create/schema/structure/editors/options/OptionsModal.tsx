@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
@@ -40,7 +40,7 @@ const serializeOptions = (type: Record<string | number, string | number | boolea
 }
 
 // Component
-const OptionsModal = (props: OptionsModalProps) => {
+const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
 
   const { optionValues, saveModal, fieldOptions, isOpen, optionType, toggleModal } = props;
   const [data, setData] = useState(deserializeOptions(optionValues));
@@ -140,7 +140,7 @@ const OptionsModal = (props: OptionsModalProps) => {
       </ModalFooter>
     </Modal>
   );
-}
+});
 
 OptionsModal.defaultProps = {
   fieldOptions: false,

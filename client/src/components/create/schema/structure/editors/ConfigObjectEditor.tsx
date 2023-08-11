@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { memo, useRef } from 'react';
 import { Button, FormText } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -20,7 +20,7 @@ interface ConfigObjectEditorProps {
 }
 
 // Config Editor
-const ConfigObjectEditor = (props: ConfigObjectEditorProps) => {
+const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectEditorProps) {
   const { name, description, value, change, remove, config } = props;
   let timeOut = useRef();
 
@@ -73,7 +73,7 @@ const ConfigObjectEditor = (props: ConfigObjectEditorProps) => {
       </div>
     </div>
   );
-}
+});
 
 ConfigObjectEditor.defaultProps = {
   placeholder: 'ConfigObjectEditor',

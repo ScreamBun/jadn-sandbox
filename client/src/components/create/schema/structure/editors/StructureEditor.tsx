@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { memo, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
@@ -28,7 +28,7 @@ interface StructureEditorProps {
 }
 
 // Structure Editor
-const StructureEditor = (props: StructureEditorProps) => {
+const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
   const { value, change, changeIndex, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
   const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
@@ -322,6 +322,6 @@ const StructureEditor = (props: StructureEditorProps) => {
       </div>
     </div>
   );
-}
+});
 
 export default StructureEditor;

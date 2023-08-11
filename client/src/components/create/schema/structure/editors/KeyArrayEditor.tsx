@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   Button, ButtonGroup, FormText, Input
 } from 'reactstrap';
@@ -17,7 +17,7 @@ interface KeyArrayEditorProps {
 }
 
 // Key Array Editor
-const KeyArrayEditor = (props: KeyArrayEditorProps) => {
+const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) {
   const { name, description, placeholder, value, change, remove } = props;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,7 +86,7 @@ const KeyArrayEditor = (props: KeyArrayEditorProps) => {
       </div>
     </div>
   );
-};
+});
 
 KeyArrayEditor.defaultProps = {
   placeholder: 'KeyArrayEditor'

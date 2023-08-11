@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   Button, ButtonGroup, FormText, Input
 } from 'reactstrap';
@@ -22,7 +22,7 @@ interface KeyObjectEditorProps {
 type Pair = { key: string, value: any };
 
 // Key Object Editor
-const KeyObjectEditor = (props: KeyObjectEditorProps) => {
+const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProps) {
   const { value, description, name, placeholder, change, config } = props;
   let valueObj = Object.keys(value).map(k => ({ key: k, value: value[k] }));
 
@@ -127,7 +127,7 @@ const KeyObjectEditor = (props: KeyObjectEditorProps) => {
       </div>
     </div>
   );
-}
+});
 
 KeyObjectEditor.defaultProps = {
   placeholder: 'KeyObjectEditor'

@@ -148,7 +148,7 @@ const JADNSchemaLoader = (props: any) => {
     }
 
     const sbEditorOnChange = (data: any) => {
-        dispatch(setSchema(data));
+        //dispatch(setSchema(data));
         setIsValidJADN(false);
         setCurrSchema(data);
         try {
@@ -185,7 +185,7 @@ const JADNSchemaLoader = (props: any) => {
                     let schemaStr = JSON.stringify(schemaObj);
                     validateJADN(schemaStr);
                     setCurrSchema(FormatJADN(schemaObj));
-                    dispatch(setSchema(schemaObj));
+                    //dispatch(setSchema(schemaObj));
 
                     if (setDecodeSchemaTypes && setDecodeMsg) {
                         loadDecodeTypes(schemaObj);
@@ -215,7 +215,7 @@ const JADNSchemaLoader = (props: any) => {
                     let dataStr = ev.target.result;
                     try {
                         setIsLoading(false);
-                        dispatch(setSchema(JSON.parse(dataStr)));
+                        //dispatch(setSchema(JSON.parse(dataStr)));
                         validateJADN(dataStr);
                         setCurrSchema(dataStr);
                         if (setDecodeSchemaTypes && setDecodeMsg) {

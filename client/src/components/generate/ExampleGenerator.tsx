@@ -36,7 +36,7 @@ const ExampleGenerator = () => {
         setSelectedFile(null);
         setLoadedSchema('');
         setGeneratedMessages([]);
-        dispatch(setSchema({ types: [] }));
+        //dispatch(setSchema({ types: [] }));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
@@ -23,7 +23,7 @@ interface PrimitiveEditorProps {
 }
 
 // Primitive Editor
-const PrimitiveEditor = (props: PrimitiveEditorProps) => {
+const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
   const { value, change, changeIndex, dataIndex, config } = props;
   let valueObj: StandardFieldObject | PrimitiveTypeObject;
   if (Number.isInteger(value[0])) {
@@ -127,6 +127,6 @@ const PrimitiveEditor = (props: PrimitiveEditorProps) => {
       </div>
     </div>
   );
-}
+});
 
 export default PrimitiveEditor;

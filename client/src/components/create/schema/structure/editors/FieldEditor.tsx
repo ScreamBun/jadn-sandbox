@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, FormGroup, Input, Label
@@ -28,7 +28,7 @@ interface FieldEditorProps {
 }
 
 // Field Editor
-const FieldEditor = (props: FieldEditorProps) => {
+const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   const { enumerated, value, dataIndex, change, config, changeIndex } = props;
   //const allTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]);
   const types = useAppSelector((state) => ({
@@ -183,7 +183,7 @@ const FieldEditor = (props: FieldEditorProps) => {
       </div>
     </div>
   );
-}
+});
 
 FieldEditor.defaultProps = {
   enumerated: false

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import {
   Button, FormGroup, FormText, Input, Label
 } from 'reactstrap';
@@ -23,7 +23,7 @@ interface KeyValueEditorProps {
 }
 
 // Key Value Editor
-const KeyValueEditor = (props: KeyValueEditorProps) => {
+const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) {
   const { name, value, description, options, placeholder, type, change, remove, required } = props;
   const [val, setVal] = useState(value ? { value: value, label: value } : '');
   const onSelectChange = (e: Option) => {
@@ -120,7 +120,7 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
       {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
     </FormGroup>
   );
-};
+});
 
 KeyValueEditor.defaultProps = {
   description: '',
