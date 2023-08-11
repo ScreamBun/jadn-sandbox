@@ -7,7 +7,8 @@ import { ThemeSwitcher } from 'react-bootswatch-theme-switcher';
 // Styles
 import 'react-toastify/dist/ReactToastify.css';
 import './components/dependencies/assets/css/styles.scss';
-
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 // Application
 import App from './app';
 
@@ -21,21 +22,23 @@ const themeRoot = `${window.location.origin}/assets`;
 const validThemes = ['dark', 'light'];
 
 const Root = () => (
-  <ThemeSwitcher storeThemeKey="theme" defaultTheme="dark" themeRoot={ themeRoot } themeOptions={ validThemes }>
-    <Provider store={ store } >
+  <ThemeSwitcher storeThemeKey="theme" defaultTheme="dark" themeRoot={themeRoot} themeOptions={validThemes}>
+    <Provider store={store} >
       <HelmetProvider>
-        <App history={ history } />
+        <DndProvider debugMode={true} backend={HTML5Backend}>
+          <App history={history} />
+        </DndProvider>
       </HelmetProvider>
     </Provider>
   </ThemeSwitcher>
 );
 
 ReactDOM.createRoot(document.getElementById('root')).
-render(
-  // <React.StrictMode>
+  render(
+    // <React.StrictMode>
     <Root />
-  // </React.StrictMode>
-);
+    // </React.StrictMode>
+  );
 
 // TODO: Include a service worker
 // if ("serviceWorker" in navigator) {

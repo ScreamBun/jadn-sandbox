@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem } from 'reactstrap'
-import { Draggable, Droppable } from 'react-drag-and-drop';
+import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { Info, Types } from './structure/structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faCheck, faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
@@ -18,6 +17,8 @@ import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
+import { Draggable } from './Draggable';
+import { Droppable } from './Droppable'
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -43,8 +44,7 @@ const SchemaCreator = (props: any) => {
     const [isLoading, setIsLoading] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
-    const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
-    const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
+
 
     useEffect(() => {
         setIsValidJADN(false);
@@ -221,90 +221,17 @@ const SchemaCreator = (props: any) => {
         const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
 
         infoKeys = Object.keys(unusedInfo).map(k => (
-            <Draggable type="info" data={k} key={unusedInfo[k].key} onDragStart={selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
-                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action={selectedFile?.value == 'file' && !generatedSchema ? false : true}>
-                    {unusedInfo[k].key}
-                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
-                </ListGroupItem>
-            </Draggable>
+            <Draggable item={Info[k].key} type={'Info'} key={Info[k].key} id={k} />
         ));
     } else {
         infoKeys = Object.keys(Info).map(k => (
-            <Draggable type="info" data={k} key={Info[k].key} onDragStart={selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
-                <ListGroupItem style={{ color: `${selectedFile?.value == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile?.value == 'file' && !generatedSchema ? false : true}>
-                    {Info[k].key}
-                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
-                </ListGroupItem>
-            </Draggable>
+            <Draggable item={Info[k].key} type={'Info'} key={Info[k].key} id={k} />
         ));
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <Draggable type="types" data={k} key={Types[k].key} onDragStart={selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
-            <ListGroupItem style={{ color: `${selectedFile?.value == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile?.value == 'file' && !generatedSchema ? false : true}>
-                {Types[k].key}
-                <FontAwesomeIcon icon={faGripLines} className='float-right' />
-            </ListGroupItem>
-        </Draggable>
+        <Draggable item={Types[k].key} type={'Types'} key={Types[k].key} id={k} />
     ));
-
-    const onDrop = (data: any) => {
-        document.getElementById('schema-editor').style.backgroundColor = '';
-        if (data.info) {
-            if (!generatedSchema.info) {
-                let newSchema = { ...generatedSchema };
-                if (data.info == 'config') {
-                    newSchema = Object.assign({
-                        info: {
-                            ...generatedSchema.info || {},
-                            ...Info[data.info].edit(configInitialState)
-                        }
-                    }, newSchema);
-                    setGeneratedSchema(newSchema);
-                } else {
-                    newSchema = Object.assign({
-                        info: {
-                            ...generatedSchema.info || {},
-                            ...Info[data.info].edit()
-                        }
-                    }, newSchema);
-                    setGeneratedSchema(newSchema);
-                }
-            } else if (generatedSchema.info && !(data.info in generatedSchema.info)) {
-                if (data.info == 'config') {
-                    setGeneratedSchema((generatedSchema: any) => ({
-                        ...generatedSchema,
-                        info: {
-                            ...generatedSchema.info || {},
-                            ...Info[data.info].edit(configInitialState)
-                        },
-                    }));
-                } else {
-                    setGeneratedSchema((generatedSchema) => ({
-                        ...generatedSchema,
-                        info: {
-                            ...generatedSchema.info || {},
-                            ...Info[data.info].edit()
-                        }
-                    }));
-                }
-            }
-            scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
-
-        } else if (data.types) {
-            const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-            const tmpDef = Types[data.types].edit();
-            tmpTypes.push(tmpDef);  // unshift drops items at the bottom
-            setGeneratedSchema((generatedSchema: any) => ({
-                ...generatedSchema,
-                types: tmpTypes
-            }));
-            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
-
-        } else {
-            console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
-        }
-    }
 
     const infoEditors = Object.keys(Info).map((k, i) => {
         const key = k as keyof typeof Info;
@@ -420,6 +347,62 @@ const SchemaCreator = (props: any) => {
         });
     }).filter(Boolean);
 
+    const onDrop = (key: string) => {
+        if (Object.keys(Info).includes(key)) {
+            if (!generatedSchema.info) {
+                let newSchema = { ...generatedSchema };
+                if (key == 'config') {
+                    newSchema = Object.assign({
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[key].edit(configInitialState)
+                        }
+                    }, newSchema);
+                    setGeneratedSchema(newSchema);
+                } else {
+                    newSchema = Object.assign({
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[key].edit()
+                        }
+                    }, newSchema);
+                    setGeneratedSchema(newSchema);
+                }
+            } else if (generatedSchema.info && !(key in generatedSchema.info)) {
+                if (key == 'config') {
+                    setGeneratedSchema((generatedSchema: any) => ({
+                        ...generatedSchema,
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[key].edit(configInitialState)
+                        },
+                    }));
+                } else {
+                    setGeneratedSchema((generatedSchema) => ({
+                        ...generatedSchema,
+                        info: {
+                            ...generatedSchema.info || {},
+                            ...Info[key].edit()
+                        }
+                    }));
+                }
+            }
+            return key;
+        } else if (Object.keys(Types).includes(key)) {
+            const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
+            const tmpDef = Types[key].edit();
+            tmpTypes.push(tmpDef);  // unshift drops items at the bottom
+            setGeneratedSchema((generatedSchema: any) => ({
+                ...generatedSchema,
+                types: tmpTypes
+            }));
+            return key;
+        } else {
+            console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
+            return key;
+        }
+    }
+
     return (
         <div className='card'>
             <div className='card-header p-2'>
@@ -515,30 +498,19 @@ const SchemaCreator = (props: any) => {
                                 </div>
                                 <div id="schema-editor" className='col-md-9'>
                                     {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
-                                        <Droppable
-                                            types={['info', 'types']} // <= allowed drop types
-                                            onDrop={onDrop}
-                                            onDragOver={() => {
-                                                document.getElementById('schema-editor').style.backgroundColor = 'rgba(0,0,0,.5)';
-                                            }}
-                                            onDragLeave={() => {
-                                                document.getElementById('schema-editor').style.backgroundColor = '';
-                                            }}
-                                            className='col-12 mt-1'
-                                            style={{
-                                                minHeight: '20em',
-                                            }}
-                                        >
-                                            <div className="col pt-2" ref={scrollToInfoRef}>
+                                        <div>
+                                            <div className="col pt-2">
                                                 <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
-                                                {infoEditors}
+                                                <Droppable onDrop={onDrop} type={'Info'} editor={infoEditors} />
+
                                             </div>
                                             <hr />
-                                            <div className="col" ref={scrollToTypeRef}>
+                                            <div className="col">
                                                 <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                                {typesEditors}
+                                                <Droppable onDrop={onDrop} type={"Types"} editor={typesEditors} />
+
                                             </div>
-                                        </Droppable>
+                                        </div>
                                     }
                                 </div>
                             </div>
