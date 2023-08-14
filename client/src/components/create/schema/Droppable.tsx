@@ -1,14 +1,17 @@
 import React, { memo } from 'react';
 import { useDrop } from 'react-dnd'
 
-export const Droppable = memo(function Droppable({ onDrop, type, editor }) {
+export const Droppable = memo(function Droppable({ onDrop, acceptableType, editor, children }) {
 
     const [{ isOver, dragging, canDrop }, drop] = useDrop(
         () => ({
-            accept: [`${type}`],
+            accept: [`${acceptableType}`],
             drop(monitor) {
-                onDrop(monitor.itemID)
-                return undefined
+                if (typeof monitor.itemID == "string") {
+                    console.log("dropping")
+                    onDrop(monitor.itemID)
+                    return undefined
+                }
             },
             collect: (monitor) => ({
                 isOver: monitor.isOver(),
@@ -22,9 +25,13 @@ export const Droppable = memo(function Droppable({ onDrop, type, editor }) {
     return (
         <div
             ref={drop}
-            style={{ minHeight: '10em' }}
+            style={{
+                minHeight: '10em',
+                backgroundColor: canDrop ? 'rgba(0,0,0,.5)' : 'inherit',
+            }}
         >
             {editor}
+            <div>{children}</div>
         </div>
 
     );

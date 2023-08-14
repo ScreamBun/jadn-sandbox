@@ -1,25 +1,32 @@
 import { faGripLines } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { ListGroupItem } from "reactstrap";
 import { useDrag } from 'react-dnd'
 
-export const Draggable = memo(function SourceBox({ item, type, id }) {
-
+export const DraggableKey = memo(function SourceBox({ item, acceptableType, id, isDraggable = true }) {
     const [{ isDragging }, drag] = useDrag(
         () => ({
-            type: type,
+            type: acceptableType,
             item: { itemID: id },
-            canDrag: true,
+            canDrag: isDraggable,
             collect: (monitor) => ({
                 item: monitor.getItem(),
-                isDraggingInfo: monitor.isDragging()
-            })
-        }), [item, type]
+                isDragging: monitor.isDragging()
+            }),
+        }), [item, acceptableType, isDraggable]
+    )
+
+    const containerStyle = useMemo(
+        () => ({
+            opacity: isDragging || !isDraggable ? 0.4 : 1,
+            cursor: isDraggable ? 'move' : 'default',
+        }),
+        [isDragging, isDraggable],
     )
 
     return (
-        <div ref={drag}>
+        <div ref={drag} style={containerStyle}>
             <ListGroupItem style={{ color: 'inherit', padding: '8px' }}>
                 {item}
                 <FontAwesomeIcon icon={faGripLines} className='float-right' />
