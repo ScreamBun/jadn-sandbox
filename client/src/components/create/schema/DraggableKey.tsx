@@ -4,7 +4,7 @@ import React, { memo, useMemo } from "react";
 import { ListGroupItem } from "reactstrap";
 import { useDrag } from 'react-dnd'
 
-export const DraggableKey = memo(function SourceBox({ item, acceptableType, id, isDraggable = true }) {
+export const DraggableKey = memo(function DraggableKey({ item, acceptableType, id, isDraggable = true }) {
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: acceptableType,

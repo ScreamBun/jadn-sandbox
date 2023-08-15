@@ -4,14 +4,12 @@ import { useDrag, useDrop } from 'react-dnd'
 import { TypeKeys, TypeObject } from "./structure/editors/consts";
 import { zip } from "components/utils";
 
-export const DraggableType = memo(function SourceBox({ item, acceptableType, id, isDraggable = true }) {
-    const changeIndex = item.props.changeIndex;
-    const ref = useRef(null);
+export const DraggableType = memo(function DraggableType({ item, acceptableType, id, isDraggable = true, changeIndex }) {
 
-    const [{ isDragging }, drag] = useDrag(
+    const [{ isDragging }, dragRef] = useDrag(
         () => ({
             type: acceptableType,
-            item: { itemID: id, originalIndex: item.props.dataIndex, itemValue: item.props.value },
+            item: () => { return { itemID: id, originalIndex: item.props.dataIndex, itemValue: item.props.value } },
             canDrag: isDraggable,
             collect: (monitor) => ({
                 item: monitor.getItem(),
@@ -20,35 +18,56 @@ export const DraggableType = memo(function SourceBox({ item, acceptableType, id,
         }), [item, acceptableType, isDraggable]
     )
 
-    const [, dropType] = useDrop(
+    const [, dropRef] = useDrop(
         () => ({
             accept: acceptableType,
-            drop: (draggingItem, _monitor) => {
-                if (!ref.current) {
-                    return
-                }
-                const dragIndex = draggingItem.originalIndex
-                const hoverIndex = id
-                if (dragIndex && dragIndex !== hoverIndex) {
-                    console.log("changing")
-                    changeIndex(zip(TypeKeys, draggingItem.itemValue) as TypeObject, dragIndex, hoverIndex)
-                }
-            },
-            // hover: (draggingItem, _monitor) => {
+            // drop: (draggingItem, _monitor) => {
             //     if (!ref.current) {
             //         return
             //     }
             //     const dragIndex = draggingItem.originalIndex
             //     const hoverIndex = id
-            //     console.log(dragIndex, hoverIndex)
             //     if (dragIndex && dragIndex !== hoverIndex) {
-            //         console.log("changing")
-            //         changeIndex(draggingItem.itemValue, dragIndex, hoverIndex)
+            //         console.log("on drop index of " + JSON.stringify(draggingItem) + " from " + dragIndex + " to " + hoverIndex)
+            //         //TODO: FIX -- state is not updated when changing index however state on render is correct
+            //         changeIndex(zip(TypeKeys, draggingItem.itemValue) as TypeObject, dragIndex, hoverIndex)
             //     }
             // },
+            //TODO: scroll page
+            hover: (draggedItem, monitor) => {
+                if (!ref.current) {
+                    return
+                }
+                const dragIndex = draggedItem.originalIndex
+                const hoverIndex = id
+
+                // Don't replace items with themselves
+                if (dragIndex === hoverIndex) {
+                    return
+                }
+
+                const hoverBoundingRect = ref.current?.getBoundingClientRect()
+                const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+                const hoverActualY = monitor.getClientOffset().y - hoverBoundingRect.top
+
+                // if dragging down, continue only when hover is smaller than middle Y
+                if (dragIndex < hoverIndex && hoverActualY < hoverMiddleY) {
+                    return
+                }
+                // if dragging up, continue only when hover is bigger than middle Y
+                if (dragIndex > hoverIndex && hoverActualY > hoverMiddleY) {
+                    return
+                }
+
+                changeIndex(zip(TypeKeys, draggedItem.itemValue) as TypeObject, dragIndex, hoverIndex)
+                draggedItem.originalIndex = hoverIndex
+            },
         }),
         [],
     )
+
+    const ref = useRef(null);
+    const dragDropRef = dragRef(dropRef(ref))
 
     const containerStyle = useMemo(
         () => ({
@@ -58,10 +77,9 @@ export const DraggableType = memo(function SourceBox({ item, acceptableType, id,
         [isDragging, isDraggable],
     )
 
-    drag(dropType(ref))
 
     return (
-        <div ref={ref} style={containerStyle} >
+        <div ref={dragDropRef} style={containerStyle} >
             <ListGroupItem style={{ color: 'inherit', padding: '8px' }}>
                 {item}
             </ListGroupItem>

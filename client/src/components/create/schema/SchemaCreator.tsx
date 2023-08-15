@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { Info, Types } from './structure/structure';
 import { loadFile, setSchema } from 'actions/util';
@@ -19,7 +19,7 @@ import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 import { DraggableType } from './DraggableType';
 import { Droppable } from './Droppable'
-import { DraggableKey } from './structure/DraggableKey';
+import { DraggableKey } from './DraggableKey';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -40,9 +40,9 @@ const SchemaCreator = (props: any) => {
     const [fileName, setFileName] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
-    const [isLoading, setIsLoading] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
 
@@ -53,7 +53,6 @@ const SchemaCreator = (props: any) => {
         if (generatedSchema) {
             const schemaStr = FormatJADN(generatedSchema);
             dispatch(setSchema(generatedSchema));
-            console.log(schemaStr)
             setData(schemaStr);
 
             //set configuration data
@@ -223,16 +222,16 @@ const SchemaCreator = (props: any) => {
         const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
 
         infoKeys = Object.keys(unusedInfo).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'Info'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
         ));
     } else {
         infoKeys = Object.keys(Info).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'Info'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
         ));
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <DraggableKey item={Types[k].key} acceptableType={'Types'} key={Types[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+        <DraggableKey item={Types[k].key} acceptableType={'TypesKeys'} key={Types[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
     ));
 
     const infoEditors = Object.keys(Info).map((k, i) => {
@@ -288,11 +287,34 @@ const SchemaCreator = (props: any) => {
             });
         }
         return null;
-    }).filter(Boolean);
+    });
+
+    const onDrag = useCallback((val, dragIndex: number, hoverIndex: number) => {
+        console.log(generatedSchema.types, dragIndex, hoverIndex)
+        const type = val.type.toLowerCase() as keyof typeof Types;
+        const dragItem = Types[type].edit(val);
+        const hoverItem = generatedSchema.types[hoverIndex];
+        console.log("REPLACING : " + dragItem + " WITH " + hoverItem)
+
+        // const tmpTypes = [...generatedSchema.types]
+        // tmpTypes[hoverIndex] = dragItem
+        // tmpTypes[dragIndex] = hoverItem
+
+        let tmpTypes = [...generatedSchema.types];
+        tmpTypes.splice(dragIndex, 1);
+        tmpTypes.splice(hoverIndex, 0, Types[type].edit(val));
+
+        setGeneratedSchema((generatedSchema: any) => {
+            return ({ ...generatedSchema, types: tmpTypes })
+        })
+    }, [generatedSchema])
 
     const typesEditors = (generatedSchema.types || []).map((def, i) => {
         const type = def[1].toLowerCase() as keyof typeof Types;
-        return (<DraggableType acceptableType={'Types'} key={i} id={i}
+        return (<DraggableType acceptableType={'Types'}
+            key={i}
+            id={i}
+            changeIndex={onDrag}
             item={Types[type].editor({
                 key: i,
                 value: def,
@@ -325,7 +347,6 @@ const SchemaCreator = (props: any) => {
                     }
                 },
                 changeIndex: (val, dataIndex: number, idx: number) => {
-                    console.log(val, dataIndex, idx)
                     const type = val.type.toLowerCase() as keyof typeof Types;
                     if (idx < 0) {
                         sbToastError('Error: Cannot move Type up anymore');
@@ -335,51 +356,27 @@ const SchemaCreator = (props: any) => {
                         return;
                     }
 
-                    const tmpTypes = [...generatedSchema.types];
-                    console.log('CURRENT TYPES ARRAY')
-                    console.log(tmpTypes)
+                    let tmpTypes = [...generatedSchema.types];
 
-                    const replacedItem = tmpTypes.slice(idx, idx + 1);
-                    console.log(replacedItem)
+                    tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
 
-                    tmpTypes.splice(dataIndex, 1, replacedItem[0]);
-                    tmpTypes.splice(idx, 1, Types[type].edit(val));
-
-                    //tmpTypes[dataIndex] = replacedItem[0];
-                    // tmpTypes[idx] = Types[type].edit(val);
-
-                    // tmpTypes.map((t, i) => {
-                    //     if (i === idx) {
-                    //         return Types[type].edit(val);
-                    //     } else if (i == dataIndex) {
-                    //         return replacedItem[0];
-                    //     } else {
-                    //         return t;
-                    //     }
-                    // });
-
-                    console.log('NEW TYPES ARRAY')
-                    console.log(tmpTypes)
-
-                    // tmpTypes.splice(dataIndex, 1);
-                    // tmpTypes = [
-                    //     ...tmpTypes.slice(0, idx),
-                    //     Types[type].edit(val),
-                    //     ...tmpTypes.slice(idx)
-                    // ];
-
+                    tmpTypes = [
+                        ...tmpTypes.slice(0, idx),
+                        Types[type].edit(val),
+                        ...tmpTypes.slice(idx)
+                    ];
 
                     setGeneratedSchema((generatedSchema: any) => ({
                         ...generatedSchema,
                         types: tmpTypes
-                    })
-                    );
+                    }));
                 },
                 config: configOpt
             })} />)
-    }).filter(Boolean);
+    });
 
     const onDrop = (key: string) => {
+        console.log("ON DROP CALLED")
         if (Object.keys(Info).includes(key)) {
             if (!generatedSchema.info) {
                 let newSchema = { ...generatedSchema };
@@ -419,7 +416,6 @@ const SchemaCreator = (props: any) => {
                     }));
                 }
             }
-            return key;
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const tmpDef = Types[key].edit();
@@ -428,10 +424,8 @@ const SchemaCreator = (props: any) => {
                 ...generatedSchema,
                 types: tmpTypes
             }));
-            return key;
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
-            return key;
         }
     }
 
@@ -533,14 +527,16 @@ const SchemaCreator = (props: any) => {
                                         <div>
                                             <div className="col pt-2">
                                                 <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
-                                                <Droppable onDrop={onDrop} acceptableType={'Info'} editor={infoEditors} />
+                                                <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
+                                                    {infoEditors}
+                                                </Droppable>
 
                                             </div>
                                             <hr />
                                             <div className="col">
                                                 <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                                <Droppable onDrop={onDrop} acceptableType={"Types"} editor={typesEditors} >
-                                                    <Droppable />
+                                                <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
+                                                    {typesEditors}
                                                 </Droppable>
 
                                             </div>
