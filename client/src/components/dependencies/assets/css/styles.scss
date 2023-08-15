@@ -57,6 +57,19 @@ body {
     height: 100%;
 }  */
 
+//scrollToTopBtn
+.btn-block {
+    box-shadow: 15px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    z-index: 50;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+
+    &:hover {
+        box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.4);
+        transform: translateY(-7px);
+    }
+}
 
 .code,
 textarea {
