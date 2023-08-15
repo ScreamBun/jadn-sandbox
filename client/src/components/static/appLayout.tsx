@@ -79,7 +79,9 @@ const AppLayout = () => {
         <SBScrollToTop />
       </div>
 
-      <Outlet />
+      <div className='mt-3'>
+        <Outlet />
+      </div>
 
       <br />
       <br />
