@@ -292,19 +292,18 @@ const SchemaCreator = (props: any) => {
     const onDrag = useCallback((val, dragIndex: number, hoverIndex: number) => {
         console.log(generatedSchema.types, dragIndex, hoverIndex)
         const type = val.type.toLowerCase() as keyof typeof Types;
-        const dragItem = Types[type].edit(val);
+        const dragItem = Types[type].edit(val); //generatedSchema.types[dragIndex]; //
         const hoverItem = generatedSchema.types[hoverIndex];
         console.log("REPLACING : " + dragItem + " WITH " + hoverItem)
 
-        // const tmpTypes = [...generatedSchema.types]
-        // tmpTypes[hoverIndex] = dragItem
-        // tmpTypes[dragIndex] = hoverItem
-
-        let tmpTypes = [...generatedSchema.types];
-        tmpTypes.splice(dragIndex, 1);
-        tmpTypes.splice(hoverIndex, 0, Types[type].edit(val));
+        // let tmpTypes = [...generatedSchema.types];
+        // tmpTypes.splice(dragIndex, 1);
+        // tmpTypes.splice(hoverIndex, 0, Types[type].edit(val));
 
         setGeneratedSchema((generatedSchema: any) => {
+            const tmpTypes = [...generatedSchema.types];
+            tmpTypes[dragIndex] = hoverItem
+            tmpTypes[hoverIndex] = dragItem
             return ({ ...generatedSchema, types: tmpTypes })
         })
     }, [generatedSchema])

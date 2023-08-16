@@ -3,12 +3,13 @@ import { useDrop } from 'react-dnd'
 
 export const Droppable = memo(function Droppable({ onDrop, acceptableType, children }) {
 
+    //TODO: focus/ scroll to on dropped item
     const [{ isOver, canDrop }, drop] = useDrop(
         () => ({
             accept: [`${acceptableType}`],
-            drop: (monitor) => {
-                onDrop(monitor.itemID)
-                return undefined
+            drop: (item) => {
+                onDrop(item.itemID)
+                return item
             },
             collect: (monitor) => ({
                 isOver: monitor.isOver(),

@@ -29,10 +29,10 @@ export const DraggableType = memo(function DraggableType({ item, acceptableType,
             //     const hoverIndex = id
             //     if (dragIndex && dragIndex !== hoverIndex) {
             //         console.log("on drop index of " + JSON.stringify(draggingItem) + " from " + dragIndex + " to " + hoverIndex)
-            //         //TODO: FIX -- state is not updated when changing index however state on render is correct
             //         changeIndex(zip(TypeKeys, draggingItem.itemValue) as TypeObject, dragIndex, hoverIndex)
             //     }
             // },
+            //TODO: FIX -- state is not updated when changing index however state on rendered page is correct
             //TODO: scroll page
             hover: (draggedItem, monitor) => {
                 if (!ref.current) {
