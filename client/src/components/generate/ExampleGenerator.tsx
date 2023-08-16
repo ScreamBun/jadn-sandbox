@@ -55,7 +55,7 @@ const ExampleGenerator = () => {
             }
         }
 
-        dispatch(convertSchema(schemaObj, 'json'))
+        dispatch(convertSchema(schemaObj, ['json']))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
                     console.error(convertSchemaVal.payload.response);

@@ -63,7 +63,7 @@ class Convert(Resource):
                     except:
                         tb = traceback.format_exc()
                         print(tb)
-                        return "Failed to Convert", 500
+                        
         else:
             return "Schema is not valid", 500
 
