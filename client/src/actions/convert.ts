@@ -34,7 +34,7 @@ export interface InfoSuccessAction extends ActionSuccessResult {
 const CONVERT_REQUEST = '@@convert/CONVERT_REQUEST';
 export const CONVERT_SUCCESS = '@@convert/CONVERT_SUCCESS';
 export const CONVERT_FAILURE = '@@convert/CONVERT_FAILURE';
-export const convertSchema = (schema: Record<string, any>, t: string[] | string) => createAction({
+export const convertSchema = (schema: Record<string, any>, t: string[]) => createAction({
   endpoint: `${baseAPI}/`,
   method: 'POST',
   headers: {

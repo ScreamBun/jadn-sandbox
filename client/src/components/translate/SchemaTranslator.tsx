@@ -64,7 +64,7 @@ const SchemaTranslator = () => {
                             .then((convertSchemaVal) => {
                                 if (convertSchemaVal.error) {
                                     setIsLoading(false);
-                                    setTranslatedSchema([]);
+                                    setTranslatedSchema(initConvertedSchemaState);
                                     sbToastError(convertSchemaVal.payload.response);
                                     return;
                                 }
@@ -75,24 +75,29 @@ const SchemaTranslator = () => {
                                 }
                             })
                             .catch((convertSchemaErr: string) => {
+                                setTranslatedSchema(initConvertedSchemaState);
                                 setIsLoading(false);
                                 sbToastError(convertSchemaErr);
                             })
 
                     } else if (validateSchemaVal.payload.valid_bool == false) {
+                        setTranslatedSchema(initConvertedSchemaState);
                         setIsLoading(false);
                         sbToastError("Invalid Schema");
                     } else if (translation.length == 0) {
+                        setTranslatedSchema(initConvertedSchemaState);
                         setIsLoading(false);
                         sbToastError("No translation selected");
                     }
                 })
                 .catch((validateSchemaErr) => {
+                    setTranslatedSchema(initConvertedSchemaState);
                     setIsLoading(false);
                     sbToastError(validateSchemaErr);
                 })
 
         } else {
+            setTranslatedSchema(initConvertedSchemaState);
             setIsLoading(false);
             sbToastError("No language selected for translation");
         }

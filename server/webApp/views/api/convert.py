@@ -34,9 +34,11 @@ class Convert(Resource):
         
         if is_valid:
             convertedData = []
-            if isinstance(request_json["convert-to"], str):
+            if len(request_json["convert-to"]) == 1:
                 try:
-                    conv_fmt = SchemaFormats(request_json["convert-to"])
+                    lang = request_json["convert-to"][0]
+                    conv_fmt = SchemaFormats(lang)
+                    
                 except Exception:  
                     return "Invalid Conversion Type", 500
                 
