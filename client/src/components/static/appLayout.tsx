@@ -26,8 +26,8 @@ const AppLayout = () => {
 
   return (
     <div>
-      <div className='fixed-top py-0'>
-        <nav className='navbar navbar-expand-md navbar-dark bg-primary'>
+      <div className='fixed-top'>
+        <nav className='navbar navbar-expand-md navbar-dark bg-primary py-0'>
           <button className='navbar-toggler collapsed' type='button' onClick={onToggleNav} data-toggle='collapse' data-target='#navToggle' aria-controls='navToggle' aria-expanded='false' aria-label='Toggle navigation'>
             <span className='navbar-toggler-icon' />
           </button>
@@ -79,9 +79,7 @@ const AppLayout = () => {
         <SBScrollToTop />
       </div>
 
-      <div className='mt-3'>
-        <Outlet />
-      </div>
+      <Outlet />
 
       <br />
       <br />

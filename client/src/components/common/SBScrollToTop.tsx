@@ -4,9 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "reactstrap";
 
 
-const SBScrollToTop = (props: any) => {
-
-    const { color } = props;
+const SBScrollToTop = () => {
 
     const [isVisible, setIsVisible] = useState(false);
 
@@ -34,7 +32,7 @@ const SBScrollToTop = (props: any) => {
     }
 
     return (
-        <Button color={color || "secondary"} id="scollToTopBtn" className="btn btn-block"
+        <Button color={"info"} id="scollToTopBtn" className="btn btn-block"
             onClick={onScrollUp} style={{ display: isVisible ? 'block' : 'none' }}>
             <FontAwesomeIcon icon={faArrowUp} />
         </Button >
