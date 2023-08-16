@@ -221,7 +221,13 @@ const SchemaCreator = (props: any) => {
         const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
 
         infoKeys = Object.keys(unusedInfo).map(k => (
-            <Draggable type="info" data={k} key={unusedInfo[k].key} onDragStart={selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
+            <Draggable type="info" data={k} key={unusedInfo[k].key}
+                onDragStart={() => {
+                    document.getElementById('dropInfo').style.backgroundColor = 'rgba(0,0,0,.5)';
+                    selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : '';
+                }}
+                onDragEnd={() => { document.getElementById('dropInfo').style.backgroundColor = ''; }}
+            >
                 <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action={selectedFile?.value == 'file' && !generatedSchema ? false : true}>
                     {unusedInfo[k].key}
                     <FontAwesomeIcon icon={faGripLines} className='float-right' />
@@ -230,7 +236,13 @@ const SchemaCreator = (props: any) => {
         ));
     } else {
         infoKeys = Object.keys(Info).map(k => (
-            <Draggable type="info" data={k} key={Info[k].key} onDragStart={selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
+            <Draggable type="info" data={k} key={Info[k].key}
+                onDragStart={() => {
+                    document.getElementById('dropInfo').style.backgroundColor = 'rgba(0,0,0,.5)';
+                    selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : '';
+                }}
+                onDragEnd={() => { document.getElementById('dropInfo').style.backgroundColor = ''; }}
+            >
                 <ListGroupItem style={{ color: `${selectedFile?.value == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile?.value == 'file' && !generatedSchema ? false : true}>
                     {Info[k].key}
                     <FontAwesomeIcon icon={faGripLines} className='float-right' />
@@ -240,7 +252,13 @@ const SchemaCreator = (props: any) => {
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <Draggable type="types" data={k} key={Types[k].key} onDragStart={selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : ''}>
+        <Draggable type="types" data={k} key={Types[k].key}
+            onDragStart={() => {
+                document.getElementById('dropTypes').style.backgroundColor = 'rgba(0,0,0,.5)';
+                selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : '';
+            }}
+            onDragEnd={() => { document.getElementById('dropTypes').style.backgroundColor = ''; }}
+        >
             <ListGroupItem style={{ color: `${selectedFile?.value == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile?.value == 'file' && !generatedSchema ? false : true}>
                 {Types[k].key}
                 <FontAwesomeIcon icon={faGripLines} className='float-right' />
@@ -249,7 +267,9 @@ const SchemaCreator = (props: any) => {
     ));
 
     const onDrop = (data: any) => {
-        document.getElementById('schema-editor').style.backgroundColor = '';
+        document.getElementById('dropInfo').style.backgroundColor = '';
+        document.getElementById('dropTypes').style.backgroundColor = '';
+
         if (data.info) {
             if (!generatedSchema.info) {
                 let newSchema = { ...generatedSchema };
@@ -515,30 +535,49 @@ const SchemaCreator = (props: any) => {
                                 </div>
                                 <div id="schema-editor" className='col-md-9'>
                                     {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
-                                        <Droppable
-                                            types={['info', 'types']} // <= allowed drop types
-                                            onDrop={onDrop}
-                                            onDragOver={() => {
-                                                document.getElementById('schema-editor').style.backgroundColor = 'rgba(0,0,0,.5)';
-                                            }}
-                                            onDragLeave={() => {
-                                                document.getElementById('schema-editor').style.backgroundColor = '';
-                                            }}
-                                            className='col-12 mt-1'
-                                            style={{
-                                                minHeight: '20em',
-                                            }}
-                                        >
-                                            <div className="col pt-2" ref={scrollToInfoRef}>
-                                                <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
-                                                {infoEditors}
-                                            </div>
+                                        <div>
+                                            <Droppable
+                                                id={"dropInfo"}
+                                                types={['info']} // <= allowed drop types
+                                                onDrop={onDrop}
+                                                onDragOver={() => {
+                                                    document.getElementById('dropInfo').style.backgroundColor = 'lightgreen';
+                                                }}
+                                                onDragLeave={() => {
+                                                    document.getElementById('dropInfo').style.backgroundColor = '';
+                                                }}
+                                                className='col-12 mt-1'
+                                                style={{
+                                                    minHeight: '20em',
+                                                }}
+                                            >
+                                                <div className="col pt-2" ref={scrollToInfoRef}>
+                                                    <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                                    {infoEditors}
+                                                </div>
+                                            </Droppable>
                                             <hr />
-                                            <div className="col" ref={scrollToTypeRef}>
-                                                <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                                {typesEditors}
-                                            </div>
-                                        </Droppable>
+                                            <Droppable
+                                                id={"dropTypes"}
+                                                types={['types']} // <= allowed drop types
+                                                onDrop={onDrop}
+                                                onDragOver={() => {
+                                                    document.getElementById('dropTypes').style.backgroundColor = 'lightgreen';
+                                                }}
+                                                onDragLeave={() => {
+                                                    document.getElementById('dropTypes').style.backgroundColor = '';
+                                                }}
+                                                className='col-12 mt-1'
+                                                style={{
+                                                    minHeight: '20em',
+                                                }}
+                                            >
+                                                <div className="col" ref={scrollToTypeRef}>
+                                                    <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                    {typesEditors}
+                                                </div>
+                                            </Droppable>
+                                        </div>
                                     }
                                 </div>
                             </div>

@@ -77,7 +77,7 @@ export default (state = initialState, action: util.UtilActions) => {
         selectedSchema: action.payload.schema || {},
         types: {
           ...state.types,
-          schema: action.payload.schema.types.map(t => ({ [t[0]]: t })).reduce((prev, curr) => Object.assign(prev, curr), {})
+          schema: action.payload.schema.types ? action.payload.schema.types.map(t => ({ [t[0]]: t })).reduce((prev, curr) => Object.assign(prev, curr), {}) : []
         }
       };
 
