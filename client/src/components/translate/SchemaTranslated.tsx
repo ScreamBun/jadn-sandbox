@@ -44,7 +44,7 @@ const SchemaTranslated = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-6'>
                         <SBSelect id={"translation-list"} data={translateOpts} onChange={handleTranslation}
-                            placeholder={'Translate to...'}
+                            placeholder={'Translate to...(select at least one)'}
                             value={translation} isMultiSelect
                         />
                     </div>

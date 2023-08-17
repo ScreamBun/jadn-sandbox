@@ -8,7 +8,7 @@ import SBSaveFile from 'components/common/SBSaveFile'
 //TODO: create messages in other languages ?
 //TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
-    const { generatedMessages, loadedSchema, isLoading } = props;
+    const { generatedMessages, loadedSchema, isLoading, numOfMsg, setNumOfMsg } = props;
     const [toggle, setToggle] = useState('');
 
     const onToggle = (index: number) => {
@@ -18,6 +18,11 @@ const ExampleCreator = (props: any) => {
         } else {
             setToggle(`${index}`);
         }
+    }
+
+    const onNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        setNumOfMsg(e.target.value);
     }
 
     const msgList = generatedMessages.map((message: string, i: number) => (
@@ -43,11 +48,19 @@ const ExampleCreator = (props: any) => {
     return (
         <div className="card">
             <div className="card-header p-2">
-                {isLoading ? <SBSpinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
-                    disabled={loadedSchema ? false : true}
-                    title={"Generate example messages based on selected schema"}>
-                    Generate
-                </Button>}
+                <div className='row no-gutters'>
+                    <div className='col-md-9'>
+                        <input type='number' className='form-control form-control-sm' value={numOfMsg} onChange={onNumChange}
+                            placeholder='Select number of desired generated examples...' min={1} />
+                    </div>
+                    <div className='col-md-3'>
+                        {isLoading ? <SBSpinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
+                            disabled={loadedSchema ? false : true}
+                            title={"Generate example messages based on selected schema"}>
+                            Generate
+                        </Button>}
+                    </div>
+                </div>
             </div>
             <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
                 {msgList}
