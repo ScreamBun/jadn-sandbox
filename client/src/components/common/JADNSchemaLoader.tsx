@@ -71,14 +71,13 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFormatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setCurrSchema(handleFormatJADN(currSchema));
-
+        handleFormatJADN(currSchema);
     }
 
     const handleFormatJADN = (schemaStr: string) => {
         dispatch(format(schemaStr))
             .then((rsp: { payload: { schema: any; }; }) => {
-                return (rsp.payload.schema);
+                setCurrSchema(rsp.payload.schema);
             })
             .catch((_err: any) => {
                 sbToastError('Failed to format: Invalid JSON')
@@ -189,7 +188,7 @@ const JADNSchemaLoader = (props: any) => {
                     let schemaObj = loadFileVal.payload.data;
                     let schemaStr = JSON.stringify(schemaObj);
                     validateJADN(schemaStr);
-                    setCurrSchema(handleFormatJADN(schemaStr));
+                    handleFormatJADN(schemaStr);
                     dispatch(setSchema(schemaObj));
 
                     if (setDecodeSchemaTypes && setDecodeMsg) {
