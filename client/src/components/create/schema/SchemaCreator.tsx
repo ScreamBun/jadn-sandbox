@@ -13,7 +13,6 @@ import SBEditor from 'components/common/SBEditor';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../consts';
 import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
-import { FormatJADN } from 'components/utils';
 import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
@@ -34,7 +33,7 @@ const SchemaCreator = (props: any) => {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
-    const [data, setData] = useState(''); //generatedSchema JSON string
+    const [data, setData] = useState(''); //generatedSchema JSON
     const [fileName, setFileName] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
@@ -50,7 +49,6 @@ const SchemaCreator = (props: any) => {
         setIsValidJADN(false);
         setIsValidating(false);
         if (generatedSchema) {
-            const schemaStr = FormatJADN(generatedSchema);
             dispatch(setSchema(generatedSchema));
             setData(schemaStr);
 

@@ -6,9 +6,9 @@ import SBDownloadFile from "components/common/SBDownloadFile";
 import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import SBSaveFile from "components/common/SBSaveFile";
-import { FormatJADN } from "components/utils";
 import { useSelector } from "react-redux";
 import { getValidTransformations } from "reducers/transform";
+import { initTransformedSchema } from "./SchemaTransformer";
 
 const SchemaTransformed = (props: any) => {
 
@@ -27,8 +27,13 @@ const SchemaTransformed = (props: any) => {
 
     const onSelectChange = (e: Option) => {
         setBaseFile(null);
-        setTransformedSchema([]);
+        setTransformedSchema([initTransformedSchema]);
         setTransformationType(e);
+    }
+
+    const onBaseFileSelect = (e: Option) => {
+        setTransformedSchema([initTransformedSchema]);
+        setBaseFile(e);
     }
 
     return (
@@ -40,14 +45,14 @@ const SchemaTransformed = (props: any) => {
                             placeholder={'Select transformation type...'} value={transformationType}
                         />
                         {transformationType?.value == 'resolve references' ?
-                            <SBSelect id={"base-file"} data={baseFileOpts} onChange={(e: Option) => { setTransformedSchema([]); setBaseFile(e); }}
+                            <SBSelect id={"base-file"} data={baseFileOpts} onChange={onBaseFileSelect}
                                 placeholder={'Select base file...'} value={baseFile}
                             /> : ""}
                     </div>
                     <div className='col-md-3'>
-                        <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema.length == 1 ? FormatJADN(transformedSchema[0].schema) : transformedSchema.schema} customClass={`float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} />
-                        <SBSaveFile data={transformedSchema.length == 1 ? FormatJADN(transformedSchema[0].schema) : transformedSchema.schema} loc={'schemas'} customClass={`mr-1 float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} filename={transformedSchema.length == 1 ? transformedSchema[0].schema_name : baseFile} ext={transformedSchema.length == 1 ? transformedSchema[0].schema_fmt : 'jadn'} />
-                        <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} filename={transformedSchema.length == 1 ? transformedSchema[0].schema_name : baseFile} data={transformedSchema.length == 1 ? FormatJADN(transformedSchema[0].schema) : transformedSchema.schema} ext={transformedSchema.length == 1 ? transformedSchema[0].schema_fmt : 'jadn'} />
+                        <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} />
+                        <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`mr-1 float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} filename={baseFile} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                        <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} filename={baseFile} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
 
                         {isLoading ? <SBSpinner action={'Transforming'} /> : <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
                             disabled={data.length != 0 && (transformationType?.value == 'resolve references' ? baseFile : true) ? false : true}
@@ -67,18 +72,18 @@ const SchemaTransformed = (props: any) => {
                                     {output.schema_name}
                                 </button>
                                 <SBCopyToClipboard buttonId={`copySchema${i}`} data={output.schema} customClass='float-right' />
-                                <SBSaveFile data={output.schema} loc={'messages'} customClass={"float-right mr-1"} filename={`${output.schema_name}`} ext={'json'} />
-                                <SBDownloadFile buttonId={`downloadSchema${i}`} customClass='mr-1 float-right' filename={`${output.schema_name}`} data={output.schema} ext={'json'} />
+                                <SBSaveFile data={output.schema} loc={'schemas'} customClass={"float-right mr-1"} filename={`${output.schema_name}`} ext={'jadn'} />
+                                <SBDownloadFile buttonId={`downloadSchema${i}`} customClass='mr-1 float-right' filename={`${output.schema_name}`} data={output.schema} ext={'jadn'} />
                             </h5>
                         </div>
 
                         {toggle == `${i}` ?
                             <div className="card-body" key={i}>
-                                <SBEditor data={FormatJADN(output.schema)} isReadOnly={true} height={'20em'}></SBEditor>
+                                <SBEditor data={output.schema} isReadOnly={true} height={'20em'}></SBEditor>
                             </div> : ''}
                     </div>
                 )) :
-                    <SBEditor data={transformedSchema.length == 1 ? FormatJADN(transformedSchema[0].schema) : transformedSchema.schema} isReadOnly={true}></SBEditor>}
+                    <SBEditor data={transformedSchema[0].schema} isReadOnly={true}></SBEditor>}
             </div>
         </div>
     )

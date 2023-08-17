@@ -9,13 +9,18 @@ import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
 import { info, transformSchema } from 'actions/transform'
 import { Option } from 'components/common/SBSelect'
 
+export const initTransformedSchema = {
+    schema: '',
+    schema_name: ''
+}
+
 const SchemaTransformer = () => {
     const dispatch = useDispatch();
 
     const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
     const [transformationType, setTransformationType] = useState<Option | null>();
     const [baseFile, setBaseFile] = useState<Option | null>();
-    const [transformedSchema, setTransformedSchema] = useState([]);
+    const [transformedSchema, setTransformedSchema] = useState([initTransformedSchema]);
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
@@ -27,7 +32,7 @@ const SchemaTransformer = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setTransformedSchema([]);
+        setTransformedSchema([initTransformedSchema]);
         setBaseFile(null);
     }, [selectedFiles])
 
@@ -36,7 +41,7 @@ const SchemaTransformer = () => {
         setBaseFile(null);
         setTransformationType(null);
         setSelectedFiles([]);
-        setTransformedSchema([]);
+        setTransformedSchema([initTransformedSchema]);
         //clear checkboxes 
         var inputElem = document.getElementsByTagName('input');
         for (var i = 0; i < inputElem.length; i++) {

@@ -11,10 +11,10 @@ import SBCopyToClipboard from "./SBCopyToClipboard";
 import SBEditor from "./SBEditor";
 import { LANG_JSON } from "components/utils/constants";
 import SBFileUploader from "./SBFileUploader";
-import { FormatJADN } from "components/utils";
 import SBSaveFile from "./SBSaveFile";
 import SBSelect, { Option } from "./SBSelect";
 import SBSpinner from "./SBSpinner";
+import { format } from "actions/format";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -71,13 +71,18 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFormatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        try {
-            const schemaObj = JSON.parse(currSchema);
-            const schemaStr = FormatJADN(schemaObj);
-            setCurrSchema(schemaStr);
-        } catch {
-            sbToastError('Failed to format: Invalid JSON')
-        }
+        setCurrSchema(handleFormatJADN(currSchema));
+
+    }
+
+    const handleFormatJADN = (schemaStr: string) => {
+        dispatch(format(schemaStr))
+            .then((rsp: { payload: { schema: any; }; }) => {
+                return (rsp.payload.schema);
+            })
+            .catch((_err: any) => {
+                sbToastError('Failed to format: Invalid JSON')
+            })
     }
 
     const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
@@ -184,7 +189,7 @@ const JADNSchemaLoader = (props: any) => {
                     let schemaObj = loadFileVal.payload.data;
                     let schemaStr = JSON.stringify(schemaObj);
                     validateJADN(schemaStr);
-                    setCurrSchema(FormatJADN(schemaObj));
+                    setCurrSchema(handleFormatJADN(schemaStr));
                     dispatch(setSchema(schemaObj));
 
                     if (setDecodeSchemaTypes && setDecodeMsg) {
