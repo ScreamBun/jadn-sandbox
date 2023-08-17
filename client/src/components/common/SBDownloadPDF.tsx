@@ -14,7 +14,14 @@ const SBDownloadPDF = (props: any) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
         setFileNameInput(e.target.value);
+    }
+
+    const onCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setIsLoading(false);
+        setToggleDownloadDialog(false);
     }
 
     const onDownloadClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -24,7 +31,6 @@ const SBDownloadPDF = (props: any) => {
             return;
         }
         const filename = `${fileNameInput}.pdf`;
-        const dataObj = JSON.parse(data)
         setIsLoading(true);
         try {
             fetch('/api/convert/pdf', {
@@ -33,7 +39,7 @@ const SBDownloadPDF = (props: any) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    schema: dataObj
+                    schema: data
                 })
             }).then(
                 rsp => rsp.blob()
@@ -83,7 +89,7 @@ const SBDownloadPDF = (props: any) => {
                 </ModalBody>
                 <ModalFooter>
                     <Button color="success" onClick={onDownloadClick}>Save</Button>
-                    <Button color="secondary" onClick={() => { setIsLoading(false); setToggleDownloadDialog(false); }}>Cancel</Button>
+                    <Button color="secondary" onClick={onCancel}>Cancel</Button>
                 </ModalFooter>
             </Modal>
         </>

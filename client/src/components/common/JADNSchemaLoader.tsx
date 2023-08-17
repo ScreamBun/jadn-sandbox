@@ -19,7 +19,7 @@ import { format } from "actions/format";
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
 
-    const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
+    const { selectedFile, setSelectedFile, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -31,15 +31,6 @@ const JADNSchemaLoader = (props: any) => {
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
-
-    useEffect(() => {
-        if (loadedSchema == '') {
-            setCurrSchema('');
-            setIsLoading(false);
-            setIsValidating(false);
-            setIsValidJADN(false);
-        }
-    }, [loadedSchema])
 
     const loadDecodeTypes = (schemaObj: any) => {
         let decodeTypes = {
@@ -90,6 +81,7 @@ const JADNSchemaLoader = (props: any) => {
 
     const validateJADN = (jsonToValidate: any) => {
         setIsValidJADN(false);
+        setLoadedSchema(null);
         setIsValidating(true);
         let jsonObj = validateJSON(jsonToValidate);
         if (!jsonObj) {
@@ -103,7 +95,7 @@ const JADNSchemaLoader = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
-                        setLoadedSchema(JSON.stringify(jsonObj));
+                        setLoadedSchema(jsonObj);
                         setIsValidating(false);
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                         return true;
@@ -151,9 +143,10 @@ const JADNSchemaLoader = (props: any) => {
         return jsonObj;
     }
 
-    const sbEditorOnChange = (data: any) => {
+    const sbEditorOnChange = (data: string) => {
         dispatch(setSchema(data));
         setIsValidJADN(false);
+        setLoadedSchema(null);
         setCurrSchema(data);
         try {
             if (setDecodeSchemaTypes && setDecodeMsg) {
@@ -166,7 +159,7 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFileSelect = (e: Option) => {
         setIsValidJADN(false);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setCurrSchema('');
         setSelectedFile(e);
         if (e == null) {
@@ -206,8 +199,8 @@ const JADNSchemaLoader = (props: any) => {
         e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
+        setLoadedSchema(null);
         setCurrSchema('');
-        setLoadedSchema('');
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
             const file = e.target.files[0];
@@ -238,13 +231,13 @@ const JADNSchemaLoader = (props: any) => {
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         dismissAllToast();
-        setIsValidJADN(false);
-        setIsValidating(false);
         setIsLoading(false);
+        setIsValidating(false);
+        setIsValidJADN(false);
+        setLoadedSchema(null);
+        setCurrSchema('');
         setSelectedFile(null);
         setFileName('');
-        setCurrSchema('');
-        setLoadedSchema('');
         if (ref.current) {
             ref.current.value = '';
         }

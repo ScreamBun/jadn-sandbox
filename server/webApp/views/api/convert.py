@@ -95,10 +95,10 @@ class ConvertPDF(Resource):
     """
 
     def post(self):
-        args = parser.parse_args()
+        request_json = request.json      
         pdf = BytesIO()
         print("convert to pdf")
-        val, schema = current_app.validator.validateSchema(args["schema"], False)
+        val, schema = current_app.validator.validateSchema(request_json["schema"], False)
         if val:  # Valid Schema
             html = html_dumps(schema, styles=current_app.config.get("OPEN_C2_SCHEMA_THEME", ""))
         else:  # Invalid Schema
@@ -106,6 +106,7 @@ class ConvertPDF(Resource):
             
         pdf_obj = HTML(string=html)  # the HTML to convert
         pdf_obj.write_pdf(target=pdf)  # file handle to receive result
+        
         return Response(pdf.getvalue(), mimetype="application/pdf")
 
 

@@ -19,9 +19,9 @@ const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState('');
-    const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
+    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
     const [conversion, setConversion] = useState<Option[]>([]);
+    const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +40,7 @@ const SchemaVisualizer = () => {
     const onReset = () => {
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setConversion([]);
         setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
@@ -107,7 +107,7 @@ const SchemaVisualizer = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                            setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaVisualized
