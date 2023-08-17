@@ -17,6 +17,8 @@ const ExampleGenerator = () => {
     const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [loadedSchema, setLoadedSchema] = useState('');
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
+    const [numOfMsg, setNumOfMsg] = useState<number | null>();
+
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Message Generation'
@@ -35,6 +37,7 @@ const ExampleGenerator = () => {
         setIsLoading(false);
         setSelectedFile(null);
         setLoadedSchema('');
+        setNumOfMsg(null);
         setGeneratedMessages([]);
         //dispatch(setSchema({ types: [] }));
     }
@@ -55,7 +58,12 @@ const ExampleGenerator = () => {
             }
         }
 
-        dispatch(convertSchema(schemaObj, 'json'))
+        if (!numOfMsg || numOfMsg < 0) {
+            sbToastError("Error: Must select a number more than zero");
+            return;
+        }
+
+        dispatch(convertSchema(schemaObj, ['json']))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
                     console.error(convertSchemaVal.payload.response);
@@ -68,11 +76,11 @@ const ExampleGenerator = () => {
                 schemaProps = schema.properties ? Object.keys(schema.properties) : [];
                 var generated: any[] = [] // LIST OF GENERATED EXAMPLES
                 let i = 0;
-                while (i < 10) { //GENERATE 10 EXAMPLES - TODO: Allow user to specify # of examples to generate?
+                while (i < numOfMsg) {
                     let ex = JSONSchemaFaker.generate(schema);
                     if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
                         for (const [k, v] of Object.entries(ex)) {
-                            if (Object.keys(v).length != 0) { // CHECK IF EACH OBJ HAS DATA
+                            if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
                                 if (schemaProps && schemaProps.includes(k)) {
                                     generated.push(JSON.stringify(v, null, 2));
                                     i += 1
@@ -136,6 +144,7 @@ const ExampleGenerator = () => {
                                             generatedMessages={generatedMessages}
                                             loadedSchema={loadedSchema}
                                             isLoading={isLoading}
+                                            numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg}
                                         />
                                     </div>
                                 </div>

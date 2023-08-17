@@ -80,7 +80,7 @@ const SchemaVisualized = (props: any) => {
                     <div className='col-md-6'>
                         <SBSelect id={"conversion-list"} data={convertOpts} onChange={handleConversion}
                             value={conversion}
-                            placeholder={'Convert to...'} isMultiSelect
+                            placeholder={'Convert to...(select at least one)'} isMultiSelect
                         />
                     </div>
                     <div className='col-md-6'>

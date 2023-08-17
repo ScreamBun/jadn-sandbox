@@ -20,7 +20,7 @@ def find_file_by_name(name: str, path: str):
     file_found = None
     for (root, dirs, file) in os.walk(path):
         for f in file:
-            if name == f.lower():
+            if name.lower() == f.lower():
                 fp = root + '/' + f
                 file_found = {'name': f, 'path' : fp}
                 break
