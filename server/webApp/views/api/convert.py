@@ -27,46 +27,44 @@ class Convert(Resource):
     def post(self):
         conv = "Valid Base Schema"
         request_json = request.json      
-
-        is_valid, schema = current_app.validator.validateSchema(request_json["schema"], False)
         data = request_json["schema"]
-        schema_checked = jadn.check(data) 
+
+        is_valid, schema = current_app.validator.validateSchema(data, False)
+        if not is_valid:
+            return "Schema is not valid", 500
         
-        if is_valid:
-            convertedData = []
-            if len(request_json["convert-to"]) == 1:
-                try:
-                    lang = request_json["convert-to"][0]
-                    conv_fmt = SchemaFormats(lang)
+        schema_checked = jadn.check(data) 
+        convertedData = []
+        if len(request_json["convert-to"]) == 1:
+            try:
+                lang = request_json["convert-to"][0]
+                conv_fmt = SchemaFormats(lang)
                     
+            except Exception:  
+                return "Invalid Conversion Type", 500
+                
+            try:
+                conv = self.convertTo(schema_checked, conv_fmt)
+                convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv})
+            except:
+                tb = traceback.format_exc()
+                print(tb)
+                return "Failed to Convert", 500
+            
+        else:     
+            for i in request_json["convert-to"]:
+                try:
+                    conv_fmt = SchemaFormats(i)
                 except Exception:  
                     return "Invalid Conversion Type", 500
-                
+                    
                 try:
                     conv = self.convertTo(schema_checked, conv_fmt)
                     convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv})
                 except:
                     tb = traceback.format_exc()
                     print(tb)
-                    return "Failed to Convert", 500
-            
-            else:     
-                for i in request_json["convert-to"]:
-                    try:
-                        conv_fmt = SchemaFormats(i)
-                    except Exception:  
-                        return "Invalid Conversion Type", 500
-                    
-                    try:
-                        conv = self.convertTo(schema_checked, conv_fmt)
-                        convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv})
-                    except:
-                        tb = traceback.format_exc()
-                        print(tb)
                         
-        else:
-            return "Schema is not valid", 500
-
         return jsonify({
             "schema": {
                 "base": request_json["schema"],
