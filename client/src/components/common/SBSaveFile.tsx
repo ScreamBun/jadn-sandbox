@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { info } from "actions/util";
 import SBSpinner from "./SBSpinner";
+import { FormatJADN } from "components/utils";
 
 const SBSaveFile = (props: any) => {
 
@@ -41,9 +42,10 @@ const SBSaveFile = (props: any) => {
         }
 
         const filename = `${fileNameInput}.${fmt}`;
+        let formattedData = typeof data == "object" ? FormatJADN(data) : data;
         setIsLoading(true);
         try {
-            dispatch(saveFile(filename, dataStr, loc, overwrite))
+            dispatch(saveFile(filename, formattedData, loc, overwrite))
                 .then((val) => {
                     if (val.error) {
                         if (val.payload.status == 409) {

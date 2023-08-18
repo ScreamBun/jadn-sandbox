@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import SBSpinner from "./SBSpinner";
+import { FormatJADN } from "components/utils";
 //TODO: Add ability to save in other extensions ? 
 const SBDownloadFile = (props: any) => {
 
@@ -29,8 +30,9 @@ const SBDownloadFile = (props: any) => {
         setIsLoading(true);
         try {
             const filename = `${fileNameInput}.${fmt}`;
+            let formattedData = typeof data == "object" ? FormatJADN(data) : data;
 
-            const blob = new Blob([data], { type: "application/json" });
+            const blob = new Blob([formattedData], { type: "application/json" });
             //content: `data:application/json;charset=utf-8,${encodeURIComponent(FormatJADN(prevState.schema))}`
             const elem = document.createElement('a');
             elem.href = URL.createObjectURL(blob);

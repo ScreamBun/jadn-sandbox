@@ -22,7 +22,7 @@ const MessageCreator = (props: any) => {
         $NSID: $NSID
     })
 
-    const schemaObj = loadedSchema && typeof loadedSchema == 'string' ? JSON.parse(loadedSchema) : '';
+    const schemaObj = loadedSchema || '';
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
 
@@ -134,7 +134,7 @@ const MessageCreator = (props: any) => {
                     </TabPane>
 
                     <TabPane tabId='message'>
-                        <SBEditor data={JSON.stringify(generatedMessage, null, 2)} isReadOnly={true}></SBEditor>
+                        <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
                     </TabPane>
                 </TabContent>
             </div>

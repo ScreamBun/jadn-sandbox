@@ -15,7 +15,7 @@ const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState('');
+    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
     const [numOfMsg, setNumOfMsg] = useState<number | null>();
 
@@ -36,7 +36,7 @@ const ExampleGenerator = () => {
         e.preventDefault();
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setNumOfMsg(null);
         setGeneratedMessages([]);
         //dispatch(setSchema({ types: [] }));

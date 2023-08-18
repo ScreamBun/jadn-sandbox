@@ -1,8 +1,8 @@
-import React, { memo, useEffect, useRef, useState } from 'react'
+import React, { memo, useRef, useState } from 'react'
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem } from 'reactstrap'
 import { Draggable, Droppable } from 'react-drag-and-drop';
 import { Info, Types } from './structure/structure';
-import { loadFile, setSchema } from 'actions/util';
+import { loadFile } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCheck, faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,6 +17,7 @@ import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
+//useEffect setSchema ?
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -33,7 +34,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
-    const [data, setData] = useState(''); //generatedSchema JSON
     const [fileName, setFileName] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
@@ -45,37 +45,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
     const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
 
-    useEffect(() => {
-        setIsValidJADN(false);
-        setIsValidating(false);
-        if (generatedSchema) {
-            dispatch(setSchema(generatedSchema));
-            setData(schemaStr);
-
-            //set configuration data
-            const configDefs = generatedSchema.info && generatedSchema.info.config ? generatedSchema.info.config : [];
-            if (configDefs.length != 0) {
-                for (const [key, value] of Object.entries(configDefs)) {
-                    if (key in configOpt && configOpt[key] != value && value != '') {
-                        setConfigOpt(prevState => {
-                            return {
-                                ...prevState,
-                                [key]: value
-                            };
-                        });
-                    }
-                }
-            }
-        } else {
-            //dispatch(setSchema({}));
-            setData("{}");
-        }
-
-    }, [generatedSchema])
-
     const onFileSelect = (e: Option) => {
         dismissAllToast();
         setIsValidJADN(false);
+        setIsValidating(false);
         setGeneratedSchema('');
         setSelectedFile(e);
         if (e == null) {
@@ -110,6 +83,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
+        setIsValidating(false);
         setGeneratedSchema('');
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
@@ -150,7 +124,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
     const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        validateJADN(data);
+        validateJADN(JSON.stringify(generatedSchema));
     }
 
     const validateJADN = (jsonToValidate: any) => {
@@ -270,7 +244,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
         if (data.info) {
             if (!generatedSchema.info) {
-                let newSchema = { ...generatedSchema };
+                let newSchema;
                 if (data.info == 'config') {
                     newSchema = Object.assign({
                         info: {
@@ -278,7 +252,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                             ...Info[data.info].edit(configInitialState)
                         }
                     }, newSchema);
-                    setGeneratedSchema(newSchema);
+
                 } else {
                     newSchema = Object.assign({
                         info: {
@@ -286,26 +260,33 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                             ...Info[data.info].edit()
                         }
                     }, newSchema);
-                    setGeneratedSchema(newSchema);
                 }
+                setGeneratedSchema(newSchema);
+                setIsValidJADN(false);
+                setIsValidating(false);
             } else if (generatedSchema.info && !(data.info in generatedSchema.info)) {
+                let updatedSchema;
                 if (data.info == 'config') {
-                    setGeneratedSchema((generatedSchema: any) => ({
+                    updatedSchema = {
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
                             ...Info[data.info].edit(configInitialState)
                         },
-                    }));
+                    }
+
                 } else {
-                    setGeneratedSchema((generatedSchema) => ({
+                    updatedSchema = {
                         ...generatedSchema,
                         info: {
                             ...generatedSchema.info || {},
                             ...Info[data.info].edit()
-                        }
-                    }));
+                        },
+                    }
                 }
+                setGeneratedSchema(updatedSchema);
+                setIsValidJADN(false);
+                setIsValidating(false);
             }
             scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
@@ -313,10 +294,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const tmpDef = Types[data.types].edit();
             tmpTypes.push(tmpDef);  // unshift drops items at the bottom
-            setGeneratedSchema((generatedSchema: any) => ({
+            let updatedSchema = {
                 ...generatedSchema,
                 types: tmpTypes
-            }));
+            };
+            setGeneratedSchema(updatedSchema);
+            setIsValidJADN(false);
+            setIsValidating(false);
             scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else {
@@ -336,22 +320,19 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 change: (val: any) => {
                     if (key == 'config') {
                         setConfigOpt(val);
-                        setGeneratedSchema((generatedSchema: { info: any; }) => ({
-                            ...generatedSchema,
-                            info: {
-                                ...generatedSchema.info,
-                                ...Info[key].edit(val)
-                            }
-                        }));
-                    } else {
-                        setGeneratedSchema((generatedSchema: { info: any; }) => ({
-                            ...generatedSchema,
-                            info: {
-                                ...generatedSchema.info,
-                                ...Info[key].edit(val)
-                            }
-                        }));
                     }
+                    let updatedSchema = {
+                        ...generatedSchema,
+                        info: {
+                            ...generatedSchema.info,
+                            ...Info[key].edit(val)
+                        }
+                    };
+
+                    setGeneratedSchema(updatedSchema);
+                    setIsValidJADN(false);
+                    setIsValidating(false);
+
                 },
                 remove: (id: string) => {
                     if (generatedSchema.info && id in generatedSchema.info) {
@@ -360,17 +341,21 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         }
                         const tmpInfo = { ...generatedSchema.info };
                         delete tmpInfo[id];
+                        let updatedSchema;
                         //remove info if empty
                         if (Object.keys(tmpInfo).length == 0) {
                             const tmpData = { ...generatedSchema };
                             delete tmpData['info'];
-                            setGeneratedSchema(tmpData);
+                            updatedSchema = tmpData;
                         } else {
-                            setGeneratedSchema((generatedSchema: any) => ({
+                            updatedSchema = {
                                 ...generatedSchema,
                                 info: tmpInfo
-                            }));
+                            };
                         }
+                        setGeneratedSchema(updatedSchema);
+                        setIsValidJADN(false);
+                        setIsValidating(false);
                     }
                 },
                 config: configInitialState
@@ -388,10 +373,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
-                setGeneratedSchema((generatedSchema: any) => ({
+                let updatedSchema = {
                     ...generatedSchema,
                     types: tmpTypes
-                }))
+                };
+                setGeneratedSchema(updatedSchema);
+                setIsValidJADN(false);
+                setIsValidating(false);
             }
             ,
             remove: (idx: number) => {
@@ -400,16 +388,20 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     tmpTypes.splice(idx, 1);
                     //set data, even if references is unresolved
                     //remove types if empty
+                    let updatedSchema;
                     if (tmpTypes.length == 0) {
                         const tmpData = { ...generatedSchema };
                         delete tmpData['types'];
-                        setGeneratedSchema(tmpData);
+                        updatedSchema = tmpData;
                     } else {
-                        setGeneratedSchema((generatedSchema: any) => ({
+                        updatedSchema = {
                             ...generatedSchema,
                             types: tmpTypes
-                        }));
+                        };
                     }
+                    setGeneratedSchema(updatedSchema);
+                    setIsValidJADN(false);
+                    setIsValidating(false);
                 }
             },
             changeIndex: (val, dataIndex: number, idx: number) => {
@@ -429,10 +421,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     ...tmpTypes.slice(idx)
                 ];
 
-                setGeneratedSchema((generatedSchema: any) => ({
+                let updatedSchema = {
                     ...generatedSchema,
                     types: tmpTypes
-                }))
+                };
+                setGeneratedSchema(updatedSchema);
+                setIsValidJADN(false);
+                setIsValidating(false);
             },
             config: configOpt
         });
@@ -456,7 +451,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     <SBSaveFile
                                         buttonId={'saveSchema'}
                                         toolTip={'Save Schema'}
-                                        data={data}
+                                        data={generatedSchema}
                                         loc={'schemas'}
                                         filename={fileName}
                                         setDropdown={onFileSelect} />
@@ -468,8 +463,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         </div>
                     </div>
                     <div className='col-sm-9'>
-                        <SBCopyToClipboard buttonId='copyMessage' data={data} customClass={'float-right'} />
-                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={data} customClass={'float-right mr-1'} />
+                        <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-right'} />
+                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-right mr-1'} />
                         <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="primary" title="View in JSON">View JSON</Button>
                         <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary" title="View via Input Form">View Form</Button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
@@ -586,7 +581,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 <TabPane tabId='schema'>
                     <div className='card'>
                         <div className='card-body p-0'>
-                            <SBEditor data={data} isReadOnly={true}></SBEditor>
+                            <SBEditor data={generatedSchema} isReadOnly={true}></SBEditor>
                         </div>
                     </div>
                 </TabPane>

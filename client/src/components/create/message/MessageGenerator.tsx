@@ -13,7 +13,7 @@ const MessageGenerator = () => {
     const dispatch = useDispatch()
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState('');
+    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [commandType, setCommandType] = useState<Option | null>();
 
@@ -25,17 +25,22 @@ const MessageGenerator = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setGeneratedMessage({});
         setCommandType(null);
+        setGeneratedMessage({});
+        dispatch(setSchema({}));
     }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedFile(null);
+        setLoadedSchema(null);
         setCommandType(null);
-        setLoadedSchema('');
         setGeneratedMessage({});
+<<<<<<< HEAD
         //dispatch(setSchema({ types: [] }));
+=======
+        dispatch(setSchema({}));
+>>>>>>> react-select
     }
 
     return (
@@ -56,7 +61,7 @@ const MessageGenerator = () => {
                                 <div className='col-md-6 pr-1'>
                                     <JADNSchemaLoader
                                         selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                        loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                        setLoadedSchema={setLoadedSchema} />
                                 </div>
                                 <div className='col-md-6 pl-1'>
                                     <MessageCreator

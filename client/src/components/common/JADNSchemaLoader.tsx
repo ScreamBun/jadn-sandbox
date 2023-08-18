@@ -14,12 +14,12 @@ import SBFileUploader from "./SBFileUploader";
 import SBSaveFile from "./SBSaveFile";
 import SBSelect, { Option } from "./SBSelect";
 import SBSpinner from "./SBSpinner";
-import { format } from "actions/format";
+import { FormatJADN } from "components/utils";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
 
-    const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
+    const { selectedFile, setSelectedFile, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -31,15 +31,6 @@ const JADNSchemaLoader = (props: any) => {
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
-
-    useEffect(() => {
-        if (loadedSchema == '') {
-            setCurrSchema('');
-            setIsLoading(false);
-            setIsValidating(false);
-            setIsValidJADN(false);
-        }
-    }, [loadedSchema])
 
     const loadDecodeTypes = (schemaObj: any) => {
         let decodeTypes = {
@@ -71,25 +62,23 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFormatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        handleFormatJADN(currSchema);
+        try {
+            const schemaObj = JSON.parse(currSchema);
+            const schemaStr = FormatJADN(schemaObj);
+            setCurrSchema(schemaStr);
+        } catch {
+            sbToastError('Failed to format: Invalid JSON')
+        }
     }
 
-    const handleFormatJADN = (schemaStr: string) => {
-        dispatch(format(schemaStr))
-            .then((rsp: { payload: { schema: any; }; }) => {
-                setCurrSchema(rsp.payload.schema);
-            })
-            .catch((_err: any) => {
-                sbToastError('Failed to format: Invalid JSON')
-            })
-    }
-
-    const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
-        validateJADN(currSchema);
+    const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        validateJADN(JSON.stringify(currSchema));
     }
 
     const validateJADN = (jsonToValidate: any) => {
         setIsValidJADN(false);
+        setLoadedSchema(null);
         setIsValidating(true);
         let jsonObj = validateJSON(jsonToValidate);
         if (!jsonObj) {
@@ -103,7 +92,8 @@ const JADNSchemaLoader = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
-                        setLoadedSchema(JSON.stringify(jsonObj));
+                        setLoadedSchema(jsonObj);
+                        dispatch(setSchema(schemaObj));
                         setIsValidating(false);
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                         return true;
@@ -151,8 +141,7 @@ const JADNSchemaLoader = (props: any) => {
         return jsonObj;
     }
 
-    const sbEditorOnChange = (data: any) => {
-        //dispatch(setSchema(data));
+    const sbEditorOnChange = (data: string) => {
         setIsValidJADN(false);
         setCurrSchema(data);
         try {
@@ -166,7 +155,7 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFileSelect = (e: Option) => {
         setIsValidJADN(false);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setCurrSchema('');
         setSelectedFile(e);
         if (e == null) {
@@ -188,8 +177,7 @@ const JADNSchemaLoader = (props: any) => {
                     let schemaObj = loadFileVal.payload.data;
                     let schemaStr = JSON.stringify(schemaObj);
                     validateJADN(schemaStr);
-                    handleFormatJADN(schemaStr);
-                    dispatch(setSchema(schemaObj));
+                    setCurrSchema(schemaObj);
 
                     if (setDecodeSchemaTypes && setDecodeMsg) {
                         loadDecodeTypes(schemaObj);
@@ -206,8 +194,8 @@ const JADNSchemaLoader = (props: any) => {
         e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
+        setLoadedSchema(null);
         setCurrSchema('');
-        setLoadedSchema('');
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
             const file = e.target.files[0];
@@ -218,12 +206,12 @@ const JADNSchemaLoader = (props: any) => {
                 if (ev.target) {
                     let dataStr = ev.target.result;
                     try {
+                        let dataObj = JSON.parse(dataStr);
                         setIsLoading(false);
-                        //dispatch(setSchema(JSON.parse(dataStr)));
                         validateJADN(dataStr);
-                        setCurrSchema(dataStr);
+                        setCurrSchema(dataObj);
                         if (setDecodeSchemaTypes && setDecodeMsg) {
-                            loadDecodeTypes(JSON.parse(dataStr));
+                            loadDecodeTypes(dataObj);
                         }
                     } catch (err) {
                         setIsLoading(false);
@@ -238,13 +226,13 @@ const JADNSchemaLoader = (props: any) => {
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         dismissAllToast();
-        setIsValidJADN(false);
-        setIsValidating(false);
         setIsLoading(false);
+        setIsValidating(false);
+        setIsValidJADN(false);
+        setLoadedSchema(null);
+        setCurrSchema('');
         setSelectedFile(null);
         setFileName('');
-        setCurrSchema('');
-        setLoadedSchema('');
         if (ref.current) {
             ref.current.value = '';
         }

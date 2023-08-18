@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
-import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTranslated from './SchemaTranslated'
@@ -15,7 +14,7 @@ const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState('');
+    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
     const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [translation, setTranslation] = useState<Option[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +33,7 @@ const SchemaTranslator = () => {
     const onReset = () => {
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setTranslation([]);
         setTranslatedSchema(initConvertedSchemaState);
     }
@@ -55,52 +54,32 @@ const SchemaTranslator = () => {
                     }
                 }
             }
-            dispatch(validateSchema(schemaObj))
-                .then((validateSchemaVal) => {
-                    if (validateSchemaVal.payload.valid_bool == true) {
-                        //convertSchema takes in an array of values
-                        const arr = translation.map(obj => obj.value);
-                        dispatch(convertSchema(schemaObj, arr))
-                            .then((convertSchemaVal) => {
-                                if (convertSchemaVal.error) {
-                                    setIsLoading(false);
-                                    setTranslatedSchema(initConvertedSchemaState);
-                                    sbToastError(convertSchemaVal.payload.response);
-                                    return;
-                                }
-                                setIsLoading(false);
-                                setTranslatedSchema(convertSchemaVal.payload.schema.convert);
-                                const convertedArr = convertSchemaVal.payload.schema.convert.map(obj => obj.fmt_ext);
-                                for (let i = 0; i < arr.length; i++) {
-                                    if (convertedArr.includes(arr[i])) {
-                                        sbToastSuccess(`Schema translated to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
-                                    } else {
-                                        sbToastError(`Failed to convert to ${translation[i].label}`);
-                                    }
-                                }
-                            })
-                            .catch((convertSchemaErr: string) => {
-                                setTranslatedSchema(initConvertedSchemaState);
-                                setIsLoading(false);
-                                sbToastError(convertSchemaErr);
-                            })
-
-                    } else if (validateSchemaVal.payload.valid_bool == false) {
-                        setTranslatedSchema(initConvertedSchemaState);
+            //convertSchema takes in an array of values
+            const arr = translation.map(obj => obj.value);
+            dispatch(convertSchema(schemaObj, arr))
+                .then((convertSchemaVal) => {
+                    if (convertSchemaVal.error) {
                         setIsLoading(false);
-                        sbToastError("Invalid Schema");
-                    } else if (translation.length == 0) {
                         setTranslatedSchema(initConvertedSchemaState);
-                        setIsLoading(false);
-                        sbToastError("No translation selected");
+                        sbToastError(convertSchemaVal.payload.response);
+                        return;
+                    }
+                    setIsLoading(false);
+                    setTranslatedSchema(convertSchemaVal.payload.schema.convert);
+                    const convertedArr = convertSchemaVal.payload.schema.convert.map(obj => obj.fmt_ext);
+                    for (let i = 0; i < arr.length; i++) {
+                        if (convertedArr.includes(arr[i])) {
+                            sbToastSuccess(`Schema translated to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                        } else {
+                            sbToastError(`Failed to convert to ${translation[i].label}`);
+                        }
                     }
                 })
-                .catch((validateSchemaErr) => {
+                .catch((convertSchemaErr: string) => {
                     setTranslatedSchema(initConvertedSchemaState);
                     setIsLoading(false);
-                    sbToastError(validateSchemaErr);
+                    sbToastError(convertSchemaErr);
                 })
-
         } else {
             setTranslatedSchema(initConvertedSchemaState);
             setIsLoading(false);
@@ -127,7 +106,7 @@ const SchemaTranslator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                            setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTranslated

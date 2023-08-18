@@ -32,10 +32,14 @@ const SBScrollToTop = () => {
     }
 
     return (
-        <Button color={"info"} id="scollToTopBtn" className="btn btn-block"
-            onClick={onScrollUp} style={{ display: isVisible ? 'block' : 'none' }}>
-            <FontAwesomeIcon icon={faArrowUp} />
-        </Button >
+        <div className="btn-rounded" style={{ display: isVisible ? 'block' : 'none' }}>
+            <Button color={"warning"} id="scollToTopBtn" className="btn"
+                onClick={onScrollUp}>
+                <FontAwesomeIcon icon={faArrowUp} />
+
+            </Button >
+            <p className="small"> Back to Top </p>
+        </div>
     );
 }
 
