@@ -134,7 +134,7 @@ const MessageCreator = (props: any) => {
                     </TabPane>
 
                     <TabPane tabId='message'>
-                        <SBEditor data={JSON.stringify(generatedMessage, null, 2)} isReadOnly={true}></SBEditor>
+                        <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
                     </TabPane>
                 </TabContent>
             </div>

@@ -67,7 +67,7 @@ export const FormatJADN = (schema: number | string | Array<any> | Record<string,
   if (typeof (schema) === 'object') {
     if (Array.isArray(schema)) {
       const nested = schema && Array.isArray(schema[0]);  // Not an empty list
-      const lvl = schema && Array.isArray(schema[-1]) ? _level + 1 : _level;
+      const lvl = schema && Array.isArray(schema[-1]) ? _level : _level + 1;
       const lines = schema.map(val => FormatJADN(val, indent, lvl));
       if (nested) {
         return `[\n${ind}${lines.join(`,\n${ind}`)}\n${indE}]`;

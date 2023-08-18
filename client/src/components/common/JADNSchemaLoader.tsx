@@ -14,7 +14,7 @@ import SBFileUploader from "./SBFileUploader";
 import SBSaveFile from "./SBSaveFile";
 import SBSelect, { Option } from "./SBSelect";
 import SBSpinner from "./SBSpinner";
-import { format } from "actions/format";
+import { FormatJADN } from "components/utils";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -62,21 +62,18 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFormatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        handleFormatJADN(currSchema);
+        try {
+            const schemaObj = JSON.parse(currSchema);
+            const schemaStr = FormatJADN(schemaObj);
+            setCurrSchema(schemaStr);
+        } catch {
+            sbToastError('Failed to format: Invalid JSON')
+        }
     }
 
-    const handleFormatJADN = (schemaStr: string) => {
-        dispatch(format(schemaStr))
-            .then((rsp: { payload: { schema: any; }; }) => {
-                setCurrSchema(rsp.payload.schema);
-            })
-            .catch((_err: any) => {
-                sbToastError('Failed to format: Invalid JSON')
-            })
-    }
-
-    const onValidateJADNClick = (_e: React.MouseEvent<HTMLButtonElement>) => {
-        validateJADN(currSchema);
+    const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        validateJADN(JSON.stringify(currSchema));
     }
 
     const validateJADN = (jsonToValidate: any) => {
@@ -96,6 +93,7 @@ const JADNSchemaLoader = (props: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
                         setLoadedSchema(jsonObj);
+                        dispatch(setSchema(schemaObj));
                         setIsValidating(false);
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                         return true;
@@ -144,9 +142,7 @@ const JADNSchemaLoader = (props: any) => {
     }
 
     const sbEditorOnChange = (data: string) => {
-        dispatch(setSchema(data));
         setIsValidJADN(false);
-        setLoadedSchema(null);
         setCurrSchema(data);
         try {
             if (setDecodeSchemaTypes && setDecodeMsg) {
@@ -181,8 +177,7 @@ const JADNSchemaLoader = (props: any) => {
                     let schemaObj = loadFileVal.payload.data;
                     let schemaStr = JSON.stringify(schemaObj);
                     validateJADN(schemaStr);
-                    handleFormatJADN(schemaStr);
-                    dispatch(setSchema(schemaObj));
+                    setCurrSchema(schemaObj);
 
                     if (setDecodeSchemaTypes && setDecodeMsg) {
                         loadDecodeTypes(schemaObj);
@@ -211,12 +206,12 @@ const JADNSchemaLoader = (props: any) => {
                 if (ev.target) {
                     let dataStr = ev.target.result;
                     try {
+                        let dataObj = JSON.parse(dataStr);
                         setIsLoading(false);
-                        dispatch(setSchema(JSON.parse(dataStr)));
                         validateJADN(dataStr);
-                        setCurrSchema(dataStr);
+                        setCurrSchema(dataObj);
                         if (setDecodeSchemaTypes && setDecodeMsg) {
-                            loadDecodeTypes(JSON.parse(dataStr));
+                            loadDecodeTypes(dataObj);
                         }
                     } catch (err) {
                         setIsLoading(false);

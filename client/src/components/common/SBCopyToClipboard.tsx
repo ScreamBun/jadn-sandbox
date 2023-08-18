@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Button } from "reactstrap";
 import { sbToastError, sbToastSuccess } from "./SBToast";
 import SBSpinner from "./SBSpinner";
+import { FormatJADN } from "components/utils";
 
 const SBCopyToClipboard = (props: any) => {
 
@@ -18,8 +19,9 @@ const SBCopyToClipboard = (props: any) => {
             if (shouldStringify == true) {
                 copied_data = JSON.stringify(data, null, 4);
             }
+            let formattedData = typeof data == "object" ? FormatJADN(data) : data;
 
-            navigator.clipboard.writeText(copied_data);
+            navigator.clipboard.writeText(formattedData);
             setIsLoading(false);
             sbToastSuccess(`Copied to clipboard`);
         } catch {
