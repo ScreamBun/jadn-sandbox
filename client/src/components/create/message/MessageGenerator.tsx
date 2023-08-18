@@ -36,11 +36,7 @@ const MessageGenerator = () => {
         setLoadedSchema(null);
         setCommandType(null);
         setGeneratedMessage({});
-<<<<<<< HEAD
-        //dispatch(setSchema({ types: [] }));
-=======
         dispatch(setSchema({}));
->>>>>>> react-select
     }
 
     return (
