@@ -6,7 +6,7 @@ import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
-import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaVisualized from './SchemaVisualized'
 import { Option } from 'components/common/SBSelect'
 
@@ -30,6 +30,7 @@ const SchemaVisualizer = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     useEffect(() => {
@@ -38,6 +39,7 @@ const SchemaVisualizer = () => {
     }, [loadedSchema]);
 
     const onReset = () => {
+        setIsLoading(false);
         setSelectedFile('');
         setLoadedSchema('');
         setConversion([]);
@@ -85,13 +87,12 @@ const SchemaVisualizer = () => {
                                 sbToastError(convertSchemaErr);
                             })
 
-                    } else if (validateSchemaVal.payload.valid_bool == false) {
+                    // validateSchemaVal.payload.valid_bool == false
+                    } else {
                         setIsLoading(false);
                         sbToastError("Invalid Schema");
-                    } else if (conversion.length == 0) {
-                        setIsLoading(false);
-                        sbToastError("No conversion selected");
                     }
+
                 })
                 .catch((validateSchemaErr: string) => {
                     setIsLoading(false);

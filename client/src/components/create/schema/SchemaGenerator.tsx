@@ -5,6 +5,7 @@ import { Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { info } from 'actions/util'
 import SchemaCreator from './SchemaCreator'
+import { dismissAllToast } from 'components/common/SBToast'
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const SchemaGenerator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {

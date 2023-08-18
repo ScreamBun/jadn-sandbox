@@ -6,7 +6,7 @@ import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
-import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTranslated from './SchemaTranslated'
 import { initConvertedSchemaState } from 'components/visualize/SchemaVisualizer'
 import { Option } from 'components/common/SBSelect'
@@ -24,6 +24,7 @@ const SchemaTranslator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     useEffect(() => {
@@ -31,6 +32,7 @@ const SchemaTranslator = () => {
     }, [loadedSchema])
 
     const onReset = () => {
+        setIsLoading(false);
         setSelectedFile('');
         setLoadedSchema('');
         setTranslation([]);

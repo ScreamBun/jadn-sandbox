@@ -6,6 +6,7 @@ import MessageCreator from './MessageCreator'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import { dismissAllToast } from 'components/common/SBToast'
 
 const MessageGenerator = () => {
     const dispatch = useDispatch()
@@ -19,6 +20,7 @@ const MessageGenerator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     useEffect(() => {

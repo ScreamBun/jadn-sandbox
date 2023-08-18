@@ -12,7 +12,7 @@ import { getValidTransformations } from "reducers/transform";
 
 const SchemaTransformed = (props: any) => {
 
-    const { transformedSchema, data, transformationType, setTransformationType, isLoading, baseFile, setBaseFile, selectedFiles } = props;
+    const { transformedSchema, data, transformationType, setTransformationType, setTransformedSchema, isLoading, baseFile, setBaseFile, selectedFiles } = props;
     const [toggle, setToggle] = useState('');
     const transformationOpts = useSelector(getValidTransformations);
     const baseFileOpts = selectedFiles.map((file: { name: any; }) => { return (file.name); });
@@ -26,12 +26,21 @@ const SchemaTransformed = (props: any) => {
         }
     }
 
+    const onSelectChange = (e: Option) => {
+        if (e == null) {
+            setTransformationType(null);
+            setTransformedSchema([]);
+            return;
+        }
+        setTransformationType(e);
+    }
+
     return (
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-9'>
-                        <SBSelect id={"transformation-list"} data={transformationOpts} onChange={(e: Option) => setTransformationType(e)}
+                        <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectChange}
                             placeholder={'Select transformation type...'} value={transformationType}
                         />
                         {transformationType && transformationType.value == 'resolve references' ?
