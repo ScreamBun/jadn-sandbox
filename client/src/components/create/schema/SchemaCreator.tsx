@@ -540,7 +540,7 @@ const SchemaCreator = (props: any) => {
                                     </div>
                                     <div className='row mt-2'>
                                         <div className='col'>
-                                            <SBOutline id={'create-schema-outline'} items={generatedSchema.types} isReorder={false} title={'Outline'}></SBOutline>
+                                            <SBOutline id={'create-schema-outline'} items={generatedSchema.types} title={'Outline'}></SBOutline>
                                         </div>
                                     </div>
                                 </div>

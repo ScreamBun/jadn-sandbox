@@ -1,46 +1,90 @@
 
-import React, { useEffect } from "react";
-import { findDOMNode } from 'react-dom';
-import dragula from "react-dragula"
-import 'dragula/dist/dragula.css';
-import { faCopy, faGrip, faGripVertical } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import update from 'immutability-helper'
+import React, { useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 
-interface SBOutlineProps {
+import { OutlineCard } from "./OutlineCard";
+
+
+export interface Item {
+    id: number
+    text: string
+}  
+
+export interface OutlineContainerState {
+    cards: Item[]
+}  
+
+export interface SBOutlineProps {
     id: string;
     title: string;
-    items: any[];
-    isReorder: boolean;
+    items: any[]; 
 }
 
-const SBOutline = (props: SBOutlineProps) => {
-    const { id='sb-outline', title, items=[], isReorder=false } = props;
+const SBOutline  = (props: SBOutlineProps) => {
+    const { id='sb-outline', title, items=[]} = props;
 
     useEffect(() => {
-        const container = findDOMNode(document.getElementById(id));
-        dragula([container]);
+        // placeholder
     }) 
+
+    const [cards, setCards] = useState([
+        {
+          id: 1,
+          text: '',
+        }
+      ])
+
+    useEffect(() => {
+        let cards: Item[] = []
+        {items.map((item, i) => {
+            const card = {
+                id : i,
+                text : item[0]
+            }
+            cards.push(card)
+        })}
+
+        setCards(cards);
+
+        const test = ""
+    },[items])       
+  
+
+    const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
+        setCards((prevCards: Item[]) =>
+          update(prevCards, {
+            $splice: [
+              [dragIndex, 1],
+              [hoverIndex, 0, prevCards[dragIndex] as Item],
+            ],
+          }),
+        )
+      }, [])    
+
+    const renderCard = useCallback(
+        (card: { id: number; text: string }, index: number) => {
+          return (
+            <OutlineCard
+              key={card.id}
+              index={index}
+              id={card.id}
+              text={card.text}
+              moveCard={moveCard}
+            />
+          )
+        },
+        [],
+      )    
 
     return (
         <>
             {items && items.length > 0 ? (
-                <div className="sb-outline m-2">
+                <div id={id} className="ml-2">
                     <h5>{title}</h5>
-                    <ul id={id} className="list-group">
-                        {items.map((item, i) => {
-                            if (Array.isArray(item)) {
-                                return (
-                                    <li key={i} className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                        {item[0]}
-                                        <FontAwesomeIcon icon={faGrip}></FontAwesomeIcon>
-                                    </li>
-                                )
-                            } else {
-                                return (<></>)
-                            }
-                        })}
-                    </ul>           
+                    <div className="sb-outline mt-2 ml-0">
+                        <div>{cards.map((card, i) => renderCard(card, i))}</div>
+                    </div>
                 </div>
                 ) : (
                     <></>
@@ -49,5 +93,4 @@ const SBOutline = (props: SBOutlineProps) => {
         </>
     );
 }
-
 export default SBOutline;
