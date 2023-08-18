@@ -18,6 +18,8 @@ import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
+import SBOutline from 'components/common/SBOutline';
+
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -496,41 +498,50 @@ const SchemaCreator = (props: any) => {
                         <div className='card-body p-0'>
                             <div className='row no-gutters'>
                                 <div id="schema-options" className='col-sm-3'>
-                                    <div className='sticky-top sticky-offset'>
-                                        <Nav pills>
-                                            <NavItem>
-                                                <NavLink
-                                                    className={activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
-                                                    onClick={() => setActiveOpt('info')}
-                                                    title="meta data (about a schema package)"
-                                                >
-                                                    Info
-                                                </NavLink>
-                                            </NavItem>
-                                            <NavItem>
-                                                <NavLink
-                                                    className={activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
-                                                    onClick={() => setActiveOpt('types')}
-                                                    title="schema content (the information model)"
-                                                >
-                                                    Types*
-                                                </NavLink>
-                                            </NavItem>
-                                        </Nav>
-                                        <TabContent activeTab={activeOpt}>
-                                            <TabPane tabId='info'>
-                                                <ListGroup>
-                                                    {infoKeys.length != 0 ? infoKeys : <div className='col'>No more Info to add</div>}
-                                                </ListGroup>
-                                            </TabPane>
-                                            <TabPane tabId='types'>
-                                                <ListGroup>
-                                                    {typesKeys}
-                                                </ListGroup>
-                                            </TabPane>
-                                        </TabContent>
+                                    <div className='row'>
+                                        <div className='col'>
+                                            <div className='sticky-top sticky-offset'>
+                                                <Nav pills>
+                                                    <NavItem>
+                                                        <NavLink
+                                                            className={activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                            disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                                            onClick={() => setActiveOpt('info')}
+                                                            title="meta data (about a schema package)"
+                                                        >
+                                                            Info
+                                                        </NavLink>
+                                                    </NavItem>
+                                                    <NavItem>
+                                                        <NavLink
+                                                            className={activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                            disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                                            onClick={() => setActiveOpt('types')}
+                                                            title="schema content (the information model)"
+                                                        >
+                                                            Types*
+                                                        </NavLink>
+                                                    </NavItem>
+                                                </Nav>
+                                                <TabContent activeTab={activeOpt}>
+                                                    <TabPane tabId='info'>
+                                                        <ListGroup>
+                                                            {infoKeys.length != 0 ? infoKeys : <div className='col'>No more Info to add</div>}
+                                                        </ListGroup>
+                                                    </TabPane>
+                                                    <TabPane tabId='types'>
+                                                        <ListGroup>
+                                                            {typesKeys}
+                                                        </ListGroup>
+                                                    </TabPane>
+                                                </TabContent>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='row mt-2'>
+                                        <div className='col'>
+                                            <SBOutline id={'create-schema-outline'} items={generatedSchema.types} isReorder={false} title={'Outline'}></SBOutline>
+                                        </div>
                                     </div>
                                 </div>
                                 <div id="schema-editor" className='col-md-9'>

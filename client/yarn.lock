@@ -5279,6 +5279,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"atoa@npm:1.0.0":
+  version: 1.0.0
+  resolution: "atoa@npm:1.0.0"
+  checksum: 7709678455c33016ebd2eb321de57394b9ffaffaeb7eb71b74f8a2f0887caaa597394e14784c423c21c2fe56a6ca3bfd934fa6307b94fb55a7b5edc8d4a8ca04
+  languageName: node
+  linkType: hard
+
 "available-typed-arrays@npm:^1.0.5":
   version: 1.0.5
   resolution: "available-typed-arrays@npm:1.0.5"
@@ -5982,6 +5989,7 @@ __metadata:
     react-bootswatch-theme-switcher: "https://git@github.com/screambun/react-bootswatch-theme-switcher.git"
     react-dom: ^18.2.0
     react-drag-and-drop: ^3.0.0
+    react-dragula: ^1.1.17
     react-helmet-async: ^1.3.0
     react-json-editor: "https://git@github.com/screambun/react-json-editor.git"
     react-json-pretty: ^2.2.0
@@ -6268,6 +6276,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"contra@npm:1.9.4":
+  version: 1.9.4
+  resolution: "contra@npm:1.9.4"
+  dependencies:
+    atoa: 1.0.0
+    ticky: 1.0.1
+  checksum: 2465b96f677d047a23f8b1fda07e1e57f70a5a027c4b0f00212afb969af401f111dd473524a904bca9e4ef30716f4916f55473f4e7812ef321e948ad81a28c41
+  languageName: node
+  linkType: hard
+
 "convert-source-map@npm:^1.5.0, convert-source-map@npm:^1.6.0, convert-source-map@npm:^1.7.0":
   version: 1.9.0
   resolution: "convert-source-map@npm:1.9.0"
@@ -6371,6 +6389,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"crossvent@npm:1.5.4":
+  version: 1.5.4
+  resolution: "crossvent@npm:1.5.4"
+  dependencies:
+    custom-event: 1.0.0
+  checksum: 72be05d3339491ab618a3b8f7ecbe2548900b6d0f2db7170c0479505e9d51ebba7ea6685a8eeca38cfec4fb89da3c0dee88c08d301c7ebcf92df4fb6c7f0615e
+  languageName: node
+  linkType: hard
+
 "crypto-random-string@npm:^2.0.0":
   version: 2.0.0
   resolution: "crypto-random-string@npm:2.0.0"
@@ -6429,6 +6456,13 @@ __metadata:
   version: 3.1.1
   resolution: "csstype@npm:3.1.1"
   checksum: 1f7b4f5fdd955b7444b18ebdddf3f5c699159f13e9cf8ac9027ae4a60ae226aef9bbb14a6e12ca7dba3358b007cee6354b116e720262867c398de6c955ea451d
+  languageName: node
+  linkType: hard
+
+"custom-event@npm:1.0.0":
+  version: 1.0.0
+  resolution: "custom-event@npm:1.0.0"
+  checksum: 6f02757eb2f7f5f12ae7beebebd62f6d4722abab4af303358d9c5b057d921397ef426f4656dc6a4b386c0726d68b4ec1d424bdfc32cf3032e1c556f35f505a60
   languageName: node
   linkType: hard
 
@@ -6902,6 +6936,16 @@ __metadata:
     no-case: ^3.0.4
     tslib: ^2.0.3
   checksum: a65e3519414856df0228b9f645332f974f2bf5433370f544a681122eab59e66038fc3349b4be1cdc47152779dac71a5864f1ccda2f745e767c46e9c6543b1169
+  languageName: node
+  linkType: hard
+
+"dragula@npm:3.7.2":
+  version: 3.7.2
+  resolution: "dragula@npm:3.7.2"
+  dependencies:
+    contra: 1.9.4
+    crossvent: 1.5.4
+  checksum: b2ebddf3df761706dea62ea8b0510ad02392b2143475bfca82ca5fa58e56ad5a7e8d1d6c44f9db17913fac042c1da44c57de57e4b58c989f119d912f629cfbab
   languageName: node
   linkType: hard
 
@@ -11568,6 +11612,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dragula@npm:^1.1.17":
+  version: 1.1.17
+  resolution: "react-dragula@npm:1.1.17"
+  dependencies:
+    atoa: 1.0.0
+    dragula: 3.7.2
+  checksum: 06127929beeb0ab3342d7c7d464da562770f91b8c0c2deefd055262106c32944582e9a5509eb426934ee53fca731d6559301a412d8b36a25d311149350bb1f27
+  languageName: node
+  linkType: hard
+
 "react-fast-compare@npm:^3.0.1, react-fast-compare@npm:^3.2.0":
   version: 3.2.1
   resolution: "react-fast-compare@npm:3.2.1"
@@ -13208,6 +13262,13 @@ __metadata:
   version: 1.1.0
   resolution: "thunky@npm:1.1.0"
   checksum: 993096c472b6b8f30e29dc777a8d17720e4cab448375041f20c0cb802a09a7fb2217f2a3e8cdc11851faa71c957e2db309357367fc9d7af3cb7a4d00f4b66034
+  languageName: node
+  linkType: hard
+
+"ticky@npm:1.0.1":
+  version: 1.0.1
+  resolution: "ticky@npm:1.0.1"
+  checksum: b164b428715b2c5993d5662a81a657f13368248085df74a66c44b54fdc2b888b9223f5703312199d0aabd846cbc281f54519d5aec4a2f933f4c04e9f367e2117
   languageName: node
   linkType: hard
 
