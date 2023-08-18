@@ -76,7 +76,6 @@ const AppLayout = () => {
             </ul>
           </div>
         </nav>
-        <SBScrollToTop />
       </div>
 
       <Outlet />
@@ -84,6 +83,8 @@ const AppLayout = () => {
       <br />
       <br />
       <br />
+
+      <SBScrollToTop />
 
       <nav className='navbar navbar-dark bg-secondary fixed-bottom py-1'>
         <ThemeChooser size='sm' />

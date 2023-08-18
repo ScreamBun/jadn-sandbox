@@ -4,7 +4,7 @@ import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faPlusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options/OptionsModal';
@@ -299,12 +299,12 @@ const StructureEditor = (props: StructureEditorProps) => {
           <legend>
             {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
             <ButtonGroup className="float-right">
-              <Button color={fieldCollapse ? 'success' : 'warning'} onClick={() => setFieldCollapse(!fieldCollapse)}>
-                <FontAwesomeIcon icon={fieldCollapse ? faPlusCircle : faMinusCircle} />
+              <Button color={fieldCollapse ? 'success' : 'secondary'} className='btn btn-sm' onClick={() => setFieldCollapse(!fieldCollapse)}>
+                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp} />
                 &nbsp;
                 {fieldCollapse ? ' Show' : ' Hide'}
               </Button>
-              <Button color="primary" onClick={addField} >
+              <Button color="primary" onClick={addField} className='btn btn-sm' >
                 <FontAwesomeIcon icon={faPlusSquare} />
                 &nbsp;
                 Add
