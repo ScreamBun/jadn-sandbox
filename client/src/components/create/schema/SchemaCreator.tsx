@@ -1,10 +1,9 @@
-import React, { memo, useRef, useState } from 'react'
-import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink, ListGroupItem } from 'reactstrap'
-import { Draggable, Droppable } from 'react-drag-and-drop';
+import React, { useCallback, memo, useRef, useState } from 'react'
+import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { Info, Types } from './structure/structure';
 import { loadFile } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faCheck, faGripLines, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
@@ -18,6 +17,9 @@ import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 //useEffect setSchema ?
+import { DraggableType } from './DraggableType';
+import { Droppable } from './Droppable'
+import { DraggableKey } from './DraggableKey';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -37,9 +39,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const [fileName, setFileName] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
-    const [isLoading, setIsLoading] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
     const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
@@ -193,63 +195,27 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
 
         infoKeys = Object.keys(unusedInfo).map(k => (
-            <Draggable type="info" data={k} key={unusedInfo[k].key}
-                onDragStart={() => {
-                    document.getElementById('dropInfo').style.backgroundColor = 'rgba(0,0,0,.5)';
-                    selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : '';
-                }}
-                onDragEnd={() => { document.getElementById('dropInfo').style.backgroundColor = ''; }}
-            >
-                <ListGroupItem style={{ color: 'inherit', padding: '8px' }} action={selectedFile?.value == 'file' && !generatedSchema ? false : true}>
-                    {unusedInfo[k].key}
-                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
-                </ListGroupItem>
-            </Draggable>
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
         ));
     } else {
         infoKeys = Object.keys(Info).map(k => (
-            <Draggable type="info" data={k} key={Info[k].key}
-                onDragStart={() => {
-                    document.getElementById('dropInfo').style.backgroundColor = 'rgba(0,0,0,.5)';
-                    selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : '';
-                }}
-                onDragEnd={() => { document.getElementById('dropInfo').style.backgroundColor = ''; }}
-            >
-                <ListGroupItem style={{ color: `${selectedFile?.value == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile?.value == 'file' && !generatedSchema ? false : true}>
-                    {Info[k].key}
-                    <FontAwesomeIcon icon={faGripLines} className='float-right' />
-                </ListGroupItem>
-            </Draggable>
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
         ));
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <Draggable type="types" data={k} key={Types[k].key}
-            onDragStart={() => {
-                document.getElementById('dropTypes').style.backgroundColor = 'rgba(0,0,0,.5)';
-                selectedFile?.value == 'file' && !generatedSchema ? (e) => e.preventDefault() : '';
-            }}
-            onDragEnd={() => { document.getElementById('dropTypes').style.backgroundColor = ''; }}
-        >
-            <ListGroupItem style={{ color: `${selectedFile?.value == 'file' && !generatedSchema ? 'gray' : 'inherit'}`, padding: '8px' }} action={selectedFile?.value == 'file' && !generatedSchema ? false : true}>
-                {Types[k].key}
-                <FontAwesomeIcon icon={faGripLines} className='float-right' />
-            </ListGroupItem>
-        </Draggable>
+        <DraggableKey item={Types[k].key} acceptableType={'TypesKeys'} key={Types[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
     ));
 
-    const onDrop = (data: any) => {
-        document.getElementById('dropInfo').style.backgroundColor = '';
-        document.getElementById('dropTypes').style.backgroundColor = '';
-
-        if (data.info) {
+    const onDrop = (key: string) => {
+        if (Object.keys(Info).includes(key)) {
             let updatedSchema;
-            if (data.info == 'config') {
+            if (key == 'config') {
                 updatedSchema = {
                     ...generatedSchema,
                     info: {
                         ...generatedSchema.info || {},
-                        ...Info[data.info].edit(configInitialState)
+                        ...Info[key].edit(configInitialState)
                     },
                 }
 
@@ -258,7 +224,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     ...generatedSchema,
                     info: {
                         ...generatedSchema.info || {},
-                        ...Info[data.info].edit()
+                        ...Info[key].edit()
                     },
                 }
             }
@@ -268,9 +234,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
             scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
-        } else if (data.types) {
+        } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-            const tmpDef = Types[data.types].edit();
+            const tmpDef = Types[key].edit();
             tmpTypes.push(tmpDef);  // unshift drops items at the bottom
             let updatedSchema = {
                 ...generatedSchema,
@@ -339,74 +305,101 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             });
         }
         return null;
-    }).filter(Boolean);
+    });
+
+    const onDrag = useCallback((val, dragIndex: number, hoverIndex: number) => {
+        console.log(generatedSchema.types, dragIndex, hoverIndex)
+        const type = val.type.toLowerCase() as keyof typeof Types;
+        const dragItem = Types[type].edit(val); //generatedSchema.types[dragIndex]; //
+        const hoverItem = generatedSchema.types[hoverIndex];
+        console.log("REPLACING : " + dragItem + " WITH " + hoverItem)
+
+        // let tmpTypes = [...generatedSchema.types];
+        // tmpTypes.splice(dragIndex, 1);
+        // tmpTypes.splice(hoverIndex, 0, Types[type].edit(val));
+
+        setGeneratedSchema((generatedSchema: any) => {
+            const tmpTypes = [...generatedSchema.types];
+            tmpTypes[dragIndex] = hoverItem
+            tmpTypes[hoverIndex] = dragItem
+            return ({ ...generatedSchema, types: tmpTypes })
+        })
+    }, [generatedSchema])
 
     const typesEditors = (generatedSchema.types || []).map((def, i) => {
         const type = def[1].toLowerCase() as keyof typeof Types;
-        return Types[type].editor({
-            key: self.crypto.randomUUID(),
-            value: def,
-            dataIndex: i,
-            change: (val, idx: number) => {
-                const tmpTypes = [...generatedSchema.types];
-                tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
-                let updatedSchema = {
-                    ...generatedSchema,
-                    types: tmpTypes
-                };
-                setGeneratedSchema(updatedSchema);
-                setIsValidJADN(false);
-                setIsValidating(false);
-            }
-            ,
-            remove: (idx: number) => {
-                if (generatedSchema.types.length >= idx) {
+        return (<DraggableType acceptableType={'Types'}
+            key={self.crypto.randomUUID()}
+            id={self.crypto.randomUUID()}
+            dataIndex={i}
+            changeIndex={onDrag}
+            item={Types[type].editor({
+                key: self.crypto.randomUUID(),
+                value: def,
+                dataIndex: i,
+                change: (val, idx: number) => {
                     const tmpTypes = [...generatedSchema.types];
-                    tmpTypes.splice(idx, 1);
-                    //remove types if empty
-                    let updatedSchema;
-                    if (tmpTypes.length == 0) {
-                        const tmpData = { ...generatedSchema };
-                        delete tmpData['types'];
-                        updatedSchema = tmpData;
-                    } else {
-                        updatedSchema = {
-                            ...generatedSchema,
-                            types: tmpTypes
-                        };
-                    }
+                    tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
+                    let updatedSchema = {
+                        ...generatedSchema,
+                        types: tmpTypes
+                    };
                     setGeneratedSchema(updatedSchema);
                     setIsValidJADN(false);
                     setIsValidating(false);
                 }
-            },
-            changeIndex: (val, dataIndex: number, idx: number) => {
-                if (idx < 0) {
-                    sbToastError('Error: Cannot move Type up anymore')
-                    return;
-                } else if (idx >= generatedSchema.types.length) {
-                    sbToastError('Error: Cannot move Type down anymore')
-                    return;
-                }
+                ,
+                remove: (idx: number) => {
+                    if (generatedSchema.types.length >= idx) {
+                        const tmpTypes = [...generatedSchema.types];
+                        tmpTypes.splice(idx, 1);
+                        //remove types if empty
+                        let updatedSchema;
+                        if (tmpTypes.length == 0) {
+                            const tmpData = { ...generatedSchema };
+                            delete tmpData['types'];
+                            updatedSchema = tmpData;
+                        } else {
+                            updatedSchema = {
+                                ...generatedSchema,
+                                types: tmpTypes
+                            };
+                        }
+                        setGeneratedSchema(updatedSchema);
+                        setIsValidJADN(false);
+                        setIsValidating(false);
+                    }
+                },
+                changeIndex: (val, dataIndex: number, idx: number) => {
+                    const type = val.type.toLowerCase() as keyof typeof Types;
+                    if (idx < 0) {
+                        sbToastError('Error: Cannot move Type up anymore');
+                        return;
+                    } else if (idx >= generatedSchema.types.length) {
+                        sbToastError('Error: Cannot move Type down anymore');
+                        return;
+                    }
 
-                let tmpTypes = [...generatedSchema.types];
-                tmpTypes.splice(dataIndex, 1)
-                tmpTypes = [
-                    ...tmpTypes.slice(0, idx),
-                    Types[val.type.toLowerCase()].edit(val),
-                    ...tmpTypes.slice(idx)
-                ];
+                    let tmpTypes = [...generatedSchema.types];
 
-                let updatedSchema = {
-                    ...generatedSchema,
-                    types: tmpTypes
-                };
-                setGeneratedSchema(updatedSchema);
-                setIsValidJADN(false);
-                setIsValidating(false);
-            },
-            config: configOpt
-        });
+                    tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
+
+                    tmpTypes = [
+                        ...tmpTypes.slice(0, idx),
+                        Types[type].edit(val),
+                        ...tmpTypes.slice(idx)
+                    ];
+
+                    let updatedSchema = {
+                        ...generatedSchema,
+                        types: tmpTypes
+                    };
+                    setGeneratedSchema(updatedSchema);
+                    setIsValidJADN(false);
+                    setIsValidating(false);
+                },
+                config: configOpt
+            })} />)
     }).filter(Boolean);
 
     return (
@@ -505,47 +498,21 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 <div id="schema-editor" className='col-md-9'>
                                     {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                                         <div>
-                                            <Droppable
-                                                id={"dropInfo"}
-                                                types={['info']} // <= allowed drop types
-                                                onDrop={onDrop}
-                                                onDragOver={() => {
-                                                    document.getElementById('dropInfo').style.backgroundColor = 'lightgreen';
-                                                }}
-                                                onDragLeave={() => {
-                                                    document.getElementById('dropInfo').style.backgroundColor = '';
-                                                }}
-                                                className='col-12 mt-1'
-                                                style={{
-                                                    minHeight: '20em',
-                                                }}
-                                            >
-                                                <div className="col pt-2" ref={scrollToInfoRef}>
-                                                    <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                            <div className="col pt-2" ref={scrollToInfoRef}>
+                                                <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                                <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
                                                     {infoEditors}
-                                                </div>
-                                            </Droppable>
+                                                </Droppable>
+
+                                            </div>
                                             <hr />
-                                            <Droppable
-                                                id={"dropTypes"}
-                                                types={['types']} // <= allowed drop types
-                                                onDrop={onDrop}
-                                                onDragOver={() => {
-                                                    document.getElementById('dropTypes').style.backgroundColor = 'lightgreen';
-                                                }}
-                                                onDragLeave={() => {
-                                                    document.getElementById('dropTypes').style.backgroundColor = '';
-                                                }}
-                                                className='col-12 mt-1'
-                                                style={{
-                                                    minHeight: '20em',
-                                                }}
-                                            >
-                                                <div className="col" ref={scrollToTypeRef}>
-                                                    <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                            <div className="col" ref={scrollToTypeRef}>
+                                                <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
                                                     {typesEditors}
-                                                </div>
-                                            </Droppable>
+                                                </Droppable>
+
+                                            </div>
                                         </div>
                                     }
                                 </div>

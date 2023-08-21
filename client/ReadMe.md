@@ -29,7 +29,7 @@
     - [Theme Switching](https://www.npmjs.com/react-bootswatch-theme-switcher) - Bootstrap Theme Switcher
     - [Redux Binding](https://www.npmjs.com/package/connected-react-router) - Synchronize router state with redux store
     - [DOM](https://www.npmjs.com/package/react-dom) - Entry point to the DOM for React
-    - [Drag and Drop](https://www.npmjs.com/package/react-drag-and-drop) - UI Drag and drop
+    - [Drag and Drop](https://www.npmjs.com/package/react-dnd) - UI Drag and drop
     - [HTML Header](https://www.npmjs.com/package/react-helmet-async) - HTML Header Helper
     - [JSON Editor](https://www.npmjs.com/package/react-json-editor-ajrm) - JSON Syntax Editor
     - [JSON Pretty](https://www.npmjs.com/package/react-json-pretty) - Pretty Prints JSON
