@@ -25,7 +25,6 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
 
   const onChange = (k: string, v: any) => {
     const tmpValues = { ...value };
-    console.log(k, v, tmpValues)
     //if value is empty, reset to default
     if (v === '') {
       tmpValues[k] = config[k];
