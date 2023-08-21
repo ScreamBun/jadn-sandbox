@@ -10,8 +10,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 // Styles
 import 'react-toastify/dist/ReactToastify.css';
 import './components/dependencies/assets/css/styles.scss';
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+
 // Application
 import App from './app';
 
