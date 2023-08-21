@@ -4,6 +4,9 @@ import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeSwitcher } from 'react-bootswatch-theme-switcher';
 
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+
 // Styles
 import 'react-toastify/dist/ReactToastify.css';
 import './components/dependencies/assets/css/styles.scss';

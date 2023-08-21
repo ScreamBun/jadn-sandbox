@@ -218,3 +218,17 @@ small {
 .sticky-offset {
     top: 65px !important;
 }
+
+.sb-outline {
+    .list-group-item {
+        cursor: grab !important;
+        color: inherit;
+    }
+}
+
+.sb-outline {
+    .list-group-item:hover {
+        cursor: grab !important;
+        color: inherit;
+    }
+}
