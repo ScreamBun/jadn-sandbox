@@ -243,51 +243,29 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         document.getElementById('dropTypes').style.backgroundColor = '';
 
         if (data.info) {
-            if (!generatedSchema.info) {
-                let newSchema;
-                if (data.info == 'config') {
-                    newSchema = Object.assign({
-                        info: {
-                            ...generatedSchema.info || {},
-                            ...Info[data.info].edit(configInitialState)
-                        }
-                    }, newSchema);
-
-                } else {
-                    newSchema = Object.assign({
-                        info: {
-                            ...generatedSchema.info || {},
-                            ...Info[data.info].edit()
-                        }
-                    }, newSchema);
+            let updatedSchema;
+            if (data.info == 'config') {
+                updatedSchema = {
+                    ...generatedSchema,
+                    info: {
+                        ...generatedSchema.info || {},
+                        ...Info[data.info].edit(configInitialState)
+                    },
                 }
-                setGeneratedSchema(newSchema);
-                setIsValidJADN(false);
-                setIsValidating(false);
-            } else if (generatedSchema.info && !(data.info in generatedSchema.info)) {
-                let updatedSchema;
-                if (data.info == 'config') {
-                    updatedSchema = {
-                        ...generatedSchema,
-                        info: {
-                            ...generatedSchema.info || {},
-                            ...Info[data.info].edit(configInitialState)
-                        },
-                    }
 
-                } else {
-                    updatedSchema = {
-                        ...generatedSchema,
-                        info: {
-                            ...generatedSchema.info || {},
-                            ...Info[data.info].edit()
-                        },
-                    }
+            } else {
+                updatedSchema = {
+                    ...generatedSchema,
+                    info: {
+                        ...generatedSchema.info || {},
+                        ...Info[data.info].edit()
+                    },
                 }
-                setGeneratedSchema(updatedSchema);
-                setIsValidJADN(false);
-                setIsValidating(false);
             }
+            setGeneratedSchema(updatedSchema);
+            setIsValidJADN(false);
+            setIsValidating(false);
+
             scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else if (data.types) {
@@ -312,10 +290,11 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         const key = k as keyof typeof Info;
         if (generatedSchema.info && k in generatedSchema.info) {
             return Info[key].editor({
-                key: i,
+                key: self.crypto.randomUUID(),
                 value: key == 'config' ? configOpt :
                     generatedSchema.info[key]
                 ,
+                dataIndex: i,
                 placeholder: k,
                 change: (val: any) => {
                     if (key == 'config') {
@@ -367,7 +346,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const typesEditors = (generatedSchema.types || []).map((def, i) => {
         const type = def[1].toLowerCase() as keyof typeof Types;
         return Types[type].editor({
-            key: i,
+            key: self.crypto.randomUUID(),
             value: def,
             dataIndex: i,
             change: (val, idx: number) => {
@@ -386,7 +365,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 if (generatedSchema.types.length >= idx) {
                     const tmpTypes = [...generatedSchema.types];
                     tmpTypes.splice(idx, 1);
-                    //set data, even if references is unresolved
                     //remove types if empty
                     let updatedSchema;
                     if (tmpTypes.length == 0) {

@@ -33,34 +33,46 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
   const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
+  let fieldCount = 1;
   const [fieldCollapse, setFieldCollapse] = useState(false);
   const [modal, setModal] = useState(false);
-  let valueObj = zip(TypeKeys, value) as StandardTypeObject;
-  let fieldCount = 1;
+  const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
+  const [valueObj, setValueObj] = useState(valueObjInit);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
-    const updatevalue = { ...valueObj, [key]: value };
-    change(updatevalue, dataIndex);
+    setValueObj({ ...valueObj, [key]: value });
   }
 
   const onBlur = (e: any) => {
-    const value = e.target.value;
-    if (predefinedTypes.includes(value.toLowerCase())) {
-      sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
+    const { placeholder, value } = e.target;
+
+    //VALIDATE NAME
+    if (placeholder == "Name") {
+      if (predefinedTypes.includes(value.toLowerCase())) {
+        sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
+      }
+      if (value.length >= 64) {
+        sbToastError('Error: Max length reached');
+        return;
+      }
+      if (value.includes(config.$Sys)) {
+        sbToastError('Error: TypeNames SHOULD NOT contain the System character');
+      }
+      const regex = new RegExp(config.$TypeName, "g");
+      if (!regex.test(value)) {
+        sbToastError('Error: TypeName format is not permitted');
+      }
     }
-    if (value.length >= 64) {
-      sbToastError('Error: Max length reached');
+
+    const key = placeholder.toLowerCase();
+    const updatevalue = { ...valueObj, [key]: value };
+    if (JSON.stringify(valueObjInit) == JSON.stringify(updatevalue)) {
       return;
     }
-    if (value.includes(config.$Sys)) {
-      sbToastError('Error: TypeNames SHOULD NOT contain the System character');
-    }
-    const regex = new RegExp(config.$TypeName, "g");
-    if (!regex.test(value)) {
-      sbToastError('Error: TypeName format is not permitted');
-    }
+    setValueObj(updatevalue);
+    change(updatevalue, dataIndex);
   }
 
   const removeAll = () => {
@@ -94,6 +106,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       field = [fieldCount, fieldName, 'String', [], ''] as StandardFieldArray;
     }
     const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
+    setValueObj(updatevalue);
     change(updatevalue, dataIndex);
     setFieldCollapse(false);
     scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
@@ -102,6 +115,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
     let tmpFieldValues = [...valueObj.fields];
+
     if (newIndex < 0) {
       sbToastError('Error: Cannot move Type up anymore')
       return;
@@ -121,7 +135,9 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     //switch fields
     tmpFieldValues[oldIndex] = prevField;
     tmpFieldValues[newIndex] = val;
+
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
+    setValueObj(updatevalue);
     change(updatevalue, dataIndex);
   }
 
@@ -151,6 +167,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     });
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
+    setValueObj(updatevalue);
     change(updatevalue, dataIndex);
   };
 
@@ -164,16 +181,22 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     }
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
+    setValueObj(updatevalue);
     change(updatevalue, dataIndex);
   };
 
   const saveModal = (modalData: Array<string>) => {
     toggleModal();
+    const prevState = [...valueObj.options];
+    if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
+      return;
+    }
     var updatevalue = { ...valueObj, options: modalData }
     // if EnumeratedField && enum || pointer, remove fields 
     if (updatevalue.type == "Enumerated" && (updatevalue.options.find(str => str.startsWith('#'))) || (updatevalue.options.find(str => str.startsWith('>')))) {
       updatevalue = { ...updatevalue, fields: [] }
     }
+    setValueObj(updatevalue);
     change(updatevalue, dataIndex);
   }
 
@@ -217,7 +240,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
           <FormGroup className="col-md-6">
             <Label>Comment</Label>
-            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} />
+            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
           </FormGroup>
         </div>
       </div>
@@ -291,7 +314,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
         <FormGroup className="col-md-6">
           <Label>Comment
-            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} />
+            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
           </Label>
         </FormGroup>
 

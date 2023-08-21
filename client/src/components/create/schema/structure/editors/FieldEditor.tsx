@@ -38,7 +38,8 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   const [modal, setModal] = useState(false);
   const fieldKeys = enumerated ? EnumeratedFieldKeys : StandardFieldKeys;
-  let valueObj = zip(fieldKeys, value) as FieldObject;
+  const valueObjInit = zip(fieldKeys, value) as FieldObject;
+  const [valueObj, setValueObj] = useState(valueObjInit);
   const val = valueObj as StandardFieldObject;
   const [valType, setValType] = useState({ value: val.type, label: val.type });
 
@@ -50,24 +51,34 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       }
     }
     const key = placeholder.toLowerCase();
-    const updatevalue = { ...valueObj, [key]: value }
-    change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
+    setValueObj({ ...valueObj, [key]: value });
   }
 
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.includes('/')) {
-      sbToastError('Error: FieldNames MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension.');
+    const { placeholder, value } = e.target;
+
+    if (placeholder == "Name") {
+      if (value.includes('/')) {
+        sbToastError('Error: FieldNames MUST NOT contain the JSON Pointer field separator "/", which is reserved for use in the Pointers extension.');
+        return;
+      }
+      if (value.length >= 64) {
+        sbToastError('Error: Max length reached');
+        return;
+      }
+      const regex = new RegExp(config.$FieldName, "g");
+      if (!regex.test(value)) {
+        sbToastError('Error: FieldName format is not permitted');
+      }
+    }
+
+    const key = placeholder.toLowerCase();
+    const updatevalue = { ...valueObj, [key]: value }
+    if (JSON.stringify(valueObjInit) == JSON.stringify(updatevalue)) {
       return;
     }
-    if (value.length >= 64) {
-      sbToastError('Error: Max length reached');
-      return;
-    }
-    const regex = new RegExp(config.$FieldName, "g");
-    if (!regex.test(value)) {
-      sbToastError('Error: FieldName format is not permitted');
-    }
+    setValueObj(updatevalue);
+    change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
   const onSelectChange = (e: Option) => {
@@ -76,13 +87,14 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     if (e == null) {
       //default field type is String
       setValType({ value: 'String', label: 'String' });
-      updatevalue = { ...valueObj, options: [], ['type']: '' };
+      updatevalue = { ...valueObj, options: [], ['type']: 'String' };
 
     } else {
       setValType(e);
       updatevalue = { ...valueObj, options: [], ['type']: e.value };
     }
 
+    setValueObj(updatevalue);
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
@@ -93,7 +105,12 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   const saveModal = (modalData: Array<string>) => {
     toggleModal();
+    const prevState = [...valueObj.options];
+    if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
+      return;
+    }
     const updatevalue = { ...valueObj, options: modalData }
+    setValueObj(updatevalue);
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
@@ -107,7 +124,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       return (
         <FormGroup className="col-md-4">
           <Label>Value</Label>
-          <Input type="text" placeholder="Value" value={val.value} onChange={onChange} />
+          <Input type="text" placeholder="Value" value={val.value} onChange={onChange} onBlur={onBlur} />
         </FormGroup>
       );
     }
@@ -165,7 +182,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       <div className="row m-0">
         <FormGroup className={enumerated ? 'col-md-3' : 'col-md-2'}>
           <Label>ID</Label>
-          <Input type="number" placeholder="ID" value={valueObj.id} onChange={onChange} />
+          <Input type="number" placeholder="ID" value={valueObj.id} onChange={onChange} onBlur={onBlur} />
         </FormGroup>
 
         {makeOptions()}
@@ -178,6 +195,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
             rows={1}
             value={valueObj.comment}
             onChange={onChange}
+            onBlur={onBlur}
           />
         </FormGroup>
       </div>

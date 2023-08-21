@@ -25,35 +25,46 @@ interface PrimitiveEditorProps {
 // Primitive Editor
 const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
   const { value, change, changeIndex, dataIndex, config } = props;
-  let valueObj: StandardFieldObject | PrimitiveTypeObject;
-  if (Number.isInteger(value[0])) {
-    valueObj = zip(StandardFieldKeys, value) as StandardFieldObject;
-  } else {
-    valueObj = zip(TypeKeys, value) as PrimitiveTypeObject;
-  }
-
   const [modal, setModal] = useState(false);
+
+  let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
+  if (Number.isInteger(value[0])) {
+    valueObjInit = zip(StandardFieldKeys, value) as StandardFieldObject;
+  } else {
+    valueObjInit = zip(TypeKeys, value) as PrimitiveTypeObject;
+  }
+  const [valueObj, setValueObj] = useState(valueObjInit);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
-    const updatevalue = { ...valueObj, [key]: value }
-    change(updatevalue, dataIndex);
+    setValueObj({ ...valueObj, [key]: value });
   }
 
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.length >= 64) {
-      sbToastError('Error: Max length reached');
+    const { placeholder, value } = e.target;
+
+    if (placeholder == "Name") {
+      if (value.length >= 64) {
+        sbToastError('Error: Max length reached');
+        return;
+      }
+      if (value.includes(config.$Sys)) {
+        sbToastError('Error: TypeNames SHOULD NOT contain the System character');
+      }
+      const regex = new RegExp(config.$TypeName, "g");
+      if (!regex.test(value)) {
+        sbToastError('Error: TypeName format is not permitted');
+      }
+    }
+
+    const key = placeholder.toLowerCase();
+    const updatevalue = { ...valueObj, [key]: value };
+    if (JSON.stringify(valueObjInit) == JSON.stringify(updatevalue)) {
       return;
     }
-    if (value.includes(config.$Sys)) {
-      sbToastError('Error: TypeNames SHOULD NOT contain the System character');
-    }
-    const regex = new RegExp(config.$TypeName, "g");
-    if (!regex.test(value)) {
-      sbToastError('Error: TypeName format is not permitted');
-    }
+    setValueObj(updatevalue);
+    change(updatevalue, dataIndex);
   }
 
   const removeAll = () => {
@@ -63,7 +74,12 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
 
   const saveModal = (modalData: Array<string>) => {
     toggleModal();
+    const prevState = [...valueObj.options];
+    if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
+      return;
+    }
     const updatevalue = { ...valueObj, options: modalData }
+    setValueObj(updatevalue);
     change(updatevalue, dataIndex);
   }
 
@@ -121,6 +137,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
               rows={1}
               value={valueObj.comment}
               onChange={onChange}
+              onBlur={onBlur}
             />
           </Label>
         </FormGroup>

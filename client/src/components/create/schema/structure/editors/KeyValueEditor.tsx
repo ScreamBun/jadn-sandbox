@@ -25,7 +25,9 @@ interface KeyValueEditorProps {
 // Key Value Editor
 const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) {
   const { name, value, description, options, placeholder, type, change, remove, required } = props;
-  const [val, setVal] = useState(value ? { value: value, label: value } : '');
+  const [valueData, setValueData] = useState(value);
+
+  const [val, setVal] = useState(value ? { value: value, label: value } : ''); //for select
   const onSelectChange = (e: Option) => {
     if (e == null) {
       setVal('');
@@ -61,7 +63,6 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   }
 
   if (type === 'SBSelect' && options) {
-    console.log(options)
     return (
       <FormGroup row className="border m-1 p-1">
         <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
@@ -90,13 +91,14 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   ];
 
   const inputArgs: Record<string, any> = {
-    value,
-    checked: type && value,
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => change(e.target.value)
+    value: valueData,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValueData(e.target.value),
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.value); }
   };
 
   if (['checkbox', 'radio'].includes(type)) {
-    inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => change(e.target.checked);
+    inputArgs.defaultChecked = type && valueData,
+      inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => { setValueData(e.target.checked); change(e.target.checked); }
   }
 
   return (

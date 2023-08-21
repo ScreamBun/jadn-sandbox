@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import {
   Button, ButtonGroup, FormText, Input
 } from 'reactstrap';
@@ -24,9 +24,20 @@ type Pair = { key: string, value: any };
 // Key Object Editor
 const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProps) {
   const { value, description, name, placeholder, change, config } = props;
-  let valueObj = Object.keys(value).map(k => ({ key: k, value: value[k] }));
+  let valueObjInit = Object.keys(value).map(k => ({ key: k, value: value[k] }));
+  const [valueObj, setValueObj] = useState(valueObjInit);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { dataset, value } = e.target;
+    const idx = parseInt(dataset.index || '', 10);
+    const type = dataset.type as keyof Pair;
+
+    const tmpvalue = [...valueObj];
+    tmpvalue[idx][type] = value;
+    setValueObj(tmpvalue);
+  }
+
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { dataset, value } = e.target;
     const idx = parseInt(dataset.index || '', 10);
     const type = dataset.type as keyof Pair;
@@ -40,6 +51,10 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
 
     const tmpvalue = [...valueObj];
     tmpvalue[idx][type] = value;
+    if (JSON.stringify(valueObjInit) == JSON.stringify(tmpvalue)) {
+      return;
+    }
+    setValueObj(tmpvalue);
     change(toObject(tmpvalue));
   }
 
@@ -61,19 +76,22 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
       const idx = parseInt(dataset.index || '', 10);
 
       const tmpvalue = [...valueObj.filter((_row, i) => i !== idx)];
+      setValueObj(tmpvalue);
       change(toObject(tmpvalue));
 
     } else {
-      console.log('cant remove');
+      removeAll();
     }
   }
 
   const addIndex = () => {
-    if (valueObj.some(v => v.key === '')) {
+    if (valueObjInit.some(v => v.key === '')) {
+      sbToastError('Cannot add more: Enter namespace');
       return;
     }
 
     const tmpvalue = [...valueObj, { key: '', value: '' }];
+    setValueObj(tmpvalue);
     change(toObject(tmpvalue));
   }
 
@@ -88,6 +106,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
         placeholder={'NSID'}
         value={obj.key}
         onChange={onChange}
+        onBlur={onBlur}
       />
       <Input
         type="text"
@@ -97,6 +116,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
         placeholder={placeholder}
         value={obj.value}
         onChange={onChange}
+        onBlur={onBlur}
       />
       <div className="input-group-append">
         <Button color="danger" onClick={removeIndex} data-index={i}>
