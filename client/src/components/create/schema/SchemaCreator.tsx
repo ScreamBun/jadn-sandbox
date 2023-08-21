@@ -369,7 +369,15 @@ const SchemaCreator = (props: any) => {
     }).filter(Boolean);
 
     const typesEditors = (generatedSchema.types || []).map((def, i) => {
-        const type = def[1].toLowerCase() as keyof typeof Types;
+        let type = def[1].toLowerCase() as keyof typeof Types;
+
+        //CHECK FOR VALID TYPE
+        if (!Object.keys(Types).includes(type)) {
+            sbToastError(`Error: ${type} in Type definition [${def}] is not a valid type. Changing type to String.`)
+            def[1] = "String";
+            type = "string";
+        }
+
         return Types[type].editor({
             key: i,
             value: def,
