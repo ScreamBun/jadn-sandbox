@@ -291,9 +291,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         if (generatedSchema.info && k in generatedSchema.info) {
             return Info[key].editor({
                 key: self.crypto.randomUUID(),
-                value: key == 'config' ? configOpt :
-                    generatedSchema.info[key]
-                ,
+                value: generatedSchema.info[key],
                 dataIndex: i,
                 placeholder: k,
                 change: (val: any) => {
