@@ -1,4 +1,5 @@
 // General Utility Functions
+import _ from 'lodash';
 import { objectFromTuple } from './object';
 
 /**
@@ -26,4 +27,8 @@ export const zip = (keys: Array<string>, values: Array<any>): Record<string, any
   return objectFromTuple(
     ...values.map<[string, any]>((v: any, i: number) => [keys[i], v])
   );
+};
+
+export const isArrayEqual = (x: [], y: []) => {
+  return _(x).differenceWith(y, _.isEqual).isEmpty();
 };
