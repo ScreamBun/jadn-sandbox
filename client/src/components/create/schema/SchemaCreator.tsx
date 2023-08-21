@@ -1,4 +1,4 @@
-import React, { useCallback, memo, useRef, useState } from 'react'
+import React, { memo, useRef, useState } from 'react'
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { Info, Types } from './structure/structure';
 import { loadFile } from 'actions/util';
@@ -19,7 +19,6 @@ import SBSpinner from 'components/common/SBSpinner';
 import SBOutline from 'components/common/SBOutline';
 
 //useEffect setSchema ?
-import { DraggableType } from './DraggableType';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
 
@@ -309,99 +308,75 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         return null;
     });
 
-    const onDrag = useCallback((val, dragIndex: number, hoverIndex: number) => {
-        console.log(generatedSchema.types, dragIndex, hoverIndex)
-        const type = val.type.toLowerCase() as keyof typeof Types;
-        const dragItem = Types[type].edit(val); //generatedSchema.types[dragIndex]; //
-        const hoverItem = generatedSchema.types[hoverIndex];
-        console.log("REPLACING : " + dragItem + " WITH " + hoverItem)
-
-        // let tmpTypes = [...generatedSchema.types];
-        // tmpTypes.splice(dragIndex, 1);
-        // tmpTypes.splice(hoverIndex, 0, Types[type].edit(val));
-
-        setGeneratedSchema((generatedSchema: any) => {
-            const tmpTypes = [...generatedSchema.types];
-            tmpTypes[dragIndex] = hoverItem
-            tmpTypes[hoverIndex] = dragItem
-            return ({ ...generatedSchema, types: tmpTypes })
-        })
-    }, [generatedSchema])
-
     const typesEditors = (generatedSchema.types || []).map((def, i) => {
         const type = def[1].toLowerCase() as keyof typeof Types;
-        return (<DraggableType acceptableType={'Types'}
-            key={self.crypto.randomUUID()}
-            id={self.crypto.randomUUID()}
-            dataIndex={i}
-            changeIndex={onDrag}
-            item={Types[type].editor({
-                key: self.crypto.randomUUID(),
-                value: def,
-                dataIndex: i,
-                change: (val, idx: number) => {
+        return (Types[type].editor({
+            key: self.crypto.randomUUID(),
+            value: def,
+            dataIndex: i,
+            change: (val, idx: number) => {
+                const tmpTypes = [...generatedSchema.types];
+                tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
+                let updatedSchema = {
+                    ...generatedSchema,
+                    types: tmpTypes
+                };
+                setGeneratedSchema(updatedSchema);
+                setIsValidJADN(false);
+                setIsValidating(false);
+            }
+            ,
+            remove: (idx: number) => {
+                if (generatedSchema.types.length >= idx) {
                     const tmpTypes = [...generatedSchema.types];
-                    tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
-                    let updatedSchema = {
-                        ...generatedSchema,
-                        types: tmpTypes
-                    };
+                    tmpTypes.splice(idx, 1);
+                    //remove types if empty
+                    let updatedSchema;
+                    if (tmpTypes.length == 0) {
+                        const tmpData = { ...generatedSchema };
+                        delete tmpData['types'];
+                        updatedSchema = tmpData;
+                    } else {
+                        updatedSchema = {
+                            ...generatedSchema,
+                            types: tmpTypes
+                        };
+                    }
                     setGeneratedSchema(updatedSchema);
                     setIsValidJADN(false);
                     setIsValidating(false);
                 }
-                ,
-                remove: (idx: number) => {
-                    if (generatedSchema.types.length >= idx) {
-                        const tmpTypes = [...generatedSchema.types];
-                        tmpTypes.splice(idx, 1);
-                        //remove types if empty
-                        let updatedSchema;
-                        if (tmpTypes.length == 0) {
-                            const tmpData = { ...generatedSchema };
-                            delete tmpData['types'];
-                            updatedSchema = tmpData;
-                        } else {
-                            updatedSchema = {
-                                ...generatedSchema,
-                                types: tmpTypes
-                            };
-                        }
-                        setGeneratedSchema(updatedSchema);
-                        setIsValidJADN(false);
-                        setIsValidating(false);
-                    }
-                },
-                changeIndex: (val, dataIndex: number, idx: number) => {
-                    const type = val.type.toLowerCase() as keyof typeof Types;
-                    if (idx < 0) {
-                        sbToastError('Error: Cannot move Type up anymore');
-                        return;
-                    } else if (idx >= generatedSchema.types.length) {
-                        sbToastError('Error: Cannot move Type down anymore');
-                        return;
-                    }
+            },
+            changeIndex: (val, dataIndex: number, idx: number) => {
+                const type = val.type.toLowerCase() as keyof typeof Types;
+                if (idx < 0) {
+                    sbToastError('Error: Cannot move Type up anymore');
+                    return;
+                } else if (idx >= generatedSchema.types.length) {
+                    sbToastError('Error: Cannot move Type down anymore');
+                    return;
+                }
 
-                    let tmpTypes = [...generatedSchema.types];
+                let tmpTypes = [...generatedSchema.types];
 
-                    tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
+                tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
 
-                    tmpTypes = [
-                        ...tmpTypes.slice(0, idx),
-                        Types[type].edit(val),
-                        ...tmpTypes.slice(idx)
-                    ];
+                tmpTypes = [
+                    ...tmpTypes.slice(0, idx),
+                    Types[type].edit(val),
+                    ...tmpTypes.slice(idx)
+                ];
 
-                    let updatedSchema = {
-                        ...generatedSchema,
-                        types: tmpTypes
-                    };
-                    setGeneratedSchema(updatedSchema);
-                    setIsValidJADN(false);
-                    setIsValidating(false);
-                },
-                config: configOpt
-            })} />)
+                let updatedSchema = {
+                    ...generatedSchema,
+                    types: tmpTypes
+                };
+                setGeneratedSchema(updatedSchema);
+                setIsValidJADN(false);
+                setIsValidating(false);
+            },
+            config: configOpt
+        }))
     }).filter(Boolean);
 
     return (
