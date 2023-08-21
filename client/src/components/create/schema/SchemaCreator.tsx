@@ -1,7 +1,7 @@
-import React, { memo, useRef, useState } from 'react'
+import React, { useEffect, memo, useRef, useState } from 'react'
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { Info, Types } from './structure/structure';
-import { loadFile } from 'actions/util';
+import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,8 +17,6 @@ import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 import SBOutline from 'components/common/SBOutline';
-
-//useEffect setSchema ?
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
 
@@ -35,6 +33,10 @@ const configInitialState = {
 const SchemaCreator = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
+
+    useEffect(() => {
+        dispatch(setSchema(generatedSchema))
+    }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
     const [fileName, setFileName] = useState('');
