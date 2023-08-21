@@ -24,10 +24,6 @@ export interface SBOutlineProps {
 const SBOutline  = (props: SBOutlineProps) => {
     const { id='sb-outline', title, items=[]} = props;
 
-    useEffect(() => {
-        // placeholder
-    }) 
-
     const [cards, setCards] = useState([
         {
           id: 1,
@@ -47,8 +43,7 @@ const SBOutline  = (props: SBOutlineProps) => {
 
         setCards(cards);
 
-        const test = ""
-    },[items])       
+    },[props])       
   
 
     const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
