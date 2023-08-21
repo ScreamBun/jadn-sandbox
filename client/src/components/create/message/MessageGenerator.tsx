@@ -27,7 +27,7 @@ const MessageGenerator = () => {
     useEffect(() => {
         setCommandType(null);
         setGeneratedMessage({});
-        dispatch(setSchema({}));
+        dispatch(setSchema(loadedSchema));
     }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
