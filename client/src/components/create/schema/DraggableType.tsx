@@ -7,8 +7,11 @@ export const DraggableType = memo(function DraggableType({ item, acceptableType,
     const [{ isDragging }, dragRef] = useDrag(
         () => ({
             type: acceptableType,
-            item: () => { return { itemID: id, originalIndex: dataIndex, itemValue: item.props.value } },
+            item: () => { return { itemID: id, originalIndex: dataIndex, newIndex: dataIndex, itemValue: item.props.value, changeIndexProp: item.props.changeIndex } },
             canDrag: isDraggable,
+            end: (item) => {
+                item.changeIndexProp(item.itemValue, item.originalIndex, item.newIndex);
+            },
             collect: (monitor) => ({
                 item: monitor.getItem(),
                 isDragging: monitor.isDragging(),
@@ -19,24 +22,12 @@ export const DraggableType = memo(function DraggableType({ item, acceptableType,
     const [, dropRef] = useDrop(
         () => ({
             accept: acceptableType,
-            //  drop: (draggedItem, _monitor) => {
-            //     if (!ref.current) {
-            //         return
-            //     }
-            //     const dragIndex = draggedItem.originalIndex
-            //     const hoverIndex = dataIndex
-            //     if (dragIndex && dragIndex !== hoverIndex) {
-            //         console.log("on drop index of " + JSON.stringify(draggedItem) + " from " + dragIndex + " to " + hoverIndex)
-            //         changeIndex(dragIndex, hoverIndex)
-            //         draggedItem.originalIndex = hoverIndex
-            //     } 
-            // },
             //TODO: scroll page
             hover: (draggedItem, monitor) => {
                 if (!ref.current) {
                     return
                 }
-                const dragIndex = draggedItem.originalIndex
+                const dragIndex = draggedItem.newIndex
                 const hoverIndex = dataIndex
 
                 // Don't replace items with themselves
@@ -58,7 +49,7 @@ export const DraggableType = memo(function DraggableType({ item, acceptableType,
                 }
 
                 changeIndex(dragIndex, hoverIndex)
-                draggedItem.originalIndex = hoverIndex
+                draggedItem.newIndex = hoverIndex
             },
         }),
         [],

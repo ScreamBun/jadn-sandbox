@@ -312,10 +312,12 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         </Button>
       </ButtonGroup>
       <ButtonGroup size="sm" className="float-right mr-1">
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)} >
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
+          title={`Move ${valueObj.type} Up`}>
           <FontAwesomeIcon icon={faSquareCaretUp} />
         </Button>
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
+          title={`Move ${valueObj.type} Down`}>
           <FontAwesomeIcon icon={faSquareCaretDown} />
         </Button>
       </ButtonGroup>
@@ -352,21 +354,13 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
           </Label>
         </FormGroup>
 
-        <FormGroup tag="fieldset" className="col-12 border">
+        <FormGroup className="col-12">
           <legend>
             {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
-            <ButtonGroup className="float-right">
-              <Button color={fieldCollapse ? 'success' : 'secondary'} className='btn btn-sm' onClick={() => setFieldCollapse(!fieldCollapse)}>
-                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp} />
-                &nbsp;
-                {fieldCollapse ? ' Show' : ' Hide'}
-              </Button>
-              <Button color="primary" onClick={addField} className='btn btn-sm' >
-                <FontAwesomeIcon icon={faPlusSquare} />
-                &nbsp;
-                Add
-              </Button>
-            </ButtonGroup>
+            <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+              className='float-right btn btn-sm'
+              onClick={() => setFieldCollapse(!fieldCollapse)}
+              title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
           </legend>
 
           <div ref={scrollToFieldRef}>
@@ -374,6 +368,13 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
           </div>
 
           {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
+
+          {!fieldCollapse &&
+            <Button color="info" onClick={addField} outline className='btn btn-sm btn-block' >
+              <FontAwesomeIcon icon={faPlusSquare} />
+              &nbsp;
+              Add Field
+            </Button>}
 
         </FormGroup>
       </div>

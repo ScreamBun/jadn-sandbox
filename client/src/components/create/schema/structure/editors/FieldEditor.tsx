@@ -164,10 +164,12 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         </Button>
       </ButtonGroup>
       <ButtonGroup size="sm" className="float-right mr-1">
-        <Button color="info" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)} >
+        <Button color="info" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)}
+          title={`Move Field Up`}>
           <FontAwesomeIcon icon={faSquareCaretUp} />
         </Button>
-        <Button color="info" onClick={() => changeIndex(value, dataIndex, dataIndex + 1)} >
+        <Button color="info" onClick={() => changeIndex(value, dataIndex, dataIndex + 1)}
+          title={`Move Field Down`} >
           <FontAwesomeIcon icon={faSquareCaretDown} />
         </Button>
       </ButtonGroup>
