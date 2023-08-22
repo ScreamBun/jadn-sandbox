@@ -3,6 +3,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { githubLight } from '@uiw/codemirror-themes-all';
 import { langs } from '@uiw/codemirror-extensions-langs';
 import { LANG_HTML, LANG_MARKDOWN, LANG_XML } from 'components/utils/constants';
+import { FormatJADN } from 'components/utils';
 
 // References:
 // https://reactjsexample.com/codemirror-component-for-react/
@@ -22,8 +23,7 @@ const SBEditor = (props: any) => {
     } = props;
 
     let extensions = [langs.json()]
-
-    if (convertTo != null) {
+    if (convertTo != null && typeof convertTo != 'object') {
         switch (convertTo.toLowerCase()) {
             case LANG_HTML:
                 extensions = [langs.html()];
@@ -40,9 +40,11 @@ const SBEditor = (props: any) => {
         }
     }
 
+    let formattedData = typeof data == "object" ? FormatJADN(data) : data;
+
     return (
         <CodeMirror
-            value={data}
+            value={formattedData}
             height={height}
             maxHeight='100%'
             readOnly={isReadOnly}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useState } from 'react';
 import {
   Button, ButtonGroup, FormText, Input
 } from 'reactstrap';
@@ -17,36 +17,52 @@ interface KeyArrayEditorProps {
 }
 
 // Key Array Editor
-const KeyArrayEditor = (props: KeyArrayEditorProps) => {
+const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) {
   const { name, description, placeholder, value, change, remove } = props;
+
+  const [dataArr, setDataArr] = useState(value);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { dataset } = e.target;
     const idx = parseInt(dataset.index || '', 10);
-    const tmpValues = [...value];
+    const tmpValues = [...dataArr];
     tmpValues[idx] = e.target.value;
+    setDataArr(tmpValues);
+  }
+
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { dataset } = e.target;
+    const idx = parseInt(dataset.index || '', 10);
+    const tmpValues = [...dataArr];
+    tmpValues[idx] = e.target.value;
+    if (JSON.stringify(tmpValues) == JSON.stringify(value)) {
+      return;
+    }
+    setDataArr(tmpValues);
     change(tmpValues);
-  };
+  }
 
   const removeAll = () => {
     remove(name.toLowerCase());
-  };
+  }
 
   const removeIndex = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (value.length > 1) {
+    if (dataArr.length > 1) {
       const { dataset } = e.currentTarget;
       const index = parseInt(dataset.index || '', 10);
-      const tmpValues = [...value];
+      const tmpValues = [...dataArr];
       tmpValues.splice(index, 1);
+      setDataArr(tmpValues);
       change(tmpValues);
     }
-  };
+  }
 
   const addIndex = () => {
-    change([...value, '']);
-  };
+    setDataArr([...dataArr, '']);
+    change([...dataArr, '']);
+  }
 
-  const indices = value.map((val, i) => (
+  const indices = dataArr.map((val, i) => (
     // eslint-disable-next-line react/no-array-index-key
     <div className="input-group col-sm-12 mb-1" key={i}>
       <Input
@@ -56,6 +72,7 @@ const KeyArrayEditor = (props: KeyArrayEditorProps) => {
         placeholder={placeholder}
         value={val}
         onChange={onChange}
+        onBlur={onBlur}
       />
       <div className="input-group-append">
         <Button color='danger' onClick={removeIndex} data-index={i}>
@@ -63,7 +80,7 @@ const KeyArrayEditor = (props: KeyArrayEditorProps) => {
         </Button>
       </div>
     </div>
-  ));
+  ))
 
   return (
     <div className="border m-1 p-1">
@@ -86,7 +103,7 @@ const KeyArrayEditor = (props: KeyArrayEditorProps) => {
       </div>
     </div>
   );
-};
+})
 
 KeyArrayEditor.defaultProps = {
   placeholder: 'KeyArrayEditor'

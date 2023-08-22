@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faPlusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options/OptionsModal';
@@ -15,6 +15,8 @@ import {
 import { zip } from '../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
+import { DraggableType } from '../../DraggableType';
+import update from 'immutability-helper'
 
 
 // Interface
@@ -28,39 +30,52 @@ interface StructureEditorProps {
 }
 
 // Structure Editor
-const StructureEditor = (props: StructureEditorProps) => {
+const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
   const { value, change, changeIndex, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
   const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
+  let fieldCount = 1;
   const [fieldCollapse, setFieldCollapse] = useState(false);
   const [modal, setModal] = useState(false);
-  let valueObj = zip(TypeKeys, value) as StandardTypeObject;
-  let fieldCount = 1;
+  const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
+  const [valueObj, setValueObj] = useState(valueObjInit);
+  const [valueObjFields, setValueObjFields] = useState(valueObjInit.fields);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
-    const updatevalue = { ...valueObj, [key]: value }
-    change(updatevalue, dataIndex);
+    setValueObj({ ...valueObj, [key]: value });
   }
 
   const onBlur = (e: any) => {
-    const value = e.target.value;
-    if (predefinedTypes.includes(value.toLowerCase())) {
-      sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
+    const { placeholder, value } = e.target;
+
+    //VALIDATE NAME
+    if (placeholder == "Name") {
+      if (predefinedTypes.includes(value.toLowerCase())) {
+        sbToastError('Error: TypeName MUST NOT be a JADN predefined type');
+      }
+      if (value.length >= 64) {
+        sbToastError('Error: Max length reached');
+        return;
+      }
+      if (value.includes(config.$Sys)) {
+        sbToastError('Error: TypeNames SHOULD NOT contain the System character');
+      }
+      const regex = new RegExp(config.$TypeName, "g");
+      if (!regex.test(value)) {
+        sbToastError('Error: TypeName format is not permitted');
+      }
     }
-    if (value.length >= 64) {
-      sbToastError('Error: Max length reached');
+
+    const key = placeholder.toLowerCase();
+    const updatevalue = { ...valueObj, [key]: value };
+    if (JSON.stringify(valueObjInit) == JSON.stringify(updatevalue)) {
       return;
     }
-    if (value.includes(config.$Sys)) {
-      sbToastError('Error: TypeNames SHOULD NOT contain the System character');
-    }
-    const regex = new RegExp(config.$TypeName, "g");
-    if (!regex.test(value)) {
-      sbToastError('Error: TypeName format is not permitted');
-    }
+    setValueObj(updatevalue);
+    change(updatevalue, dataIndex);
   }
 
   const removeAll = () => {
@@ -84,6 +99,7 @@ const StructureEditor = (props: StructureEditorProps) => {
     if (currMaxID && fieldCount <= currMaxID) {
       fieldCount = currMaxID + 1;
     }
+
     let fieldName;
     if (valueObj.type.toLowerCase() === 'enumerated') {
       fieldName = 'field_value_' + fieldCount;
@@ -93,10 +109,44 @@ const StructureEditor = (props: StructureEditorProps) => {
       fieldName = 'field_name_' + fieldCount;
       field = [fieldCount, fieldName, 'String', [], ''] as StandardFieldArray;
     }
-    const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
+
+    const tmpFieldValues = [...valueObjFields, field];
+    const updatevalue = { ...valueObj, fields: tmpFieldValues };
+    setValueObj(updatevalue);
+    setValueObjFields(tmpFieldValues);
     change(updatevalue, dataIndex);
+    setFieldCollapse(false);
     scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
     fieldCount = fieldCount + 1;
+  }
+
+  const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
+    let tmpFieldValues = [...valueObjFields];
+
+    if (newIndex < 0) {
+      sbToastError('Error: Cannot move Type up anymore')
+      return;
+    } else if (newIndex >= tmpFieldValues.length) {
+      sbToastError('Error: Cannot move Type down anymore')
+      return;
+    }
+    //get other field to be moved
+    const prevField = tmpFieldValues[newIndex];
+
+    //switch IDs
+    const valID = val[0];
+    const prevID = prevField[0];
+    prevField[0] = valID;
+    val[0] = prevID;
+
+    //switch fields
+    tmpFieldValues[oldIndex] = prevField;
+    tmpFieldValues[newIndex] = val;
+
+    const updatevalue = { ...valueObj, fields: tmpFieldValues };
+    setValueObj(updatevalue);
+    setValueObjFields(tmpFieldValues);
+    change(updatevalue, dataIndex);
   }
 
   const fieldChange = (val: FieldArray, idx: number) => {
@@ -116,7 +166,7 @@ const StructureEditor = (props: StructureEditorProps) => {
       val[0] = parseInt(val[0]); //force index to type number
     }
 
-    const tmpFieldValues = [...valueObj.fields];
+    const tmpFieldValues = [...valueObjFields];
     tmpFieldValues[idx] = val;
 
     //sort fields
@@ -125,29 +175,38 @@ const StructureEditor = (props: StructureEditorProps) => {
     });
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
-    change(updatevalue, dataIndex)
+    setValueObj(updatevalue);
+    setValueObjFields(tmpFieldValues);
+    change(updatevalue, dataIndex);
   };
 
   const fieldRemove = (idx: number) => {
-    const tmpFieldValues = [...valueObj.fields];
+    const tmpFieldValues = [...valueObjFields];
 
-    if (idx + 1 == valueObj.fields.length) {
+    if (idx + 1 == valueObjFields.length) {
       tmpFieldValues.pop();
     } else {
       tmpFieldValues.splice(idx, 1);
     }
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
+    setValueObj(updatevalue);
+    setValueObjFields(tmpFieldValues);
     change(updatevalue, dataIndex);
   };
 
   const saveModal = (modalData: Array<string>) => {
     toggleModal();
+    const prevState = [...valueObj.options];
+    if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
+      return;
+    }
     var updatevalue = { ...valueObj, options: modalData }
     // if EnumeratedField && enum || pointer, remove fields 
     if (updatevalue.type == "Enumerated" && (updatevalue.options.find(str => str.startsWith('#'))) || (updatevalue.options.find(str => str.startsWith('>')))) {
       updatevalue = { ...updatevalue, fields: [] }
     }
+    setValueObj(updatevalue);
     change(updatevalue, dataIndex);
   }
 
@@ -191,7 +250,7 @@ const StructureEditor = (props: StructureEditorProps) => {
 
           <FormGroup className="col-md-6">
             <Label>Comment</Label>
-            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} />
+            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
           </FormGroup>
         </div>
       </div>
@@ -200,38 +259,67 @@ const StructureEditor = (props: StructureEditorProps) => {
 
   //FieldType MUST be a Primitive type, ArrayOf, MapOf, or a model-defined type. 
   //no enum, choice, map, array, record
-  const fields: any[] = [];
-  if (valueObj.fields) {
-    for (let i = 0; i < valueObj.fields.length; ++i) {
-      fields.push(<FieldEditor
-        key={valueObj.fields[i][0]}
-        dataIndex={i}
-        enumerated={valueObj.type.toLowerCase() === 'enumerated'}
-        value={valueObj.fields[i]}
-        change={fieldChange}
-        remove={fieldRemove}
-        config={config}
-      />);
-    }
-  }
-  //sort fields
-  fields.sort(function (a, b) {
-    return a.key - b.key;
-  });
-  const listID = fields.map(field => field.key);
+  const onDrag = useCallback((dragIndex, hoverIndex) => {
+    setValueObjFields((prevFields) =>
+      update(prevFields, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, prevFields[dragIndex]],
+        ],
+      }),
+    )
+    setValueObj((prevObj) =>
+      update(prevObj, {
+        fields: {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, prevObj.fields[dragIndex]],
+          ],
+        }
+      }),
+    )
+  }, [])
+
+  const renderField = useCallback((field, index) => {
+    return (
+      <DraggableType
+        key={self.crypto.randomUUID()}
+        id={field[0]}
+        dataIndex={index}
+        changeIndex={onDrag}
+        acceptableType={'Field'}
+        item={< FieldEditor
+          dataIndex={index}
+          enumerated={valueObj.type.toLowerCase() === 'enumerated'}
+          value={field}
+          change={fieldChange}
+          remove={fieldRemove}
+          changeIndex={moveField}
+          config={config}
+        />}
+      />
+    );
+  }, [])
+
+  const fields = valueObjFields?.map((field, i) => renderField(field, i)) || [];
+  const listID = fields?.map(field => field.props.id);
 
   return (
     <div className="border m-1 p-1">
       <ButtonGroup size="sm" className="float-right">
-        <Button color="danger" onClick={removeAll} >
+        <Button color="danger" onClick={removeAll}
+          title={`Delete ${valueObj.type}`}
+        >
           <FontAwesomeIcon icon={faMinusCircle} />
         </Button>
       </ButtonGroup>
       <ButtonGroup size="sm" className="float-right mr-1">
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)} >
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
+          title={`Move ${valueObj.type} Up`}>
           <FontAwesomeIcon icon={faSquareCaretUp} />
         </Button>
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
+          title={`Move ${valueObj.type} Down`}>
           <FontAwesomeIcon icon={faSquareCaretDown} />
         </Button>
       </ButtonGroup>
@@ -264,25 +352,17 @@ const StructureEditor = (props: StructureEditorProps) => {
 
         <FormGroup className="col-md-6">
           <Label>Comment
-            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} />
+            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
           </Label>
         </FormGroup>
 
-        <FormGroup tag="fieldset" className="col-12 border">
+        <FormGroup className="col-12">
           <legend>
-            {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'}
-            <ButtonGroup className="float-right">
-              <Button color={fieldCollapse ? 'success' : 'warning'} onClick={() => setFieldCollapse(!fieldCollapse)}>
-                <FontAwesomeIcon icon={fieldCollapse ? faPlusCircle : faMinusCircle} />
-                &nbsp;
-                {fieldCollapse ? ' Show' : ' Hide'}
-              </Button>
-              <Button color="primary" onClick={addField} >
-                <FontAwesomeIcon icon={faPlusSquare} />
-                &nbsp;
-                Add
-              </Button>
-            </ButtonGroup>
+            {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
+            <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+              className='float-right btn btn-sm'
+              onClick={() => setFieldCollapse(!fieldCollapse)}
+              title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
           </legend>
 
           <div ref={scrollToFieldRef}>
@@ -291,10 +371,16 @@ const StructureEditor = (props: StructureEditorProps) => {
 
           {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
 
+          {!fieldCollapse &&
+            <Button color="info" onClick={addField} outline className='btn btn-sm btn-block'
+              title='Add Field'>
+              <FontAwesomeIcon icon={faPlusSquare} />
+            </Button>}
+
         </FormGroup>
       </div>
     </div>
   );
-}
+});
 
 export default StructureEditor;

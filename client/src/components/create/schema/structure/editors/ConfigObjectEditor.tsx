@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { memo } from 'react';
 import { Button, FormText } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -20,25 +20,21 @@ interface ConfigObjectEditorProps {
 }
 
 // Config Editor
-const ConfigObjectEditor = (props: ConfigObjectEditorProps) => {
+const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectEditorProps) {
   const { name, description, value, change, remove, config } = props;
-  let timeOut = useRef();
 
   const onChange = (k: string, v: any) => {
     const tmpValues = { ...value };
     //if value is empty, reset to default
     if (v === '') {
-      timeOut.current = setTimeout(() => {
-        tmpValues[k] = config[k];
-        sbToastInfo('Resetting config value ' + k + ' to default');
-        change(tmpValues);
-      }, 3000);
+      tmpValues[k] = config[k];
+      sbToastInfo('Resetting config value ' + k + ' to default');
+      change(tmpValues);
     } else {
-      clearTimeout(timeOut.current);
+      const parsedVal = /\d+$/.test(v) ? parseInt(v) : v;
+      tmpValues[k] = parsedVal;
+      change(tmpValues);
     }
-    const parsedVal = /\d+$/.test(v) ? parseInt(v) : v;
-    tmpValues[k] = parsedVal;
-    change(tmpValues);
   }
 
   const removeAll = () => {
@@ -73,7 +69,7 @@ const ConfigObjectEditor = (props: ConfigObjectEditorProps) => {
       </div>
     </div>
   );
-}
+});
 
 ConfigObjectEditor.defaultProps = {
   placeholder: 'ConfigObjectEditor',

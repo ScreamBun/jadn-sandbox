@@ -1,0 +1,10 @@
+{
+  "info": {
+    "title": "JADN Schema Start Up Template",
+    "package": "http://JADN-Schema-Start-Up-Template-URI",
+    "exports": ["Schema"]
+  },
+  "types": [
+    ["Schema", "Record", [], "", []]
+  ]
+}

@@ -3,7 +3,7 @@ import os
 import toml
 
 from jadnschema.utils import FrozenDict
-from jadnschema.convert import SchemaFormats
+from jadnschema.convert import SchemaFormats, SchemaVisualizationFormats, SchemaTranslationFormats
 
 
 class Config:
@@ -45,20 +45,24 @@ class Config:
     OPTIONS = None
     # OpenC2 Options
     OPEN_C2_DATA = os.path.join(APP_DATA, "openc2_files")
+
+    OPEN_C2_SCHEMA_DATA = os.path.join(APP_DATA, "openc2_files", "schemas")
+    OPEN_C2_SCHEMA_CUSTOM_DATA = os.path.join(OPEN_C2_SCHEMA_DATA, "custom")
+    OPEN_C2_SCHEMA_EXAMPLE_DATA = os.path.join(OPEN_C2_SCHEMA_DATA, "examples")
+
+    OPEN_C2_MESSAGE_DATA = os.path.join(APP_DATA, "openc2_files", "messages")
+    OPEN_C2_MESSAGE_CUSTOM_DATA = os.path.join(OPEN_C2_MESSAGE_DATA, "custom")
+    OPEN_C2_MESSAGE_EXAMPLE_DATA = os.path.join(OPEN_C2_MESSAGE_DATA, "examples")
+
     OPEN_C2_SCHEMA_THEME = os.path.join(OPEN_C2_DATA, "openc2_schema_theme.css")
     PROFILE_TEST_DATA = os.path.join(APP_DATA, "test_messages")
 
-    try:
-        with open(os.path.join(APP_DATA, "openc2_files", "messages", "_default_types.json"), "r", encoding="utf-8") as f:
-            DEFAULT_MESSAGE_TYPES = json.load(f)
-    except Exception:  # pylint: disable=broad-except
-        # TODO: pick better exception
-        DEFAULT_MESSAGE_TYPES = {}
-
     VALID_SCHEMAS = ["jadn", ]
     VALID_SCHEMA_CONV = FrozenDict({fmt.name: fmt.value for fmt in SchemaFormats})
+    VALID_SCHEMA_TRANSLATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaTranslationFormats})
+    VALID_SCHEMA_VISUALIZATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaVisualizationFormats})
     VALID_MESSAGES = ["json", "cbor", "xml"]
-
+    VALID_TRANSFORMATIONS = ["resolve references", "strip comments"]
 
 class DefaultConfig(Config):
     DEBUG = False

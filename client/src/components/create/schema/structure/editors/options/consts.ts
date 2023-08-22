@@ -151,9 +151,11 @@ export const TypeOptionInputArgs = {
     description: 'If present, Enumerated values and fields of compound types are denoted by FieldID rather than FieldName'
   },
   vtype: {
+    type: 'SBCreatableSelect',
     description: 'Value type for ArrayOf and MapOf'
   },
   ktype: {
+    type: 'SBCreatableSelect',
     description: 'Key type for MapOf'
   },
   enum: {
@@ -163,7 +165,7 @@ export const TypeOptionInputArgs = {
     description: 'Extension: Enumerated type containing pointers derived from the specified Array, Choice, Map or Record type'
   },
   format: {
-    type: 'select',
+    type: 'SBSelect',
     description: '(optional) Semantic validation keyword'
   },
   pattern: {
@@ -191,7 +193,7 @@ export const TypeOptionInputArgs = {
   },
   set: {
     type: 'checkbox',
-    description: '(optional) If present, an ArrayOf instance is unordered and uniques'
+    description: '(optional) If present, an ArrayOf instance is unordered and unique'
   },
   unordered: {
     type: 'checkbox',

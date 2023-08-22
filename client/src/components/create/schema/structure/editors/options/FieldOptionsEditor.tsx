@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FieldOptionInputArgs, OptionChange } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
 
@@ -12,7 +12,7 @@ interface FieldOptionsEditorProps {
 }
 
 // Field Options Editor
-const FieldOptionsEditor = (props: FieldOptionsEditorProps) => {
+const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsEditorProps) {
   const { change, deserializedState, fieldOptions, id } = props;
 
   const validOptions = () => {
@@ -42,7 +42,7 @@ const FieldOptionsEditor = (props: FieldOptionsEditorProps) => {
     );
   }
   return '';
-};
+});
 
 FieldOptionsEditor.defaultProps = {
   fieldOptions: false,

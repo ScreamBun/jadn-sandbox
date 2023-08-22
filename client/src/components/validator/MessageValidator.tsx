@@ -7,14 +7,16 @@ import { validateMessage } from 'actions/validate'
 import { info } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
-import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { Option } from 'components/common/SBSelect'
 
 
 const MessageValidator = () => {
     const dispatch = useDispatch();
 
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
-    const [loadedSchema, setLoadedSchema] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
+    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
     const [selectedMsgFile, setSelectedMsgFile] = useState('');
     const [loadedMsg, setLoadedMsg] = useState('');
     const [msgFormat, setMsgFormat] = useState('');
@@ -29,12 +31,14 @@ const MessageValidator = () => {
 
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setSelectedSchemaFile('');
-        setLoadedSchema('');
+        setIsLoading(false);
+        setSelectedSchemaFile(null);
+        setLoadedSchema(null);
         setSelectedMsgFile('');
         setLoadedMsg('');
         setMsgFormat('');
@@ -47,29 +51,35 @@ const MessageValidator = () => {
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
 
         if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
             try {
-                dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat, decodeMsg))
+                dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat.value, decodeMsg.value))
                     .then((submitVal: any) => {
                         if (submitVal && submitVal.payload.valid_bool) {
+                            setIsLoading(false);
                             sbToastSuccess(submitVal.payload.valid_msg)
                         } else {
                             if (submitVal.payload.valid_msg.length != 1 && typeof submitVal.payload.valid_msg == 'object') {
+                                setIsLoading(false);
                                 for (const index in submitVal.payload.valid_msg) {
                                     sbToastError(submitVal.payload.valid_msg[index])
                                 }
                             } else {
+                                setIsLoading(false);
                                 sbToastError(submitVal.payload.valid_msg)
                             }
                         }
                     })
-                    .catch((submitErr) => {
+                    .catch((submitErr: { message: string }) => {
+                        setIsLoading(false);
                         sbToastError(submitErr.message)
                         return false;
                     })
             } catch (err) {
                 if (err instanceof Error) {
+                    setIsLoading(false);
                     sbToastError(err.message)
                 }
             }
@@ -88,6 +98,7 @@ const MessageValidator = () => {
                 err += ', message type';
             }
             sbToastError('ERROR: Validation failed - Please select ' + err)
+            setIsLoading(false);
         }
     }
 
@@ -110,7 +121,7 @@ const MessageValidator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
+                                            setLoadedSchema={setLoadedSchema}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes} setDecodeSchemaTypes={setDecodeSchemaTypes} />
                                     </div>
@@ -121,7 +132,7 @@ const MessageValidator = () => {
                                             msgFormat={msgFormat} setMsgFormat={setMsgFormat}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes}
-                                            loadedSchema={loadedSchema}
+                                            loadedSchema={loadedSchema} isLoading={isLoading}
                                         />
                                     </div>
                                 </div>

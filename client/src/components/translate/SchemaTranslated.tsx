@@ -1,69 +1,72 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Button } from "reactstrap";
-import { getConversions } from "reducers/convert";
+import { getValidTranslations } from "reducers/convert";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
-import { isNull } from "lodash";
 import { useLocation } from "react-router-dom";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
-const validTranslations = ['JSON', 'Relax', 'XSD'];
+import SBSpinner from "components/common/SBSpinner";
+import SBSelect, { Option } from "components/common/SBSelect";
+import { initConvertedSchemaState } from "components/visualize/SchemaVisualizer";
 
 const SchemaTranslated = (props: any) => {
     const location = useLocation()
     const { navConvertTo } = location.state
 
-    const { loadedSchema, translation, setTranslation, translatedSchema, convertAll, setConvertAll, setTranslatedSchema } = props;
-    const data = useSelector(getConversions);
-    let translateOpts = {};
+    const { loadedSchema, translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading } = props;
+    const data = useSelector(getValidTranslations);
+    let translateOpts: Option[] = [];
     for (let i = 0; i < Object.keys(data).length; i++) {
-        if (validTranslations.includes(Object.keys(data)[i])) {
-            translateOpts[Object.keys(data)[i]] = Object.values(data)[i];
-        }
+        translateOpts.push({ ['label']: Object.keys(data)[i], ['value']: Object.values(data)[i] });
     }
 
     useEffect(() => {
-        if (!isNull(navConvertTo)) {
-            setTranslation(navConvertTo);
+        if (navConvertTo != '') {
+            const index = Object.values(data).indexOf(navConvertTo)
+            setTranslation({ value: Object.values(data)[index], label: Object.keys(data)[index] });
         }
     }, [])
 
-    const handleTranslation = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setTranslation(e.target.value);
-        setTranslatedSchema('');
-        setConvertAll([]);
+    const handleTranslation = (e: Option[]) => {
+        let translateTo = [];
+        for (let i = 0; i < Object.values(e).length; i++) {
+            translateTo.push(Object.values(e)[i])
+        }
+        setTranslation(translateTo);
+        setTranslatedSchema(initConvertedSchemaState);
     }
 
     return (
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
-                        <select id="translate-to" name="translate-to" className="form-control form-control-sm" value={translation} onChange={handleTranslation}>
-                            <option value=""> Translate To... </option>
-                            <option value="all"> All </option>
-                            {Object.entries(translateOpts).map(([d, c]) => <option key={d} value={c}> {d} </option>)}
-                        </select>
+                    <div className='col-md-6'>
+                        <SBSelect id={"translation-list"} data={translateOpts} onChange={handleTranslation}
+                            placeholder={'Translate to...(select at least one)'}
+                            value={translation} isMultiSelect
+                        />
                     </div>
-                    <div className='col-md-9'>
-                        <div className={`${translation == 'all' || !translatedSchema ? ' d-none' : ''}`}>
-                            <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema} customClass='float-right' />
-                            <SBDownloadFile buttonId='schemaDownload' data={translatedSchema} ext={translation} customClass={`mr-1 float-right${translatedSchema ? '' : ' d-none'}`} />
+                    <div className='col-md-6'>
+                        <div className={`${translatedSchema.length != 0 ? '' : ' d-none'}`}>
+                            <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema[0].schema} customClass='float-right' />
+                            <SBDownloadFile buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`mr-1 float-right${translatedSchema[0].schema ? '' : ' d-none'}`} />
                         </div>
 
-                        <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
-                            disabled={loadedSchema && translation ? false : true}
+                        {isLoading ? <SBSpinner action={'Translating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
+                            disabled={loadedSchema && translation.length != 0 ? false : true}
                             title={"Translate the given JADN schema to the selected format"}
                         >
                             Translate
-                        </Button>
+                        </Button>}
                     </div>
                 </div>
             </div>
             <div className="card-body p-0">
-                {translation == 'all' && convertAll.length != 0 ? <SBCollapseViewer data={convertAll} /> :
-                    <SBEditor data={translatedSchema} isReadOnly={true} convertTo={translation}></SBEditor>
+                {translation.length > 1 && translatedSchema.length > 1 ?
+                    <SBCollapseViewer data={translatedSchema} /> :
+                    <SBEditor data={translatedSchema[0].schema} isReadOnly={true} convertTo={(translation.length == 1 ? translation[0].value : translation)}></SBEditor>
                 }
             </div>
         </div>

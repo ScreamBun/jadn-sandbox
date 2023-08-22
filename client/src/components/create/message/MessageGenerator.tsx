@@ -6,33 +6,37 @@ import MessageCreator from './MessageCreator'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import { dismissAllToast } from 'components/common/SBToast'
+import { Option } from 'components/common/SBSelect'
 
 const MessageGenerator = () => {
     const dispatch = useDispatch()
 
-    const [selectedFile, setSelectedFile] = useState('');
-    const [loadedSchema, setLoadedSchema] = useState('');
+    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
     const [generatedMessage, setGeneratedMessage] = useState({});
-    const [commandType, setCommandType] = useState('');
+    const [commandType, setCommandType] = useState<Option | null>();
 
     const meta_title = useSelector(getPageTitle) + ' | Message Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     useEffect(() => {
+        setCommandType(null);
         setGeneratedMessage({});
-        setCommandType('');
+        dispatch(setSchema(loadedSchema));
     }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setSelectedFile('');
-        setLoadedSchema('');
+        setSelectedFile(null);
+        setLoadedSchema(null);
+        setCommandType(null);
         setGeneratedMessage({});
-
-        dispatch(setSchema({ types: [] }));
+        dispatch(setSchema({}));
     }
 
     return (
@@ -53,12 +57,12 @@ const MessageGenerator = () => {
                                 <div className='col-md-6 pr-1'>
                                     <JADNSchemaLoader
                                         selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                        loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                        setLoadedSchema={setLoadedSchema} />
                                 </div>
                                 <div className='col-md-6 pl-1'>
                                     <MessageCreator
                                         generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                        commandType={commandType} setCommandType={setCommandType} />
+                                        commandType={commandType} setCommandType={setCommandType} loadedSchema={loadedSchema} />
                                 </div>
                             </div>
                         </div>

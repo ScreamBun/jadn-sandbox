@@ -1,19 +1,17 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { TabContent, TabPane, Button, FormText } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib/GenMsgLib'
-import { getSelectedSchema } from 'reducers/util'
 import { StandardFieldArray } from '../schema/interface'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
 import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPENAME } from '../consts'
 import SBDownloadFile from 'components/common/SBDownloadFile'
+import SBSaveFile from 'components/common/SBSaveFile'
+import SBSelect, { Option } from 'components/common/SBSelect'
 
 const MessageCreator = (props: any) => {
-    const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
-
+    const { generatedMessage, setGeneratedMessage, commandType, setCommandType, loadedSchema } = props
     const [activeView, setActiveView] = useState('creator');
-
     const [configOpt, setConfigOpt] = useState({
         $MaxBinary: $MAX_BINARY,
         $MaxString: $MAX_STRING,
@@ -24,9 +22,9 @@ const MessageCreator = (props: any) => {
         $NSID: $NSID
     })
 
-    let schemaObj = useSelector(getSelectedSchema);
+    const schemaObj = loadedSchema || '';
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
-    const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType) : [];
+    const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
 
     //set configuration data
     const configDefs = schemaObj.info && schemaObj.info.config ? schemaObj.info.config : [];
@@ -41,8 +39,8 @@ const MessageCreator = (props: any) => {
         }
     }
 
-    const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setCommandType(e.target.value);
+    const handleSelection = (e: Option) => {
+        setCommandType(e);
         setGeneratedMessage({});
     }
 
@@ -75,7 +73,7 @@ const MessageCreator = (props: any) => {
     }
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
-    if (commandType) {
+    if (commandType?.value) {
         if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
             if (recordDef[1] && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { //check not choice or enum type
                 const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
@@ -93,7 +91,7 @@ const MessageCreator = (props: any) => {
             <FormText color="muted">
                 Message generator will appear here after selecting a message type
                 &nbsp;
-                {commandType}
+                {commandType?.value}
             </FormText>
         );
     }
@@ -102,19 +100,25 @@ const MessageCreator = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
-                        <select id='command-list' name='command-list' className='form-control form-control-sm' value={commandType} disabled={exportRecords ? false : true} onChange={handleSelection}
-                            title={exportRecords ? "Select message type to create based on valid JADN Schema" : "No Message Type Found. Please define exports in info section of schema."}>
-                            <option value=''>Message Type</option>
-                            {exportRecords ? exportRecords.map((rec: any) => <option key={rec} value={rec}>{rec}</option>) : []}
-                        </select>
+                    <div className='col-md-6'>
+                        <div className="input-group">
+                            <SBSelect id={"command-list"}
+                                data={exportRecords}
+                                onChange={handleSelection}
+                                placeholder={'Select a message type...'}
+                                value={commandType}
+                            />
+                            <div className="input-group-btn ml-1">
+                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-right mr-1"} ext={'json'} />
+                            </div>
+                        </div>
                     </div>
                     <div className='col'>
-                        <SBCopyToClipboard buttonId='copyMessage2' data={generatedMessage} customClass='float-right' shouldStringify={true} />
+                        <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-right' shouldStringify={true} />
                         <SBDownloadFile buttonId='msgDownload' customClass='float-right mr-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
 
-                        <Button onClick={() => setActiveView('message')} className={`float-right btn-sm mr-1 ${activeView == 'message' ? ' d-none' : ''}`} color="info">View Message</Button>
-                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="info">View Creator</Button>
+                        <Button onClick={() => setActiveView('message')} className={`float-right btn-sm mr-1 ${activeView == 'message' ? ' d-none' : ''}`} color="primary">View Message</Button>
+                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary">View Creator</Button>
                     </div>
                 </div>
             </div>
@@ -130,7 +134,7 @@ const MessageCreator = (props: any) => {
                     </TabPane>
 
                     <TabPane tabId='message'>
-                        <SBEditor data={JSON.stringify(generatedMessage, null, 2)} isReadOnly={true}></SBEditor>
+                        <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
                     </TabPane>
                 </TabContent>
             </div>

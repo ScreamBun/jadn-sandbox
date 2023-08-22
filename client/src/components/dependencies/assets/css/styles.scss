@@ -57,6 +57,23 @@ body {
     height: 100%;
 }  */
 
+//scrollToTopBtn
+.btn-rounded {
+    text-align: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 3em;
+    right: 3em;
+    z-index: 50;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+    border-radius: 10%;
+    //    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+
+    &:hover {
+        transform: translateY(-10px);
+    }
+}
 
 .code,
 textarea {
@@ -200,4 +217,18 @@ small {
 // Boostrap Nav offset for sticky top.
 .sticky-offset {
     top: 65px !important;
+}
+
+.sb-outline {
+    .list-group-item {
+        cursor: grab !important;
+        color: inherit;
+    }
+}
+
+.sb-outline {
+    .list-group-item:hover {
+        cursor: grab !important;
+        color: inherit;
+    }
 }

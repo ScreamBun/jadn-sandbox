@@ -1,18 +1,28 @@
 import * as convert from '../actions/convert';
 
 export interface ConvertState {
-  conversions: Record<string, any>;
+  valid_conversions: {
+    conversions: Record<string, any>;
+    translations: Record<string, any>;
+    visualizations: Record<string, any>;
+  };
   converted: {
     convert: string;
     fmt: string;
+    fmt_ext: string;
   }
 }
 
 const initialState: ConvertState = {
-  conversions: {},
+  valid_conversions: {
+    conversions: {},
+    translations: {},
+    visualizations: {}
+  },
   converted: {
     convert: '',
-    fmt: ''
+    fmt: '',
+    fmt_ext: ''
   },
 };
 
@@ -21,11 +31,14 @@ export default (state = initialState, action: convert.ConvertActions) => {
     case convert.INFO_SUCCESS:
       return {
         ...state,
-        conversions: action.payload.conversions || {}
+        valid_conversions: {
+          conversions: action.payload.conversions || {},
+          translations: action.payload.translations || {},
+          visualizations: action.payload.visualizations || {}
+        }
       };
 
     case convert.CONVERT_SUCCESS:
-    case convert.CONVERTTOALL_SUCCESS:
       return {
         ...state,
         converted: action.payload.schema || {}
@@ -33,7 +46,6 @@ export default (state = initialState, action: convert.ConvertActions) => {
 
     case convert.INFO_FAILURE:
     case convert.CONVERT_FAILURE:
-    case convert.CONVERTTOALL_FAILURE:
       return {
         ...state,
         error: action.payload.error || 'ERROR'
@@ -45,4 +57,5 @@ export default (state = initialState, action: convert.ConvertActions) => {
 };
 
 //selectors
-export const getConversions = (state: { Convert: { conversions: any; }; }) => state.Convert.conversions;
+export const getValidTranslations = (state: { Convert: { valid_conversions: { translations: any; }; }; }) => state.Convert.valid_conversions.translations;
+export const getValidVisualizations = (state: { Convert: { valid_conversions: { visualizations: any; }; }; }) => state.Convert.valid_conversions.visualizations;

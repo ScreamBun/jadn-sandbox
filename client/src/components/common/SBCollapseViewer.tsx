@@ -5,10 +5,10 @@ import SBDownloadFile from "./SBDownloadFile";
 import { faWindowMaximize, faFileImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "reactstrap";
-import { convertToGvFullView, onDownloadSVGClick, onGVPopOutClick } from "./SBGvPreviewer";
-import { onHTMLPopOutClick } from "./SBHtmlPreviewer";
-import { onMDPopOutClick } from "./SBMarkdownPreviewer";
-import { convertToPuml, onDownloadPNGClick } from "./SBPumlPreviewer";
+import { convertToGvFullView, onDownloadSVGClick, onGVPopOutClick } from "../visualize/SBGvPreviewer";
+import { onHTMLPopOutClick } from "../visualize/SBHtmlPreviewer";
+import { onMDPopOutClick } from "../visualize/SBMarkdownPreviewer";
+import { convertToPuml, onDownloadPNGClick } from "../visualize/SBPumlPreviewer";
 import { sbToastError } from "./SBToast";
 import SBDownloadPDF from "./SBDownloadPDF";
 
@@ -59,7 +59,8 @@ const SBCollapseViewer = (props: any) => {
                             {obj.fmt}
                         </button>
                         <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-right' />
-                        <SBDownloadFile buttonId={`download${i}`} customClass='mr-1 float-right' data={obj.schema} ext={obj.fmt} />
+                        <SBDownloadFile buttonId={`download${i}`} customClass='mr-1 float-right' data={obj.schema} ext={obj.fmt_ext} />
+
                         <span className={`${obj.fmt == 'HTML' ? '' : ' d-none'}`}>
                             <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
                             <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(obj.schema)}>
@@ -103,7 +104,8 @@ const SBCollapseViewer = (props: any) => {
                 {toggle == `${i}` ?
                     <div className="card-body" key={i}>
                         <SBEditor data={obj.schema} isReadOnly={true} height={'20em'}></SBEditor>
-                    </div> : ''}
+                    </div>
+                    : ''}
             </div>
         );
     });

@@ -25,6 +25,8 @@ export interface InfoSuccessAction extends ActionSuccessResult {
   type: typeof INFO_SUCCESS;
   payload: {
     conversions: Record<string, any>;
+    translations: Record<string, any>;
+    visualizations: Record<string, any>;
   };
 }
 
@@ -32,37 +34,18 @@ export interface InfoSuccessAction extends ActionSuccessResult {
 const CONVERT_REQUEST = '@@convert/CONVERT_REQUEST';
 export const CONVERT_SUCCESS = '@@convert/CONVERT_SUCCESS';
 export const CONVERT_FAILURE = '@@convert/CONVERT_FAILURE';
-export const convertSchema = (schema: Record<string, any>, t: string) => createAction({
+export const convertSchema = (schema: Record<string, any>, t: string[]) => createAction({
   endpoint: `${baseAPI}/`,
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    schema,
+    'schema': schema,
     'convert-to': t
   }),
   types: [
     CONVERT_REQUEST, CONVERT_SUCCESS, CONVERT_FAILURE
-  ]
-});
-
-// POST - /api/convert/all - convert the given schema to a different format
-const CONVERTTOALL_REQUEST = '@@convert/CONVERTTOALL_REQUEST';
-export const CONVERTTOALL_SUCCESS = '@@convert/CONVERTTOALL_SUCCESS';
-export const CONVERTTOALL_FAILURE = '@@convert/CONVERTTOALL_FAILURE';
-export const convertToAll = (schema: Record<string, any>, convertType: string) => createAction({
-  endpoint: `${baseAPI}/all`,
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    schema,
-    convertType
-  }),
-  types: [
-    CONVERTTOALL_REQUEST, CONVERTTOALL_SUCCESS, CONVERTTOALL_FAILURE
   ]
 });
 
@@ -71,32 +54,23 @@ export interface ConvertSchemaSuccessAction extends ActionSuccessResult {
   payload: {
     schema: {
       base: string;
-      convert: string;
+      convert: Array<string>;
     };
   };
 }
 
-export interface ConvertToAllSchemaSuccessAction extends ActionSuccessResult {
-  type: typeof CONVERTTOALL_SUCCESS;
-  payload: {
-    schema: {
-      base: string;
-      convert: Array<any>;
-    };
-  }
-}
 // Request Actions
 export interface ConvertRequestActions extends ActionRequestResult {
-  type: typeof INFO_REQUEST | typeof CONVERT_REQUEST | typeof CONVERTTOALL_REQUEST;
+  type: typeof INFO_REQUEST | typeof CONVERT_REQUEST;
 }
 
 // Failure Actions
 export interface ConvertFailureActions extends ActionFailureResult {
-  type: typeof INFO_FAILURE | typeof CONVERT_FAILURE | typeof CONVERTTOALL_FAILURE;
+  type: typeof INFO_FAILURE | typeof CONVERT_FAILURE;
 }
 
 export type ConvertActions = (
   ConvertRequestActions | ConvertFailureActions |
   // Success Actions
-  InfoSuccessAction | ConvertSchemaSuccessAction | ConvertToAllSchemaSuccessAction
+  InfoSuccessAction | ConvertSchemaSuccessAction
 );

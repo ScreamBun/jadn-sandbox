@@ -5,35 +5,26 @@ import { Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { info } from 'actions/util'
 import SchemaCreator from './SchemaCreator'
-import { EXPORT, EXPORT_TYPE, PACKAGE, TITLE } from '../consts';
-
-export const initialGeneratedSchemaState = {
-    info: {
-        title: TITLE,
-        package: PACKAGE,
-        exports: [EXPORT]
-    },
-    types: [
-        [EXPORT, EXPORT_TYPE, [], "", []]
-    ]
-}
+import { dismissAllToast } from 'components/common/SBToast'
+import { Option } from 'components/common/SBSelect'
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
 
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState('');
-    const [generatedSchema, setGeneratedSchema] = useState(initialGeneratedSchemaState);
+    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
+    const [generatedSchema, setGeneratedSchema] = useState('');
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
+        dismissAllToast();
     }, [dispatch])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setSelectedSchemaFile('');
-        setGeneratedSchema(initialGeneratedSchemaState);
+        setSelectedSchemaFile(null);
+        setGeneratedSchema('');
     }
 
     return (
