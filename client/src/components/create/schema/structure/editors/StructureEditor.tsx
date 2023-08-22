@@ -301,7 +301,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     );
   }, [])
 
-  const fields = valueObjFields?.map((field, i) => renderField(field, i));
+  const fields = valueObjFields?.map((field, i) => renderField(field, i)) || [];
   const listID = fields?.map(field => field.props.id);
 
   return (

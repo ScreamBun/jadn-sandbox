@@ -1,14 +1,20 @@
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { useDrop } from 'react-dnd'
 
 export const Droppable = memo(function Droppable({ onDrop, acceptableType, children }) {
 
-    //TODO: focus/ scroll to on dropped item
+    const scrollToRef = useRef<HTMLInputElement | null>(null);
     const [{ isOver, canDrop }, drop] = useDrop(
         () => ({
             accept: [`${acceptableType}`],
             drop: (item) => {
                 onDrop(item.itemID)
+
+                //TODO: fix scroll to dropped item
+                //scrollToRef.current.lastElementChild != the actual last Element
+                //console.log(scrollToRef.current?.lastElementChild)
+                scrollToRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+
                 return item
             },
             collect: (monitor) => ({
@@ -29,7 +35,9 @@ export const Droppable = memo(function Droppable({ onDrop, acceptableType, child
                 padding: '5px',
             }}
         >
-            <div>{children}</div>
+            <div ref={scrollToRef}>
+                {children}
+            </div>
         </div>
     );
 });

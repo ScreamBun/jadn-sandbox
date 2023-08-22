@@ -47,8 +47,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const [activeOpt, setActiveOpt] = useState('info');
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
-    const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
-    const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
 
     const onFileSelect = (e: Option) => {
         dismissAllToast();
@@ -235,8 +233,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
-            scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
-
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const tmpDef = Types[key].edit();
@@ -248,7 +244,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setGeneratedSchema(updatedSchema);
             setIsValidJADN(false);
             setIsValidating(false);
-            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -494,7 +489,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 <div id="schema-editor" className='col-md-9'>
                                     {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                                         <div>
-                                            <div className="col pt-2" ref={scrollToInfoRef}>
+                                            <div className="col pt-2">
                                                 <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
                                                 <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
                                                     {infoEditors}
@@ -502,7 +497,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
                                             </div>
                                             <hr />
-                                            <div className="col" ref={scrollToTypeRef}>
+                                            <div className="col">
                                                 <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
                                                 <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
                                                     {typesEditors}
