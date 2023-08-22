@@ -18,6 +18,7 @@ export interface OutlineCardProps {
   text: string
   index: number
   moveCard: (dragIndex: number, hoverIndex: number) => void
+  dropCard: (item: {}) => void
 }
 
 interface DragItem {
@@ -26,7 +27,7 @@ interface DragItem {
   type: string
 }
 
-export const OutlineCard: FC<OutlineCardProps> = ({ id, text, index, moveCard }) => {
+export const OutlineCard: FC<OutlineCardProps> = ({ id, text, index, moveCard, dropCard }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -38,6 +39,11 @@ export const OutlineCard: FC<OutlineCardProps> = ({ id, text, index, moveCard })
       return {
         handlerId: monitor.getHandlerId(),
       }
+    },
+    drop(item: DragItem, monitor){
+      console.log("OutlineCard item dropped: " + JSON.stringify(item));
+      console.log("OutlineCard item DropResult: " + JSON.stringify(monitor.getDropResult()));
+      dropCard(item);
     },
     hover(item: DragItem, monitor) {
       if (!ref.current) {
