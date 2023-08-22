@@ -16,7 +16,7 @@ import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
-import SBOutline from 'components/common/SBOutline';
+import SBOutline, { Item } from 'components/common/SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
 
@@ -33,10 +33,12 @@ const configInitialState = {
 const SchemaCreator = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
+    const generatedSchemaTypesRef = React.useRef(generatedSchema.types);
 
     useEffect(() => {
-        dispatch(setSchema(generatedSchema))
-    }, [generatedSchema])
+        dispatch(setSchema(generatedSchema));
+        generatedSchemaTypesRef.current = generatedSchema.types;
+    }, [generatedSchema.types])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
     const [fileName, setFileName] = useState('');
@@ -360,7 +362,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 }
 
                 let tmpTypes = [...generatedSchema.types];
-
                 tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
 
                 tmpTypes = [
@@ -381,8 +382,31 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         }))
     }).filter(Boolean);
 
-    const onOutlineDrop = (updatedCards: {}) => {
+    // TODO: Move to utils / general
+    const getIndex = (arr: [], field: string) => {
+        return arr.findIndex((obj: any) => obj.field === field);
+    }    
+
+    const reorder = (updatedOrder: Item[]) => {
+        let reordered_types: any[] = [];
+
+        // setCardsState(initalState);
+        {updatedOrder.map((updated_item, i) => {
+            const item_text = updated_item.text;       
+            const filtered_item = generatedSchemaTypesRef.current.filter((item:[]) => item[0] === item_text);
+            reordered_types[i] = filtered_item[0];
+        })};          
+
+        let updatedSchema = {
+            ...generatedSchema,
+            types: reordered_types
+        };
+        setGeneratedSchema(updatedSchema);            
+    }
+
+    const onOutlineDrop = (updatedCards: Item[]) => {
         console.log("SchemaCreator onOutlineDrop: " + JSON.stringify(updatedCards));
+        reorder(updatedCards);
     }    
 
     return (
