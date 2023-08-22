@@ -307,7 +307,9 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   return (
     <div className="border m-1 p-1">
       <ButtonGroup size="sm" className="float-right">
-        <Button color="danger" onClick={removeAll} >
+        <Button color="danger" onClick={removeAll}
+          title={`Delete ${valueObj.type}`}
+        >
           <FontAwesomeIcon icon={faMinusCircle} />
         </Button>
       </ButtonGroup>
@@ -370,10 +372,9 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
           {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
 
           {!fieldCollapse &&
-            <Button color="info" onClick={addField} outline className='btn btn-sm btn-block' >
+            <Button color="info" onClick={addField} outline className='btn btn-sm btn-block'
+              title='Add Field'>
               <FontAwesomeIcon icon={faPlusSquare} />
-              &nbsp;
-              Add Field
             </Button>}
 
         </FormGroup>

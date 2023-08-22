@@ -90,15 +90,21 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
   return (
     <div className="border m-1 p-1">
       <ButtonGroup size="sm" className="float-right">
-        <Button color="danger" onClick={removeAll} >
+        <Button color="danger" onClick={removeAll}
+          title={`Delete ${valueObj.type}`}
+        >
           <FontAwesomeIcon icon={faMinusCircle} />
         </Button>
       </ButtonGroup>
       <ButtonGroup size="sm" className="float-right mr-1">
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)} >
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
+          title={`Move ${valueObj.type} Up`}
+        >
           <FontAwesomeIcon icon={faSquareCaretUp} />
         </Button>
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
+        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
+          title={`Move ${valueObj.type} Down`}
+        >
           <FontAwesomeIcon icon={faSquareCaretDown} />
         </Button>
       </ButtonGroup>
