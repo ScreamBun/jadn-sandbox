@@ -1,7 +1,6 @@
 
 import update from 'immutability-helper'
 import React, { useCallback, useEffect, useState } from "react";
-import _ from "lodash";
 
 import { OutlineCard } from "./OutlineCard";
 
@@ -19,35 +18,41 @@ export interface SBOutlineProps {
     id: string;
     title: string;
     items: any[]; 
+    onOutlineDrop: (arg: {}) => void
 }
 
 const SBOutline  = (props: SBOutlineProps) => {
-    const { id='sb-outline', title, items=[]} = props;
-
-    const [cards, setCards] = useState([
-        {
-          id: 1,
-          text: '',
-        }
-      ])
+    const initalState: Item[] = [];
+    const { id='sb-outline', title, items=[]} = props; 
+    const [cardsState, setCardsState] = useState<Item[]>(initalState);
+    const cardsStateRef = React.useRef(cardsState);
 
     useEffect(() => {
-        let cards: Item[] = []
+        cardsStateRef.current = cardsState;
+      }, [cardsState]);    
+
+    useEffect(() => {
+        setCardsState(initalState);
         {items.map((item, i) => {
-            const card = {
+            const new_card = {
                 id : i,
                 text : item[0]
             }
-            cards.push(card)
-        })}
+            setCardsState(prev => [...prev, new_card]);
+        })};
 
-        setCards(cards);
+        console.log("SBOutline useEffect cards state: " + JSON.stringify(cardsState));
 
-    },[props])       
+    },[props]);
+
+    const dropCard = useCallback((item: {}) => {
+        console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));       
+        props.onOutlineDrop(cardsStateRef.current)
+      }, [])     
   
 
     const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
-        setCards((prevCards: Item[]) =>
+        setCardsState((prevCards: Item[]) =>
           update(prevCards, {
             $splice: [
               [dragIndex, 1],
@@ -66,6 +71,7 @@ const SBOutline  = (props: SBOutlineProps) => {
               id={card.id}
               text={card.text}
               moveCard={moveCard}
+              dropCard={dropCard}
             />
           )
         },
@@ -78,7 +84,7 @@ const SBOutline  = (props: SBOutlineProps) => {
                 <div id={id} className="ml-2">
                     <h5>{title}</h5>
                     <div className="sb-outline mt-2 ml-0">
-                        <div>{cards.map((card, i) => renderCard(card, i))}</div>
+                        <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
                     </div>
                 </div>
                 ) : (

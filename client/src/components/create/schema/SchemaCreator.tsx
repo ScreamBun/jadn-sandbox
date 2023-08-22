@@ -384,6 +384,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         }))
     }).filter(Boolean);
 
+    const onOutlineDrop = (updatedCards: {}) => {
+        console.log("SchemaCreator onOutlineDrop: " + JSON.stringify(updatedCards));
+    }    
+
     return (
         <div className='card'>
             <div className='card-header p-2'>
@@ -482,7 +486,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     </div>
                                     <div className='row mt-2'>
                                         <div className='col'>
-                                            <SBOutline id={'create-schema-outline'} items={generatedSchema.types} title={'Outline'}></SBOutline>
+                                            <SBOutline id={'create-schema-outline'} items={generatedSchema.types} title={'Outline'} onOutlineDrop={onOutlineDrop}></SBOutline>
                                         </div>
                                     </div>
                                 </div>
