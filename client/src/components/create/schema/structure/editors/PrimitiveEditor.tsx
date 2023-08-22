@@ -1,10 +1,10 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-  Button, ButtonGroup, FormGroup, Input, InputGroup, Label
+  Button, ButtonGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options/OptionsModal';
@@ -26,6 +26,7 @@ interface PrimitiveEditorProps {
 const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
   const { value, change, changeIndex, dataIndex, config } = props;
   const [modal, setModal] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
   if (Number.isInteger(value[0])) {
@@ -89,25 +90,22 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
 
   return (
     <div className="border m-1 p-1">
-      <ButtonGroup size="sm" className="float-right">
-        <Button color="danger" onClick={removeAll}
-          title={`Delete ${valueObj.type}`}
-        >
-          <FontAwesomeIcon icon={faMinusCircle} />
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup size="sm" className="float-right mr-1">
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
-          title={`Move ${valueObj.type} Up`}
-        >
-          <FontAwesomeIcon icon={faSquareCaretUp} />
-        </Button>
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
-          title={`Move ${valueObj.type} Down`}
-        >
-          <FontAwesomeIcon icon={faSquareCaretDown} />
-        </Button>
-      </ButtonGroup>
+      <Dropdown className='float-right' isOpen={isDropdownOpen} toggle={() => setIsDropdownOpen(prevState => !prevState)}>
+        <DropdownToggle size='sm' title='More Options...'>
+          <FontAwesomeIcon icon={faEllipsisV} />
+        </DropdownToggle>
+        <DropdownMenu >
+          <DropdownItem color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}>
+            <FontAwesomeIcon icon={faSquareCaretUp} /> {`Move ${valueObj.type} Up`}
+          </DropdownItem>
+          <DropdownItem color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
+            <FontAwesomeIcon icon={faSquareCaretDown} /> {`Move ${valueObj.type} Down`}
+          </DropdownItem>
+          <DropdownItem onClick={removeAll} style={{ color: 'red' }} >
+            <FontAwesomeIcon icon={faMinusCircle} /> {`Delete ${valueObj.type}`}
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
 
       <div className="border-bottom mb-2">
         <h5 className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>

@@ -1,10 +1,10 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-  Button, ButtonGroup, FormGroup, Input, InputGroup, Label
+  Button, ButtonGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faCircleChevronDown, faCircleChevronUp, faEllipsisV, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
 import OptionsModal from './options/OptionsModal';
@@ -17,7 +17,6 @@ import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
 import { DraggableType } from '../../DraggableType';
 import update from 'immutability-helper'
-
 
 // Interface
 interface StructureEditorProps {
@@ -34,6 +33,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const { value, change, changeIndex, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
   const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   let fieldCount = 1;
   const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -306,23 +306,23 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <div className="border m-1 p-1">
-      <ButtonGroup size="sm" className="float-right">
-        <Button color="danger" onClick={removeAll}
-          title={`Delete ${valueObj.type}`}
-        >
-          <FontAwesomeIcon icon={faMinusCircle} />
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup size="sm" className="float-right mr-1">
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
-          title={`Move ${valueObj.type} Up`}>
-          <FontAwesomeIcon icon={faSquareCaretUp} />
-        </Button>
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
-          title={`Move ${valueObj.type} Down`}>
-          <FontAwesomeIcon icon={faSquareCaretDown} />
-        </Button>
-      </ButtonGroup>
+
+      <Dropdown className='float-right' isOpen={isDropdownOpen} toggle={() => setIsDropdownOpen(prevState => !prevState)}>
+        <DropdownToggle size='sm' title='More Options...'>
+          <FontAwesomeIcon icon={faEllipsisV} />
+        </DropdownToggle>
+        <DropdownMenu >
+          <DropdownItem color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}>
+            <FontAwesomeIcon icon={faSquareCaretUp} /> {`Move ${valueObj.type} Up`}
+          </DropdownItem>
+          <DropdownItem color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
+            <FontAwesomeIcon icon={faSquareCaretDown} /> {`Move ${valueObj.type} Down`}
+          </DropdownItem>
+          <DropdownItem onClick={removeAll} style={{ color: 'red' }} >
+            <FontAwesomeIcon icon={faMinusCircle} /> {`Delete ${valueObj.type}`}
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
 
       <div className="border-bottom mb-2">
         <h5 className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
