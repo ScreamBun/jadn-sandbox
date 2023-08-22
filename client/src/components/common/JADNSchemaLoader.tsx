@@ -93,7 +93,7 @@ const JADNSchemaLoader = (props: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
                         setLoadedSchema(jsonObj);
-                        dispatch(setSchema(schemaObj));
+                        dispatch(setSchema(jsonObj));
                         setIsValidating(false);
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                         return true;

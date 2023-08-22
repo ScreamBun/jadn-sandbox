@@ -50,12 +50,12 @@ const ExampleCreator = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-9'>
-                        <input type='number' className='form-control form-control-sm' value={numOfMsg} onChange={onNumChange}
-                            placeholder='Select number of desired generated examples...' min={1} />
+                        <input id="numOfMsg" type='number' className='form-control form-control-sm' value={numOfMsg} onChange={onNumChange}
+                            placeholder='Select number of desired generated examples...(1-10)' min={1} max={10} />
                     </div>
                     <div className='col-md-3'>
                         {isLoading ? <SBSpinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
-                            disabled={loadedSchema ? false : true}
+                            disabled={loadedSchema && numOfMsg ? false : true}
                             title={"Generate example messages based on selected schema"}>
                             Generate
                         </Button>}

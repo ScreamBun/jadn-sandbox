@@ -17,7 +17,7 @@ const ExampleGenerator = () => {
     const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
-    const [numOfMsg, setNumOfMsg] = useState<number | null>();
+    const [numOfMsg, setNumOfMsg] = useState<number | undefined>(undefined);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -63,6 +63,11 @@ const ExampleGenerator = () => {
             return;
         }
 
+        if (numOfMsg && numOfMsg > 10) {
+            sbToastError("Error: Must select a number less than ten");
+            return;
+        }
+
         dispatch(convertSchema(schemaObj, ['json']))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
@@ -71,11 +76,13 @@ const ExampleGenerator = () => {
                     sbToastError('Failed to generate examples: Invalid JSON data');
                     return;
                 }
+
                 //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
                 const schema = JSON.parse(convertSchemaVal.payload.schema.convert[0].schema);
                 schemaProps = schema.properties ? Object.keys(schema.properties) : [];
                 var generated: any[] = [] // LIST OF GENERATED EXAMPLES
                 let i = 0;
+
                 while (i < numOfMsg) {
                     let ex = JSONSchemaFaker.generate(schema);
                     if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
@@ -101,6 +108,10 @@ const ExampleGenerator = () => {
                             }
                         }
                     }
+
+                    if (i == 0) {
+                        break;
+                    }
                 }
 
                 if (generated.length != 0) {
@@ -111,6 +122,9 @@ const ExampleGenerator = () => {
                     setIsLoading(false);
                     sbToastError('Failed to generate examples');
                 }
+
+
+
             })
             .catch((convertSchemaErr) => {
                 sbToastError('Failed to generate examples: JADN TO JSON conversion failed');
