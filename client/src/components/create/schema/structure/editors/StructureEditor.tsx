@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
@@ -15,6 +15,8 @@ import {
 import { zip } from '../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
+import { DraggableType } from '../../DraggableType';
+import update from 'immutability-helper'
 
 
 // Interface
@@ -38,6 +40,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const [modal, setModal] = useState(false);
   const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
   const [valueObj, setValueObj] = useState(valueObjInit);
+  const [valueObjFields, setValueObjFields] = useState(valueObjInit.fields);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
@@ -96,6 +99,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     if (currMaxID && fieldCount <= currMaxID) {
       fieldCount = currMaxID + 1;
     }
+
     let fieldName;
     if (valueObj.type.toLowerCase() === 'enumerated') {
       fieldName = 'field_value_' + fieldCount;
@@ -105,8 +109,11 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       fieldName = 'field_name_' + fieldCount;
       field = [fieldCount, fieldName, 'String', [], ''] as StandardFieldArray;
     }
-    const updatevalue = { ...valueObj, fields: [...valueObj.fields, field] };
+
+    const tmpFieldValues = [...valueObjFields, field];
+    const updatevalue = { ...valueObj, fields: tmpFieldValues };
     setValueObj(updatevalue);
+    setValueObjFields(tmpFieldValues);
     change(updatevalue, dataIndex);
     setFieldCollapse(false);
     scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
@@ -114,7 +121,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   }
 
   const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
-    let tmpFieldValues = [...valueObj.fields];
+    let tmpFieldValues = [...valueObjFields];
 
     if (newIndex < 0) {
       sbToastError('Error: Cannot move Type up anymore')
@@ -138,6 +145,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
     setValueObj(updatevalue);
+    setValueObjFields(tmpFieldValues);
     change(updatevalue, dataIndex);
   }
 
@@ -158,7 +166,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       val[0] = parseInt(val[0]); //force index to type number
     }
 
-    const tmpFieldValues = [...valueObj.fields];
+    const tmpFieldValues = [...valueObjFields];
     tmpFieldValues[idx] = val;
 
     //sort fields
@@ -168,13 +176,14 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
     setValueObj(updatevalue);
+    setValueObjFields(tmpFieldValues);
     change(updatevalue, dataIndex);
   };
 
   const fieldRemove = (idx: number) => {
-    const tmpFieldValues = [...valueObj.fields];
+    const tmpFieldValues = [...valueObjFields];
 
-    if (idx + 1 == valueObj.fields.length) {
+    if (idx + 1 == valueObjFields.length) {
       tmpFieldValues.pop();
     } else {
       tmpFieldValues.splice(idx, 1);
@@ -182,6 +191,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
     setValueObj(updatevalue);
+    setValueObjFields(tmpFieldValues);
     change(updatevalue, dataIndex);
   };
 
@@ -249,26 +259,50 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   //FieldType MUST be a Primitive type, ArrayOf, MapOf, or a model-defined type. 
   //no enum, choice, map, array, record
-  const fields: any[] = [];
-  if (valueObj.fields) {
-    for (let i = 0; i < valueObj.fields.length; ++i) {
-      fields.push(<FieldEditor
-        key={valueObj.fields[i][0]}
-        dataIndex={i}
-        enumerated={valueObj.type.toLowerCase() === 'enumerated'}
-        value={valueObj.fields[i]}
-        change={fieldChange}
-        remove={fieldRemove}
-        changeIndex={moveField}
-        config={config}
-      />);
-    }
-  }
-  //sort fields
-  fields.sort(function (a, b) {
-    return a.key - b.key;
-  });
-  const listID = fields.map(field => field.key);
+  const onDrag = useCallback((dragIndex, hoverIndex) => {
+    setValueObjFields((prevFields) =>
+      update(prevFields, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, prevFields[dragIndex]],
+        ],
+      }),
+    )
+    setValueObj((prevObj) =>
+      update(prevObj, {
+        fields: {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, prevObj.fields[dragIndex]],
+          ],
+        }
+      }),
+    )
+  }, [])
+
+  const renderField = useCallback((field, index) => {
+    return (
+      <DraggableType
+        key={self.crypto.randomUUID()}
+        id={field[0]}
+        dataIndex={index}
+        changeIndex={onDrag}
+        acceptableType={'Field'}
+        item={< FieldEditor
+          dataIndex={index}
+          enumerated={valueObj.type.toLowerCase() === 'enumerated'}
+          value={field}
+          change={fieldChange}
+          remove={fieldRemove}
+          changeIndex={moveField}
+          config={config}
+        />}
+      />
+    );
+  }, [])
+
+  const fields = valueObjFields?.map((field, i) => renderField(field, i));
+  const listID = fields?.map(field => field.props.id);
 
   return (
     <div className="border m-1 p-1">

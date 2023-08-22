@@ -1,8 +1,6 @@
 import React, { memo, useMemo, useRef } from "react";
 import { ListGroupItem } from "reactstrap";
 import { useDrag, useDrop } from 'react-dnd'
-import { TypeKeys, TypeObject } from "./structure/editors/consts";
-import { zip } from "components/utils";
 
 export const DraggableType = memo(function DraggableType({ item, acceptableType, id, dataIndex, isDraggable = true, changeIndex }) {
 
@@ -21,25 +19,25 @@ export const DraggableType = memo(function DraggableType({ item, acceptableType,
     const [, dropRef] = useDrop(
         () => ({
             accept: acceptableType,
-            drop: (draggingItem, _monitor) => {
-                if (!ref.current) {
-                    return
-                }
-                const dragIndex = draggingItem.originalIndex
-                const hoverIndex = dataIndex
-                if (dragIndex && dragIndex !== hoverIndex) {
-                    console.log("on drop index of " + JSON.stringify(draggingItem) + " from " + dragIndex + " to " + hoverIndex)
-                    changeIndex(zip(TypeKeys, draggingItem.itemValue) as TypeObject, dragIndex, hoverIndex)
-                    draggingItem.originalIndex = hoverIndex
-                }
-            },
+            //  drop: (draggedItem, _monitor) => {
+            //     if (!ref.current) {
+            //         return
+            //     }
+            //     const dragIndex = draggedItem.originalIndex
+            //     const hoverIndex = dataIndex
+            //     if (dragIndex && dragIndex !== hoverIndex) {
+            //         console.log("on drop index of " + JSON.stringify(draggedItem) + " from " + dragIndex + " to " + hoverIndex)
+            //         changeIndex(dragIndex, hoverIndex)
+            //         draggedItem.originalIndex = hoverIndex
+            //     } 
+            // },
             //TODO: scroll page
             hover: (draggedItem, monitor) => {
                 if (!ref.current) {
                     return
                 }
                 const dragIndex = draggedItem.originalIndex
-                const hoverIndex = id
+                const hoverIndex = dataIndex
 
                 // Don't replace items with themselves
                 if (dragIndex === hoverIndex) {
@@ -59,8 +57,8 @@ export const DraggableType = memo(function DraggableType({ item, acceptableType,
                     return
                 }
 
-                //changeIndex(zip(TypeKeys, draggedItem.itemValue) as TypeObject, dragIndex, hoverIndex)
-                //draggedItem.originalIndex = hoverIndex
+                changeIndex(dragIndex, hoverIndex)
+                draggedItem.originalIndex = hoverIndex
             },
         }),
         [],
