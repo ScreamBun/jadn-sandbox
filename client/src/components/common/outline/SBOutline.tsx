@@ -2,7 +2,7 @@
 import update from 'immutability-helper'
 import React, { useCallback, useEffect, useState } from "react";
 
-import { OutlineCard } from "./OutlineCard";
+import { SBOutlineCard } from "./SBOutlineCard";
 
 
 export interface Item {
@@ -18,7 +18,7 @@ export interface SBOutlineProps {
     id: string;
     title: string;
     items: any[]; 
-    onOutlineDrop: (arg: {}) => void
+    onOutlineDrop: (arg: Item[]) => void
 }
 
 const SBOutline  = (props: SBOutlineProps) => {
@@ -65,7 +65,7 @@ const SBOutline  = (props: SBOutlineProps) => {
     const renderCard = useCallback(
         (card: { id: number; text: string }, index: number) => {
           return (
-            <OutlineCard
+            <SBOutlineCard
               key={card.id}
               index={index}
               id={card.id}
@@ -74,7 +74,7 @@ const SBOutline  = (props: SBOutlineProps) => {
               dropCard={dropCard}
             />
           )
-        },
+        }, 
         [],
       )    
 

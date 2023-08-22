@@ -4,7 +4,6 @@ import { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 
 import React from 'react'
-import { ItemTypes } from './ItemTypes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGrip } from '@fortawesome/free-solid-svg-icons'
 
@@ -13,7 +12,11 @@ const style = {
   cursor: 'move',
 }
 
-export interface OutlineCardProps {
+const ItemTypes = {
+  CARD: 'card',
+}
+
+export interface SBOutlineCardProps {
   id: any
   text: string
   index: number
@@ -27,7 +30,7 @@ interface DragItem {
   type: string
 }
 
-export const OutlineCard: FC<OutlineCardProps> = ({ id, text, index, moveCard, dropCard }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCard, dropCard }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -40,9 +43,8 @@ export const OutlineCard: FC<OutlineCardProps> = ({ id, text, index, moveCard, d
         handlerId: monitor.getHandlerId(),
       }
     },
-    drop(item: DragItem, monitor){
-      console.log("OutlineCard item dropped: " + JSON.stringify(item));
-      console.log("OutlineCard item DropResult: " + JSON.stringify(monitor.getDropResult()));
+    drop(item: DragItem, monitor) {
+      console.log("SBOutlineCard item dropped: " + JSON.stringify(item));
       dropCard(item);
     },
     hover(item: DragItem, monitor) {

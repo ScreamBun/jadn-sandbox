@@ -16,9 +16,9 @@ import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
-import SBOutline, { Item } from 'components/common/SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
+import SBOutline, { Item } from 'components/common/outline/SBOutline';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -383,15 +383,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             },
             config: configOpt
         }))
-    }).filter(Boolean);
-
-    // TODO: Move to utils / general
-    const getIndex = (arr: [], field: string) => {
-        return arr.findIndex((obj: any) => obj.field === field);
-    }    
+    }).filter(Boolean);   
 
     const reorder = (updatedOrder: Item[]) => {
-        let reordered_types: any[] = [];
+        let reordered_types: any[] = []; 
 
         // setCardsState(initalState);
         {updatedOrder.map((updated_item, i) => {
