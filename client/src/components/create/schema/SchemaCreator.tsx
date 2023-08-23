@@ -237,7 +237,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-            const tmpDef = Types[key].edit();
+            const tmpDef = Types[key].edit({ name: `${key}_name` });
             tmpTypes.push(tmpDef);  // unshift drops items at the bottom
             let updatedSchema = {
                 ...generatedSchema,
