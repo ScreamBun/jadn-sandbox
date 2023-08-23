@@ -33,12 +33,12 @@ const configInitialState = {
 const SchemaCreator = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
-    const generatedSchemaTypesRef = React.useRef(generatedSchema.types);
+    const generatedSchemaRef = React.useRef(generatedSchema);
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema));
-        generatedSchemaTypesRef.current = generatedSchema.types;
-    }, [generatedSchema.types])
+        generatedSchemaRef.current = generatedSchema;
+    }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
     const [fileName, setFileName] = useState('');
@@ -390,12 +390,12 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
         {updatedOrder.map((updated_item, i) => {
             const item_text = updated_item.text;       
-            const filtered_item = generatedSchemaTypesRef.current.filter((item:[]) => item[0] === item_text);
+            const filtered_item = generatedSchemaRef.current.types.filter((item:[]) => item[0] === item_text);
             reordered_types[i] = filtered_item[0];
         })};          
 
         let updatedSchema = {
-            ...generatedSchema,
+            ...generatedSchemaRef.current,
             types: reordered_types
         };
         setGeneratedSchema(updatedSchema);            

@@ -122,8 +122,8 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
                 <div className='col-10'>
                     <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
                 </div>
-                <div className='col-2'>
-                    <FontAwesomeIcon title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+                <div className='col-2 pl-1 pr-1'>
+                    <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
                 </div>                
             </div>
         </div>
