@@ -87,7 +87,9 @@ export const DraggableType = memo(function DraggableType(props: DraggableTypePro
     return (
         <div ref={dragHandler} style={containerStyle} >
             <ListGroupItem style={{ color: 'inherit', padding: '8px' }}>
-                <FontAwesomeIcon icon={faGrip} ref={dragDropRef} style={handleStyle} />
+                <div ref={dragDropRef} style={handleStyle}>
+                    <FontAwesomeIcon icon={faGrip} />
+                </div>
                 {item}
             </ListGroupItem >
         </div >
