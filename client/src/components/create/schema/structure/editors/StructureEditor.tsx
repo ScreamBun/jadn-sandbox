@@ -217,7 +217,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   //If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
   if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
     return (
-      <div className="border m-1 p-1">
+      <div className="border m-0 p-1">
         <ButtonGroup size="sm" className="float-right">
           <Button color="danger" onClick={removeAll} >
             <FontAwesomeIcon icon={faMinusCircle} />
@@ -225,7 +225,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         </ButtonGroup>
 
         <div className="border-bottom mb-2">
-          <h5 className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
+          <h5 id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
         </div>
 
         <div className="row m-0">
@@ -250,8 +250,9 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
           <FormGroup className="col-md-6">
             <Label>Comment</Label>
-            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+            <Input type="textarea" placeholder="Comment" className='text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
           </FormGroup>
+
         </div>
       </div>
     );
@@ -305,7 +306,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const listID = fields?.map(field => field.props.id);
 
   return (
-    <div className="border m-1 p-1">
+    <div className="border m-0 p-1">
       <ButtonGroup size="sm" className="float-right">
         <Button color="danger" onClick={removeAll}
           title={`Delete ${valueObj.type}`}
@@ -325,7 +326,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       </ButtonGroup>
 
       <div className="border-bottom mb-2">
-        <h5 className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
+        <h5 id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
       </div>
 
       <div className="row m-0">
@@ -351,9 +352,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         </FormGroup>
 
         <FormGroup className="col-md-6">
-          <Label>Comment
-            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
-          </Label>
+          <Label className='mb-0'>Comment</Label>
+          <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
         </FormGroup>
 
         <FormGroup className="col-12">

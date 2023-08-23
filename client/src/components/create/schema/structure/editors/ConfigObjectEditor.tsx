@@ -54,7 +54,7 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
   });
 
   return (
-    <div className="border m-1 p-1">
+    <div className="border m-0 p-1">
       <Button color="danger" size="sm" className="float-right" onClick={removeAll} >
         <FontAwesomeIcon
           icon={faMinusCircle}

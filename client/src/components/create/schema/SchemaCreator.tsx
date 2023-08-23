@@ -388,7 +388,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const reorder = (updatedOrder: Item[]) => {
         let reordered_types: any[] = []; 
 
-        // setCardsState(initalState);
         {updatedOrder.map((updated_item, i) => {
             const item_text = updated_item.text;       
             const filtered_item = generatedSchemaTypesRef.current.filter((item:[]) => item[0] === item_text);
@@ -400,12 +399,24 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             types: reordered_types
         };
         setGeneratedSchema(updatedSchema);            
-    }
+    };
 
     const onOutlineDrop = (updatedCards: Item[]) => {
         console.log("SchemaCreator onOutlineDrop: " + JSON.stringify(updatedCards));
         reorder(updatedCards);
-    }    
+    };
+
+    const onOutlineClick= (e:React.MouseEvent<HTMLElement>, text: string) => {
+        e.preventDefault();
+        console.log("SchemaCreator onOutlineClick: " + text);
+        const yOffset = -70; 
+        const element = document.getElementById(text);
+        if(element){
+            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({top: y, behavior: 'smooth'});    
+            // element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }    
+    };      
 
     return (
         <div className='card'>
@@ -413,7 +424,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 <div className='row no-gutters'>
                     <div className='col-sm-3'>
                         <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
-                            <div className="input-group">
+                            <div className="input-group flex-nowrap">
                                 <SBSelect id={"schema-list"}
                                     data={schemaOpts}
                                     onChange={onFileSelect}
@@ -457,92 +468,93 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     </div>
                 </div>
             </div>
-            <TabContent activeTab={activeView}>
-                <TabPane tabId='creator'>
-                    <div className='card'>
-                        <div className='card-body p-0'>
-                            <div className='row no-gutters'>
-                                <div id="schema-options" className='col-sm-3'>
-                                    <div className='row'>
-                                        <div className='col'>
-                                            <div className='sticky-top sticky-offset'>
-                                                <Nav pills>
-                                                    <NavItem>
-                                                        <NavLink
-                                                            className={activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                            disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
-                                                            onClick={() => setActiveOpt('info')}
-                                                            title="meta data (about a schema package)"
-                                                        >
-                                                            Info
-                                                        </NavLink>
-                                                    </NavItem>
-                                                    <NavItem>
-                                                        <NavLink
-                                                            className={activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                            disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
-                                                            onClick={() => setActiveOpt('types')}
-                                                            title="schema content (the information model)"
-                                                        >
-                                                            Types*
-                                                        </NavLink>
-                                                    </NavItem>
-                                                </Nav>
-                                                <TabContent activeTab={activeOpt}>
-                                                    <TabPane tabId='info'>
-                                                        <ListGroup>
-                                                            {infoKeys.length != 0 ? infoKeys : <div className='col'>No more Info to add</div>}
-                                                        </ListGroup>
-                                                    </TabPane>
-                                                    <TabPane tabId='types'>
-                                                        <ListGroup>
-                                                            {typesKeys}
-                                                        </ListGroup>
-                                                    </TabPane>
-                                                </TabContent>
-                                            </div>
+            <div className='card-body p-2'>
+                <TabContent activeTab={activeView}>
+                    <TabPane tabId='creator'>
+                        <div className='row'>
+                            <div id="schema-options" className='col-sm-3 pr-1'>
+                                <div className='row'>
+                                    <div className='col'>
+                                        <Nav pills className='pb-2'>
+                                            <NavItem className='mr-2'>
+                                                <NavLink
+                                                    className={activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                                    onClick={() => setActiveOpt('info')}
+                                                    title="meta data (about a schema package)"
+                                                >
+                                                    Info
+                                                </NavLink>
+                                            </NavItem>
+                                            <NavItem>
+                                                <NavLink
+                                                    className={activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                                    onClick={() => setActiveOpt('types')}
+                                                    title="schema content (the information model)"
+                                                >
+                                                    Types*
+                                                </NavLink>
+                                            </NavItem>
+                                        </Nav>
+                                        <TabContent className='mb-2' activeTab={activeOpt}>
+                                            <TabPane tabId='info'>
+                                                <ListGroup>
+                                                    {infoKeys.length != 0 ? infoKeys : <div className='col'>No Info to add</div>}
+                                                </ListGroup>
+                                            </TabPane>
+                                            <TabPane tabId='types'>
+                                                <ListGroup>
+                                                    {typesKeys}
+                                                </ListGroup>
+                                            </TabPane>
+                                        </TabContent>                                                    
+                                    </div>
+                                </div> 
+                                <div className='row'>
+                                    <div className='col'>
+                                        <SBOutline id={'schema-outline'} 
+                                            items={generatedSchema.types} 
+                                            title={'Outline'} 
+                                            onDrop={onOutlineDrop}
+                                            onClick={onOutlineClick}
+                                        ></SBOutline>
+                                    </div>
+                                </div>                                                                             
+                            </div>
+                            <div id="schema-editor" className='col-md-9 pl-2 pr-1'>
+                                {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
+                                    <div>
+                                        <div className="col pt-2 pr-0 pl-0 pb-0">
+                                            <h5 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                            <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
+                                                {infoEditors}
+                                            </Droppable>
+
+                                        </div>
+                                        <hr />
+                                        <div className="col p-0">
+                                            <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                            <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
+                                                {typesEditors}
+                                            </Droppable>
+
                                         </div>
                                     </div>
-                                    <div className='row mt-2'>
-                                        <div className='col'>
-                                            <SBOutline id={'create-schema-outline'} items={generatedSchema.types} title={'Outline'} onOutlineDrop={onOutlineDrop}></SBOutline>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="schema-editor" className='col-md-9'>
-                                    {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
-                                        <div>
-                                            <div className="col pt-2">
-                                                <h5 id="info">Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
-                                                <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
-                                                    {infoEditors}
-                                                </Droppable>
-
-                                            </div>
-                                            <hr />
-                                            <div className="col">
-                                                <h5 id="types">Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                                <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
-                                                    {typesEditors}
-                                                </Droppable>
-
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
+                                }
                             </div>
                         </div>
-                    </div>
-                </TabPane>
+                    </TabPane>
 
-                <TabPane tabId='schema'>
-                    <div className='card'>
-                        <div className='card-body p-0'>
-                            <SBEditor data={generatedSchema} isReadOnly={true}></SBEditor>
+                    <TabPane tabId='schema'>
+                        <div className='card'>
+                            <div className='card-body p-0'>
+                                <SBEditor data={generatedSchema} isReadOnly={true}></SBEditor>
+                            </div>
                         </div>
-                    </div>
-                </TabPane>
-            </TabContent >
+                    </TabPane>
+                </TabContent >
+            </div>
         </div>
     )
 });

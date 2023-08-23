@@ -33,7 +33,7 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
 
   if (fieldOptions) {
     return (
-      <div className="border m-1 p-1">
+      <div className="border m-0 p-1">
         <p className="col-sm-4 my-1"><strong>{id}</strong></p>
         <div className="col-12 m-0">
           {validOptions()}

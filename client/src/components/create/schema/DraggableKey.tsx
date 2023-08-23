@@ -27,7 +27,7 @@ export const DraggableKey = memo(function DraggableKey({ item, acceptableType, i
 
     return (
         <div ref={drag} style={containerStyle}>
-            <ListGroupItem style={{ color: 'inherit', padding: '8px' }}>
+            <ListGroupItem title={'Drag and drop to add'} style={{ color: 'inherit', padding: '8px' }}>
                 {item}
                 <FontAwesomeIcon icon={faGripLines} className='float-right' />
             </ListGroupItem>

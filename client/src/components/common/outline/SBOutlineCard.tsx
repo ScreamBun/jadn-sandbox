@@ -17,11 +17,12 @@ const ItemTypes = {
 }
 
 export interface SBOutlineCardProps {
-  id: any
-  text: string
-  index: number
-  moveCard: (dragIndex: number, hoverIndex: number) => void
-  dropCard: (item: {}) => void
+  id: any;
+  text: string;
+  index: number;
+  moveCard: (dragIndex: number, hoverIndex: number) => void;
+  dropCard: (item: {}) => void;
+  onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
 }
 
 interface DragItem {
@@ -30,7 +31,7 @@ interface DragItem {
   type: string
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCard, dropCard }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCard, dropCard, onClick }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -105,20 +106,24 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
-  })
+  });
 
   const opacity = isDragging ? 0 : 1
   drag(drop(ref))
 
+  const handleOnClick = (e: React.MouseEvent<HTMLElement>) => {
+    onClick(e, text)
+  };
+
   return (
     <div className='card'>
-        <div className='card-body' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+        <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
             <div className='row'>
                 <div className='col-10'>
-                    <a href="#">{text}</a>
+                    <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
                 </div>
                 <div className='col-2'>
-                    <FontAwesomeIcon icon={faGrip}></FontAwesomeIcon>
+                    <FontAwesomeIcon title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
                 </div>                
             </div>
         </div>

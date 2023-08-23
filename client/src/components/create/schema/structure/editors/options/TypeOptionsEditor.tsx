@@ -73,7 +73,7 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
 
   if (validOptions().length != 0) {
     return (
-      <div className="border m-1 p-1">
+      <div className="border m-0 p-1">
         <p className="col-sm-4 my-1"><strong>{id}</strong></p>
         <div className="col-12 m-0">
           {validOptions()}
@@ -81,7 +81,7 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
       </div>
     );
   } else if (optionType == "Boolean") {
-    return (<div className="border m-1 p-1">
+    return (<div className="border m-0 p-1">
       <div className="col-12 m-0"> No type options available </div>
     </div>);
   }

@@ -157,7 +157,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   }
 
   return (
-    <div className="col-sm-12 border m-1 p-1">
+    <div className="col-sm-12 border m-0 p-1">
       <ButtonGroup size="sm" className="float-right">
         <Button color="danger" onClick={removeAll}
           title={`Delete Field`}

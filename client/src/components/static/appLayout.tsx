@@ -9,6 +9,7 @@ import favicon from '../dependencies/assets/img/jadn-favicon.png';
 import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE, NAV_ABOUT } from 'components/utils/constants';
 import { useAppSelector } from '../../reducers';
 import SBScrollToTop from 'components/common/SBScrollToTop';
+// import SBScrollToTop from 'components/common/SBScrollToTop';
 
 const AppLayout = () => {
 
@@ -23,6 +24,11 @@ const AppLayout = () => {
   const onNavClick = (navClickEvent: any) => {
     setNavActive(navClickEvent.currentTarget.textContent);
   };
+
+  const scrollToTop = () => {
+    console.log("scrollToTop");
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };  
 
   return (
     <div>
@@ -84,11 +90,15 @@ const AppLayout = () => {
       <br />
       <br />
 
-      <SBScrollToTop />
+      {/* <SBScrollToTop /> */}
 
       <nav className='navbar navbar-dark bg-secondary fixed-bottom py-1'>
         <ThemeChooser size='sm' />
-        <small>{version_info}</small>
+        <div className='ml-auto'>
+          {/* <small className='mr-2'><a title="Scroll to the top of the page" onClick={scrollToTop} href="#">[Scroll to Top]</a></small> */}
+          <SBScrollToTop></SBScrollToTop>
+          <small className=''>{version_info}</small>
+        </div>
       </nav>
 
       <ToastContainer position={toast.POSITION.TOP_RIGHT} autoClose={4000} theme='colored' />
