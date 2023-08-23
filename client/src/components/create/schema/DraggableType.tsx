@@ -1,6 +1,8 @@
 import React, { memo, useMemo, useRef } from "react";
 import { ListGroupItem } from "reactstrap";
 import { useDrag, useDrop } from 'react-dnd'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGrip } from "@fortawesome/free-solid-svg-icons";
 
 interface DraggableTypeProps {
     item: any;
@@ -14,7 +16,7 @@ interface DraggableTypeProps {
 export const DraggableType = memo(function DraggableType(props: DraggableTypeProps) {
     const { item, acceptableType, id, dataIndex, isDraggable = true, changeIndex } = props;
 
-    const [{ isDragging }, dragRef] = useDrag(
+    const [{ isDragging }, dragRef, dragHandler] = useDrag(
         () => ({
             type: acceptableType,
             item: () => { return { itemID: id, originalIndex: dataIndex, newIndex: dataIndex, itemValue: item.props.value, changeIndexProp: item.props.changeIndex } },
@@ -71,18 +73,24 @@ export const DraggableType = memo(function DraggableType(props: DraggableTypePro
     const containerStyle = useMemo(
         () => ({
             opacity: isDragging || !isDraggable ? 0.4 : 1,
+        }),
+        [isDragging, isDraggable],
+    )
+
+    const handleStyle = useMemo(
+        () => ({
             cursor: isDraggable ? 'move' : 'default',
         }),
         [isDragging, isDraggable],
     )
 
-
     return (
-        <div ref={dragDropRef} style={containerStyle} >
+        <div ref={dragHandler} style={containerStyle} >
             <ListGroupItem style={{ color: 'inherit', padding: '8px' }}>
+                <FontAwesomeIcon icon={faGrip} ref={dragDropRef} style={handleStyle} />
                 {item}
-            </ListGroupItem>
-        </div>
+            </ListGroupItem >
+        </div >
     );
 
 });
