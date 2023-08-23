@@ -10,9 +10,14 @@ import SBEditor from "./SBEditor";
 import SBFileUploader from "./SBFileUploader";
 import SBSelect, { Option } from "./SBSelect";
 
-//data {name, type,  data}
+interface SBMultiSchemaLoaderProps {
+    data: { 'name': string, 'type': string, 'data': object }[];
+    setData: any;
+    selectedFileOpts: Option[];
+    setSelectedFileOpts: any;
+}
 
-const SBMultiSchemaLoader = (props: any) => {
+const SBMultiSchemaLoader = (props: SBMultiSchemaLoaderProps) => {
     const dispatch = useDispatch();
     const { data, setData, selectedFileOpts, setSelectedFileOpts } = props;
     const [selectedFile, setSelectedFile] = useState<null | 'file'>(null);
@@ -103,7 +108,7 @@ const SBMultiSchemaLoader = (props: any) => {
 
     //removeFile : remove selected uploaded file
     const removeFile = (filename: string) => {
-        setData(data.filter((file: File) => file.name !== filename));
+        setData(data.filter((file) => file.name !== filename));
         setSelectedFileOpts(selectedFileOpts.filter((opt) => opt.value != filename));
     }
 
