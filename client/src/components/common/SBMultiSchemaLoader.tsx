@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "reactstrap";
 import { getAllSchemasList } from "reducers/util";
@@ -6,16 +6,26 @@ import { sbToastError } from "./SBToast";
 import { faExclamationCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { info, loadFile } from "actions/util";
+import SBEditor from "./SBEditor";
 
 const SBMultiSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
     const { data, setData } = props;
+    const [toggle, setToggle] = useState('');
 
     const schemaOpts = useSelector(getAllSchemasList);
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
 
+    const onToggle = (index: number) => {
+        if (toggle == index.toString()) {
+            setToggle('');
+
+        } else {
+            setToggle(`${index}`);
+        }
+    }
 
     //onFileUpload : upload file(s) to uploaded file list
     const onFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +104,29 @@ const SBMultiSchemaLoader = (props: any) => {
         }
     }
 
+    const listData = data.map((fileObj: any, i: number) => {
+        return (
+            <div className="card" key={i}>
+                <div className="card-header">
+                    <h5 className="mb-0">
+                        <button className={fileObj.data == 'err' ? `btn` : `btn btn-link`} id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
+                            {fileObj.name} {fileObj.data == 'err' ? <FontAwesomeIcon style={{ color: 'red' }} title={'Invalid JADN. Please remove or fix schema.'} icon={faExclamationCircle}></FontAwesomeIcon> : ''}
+                        </button>
+                        <Button id='removeFile' color="danger" className='btn-sm float-right' onClick={() => removeFile(i, fileObj.name)}>
+                            <FontAwesomeIcon icon={faTrash} />
+                        </Button>
+                    </h5>
+                </div>
+
+                {toggle == `${i}` && fileObj.data != 'err' ?
+                    <div className="card-body" key={i}>
+                        <SBEditor data={fileObj.data} isReadOnly={true} height={'20em'}></SBEditor>
+                    </div>
+                    : ''}
+            </div>
+        )
+    })
+
     return (
         <div className="card">
             <div className="card-header p-2">
@@ -125,14 +158,7 @@ const SBMultiSchemaLoader = (props: any) => {
                     </div>
                     <div style={{ height: '20em' }}>
                         <ul className="list-group">
-                            {data.map((file: any, index: number) => (
-                                <li className="list-group-item" key={index}>
-                                    {file.name} {file.data == 'err' ? <FontAwesomeIcon style={{ color: 'red' }} title={'Invalid JADN. Please remove or fix schema.'} icon={faExclamationCircle}></FontAwesomeIcon> : ''}
-                                    <Button id='removeFile' color="danger" className='btn-sm float-right' onClick={() => removeFile(index, file.name)}>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </Button>
-                                </li>
-                            ))}
+                            {listData}
                         </ul>
                     </div>
                 </div>

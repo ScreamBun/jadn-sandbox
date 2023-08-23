@@ -50,12 +50,14 @@ const SchemaTransformed = (props: any) => {
                             /> : ""}
                     </div>
                     <div className='col-md-3'>
-                        <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} />
-                        <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`mr-1 float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} filename={baseFile} ext={transformedSchema[0].schema_fmt || 'jadn'} />
-                        <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${transformedSchema && (transformedSchema.length == 1) ? '' : ' d-none'}`} filename={baseFile} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                        <div className={`${transformedSchema && (transformedSchema.length == 1) && transformedSchema[0].schema != '' ? '' : ' d-none'}`}>
+                            <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-right`} />
+                            <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`mr-1 float-right`} filename={baseFile} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                            <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right`} filename={baseFile} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                        </div>
 
                         {isLoading ? <SBSpinner action={'Transforming'} /> : <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
-                            disabled={data.length != 0 && (transformationType?.value == 'resolve references' ? baseFile : true) ? false : true}
+                            disabled={data.length != 0 && transformationType && (transformationType?.value == 'resolve references' ? (baseFile ? true : false) : true) ? false : true}
                             title={"Process JADN schema(s) to produce another JADN schema"}>
                             Transform
                         </Button>}

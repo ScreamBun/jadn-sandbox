@@ -96,6 +96,7 @@ const SchemaTransformer = () => {
                     sbToastError(err);
                 })
         } else {
+            setIsLoading(false);
             sbToastError('No Transformation type selected');
         }
     }
