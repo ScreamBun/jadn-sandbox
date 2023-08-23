@@ -1,8 +1,14 @@
-import React, { memo, useRef } from 'react';
+import React, { ReactNode, memo, useRef } from 'react';
 import { useDrop } from 'react-dnd'
 
-export const Droppable = memo(function Droppable({ onDrop, acceptableType, children }) {
+interface DroppableProps {
+    onDrop: (key: string) => void;
+    acceptableType: string;
+    children: ReactNode;
+}
 
+export const Droppable = memo(function Droppable(props: DroppableProps) {
+    const { onDrop, acceptableType, children } = props;
     const scrollToRef = useRef<HTMLInputElement | null>(null);
     const [{ isOver, canDrop }, drop] = useDrop(
         () => ({
