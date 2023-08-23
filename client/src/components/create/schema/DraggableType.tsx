@@ -2,7 +2,17 @@ import React, { memo, useMemo, useRef } from "react";
 import { ListGroupItem } from "reactstrap";
 import { useDrag, useDrop } from 'react-dnd'
 
-export const DraggableType = memo(function DraggableType({ item, acceptableType, id, dataIndex, isDraggable = true, changeIndex }) {
+interface DraggableTypeProps {
+    item: any;
+    acceptableType: string;
+    id: string | number;
+    dataIndex: number;
+    isDraggable: boolean;
+    changeIndex: (originalIndex: number, newIndex: number) => void;
+}
+
+export const DraggableType = memo(function DraggableType(props: DraggableTypeProps) {
+    const { item, acceptableType, id, dataIndex, isDraggable = true, changeIndex } = props;
 
     const [{ isDragging }, dragRef] = useDrag(
         () => ({
