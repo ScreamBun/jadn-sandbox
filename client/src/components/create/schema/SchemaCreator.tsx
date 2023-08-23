@@ -383,22 +383,24 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             },
             config: configOpt
         }))
-    }).filter(Boolean);   
+    }).filter(Boolean);
 
     const reorder = (updatedOrder: Item[]) => {
-        let reordered_types: any[] = []; 
+        let reordered_types: any[] = [];
 
-        {updatedOrder.map((updated_item, i) => {
-            const item_text = updated_item.text;       
-            const filtered_item = generatedSchemaRef.current.types.filter((item:[]) => item[0] === item_text);
-            reordered_types[i] = filtered_item[0];
-        })};          
+        {
+            updatedOrder.map((updated_item, i) => {
+                const item_text = updated_item.text;
+                const filtered_item = generatedSchemaRef.current.types.filter((item: []) => item[0] === item_text);
+                reordered_types[i] = filtered_item[0];
+            })
+        };
 
         let updatedSchema = {
             ...generatedSchemaRef.current,
             types: reordered_types
         };
-        setGeneratedSchema(updatedSchema);            
+        setGeneratedSchema(updatedSchema);
     };
 
     const onOutlineDrop = (updatedCards: Item[]) => {
@@ -406,17 +408,17 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         reorder(updatedCards);
     };
 
-    const onOutlineClick= (e:React.MouseEvent<HTMLElement>, text: string) => {
+    const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
         e.preventDefault();
         console.log("SchemaCreator onOutlineClick: " + text);
-        const yOffset = -70; 
+        const yOffset = -70;
         const element = document.getElementById(text);
-        if(element){
-            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({top: y, behavior: 'smooth'});    
+        if (element) {
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
             // element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }    
-    };      
+        }
+    };
 
     return (
         <div className='card'>
@@ -508,19 +510,19 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                     {typesKeys}
                                                 </ListGroup>
                                             </TabPane>
-                                        </TabContent>                                                    
+                                        </TabContent>
                                     </div>
-                                </div> 
+                                </div>
                                 <div className='row'>
                                     <div className='col'>
-                                        <SBOutline id={'schema-outline'} 
-                                            items={generatedSchema.types} 
-                                            title={'Outline'} 
+                                        <SBOutline id={'schema-outline'}
+                                            items={generatedSchema.types}
+                                            title={'Outline'}
                                             onDrop={onOutlineDrop}
                                             onClick={onOutlineClick}
                                         ></SBOutline>
                                     </div>
-                                </div>                                                                             
+                                </div>
                             </div>
                             <div id="schema-editor" className='col-md-9 pl-2 pr-1'>
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
