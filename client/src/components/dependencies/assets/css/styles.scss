@@ -57,22 +57,17 @@ body {
     height: 100%;
 }  */
 
-//scrollToTopBtn
-.btn-rounded {
-    text-align: center;
-    justify-content: center;
-    position: fixed;
-    bottom: 3em;
-    right: 3em;
-    z-index: 50;
-    cursor: pointer;
-    transition: all 0.3s ease 0s;
-    border-radius: 10%;
-    //    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+.card-body-page {
+    height: 40em;
+    overflow-y: auto;
+    padding: 0;
+}
 
-    &:hover {
-        transform: translateY(-10px);
-    }
+.card-body-scroller {
+    height: 40em;
+    overflow-y: scroll;
+    position: sticky;
+    top: 0;
 }
 
 .code,
@@ -209,7 +204,7 @@ small {
 }
 
 .text-area-w100 {
-    width: 100%; 
+    width: 100%;
     max-width: 100%;
 }
 
@@ -223,7 +218,7 @@ small {
             cursor: pointer;
             padding: 4px 10px;
         }
-    }    
+    }
 
     .list-group-item {
         cursor: pointer !important;

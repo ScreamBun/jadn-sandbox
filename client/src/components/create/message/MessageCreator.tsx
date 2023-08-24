@@ -122,7 +122,7 @@ const MessageCreator = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
+            <div className='card-body-page'>
                 <TabContent activeTab={activeView}>
                     <TabPane tabId='creator'>
                         <div id='command-fields' className='p-2'>

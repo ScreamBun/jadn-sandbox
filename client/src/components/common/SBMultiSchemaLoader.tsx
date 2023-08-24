@@ -155,7 +155,7 @@ const SBMultiSchemaLoader = (props: SBMultiSchemaLoaderProps) => {
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0" style={{ height: '40em', overflowY: 'auto' }}>
+            <div className="card-body-page">
                 {listData}
             </div>
         </div>

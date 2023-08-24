@@ -111,7 +111,7 @@ const SBCollapseViewer = (props: any) => {
     });
 
     return (
-        <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
+        <div className='card-body-page'>
             {listData}
             <div id="fullGV" style={{ visibility: 'hidden', overflow: 'hidden' }}></div>
         </div>
