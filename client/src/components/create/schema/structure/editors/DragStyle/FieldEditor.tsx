@@ -1,17 +1,17 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-  Button, ButtonGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, Label
+  Button, ButtonGroup, FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisV, faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {
   FieldObject, EnumeratedFieldObject, EnumeratedFieldKeys, StandardFieldKeys, StandardFieldObject
-} from './consts';
-import OptionsModal from './options/OptionsModal';
-import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../interface';
-import { objectValues, zip } from '../../../../utils';
-import { useAppSelector } from '../../../../../reducers';
+} from '../consts';
+import OptionsModal from '../options/OptionsModal';
+import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../../interface';
+import { objectValues, zip } from '../../../../../utils';
+import { useAppSelector } from '../../../../../../reducers';
 import { sbToastError } from 'components/common/SBToast';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import { Option } from 'components/common/SBSelect';
@@ -29,7 +29,7 @@ interface FieldEditorProps {
 
 // Field Editor
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
-  const { enumerated, value, dataIndex, change, config, changeIndex } = props;
+  const { enumerated, value, dataIndex, change, config } = props;
   //const allTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]);
   const types = useAppSelector((state) => ({
     base: state.Util.types.base,
@@ -42,7 +42,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   const [valueObj, setValueObj] = useState(valueObjInit);
   const val = valueObj as StandardFieldObject;
   const [valType, setValType] = useState({ value: val.type, label: val.type });
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
@@ -159,22 +158,12 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   return (
     <div className="col-sm-12 border m-1 p-1">
-      <Dropdown className='float-right' isOpen={isDropdownOpen} toggle={() => setIsDropdownOpen(prevState => !prevState)}>
-        <DropdownToggle size='sm' title='More Options...'>
-          <FontAwesomeIcon icon={faEllipsisV} />
-        </DropdownToggle>
-        <DropdownMenu >
-          <DropdownItem color="info" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)}>
-            <FontAwesomeIcon icon={faSquareCaretUp} /> {`Move Field Up`}
-          </DropdownItem>
-          <DropdownItem color="info" onClick={() => changeIndex(value, dataIndex, dataIndex + 1)} >
-            <FontAwesomeIcon icon={faSquareCaretDown} /> {`Move Field Down`}
-          </DropdownItem>
-          <DropdownItem onClick={removeAll} style={{ color: 'red' }} >
-            <FontAwesomeIcon icon={faMinusCircle} /> {`Delete Field`}
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+      <ButtonGroup size="sm" className="float-right">
+        <Button color="danger" onClick={removeAll}
+          title={`Delete Field`}>
+          <FontAwesomeIcon icon={faMinusCircle} />
+        </Button>
+      </ButtonGroup>
 
       <div className="border-bottom mb-2">
         <p className="col-sm-4 my-1">

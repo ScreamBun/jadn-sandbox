@@ -1,14 +1,14 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-  Button, ButtonGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, InputGroup, Label
+  Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleChevronDown, faCircleChevronUp, faEllipsisV, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
-import FieldEditor from '../FieldEditor';
+import FieldEditor from './FieldEditor';
 import {
   EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
 } from '../../../interface';
@@ -30,10 +30,9 @@ interface StructureEditorProps {
 
 // Structure Editor
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, change, changeIndex, dataIndex, config } = props;
+  const { value, change, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
   const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   let fieldCount = 1;
   const [fieldCollapse, setFieldCollapse] = useState(false);

@@ -1,20 +1,20 @@
 import React, { memo, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-    Button, ButtonGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Input, InputGroup, Label
+    Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleChevronDown, faCircleChevronUp, faEllipsisV, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
-import FieldEditor from '../FieldEditor';
 import {
     EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
 } from '../../../interface';
 import { zip } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
+import FieldEditorBtnStyle from './FieldEditorBtnStyle';
 
 // Interface
 interface StructureEditorProps {
@@ -31,7 +31,6 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     const { value, change, changeIndex, dataIndex, config } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
     const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     let fieldCount = 1;
     const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -254,7 +253,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     const fields: any[] = [];
     if (valueObj.fields) {
         for (let i = 0; i < valueObj.fields.length; ++i) {
-            fields.push(<FieldEditor
+            fields.push(<FieldEditorBtnStyle
                 key={valueObj.fields[i][0]}
                 dataIndex={i}
                 enumerated={valueObj.type.toLowerCase() === 'enumerated'}
@@ -272,22 +271,23 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     return (
         <div className="border m-1 p-1">
 
-            <Dropdown className='float-right' isOpen={isDropdownOpen} toggle={() => setIsDropdownOpen(prevState => !prevState)}>
-                <DropdownToggle size='sm' title='More Options...'>
-                    <FontAwesomeIcon icon={faEllipsisV} />
-                </DropdownToggle>
-                <DropdownMenu >
-                    <DropdownItem color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}>
-                        <FontAwesomeIcon icon={faSquareCaretUp} /> {`Move ${valueObj.type} Up`}
-                    </DropdownItem>
-                    <DropdownItem color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
-                        <FontAwesomeIcon icon={faSquareCaretDown} /> {`Move ${valueObj.type} Down`}
-                    </DropdownItem>
-                    <DropdownItem onClick={removeAll} style={{ color: 'red' }} >
-                        <FontAwesomeIcon icon={faMinusCircle} /> {`Delete ${valueObj.type}`}
-                    </DropdownItem>
-                </DropdownMenu>
-            </Dropdown>
+            <ButtonGroup size="sm" className="float-right">
+                <Button color="danger" onClick={removeAll}
+                    title={`Delete ${valueObj.type}`}
+                >
+                    <FontAwesomeIcon icon={faMinusCircle} />
+                </Button>
+            </ButtonGroup>
+            <ButtonGroup size="sm" className="float-right mr-1">
+                <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
+                    title={`Move ${valueObj.type} Up`}>
+                    <FontAwesomeIcon icon={faSquareCaretUp} />
+                </Button>
+                <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
+                    title={`Move ${valueObj.type} Down`}>
+                    <FontAwesomeIcon icon={faSquareCaretDown} />
+                </Button>
+            </ButtonGroup>
 
             <div className="border-bottom mb-2">
                 <h5 id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>

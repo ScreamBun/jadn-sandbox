@@ -1,5 +1,5 @@
 import React from 'react';
-import { PrimitiveEditor, StructureEditor, StructureEditorBtnStyle } from './editors/editors';
+import { PrimitiveEditor, StructureEditor, StructureEditorBtnStyle, PrimitiveEditorBtnStyle } from './editors/editors';
 import { PrimitiveDef, StructureDef } from './interfaces';
 import { InfoConfig, StandardTypeArray } from '../interface';
 
@@ -76,14 +76,14 @@ export default {
     key: 'MapOf',
     edit: (props: StructureDef) => primDef({ ...props, type: 'MapOf' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'structure'
   },
   arrayof: {
     key: 'ArrayOf',
     edit: (props: StructureDef) => primDef({ ...props, type: 'ArrayOf' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'structure'
   },
   // Primitive Types
@@ -91,35 +91,35 @@ export default {
     key: 'Binary',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Binary' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   },
   boolean: {
     key: 'Boolean',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Boolean' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   },
   integer: {
     key: 'Integer',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Integer' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   },
   number: {
     key: 'Number',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Number' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   },
   string: {
     key: 'String',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'String' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   }
 };
