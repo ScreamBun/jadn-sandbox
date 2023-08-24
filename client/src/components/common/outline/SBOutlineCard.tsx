@@ -44,7 +44,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
         handlerId: monitor.getHandlerId(),
       }
     },
-    drop(item: DragItem, monitor) {
+    drop(item: DragItem, _monitor) {
       console.log("SBOutlineCard item dropped: " + JSON.stringify(item));
       dropCard(item);
     },

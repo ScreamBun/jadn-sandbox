@@ -258,8 +258,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     );
   }
 
-  //FieldType MUST be a Primitive type, ArrayOf, MapOf, or a model-defined type. 
-  //no enum, choice, map, array, record
   const onDrag = useCallback((dragIndex, hoverIndex) => {
     setValueObjFields((prevFields) =>
       update(prevFields, {

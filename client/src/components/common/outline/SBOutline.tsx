@@ -3,8 +3,6 @@ import update from 'immutability-helper'
 import React, { useCallback, useEffect, useState } from "react";
 
 import { SBOutlineCard } from "./SBOutlineCard";
-import { Nav, NavItem, NavLink } from 'reactstrap';
-
 
 export interface Item {
     id: number
