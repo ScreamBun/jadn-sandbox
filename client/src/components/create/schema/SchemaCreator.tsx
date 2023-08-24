@@ -19,6 +19,7 @@ import SBSpinner from 'components/common/SBSpinner';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
 import SBOutline, { Item } from 'components/common/outline/SBOutline';
+import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -420,6 +421,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         }
     };
 
+    const [fieldCollapse, setFieldCollapse] = useState(false);
+
     return (
         <div className='card'>
             <div className='card-header p-2'>
@@ -526,23 +529,44 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                             </div>
                             <div id="schema-editor" className='col-md-9 card-body-scroller' >
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
-                                    <div>
-                                        <div className="col pt-2 pr-0 pl-0 pb-0">
-                                            <h5 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
-                                            <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
-                                                {infoEditors}
-                                            </Droppable>
+                                    <>
+                                        <div className='row'>
+                                            <div className="col pt-2">
+                                                <div className='row'>
+                                                    <div className='col'>
+                                                        <h5 id="info" className='mb-0'>Info 
+                                                            <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small>
+                                                        </h5>                                                        
+                                                    </div>
+                                                    <div className='col'>
+                                                        {generatedSchema.info &&
+                                                            <legend>
+                                                                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                className='float-right btn btn-sm'
+                                                                onClick={() => setFieldCollapse(!fieldCollapse)}
+                                                                title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                                            </legend>
+                                                        }  
+                                                    </div>
+                                                </div>
+                                                {!fieldCollapse &&
+                                                <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
+                                                    {infoEditors}
+                                                </Droppable>}
 
+                                            </div>
                                         </div>
                                         <hr />
-                                        <div className="col p-0">
-                                            <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                            <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
-                                                {typesEditors}
-                                            </Droppable>
+                                        <div className='row'>                                        
+                                            <div className="col">
+                                                <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
+                                                    {typesEditors}
+                                                </Droppable>
 
+                                            </div>
                                         </div>
-                                    </div>
+                                    </>
                                 }
                             </div>
                         </div>
