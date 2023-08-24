@@ -305,23 +305,13 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <div className="border m-1 p-1">
-
-      <Dropdown className='float-right' isOpen={isDropdownOpen} toggle={() => setIsDropdownOpen(prevState => !prevState)}>
-        <DropdownToggle size='sm' title='More Options...'>
-          <FontAwesomeIcon icon={faEllipsisV} />
-        </DropdownToggle>
-        <DropdownMenu >
-          <DropdownItem color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}>
-            <FontAwesomeIcon icon={faSquareCaretUp} /> {`Move ${valueObj.type} Up`}
-          </DropdownItem>
-          <DropdownItem color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} >
-            <FontAwesomeIcon icon={faSquareCaretDown} /> {`Move ${valueObj.type} Down`}
-          </DropdownItem>
-          <DropdownItem onClick={removeAll} style={{ color: 'red' }} >
-            <FontAwesomeIcon icon={faMinusCircle} /> {`Delete ${valueObj.type}`}
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+      <ButtonGroup size="sm" className="float-right">
+        <Button color="danger" onClick={removeAll}
+          title={`Delete ${valueObj.type}`}
+        >
+          <FontAwesomeIcon icon={faMinusCircle} />
+        </Button>
+      </ButtonGroup>
 
       <div className="border-bottom mb-2">
         <h5 id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
