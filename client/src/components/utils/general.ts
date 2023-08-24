@@ -32,3 +32,7 @@ export const zip = (keys: Array<string>, values: Array<any>): Record<string, any
 export const isArrayEqual = (x: [], y: []) => {
   return _(x).differenceWith(y, _.isEqual).isEmpty();
 };
+
+export const getIndex = (arr: [], field: string) => {
+    return arr.findIndex((obj: any) => obj.field === field);
+};

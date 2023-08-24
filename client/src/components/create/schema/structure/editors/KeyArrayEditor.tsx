@@ -83,7 +83,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
   ))
 
   return (
-    <div className="border m-1 p-1">
+    <div className="border m-0 p-1">
       <ButtonGroup size="sm" className="float-right">
         <Button color="info" onClick={addIndex} >
           <FontAwesomeIcon icon={faPlusSquare} />

@@ -2,8 +2,7 @@
 import update from 'immutability-helper'
 import React, { useCallback, useEffect, useState } from "react";
 
-import { OutlineCard } from "./OutlineCard";
-
+import { SBOutlineCard } from "./SBOutlineCard";
 
 export interface Item {
     id: number
@@ -18,7 +17,8 @@ export interface SBOutlineProps {
     id: string;
     title: string;
     items: any[]; 
-    onOutlineDrop: (arg: {}) => void
+    onDrop: (arg: Item[]) => void;
+    onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
 }
 
 const SBOutline  = (props: SBOutlineProps) => {
@@ -45,12 +45,16 @@ const SBOutline  = (props: SBOutlineProps) => {
 
     },[props]);
 
+    const onClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
+      console.log("SBOutline onClick useCallback text: " + text);       
+      props.onClick(e, text)
+    }, []);     
+
     const dropCard = useCallback((item: {}) => {
         console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));       
-        props.onOutlineDrop(cardsStateRef.current)
-      }, [])     
+        props.onDrop(cardsStateRef.current)
+    }, []);     
   
-
     const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
         setCardsState((prevCards: Item[]) =>
           update(prevCards, {
@@ -60,30 +64,33 @@ const SBOutline  = (props: SBOutlineProps) => {
             ],
           }),
         )
-      }, [])    
+      }, []);    
 
     const renderCard = useCallback(
         (card: { id: number; text: string }, index: number) => {
           return (
-            <OutlineCard
+            <SBOutlineCard
               key={card.id}
               index={index}
               id={card.id}
               text={card.text}
               moveCard={moveCard}
               dropCard={dropCard}
+              onClick={onClick}
             />
           )
-        },
-        [],
-      )    
+        }, 
+        []
+    );    
 
     return (
         <>
             {items && items.length > 0 ? (
-                <div id={id} className="ml-2">
-                    <h5>{title}</h5>
-                    <div className="sb-outline mt-2 ml-0">
+                <div id={id}>
+                    <ul className="nav nav-pills">
+                      <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link">{title}</a></li>
+                    </ul>                    
+                    <div className="sb-outline mt-2">
                         <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
                     </div>
                 </div>

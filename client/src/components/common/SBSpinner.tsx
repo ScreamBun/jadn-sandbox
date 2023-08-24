@@ -19,7 +19,7 @@ const SBSpinner = (props: any) => {
                 <div className="spinner-border spinner-border-lg" color="inherit" role="status">
                     <div className="sr-only">Loading...</div>
                 </div>
-                <div>{action ? `${action} ...` : ''}</div>
+                <div className="ml-2">{action ? `${action} ...` : ''}</div>
             </div>
         );
     }
@@ -29,7 +29,7 @@ const SBSpinner = (props: any) => {
             <span className="spinner-border spinner-border-sm" color="inherit" role="status">
                 <span className="sr-only">Loading...</span>
             </span>
-            <span className="ml-1">{action ? `${action} ...` : ''}</span>
+            <span className="ml-2">{action ? `${action} ...` : ''}</span>
         </Button>
     );
 }

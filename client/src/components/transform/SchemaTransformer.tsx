@@ -18,6 +18,7 @@ const SchemaTransformer = () => {
     const dispatch = useDispatch();
 
     const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
+    const [selectedFileOpts, setSelectedFileOpts] = useState<Option[]>([]);
     const [transformationType, setTransformationType] = useState<Option | null>();
     const [baseFile, setBaseFile] = useState<Option | null>();
     const [transformedSchema, setTransformedSchema] = useState([initTransformedSchema]);
@@ -41,24 +42,13 @@ const SchemaTransformer = () => {
         setBaseFile(null);
         setTransformationType(null);
         setSelectedFiles([]);
+        setSelectedFileOpts([]);
         setTransformedSchema([initTransformedSchema]);
-        //clear checkboxes 
-        var inputElem = document.getElementsByTagName('input');
-        for (var i = 0; i < inputElem.length; i++) {
-            if (inputElem[i].type == 'checkbox') {
-                if (inputElem[i].name == 'schema-files') {
-                    inputElem[i].checked = false;
-                }
-            }
-        }
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        //validate all selected files
-        //call resolve_references.py
-        //set transformed Schema
         if (transformationType?.value) {
             const selectedBasefile = baseFile?.value ? baseFile.value : '';
             dispatch(transformSchema(selectedFiles, transformationType.value, selectedBasefile))
@@ -96,6 +86,7 @@ const SchemaTransformer = () => {
                     sbToastError(err);
                 })
         } else {
+            setIsLoading(false);
             sbToastError('No Transformation type selected');
         }
     }
@@ -117,7 +108,8 @@ const SchemaTransformer = () => {
                             <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <SBMultiSchemaLoader data={selectedFiles} setData={setSelectedFiles} />
+                                        <SBMultiSchemaLoader data={selectedFiles} setData={setSelectedFiles}
+                                            selectedFileOpts={selectedFileOpts} setSelectedFileOpts={setSelectedFileOpts} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}

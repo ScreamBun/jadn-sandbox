@@ -40,7 +40,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
 
   if (type === 'SBCreatableSelect' && options) {
     return (
-      <FormGroup row className="border m-1 p-1">
+      <FormGroup row className="border m-0 p-1">
         <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
         <div className="input-group col-sm-10">
           <SBCreatableSelect id={`editor-${placeholder}`}
@@ -64,7 +64,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
 
   if (type === 'SBSelect' && options) {
     return (
-      <FormGroup row className="border m-1 p-1">
+      <FormGroup row className="border m-0 p-1">
         <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
         <div className="input-group col-sm-10">
           <SBSelect id={`editor-${placeholder}`}
@@ -102,7 +102,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   }
 
   return (
-    <FormGroup row className="border m-1 p-1">
+    <FormGroup row className="border m-0 p-1">
       <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
       <div className="input-group col-sm-10">
         <Input

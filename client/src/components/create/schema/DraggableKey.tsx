@@ -4,7 +4,15 @@ import React, { memo, useMemo } from "react";
 import { ListGroupItem } from "reactstrap";
 import { useDrag } from 'react-dnd'
 
-export const DraggableKey = memo(function DraggableKey({ item, acceptableType, id, isDraggable = true }) {
+interface DraggableKeyProps {
+    item: any;
+    acceptableType: string;
+    id: string | number;
+    isDraggable: boolean;
+}
+
+export const DraggableKey = memo(function DraggableKey(props: DraggableKeyProps) {
+    const { item, acceptableType, id, isDraggable = true } = props;
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: acceptableType,
@@ -27,7 +35,7 @@ export const DraggableKey = memo(function DraggableKey({ item, acceptableType, i
 
     return (
         <div ref={drag} style={containerStyle}>
-            <ListGroupItem style={{ color: 'inherit', padding: '8px' }}>
+            <ListGroupItem title={'Drag and drop to add'} style={{ color: 'inherit', padding: '8px' }}>
                 {item}
                 <FontAwesomeIcon icon={faGripLines} className='float-right' />
             </ListGroupItem>

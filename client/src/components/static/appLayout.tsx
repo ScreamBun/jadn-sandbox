@@ -22,7 +22,7 @@ const AppLayout = () => {
 
   const onNavClick = (navClickEvent: any) => {
     setNavActive(navClickEvent.currentTarget.textContent);
-  };
+  }; 
 
   return (
     <div>
@@ -84,11 +84,12 @@ const AppLayout = () => {
       <br />
       <br />
 
-      <SBScrollToTop />
-
       <nav className='navbar navbar-dark bg-secondary fixed-bottom py-1'>
         <ThemeChooser size='sm' />
-        <small>{version_info}</small>
+        <div className='ml-auto'>
+          <SBScrollToTop></SBScrollToTop>
+          <small className=''>{version_info}</small>
+        </div>
       </nav>
 
       <ToastContainer position={toast.POSITION.TOP_RIGHT} autoClose={4000} theme='colored' />

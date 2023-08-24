@@ -1,10 +1,29 @@
 import React, { memo, useMemo, useRef } from "react";
-import { ListGroupItem } from "reactstrap";
 import { useDrag, useDrop } from 'react-dnd'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGrip } from "@fortawesome/free-solid-svg-icons";
 
-export const DraggableType = memo(function DraggableType({ item, acceptableType, id, dataIndex, isDraggable = true, changeIndex }) {
+interface DraggableTypeProps {
+    item: any;
+    acceptableType: string;
+    id: string | number;
+    dataIndex: number;
+    isDraggable: boolean;
+    changeIndex: (originalIndex: number, newIndex: number) => void;
+}
 
-    const [{ isDragging }, dragRef] = useDrag(
+interface DragItem {
+    itemID: string;
+    originalIndex: number;
+    newIndex: number;
+    itemValue: string[];
+    changeIndexProp: (val: string[], originalIndex: number, newIndex: number) => void;
+}
+
+export const DraggableType = memo(function DraggableType(props: DraggableTypeProps) {
+    const { item, acceptableType, id, dataIndex, isDraggable = true, changeIndex } = props;
+
+    const [{ isDragging }, dragRef, dragHandler] = useDrag(
         () => ({
             type: acceptableType,
             item: () => { return { itemID: id, originalIndex: dataIndex, newIndex: dataIndex, itemValue: item.props.value, changeIndexProp: item.props.changeIndex } },
@@ -23,7 +42,7 @@ export const DraggableType = memo(function DraggableType({ item, acceptableType,
         () => ({
             accept: acceptableType,
             //TODO: scroll page
-            hover: (draggedItem, monitor) => {
+            hover: (draggedItem: DragItem, monitor) => {
                 if (!ref.current) {
                     return
                 }
@@ -61,17 +80,31 @@ export const DraggableType = memo(function DraggableType({ item, acceptableType,
     const containerStyle = useMemo(
         () => ({
             opacity: isDragging || !isDraggable ? 0.4 : 1,
+        }),
+        [isDragging, isDraggable],
+    )
+
+    const handleStyle = useMemo(
+        () => ({
             cursor: isDraggable ? 'move' : 'default',
         }),
         [isDragging, isDraggable],
     )
 
-
     return (
-        <div ref={dragDropRef} style={containerStyle} >
-            <ListGroupItem style={{ color: 'inherit', padding: '8px' }}>
-                {item}
-            </ListGroupItem>
+        <div className='card'>
+            <div className='card-body list-group-item' ref={dragHandler} style={containerStyle}>
+                <div className='row'>
+                    <div className='col-11 pl-2 pr-2'>
+                        {item}
+                    </div>
+                    <div className='col-1 pl-2 pr-2'>
+                        <div ref={dragDropRef} style={handleStyle}>
+                            <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 

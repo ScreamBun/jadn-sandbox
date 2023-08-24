@@ -4,7 +4,6 @@ import { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 
 import React from 'react'
-import { ItemTypes } from './ItemTypes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGrip } from '@fortawesome/free-solid-svg-icons'
 
@@ -13,12 +12,17 @@ const style = {
   cursor: 'move',
 }
 
-export interface OutlineCardProps {
-  id: any
-  text: string
-  index: number
-  moveCard: (dragIndex: number, hoverIndex: number) => void
-  dropCard: (item: {}) => void
+const ItemTypes = {
+  CARD: 'card',
+}
+
+export interface SBOutlineCardProps {
+  id: any;
+  text: string;
+  index: number;
+  moveCard: (dragIndex: number, hoverIndex: number) => void;
+  dropCard: (item: {}) => void;
+  onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
 }
 
 interface DragItem {
@@ -27,7 +31,7 @@ interface DragItem {
   type: string
 }
 
-export const OutlineCard: FC<OutlineCardProps> = ({ id, text, index, moveCard, dropCard }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCard, dropCard, onClick }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -40,9 +44,8 @@ export const OutlineCard: FC<OutlineCardProps> = ({ id, text, index, moveCard, d
         handlerId: monitor.getHandlerId(),
       }
     },
-    drop(item: DragItem, monitor){
-      console.log("OutlineCard item dropped: " + JSON.stringify(item));
-      console.log("OutlineCard item DropResult: " + JSON.stringify(monitor.getDropResult()));
+    drop(item: DragItem, _monitor) {
+      console.log("SBOutlineCard item dropped: " + JSON.stringify(item));
       dropCard(item);
     },
     hover(item: DragItem, monitor) {
@@ -103,20 +106,24 @@ export const OutlineCard: FC<OutlineCardProps> = ({ id, text, index, moveCard, d
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
-  })
+  });
 
   const opacity = isDragging ? 0 : 1
   drag(drop(ref))
 
+  const handleOnClick = (e: React.MouseEvent<HTMLElement>) => {
+    onClick(e, text)
+  };
+
   return (
     <div className='card'>
-        <div className='card-body' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+        <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
             <div className='row'>
-                <div className='col-10'>
-                    <a href="#">{text}</a>
+                <div className='col-10 pl-2 pr-2'>
+                    <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
                 </div>
-                <div className='col-2'>
-                    <FontAwesomeIcon icon={faGrip}></FontAwesomeIcon>
+                <div className='col-2 pl-2 pr-2'>
+                    <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
                 </div>                
             </div>
         </div>

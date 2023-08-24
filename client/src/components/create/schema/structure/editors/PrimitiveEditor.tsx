@@ -108,42 +108,39 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
       </Dropdown>
 
       <div className="border-bottom mb-2">
-        <h5 className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
+        <h5 id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
       </div>
 
       <div className="row m-0">
         <FormGroup className="col-md-4">
-          <Label>Name
-            <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
-          </Label>
+          <Label className='mb-0'>Name</Label>
+          <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
         </FormGroup>
 
         <FormGroup className="col-md-2">
-          <Label>&nbsp;
-            <InputGroup>
-              <Button outline color="info" onClick={toggleModal}>Type Options</Button>
-              <OptionsModal
-                optionValues={valueObj.options}
-                isOpen={modal}
-                optionType={valueObj.type}
-                toggleModal={toggleModal}
-                saveModal={saveModal}
-              />
-            </InputGroup>
-          </Label>
+          <Label className='mb-0'>&nbsp;</Label>
+          <InputGroup>
+            <Button outline color="info" onClick={toggleModal}>Type Options</Button>
+            <OptionsModal
+              optionValues={valueObj.options}
+              isOpen={modal}
+              optionType={valueObj.type}
+              toggleModal={toggleModal}
+              saveModal={saveModal}
+            />
+          </InputGroup>
         </FormGroup>
 
         <FormGroup className="col-md-6">
-          <Label>Comment
-            <Input
-              type="textarea"
-              placeholder="Comment"
-              rows={1}
-              value={valueObj.comment}
-              onChange={onChange}
-              onBlur={onBlur}
-            />
-          </Label>
+          <Label className='mb-0'>Comment</Label>
+          <Input
+            type="textarea"
+            placeholder="Comment"
+            rows={1}
+            value={valueObj.comment}
+            onChange={onChange}
+            onBlur={onBlur}
+          />
         </FormGroup>
       </div>
     </div>
