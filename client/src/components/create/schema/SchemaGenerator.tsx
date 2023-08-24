@@ -51,8 +51,8 @@ const SchemaGenerator = () => {
                                 <DropdownMenu >
                                     <DropdownItem header>Editor Style</DropdownItem>
                                     <ButtonGroup className='float-right'>
-                                        <Button onClick={() => setIsButtonStyle(false)} className='btn btn-sm m-1' color={isButtonStyle == false ? 'success' : ''}>Drag and Drop</Button>
-                                        <Button onClick={() => setIsButtonStyle(true)} className='btn btn-sm m-1' color={isButtonStyle == true ? 'success' : ''}>Button</Button>
+                                        <Button onClick={() => { setIsButtonStyle(false); setIsDropdownOpen(false); }} className='btn btn-sm m-1' color={isButtonStyle == false ? 'success' : ''}>Drag and Drop</Button>
+                                        <Button onClick={() => { setIsButtonStyle(true); setIsDropdownOpen(false); }} className='btn btn-sm m-1' color={isButtonStyle == true ? 'success' : ''}>Button</Button>
                                     </ButtonGroup>
                                 </DropdownMenu>
                             </Dropdown>
