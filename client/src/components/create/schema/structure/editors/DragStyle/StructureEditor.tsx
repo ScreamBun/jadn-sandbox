@@ -6,16 +6,16 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronDown, faCircleChevronUp, faEllipsisV, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 
-import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
-import OptionsModal from './options/OptionsModal';
-import FieldEditor from './FieldEditor';
+import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
+import OptionsModal from '../options/OptionsModal';
+import FieldEditor from '../FieldEditor';
 import {
   EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
-} from '../../interface';
-import { zip } from '../../../../utils';
+} from '../../../interface';
+import { zip } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
-import { DraggableType } from '../../DraggableType';
+import { DraggableType } from './DraggableType';
 import update from 'immutability-helper'
 
 // Interface

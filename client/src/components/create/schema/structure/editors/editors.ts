@@ -3,7 +3,8 @@ import KeyArrayEditor from './KeyArrayEditor';
 import KeyObjectEditor from './KeyObjectEditor';
 import KeyValueEditor from './KeyValueEditor';
 import PrimitiveEditor from './PrimitiveEditor';
-import StructureEditor from './StructureEditor';
+import StructureEditor from './DragStyle/StructureEditor';
+import StructureEditorBtnStyle from './BtnStyle/StructureEditorBtnStyle';
 
 export {
   ConfigObjectEditor,
@@ -11,5 +12,6 @@ export {
   KeyObjectEditor,
   KeyValueEditor,
   PrimitiveEditor,
-  StructureEditor
+  StructureEditor,
+  StructureEditorBtnStyle
 };
