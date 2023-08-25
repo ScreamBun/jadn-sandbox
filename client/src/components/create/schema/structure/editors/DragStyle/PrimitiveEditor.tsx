@@ -4,13 +4,13 @@ import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
-import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from './consts';
-import OptionsModal from './options/OptionsModal';
-import { zip } from '../../../../utils';
+import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from '../consts';
+import OptionsModal from '../options/OptionsModal';
+import { zip } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
-import { InfoConfig } from '../../interface';
+import { InfoConfig } from '../../../interface';
 
 // Interface
 interface PrimitiveEditorProps {
@@ -24,7 +24,7 @@ interface PrimitiveEditorProps {
 
 // Primitive Editor
 const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
-  const { value, change, changeIndex, dataIndex, config } = props;
+  const { value, change, dataIndex, config } = props;
   const [modal, setModal] = useState(false);
 
   let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
@@ -88,24 +88,12 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
   }
 
   return (
-    <div className="border m-0 p-1">
+    <div className="border m-1 p-1">
       <ButtonGroup size="sm" className="float-right">
         <Button color="danger" onClick={removeAll}
           title={`Delete ${valueObj.type}`}
         >
           <FontAwesomeIcon icon={faMinusCircle} />
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup size="sm" className="float-right mr-1">
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
-          title={`Move ${valueObj.type} Up`}
-        >
-          <FontAwesomeIcon icon={faSquareCaretUp} />
-        </Button>
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
-          title={`Move ${valueObj.type} Down`}
-        >
-          <FontAwesomeIcon icon={faSquareCaretDown} />
         </Button>
       </ButtonGroup>
 

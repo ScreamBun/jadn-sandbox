@@ -1,25 +1,21 @@
 import React, { useEffect, memo, useRef, useState } from 'react'
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
-import { Info, Types } from './structure/structure';
+import { Info, Types } from '../../structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBEditor from 'components/common/SBEditor';
-import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../consts';
+import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
 import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
-import { Droppable } from './Droppable'
-import { DraggableKey } from './DraggableKey';
-import SBOutline, { Item } from 'components/common/outline/SBOutline';
-import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -31,14 +27,12 @@ const configInitialState = {
     $NSID: $NSID
 }
 
-const SchemaCreator = memo(function SchemaCreator(props: any) {
+const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
-    const generatedSchemaRef = React.useRef(generatedSchema);
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema));
-        generatedSchemaRef.current = generatedSchema;
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
@@ -50,6 +44,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const [activeOpt, setActiveOpt] = useState('info');
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
+    const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
+    const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
 
     const onFileSelect = (e: Option) => {
         dismissAllToast();
@@ -199,16 +195,40 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
 
         infoKeys = Object.keys(unusedInfo).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+            <div className='list-group-item p-2' key={k}>
+                {Info[k].key}
+
+                <Button color="info" onClick={() => onDrop(k)} outline className='float-right btn btn-sm'
+                    disabled={selectedFile?.value == 'file' ? true : false}
+                    title='Add to Schema'>
+                    <FontAwesomeIcon icon={faPlusSquare} />
+                </Button>
+            </div>
         ));
     } else {
         infoKeys = Object.keys(Info).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+            <div className='list-group-item p-2' key={k}>
+                {Info[k].key}
+
+                <Button color="info" onClick={() => onDrop(k)} outline className='float-right btn btn-sm'
+                    disabled={selectedFile?.value == 'file' ? true : false}
+                    title='Add to Schema'>
+                    <FontAwesomeIcon icon={faPlusSquare} />
+                </Button>
+            </div>
         ));
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <DraggableKey item={Types[k].key} acceptableType={'TypesKeys'} key={Types[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+        <div className='list-group-item p-2' key={k}>
+            {Types[k].key}
+
+            <Button color="info" onClick={() => onDrop(k)} outline className='float-right btn btn-sm'
+                disabled={selectedFile?.value == 'file' ? true : false}
+                title='Add to Schema'>
+                <FontAwesomeIcon icon={faPlusSquare} />
+            </Button>
+        </div>
     ));
 
     const onDrop = (key: string) => {
@@ -235,6 +255,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setGeneratedSchema(updatedSchema);
             setIsValidJADN(false);
             setIsValidating(false);
+            scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
@@ -247,6 +268,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setGeneratedSchema(updatedSchema);
             setIsValidJADN(false);
             setIsValidating(false);
+            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -318,7 +340,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             type = "string";
         }
 
-        return (Types[type].editor({
+        return (Types[type].editorBtnStyle({
             key: self.crypto.randomUUID(),
             value: def,
             dataIndex: i,
@@ -386,40 +408,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         }))
     }).filter(Boolean);
 
-    const reorder = (updatedOrder: Item[]) => {
-        let reordered_types: any[] = [];
-
-        {
-            updatedOrder.map((updated_item, i) => {
-                const item_text = updated_item.text;
-                const filtered_item = generatedSchemaRef.current.types.filter((item: []) => item[0] === item_text);
-                reordered_types[i] = filtered_item[0];
-            })
-        };
-
-        let updatedSchema = {
-            ...generatedSchemaRef.current,
-            types: reordered_types
-        };
-        setGeneratedSchema(updatedSchema);
-    };
-
-    const onOutlineDrop = (updatedCards: Item[]) => {
-        console.log("SchemaCreator onOutlineDrop: " + JSON.stringify(updatedCards));
-        reorder(updatedCards);
-    };
-
-    const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
-        e.preventDefault();
-        console.log("SchemaCreator onOutlineClick: " + text);
-        const element = document.getElementById(text);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
-
-    const [fieldCollapse, setFieldCollapse] = useState(false);
-
     return (
         <div className='card'>
             <div className='card-header p-2'>
@@ -472,9 +460,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             </div>
             <div className='card-body p-2'>
                 <TabContent activeTab={activeView}>
-                    <TabPane tabId='creator' className='container-fluid'>
+                    <TabPane tabId='creator'>
                         <div className='row'>
-                            <div id="schema-options" className='col-sm-3 pl-0 card-body-scroller'>
+                            <div id="schema-options" className='col-sm-3 pr-1 card-body-scroller'>
                                 <div className='row'>
                                     <div className='col'>
                                         <Nav pills className='pb-2'>
@@ -513,57 +501,24 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                         </TabContent>
                                     </div>
                                 </div>
-                                <div className='row'>
-                                    <div className='col'>
-                                        <SBOutline id={'schema-outline'}
-                                            items={generatedSchema.types}
-                                            title={'Outline'}
-                                            onDrop={onOutlineDrop}
-                                            onClick={onOutlineClick}
-                                        ></SBOutline>
-                                    </div>
-                                </div>
                             </div>
-                            <div id="schema-editor" className='col-md-9 px-1 card-body-scroller' >
+                            <div id="schema-editor" className='col-md-9 px-2 card-body-scroller'>
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
-                                    <>
-                                        <div className='row'>
-                                            <div className="col pt-2">
-                                                <div className='row'>
-                                                    <div className='col'>
-                                                        <h5 id="info" className='mb-0'>Info
-                                                            <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small>
-                                                        </h5>
-                                                    </div>
-                                                    <div className='col'>
-                                                        {generatedSchema.info &&
-                                                            <legend>
-                                                                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                    className='float-right btn btn-sm'
-                                                                    onClick={() => setFieldCollapse(!fieldCollapse)}
-                                                                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
-                                                            </legend>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                {!fieldCollapse &&
-                                                    <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
-                                                        {infoEditors}
-                                                    </Droppable>}
-
+                                    <div>
+                                        <div className="col pt-2 pr-0 pl-0 pb-0">
+                                            <h5 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                            <div className='p-1' ref={scrollToInfoRef}>
+                                                {infoEditors}
                                             </div>
                                         </div>
                                         <hr />
-                                        <div className='row'>
-                                            <div className="col">
-                                                <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                                <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
-                                                    {typesEditors}
-                                                </Droppable>
-
+                                        <div className="col p-0">
+                                            <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                            <div className='p-1' ref={scrollToTypeRef}>
+                                                {typesEditors}
                                             </div>
                                         </div>
-                                    </>
+                                    </div>
                                 }
                             </div>
                         </div>
@@ -581,4 +536,4 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         </div>
     )
 });
-export default SchemaCreator 
+export default SchemaCreatorBtnStyle 

@@ -4,21 +4,20 @@ import {
   Button, ButtonGroup, FormGroup, Input, InputGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
-import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from './consts';
-import OptionsModal from './options/OptionsModal';
+import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
+import OptionsModal from '../options/OptionsModal';
 import FieldEditor from './FieldEditor';
 import {
   EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
-} from '../../interface';
-import { zip } from '../../../../utils';
+} from '../../../interface';
+import { zip } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
-import { DraggableType } from '../../DraggableType';
+import { DraggableType } from './DraggableType';
 import update from 'immutability-helper'
-import { Droppable } from '../../Droppable';
-
+import { Droppable } from './Droppable';
 
 // Interface
 interface StructureEditorProps {
@@ -32,7 +31,7 @@ interface StructureEditorProps {
 
 // Structure Editor
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, change, changeIndex, dataIndex, config } = props;
+  const { value, change, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
   const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -305,22 +304,12 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const listID = fields?.map(field => field.props.id);
 
   return (
-    <div className="border m-0 p-1">
+    <div className="border m-1 p-1">
       <ButtonGroup size="sm" className="float-right">
         <Button color="danger" onClick={removeAll}
           title={`Delete ${valueObj.type}`}
         >
           <FontAwesomeIcon icon={faMinusCircle} />
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup size="sm" className="float-right mr-1">
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
-          title={`Move ${valueObj.type} Up`}>
-          <FontAwesomeIcon icon={faSquareCaretUp} />
-        </Button>
-        <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
-          title={`Move ${valueObj.type} Down`}>
-          <FontAwesomeIcon icon={faSquareCaretDown} />
         </Button>
       </ButtonGroup>
 
