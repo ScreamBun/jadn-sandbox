@@ -325,7 +325,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       </ButtonGroup>
 
       <div className="border-bottom mb-2">
-        <h5 id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
+        <h5 id={valueObj.name} className="col-sm-10 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
       </div>
 
       <div className="row m-0">
