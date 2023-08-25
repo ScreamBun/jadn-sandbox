@@ -66,6 +66,8 @@ body {
 .card-body-scroller {
     height: 40em;
     overflow-y: auto;
+    overflow-x: hidden;
+    width: fit-content;
     position: sticky;
     top: 0;
 }
@@ -222,7 +224,7 @@ small {
         cursor: pointer !important;
         color: inherit;
     }
-   
+
 }
 
 .sb-outline {

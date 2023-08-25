@@ -462,7 +462,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                 <TabContent activeTab={activeView}>
                     <TabPane tabId='creator'>
                         <div className='row'>
-                            <div id="schema-options" className='col-sm-3 pr-1'>
+                            <div id="schema-options" className='col-sm-3 pr-1 card-body-scroller'>
                                 <div className='row'>
                                     <div className='col'>
                                         <Nav pills className='pb-2'>
@@ -502,7 +502,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                     </div>
                                 </div>
                             </div>
-                            <div id="schema-editor" className='col-md-9 pl-2 pr-1'>
+                            <div id="schema-editor" className='col-md-9 px-2 card-body-scroller'>
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                                     <div>
                                         <div className="col pt-2 pr-0 pl-0 pb-0">
