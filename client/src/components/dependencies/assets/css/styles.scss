@@ -65,7 +65,7 @@ body {
 
 .card-body-scroller {
     height: 40em;
-    overflow-y: scroll;
+    overflow-y: auto;
     position: sticky;
     top: 0;
 }
@@ -198,7 +198,6 @@ small {
     text-align: center;
 }
 
-// Boostrap Nav offset for sticky top.
 .sticky-offset {
     top: 65px !important;
 }
@@ -208,7 +207,6 @@ small {
     max-width: 100%;
 }
 
-//Schema Creator Styles
 #schema-options {
 
     .nav-item {
@@ -224,18 +222,7 @@ small {
         cursor: pointer !important;
         color: inherit;
     }
-
-    // .list-group-item {
-    //     // padding: 5px;
-
-    //     &-action {
-    //         cursor: pointer;
-    //     }
-    // }
-
-    // .nav-link {
-    //     padding: 0.2rem 0.9rem;
-    // }    
+   
 }
 
 .sb-outline {
