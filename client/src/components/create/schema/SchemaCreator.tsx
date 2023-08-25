@@ -474,7 +474,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 <TabContent activeTab={activeView}>
                     <TabPane tabId='creator' className='container-fluid'>
                         <div className='row'>
-                            <div id="schema-options" className='col-sm-3 card-body-scroller'>
+                            <div id="schema-options" className='col-sm-3 pl-0 card-body-scroller'>
                                 <div className='row'>
                                     <div className='col'>
                                         <Nav pills className='pb-2'>
@@ -524,7 +524,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     </div>
                                 </div>
                             </div>
-                            <div id="schema-editor" className='col-md-9 card-body-scroller' >
+                            <div id="schema-editor" className='col-md-9 px-1 card-body-scroller' >
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                                     <>
                                         <div className='row'>
