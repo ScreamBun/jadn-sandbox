@@ -17,6 +17,7 @@ import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
 import { DraggableType } from './DraggableType';
 import update from 'immutability-helper'
+import { Droppable } from '../../Droppable';
 
 // Interface
 interface StructureEditorProps {
@@ -115,7 +116,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     setValueObjFields(tmpFieldValues);
     change(updatevalue, dataIndex);
     setFieldCollapse(false);
-    scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+    scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "start" });
     fieldCount = fieldCount + 1;
   }
 
@@ -285,7 +286,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         id={field[0]}
         dataIndex={index}
         changeIndex={onDrag}
-        acceptableType={'Field'}
+        acceptableType={`Field${dataIndex}`}
         item={< FieldEditor
           dataIndex={index}
           enumerated={valueObj.type.toLowerCase() === 'enumerated'}
@@ -352,11 +353,15 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
           </legend>
 
-          <div ref={scrollToFieldRef}>
-            {!fieldCollapse && fields}
+          <div>
+            {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> :
+              <Droppable acceptableType={`Field${dataIndex}`}>
+                <div ref={scrollToFieldRef}>
+                  {fields}
+                </div>
+              </Droppable>
+            }
           </div>
-
-          {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
 
           {!fieldCollapse &&
             <Button color="info" onClick={addField} outline className='btn btn-sm btn-block'

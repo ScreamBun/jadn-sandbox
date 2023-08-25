@@ -147,7 +147,7 @@ const SchemaVisualized = (props: any) => {
             <div className={`card-body p-0 ${spiltViewFlag ? 'd-none' : ''}`}>
                 {conversion.length > 1 && convertedSchema.length > 1 ?
                     <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
-                    <SBEditor data={convertedSchema[0].schema} isReadOnly={true} convertTo={(conversion.length == 1 ? conversion[0].value : conversion)} height="40em"></SBEditor>
+                    <SBEditor data={convertedSchema[0].schema} isReadOnly={true} convertTo={(conversion.length == 1 ? conversion[0].value : conversion)}></SBEditor>
                 }
             </div>
             <div className={`card-body p-0 ${spiltViewFlag ? '' : ' d-none'}`}>

@@ -19,6 +19,7 @@ import SBSpinner from 'components/common/SBSpinner';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
 import SBOutline, { Item } from 'components/common/outline/SBOutline';
+import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -411,14 +412,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
         e.preventDefault();
         console.log("SchemaCreator onOutlineClick: " + text);
-        const yOffset = -70;
         const element = document.getElementById(text);
         if (element) {
-            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-            // element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
+
+    const [fieldCollapse, setFieldCollapse] = useState(false);
 
     return (
         <div className='card'>
@@ -472,9 +472,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             </div>
             <div className='card-body p-2'>
                 <TabContent activeTab={activeView}>
-                    <TabPane tabId='creator'>
+                    <TabPane tabId='creator' className='container-fluid'>
                         <div className='row'>
-                            <div id="schema-options" className='col-sm-3 pr-1'>
+                            <div id="schema-options" className='col-sm-3 pl-0 card-body-scroller'>
                                 <div className='row'>
                                     <div className='col'>
                                         <Nav pills className='pb-2'>
@@ -524,25 +524,46 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     </div>
                                 </div>
                             </div>
-                            <div id="schema-editor" className='col-md-9 pl-2 pr-1'>
+                            <div id="schema-editor" className='col-md-9 px-1 card-body-scroller' >
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
-                                    <div>
-                                        <div className="col pt-2 pr-0 pl-0 pb-0">
-                                            <h5 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
-                                            <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
-                                                {infoEditors}
-                                            </Droppable>
+                                    <>
+                                        <div className='row'>
+                                            <div className="col pt-2">
+                                                <div className='row'>
+                                                    <div className='col'>
+                                                        <h5 id="info" className='mb-0'>Info
+                                                            <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small>
+                                                        </h5>
+                                                    </div>
+                                                    <div className='col'>
+                                                        {generatedSchema.info &&
+                                                            <legend>
+                                                                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                    className='float-right btn btn-sm'
+                                                                    onClick={() => setFieldCollapse(!fieldCollapse)}
+                                                                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                                            </legend>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                {!fieldCollapse &&
+                                                    <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
+                                                        {infoEditors}
+                                                    </Droppable>}
 
+                                            </div>
                                         </div>
                                         <hr />
-                                        <div className="col p-0">
-                                            <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                            <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
-                                                {typesEditors}
-                                            </Droppable>
+                                        <div className='row'>
+                                            <div className="col">
+                                                <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
+                                                    {typesEditors}
+                                                </Droppable>
 
+                                            </div>
                                         </div>
-                                    </div>
+                                    </>
                                 }
                             </div>
                         </div>
