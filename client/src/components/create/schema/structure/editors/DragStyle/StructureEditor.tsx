@@ -17,7 +17,7 @@ import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
 import { DraggableType } from './DraggableType';
 import update from 'immutability-helper'
-import { Droppable } from '../../Droppable';
+import { Droppable } from './Droppable';
 
 // Interface
 interface StructureEditorProps {
