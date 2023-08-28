@@ -54,20 +54,32 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
   });
 
   return (
-    <div className="border m-0 p-1">
-      <Button color="danger" size="sm" className="float-right" onClick={removeAll} >
-        <FontAwesomeIcon
-          icon={faMinusCircle}
-        />
-      </Button>
-      <div className="border-bottom mb-2">
-        <p className="col-sm-4 my-1"><strong>{name}</strong></p>
-        {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
+    <>
+      <div className="card border-secondary mb-2">
+        <div className="card-header px-2 py-2">
+          <div className='row no-gutters'>
+            <div className='col'>
+              <span><strong>{name}</strong></span><br></br>
+              {description ? <FormText color='muted'>{description}</FormText> : ''}
+            </div>
+            <div className='col'>
+              <Button color="danger" size="sm" className="float-right" onClick={removeAll} >
+                <FontAwesomeIcon
+                  icon={faMinusCircle}
+                />
+              </Button> 
+            </div>
+          </div>     
+        </div>
+        <div className="card-body px-2 py-2">
+            <div className="row m-0">
+              <div className="col-12 m-0">
+                {keys}
+              </div>
+            </div>
+        </div>
       </div>
-      <div className="col-12 m-0">
-        {keys}
-      </div>
-    </div>
+    </>
   );
 });
 

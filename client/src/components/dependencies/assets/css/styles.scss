@@ -28,6 +28,14 @@ body {
     padding-top: 75px;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.form-label {
+    margin-bottom: 0;
+}
+
 .navbar-brand>img {
     max-height: 2em;
     width: auto;
@@ -124,35 +132,17 @@ div {
     }
 }
 
-.modal {
-    text-align: center;
-    padding: 0 !important;
-
-    &:before {
-        content: '';
-        display: inline-block;
-        height: 100%;
-        vertical-align: middle;
-        margin-right: -4px;
-    }
-
-    &-dialog {
-        display: inline-block;
-        text-align: left;
-        vertical-align: middle;
-        min-width: 350px;
-    }
-}
-
 legend {
     font-size: inherit !important;
     font-weight: bold !important;
 }
 
 .card-title {
+    bottom: 0; 
     font-size: 1rem;
-    font-weight: 300;
-    letter-spacing: 1px;
+    font-weight: bold;
+    position: absolute;
+    margin-bottom: 2px !important;
 }
 
 small {
@@ -188,6 +178,21 @@ small {
 .cm-editor * {
     font-family: Consolas, monaco, monospace;
     font-size: 12px;
+}
+
+.modal-content {
+    .modal-header {
+        padding: .5rem 1rem !important;
+    
+        .modal-title {
+            width: 100%;
+        }
+    
+    }
+    
+    .modal-footer {
+        padding: .5rem 1rem !important;
+    }
 }
 
 .Toastify__toast-body {

@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { FieldOptionInputArgs, OptionChange } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
 
-// Interfaces
 interface FieldOptionsEditorProps {
   id: string;
   fieldOptions?: boolean;
@@ -11,7 +10,6 @@ interface FieldOptionsEditorProps {
   placeholder?: string;
 }
 
-// Field Options Editor
 const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsEditorProps) {
   const { change, deserializedState, fieldOptions, id } = props;
 
@@ -33,12 +31,18 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
 
   if (fieldOptions) {
     return (
-      <div className="border m-0 p-1">
-        <p className="col-sm-4 my-1"><strong>{id}</strong></p>
-        <div className="col-12 m-0">
-          {validOptions()}
-        </div>
-      </div>
+       <>
+          <div className='row'>
+            <div className='col-md-12'>
+              <strong>{id}</strong>
+            </div>
+          </div>
+          <div className='row'>
+            <div className='col-md-12'>
+              {validOptions()}    
+            </div>
+          </div>
+       </>
     );
   }
   return '';

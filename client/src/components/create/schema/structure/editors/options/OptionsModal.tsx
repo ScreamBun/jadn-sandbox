@@ -9,6 +9,9 @@ import TypeOptionsEditor from './TypeOptionsEditor';
 import FieldOptionsEditor from './FieldOptionsEditor';
 import { objectFromTuple } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
+import { ModalSize } from './ModalSize';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 // Interface
 interface OptionsModalProps {
@@ -18,6 +21,7 @@ interface OptionsModalProps {
   fieldOptions?: boolean;
   optionValues: Array<string>;
   optionType?: string;
+  modelSize?: string;
 }
 
 // convert array into options data state object
@@ -42,7 +46,7 @@ const serializeOptions = (type: Record<string | number, string | number | boolea
 // Component
 const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
 
-  const { optionValues, saveModal, fieldOptions, isOpen, optionType, toggleModal } = props;
+  const { optionValues, saveModal, fieldOptions, isOpen, optionType, toggleModal, modelSize = ModalSize.md } = props;
   const [data, setData] = useState(deserializeOptions(optionValues));
   const tmpData = { ...deserializeOptions(optionValues) };
 
@@ -118,9 +122,16 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
   }
 
   return (
-    <Modal size="xl" isOpen={isOpen}>
+    <Modal className={modelSize} isOpen={isOpen}>
       <ModalHeader>
-        {fieldOptions ? 'Field' : 'Type'} Options
+        <div className='float-left'>
+          {fieldOptions ? 'Field' : 'Type'} Options
+        </div>
+        <div className='float-right'>
+          <Button color="secondary" className='float-right btn-sm' title='Close' onClick={toggleModalhere}>
+            <FontAwesomeIcon icon={faClose} />
+          </Button>
+        </div>
       </ModalHeader>
       <ModalBody>
         <FieldOptionsEditor
@@ -135,8 +146,8 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
         />
       </ModalBody>
       <ModalFooter>
-        <Button color="success" onClick={saveData}>Save</Button>
         <Button color="secondary" onClick={toggleModalhere}>Close</Button>
+        <Button color="success" onClick={saveData}>Save</Button>
       </ModalFooter>
     </Modal>
   );

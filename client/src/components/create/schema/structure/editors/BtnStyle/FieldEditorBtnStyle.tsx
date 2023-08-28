@@ -1,5 +1,4 @@
 import React, { memo, useState } from 'react';
-//import equal from 'fast-deep-equal';
 import {
     Button, ButtonGroup, FormGroup, Input, Label
 } from 'reactstrap';
@@ -30,7 +29,7 @@ interface FieldEditorProps {
 // Field Editor
 const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditorProps) {
     const { enumerated, value, dataIndex, change, config, changeIndex } = props;
-    //const allTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]);
+
     const types = useAppSelector((state) => ({
         base: state.Util.types.base,
         schema: Object.keys(state.Util.types.schema) || {}
@@ -42,7 +41,6 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
     const [valueObj, setValueObj] = useState(valueObjInit);
     const val = valueObj as StandardFieldObject;
     const [valType, setValType] = useState({ value: val.type, label: val.type });
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { placeholder, value } = e.target;
@@ -123,27 +121,27 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
         if (enumerated) {
             const val = valueObj as EnumeratedFieldObject;
             return (
-                <FormGroup className="col-md-4">
+                <div className="col-md-4">
                     <Label>Value</Label>
                     <Input type="text" placeholder="Value" value={val.value} onChange={onChange} onBlur={onBlur} />
-                </FormGroup>
+                </div>
             );
         }
 
         return (
             <div className="col-md-10 p-0 m-0">
-                <FormGroup className="col-md-4 d-inline-block">
+                <div className="col-md-4 d-inline-block">
                     <Label>Name</Label>
                     <Input type="text" placeholder="Name" maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
-                </FormGroup>
+                </div>
 
-                <FormGroup className="col-md-4 d-inline-block">
+                <div className="col-md-4 d-inline-block">
                     <Label>Type</Label>
                     <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
-                </FormGroup>
+                </div>
 
-                <FormGroup className="col-md-4 d-inline-block">
-                    <Button outline color="info" onClick={toggleModal}>Field Options</Button>
+                <div className="col-md-4 d-inline-block">
+                    <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
                     <OptionsModal
                         optionValues={val.options}
                         isOpen={modal}
@@ -152,59 +150,57 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                         optionType={val.type}
                         fieldOptions
                     />
-                </FormGroup>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="col-sm-12 border m-1 p-1">
-            <ButtonGroup size="sm" className="float-right">
-                <Button color="danger" onClick={removeAll}
-                    title={`Delete Field`}>
-                    <FontAwesomeIcon icon={faMinusCircle} />
-                </Button>
-            </ButtonGroup>
-            <ButtonGroup size="sm" className="float-right mr-1">
-                <Button color="info" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)}
-                    title={`Move Field Up`}>
-                    <FontAwesomeIcon icon={faSquareCaretUp} />
-                </Button>
-                <Button color="info" onClick={() => changeIndex(value, dataIndex, dataIndex + 1)}
-                    title={`Move Field Down`} >
-                    <FontAwesomeIcon icon={faSquareCaretDown} />
-                </Button>
-            </ButtonGroup>
+        <>
+            <div className="card mb-2">
+                <div className="card-header px-2 py-2">
+                    <span>{enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}</span>
+                    <ButtonGroup size="sm" className="float-right">
+                        <Button color="danger" onClick={removeAll}
+                            title={`Delete Field`}>
+                            <FontAwesomeIcon icon={faMinusCircle} />
+                        </Button>
+                    </ButtonGroup>
+                    <ButtonGroup size="sm" className="float-right mr-1">
+                        <Button color="primary" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)}
+                            title={`Move Field Up`}>
+                            <FontAwesomeIcon icon={faSquareCaretUp} />
+                        </Button>
+                        <Button color="primary" onClick={() => changeIndex(value, dataIndex, dataIndex + 1)}
+                            title={`Move Field Down`} >
+                            <FontAwesomeIcon icon={faSquareCaretDown} />
+                        </Button>
+                    </ButtonGroup>         
+                </div>
+                <div className="card-body px-2 py-2">
+                    <div className="row m-0">
+                        <div className={enumerated ? 'col-md-3' : 'col-md-2'}>
+                            <Label>ID</Label>
+                            <Input type="number" placeholder="ID" value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+                        </div>
 
-            <div className="border-bottom mb-2">
-                <p className="col-sm-4 my-1">
-                    <strong>
-                        {enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}
-                    </strong>
-                </p>
-            </div>
+                        {makeOptions()}
 
-            <div className="row m-0">
-                <FormGroup className={enumerated ? 'col-md-3' : 'col-md-2'}>
-                    <Label>ID</Label>
-                    <Input type="number" placeholder="ID" value={valueObj.id} onChange={onChange} onBlur={onBlur} />
-                </FormGroup>
-
-                {makeOptions()}
-
-                <FormGroup className={enumerated ? 'col-md-4' : 'col-md-12'}>
-                    <Label>Comment</Label>
-                    <Input
-                        type="textarea"
-                        placeholder="Comment"
-                        rows={1}
-                        value={valueObj.comment}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                    />
-                </FormGroup>
-            </div>
-        </div>
+                        <div className={enumerated ? 'col-md-4' : 'col-md-12'}>
+                            <Label>Comment</Label>
+                            <Input
+                                type="textarea"
+                                placeholder="Comment"
+                                rows={1}
+                                value={valueObj.comment}
+                                onChange={onChange}
+                                onBlur={onBlur}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>        
+        </>
     );
 });
 

@@ -111,7 +111,8 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     }
     const updatevalue = { ...valueObj, options: modalData }
     setValueObj(updatevalue);
-    change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
+    change(updatevalue, dataIndex);
+    // change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
   const toggleModal = () => {
@@ -122,27 +123,27 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     if (enumerated) {
       const val = valueObj as EnumeratedFieldObject;
       return (
-        <FormGroup className="col-md-4">
+        <div className="col-md-4">
           <Label>Value</Label>
           <Input type="text" placeholder="Value" value={val.value} onChange={onChange} onBlur={onBlur} />
-        </FormGroup>
+        </div>
       );
     }
 
     return (
       <div className="col-md-10 p-0 m-0">
-        <FormGroup className="col-md-4 d-inline-block">
+        <div className="col-md-4 d-inline-block">
           <Label>Name</Label>
           <Input type="text" placeholder="Name" maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
-        </FormGroup>
+        </div>
 
-        <FormGroup className="col-md-4 d-inline-block">
+        <div className="col-md-4 d-inline-block">
           <Label>Type</Label>
           <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
-        </FormGroup>
+        </div>
 
-        <FormGroup className="col-md-4 d-inline-block">
-          <Button outline color="info" onClick={toggleModal}>Field Options</Button>
+        <div className="col-md-4 d-inline-block">
+          <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
           <OptionsModal
             optionValues={val.options}
             isOpen={modal}
@@ -151,49 +152,47 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
             optionType={val.type}
             fieldOptions
           />
-        </FormGroup>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="col-sm-12 border m-1 p-1">
-      <ButtonGroup size="sm" className="float-right">
-        <Button color="danger" onClick={removeAll}
-          title={`Delete Field`}>
-          <FontAwesomeIcon icon={faMinusCircle} />
-        </Button>
-      </ButtonGroup>
+    <>
+      <div className="card border-secondary mb-2">
+        <div className="card-header px-2 py-2">
+            <span className="px-1 my-1">{enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}</span>
+            <ButtonGroup size="sm" className="float-right">
+              <Button color="danger" onClick={removeAll}
+                title={`Delete Field`}>
+                <FontAwesomeIcon icon={faMinusCircle} />
+              </Button>
+            </ButtonGroup>        
+        </div>
+        <div className="card-body px-2 py-2">
+            <div className="row m-0">
+              <FormGroup className={enumerated ? 'col-md-3' : 'col-md-2'}>
+                <Label>ID</Label>
+                <Input type="number" placeholder="ID" value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+              </FormGroup>
 
-      <div className="border-bottom mb-2">
-        <p className="col-sm-4 my-1">
-          <strong>
-            {enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}
-          </strong>
-        </p>
-      </div>
+              {makeOptions()}
 
-      <div className="row m-0">
-        <FormGroup className={enumerated ? 'col-md-3' : 'col-md-2'}>
-          <Label>ID</Label>
-          <Input type="number" placeholder="ID" value={valueObj.id} onChange={onChange} onBlur={onBlur} />
-        </FormGroup>
-
-        {makeOptions()}
-
-        <FormGroup className={enumerated ? 'col-md-4' : 'col-md-12'}>
-          <Label>Comment</Label>
-          <Input
-            type="textarea"
-            placeholder="Comment"
-            rows={1}
-            value={valueObj.comment}
-            onChange={onChange}
-            onBlur={onBlur}
-          />
-        </FormGroup>
-      </div>
-    </div>
+              <FormGroup className={enumerated ? 'col-md-4' : 'col-md-12'}>
+                <Label>Comment</Label>
+                <Input
+                  type="textarea"
+                  placeholder="Comment"
+                  rows={1}
+                  value={valueObj.comment}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                />
+              </FormGroup>
+            </div>
+        </div>
+      </div>    
+    </>
   );
 });
 

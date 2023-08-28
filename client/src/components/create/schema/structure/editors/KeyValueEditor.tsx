@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import {
-  Button, FormGroup, FormText, Input, Label
+  Button, FormText, Label
 } from 'reactstrap';
 import { InputType } from 'reactstrap/es/Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -40,55 +40,71 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
 
   if (type === 'SBCreatableSelect' && options) {
     return (
-      <FormGroup row className="border m-0 p-1">
-        <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
-        <div className="input-group col-sm-10">
-          <SBCreatableSelect id={`editor-${placeholder}`}
-            placeholder={`Please select a ${placeholder}...`}
-            data={options}
-            onChange={onSelectChange}
-            value={val}
-            isGrouped={Array.isArray(options) ? false : true}
-          />
-          {remove ?
-            <div className="input-group-append">
-              <Button color='danger' onClick={() => remove(name.toLowerCase())}>
-                <FontAwesomeIcon icon={faMinusSquare} />
-              </Button>
-            </div> : ''}
+      <>
+        <div className="card mb-2">
+          <div className="card-body px-2 py-2">
+          <div className="row m-0 no-gutters t1">
+              <div className='col'>
+                <div className='mb-0'>
+                  <Label htmlFor={`editor-${placeholder}`}><strong>{placeholder}{required ? '*' : ''}</strong></Label>
+                  <div className="input-group col-sm-12">
+                    <SBCreatableSelect id={`editor-${placeholder}`}
+                      placeholder={`Please select a ${placeholder}...`}
+                      data={options}
+                      onChange={onSelectChange}
+                      value={val}
+                      isGrouped={Array.isArray(options) ? false : true}
+                    />
+                    {remove ?
+                      <div className="input-group-append">
+                        <Button color='danger' onClick={() => remove(name.toLowerCase())}>
+                          <FontAwesomeIcon icon={faMinusSquare} />
+                        </Button>
+                      </div> : ''}
+                  </div>
+                  {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
+                </div> 
+              </div>
+            </div>
+          </div>
         </div>
-        {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
-      </FormGroup>
+      </>
     );
   }
 
   if (type === 'SBSelect' && options) {
     return (
-      <FormGroup row className="border m-0 p-1">
-        <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
-        <div className="input-group col-sm-10">
-          <SBSelect id={`editor-${placeholder}`}
-            placeholder={`Please select a ${placeholder}...`}
-            data={options}
-            onChange={onSelectChange}
-            value={val}
-            isGrouped={Array.isArray(options) ? false : true}
-          />
-          {remove ?
-            <div className="input-group-append">
-              <Button color='danger' onClick={() => remove(name.toLowerCase())}>
-                <FontAwesomeIcon icon={faMinusSquare} />
-              </Button>
-            </div> : ''}
+      <>
+        <div className="card mb-2">
+          <div className="card-body px-2 py-2">
+          <div className="row m-0 no-gutters">
+              <div className='col'>
+                <div className='mb-0'>
+                  <Label htmlFor={`editor-${placeholder}`}><strong>{placeholder}{required ? '*' : ''}</strong></Label>
+                  <div className="input-group col-md-12">
+                    <SBSelect id={`editor-${placeholder}`}
+                      placeholder={`Please select a ${placeholder}...`}
+                      data={options}
+                      onChange={onSelectChange}
+                      value={val}
+                      isGrouped={Array.isArray(options) ? false : true}
+                    />
+                    {remove ?
+                      <div className="input-group-append">
+                        <Button color='danger' onClick={() => remove(name.toLowerCase())}>
+                          <FontAwesomeIcon icon={faMinusSquare} />
+                        </Button>
+                      </div> : ''}
+                  </div>
+                  {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
-      </FormGroup>
+      </>
     );
   }
-
-  const shadowless: Array<InputType> = [
-    'checkbox', 'file', 'hidden', 'image', 'radio'
-  ];
 
   const inputArgs: Record<string, any> = {
     value: valueData,
@@ -99,28 +115,46 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   if (['checkbox', 'radio'].includes(type)) {
     inputArgs.defaultChecked = type && valueData,
       inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => { setValueData(e.target.checked); change(e.target.checked); }
+
+      return (
+        <>
+          <div className="card mb-2">
+            <div className="card-body px-2 py-2">
+              <div className="row">
+                <div className="col-md-12">
+                    <form className="form-inline" role="form">           
+                        <Label htmlFor={`editor-${placeholder}`} className='pr-2'><strong>{placeholder}{required ? '*' : ''}</strong></Label>
+                        <input type={type} id={`editor-${placeholder}`} />
+                        {remove ?
+                        <Button title={`Remove ${placeholder}`} className="btn-sm ml-2" color='danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></Button>
+                        : ''}
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      );  
   }
 
   return (
-    <FormGroup row className="border m-0 p-1">
-      <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
-      <div className="input-group col-sm-10">
-        <Input
-          type={type}
-          id={`editor-${placeholder}`}
-          className={`form-control ${shadowless.includes(type) ? ' shadow-none' : ''}`}
-          placeholder={placeholder}
-          {...inputArgs}
-        />
-        {remove ?
-          <div className="input-group-append">
-            <Button color='danger' onClick={() => remove(name.toLowerCase())}>
-              <FontAwesomeIcon icon={faMinusSquare} />
-            </Button>
-          </div> : ''}
+    <>
+      <div className="card mb-2">
+        <div className="card-body px-2 py-2">
+          <div className="row">
+            <div className="col-md-12">
+                <form className="form-inline" role="form">           
+                    <Label htmlFor={`editor-${placeholder}`} className='pr-2'><strong>{placeholder}{required ? '*' : ''}</strong></Label>
+                    <input type={type} className="form-control" id={`editor-${placeholder}`} />
+                    {remove ?
+                    <Button title={`Remove ${placeholder}`} className="btn-sm ml-2" color='danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></Button>
+                    : ''}
+                </form>
+            </div>
+          </div>
+        </div>
       </div>
-      {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
-    </FormGroup>
+    </>
   );
 });
 

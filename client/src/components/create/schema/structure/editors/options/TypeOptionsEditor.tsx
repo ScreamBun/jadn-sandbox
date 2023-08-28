@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { getValidFormatOpts } from 'actions/format';
 import { useAppSelector } from 'reducers';
 
-// Interfaces
 interface TypeOptionsEditorProps {
   id: string;
   placeholder?: string;
@@ -15,7 +14,6 @@ interface TypeOptionsEditorProps {
   optionType?: string;
 }
 
-// Type Options Editor
 const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEditorProps) {
   const { change, deserializedState, id, optionType } = props;
   const dispatch = useDispatch();
@@ -73,17 +71,16 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
 
   if (validOptions().length != 0) {
     return (
-      <div className="border m-0 p-1">
-        <p className="col-sm-4 my-1"><strong>{id}</strong></p>
-        <div className="col-12 m-0">
-          {validOptions()}
-        </div>
-      </div>
+      <>
+        {/* <p><strong>{id}</strong></p> */}
+        {validOptions()}
+      </>
     );
   } else if (optionType == "Boolean") {
-    return (<div className="border m-0 p-1">
-      <div className="col-12 m-0"> No type options available </div>
-    </div>);
+    return (
+    <>
+      No type options available
+    </>);
   }
   return '';
 });

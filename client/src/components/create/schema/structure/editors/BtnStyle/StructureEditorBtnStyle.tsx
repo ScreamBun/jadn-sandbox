@@ -207,46 +207,46 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     }
 
     //If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
+    // MapOf & ArrayOf
     if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
         return (
-            <div className="border m-0 p-1">
-                <ButtonGroup size="sm" className="float-right">
-                    <Button color="danger" onClick={removeAll} >
-                        <FontAwesomeIcon icon={faMinusCircle} />
-                    </Button>
-                </ButtonGroup>
-
-                <div className="border-bottom mb-2">
-                    <h5 id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
+            <>
+                <div className="card border-secondary mb-3">
+                    <div className="card-header px-2 py-2">
+                        <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</span>
+                        <ButtonGroup size="sm" className="float-right">
+                            <Button color="danger" onClick={removeAll} >
+                                <FontAwesomeIcon icon={faMinusCircle} />
+                            </Button>
+                        </ButtonGroup>          
+                    </div>
+                    <div className="card-body px-2 py-2">
+                        <div className="row m-0">
+                            <FormGroup className="col-md-4">
+                                <Label>Name</Label>
+                                <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                            </FormGroup>
+                            <FormGroup className="col-md-2">
+                                <Label>&nbsp;</Label>
+                                <InputGroup>
+                                    <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                                    <OptionsModal
+                                        optionValues={valueObj.options}
+                                        isOpen={modal}
+                                        optionType={valueObj.type}
+                                        toggleModal={toggleModal}
+                                        saveModal={saveModal}
+                                    />
+                                </InputGroup>
+                            </FormGroup>
+                            <FormGroup className="col-md-6">
+                                <Label>Comment</Label>
+                                <Input type="textarea" placeholder="Comment" className='text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                            </FormGroup>
+                        </div>
+                    </div>
                 </div>
-
-                <div className="row m-0">
-                    <FormGroup className="col-md-4">
-                        <Label>Name</Label>
-                        <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
-                    </FormGroup>
-
-                    <FormGroup className="col-md-2">
-                        <Label>&nbsp;</Label>
-                        <InputGroup>
-                            <Button outline color="info" onClick={toggleModal}>Type Options</Button>
-                            <OptionsModal
-                                optionValues={valueObj.options}
-                                isOpen={modal}
-                                optionType={valueObj.type}
-                                toggleModal={toggleModal}
-                                saveModal={saveModal}
-                            />
-                        </InputGroup>
-                    </FormGroup>
-
-                    <FormGroup className="col-md-6">
-                        <Label>Comment</Label>
-                        <Input type="textarea" placeholder="Comment" className='text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
-                    </FormGroup>
-
-                </div>
-            </div>
+            </>
         );
     }
 
@@ -269,41 +269,44 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     const listID = fields.map(field => field.key);
 
     return (
-        <div className="border m-1 p-1">
+        <>
+            <div className="card mb-3">
+                <div className="card-header px-2 py-2">
 
-            <ButtonGroup size="sm" className="float-right">
-                <Button color="danger" onClick={removeAll}
-                    title={`Delete ${valueObj.type}`}
-                >
-                    <FontAwesomeIcon icon={faMinusCircle} />
-                </Button>
-            </ButtonGroup>
-            <ButtonGroup size="sm" className="float-right mr-1">
-                <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
-                    title={`Move ${valueObj.type} Up`}>
-                    <FontAwesomeIcon icon={faSquareCaretUp} />
-                </Button>
-                <Button color="info" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
-                    title={`Move ${valueObj.type} Down`}>
-                    <FontAwesomeIcon icon={faSquareCaretDown} />
-                </Button>
-            </ButtonGroup>
+                    <div className='row'>
+                        <div className='col'>
+                            <span id={valueObj.name} className="card-title">{`${valueObj.name}(${valueObj.type})`}</span>
+                        </div>
+                        <div className='col'>
+                            <ButtonGroup size="sm" className="float-right">
+                                <Button color="danger" onClick={removeAll}
+                                    title={`Delete ${valueObj.type}`}>
+                                    <FontAwesomeIcon icon={faMinusCircle} />
+                                </Button>
+                            </ButtonGroup>
+                            <ButtonGroup size="sm" className="float-right mr-1">
+                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
+                                    title={`Move ${valueObj.type} Up`}>
+                                    <FontAwesomeIcon icon={faSquareCaretUp} />
+                                </Button>
+                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
+                                    title={`Move ${valueObj.type} Down`}>
+                                    <FontAwesomeIcon icon={faSquareCaretDown} />
+                                </Button>
+                            </ButtonGroup>  
+                        </div>
+                    </div>
+                </div>
+                <div className="card-body px-2 py-2">
+                    <div className="row">
 
-            <div className="border-bottom mb-2">
-                <h5 id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
-            </div>
+                        <div className="col-md-4">
+                            <Label className='mb-0'>Name</Label>
+                            <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                        </div>
 
-            <div className="row m-0">
-                <FormGroup className="col-md-4">
-                    <Label>Name
-                        <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
-                    </Label>
-                </FormGroup>
-
-                <FormGroup className="col-md-2">
-                    <Label>&nbsp;
-                        <InputGroup>
-                            <Button outline color="info" onClick={toggleModal}>Type Options</Button>
+                        <div className="col-md-2 mt-4 text-center">
+                            <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
                             <OptionsModal
                                 optionValues={valueObj.options}
                                 isOpen={modal}
@@ -311,39 +314,47 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 toggleModal={toggleModal}
                                 saveModal={saveModal}
                             />
-                        </InputGroup>
-                    </Label>
-                </FormGroup>
-
-                <FormGroup className="col-md-6">
-                    <Label className='mb-0'>Comment</Label>
-                    <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
-                </FormGroup>
-
-                <FormGroup className="col-12">
-                    <legend>
-                        {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
-                        <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                            className='float-right btn btn-sm'
-                            onClick={() => setFieldCollapse(!fieldCollapse)}
-                            title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
-                    </legend>
-
-                    <div ref={scrollToFieldRef}>
-                        {!fieldCollapse && fields}
+                        </div>
+                        <div className="col-md-6">
+                            <Label className='mb-0'>Comment</Label>
+                            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                        </div>
                     </div>
+                    <div className="row pt-2">
+                        <div className="col-12">
+                            <legend>
+                                {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
 
-                    {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> : ''}
+                                <span 
+                                    className="badge badge-pill badge-primary ml-1 cursor-pointer"
+                                    title='Add Field'
+                                    onClick={addField}>
+                                    <FontAwesomeIcon icon={faPlusSquare} />
+                                </span>                                    
 
-                    {!fieldCollapse &&
-                        <Button color="info" onClick={addField} outline className='btn btn-sm btn-block'
-                            title='Add Field'>
-                            <FontAwesomeIcon icon={faPlusSquare} />
-                        </Button>}
+                                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                    className='float-right btn btn-sm'
+                                    onClick={() => setFieldCollapse(!fieldCollapse)}
+                                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                            </legend>
 
-                </FormGroup>
-            </div>
-        </div>
+                            <div ref={scrollToFieldRef}>
+                                {!fieldCollapse && fields}
+                            </div>
+
+                            {!fieldCollapse && fields.length == 0 ? <p className='mb-2'> No fields to show</p> : ''}
+
+                            {!fieldCollapse &&
+                                <Button color="primary" onClick={addField} className='btn btn-sm btn-block'
+                                    title='Add Field'>
+                                    <FontAwesomeIcon icon={faPlusSquare} />
+                                </Button>}
+
+                        </div>
+                    </div>
+                </div>
+            </div>        
+        </>
     );
 });
 

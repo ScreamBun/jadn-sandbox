@@ -214,47 +214,47 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     setModal(modal => !modal);
   }
 
-  //If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
+  // If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
+  // TODO: Is this used?
   if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
     return (
-      <div className="border m-0 p-1">
-        <ButtonGroup size="sm" className="float-right">
-          <Button color="danger" onClick={removeAll} >
-            <FontAwesomeIcon icon={faMinusCircle} />
-          </Button>
-        </ButtonGroup>
-
-        <div className="border-bottom mb-2">
-          <h5 id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
-        </div>
-
-        <div className="row m-0">
-          <FormGroup className="col-md-4">
-            <Label>Name</Label>
-            <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
-          </FormGroup>
-
-          <FormGroup className="col-md-2">
-            <Label>&nbsp;</Label>
-            <InputGroup>
-              <Button outline color="info" onClick={toggleModal}>Type Options</Button>
-              <OptionsModal
-                optionValues={valueObj.options}
-                isOpen={modal}
-                optionType={valueObj.type}
-                toggleModal={toggleModal}
-                saveModal={saveModal}
-              />
-            </InputGroup>
-          </FormGroup>
-
-          <FormGroup className="col-md-6">
-            <Label>Comment</Label>
-            <Input type="textarea" placeholder="Comment" className='text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
-          </FormGroup>
-
-        </div>
-      </div>
+      <>
+        <div className="ZZZZ card mb-3">
+            <div className="card-header px-2 py-2">
+                <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</span>
+                <ButtonGroup size="sm" className="float-right">
+                  <Button color="danger" onClick={removeAll} >
+                    <FontAwesomeIcon icon={faMinusCircle} />
+                  </Button>
+                </ButtonGroup>                
+            </div>
+            <div className="card-body px-2 py-2">
+                <div className="row m-0">
+                  <FormGroup className="col-md-4">
+                    <Label>Name</Label>
+                    <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                  </FormGroup>
+                  <FormGroup className="col-md-2 mt-4 text-center">
+                    <Label>&nbsp;</Label>
+                    <ButtonGroup>
+                      <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                      <OptionsModal
+                        optionValues={valueObj.options}
+                        isOpen={modal}
+                        optionType={valueObj.type}
+                        toggleModal={toggleModal}
+                        saveModal={saveModal}
+                      />
+                    </ButtonGroup>
+                  </FormGroup>
+                  <FormGroup className="col-md-6">
+                    <Label>Comment</Label>
+                    <Input type="textarea" placeholder="Comment" className='text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                  </FormGroup>
+                </div>
+            </div>
+        </div>      
+      </>
     );
   }
 
@@ -304,74 +304,101 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const listID = fields?.map(field => field.props.id);
 
   return (
-    <div className="border m-1 p-1">
-      <ButtonGroup size="sm" className="float-right">
-        <Button color="danger" onClick={removeAll}
-          title={`Delete ${valueObj.type}`}
-        >
-          <FontAwesomeIcon icon={faMinusCircle} />
-        </Button>
-      </ButtonGroup>
 
-      <div className="border-bottom mb-2">
-        <h5 id={valueObj.name} className="col-sm-10 my-1">{`${valueObj.name}(${valueObj.type})`}</h5>
-      </div>
+    <>
+	    <div className="card mb-2">
+        <div className="card-header px-2 py-2">
+          <div className='row'>
+            <div className='col'>
+              <span id={valueObj.name} className="card-title">{`${valueObj.name}(${valueObj.type})`}</span>
+            </div>
+            <div className='col'>
+              <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
+                <FontAwesomeIcon icon={faMinusCircle} />
+              </Button>
+            </div>
+          </div>              
+        </div>
+        <div className="card-body px-2 pt-2 pb-3">
+          <div className="row">
 
-      <div className="row m-0">
-        <FormGroup className="col-md-4">
-          <Label>Name
-            <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
-          </Label>
-        </FormGroup>
+            <div className="col-md-4">
+              <Label className='mb-0'>Name</Label>
+              <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+            </div>
 
-        <FormGroup className="col-md-2">
-          <Label>&nbsp;
-            <InputGroup>
-              <Button outline color="info" onClick={toggleModal}>Type Options</Button>
-              <OptionsModal
-                optionValues={valueObj.options}
-                isOpen={modal}
-                optionType={valueObj.type}
-                toggleModal={toggleModal}
-                saveModal={saveModal}
-              />
-            </InputGroup>
-          </Label>
-        </FormGroup>
+            <div className="col-md-2 text-center">
+              <Label className='mb-0'>&nbsp;</Label>
+              <Button color="primary" className='p-2 mt-4 btn-sm' onClick={toggleModal}>Type Options</Button>
+                <OptionsModal
+                  optionValues={valueObj.options}
+                  isOpen={modal}
+                  optionType={valueObj.type}
+                  toggleModal={toggleModal}
+                  saveModal={saveModal}
+                />
+            </div>
 
-        <FormGroup className="col-md-6">
-          <Label className='mb-0'>Comment</Label>
-          <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
-        </FormGroup>
+            <div className="col-md-6">
+              <Label className='mb-0'>Comment</Label>
+              <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+            </div>
 
-        <FormGroup className="col-12">
-          <legend>
-            {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
-            <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-              className='float-right btn btn-sm'
-              onClick={() => setFieldCollapse(!fieldCollapse)}
-              title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
-          </legend>
-
-          <div>
-            {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> :
-              <Droppable acceptableType={`Field${dataIndex}`}>
-                <div ref={scrollToFieldRef}>
-                  {fields}
-                </div>
-              </Droppable>
-            }
           </div>
+          <div className="row pt-2">
 
-          {!fieldCollapse &&
-            <Button color="info" onClick={addField} outline className='btn btn-sm btn-block'
-              title='Add Field'>
-              <FontAwesomeIcon icon={faPlusSquare} />
-            </Button>}
+            <div className="col-12">
+              {/* <legend>
+                {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
+                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                  className='float-right btn btn-sm '
+                  onClick={() => setFieldCollapse(!fieldCollapse)}
+                  title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+              </legend> */}
 
-        </FormGroup>
+              <legend>
+                  {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
+
+                  <span 
+                      className="badge badge-pill badge-primary ml-1 cursor-pointer"
+                      title='Add Field'
+                      onClick={addField}>
+                      <FontAwesomeIcon icon={faPlusSquare} />
+                  </span> 
+
+                  <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                      className='float-right btn btn-sm'
+                      onClick={() => setFieldCollapse(!fieldCollapse)}
+                      title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+              </legend>
+              
+              <div ref={scrollToFieldRef}>
+                  {!fieldCollapse && fields}
+              </div>              
+
+              {!fieldCollapse && fields.length == 0 ? <p> No fields to show</p> :""}
+
+              {!fieldCollapse &&
+                  <div>
+                    {/* <Droppable acceptableType={`Field${dataIndex}`}>
+                      <div ref={scrollToFieldRef}>
+                        {fields}
+                      </div>
+                    </Droppable>                     */}
+                    <Button color="primary" onClick={addField} className='btn btn-sm btn-block'
+                      title='Add Field'>
+                      <FontAwesomeIcon icon={faPlusSquare} />
+                    </Button>                    
+                  </div>
+                }
+
+            </div>      
+
+          </div>
+        </div>
       </div>
-    </div>
+
+    </>
   );
 });
 
