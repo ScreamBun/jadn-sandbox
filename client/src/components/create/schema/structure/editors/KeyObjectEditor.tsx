@@ -128,15 +128,13 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
 
   return (
     <>
-      <div className="card border-secondary mb-2">
+      <div className="card mb-2">
         <div className="card-body px-2 py-2">
           <div className="row m-0 no-gutters">
             <div className='col'>
               <ButtonGroup size="sm" className="float-right">
                 <Button color="primary" onClick={addIndex} >
-                  <FontAwesomeIcon
-                    icon={faPlusSquare}
-                  />
+                  <FontAwesomeIcon icon={faPlusSquare} />
                 </Button>
                 <Button color="danger" onClick={removeAll} >
                   <FontAwesomeIcon icon={faMinusCircle} />

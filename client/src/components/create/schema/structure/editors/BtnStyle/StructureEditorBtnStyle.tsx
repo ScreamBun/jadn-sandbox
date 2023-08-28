@@ -211,14 +211,18 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
         return (
             <>
-                <div className="card border-secondary mb-3">
+                <div className="card mb-3">
                     <div className="card-header px-2 py-2">
-                        <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</span>
-                        <ButtonGroup size="sm" className="float-right">
-                            <Button color="danger" onClick={removeAll} >
+                        <div className='row'>
+                            <div className='col'>
+                                <span id={valueObj.name} className="card-title">{`${valueObj.name}(${valueObj.type})`}</span>
+                            </div>
+                            <div className='col'>
+                                <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
                                 <FontAwesomeIcon icon={faMinusCircle} />
-                            </Button>
-                        </ButtonGroup>          
+                                </Button>
+                            </div>
+                        </div>         
                     </div>
                     <div className="card-body px-2 py-2">
                         <div className="row m-0">

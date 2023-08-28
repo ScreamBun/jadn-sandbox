@@ -89,22 +89,28 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
 
     return (
         <>
-            <div className="card border-secondary mb-3">
+            <div className="card mb-3">
                 <div className="card-header px-2 py-2">
-                    <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</span>
-                    <ButtonGroup size="sm" className="float-right">
-                        <Button color="danger" onClick={removeAll} title={`Delete ${valueObj.type}`}>
-                            <FontAwesomeIcon icon={faMinusCircle} />
-                        </Button>
-                    </ButtonGroup>
-                    <ButtonGroup size="sm" className="float-right mr-1">
-                        <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)} title={`Move ${valueObj.type} Up`}>
-                            <FontAwesomeIcon icon={faSquareCaretUp} />
-                        </Button>
-                        <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} title={`Move ${valueObj.type} Down`}>
-                            <FontAwesomeIcon icon={faSquareCaretDown} />
-                        </Button>
-                    </ButtonGroup>                
+                    <div className='row'>
+                        <div className='col'>
+                            <span id={valueObj.name} className="card-title">{`${valueObj.name}(${valueObj.type})`}</span>
+                        </div>
+                        <div className='col'>
+                            <ButtonGroup size="sm" className="float-right">
+                                <Button color="danger" onClick={removeAll} title={`Delete ${valueObj.type}`}>
+                                    <FontAwesomeIcon icon={faMinusCircle} />
+                                </Button>
+                            </ButtonGroup>
+                            <ButtonGroup size="sm" className="float-right mr-1">
+                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)} title={`Move ${valueObj.type} Up`}>
+                                    <FontAwesomeIcon icon={faSquareCaretUp} />
+                                </Button>
+                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} title={`Move ${valueObj.type} Down`}>
+                                    <FontAwesomeIcon icon={faSquareCaretDown} />
+                                </Button>
+                            </ButtonGroup> 
+                        </div>
+                    </div>
                 </div>
                 <div className="card-body px-2 py-2">
                     <div className="row m-0">
