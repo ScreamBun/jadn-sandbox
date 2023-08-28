@@ -144,11 +144,13 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
           <div className="row">
             <div className="col-md-12">
                 <form className="form-inline" role="form">           
+                  <div className="input-group w-100">
                     <Label htmlFor={`editor-${placeholder}`} className='pr-2'><strong>{placeholder}{required ? '*' : ''}</strong></Label>
                     <input type={type} className="form-control" id={`editor-${placeholder}`} />
                     {remove ?
                     <Button title={`Remove ${placeholder}`} className="btn-sm ml-2" color='danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></Button>
                     : ''}
+                  </div>
                 </form>
             </div>
           </div>
