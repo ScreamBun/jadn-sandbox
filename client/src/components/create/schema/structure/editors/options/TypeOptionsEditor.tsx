@@ -72,7 +72,6 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
   if (validOptions().length != 0) {
     return (
       <>
-        {/* <p><strong>{id}</strong></p> */}
         {validOptions()}
       </>
     );

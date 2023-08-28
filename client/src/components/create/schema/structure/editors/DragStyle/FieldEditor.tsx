@@ -159,15 +159,18 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   return (
     <>
-      <div className="card border-secondary mb-2">
+      <div className="card mb-2">
         <div className="card-header px-2 py-2">
-            <span className="px-1 my-1">{enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}</span>
-            <ButtonGroup size="sm" className="float-right">
-              <Button color="danger" onClick={removeAll}
-                title={`Delete Field`}>
+          <div className='row'>
+            <div className='col'>
+              <span className="card-title">{enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}</span>
+            </div>
+            <div className='col'>
+              <Button color="danger" className="float-right btn-sm" onClick={removeAll}  title={`Delete Field`}>
                 <FontAwesomeIcon icon={faMinusCircle} />
               </Button>
-            </ButtonGroup>        
+            </div>
+          </div>      
         </div>
         <div className="card-body px-2 py-2">
             <div className="row m-0">

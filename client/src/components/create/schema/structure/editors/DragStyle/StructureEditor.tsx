@@ -346,16 +346,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
           </div>
           <div className="row pt-2">
-
             <div className="col-12">
-              {/* <legend>
-                {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
-                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                  className='float-right btn btn-sm '
-                  onClick={() => setFieldCollapse(!fieldCollapse)}
-                  title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
-              </legend> */}
-
               <legend>
                   {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
 

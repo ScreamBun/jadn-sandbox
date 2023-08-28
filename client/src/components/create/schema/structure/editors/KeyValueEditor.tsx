@@ -43,7 +43,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
       <>
         <div className="card mb-2">
           <div className="card-body px-2 py-2">
-          <div className="row m-0 no-gutters t1">
+          <div className="row m-0 no-gutters">
               <div className='col'>
                 <div className='mb-0'>
                   <Label htmlFor={`editor-${placeholder}`}><strong>{placeholder}{required ? '*' : ''}</strong></Label>
