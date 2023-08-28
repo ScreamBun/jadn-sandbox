@@ -41,7 +41,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   if (type === 'SBCreatableSelect' && options) {
     return (
       <>
-        <div className="card mb-2">
+        <div className="card border-secondary mb-2">
           <div className="card-body px-2 py-2">
           <div className="row m-0 no-gutters">
               <div className='col'>
@@ -75,7 +75,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   if (type === 'SBSelect' && options) {
     return (
       <>
-        <div className="card mb-2">
+        <div className="card border-secondary mb-2">
           <div className="card-body px-2 py-2">
           <div className="row m-0 no-gutters">
               <div className='col'>
@@ -118,7 +118,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
 
       return (
         <>
-          <div className="card mb-2">
+          <div className="card border-secondary mb-2">
             <div className="card-body px-2 py-2">
               <div className="row">
                 <div className="col-md-12">
@@ -139,7 +139,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
 
   return (
     <>
-      <div className="card mb-2">
+      <div className="card border-secondary mb-2">
         <div className="card-body px-2 py-2">
           <div className="row">
             <div className="col-md-12">
@@ -148,7 +148,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                     <Label htmlFor={`editor-${placeholder}`} className='pr-2'><strong>{placeholder}{required ? '*' : ''}</strong></Label>
                     <input type={type} className="form-control" id={`editor-${placeholder}`} />
                     {remove ?
-                    <Button title={`Remove ${placeholder}`} className="btn-sm ml-2" color='danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></Button>
+                    <Button title={`Remove ${placeholder}`} className="btn-sm" color='danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></Button>
                     : ''}
                   </div>
                 </form>

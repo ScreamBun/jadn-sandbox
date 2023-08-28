@@ -157,7 +157,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
 
     return (
         <>
-            <div className="card mb-2">
+            <div className="card border-secondary mb-2">
                 <div className="card-header px-2 py-2">
                     <span>{enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}</span>
                     <ButtonGroup size="sm" className="float-right">

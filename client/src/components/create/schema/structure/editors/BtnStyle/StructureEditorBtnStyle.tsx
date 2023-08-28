@@ -211,7 +211,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
         return (
             <>
-                <div className="card mb-3">
+                <div className="card border-secondary mb-3">
                     <div className="card-header px-2 py-2">
                         <div className='row'>
                             <div className='col'>
@@ -274,7 +274,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
     return (
         <>
-            <div className="card mb-3">
+            <div className="card border-secondary mb-3">
                 <div className="card-header px-2 py-2">
 
                     <div className='row'>

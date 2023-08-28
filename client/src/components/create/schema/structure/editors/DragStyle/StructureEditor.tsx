@@ -306,7 +306,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   return (
 
     <>
-	    <div className="card mb-2">
+	    <div className="card border-secondary mb-2">
         <div className="card-header px-2 py-2">
           <div className='row'>
             <div className='col'>

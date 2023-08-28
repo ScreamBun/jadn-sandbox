@@ -84,7 +84,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
 
   return (
     <>
-      <div className="card mb-2">
+      <div className="card border-secondary mb-2">
         <div className="card-body px-2 py-2">
           <div className="row m-0 no-gutters">
             <div className='col'>
