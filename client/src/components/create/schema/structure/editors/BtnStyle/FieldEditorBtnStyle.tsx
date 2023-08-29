@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import {
-    Button, ButtonGroup, FormGroup, Input, Label
+    Button, ButtonGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
@@ -26,7 +26,7 @@ interface FieldEditorProps {
     changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
 }
 
-// Field Editor
+
 const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditorProps) {
     const { enumerated, value, dataIndex, change, config, changeIndex } = props;
 

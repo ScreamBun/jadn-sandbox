@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-  Button, ButtonGroup, FormGroup, Input, Label
+  Button, FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -16,7 +16,7 @@ import { sbToastError } from 'components/common/SBToast';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import { Option } from 'components/common/SBSelect';
 
-// Interface
+
 interface FieldEditorProps {
   enumerated?: boolean;
   dataIndex: number;
@@ -27,7 +27,7 @@ interface FieldEditorProps {
   changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
 }
 
-// Field Editor
+
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   const { enumerated, value, dataIndex, change, config } = props;
   //const allTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]);
@@ -111,8 +111,8 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     }
     const updatevalue = { ...valueObj, options: modalData }
     setValueObj(updatevalue);
-    change(updatevalue, dataIndex);
-    // change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
+    // change(updatevalue, dataIndex);
+    change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
   const toggleModal = () => {
