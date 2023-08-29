@@ -18,6 +18,7 @@ import { useAppSelector } from 'reducers';
 import { DraggableType } from './DraggableType';
 import update from 'immutability-helper'
 import { Droppable } from './Droppable';
+import { ModalSize } from '../options/ModalSize';
 
 // Interface
 interface StructureEditorProps {
@@ -230,13 +231,13 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
             </div>
             <div className="card-body px-2 py-2">
                 <div className="row m-0">
-                  <FormGroup className="col-md-4">
+                  <div className="col-md-4">
                     <Label>Name</Label>
                     <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
-                  </FormGroup>
-                  <FormGroup className="col-md-2 mt-4 text-center">
+                  </div>
+                  <div className="col-md-2 mt-4 text-center">
                     <Label>&nbsp;</Label>
-                    <ButtonGroup>
+                    <InputGroup>
                       <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
                       <OptionsModal
                         optionValues={valueObj.options}
@@ -244,13 +245,14 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                         optionType={valueObj.type}
                         toggleModal={toggleModal}
                         saveModal={saveModal}
+                        modalSize={ModalSize.lg}
                       />
-                    </ButtonGroup>
-                  </FormGroup>
-                  <FormGroup className="col-md-6">
+                    </InputGroup>
+                  </div>
+                  <div className="col-md-6">
                     <Label>Comment</Label>
                     <Input type="textarea" placeholder="Comment" className='text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
-                  </FormGroup>
+                  </div>
                 </div>
             </div>
         </div>      
