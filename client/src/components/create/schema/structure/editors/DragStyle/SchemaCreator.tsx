@@ -553,7 +553,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
                                             </div>
                                         </div>
-                                        <hr />
+                                        <hr className='border-secondary' />
                                         <div className='row'>
                                             <div className="col">
                                                 <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>

@@ -511,7 +511,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                 {infoEditors}
                                             </div>
                                         </div>
-                                        <hr />
+                                        <hr className='border-secondary' />
                                         <div className="col p-0">
                                             <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
                                             <div className='p-1' ref={scrollToTypeRef}>
