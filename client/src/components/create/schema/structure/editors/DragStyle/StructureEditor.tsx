@@ -221,7 +221,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       <>
         <div className="card border-secondary mb-3">
             <div className="card-header px-2 py-2">
-                <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name}(${valueObj.type})`}</span>
+                <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name} (${valueObj.type})`}</span>
                 <ButtonGroup size="sm" className="float-right">
                   <Button color="danger" onClick={removeAll} >
                     <FontAwesomeIcon icon={faMinusCircle} />
@@ -310,7 +310,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         <div className="card-header px-2 py-2">
           <div className='row'>
             <div className='col'>
-              <span id={valueObj.name} className="card-title">{`${valueObj.name}(${valueObj.type})`}</span>
+              <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
             </div>
             <div className='col'>
               <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>

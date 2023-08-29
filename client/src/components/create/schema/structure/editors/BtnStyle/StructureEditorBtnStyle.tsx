@@ -215,7 +215,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                     <div className="card-header px-2 py-2">
                         <div className='row'>
                             <div className='col'>
-                                <span id={valueObj.name} className="card-title">{`${valueObj.name}(${valueObj.type})`}</span>
+                                <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                             </div>
                             <div className='col'>
                                 <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
@@ -279,7 +279,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                     <div className='row'>
                         <div className='col'>
-                            <span id={valueObj.name} className="card-title">{`${valueObj.name}(${valueObj.type})`}</span>
+                            <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                         </div>
                         <div className='col'>
                             <ButtonGroup size="sm" className="float-right">
