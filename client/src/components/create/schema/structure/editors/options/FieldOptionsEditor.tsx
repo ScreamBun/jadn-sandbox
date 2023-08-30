@@ -39,7 +39,7 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
           </div>
           <div className='row'>
             <div className='col-md-12'>
-              {validOptions()}    
+              {validOptions()}  
             </div>
           </div>
        </>

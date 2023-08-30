@@ -15,6 +15,7 @@ import { useAppSelector } from '../../../../../../reducers';
 import { sbToastError } from 'components/common/SBToast';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import { Option } from 'components/common/SBSelect';
+import { ModalSize } from '../options/ModalSize';
 
 
 interface FieldEditorProps {
@@ -150,6 +151,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
             saveModal={saveModal}
             toggleModal={toggleModal}
             optionType={val.type}
+            modalSize={ModalSize.lg}
             fieldOptions
           />
         </div>

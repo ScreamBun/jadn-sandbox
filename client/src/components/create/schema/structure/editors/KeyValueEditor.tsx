@@ -17,14 +17,30 @@ interface KeyValueEditorProps {
   value: boolean | number | string;
   type?: InputType;
   options?: Array<string>; // only for type='select'
-  change: (_v: boolean | number | string) => void;
-  remove: (_id: string | number) => void;
+  change?: (_v: boolean | number | string) => void;
+  remove?: (_id: string | number) => void;
   required: boolean;
+  removable?: boolean;
+  labelColumns?: number;
+  fieldColumns?: number;
 }
 
 // Key Value Editor
 const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) {
-  const { name, value, description, options, placeholder, type, change, remove, required } = props;
+  const { 
+    name, 
+    value, 
+    description, 
+    options, 
+    placeholder, 
+    type, 
+    change, 
+    remove, 
+    required, 
+    removable, 
+    labelColumns = 2,  
+    fieldColumns = 10
+  } = props;
   const [valueData, setValueData] = useState(value);
 
   const [val, setVal] = useState(value ? { value: value, label: value } : ''); //for select
@@ -46,7 +62,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
           <div className="row m-0 no-gutters">
               <div className='col'>
                 <div className='mb-0'>
-                  <Label htmlFor={`editor-${placeholder}`}><strong>{placeholder}{required ? '*' : ''}</strong></Label>
+                  <Label htmlFor={`editor-${placeholder}`}><strong>{name}{required ? '*' : ''}</strong></Label>
                   <div className="input-group col-sm-12">
                     <SBCreatableSelect id={`editor-${placeholder}`}
                       placeholder={`Please select a ${placeholder}...`}
@@ -55,7 +71,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                       value={val}
                       isGrouped={Array.isArray(options) ? false : true}
                     />
-                    {remove ?
+                    {removable ?
                       <div className="input-group-append">
                         <Button color='danger' onClick={() => remove(name.toLowerCase())}>
                           <FontAwesomeIcon icon={faMinusSquare} />
@@ -80,7 +96,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
           <div className="row m-0 no-gutters">
               <div className='col'>
                 <div className='mb-0'>
-                  <Label htmlFor={`editor-${placeholder}`}><strong>{placeholder}{required ? '*' : ''}</strong></Label>
+                  <Label htmlFor={`editor-${placeholder}`}><strong>{name}{required ? '*' : ''}</strong></Label>
                   <div className="input-group col-md-12">
                     <SBSelect id={`editor-${placeholder}`}
                       placeholder={`Please select a ${placeholder}...`}
@@ -89,7 +105,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                       value={val}
                       isGrouped={Array.isArray(options) ? false : true}
                     />
-                    {remove ?
+                    {removable ?
                       <div className="input-group-append">
                         <Button color='danger' onClick={() => remove(name.toLowerCase())}>
                           <FontAwesomeIcon icon={faMinusSquare} />
@@ -115,47 +131,64 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   if (['checkbox', 'radio'].includes(type)) {
     inputArgs.defaultChecked = type && valueData,
       inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => { setValueData(e.target.checked); change(e.target.checked); }
-
       return (
         <>
-          <div className="card border-secondary mb-2">
-            <div className="card-body px-2 py-2">
+        { removable ?
+          <div className="row">
+            <div className="col-md-12">
               <div className="row">
-                <div className="col-md-12">
-                    <form className="form-inline" role="form">           
-                        <Label htmlFor={`editor-${placeholder}`} className='pr-2'><strong>{placeholder}{required ? '*' : ''}</strong></Label>
-                        <input type={type} id={`editor-${placeholder}`} />
-                        {remove ?
-                        <Button title={`Remove ${placeholder}`} className="btn-sm ml-2" color='danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></Button>
-                        : ''}
-                    </form>
+                <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
+                    <span>{name} {required ? '*' : ''}</span>
+                </label>
+                <div className={`col-md-${fieldColumns} col-form-label`}>
+                  <input type={type} id={`editor-${placeholder}`} className={type} />
+                  <Button title={`Remove ${placeholder}`} className="btn-sm ml-2" color='danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></Button>
+                </div>
+              </div>
+            </div>
+          </div>  
+          :
+          <div className="row">
+            <div className="col-md-12">
+              <div className="row">
+                <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
+                    <span>{name} {required ? '*' : ''}</span>
+                </label>
+                <div className={`col-md-${fieldColumns} col-form-label`}>
+                  <input type={type} id={`editor-${placeholder}`} className={type} />
                 </div>
               </div>
             </div>
           </div>
+          }
         </>
       );  
   }
 
   return (
     <>
-      <div className="card border-secondary mb-2">
-        <div className="card-body px-2 py-2">
-          <div className="row">
-            <div className="col-md-12">
-                <form className="form-inline" role="form">           
-                  <div className="input-group w-100">
-                    <Label htmlFor={`editor-${placeholder}`} className='pr-2'><strong>{placeholder}{required ? '*' : ''}</strong></Label>
-                    <input type={type} className="form-control" id={`editor-${placeholder}`} />
-                    {remove ?
-                    <Button title={`Remove ${placeholder}`} className="btn-sm" color='danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></Button>
-                    : ''}
-                  </div>
-                </form>
+        { removable ?
+          <div className="row form-group">
+            <div className={`col-md-${labelColumns}`}>
+              <label htmlFor={`editor-${placeholder}`} className={`col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+            </div>
+            <div className={`col-md-${fieldColumns}`}>
+              <div className = "input-group input-group-sm">
+                <input type={type} className="form-control" id={`editor-${placeholder}`} />
+                <div className="input-group-append">
+                  <button title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                </div>                    
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+          :                   
+          <div className="row form-group">
+              <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+              <div className={`col-md-${fieldColumns}`}>
+                <input type={type} className="form-control form-control-sm" id={`editor-${placeholder}`} />
+              </div>
+          </div>                  
+        }
     </>
   );
 });

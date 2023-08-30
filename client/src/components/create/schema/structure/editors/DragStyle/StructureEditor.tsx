@@ -286,6 +286,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       <DraggableType
         key={self.crypto.randomUUID()}
         id={field[0]}
+        isDraggable={true}
         dataIndex={index}
         changeIndex={onDrag}
         acceptableType={`Field${dataIndex}`}
@@ -338,6 +339,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   optionType={valueObj.type}
                   toggleModal={toggleModal}
                   saveModal={saveModal}
+                  modalSize={ModalSize.lg}
                 />
             </div>
 
