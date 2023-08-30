@@ -96,8 +96,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
   }
 
   const indices = valueObj.map((obj, i) => (
-    // eslint-disable-next-line react/no-array-index-key
-    <div className="input-group col-sm-12 mb-1" key={i}>
+    <div className="input-group col-sm-12 mb-1 p-0" key={i}>
       <Input
         type="text"
         className="form-control"
@@ -129,28 +128,32 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
   return (
     <>
       <div className="card border-secondary mb-2">
-        <div className="card-body px-2 py-2">
-          <div className="row m-0 no-gutters">
-            <div className='col'>
-              <ButtonGroup size="sm" className="float-right">
-                <Button color="primary" onClick={addIndex} >
-                  <FontAwesomeIcon icon={faPlusSquare} />
-                </Button>
-                <Button color="danger" onClick={removeAll} >
-                  <FontAwesomeIcon icon={faMinusCircle} />
-                </Button>
-              </ButtonGroup>
-              <div className="border-bottom mb-2">
-                <p className="col-sm-4 my-1 px-0"><strong>{name}</strong></p>
+        <div className="card-header px-2 py-2">
+            <div className='row no-gutters'>
+              <div className='col'>
+                <span><strong>{name}</strong></span><br></br>
                 {description ? <FormText color='muted'>{description}</FormText> : ''}
               </div>
-              <div className="row m-0 indices">
-                {indices}
+              <div className='col'>
+                <ButtonGroup size="sm" className="float-right">
+                    <Button color="primary" onClick={addIndex} >
+                      <FontAwesomeIcon icon={faPlusSquare} />
+                    </Button>
+                    <Button color="danger" onClick={removeAll} >
+                      <FontAwesomeIcon icon={faMinusCircle} />
+                    </Button>
+                  </ButtonGroup>
               </div>
-            </div>
+            </div>     
           </div>
-        </div>
-      </div>    
+          <div className="card-body px-2 py-2">
+              <div className="row m-0">
+                <div className="col-12 m-0">
+                  {indices}
+                </div>
+              </div>
+          </div>
+      </div>           
     </>
   );
 });
