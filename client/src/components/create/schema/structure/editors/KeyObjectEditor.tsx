@@ -96,7 +96,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
   }
 
   const indices = valueObj.map((obj, i) => (
-    <div className="input-group col-sm-12 mb-1 p-0" key={i}>
+    <div className="input-group input-group-sm col-sm-12 mb-1 p-0" key={i}>
       <Input
         type="text"
         className="form-control"
@@ -131,8 +131,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
         <div className="card-header px-2 py-2">
             <div className='row no-gutters'>
               <div className='col'>
-                <span><strong>{name}</strong></span><br></br>
-                {description ? <FormText color='muted'>{description}</FormText> : ''}
+                <span>{name} <small style={{ fontSize: '10px' }} className="text-muted"> {description} </small></span>
               </div>
               <div className='col'>
                 <ButtonGroup size="sm" className="float-right">

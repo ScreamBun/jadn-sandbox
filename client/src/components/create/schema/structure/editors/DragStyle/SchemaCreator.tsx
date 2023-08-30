@@ -529,39 +529,61 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     <>
                                         <div className='row'>
                                             <div className="col pt-2">
-                                                <div className='row'>
-                                                    <div className='col'>
-                                                        <h5 id="info" className='mb-0'>Info
-                                                            <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small>
-                                                        </h5>
+                                                <div className='card border-secondary'>
+                                                    <div className='card-header bg-primary'>
+                                                        <div className='row'>
+                                                            <div className='col'>
+                                                                <h5 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                                            </div>
+                                                            <div className='col'>
+                                                                {generatedSchema.info &&
+                                                                    <legend>
+                                                                        <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                            className='float-right btn btn-sm'
+                                                                            onClick={() => setFieldCollapse(!fieldCollapse)}
+                                                                            title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                                                    </legend>
+                                                                }
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div className='col'>
-                                                        {generatedSchema.info &&
-                                                            <legend>
-                                                                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                    className='float-right btn btn-sm'
-                                                                    onClick={() => setFieldCollapse(!fieldCollapse)}
-                                                                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
-                                                            </legend>
-                                                        }
+                                                    <div className='card-body'>
+                                                        {!fieldCollapse &&
+                                                        <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
+                                                            {infoEditors}
+                                                        </Droppable>}
                                                     </div>
                                                 </div>
-                                                {!fieldCollapse &&
-                                                    <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
-                                                        {infoEditors}
-                                                    </Droppable>}
-
                                             </div>
                                         </div>
-                                        <hr className='border-secondary' />
-                                        <div className='row'>
-                                            <div className="col">
-                                                <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                                <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
-                                                    {typesEditors}
-                                                </Droppable>
-
+                                        <div className='row mt-2'>
+                                            <div className="col pt-2">
+                                                <div className='card border-secondary'>
+                                                    <div className='card-header bg-primary'>
+                                                        <div className='row'>
+                                                            <div className='col'>
+                                                                <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                            </div>
+                                                            <div className='col'>
+                                                                {/* {generatedSchema.info &&
+                                                                    <legend>
+                                                                        <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                            className='float-right btn btn-sm'
+                                                                            onClick={() => setFieldCollapse(!fieldCollapse)}
+                                                                            title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                                                    </legend> 
+                                                                }*/}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className='card-body'>
+                                                        <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
+                                                            {typesEditors}
+                                                        </Droppable>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                         </div>
                                     </>
                                 }

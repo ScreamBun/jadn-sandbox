@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Button, FormText } from 'reactstrap';
+import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { ConfigOptions } from './consts';
@@ -59,8 +59,7 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
         <div className="card-header px-2 py-2">
           <div className='row no-gutters'>
             <div className='col'>
-              <span><strong>{name}</strong></span><br></br>
-              {description ? <FormText color='muted'>{description}</FormText> : ''}
+              <span>{name} <small style={{ fontSize: '10px' }} className="text-muted"> {description} </small></span>
             </div>
             <div className='col'>
               <Button color="danger" size="sm" className="float-right" onClick={removeAll} >

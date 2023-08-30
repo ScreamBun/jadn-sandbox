@@ -119,10 +119,10 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
     <div className='card'>
         <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
             <div className='row'>
-                <div className='col-10 pl-2 pr-2'>
+                <div className='col-10'>
                     <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
                 </div>
-                <div className='col-2 pl-2 pr-2'>
+                <div className='col-2'>
                     <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
                 </div>                
             </div>

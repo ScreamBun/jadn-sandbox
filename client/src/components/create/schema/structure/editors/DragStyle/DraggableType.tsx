@@ -95,10 +95,10 @@ export const DraggableType = memo(function DraggableType(props: DraggableTypePro
         <div className='card'>
             <div className='card-body list-group-item' ref={dragHandler} style={containerStyle}>
                 <div className='row'>
-                    <div className='col-11 pl-2 pr-2'>
+                    <div className='col-11'>
                         {item}
                     </div>
-                    <div className='col-1 pl-2 pr-2'>
+                    <div className='col-1'>
                         <div ref={dragDropRef} style={handleStyle}>
                             <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
                         </div>
