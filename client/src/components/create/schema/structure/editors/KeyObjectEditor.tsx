@@ -96,7 +96,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
   }
 
   const indices = valueObj.map((obj, i) => (
-    <div className="input-group input-group-sm col-sm-12 mb-1 p-0" key={i}>
+    <div className="input-group input-group-sm mb-1 p-0" key={i}>
       <Input
         type="text"
         className="form-control"

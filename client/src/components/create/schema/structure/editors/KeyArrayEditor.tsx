@@ -63,7 +63,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
   }
 
   const indices = dataArr.map((val, i) => (
-    <div className="input-group input-group-sm col-sm-12 mb-1" key={i}>
+    <div className="input-group input-group-sm mb-1" key={i}>
       <Input
         type="text"
         className="form-control"
