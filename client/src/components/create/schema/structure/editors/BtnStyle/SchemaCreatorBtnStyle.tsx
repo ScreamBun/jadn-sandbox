@@ -408,7 +408,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         }))
     }).filter(Boolean);
 
-    const [fieldCollapse, setFieldCollapse] = useState(false);
+    const [infoCollapse, setInfoCollapse] = useState(false);
+    const [typesCollapse, setTypesCollapse] = useState(false);
 
     return (
         <div className='card'>
@@ -518,24 +519,24 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                             <div className='col'>
                                                                 {generatedSchema.info &&
                                                                     <legend>
-                                                                        <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                        <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
                                                                             className='float-right btn btn-sm'
-                                                                            onClick={() => setFieldCollapse(!fieldCollapse)}
-                                                                            title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                                                            onClick={() => setInfoCollapse(!infoCollapse)}
+                                                                            title={infoCollapse ? ' Show Info' : ' Hide Info'} />
                                                                     </legend>
                                                                 }
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className='card-body'>
-                                                        {!fieldCollapse &&
-                                                        <div ref={scrollToInfoRef}>
-                                                            {generatedSchema.info ? 
-                                                            <>{infoEditors}</> 
-                                                            : 
-                                                            <><p className="text-muted">To add metadata info make a selection from Info</p></>
-                                                            }
-                                                        </div>
+                                                        {!infoCollapse &&
+                                                            <div ref={scrollToInfoRef}>
+                                                                {generatedSchema.info ? 
+                                                                <>{infoEditors}</> 
+                                                                : 
+                                                                <><p className="text-muted">To add metadata info make a selection from Info</p></>
+                                                                }
+                                                            </div>
                                                         }
                                                     </div>
                                                 </div>
@@ -547,28 +548,30 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                                <h5 id="types" className='mb-0'>Types* <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
                                                             </div>
                                                             <div className='col'>
-                                                                {/* {generatedSchema.info &&
+                                                                {generatedSchema.types &&
                                                                     <legend>
-                                                                        <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                        <FontAwesomeIcon icon={typesCollapse ? faCircleChevronDown : faCircleChevronUp}
                                                                             className='float-right btn btn-sm'
-                                                                            onClick={() => setFieldCollapse(!fieldCollapse)}
-                                                                            title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                                                            onClick={() => setTypesCollapse(!typesCollapse)}
+                                                                            title={typesCollapse ? ' Show Types' : ' Hide Types'} />
                                                                     </legend> 
-                                                                }*/}
+                                                                }
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className='card-body'>
-                                                        <div ref={scrollToTypeRef}>
-                                                            {generatedSchema.types ? 
-                                                            <>{typesEditors}</> 
-                                                            : 
-                                                            <><p className="text-muted">To add schema content make a selection from Types</p></>
-                                                            }                                                            
-                                                        </div>
+                                                        {!typesCollapse &&
+                                                            <div ref={scrollToTypeRef}>
+                                                                {generatedSchema.types ? 
+                                                                <>{typesEditors}</> 
+                                                                : 
+                                                                <><p className="text-muted">To add schema content make a selection from Types</p></>
+                                                                }                                                            
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
