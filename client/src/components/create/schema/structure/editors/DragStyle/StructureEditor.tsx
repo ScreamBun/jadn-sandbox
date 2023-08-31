@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
-//import equal from 'fast-deep-equal';
 import {
-  Button, ButtonGroup, FormGroup, Input, InputGroup, Label
+  Button, ButtonGroup, Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -17,10 +16,10 @@ import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
 import { DraggableType } from './DraggableType';
 import update from 'immutability-helper'
-import { Droppable } from './Droppable';
+import { Droppable } from './Droppable';  // TODO: Revisit
 import { ModalSize } from '../options/ModalSize';
 
-// Interface
+
 interface StructureEditorProps {
   dataIndex: number; //index changes based on obj in arr (tracks the parent index)
   value: TypeArray;
@@ -30,7 +29,7 @@ interface StructureEditorProps {
   config: InfoConfig;
 }
 
-// Structure Editor
+
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
   const { value, change, dataIndex, config } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
@@ -150,15 +149,50 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     change(updatevalue, dataIndex);
   }
 
+  const getFieldPropValue = (field: JSX.Element, propPos: number) => {
+    let propValue: any = null;
+    if(field.props && 
+        field.props.item && 
+        field.props.item.props && 
+        field.props.item.props.value && 
+        field.props.item.props.value[propPos]){
+          propValue =  field.props.item.props.value[propPos];
+    } 
+    return propValue;
+  }
+
   const fieldChange = (val: FieldArray, idx: number) => {
-    //check field ID and field name
-    if (listID.includes(val[0])) {
+    
+    const fieldIDsFound = fields.filter(field => {
+      const fieldPropValID = getFieldPropValue(field, 0);
+      if(fieldPropValID){
+        return fieldPropValID == val[0]
+      } else {
+        return null;
+      }
+    });
+
+    if (fieldIDsFound.length > 1) {
       sbToastError('Error: FieldID must be unique');
       return;
     }
 
-    const filterName = fields.filter(field => field.props.value[1] == val[1]);
-    if (filterName.length > 1) {
+    // TODO: May not be needed?
+    // if (listID.includes(val[0])) {
+    //   sbToastError('Error: FieldID must be unique');
+    //   return;
+    // }
+
+    const fieldNamesFound = fields.filter(field => {
+      const fieldPropValName = getFieldPropValue(field, 1);
+      if(fieldPropValName){
+        return fieldPropValName == val[1]
+      } else {
+        return null;
+      }
+    });    
+
+    if (fieldNamesFound.length > 1) {
       sbToastError('Error: FieldName must be unique');
       return;
     }
@@ -230,14 +264,21 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 </ButtonGroup>                
             </div>
             <div className="card-body px-2 py-2">
-                <div className="row m-0">
-                  <div className="col-md-4">
-                    <Label>Name</Label>
-                    <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+              <div className="row">
+                <div className="col-md-12">
+                  <div className='row'>
+                    <div className='col-md-4'>
+                      <label htmlFor="name" className='mb-0'>Name</label>
+                    </div>             
+                    <div className='col-md-6 offset-md-2'>
+                      <label htmlFor="name" className='mb-0'>Comment</label>
+                    </div>                                
                   </div>
-                  <div className="col-md-2 mt-4 text-center">
-                    <Label>&nbsp;</Label>
-                    <InputGroup>
+                  <div className="row">
+                    <div className="col-md-4">
+                      <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                    </div>
+                    <div className="col-md-2 text-center px-0">
                       <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
                       <OptionsModal
                         optionValues={valueObj.options}
@@ -246,14 +287,15 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                         toggleModal={toggleModal}
                         saveModal={saveModal}
                         modalSize={ModalSize.lg}
+                        fieldOptions={false}
                       />
-                    </InputGroup>
-                  </div>
-                  <div className="col-md-6">
-                    <Label>Comment</Label>
-                    <Input type="textarea" placeholder="Comment" className='text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                    </div>
+                    <div className="col-md-6">
+                      <Input type="textarea" placeholder="Comment" className='text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                    </div>
                   </div>
                 </div>
+              </div>
             </div>
         </div>      
       </>
@@ -324,30 +366,35 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         </div>
         <div className="card-body px-2 pt-2 pb-3">
           <div className="row">
-
-            <div className="col-md-4">
-              <Label className='mb-0'>Name</Label>
-              <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+            <div className="col-md-12">
+              <div className='row'>
+                <div className='col-md-4'>
+                  <label htmlFor="name" className='mb-0'>Name</label>
+                </div>             
+                <div className='col-md-6 offset-md-2'>
+                  <label htmlFor="name" className='mb-0'>Comment</label>
+                </div>                                
+              </div>
+              <div className="row">
+                <div className="col-md-4">
+                  <Input type="text" className='form-control"' placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                </div>
+                <div className="col-md-2 text-center px-0">
+                  <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                  <OptionsModal
+                    optionValues={valueObj.options}
+                    isOpen={modal}
+                    optionType={valueObj.type}
+                    toggleModal={toggleModal}
+                    saveModal={saveModal}
+                    modalSize={ModalSize.lg}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />                 
+                </div>
+              </div>
             </div>
-
-            <div className="col-md-2 text-center">
-              <Label className='mb-0'>&nbsp;</Label>
-              <Button color="primary" className='p-2 mt-4 btn-sm' onClick={toggleModal}>Type Options</Button>
-                <OptionsModal
-                  optionValues={valueObj.options}
-                  isOpen={modal}
-                  optionType={valueObj.type}
-                  toggleModal={toggleModal}
-                  saveModal={saveModal}
-                  modalSize={ModalSize.lg}
-                />
-            </div>
-
-            <div className="col-md-6">
-              <Label className='mb-0'>Comment</Label>
-              <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
-            </div>
-
           </div>
           <div className="row pt-2">
             <div className="col-12">
@@ -379,7 +426,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                       <div ref={scrollToFieldRef}>
                         {fields}
                       </div>
-                    </Droppable>                     */}
+                    </Droppable>  */}
                     <Button color="primary" onClick={addField} className='btn btn-sm btn-block'
                       title='Add Field'>
                       <FontAwesomeIcon icon={faPlusSquare} />

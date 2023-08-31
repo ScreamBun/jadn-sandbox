@@ -103,36 +103,36 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
             </div>
           </div>
           <div className="card-body px-2 pt-2 pb-3">
-              <div className="row m-0">
-                <div className="col-md-4">
-                  <Label className='mb-0'>Name</Label>
-                  <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+            <div className="row">
+              <div className="col-md-12">
+                <div className='row'>
+                  <div className='col-md-4'>
+                    <label htmlFor="name" className='mb-0'>Name</label>
+                  </div>             
+                  <div className='col-md-6 offset-md-2'>
+                    <label htmlFor="name" className='mb-0'>Comment</label>
+                  </div>                                
                 </div>
-                <div className="col-md-2 mt-4 text-center">
-                  <Label className='mb-0'>&nbsp;</Label>
-                  <ButtonGroup>
+                <div className="row">
+                  <div className="col-md-4">
+                    <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                  </div>
+                  <div className="col-md-2 text-center px-0">
                     <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
-                    <OptionsModal
-                      optionValues={valueObj.options}
-                      isOpen={modal}
-                      optionType={valueObj.type}
-                      toggleModal={toggleModal}
-                      saveModal={saveModal}
-                    />
-                  </ButtonGroup>
-                </div>
-                <div className="col-md-6">
-                  <Label className='mb-0'>Comment</Label>
-                  <Input
-                    type="textarea"
-                    placeholder="Comment"
-                    rows={1}
-                    value={valueObj.comment}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                  />
+                      <OptionsModal
+                        optionValues={valueObj.options}
+                        isOpen={modal}
+                        optionType={valueObj.type}
+                        toggleModal={toggleModal}
+                        saveModal={saveModal}
+                      />
+                  </div>
+                  <div className="col-md-6">
+                  <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                  </div>
                 </div>
               </div>
+            </div>
           </div>
       </div>    
     </>

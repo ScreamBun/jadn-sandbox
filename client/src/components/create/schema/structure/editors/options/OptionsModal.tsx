@@ -138,7 +138,6 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
         <FieldOptionsEditor
           deserializedState={data['field']}
           change={saveOptions}
-          fieldOptions={fieldOptions} 
         />
         : 
         <TypeOptionsEditor

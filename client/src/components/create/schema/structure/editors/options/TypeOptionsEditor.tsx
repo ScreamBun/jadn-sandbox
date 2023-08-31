@@ -57,6 +57,7 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
         <KeyValueEditor
           key={key}
           id={key}
+          name={key}
           {...TypeOptionInputArgs[key]}
           placeholder={key}
           removable={false}

@@ -31,7 +31,6 @@ interface FieldEditorProps {
 
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   const { enumerated, value, dataIndex, change, config } = props;
-  //const allTypes = useAppSelector((state) => [...state.Util.types.base, ...Object.keys(state.Util.types.schema)]);
   const types = useAppSelector((state) => ({
     base: state.Util.types.base,
     schema: Object.keys(state.Util.types.schema) || {}
@@ -124,38 +123,74 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     if (enumerated) {
       const val = valueObj as EnumeratedFieldObject;
       return (
-        <div className="col-md-4">
-          <Label>Value</Label>
-          <Input type="text" placeholder="Value" value={val.value} onChange={onChange} onBlur={onBlur} />
-        </div>
+        <div className="row m-0">
+          <FormGroup className='col-md-2'>
+            <Label>ID</Label>
+            <Input type="number" placeholder="ID" value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+          </FormGroup>        
+          <div className="col-md-4">
+            <Label>Value</Label>
+            <Input type="text" placeholder="Value" value={val.value} onChange={onChange} onBlur={onBlur} />
+          </div>
+          <FormGroup className='col-md-6'>
+            <Label>Comment</Label>
+            <Input
+              type="textarea"
+              placeholder="Comment"
+              rows={1}
+              value={valueObj.comment}
+              onChange={onChange}
+              onBlur={onBlur}
+            />
+          </FormGroup>  
+        </div>        
       );
     }
 
     return (
-      <div className="col-md-10 p-0 m-0">
-        <div className="col-md-4 d-inline-block">
-          <Label>Name</Label>
-          <Input type="text" placeholder="Name" maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
+      <>
+        <div className="row">
+          <div className="col-md-6">
+            <Label className='mb-0'>Name</Label>
+          </div>
+          <div className="col-md-4">
+            <Label className='mb-0'>Type</Label>
+          </div>
+        </div>      
+        <div className="row">
+          <div className="col-md-6">
+            <Input type="text" placeholder="Name" maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
+          </div>
+          <div className="col-md-4">
+            <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
+          </div>
+          <div className="col-md-2">
+            <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
+            <OptionsModal
+              optionValues={val.options}
+              isOpen={modal}
+              saveModal={saveModal}
+              toggleModal={toggleModal}
+              optionType={val.type}
+              modalSize={ModalSize.lg}
+              fieldOptions={true}
+            />
+          </div>
         </div>
-
-        <div className="col-md-4 d-inline-block">
-          <Label>Type</Label>
-          <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
+        <div className="row">
+          <FormGroup className='col-md-12'>
+            <Label>Comment</Label>
+            <Input
+              type="textarea"
+              placeholder="Comment"
+              rows={1}
+              value={valueObj.comment}
+              onChange={onChange}
+              onBlur={onBlur}
+            />
+          </FormGroup>           
         </div>
-
-        <div className="col-md-4 d-inline-block">
-          <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
-          <OptionsModal
-            optionValues={val.options}
-            isOpen={modal}
-            saveModal={saveModal}
-            toggleModal={toggleModal}
-            optionType={val.type}
-            modalSize={ModalSize.lg}
-            fieldOptions
-          />
-        </div>
-      </div>
+      </>
     );
   }
 
@@ -175,26 +210,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
           </div>      
         </div>
         <div className="card-body px-2 py-2">
-            <div className="row m-0">
-              <FormGroup className={enumerated ? 'col-md-3' : 'col-md-2'}>
-                <Label>ID</Label>
-                <Input type="number" placeholder="ID" value={valueObj.id} onChange={onChange} onBlur={onBlur} />
-              </FormGroup>
-
-              {makeOptions()}
-
-              <FormGroup className={enumerated ? 'col-md-4' : 'col-md-12'}>
-                <Label>Comment</Label>
-                <Input
-                  type="textarea"
-                  placeholder="Comment"
-                  rows={1}
-                  value={valueObj.comment}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                />
-              </FormGroup>
-            </div>
+            {makeOptions()}
         </div>
       </div>    
     </>
