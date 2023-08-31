@@ -7,6 +7,7 @@
 * Provided a non drag and drop option via button clicks
 * General Schema Creation UI cleanup
 * Expand or Collapse Info, Types and Fields
+* Added scrollable inner sections for Schema Creation
 
 ## v0.4.0
 
