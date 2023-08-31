@@ -22,9 +22,9 @@ const MessageCreator = (props: any) => {
         $NSID: $NSID
     })
 
-    const schemaObj = loadedSchema && typeof loadedSchema == 'string' ? JSON.parse(loadedSchema) : loadedSchema;
+    const schemaObj = loadedSchema || '';
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
-    const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType.value) : [];
+    const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
 
     //set configuration data
     const configDefs = schemaObj.info && schemaObj.info.config ? schemaObj.info.config : [];
@@ -73,7 +73,7 @@ const MessageCreator = (props: any) => {
     }
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
-    if (commandType.value) {
+    if (commandType?.value) {
         if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
             if (recordDef[1] && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { //check not choice or enum type
                 const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
@@ -91,7 +91,7 @@ const MessageCreator = (props: any) => {
             <FormText color="muted">
                 Message generator will appear here after selecting a message type
                 &nbsp;
-                {commandType.value}
+                {commandType?.value}
             </FormText>
         );
     }
@@ -122,7 +122,7 @@ const MessageCreator = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className='card-body p-0' style={{ height: '40em', overflowY: 'auto' }}>
+            <div className='card-body-page'>
                 <TabContent activeTab={activeView}>
                     <TabPane tabId='creator'>
                         <div id='command-fields' className='p-2'>
@@ -134,7 +134,7 @@ const MessageCreator = (props: any) => {
                     </TabPane>
 
                     <TabPane tabId='message'>
-                        <SBEditor data={JSON.stringify(generatedMessage, null, 2)} isReadOnly={true}></SBEditor>
+                        <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
                     </TabPane>
                 </TabContent>
             </div>

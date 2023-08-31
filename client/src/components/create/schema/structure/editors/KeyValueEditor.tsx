@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import {
-  Button, FormGroup, FormText, Input, Label
+  Button, FormText, Label
 } from 'reactstrap';
 import { InputType } from 'reactstrap/es/Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,15 +17,33 @@ interface KeyValueEditorProps {
   value: boolean | number | string;
   type?: InputType;
   options?: Array<string>; // only for type='select'
-  change: (_v: boolean | number | string) => void;
-  remove: (_id: string | number) => void;
+  change?: (_v: boolean | number | string) => void;
+  remove?: (_id: string | number) => void;
   required: boolean;
+  removable?: boolean;
+  labelColumns?: number;
+  fieldColumns?: number;
 }
 
 // Key Value Editor
-const KeyValueEditor = (props: KeyValueEditorProps) => {
-  const { name, value, description, options, placeholder, type, change, remove, required } = props;
-  const [val, setVal] = useState(value ? { value: value, label: value } : '');
+const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) {
+  const { 
+    name, 
+    value, 
+    description, 
+    options, 
+    placeholder, 
+    type, 
+    change, 
+    remove, 
+    required, 
+    removable, 
+    labelColumns = 1,  
+    fieldColumns = 11
+  } = props;
+  const [valueData, setValueData] = useState(value);
+
+  const [val, setVal] = useState(value ? { value: value, label: value } : ''); //for select
   const onSelectChange = (e: Option) => {
     if (e == null) {
       setVal('');
@@ -38,89 +56,168 @@ const KeyValueEditor = (props: KeyValueEditorProps) => {
 
   if (type === 'SBCreatableSelect' && options) {
     return (
-      <FormGroup row className="border m-1 p-1">
-        <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
-        <div className="input-group col-sm-10">
-          <SBCreatableSelect id={`editor-${placeholder}`}
-            placeholder={`Please select a ${placeholder}...`}
-            data={options}
-            onChange={onSelectChange}
-            value={val}
-            isGrouped={Array.isArray(options) ? false : true}
-          />
-          {remove ?
-            <div className="input-group-append">
-              <Button color='danger' onClick={() => remove(name.toLowerCase())}>
-                <FontAwesomeIcon icon={faMinusSquare} />
-              </Button>
-            </div> : ''}
-        </div>
-        {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
-      </FormGroup>
+      <>
+      {removable ?
+        <>
+          <div className="row form-group">
+            <div className={`col-md-${labelColumns}`}>
+              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+            </div>
+            <div className={`col-md-${fieldColumns}`}>
+              <div className = "input-group input-group-sm">
+                <SBCreatableSelect id={`editor-${placeholder}`}
+                    placeholder={`Please select a ${placeholder}...`}
+                    data={options}
+                    onChange={onSelectChange}
+                    value={val}
+                    isGrouped={Array.isArray(options) ? false : true}
+                  />
+                  {description ? <FormText color='muted'>{description}</FormText> : ''}
+                <div className="input-group-append">
+                  <button title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                </div>                    
+              </div>
+            </div>
+          </div>        
+        </>
+        :
+        <>
+          <div className="row form-group">
+              <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+              <div className={`col-md-${fieldColumns}`}>
+                <SBCreatableSelect id={`editor-${placeholder}`}
+                      placeholder={`Please select a ${placeholder}...`}
+                      data={options}
+                      onChange={onSelectChange}
+                      value={val}
+                      isGrouped={Array.isArray(options) ? false : true}
+                    />
+                    {description ? <FormText color='muted'>{description}</FormText> : ''}
+              </div>
+          </div>         
+        </>
+      }
+      </>
     );
   }
 
   if (type === 'SBSelect' && options) {
-    console.log(options)
     return (
-      <FormGroup row className="border m-1 p-1">
-        <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
-        <div className="input-group col-sm-10">
-          <SBSelect id={`editor-${placeholder}`}
-            placeholder={`Please select a ${placeholder}...`}
-            data={options}
-            onChange={onSelectChange}
-            value={val}
-            isGrouped={Array.isArray(options) ? false : true}
-          />
-          {remove ?
-            <div className="input-group-append">
-              <Button color='danger' onClick={() => remove(name.toLowerCase())}>
-                <FontAwesomeIcon icon={faMinusSquare} />
-              </Button>
-            </div> : ''}
-        </div>
-        {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
-      </FormGroup>
+      <>
+      {removable ?
+        <>
+          <div className="row form-group">
+            <div className={`col-md-${labelColumns}`}>
+              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+            </div>
+            <div className={`col-md-${fieldColumns}`}>
+              <div className = "input-group input-group-sm">
+                <SBSelect id={`editor-${placeholder}`}
+                      placeholder={`Please select a ${placeholder}...`}
+                      data={options}
+                      onChange={onSelectChange}
+                      value={val}
+                      isGrouped={Array.isArray(options) ? false : true}
+                    />
+                  {description ? <FormText color='muted'>{description}</FormText> : ''}
+                <div className="input-group-append">
+                  <button title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                </div>                    
+              </div>
+            </div>
+          </div>
+        </>      
+        :
+        <>
+          <div className="row form-group">
+              <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+              <div className={`col-md-${fieldColumns}`}>
+                <SBSelect id={`editor-${placeholder}`}
+                  placeholder={`Please select a ${placeholder}...`}
+                  data={options}
+                  onChange={onSelectChange}
+                  value={val}
+                  isGrouped={Array.isArray(options) ? false : true}
+                />
+                {description ? <FormText color='muted'>{description}</FormText> : ''}
+              </div>
+          </div>        
+        </>
+      }
+      </>
     );
   }
 
-  const shadowless: Array<InputType> = [
-    'checkbox', 'file', 'hidden', 'image', 'radio'
-  ];
-
   const inputArgs: Record<string, any> = {
-    value,
-    checked: type && value,
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => change(e.target.value)
+    value: valueData,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValueData(e.target.value),
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.value); }
   };
 
   if (['checkbox', 'radio'].includes(type)) {
-    inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => change(e.target.checked);
+    inputArgs.defaultChecked = type && valueData,
+      inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => { setValueData(e.target.checked); change(e.target.checked); }
+      return (
+        <>
+        { removable ?
+          <div className="row">
+            <div className="col-md-12">
+              <div className="row">
+                <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
+                    <span>{name} {required ? '*' : ''}</span>
+                </label>
+                <div className={`col-md-${fieldColumns} col-form-label`}>
+                  <input type={type} id={`editor-${placeholder}`} className={type} {...inputArgs} />
+                  <Button title={`Remove ${placeholder}`} className="btn-sm ml-2" color='danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></Button>
+                </div>
+              </div>
+            </div>
+          </div>  
+          :
+          <div className="row">
+            <div className="col-md-12">
+              <div className="row">
+                <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
+                    <span>{name} {required ? '*' : ''}</span>
+                </label>
+                <div className={`col-md-${fieldColumns} col-form-label`}>
+                  <input type={type} id={`editor-${placeholder}`} className={type} {...inputArgs} />
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </>
+      );  
   }
 
   return (
-    <FormGroup row className="border m-1 p-1">
-      <Label htmlFor={`editor-${placeholder}`} sm={2} ><strong>{placeholder}{required ? '*' : ''}</strong></Label>
-      <div className="input-group col-sm-10">
-        <Input
-          type={type}
-          id={`editor-${placeholder}`}
-          className={`form-control ${shadowless.includes(type) ? ' shadow-none' : ''}`}
-          placeholder={placeholder}
-          {...inputArgs}
-        />
-        {remove ?
-          <div className="input-group-append">
-            <Button color='danger' onClick={() => remove(name.toLowerCase())}>
-              <FontAwesomeIcon icon={faMinusSquare} />
-            </Button>
-          </div> : ''}
-      </div>
-      {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
-    </FormGroup>
+    <>
+        { removable ?
+          <div className="row form-group">
+            <div className={`col-md-${labelColumns}`}>
+              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+            </div>
+            <div className={`col-md-${fieldColumns}`}>
+              <div className = "input-group input-group-sm">
+                <input type={type} className="form-control form-control-sm" id={`editor-${placeholder}`} {...inputArgs} />
+                <div className="input-group-append">
+                  <button title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                </div>                    
+              </div>
+            </div>
+          </div>
+          :                   
+          <div className="row form-group">
+              <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+              <div className={`col-md-${fieldColumns}`}>
+                <input type={type} className="form-control form-control-sm" id={`editor-${placeholder}`} {...inputArgs} />
+              </div>
+          </div>                  
+        }
+    </>
   );
-};
+});
 
 KeyValueEditor.defaultProps = {
   description: '',

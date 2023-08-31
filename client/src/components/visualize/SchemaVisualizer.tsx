@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
-import { validateSchema } from 'actions/validate'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaVisualized from './SchemaVisualized'
@@ -19,10 +18,10 @@ export const initConvertedSchemaState = [{
 const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState('');
-    const [loadedSchema, setLoadedSchema] = useState('');
-    const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
+    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
     const [conversion, setConversion] = useState<Option[]>([]);
+    const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -40,8 +39,8 @@ const SchemaVisualizer = () => {
 
     const onReset = () => {
         setIsLoading(false);
-        setSelectedFile('');
-        setLoadedSchema('');
+        setSelectedFile(null);
+        setLoadedSchema(null);
         setConversion([]);
         setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
@@ -63,42 +62,26 @@ const SchemaVisualizer = () => {
                     }
                 }
             }
-            dispatch(validateSchema(schemaObj))
-                .then((validateSchemaVal) => {
-                    if (validateSchemaVal.payload.valid_bool == true) {
-                        //convertSchema takes in an array of values
-                        const arr = conversion.map(obj => obj.value);
-                        dispatch(convertSchema(schemaObj, arr))
-                            .then((convertSchemaVal) => {
-                                if (convertSchemaVal.error) {
-                                    setIsLoading(false);
-                                    setConvertedSchema(initConvertedSchemaState);
-                                    sbToastError(convertSchemaVal.payload.response);
-                                    return;
-                                }
-                                setIsLoading(false);
-                                setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                                for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
-                                    sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
-                                }
-                            })
-                            .catch((convertSchemaErr: string) => {
-                                setIsLoading(false);
-                                sbToastError(convertSchemaErr);
-                            })
-
-                    // validateSchemaVal.payload.valid_bool == false
-                    } else {
+            //convertSchema takes in an array of values
+            const arr = conversion.map(obj => obj.value);
+            dispatch(convertSchema(schemaObj, arr))
+                .then((convertSchemaVal) => {
+                    if (convertSchemaVal.error) {
                         setIsLoading(false);
-                        sbToastError("Invalid Schema");
+                        setConvertedSchema(initConvertedSchemaState);
+                        sbToastError(convertSchemaVal.payload.response);
+                        return;
                     }
-
-                })
-                .catch((validateSchemaErr: string) => {
                     setIsLoading(false);
-                    sbToastError(validateSchemaErr);
+                    setConvertedSchema(convertSchemaVal.payload.schema.convert);
+                    for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
+                        sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                    }
                 })
-
+                .catch((convertSchemaErr: string) => {
+                    setIsLoading(false);
+                    sbToastError(convertSchemaErr);
+                })
         } else {
             setIsLoading(false);
             sbToastError("No language selected for conversion");
@@ -124,7 +107,7 @@ const SchemaVisualizer = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                            setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaVisualized

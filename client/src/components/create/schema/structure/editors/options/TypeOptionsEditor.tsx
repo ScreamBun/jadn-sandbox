@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { getValidFormatOpts } from 'actions/format';
 import { useAppSelector } from 'reducers';
 
-// Interfaces
 interface TypeOptionsEditorProps {
   id: string;
   placeholder?: string;
@@ -15,8 +14,7 @@ interface TypeOptionsEditorProps {
   optionType?: string;
 }
 
-// Type Options Editor
-const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
+const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEditorProps) {
   const { change, deserializedState, id, optionType } = props;
   const dispatch = useDispatch();
   const [formatOpts, setFormatOpts] = useState<string[]>([]);
@@ -59,7 +57,10 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
         <KeyValueEditor
           key={key}
           id={key}
+          name={key}
           {...TypeOptionInputArgs[key]}
+          labelColumns={2}
+          fieldColumns={10}
           placeholder={key}
           removable={false}
           options={getOptions(key)}
@@ -73,20 +74,18 @@ const TypeOptionsEditor = (props: TypeOptionsEditorProps) => {
 
   if (validOptions().length != 0) {
     return (
-      <div className="border m-1 p-1">
-        <p className="col-sm-4 my-1"><strong>{id}</strong></p>
-        <div className="col-12 m-0">
-          {validOptions()}
-        </div>
-      </div>
+      <>
+        {validOptions()}
+      </>
     );
   } else if (optionType == "Boolean") {
-    return (<div className="border m-1 p-1">
-      <div className="col-12 m-0"> No type options available </div>
-    </div>);
+    return (
+    <>
+      No type options available
+    </>);
   }
   return '';
-};
+});
 
 TypeOptionsEditor.defaultProps = {
   placeholder: 'Set Type Options',

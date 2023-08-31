@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useState } from 'react';
 import {
   Button, ButtonGroup, FormText, Input
 } from 'reactstrap';
@@ -22,11 +22,22 @@ interface KeyObjectEditorProps {
 type Pair = { key: string, value: any };
 
 // Key Object Editor
-const KeyObjectEditor = (props: KeyObjectEditorProps) => {
+const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProps) {
   const { value, description, name, placeholder, change, config } = props;
-  let valueObj = Object.keys(value).map(k => ({ key: k, value: value[k] }));
+  let valueObjInit = Object.keys(value).map(k => ({ key: k, value: value[k] }));
+  const [valueObj, setValueObj] = useState(valueObjInit);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { dataset, value } = e.target;
+    const idx = parseInt(dataset.index || '', 10);
+    const type = dataset.type as keyof Pair;
+
+    const tmpvalue = [...valueObj];
+    tmpvalue[idx][type] = value;
+    setValueObj(tmpvalue);
+  }
+
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { dataset, value } = e.target;
     const idx = parseInt(dataset.index || '', 10);
     const type = dataset.type as keyof Pair;
@@ -40,6 +51,10 @@ const KeyObjectEditor = (props: KeyObjectEditorProps) => {
 
     const tmpvalue = [...valueObj];
     tmpvalue[idx][type] = value;
+    if (JSON.stringify(valueObjInit) == JSON.stringify(tmpvalue)) {
+      return;
+    }
+    setValueObj(tmpvalue);
     change(toObject(tmpvalue));
   }
 
@@ -61,42 +76,46 @@ const KeyObjectEditor = (props: KeyObjectEditorProps) => {
       const idx = parseInt(dataset.index || '', 10);
 
       const tmpvalue = [...valueObj.filter((_row, i) => i !== idx)];
+      setValueObj(tmpvalue);
       change(toObject(tmpvalue));
 
     } else {
-      console.log('cant remove');
+      removeAll();
     }
   }
 
   const addIndex = () => {
-    if (valueObj.some(v => v.key === '')) {
+    if (valueObjInit.some(v => v.key === '')) {
+      sbToastError('Cannot add more: Enter namespace');
       return;
     }
 
     const tmpvalue = [...valueObj, { key: '', value: '' }];
+    setValueObj(tmpvalue);
     change(toObject(tmpvalue));
   }
 
   const indices = valueObj.map((obj, i) => (
-    // eslint-disable-next-line react/no-array-index-key
-    <div className="input-group col-sm-12 mb-1" key={i}>
+    <div className="input-group input-group-sm mb-1 p-0" key={i}>
       <Input
         type="text"
-        className="form-control"
+        className="form-control form-control-sm"
         data-index={i}
         data-type="key"
         placeholder={'NSID'}
         value={obj.key}
         onChange={onChange}
+        onBlur={onBlur}
       />
       <Input
         type="text"
-        className="form-control"
+        className="form-control form-control-sm"
         data-index={i}
         data-type="value"
         placeholder={placeholder}
         value={obj.value}
         onChange={onChange}
+        onBlur={onBlur}
       />
       <div className="input-group-append">
         <Button color="danger" onClick={removeIndex} data-index={i}>
@@ -107,27 +126,36 @@ const KeyObjectEditor = (props: KeyObjectEditorProps) => {
   ));
 
   return (
-    <div className="border m-1 p-1">
-      <ButtonGroup size="sm" className="float-right">
-        <Button color="info" onClick={addIndex} >
-          <FontAwesomeIcon
-            icon={faPlusSquare}
-          />
-        </Button>
-        <Button color="danger" onClick={removeAll} >
-          <FontAwesomeIcon icon={faMinusCircle} />
-        </Button>
-      </ButtonGroup>
-      <div className="border-bottom mb-2">
-        <p className="col-sm-4 my-1"><strong>{name}</strong></p>
-        {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
-      </div>
-      <div className="row m-0 indices">
-        {indices}
-      </div>
-    </div>
+    <>
+      <div className="card border-secondary mb-2">
+        <div className="card-header px-2 py-2">
+            <div className='row no-gutters'>
+              <div className='col'>
+                <span>{name} <small style={{ fontSize: '10px' }} className="text-muted"> {description} </small></span>
+              </div>
+              <div className='col'>
+                <ButtonGroup size="sm" className="float-right">
+                    <Button color="primary" onClick={addIndex} >
+                      <FontAwesomeIcon icon={faPlusSquare} />
+                    </Button>
+                    <Button color="danger" onClick={removeAll} >
+                      <FontAwesomeIcon icon={faMinusCircle} />
+                    </Button>
+                  </ButtonGroup>
+              </div>
+            </div>     
+          </div>
+          <div className="card-body px-2 py-2">
+              <div className="row m-0">
+                <div className="col-12 m-0">
+                  {indices}
+                </div>
+              </div>
+          </div>
+      </div>           
+    </>
   );
-}
+});
 
 KeyObjectEditor.defaultProps = {
   placeholder: 'KeyObjectEditor'

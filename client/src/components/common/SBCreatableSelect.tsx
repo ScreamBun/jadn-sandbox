@@ -6,6 +6,48 @@ const SBCreatableSelect = (props: any) => {
 
     const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value } = props;
 
+    const customStyles = {
+        control: base => ({
+            ...base,
+            height: 30,
+            minHeight: 30,
+            cursor: 'pointer'
+        }),
+    
+        container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
+    
+        valueContainer: (provided, state) => ({
+            ...provided,
+            height: '30px',
+            padding: '0 6px'
+        }),
+    
+        input: (provided, state) => ({
+            ...provided,
+            margin: '0px',
+        }),
+    
+        indicatorSeparator: state => ({
+            display: 'none',
+        }),
+    
+        indicatorsContainer: (provided, state) => ({
+            ...provided,
+            height: '30px',
+        }),
+    
+        option: (styles, state) => ({
+            ...styles,
+            cursor: 'pointer',
+        }),
+    
+        menuPortal: base => ({
+            ...base,
+            zIndex: 9999,
+            color: '#172B4D'
+        })
+    };
+
     const formatGroupLabel = (data: GroupedOption) => (
         <div style={groupStyles}>
             <span>{data.label}</span>
@@ -62,7 +104,7 @@ const SBCreatableSelect = (props: any) => {
                 isClearable
                 onChange={onChange}
                 menuPortalTarget={document.body}
-                styles={{ menuPortal: base => ({ ...base, zIndex: 9999, color: '#172B4D' }) }}
+                styles={customStyles}
                 isMulti={isMultiSelect}
                 value={value}
             />

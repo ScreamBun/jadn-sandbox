@@ -29,38 +29,87 @@ export default {
         id="Package"
         name="Package"
         description="Unique name/version"
+        fieldColumns={8}
+        required={true}
+        removable={true}
       />
     )
   },
   version: {
     key: 'Version',
     edit: (val: string) => metaDef({ k: 'version', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor {...props} id="Version" name="Version" />
+    editor: (props: EditorProps) => 
+      <KeyValueEditor 
+        {...props} 
+        id="Version" 
+        name="Version" 
+        fieldColumns={8}
+        required={false}
+        removable={true} 
+      />
   },
   title: {
     key: 'Title',
     edit: (val: string) => metaDef({ k: 'title', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor {...props} id="Title" name="Title" />
+    editor: (props: EditorProps) => 
+      <KeyValueEditor 
+        {...props} 
+        id="Title" 
+        name="Title" 
+        fieldColumns={8}
+        required={false}        
+        removable={true} 
+      />
   },
   description: {
     key: 'Description',
     edit: (val: string) => metaDef({ k: 'description', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor {...props} id="Description" name="Description" />
+    editor: (props: EditorProps) => 
+      <KeyValueEditor 
+        {...props} 
+        id="Description" 
+        name="Description" 
+        fieldColumns={10}
+        required={false}
+        removable={true}
+      />
   },
   comment: {
     key: 'Comment',
     edit: (val: string) => metaDef({ k: 'comment', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor {...props} id="Comment" name="Comment" />
+    editor: (props: EditorProps) => 
+      <KeyValueEditor 
+        {...props} 
+        id="Comment" 
+        name="Comment" 
+        fieldColumns={10}
+        required={false}        
+        removable={true} 
+      />
   },
   copyright: {
     key: 'Copyright',
     edit: (val: string) => metaDef({ k: 'copyright', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor {...props} id="Copyright" name="Copyright" />
+    editor: (props: EditorProps) => 
+      <KeyValueEditor {...props} 
+        id="Copyright" 
+        name="Copyright" 
+        fieldColumns={8}
+        required={false} 
+        removable={true}
+      />
   },
   license: {
     key: 'License',
     edit: (val: string) => metaDef({ k: 'license', v: val }),
-    editor: (props: EditorProps) => <KeyValueEditor {...props} id="License" name="License" />
+    editor: (props: EditorProps) => 
+      <KeyValueEditor {...props} 
+        id="License" 
+        name="License"
+        fieldColumns={8}
+        required={false}        
+        removable={true}
+      />
   },
   namespaces: {
     key: 'Namespaces',
@@ -83,6 +132,9 @@ export default {
         id="Exports"
         name="Exports"
         description="Type definitions exported by this module"
+        fieldColumns={10}
+        required={false}        
+        removable={true}        
       />
     )
   },

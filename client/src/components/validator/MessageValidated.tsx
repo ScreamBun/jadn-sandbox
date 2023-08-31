@@ -11,7 +11,7 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
 import SBFileUploader from "components/common/SBFileUploader";
-import Spinner from "components/common/Spinner";
+import SBSpinner from "components/common/SBSpinner";
 import SBSaveFile from "components/common/SBSaveFile";
 import SBSelect, { Option } from "components/common/SBSelect";
 
@@ -37,12 +37,10 @@ const MessageValidated = (props: any) => {
         setLoadedMsg('');
         //setDecodeMsg('');
         //setMsgFormat('');
-        if (e == null) {
-            setSelectedFile('');
-            return;
-        }
         setSelectedFile(e);
-        if (e.value == "file") {
+        if (e == null) {
+            return;
+        } else if (e.value == "file") {
             ref.current?.click();
 
         } else {
@@ -124,8 +122,8 @@ const MessageValidated = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className={`${selectedFile.value != 'file' ? 'col-md-3' : ' col-md-6'}`}>
-                        <div className={`${selectedFile.value == 'file' ? ' d-none' : ''}`}>
+                    <div className={`${selectedFile?.value != 'file' ? 'col-md-3' : ' col-md-6'}`}>
+                        <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
                             <SBSelect id={"message-list"}
                                 customClass={'mr-1'}
                                 data={msgOpts}
@@ -135,7 +133,7 @@ const MessageValidated = (props: any) => {
                                 value={selectedFile}
                                 isGrouped isFileUploader />
                         </div>
-                        <div className={`${selectedFile.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
@@ -160,7 +158,7 @@ const MessageValidated = (props: any) => {
                     <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
-                        {isLoading ? <Spinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
+                        {isLoading ? <SBSpinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
                             title={'Validate the message against the given schema'}>
                             Validate Message
                         </Button>}

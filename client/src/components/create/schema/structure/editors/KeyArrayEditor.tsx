@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useState } from 'react';
 import {
   Button, ButtonGroup, FormText, Input
 } from 'reactstrap';
@@ -17,45 +17,61 @@ interface KeyArrayEditorProps {
 }
 
 // Key Array Editor
-const KeyArrayEditor = (props: KeyArrayEditorProps) => {
+const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) {
   const { name, description, placeholder, value, change, remove } = props;
+
+  const [dataArr, setDataArr] = useState(value);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { dataset } = e.target;
     const idx = parseInt(dataset.index || '', 10);
-    const tmpValues = [...value];
+    const tmpValues = [...dataArr];
     tmpValues[idx] = e.target.value;
+    setDataArr(tmpValues);
+  }
+
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { dataset } = e.target;
+    const idx = parseInt(dataset.index || '', 10);
+    const tmpValues = [...dataArr];
+    tmpValues[idx] = e.target.value;
+    if (JSON.stringify(tmpValues) == JSON.stringify(value)) {
+      return;
+    }
+    setDataArr(tmpValues);
     change(tmpValues);
-  };
+  }
 
   const removeAll = () => {
     remove(name.toLowerCase());
-  };
+  }
 
   const removeIndex = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (value.length > 1) {
+    if (dataArr.length > 1) {
       const { dataset } = e.currentTarget;
       const index = parseInt(dataset.index || '', 10);
-      const tmpValues = [...value];
+      const tmpValues = [...dataArr];
       tmpValues.splice(index, 1);
+      setDataArr(tmpValues);
       change(tmpValues);
     }
-  };
+  }
 
   const addIndex = () => {
-    change([...value, '']);
-  };
+    setDataArr([...dataArr, '']);
+    change([...dataArr, '']);
+  }
 
-  const indices = value.map((val, i) => (
-    // eslint-disable-next-line react/no-array-index-key
-    <div className="input-group col-sm-12 mb-1" key={i}>
+  const indices = dataArr.map((val, i) => (
+    <div className="input-group input-group-sm mb-1" key={i}>
       <Input
         type="text"
-        className="form-control"
+        className="form-control form-control-sm"
         data-index={i}
         placeholder={placeholder}
         value={val}
         onChange={onChange}
+        onBlur={onBlur}
       />
       <div className="input-group-append">
         <Button color='danger' onClick={removeIndex} data-index={i}>
@@ -63,30 +79,39 @@ const KeyArrayEditor = (props: KeyArrayEditorProps) => {
         </Button>
       </div>
     </div>
-  ));
+  ))
 
   return (
-    <div className="border m-1 p-1">
-      <ButtonGroup size="sm" className="float-right">
-        <Button color="info" onClick={addIndex} >
-          <FontAwesomeIcon icon={faPlusSquare} />
-        </Button>
-        <Button color="danger" onClick={removeAll} >
-          <FontAwesomeIcon icon={faMinusCircle} />
-        </Button>
-      </ButtonGroup>
-
-      <div className="border-bottom mb-2">
-        <p className="col-sm-4 my-1"><strong>{name}</strong></p>
-        {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
-      </div>
-
-      <div className="row m-0 indices">
-        {indices}
-      </div>
-    </div>
+    <>
+      <div className="card border-secondary mb-2">
+        <div className="card-header px-2 py-2">
+            <div className='row no-gutters'>
+              <div className='col'>
+              <span>{name} <small style={{ fontSize: '10px' }} className="text-muted"> {description} </small></span>
+              </div>
+              <div className='col'>
+                <ButtonGroup size="sm" className="float-right">
+                    <Button color="primary" onClick={addIndex} >
+                      <FontAwesomeIcon icon={faPlusSquare} />
+                    </Button>
+                    <Button color="danger" onClick={removeAll} >
+                      <FontAwesomeIcon icon={faMinusCircle} />
+                    </Button>
+                  </ButtonGroup>
+              </div>
+            </div>     
+          </div>
+          <div className="card-body px-2 py-2">
+              <div className="row m-0">
+                <div className="col-12 m-0">
+                  {indices}
+                </div>
+              </div>
+          </div>
+      </div>     
+    </>
   );
-};
+})
 
 KeyArrayEditor.defaultProps = {
   placeholder: 'KeyArrayEditor'

@@ -15,7 +15,7 @@ import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onDownloadSVG
 import SBCollapseViewer from "components/common/SBCollapseViewer";
 import SBDownloadFile from "components/common/SBDownloadFile";
 import SBDownloadPDF from "components/common/SBDownloadPDF";
-import Spinner from "components/common/Spinner";
+import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { initConvertedSchemaState } from "./SchemaVisualizer";
 
@@ -80,7 +80,7 @@ const SchemaVisualized = (props: any) => {
                     <div className='col-md-6'>
                         <SBSelect id={"conversion-list"} data={convertOpts} onChange={handleConversion}
                             value={conversion}
-                            placeholder={'Convert to...'} isMultiSelect
+                            placeholder={'Convert to...(select at least one)'} isMultiSelect
                         />
                     </div>
                     <div className='col-md-6'>
@@ -134,7 +134,7 @@ const SchemaVisualized = (props: any) => {
                         </div>
 
                         <div>
-                            {isLoading ? <Spinner action={'Converting'} /> : <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
+                            {isLoading ? <SBSpinner action={'Converting'} /> : <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
                                 disabled={loadedSchema && conversion.length != 0 ? false : true}
                                 title={"Convert the given JADN schema to the selected format"}>
 
@@ -147,7 +147,7 @@ const SchemaVisualized = (props: any) => {
             <div className={`card-body p-0 ${spiltViewFlag ? 'd-none' : ''}`}>
                 {conversion.length > 1 && convertedSchema.length > 1 ?
                     <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
-                    <SBEditor data={convertedSchema[0].schema} isReadOnly={true} convertTo={(conversion.length == 1 ? conversion[0].value : conversion)} height="40em"></SBEditor>
+                    <SBEditor data={convertedSchema[0].schema} isReadOnly={true} convertTo={(conversion.length == 1 ? conversion[0].value : conversion)}></SBEditor>
                 }
             </div>
             <div className={`card-body p-0 ${spiltViewFlag ? '' : ' d-none'}`}>

@@ -9,13 +9,19 @@ import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
 import { info, transformSchema } from 'actions/transform'
 import { Option } from 'components/common/SBSelect'
 
+export const initTransformedSchema = {
+    schema: '',
+    schema_name: ''
+}
+
 const SchemaTransformer = () => {
     const dispatch = useDispatch();
 
     const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
-    const [baseFile, setBaseFile] = useState('')
-    const [transformedSchema, setTransformedSchema] = useState([]);
+    const [selectedFileOpts, setSelectedFileOpts] = useState<Option[]>([]);
     const [transformationType, setTransformationType] = useState<Option | null>();
+    const [baseFile, setBaseFile] = useState<Option | null>();
+    const [transformedSchema, setTransformedSchema] = useState([initTransformedSchema]);
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
@@ -27,69 +33,62 @@ const SchemaTransformer = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setTransformedSchema([]);
-        setBaseFile('');
+        setTransformedSchema([initTransformedSchema]);
+        setBaseFile(null);
     }, [selectedFiles])
 
     const onReset = () => {
         setIsLoading(false);
-        setBaseFile('');
+        setBaseFile(null);
         setTransformationType(null);
         setSelectedFiles([]);
-        setTransformedSchema([]);
-        //clear checkboxes 
-        var inputElem = document.getElementsByTagName('input');
-        for (var i = 0; i < inputElem.length; i++) {
-            if (inputElem[i].type == 'checkbox') {
-                if (inputElem[i].name == 'schema-files') {
-                    inputElem[i].checked = false;
-                }
-            }
-        }
+        setSelectedFileOpts([]);
+        setTransformedSchema([initTransformedSchema]);
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        //validate all selected files
-        //call resolve_references.py
-        //set transformed Schema
-        dispatch(transformSchema(selectedFiles, transformationType.value, baseFile.value))
-            .then((val) => {
-                if (val.error == true) {
-                    setIsLoading(false);
-                    if (typeof val.payload.response == "object") {
-                        val.payload.response.forEach((schema) => {
-                            sbToastError(`${schema.name} : ${schema.err}`);
+        if (transformationType?.value) {
+            const selectedBasefile = baseFile?.value ? baseFile.value : '';
+            dispatch(transformSchema(selectedFiles, transformationType.value, selectedBasefile))
+                .then((val) => {
+                    if (val.error == true) {
+                        setIsLoading(false);
+                        let invalid_schema_list: any[] = [];
+                        if (typeof val.payload.response == "object") {
+                            val.payload.response.forEach((schema) => {
+                                sbToastError(`${schema.name} : ${schema.err}`);
+                                invalid_schema_list.push(schema.name);
+                            })
                             //invalidate selectedFiles 
-                            let invalidFiles;
-                            selectedFiles.forEach((file, index) => {
-                                if (file.name == schema.name) {
-                                    invalidFiles = selectedFiles.map((f, i) => {
-                                        if (i == index) {
-                                            return { ...f, 'data': 'err' };
-                                        } else {
-                                            return f;
-                                        }
-                                    })
-                                    setSelectedFiles(invalidFiles);
+                            const invalidFiles = selectedFiles.map((f) => {
+                                if (invalid_schema_list.includes(f.name)) {
+                                    return { ...f, 'data': 'err' };
+                                } else {
+                                    return f;
                                 }
                             })
-                        })
+                            setSelectedFiles(invalidFiles);
+
+                        } else {
+                            setIsLoading(false);
+                            sbToastError(val.payload.response);
+                        }
                     } else {
                         setIsLoading(false);
-                        sbToastError(val.payload.response);
+                        sbToastSuccess('Transformed Schema successfully');
+                        setTransformedSchema(val.payload);
                     }
-                } else {
+                })
+                .catch((err) => {
                     setIsLoading(false);
-                    sbToastSuccess('Transformed Schema successfully');
-                    setTransformedSchema(val.payload);
-                }
-            })
-            .catch((err) => {
-                setIsLoading(false);
-                sbToastError(err);
-            })
+                    sbToastError(err);
+                })
+        } else {
+            setIsLoading(false);
+            sbToastError('No Transformation type selected');
+        }
     }
 
     return (
@@ -109,7 +108,8 @@ const SchemaTransformer = () => {
                             <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <SBMultiSchemaLoader data={selectedFiles} setData={setSelectedFiles} />
+                                        <SBMultiSchemaLoader data={selectedFiles} setData={setSelectedFiles}
+                                            selectedFileOpts={selectedFileOpts} setSelectedFileOpts={setSelectedFileOpts} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}

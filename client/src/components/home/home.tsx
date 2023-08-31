@@ -43,9 +43,6 @@ const Home = () => {
                 </h5>
                 <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-existing examples.</p>
               </div>
-              <div className="card-body">
-
-              </div>
               <div className="card-footer">
                 <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
                 <Link className="card-link" to={NAV_CREATE_MESSAGE}>Messages</Link>
@@ -121,9 +118,9 @@ const Home = () => {
                   simplify by removing extensions, strip comments, etc).</p>
                 <br />
               </div>
-              <div className="card-footer">
+              {/* <div className="card-footer">
                 <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
-              </div>
+              </div> */}
             </div>
             <div className="card mt-3">
               <div className="card-img-top text-center py-2 bg-primary">
@@ -135,9 +132,9 @@ const Home = () => {
                 </h5>
                 <p className="card-text">Generate various example messages based off of a Schema.</p>
               </div>
-              <div className="card-footer">
+              {/* <div className="card-footer">
                 <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

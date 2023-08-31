@@ -1,11 +1,13 @@
 import logging
 
 from io import BytesIO
+import os
 import traceback
 import jadn
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource, reqparse
 from jadnschema import transform
+from jadnschema.jadn import dumps
 
 
 logger = logging.getLogger(__name__)
@@ -34,10 +36,10 @@ class Transform(Resource):
 
         # validate all schemas
         invalid_schema_list = []
-        # for schema in request_json["schema_list"]:
-        #      is_valid, msg = current_app.validator.validateSchema(schema['data'], False)
-        #      if not is_valid:
-        #          invalid_schema_list.append({'name': schema['name'], 'err': msg})
+        for schema in request_json["schema_list"]:
+            is_valid, msg = current_app.validator.validateSchema(schema['data'], False)
+            if not is_valid:
+                invalid_schema_list.append({'name': schema['name'], 'err': msg})
         
         # if not valid, return invalid schema list 
         if len(invalid_schema_list) != 0:
@@ -49,14 +51,15 @@ class Transform(Resource):
             output = []
             if transformed == 'strip comments':
                 for schema in request_json["schema_list"]:
-                    schema_output = transform.strip_comments(schema['data'])
+                    schema_output = dumps(transform.strip_comments(schema['data']))
+                    schema_name, ext = os.path.splitext(schema['name'])
                     output.append({
-                        'schema_name': schema['name'],
+                        'schema_name': schema_name,
                         'schema': schema_output,
                         })
                 return output
             
-            if transformed == "resolve references":
+            elif transformed == "resolve references":
                 # get base schema
                 schema_base = ''
                 schema_list = []
