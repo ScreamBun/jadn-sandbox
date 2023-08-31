@@ -48,6 +48,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const [isLoading, setIsLoading] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+    const [allFieldsCollapse, setAllFieldsCollapse] = useState(false); 
+    const [infoCollapse, setInfoCollapse] = useState(false);
+    const [typesCollapse, setTypesCollapse] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
 
@@ -322,6 +325,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             key: self.crypto.randomUUID(),
             value: def,
             dataIndex: i,
+            collapseAllFields: allFieldsCollapse,
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
@@ -417,9 +421,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
-
-    const [infoCollapse, setInfoCollapse] = useState(false);
-    const [typesCollapse, setTypesCollapse] = useState(false);
 
     return (
         <div className='card'>
@@ -572,12 +573,22 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                             </div>
                                                             <div className='col'>
                                                                 {generatedSchema.types &&
-                                                                    <legend>
-                                                                        <FontAwesomeIcon icon={typesCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                            className='float-right btn btn-sm'
-                                                                            onClick={() => setTypesCollapse(!typesCollapse)}
-                                                                            title={typesCollapse ? ' Show Types' : ' Hide Types'} />
-                                                                    </legend> 
+                                                                    <>
+                                                                        <div className="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
+                                                                            <button type="button" className="btn btn-secondary" onClick={() => setTypesCollapse(!typesCollapse)}>
+                                                                                {typesCollapse ? 'Show Types' : ' Hide Types'} 
+                                                                                <FontAwesomeIcon icon={typesCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                                    className='float-right btn btn-sm'
+                                                                                    title={typesCollapse ? 'Show Types' : 'Hide Types'} />                                                                            
+                                                                            </button>
+                                                                            <button type="button" className="btn btn-secondary" onClick={() => setAllFieldsCollapse(!allFieldsCollapse)}>
+                                                                                {allFieldsCollapse ? 'Show Fields' : 'Hide Fields'}
+                                                                                <FontAwesomeIcon icon={allFieldsCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                                    className='float-right btn btn-sm'
+                                                                                    title={allFieldsCollapse ? 'Show Fields' : 'Hide Fields'} />                                                                            
+                                                                            </button>                                                                        
+                                                                        </div>
+                                                                    </> 
                                                                 }
                                                             </div>
                                                         </div>

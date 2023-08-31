@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import {
   Button, ButtonGroup, Input
 } from 'reactstrap';
@@ -27,11 +27,12 @@ interface StructureEditorProps {
   remove: (i: number) => void;
   changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
   config: InfoConfig;
+  collapseAllFields: boolean;
 }
 
 
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, change, dataIndex, config } = props;
+  const { value, change, dataIndex, config, collapseAllFields } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
   const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -47,6 +48,10 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     const key = placeholder.toLowerCase();
     setValueObj({ ...valueObj, [key]: value });
   }
+
+  useEffect(() => {
+    setFieldCollapse(collapseAllFields)
+  }, [collapseAllFields]);  
 
   const onBlur = (e: any) => {
     const { placeholder, value } = e.target;

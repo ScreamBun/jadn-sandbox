@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
     Button, ButtonGroup, FormGroup, Input, InputGroup, Label
@@ -24,11 +24,12 @@ interface StructureEditorProps {
     remove: (i: number) => void;
     changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
     config: InfoConfig;
+    collapseAllFields: boolean;
 }
 
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
-    const { value, change, changeIndex, dataIndex, config } = props;
+    const { value, change, changeIndex, dataIndex, config, collapseAllFields } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
     const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -37,6 +38,10 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     const [modal, setModal] = useState(false);
     const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
     const [valueObj, setValueObj] = useState(valueObjInit);
+
+    useEffect(() => {
+        setFieldCollapse(collapseAllFields)
+    }, [collapseAllFields]);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { placeholder, value } = e.target;
