@@ -8,6 +8,7 @@
 * General Schema Creation UI cleanup
 * Expand or Collapse Info, Types and Fields
 * Added scrollable inner sections for Schema Creation
+* Improved color contrast
 
 ## v0.4.0
 
