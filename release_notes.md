@@ -1,8 +1,16 @@
 # JADN Sandbox Release Notes
 
+## v0.5.0
+
+* Introduced draggable types and fields
+* Outline View for drag and drop reordering types
+* Provided a non drag and drop option via button clicks
+* General Schema Creation UI cleanup
+* Expand or Collapse Info, Types and Fields
+
 ## v0.4.0
 
-* Provides the ability to include namespaces and validate
+* Provided the ability to include namespaces and validate
 
 ## v0.3.0
 
