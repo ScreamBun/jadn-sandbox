@@ -550,7 +550,11 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                     <div className='card-body'>
                                                         {!fieldCollapse &&
                                                         <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
-                                                            {infoEditors}
+                                                            {generatedSchema.info ? 
+                                                            <>{infoEditors}</> 
+                                                            : 
+                                                            <><p className="text-muted">To add metadata info click and drag items from Info</p></>
+                                                            }
                                                         </Droppable>}
                                                     </div>
                                                 </div>
@@ -578,12 +582,15 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                     </div>
                                                     <div className='card-body'>
                                                         <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
-                                                            {typesEditors}
+                                                            {generatedSchema.types ? 
+                                                            <>{typesEditors}</> 
+                                                            : 
+                                                            <><p className="text-muted">To add schema content click and drag items from Types</p></>
+                                                            } 
                                                         </Droppable>
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </>
                                 }

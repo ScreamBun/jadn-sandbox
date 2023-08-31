@@ -3,7 +3,7 @@ import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'r
 import { Info, Types } from '../../structure';
 import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
-import { faCheck, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCircleChevronDown, faCircleChevronUp, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import { getAllSchemas } from 'reducers/util';
@@ -408,6 +408,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         }))
     }).filter(Boolean);
 
+    const [fieldCollapse, setFieldCollapse] = useState(false);
+
     return (
         <div className='card'>
             <div className='card-header p-2'>
@@ -504,21 +506,74 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                             </div>
                             <div id="schema-editor" className='col-md-9 px-2 card-body-scroller'>
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
-                                    <div>
-                                        <div className="col pt-2 pr-0 pl-0 pb-0">
-                                            <h5 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
-                                            <div className='p-1' ref={scrollToInfoRef}>
-                                                {infoEditors}
+                                    <>
+                                        <div className='row'>
+                                            <div className="col pt-2">
+                                                <div className='card border-secondary'>
+                                                    <div className='card-header bg-primary'>
+                                                        <div className='row'>
+                                                            <div className='col'>
+                                                                <h5 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                                            </div>
+                                                            <div className='col'>
+                                                                {generatedSchema.info &&
+                                                                    <legend>
+                                                                        <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                            className='float-right btn btn-sm'
+                                                                            onClick={() => setFieldCollapse(!fieldCollapse)}
+                                                                            title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                                                    </legend>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className='card-body'>
+                                                        {!fieldCollapse &&
+                                                        <div ref={scrollToInfoRef}>
+                                                            {generatedSchema.info ? 
+                                                            <>{infoEditors}</> 
+                                                            : 
+                                                            <><p className="text-muted">To add metadata info make a selection from Info</p></>
+                                                            }
+                                                        </div>
+                                                        }
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <hr className='border-secondary' />
-                                        <div className="col p-0">
-                                            <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
-                                            <div className='p-1' ref={scrollToTypeRef}>
-                                                {typesEditors}
+                                        <div className='row mt-2'>
+                                            <div className="col pt-2">
+                                                <div className='card border-secondary'>
+                                                    <div className='card-header bg-primary'>
+                                                        <div className='row'>
+                                                            <div className='col'>
+                                                                <h5 id="types" className='mb-0'>Types <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                            </div>
+                                                            <div className='col'>
+                                                                {/* {generatedSchema.info &&
+                                                                    <legend>
+                                                                        <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                            className='float-right btn btn-sm'
+                                                                            onClick={() => setFieldCollapse(!fieldCollapse)}
+                                                                            title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                                                    </legend> 
+                                                                }*/}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className='card-body'>
+                                                        <div ref={scrollToTypeRef}>
+                                                            {generatedSchema.types ? 
+                                                            <>{typesEditors}</> 
+                                                            : 
+                                                            <><p className="text-muted">To add schema content make a selection from Types</p></>
+                                                            }                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </div>  
+                                    </>                                  
                                 }
                             </div>
                         </div>

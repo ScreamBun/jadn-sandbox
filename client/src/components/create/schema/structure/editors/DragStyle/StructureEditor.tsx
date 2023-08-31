@@ -349,7 +349,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const listID = fields?.map(field => field.props.id);
 
   return (
-
     <>
 	    <div className="card border-secondary mb-2">
         <div className="card-header px-2 py-2">
