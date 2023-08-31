@@ -1,5 +1,4 @@
 import React, { memo, useState } from 'react';
-//import equal from 'fast-deep-equal';
 import {
   Button, FormGroup, Input, Label
 } from 'reactstrap';

@@ -69,6 +69,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                     value={val}
                     isGrouped={Array.isArray(options) ? false : true}
                   />
+                  {description ? <FormText color='muted'>{description}</FormText> : ''}
                   {removable ?
                     <div className="input-group-append">
                       <Button color='danger' onClick={() => remove(name.toLowerCase())}>
@@ -76,7 +77,6 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                       </Button>
                     </div> : ''}
                 </div>
-                {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
               </div> 
             </div>
           </div>
@@ -87,29 +87,46 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   if (type === 'SBSelect' && options) {
     return (
       <>
-        <div className="row m-0 no-gutters">
-            <div className='col'>
-              <div className='mb-0'>
-                <Label htmlFor={`editor-${placeholder}`}><strong>{name}{required ? '*' : ''}</strong></Label>
-                <div className="input-group col-md-12">
-                  <SBSelect id={`editor-${placeholder}`}
-                    placeholder={`Please select a ${placeholder}...`}
-                    data={options}
-                    onChange={onSelectChange}
-                    value={val}
-                    isGrouped={Array.isArray(options) ? false : true}
-                  />
-                  {removable ?
-                    <div className="input-group-append">
-                      <Button color='danger' onClick={() => remove(name.toLowerCase())}>
-                        <FontAwesomeIcon icon={faMinusSquare} />
-                      </Button>
-                    </div> : ''}
-                </div>
-                {description ? <FormText color='muted' className='ml-3'>{description}</FormText> : ''}
+      {removable ?
+        <>
+          <div className="row form-group">
+            <div className={`col-md-${labelColumns}`}>
+              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+            </div>
+            <div className={`col-md-${fieldColumns}`}>
+              <div className = "input-group input-group-sm">
+                <SBSelect id={`editor-${placeholder}`}
+                      placeholder={`Please select a ${placeholder}...`}
+                      data={options}
+                      onChange={onSelectChange}
+                      value={val}
+                      isGrouped={Array.isArray(options) ? false : true}
+                    />
+                  {description ? <FormText color='muted'>{description}</FormText> : ''}
+                <div className="input-group-append">
+                  <button title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                </div>                    
               </div>
             </div>
           </div>
+        </>      
+        :
+        <>
+          <div className="row form-group">
+              <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+              <div className={`col-md-${fieldColumns}`}>
+                <SBSelect id={`editor-${placeholder}`}
+                  placeholder={`Please select a ${placeholder}...`}
+                  data={options}
+                  onChange={onSelectChange}
+                  value={val}
+                  isGrouped={Array.isArray(options) ? false : true}
+                />
+                {description ? <FormText color='muted'>{description}</FormText> : ''}
+              </div>
+          </div>        
+        </>
+      }
       </>
     );
   }
