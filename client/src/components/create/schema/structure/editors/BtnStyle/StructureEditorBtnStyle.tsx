@@ -233,12 +233,12 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         <div className="row m-0">
                             <FormGroup className="col-md-4">
                                 <Label>Name</Label>
-                                <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                                <Input type="text" placeholder="Name" className='form-control form-control-sm' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                             </FormGroup>
                             <FormGroup className="col-md-2">
                                 <Label>&nbsp;</Label>
-                                <InputGroup>
-                                    <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                                <ButtonGroup>
+                                    <Button color="primary" className='px-2 py-1 btn-sm' onClick={toggleModal}>Type Options</Button>
                                     <OptionsModal
                                         optionValues={valueObj.options}
                                         isOpen={modal}
@@ -246,11 +246,11 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                         toggleModal={toggleModal}
                                         saveModal={saveModal}
                                     />
-                                </InputGroup>
+                                </ButtonGroup>
                             </FormGroup>
                             <FormGroup className="col-md-6">
                                 <Label>Comment</Label>
-                                <Input type="textarea" placeholder="Comment" className='text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                                <Input type="textarea" placeholder="Comment" className='text-area-w100 form-control form-control-sm' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                             </FormGroup>
                         </div>
                     </div>
@@ -311,11 +311,11 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                         <div className="col-md-4">
                             <Label className='mb-0'>Name</Label>
-                            <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                            <Input type="text" placeholder="Name" maxLength={64} className='form-control form-control-sm' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                         </div>
 
                         <div className="col-md-2 mt-4 text-center">
-                            <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                            <Button color="primary" className='px-2 py-1 btn-sm' onClick={toggleModal}>Type Options</Button>
                             <OptionsModal
                                 optionValues={valueObj.options}
                                 isOpen={modal}
@@ -326,7 +326,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
                         <div className="col-md-6">
                             <Label className='mb-0'>Comment</Label>
-                            <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                            <Input type="textarea" placeholder="Comment" rows={1} className='form-control form-control-sm' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                         </div>
                     </div>
                     <div className="row pt-2">

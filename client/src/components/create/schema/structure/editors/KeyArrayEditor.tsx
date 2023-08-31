@@ -66,7 +66,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
     <div className="input-group input-group-sm mb-1" key={i}>
       <Input
         type="text"
-        className="form-control"
+        className="form-control form-control-sm"
         data-index={i}
         placeholder={placeholder}
         value={val}

@@ -120,15 +120,15 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                                 type="text" 
                                 placeholder="Name" 
                                 maxLength={64} 
+                                className='form-control form-control-sm' 
                                 value={valueObj.name} 
                                 onChange={onChange} onBlur={onBlur} 
-                                className='mb-2'
                                 />
                         </div>
                         <div className="col-md-2 mt-4 text-center">
                             <Label className='mb-0'>&nbsp;</Label>
                             <ButtonGroup>
-                                <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                                <Button color="primary" className='px-2 py-1 btn-sm' onClick={toggleModal}>Type Options</Button>
                                 <OptionsModal
                                     optionValues={valueObj.options}
                                     isOpen={modal}
@@ -143,11 +143,11 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                             <Input
                                 type="textarea"
                                 placeholder="Comment"
+                                className='form-control form-control-sm' 
                                 rows={1}
                                 value={valueObj.comment}
                                 onChange={onChange}
                                 onBlur={onBlur}
-                                className='mb-2'
                             />
                         </div>
                     </div>

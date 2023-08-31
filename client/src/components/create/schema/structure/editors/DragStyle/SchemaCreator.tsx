@@ -569,7 +569,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h5 id="types" className='mb-0'>Types* <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                                <h5 id="types" className='mb-0 pt-1'>Types* <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
                                                             </div>
                                                             <div className='col'>
                                                                 {generatedSchema.types &&

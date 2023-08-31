@@ -118,7 +118,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
                     <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
-                    <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                    <Button color="primary" className='px-2 py-1 btn-sm' onClick={toggleModal}>Type Options</Button>
                       <OptionsModal
                         optionValues={valueObj.options}
                         isOpen={modal}
@@ -128,7 +128,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
                       />
                   </div>
                   <div className="col-md-6">
-                  <Input type="textarea" placeholder="Comment" rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                    <Input type="textarea" placeholder="Comment" className='form-control form-control-sm' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                   </div>
                 </div>
               </div>

@@ -59,6 +59,8 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
           id={key}
           name={key}
           {...TypeOptionInputArgs[key]}
+          labelColumns={2}
+          fieldColumns={10}
           placeholder={key}
           removable={false}
           options={getOptions(key)}

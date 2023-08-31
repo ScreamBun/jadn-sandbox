@@ -125,16 +125,17 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         <div className="row m-0">
           <FormGroup className='col-md-2'>
             <Label>ID</Label>
-            <Input type="number" placeholder="ID" value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+            <Input type="number" placeholder="ID" className='form-control form-control-sm' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
           </FormGroup>        
           <div className="col-md-4">
             <Label>Value</Label>
-            <Input type="text" placeholder="Value" value={val.value} onChange={onChange} onBlur={onBlur} />
+            <Input type="text" placeholder="Value" className='form-control form-control-sm' value={val.value} onChange={onChange} onBlur={onBlur} />
           </div>
           <FormGroup className='col-md-6'>
             <Label>Comment</Label>
             <Input
               type="textarea"
+              className='form-control form-control-sm'
               placeholder="Comment"
               rows={1}
               value={valueObj.comment}
@@ -158,13 +159,13 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         </div>      
         <div className="row">
           <div className="col-md-6">
-            <Input type="text" placeholder="Name" maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
+            <Input type="text" placeholder="Name" className='form-control form-control-sm' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
           </div>
           <div className="col-md-4">
             <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
           </div>
           <div className="col-md-2">
-            <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
+            <Button color="primary" className='btn-sm px-2 py-1' onClick={toggleModal}>Field Options</Button>
             <OptionsModal
               optionValues={val.options}
               isOpen={modal}
@@ -183,6 +184,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               type="textarea"
               placeholder="Comment"
               rows={1}
+              className='form-control form-control-sm'
               value={valueObj.comment}
               onChange={onChange}
               onBlur={onBlur}

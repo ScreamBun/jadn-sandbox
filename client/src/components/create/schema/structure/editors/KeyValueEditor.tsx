@@ -38,8 +38,8 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     remove, 
     required, 
     removable, 
-    labelColumns = 2,  
-    fieldColumns = 10
+    labelColumns = 1,  
+    fieldColumns = 11
   } = props;
   const [valueData, setValueData] = useState(value);
 
@@ -200,7 +200,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
             </div>
             <div className={`col-md-${fieldColumns}`}>
               <div className = "input-group input-group-sm">
-                <input type={type} className="form-control" id={`editor-${placeholder}`} {...inputArgs} />
+                <input type={type} className="form-control form-control-sm" id={`editor-${placeholder}`} {...inputArgs} />
                 <div className="input-group-append">
                   <button title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
                 </div>                    
