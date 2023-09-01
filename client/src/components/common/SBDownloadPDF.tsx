@@ -83,7 +83,7 @@ const SBDownloadPDF = (props: any) => {
                     <div className="form-row">
                         <label htmlFor="filename" className="col-sm-4 col-form-label">File name:</label>
                         <div className="col-sm-8">
-                            <Input id='filename' className="form-control form-control-sm" type="text" onChange={onChange}></Input>
+                            <Input id='filename' className="form-control" type="text" onChange={onChange}></Input>
                         </div>
                     </div>
                 </ModalBody>

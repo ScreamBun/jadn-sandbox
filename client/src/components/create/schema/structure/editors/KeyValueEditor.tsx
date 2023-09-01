@@ -38,8 +38,8 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     remove, 
     required, 
     removable, 
-    labelColumns = 1,  
-    fieldColumns = 11
+    labelColumns = 2,  
+    fieldColumns = 10
   } = props;
   const [valueData, setValueData] = useState(value);
 
@@ -64,7 +64,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
               <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
             </div>
             <div className={`col-md-${fieldColumns}`}>
-              <div className = "input-group input-group-sm">
+              <div className = "input-group">
                 <SBCreatableSelect id={`editor-${placeholder}`}
                     placeholder={`Please select a ${placeholder}...`}
                     data={options}
@@ -111,7 +111,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
               <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
             </div>
             <div className={`col-md-${fieldColumns}`}>
-              <div className = "input-group input-group-sm">
+              <div className = "input-group">
                 <SBSelect id={`editor-${placeholder}`}
                       placeholder={`Please select a ${placeholder}...`}
                       data={options}
@@ -199,8 +199,8 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
               <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
             </div>
             <div className={`col-md-${fieldColumns}`}>
-              <div className = "input-group input-group-sm">
-                <input type={type} className="form-control form-control-sm" id={`editor-${placeholder}`} {...inputArgs} />
+              <div className = "input-group">
+                <input type={type} className="form-control" id={`editor-${placeholder}`} {...inputArgs} />
                 <div className="input-group-append">
                   <button title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
                 </div>                    
@@ -211,7 +211,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
           <div className="row form-group">
               <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
               <div className={`col-md-${fieldColumns}`}>
-                <input type={type} className="form-control form-control-sm" id={`editor-${placeholder}`} {...inputArgs} />
+                <input type={type} className="form-control" id={`editor-${placeholder}`} {...inputArgs} />
               </div>
           </div>                  
         }

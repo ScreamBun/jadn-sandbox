@@ -249,7 +249,8 @@ const JADNSchemaLoader = (props: any) => {
                                     placeholder={'Select a schema...'}
                                     loc={'schemas'}
                                     value={selectedFile}
-                                    isGrouped isFileUploader />
+                                    isGrouped isFileUploader
+                                    isSmStyle={true} />
                                 <div className="input-group-btn ml-1">
                                     <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={currSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={setSelectedFile} />
                                 </div>
