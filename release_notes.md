@@ -1,5 +1,12 @@
 # JADN Sandbox Release Notes
 
+## v0.5.1
+
+* Missing Field Options added
+* Field Add auto scroll disabled
+* Config label columns increased
+* Input field size increased
+
 ## v0.5.0
 
 * Introduced draggable types and fields
