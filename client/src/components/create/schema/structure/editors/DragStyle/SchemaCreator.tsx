@@ -535,7 +535,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h5 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }} className="text-muted"> metadata </small></h5>
+                                                                <h6 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }}> metadata </small></h6>
                                                             </div>
                                                             <div className='col'>
                                                                 {generatedSchema.info &&
@@ -555,7 +555,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                                 {generatedSchema.info ? 
                                                                 <>{infoEditors}</> 
                                                                 : 
-                                                                <><p className="text-muted">To add metadata info click and drag items from Info</p></>
+                                                                <><p>To add metadata info click and drag items from Info</p></>
                                                                 }
                                                              </Droppable>
                                                         }
@@ -569,7 +569,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h5 id="types" className='mb-0 pt-1'>Types* <small style={{ fontSize: '10px' }} className="text-muted"> schema content </small></h5>
+                                                                <h6 id="types" className='mb-0 pt-1'>Types* <small style={{ fontSize: '10px' }}> schema content </small></h6>
                                                             </div>
                                                             <div className='col'>
                                                                 {generatedSchema.types &&
@@ -599,7 +599,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                                 {generatedSchema.types ? 
                                                                 <>{typesEditors}</> 
                                                                 : 
-                                                                <><p className="text-muted">To add schema content click and drag items from Types</p></>
+                                                                <><p>To add schema content click and drag items from Types</p></>
                                                                 } 
                                                             </Droppable>
                                                         }
