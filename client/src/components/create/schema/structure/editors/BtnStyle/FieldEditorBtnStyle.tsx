@@ -150,7 +150,10 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
         return (
             <>
             <div className="row">
-              <div className="col-md-6">
+              <div className="col-md-2">
+                <Label className='mb-0'>ID</Label>
+              </div>                
+              <div className="col-md-4">
                 <Label className='mb-0'>Name</Label>
               </div>
               <div className="col-md-4">
@@ -158,7 +161,10 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
               </div>
             </div>      
             <div className="row">
-              <div className="col-md-6">
+              <div className="col-md-2">
+                <Input type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+              </div>                
+              <div className="col-md-4">
                 <Input type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
               </div>
               <div className="col-md-4">

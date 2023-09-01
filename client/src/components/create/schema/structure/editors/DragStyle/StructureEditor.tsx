@@ -121,7 +121,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     setValueObjFields(tmpFieldValues);
     change(updatevalue, dataIndex);
     setFieldCollapse(false);
-    scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "start" });
+    // Disabled for now, annoyed the users
+    // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "start" });
     fieldCount = fieldCount + 1;
   }
 
@@ -330,14 +331,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const renderField = useCallback((field, index) => {
     return (
-      <DraggableType
-        key={self.crypto.randomUUID()}
-        id={field[0]}
-        isDraggable={true}
-        dataIndex={index}
-        changeIndex={onDrag}
-        acceptableType={`Field${dataIndex}`}
-        item={< FieldEditor
+        <FieldEditor
+          key={index}
           dataIndex={index}
           enumerated={valueObj.type.toLowerCase() === 'enumerated'}
           value={field}
@@ -345,8 +340,25 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
           remove={fieldRemove}
           changeIndex={moveField}
           config={config}
-        />}
-      />
+        />      
+        // TODO: Causes FieldOptions to not render
+      // <DraggableType
+      //   key={self.crypto.randomUUID()}
+      //   id={field[0]}
+      //   isDraggable={true}
+      //   dataIndex={index}
+      //   changeIndex={onDrag}
+      //   acceptableType={`Field${dataIndex}`}
+      //   item={< FieldEditor
+      //     dataIndex={index}
+      //     enumerated={valueObj.type.toLowerCase() === 'enumerated'}
+      //     value={field}
+      //     change={fieldChange}
+      //     remove={fieldRemove}
+      //     changeIndex={moveField}
+      //     config={config}
+      //   />}
+      // />
     );
   }, [])
 

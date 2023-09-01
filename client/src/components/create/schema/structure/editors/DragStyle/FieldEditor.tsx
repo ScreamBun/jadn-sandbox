@@ -150,21 +150,27 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     return (
       <>
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-2">
+            <Label className='mb-0'>ID</Label>
+          </div>                
+          <div className="col-md-4">
             <Label className='mb-0'>Name</Label>
           </div>
           <div className="col-md-4">
             <Label className='mb-0'>Type</Label>
           </div>
-        </div>      
+        </div>     
         <div className="row">
-          <div className="col-md-6">
-            <Input type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
-          </div>
-          <div className="col-md-4">
-            <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
-          </div>
-          <div className="col-md-2">
+            <div className="col-md-2">
+              <Input type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+            </div>                
+            <div className="col-md-4">
+              <Input type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
+            </div>
+            <div className="col-md-4">
+              <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
+            </div>
+            <div className="col-md-2">
             <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
             <OptionsModal
               optionValues={val.options}
