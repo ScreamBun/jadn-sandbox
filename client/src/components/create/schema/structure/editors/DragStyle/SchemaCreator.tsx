@@ -409,13 +409,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     };
 
     const onOutlineDrop = (updatedCards: Item[]) => {
-        console.log("SchemaCreator onOutlineDrop: " + JSON.stringify(updatedCards));
+        // console.log("SchemaCreator onOutlineDrop: " + JSON.stringify(updatedCards));
         reorder(updatedCards);
     };
 
     const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
         e.preventDefault();
-        console.log("SchemaCreator onOutlineClick: " + text);
+        // console.log("SchemaCreator onOutlineClick: " + text);
         const element = document.getElementById(text);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });

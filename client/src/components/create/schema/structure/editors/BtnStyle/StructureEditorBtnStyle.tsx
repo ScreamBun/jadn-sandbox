@@ -116,7 +116,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         setValueObj(updatevalue);
         change(updatevalue, dataIndex);
         setFieldCollapse(false);
-        scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+        // Disabled for now, annoyed the users
+        // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
         fieldCount = fieldCount + 1;
     }
 

@@ -430,7 +430,11 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                       title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
               </legend>
               
-              <div ref={scrollToFieldRef}>
+              {/* <div ref={scrollToFieldRef}>
+                  {!fieldCollapse && fields}
+              </div>                    */}
+              
+              <div>
                   {!fieldCollapse && fields}
               </div>              
 
