@@ -119,7 +119,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         });
         change(updatevalue, dataIndex);
         setFieldCollapse(false);
-        scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+        // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
         fieldCount = fieldCount + 1;
     }
 
