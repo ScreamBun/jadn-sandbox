@@ -15,6 +15,7 @@ import { zip } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
 import FieldEditorBtnStyle from './FieldEditorBtnStyle';
+import { flushSync } from 'react-dom';
 
 // Interface
 interface StructureEditorProps {
@@ -113,11 +114,12 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
         const tmpFieldValues = [...valueObj.fields, field];
         const updatevalue = { ...valueObj, fields: tmpFieldValues };
-        setValueObj(updatevalue);
+        flushSync(() => {
+            setValueObj(updatevalue);
+        });
         change(updatevalue, dataIndex);
         setFieldCollapse(false);
-        // Disabled for now, annoyed the users
-        // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+        scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
         fieldCount = fieldCount + 1;
     }
 
@@ -225,10 +227,10 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             </div>
                             <div className='col'>
                                 <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
-                                <FontAwesomeIcon icon={faMinusCircle} />
+                                    <FontAwesomeIcon icon={faMinusCircle} />
                                 </Button>
                             </div>
-                        </div>         
+                        </div>
                     </div>
                     <div className="card-body px-2 py-2">
                         <div className="row m-0">
@@ -303,7 +305,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                     title={`Move ${valueObj.type} Down`}>
                                     <FontAwesomeIcon icon={faSquareCaretDown} />
                                 </Button>
-                            </ButtonGroup>  
+                            </ButtonGroup>
                         </div>
                     </div>
                 </div>
@@ -335,12 +337,12 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             <legend>
                                 {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
 
-                                <span 
+                                <span
                                     className="badge badge-pill badge-primary ml-1 cursor-pointer"
                                     title='Add Field'
                                     onClick={addField}>
                                     <FontAwesomeIcon icon={faPlusSquare} />
-                                </span>                                    
+                                </span>
 
                                 <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
                                     className='float-right btn btn-sm'
@@ -363,7 +365,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
                     </div>
                 </div>
-            </div>        
+            </div>
         </>
     );
 });

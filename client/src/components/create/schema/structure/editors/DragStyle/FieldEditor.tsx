@@ -195,8 +195,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   }
 
   const toggleModal = () => {
-    console.log(modal)
-
     setModal(!modal);
   }
 

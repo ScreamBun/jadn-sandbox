@@ -17,6 +17,7 @@ import { useAppSelector } from 'reducers';
 import update from 'immutability-helper'
 import { Droppable } from './Droppable';  // TODO: Revisit
 import { ModalSize } from '../options/ModalSize';
+import { flushSync } from 'react-dom';
 
 
 interface StructureEditorProps {
@@ -42,15 +43,15 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const [valueObj, setValueObj] = useState(valueObjInit);
   const [valueObjFields, setValueObjFields] = useState(valueObjInit.fields);
 
+  useEffect(() => {
+    setFieldCollapse(collapseAllFields)
+  }, [collapseAllFields]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
     setValueObj({ ...valueObj, [key]: value });
   }
-
-  useEffect(() => {
-    setFieldCollapse(collapseAllFields)
-  }, [collapseAllFields]);
 
   const onBlur = (e: any) => {
     const { placeholder, value } = e.target;
@@ -115,12 +116,15 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
     const tmpFieldValues = [...valueObjFields, field];
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
-    setValueObj(updatevalue);
-    setValueObjFields(tmpFieldValues);
+
+    flushSync(() => {
+      setValueObj(updatevalue);
+      setValueObjFields(tmpFieldValues);
+    });
+
     change(updatevalue, dataIndex);
     setFieldCollapse(false);
-    // Disabled for now, annoyed the users
-    // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "start" });
+    scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
     fieldCount = fieldCount + 1;
   }
 
