@@ -48,13 +48,15 @@ class Format(Resource):
 class FormatOptions(Resource):
     """
     Endpoint for api/format/options
-    """
-
+    """    
     def get(self, type):
 
         #get_formats of given format type from parameters
-        format_options = current_app.formatOptionLogic.get_formats_by_type(type)
-        
+        if type:
+            format_options = current_app.formatOptionLogic.get_formats_by_type(type)
+        else: 
+            format_options = current_app.formatOptionLogic.get_formats_by_type()
+
         try:
             j = jsonify({
                 "format_options": format_options

@@ -83,7 +83,7 @@ class FormatOptionLogic:
         formats = self.get_formats()
         formats_returned = []
 
-        if type:
+        if type != 'undefined':
             for format in formats:
                 if format['type'].lower() == type.lower():
                     formats_returned.append(format)

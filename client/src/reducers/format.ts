@@ -36,3 +36,5 @@ export default (state = initialState, action: format.FormatActions) => {
             return state;
     }
 };
+
+export const getFormatOptions = (state: { Format: { format_options: any; }; }) => state.Format.format_options;

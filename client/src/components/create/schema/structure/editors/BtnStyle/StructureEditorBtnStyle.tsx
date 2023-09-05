@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-    Button, ButtonGroup, FormGroup, Input, InputGroup, Label
+    Button, ButtonGroup, FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';

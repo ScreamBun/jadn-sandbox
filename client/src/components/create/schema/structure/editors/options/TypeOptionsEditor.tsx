@@ -1,10 +1,10 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo } from 'react';
 import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
 import { safeGet } from '../../../../../utils';
-import { useDispatch } from 'react-redux';
-import { getValidFormatOpts } from 'actions/format';
+import { useSelector } from 'react-redux';
 import { useAppSelector } from 'reducers';
+import { getFormatOptions } from 'reducers/format';
 
 interface TypeOptionsEditorProps {
   id: string;
@@ -16,26 +16,12 @@ interface TypeOptionsEditorProps {
 
 const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEditorProps) {
   const { change, deserializedState, id, optionType } = props;
-  const dispatch = useDispatch();
-  const [formatOpts, setFormatOpts] = useState<string[]>([]);
   const schemaTypes = useAppSelector((state) => ({
     base: state.Util.types.base,
     schema: Object.keys(state.Util.types.schema) || {}
   }));
 
-  useEffect(() => {
-    if (optionType != undefined) {
-      dispatch(getValidFormatOpts(optionType))
-        //TODO: get format options based on type
-        .then((val) => {
-          setFormatOpts(val.payload.format_options.map(obj => obj.name));
-        })
-        .catch((val) => {
-          console.log("ERROR: " + val.payload.err);
-          setFormatOpts([]);
-        })
-    }
-  }, []);
+  const formatTypes = useSelector(getFormatOptions);
 
   const getOptions = (key: string) => {
     switch (key) {
@@ -45,7 +31,13 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
         return schemaTypes;
       case 'format':
         //get only applicable formats based on type 
-        return formatOpts;
+        let formats_returned = [];
+        for (const format of formatTypes) {
+          if (format.type.toLowerCase() == optionType?.toLowerCase()) {
+            formats_returned.push(format.name)
+          }
+        }
+        return formats_returned;
       default:
         return [];
     }
@@ -56,7 +48,7 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
       return (
         <KeyValueEditor
           key={key}
-          id={key}
+          id={id}
           name={key}
           {...TypeOptionInputArgs[key]}
           labelColumns={2}
@@ -80,9 +72,9 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
     );
   } else if (optionType == "Boolean") {
     return (
-    <>
-      No type options available
-    </>);
+      <>
+        No type options available
+      </>);
   }
   return '';
 });
