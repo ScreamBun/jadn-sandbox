@@ -7,6 +7,7 @@ import { opts2obj } from 'components/create/schema/structure/editors/options/con
 import { validateOptDataElem } from '../../utils';
 import FormattedField from './formattedField';
 import { hasProperty } from 'components/utils';
+import SBToggleBtn from 'components/common/SBToggleBtn';
 
 // Interface
 interface ArrayFieldProps {
@@ -26,7 +27,7 @@ const ArrayField = (props: ArrayFieldProps) => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState<string[]>([]); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
-
+  const [toggle, setToggle] = useState(true);
 
   const onChange = (_k: string, v: any, i: number) => {
     var updatedArr;
@@ -79,11 +80,13 @@ const ArrayField = (props: ArrayFieldProps) => {
     <div className='form-group'>
       <div className='card border-secondary'>
         <div className='card-header p-2'>
-          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          {err}
+          <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+            {err}
+          </SBToggleBtn>
         </div>
-        <div className='card-body mx-2'>
+        <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
           {fieldDef}
         </div>
       </div>

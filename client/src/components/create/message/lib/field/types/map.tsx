@@ -6,6 +6,7 @@ import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'components/utils';
 import { validateOptDataElem } from '../../utils';
+import SBToggleBtn from 'components/common/SBToggleBtn';
 
 // Interface
 interface MapFieldProps {
@@ -25,7 +26,7 @@ const MapField = (props: MapFieldProps) => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState({}); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
-
+  const [toggle, setToggle] = useState(true);
 
   const onChange = (k: string, v: any) => {
     if (!v) {
@@ -60,17 +61,21 @@ const MapField = (props: MapFieldProps) => {
     <div className='form-group'>
       <div className='card border-secondary'>
         <div className='card-header p-2'>
-          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          {err}
+          <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+            {err}
+          </SBToggleBtn>
         </div>
-        <div className='card-body mx-2'>
+
+        <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
           <div className='row'>
             <div className="col my-1 px-0">
               {fieldDef}
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

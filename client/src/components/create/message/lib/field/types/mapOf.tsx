@@ -13,6 +13,7 @@ import { useAppSelector } from '../../../../../../reducers';
 import { validateOptDataElem } from '../../utils';
 import { delMultiKey, hasProperty, setMultiKey } from 'components/utils';
 import { $MINV } from 'components/create/consts';
+import SBToggleBtn from 'components/common/SBToggleBtn';
 
 // Interface
 interface MapOfFieldProps {
@@ -34,6 +35,8 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [kopts, setkOpts] = useState<any[]>([]);
     const [vopts, setvOpts] = useState<any[]>([]);
     const [errMsg, setErrMsg] = useState<string[]>([]);
+    const [toggle, setToggle] = useState(true);
+    const [toggleField, setToggleField] = useState('0');
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
@@ -249,11 +252,13 @@ const MapOfField = (props: MapOfFieldProps) => {
             <div className='form-group' key={i}>
                 <div className='card border-secondary'>
                     <div className='card-header p-2'>
-                        <p className='card-title m-0'>
-                            {name} {i + 1}
-                        </p>
+                        <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
+                            <p className='card-title m-0'>
+                                {name} {i + 1}
+                            </p>
+                        </SBToggleBtn>
                     </div>
-                    <div className='card-body mx-2'>
+                    <div className={`card-body mx-2 ${toggleField == `${i}` ? '' : 'collapse'}`} id={`${i}`}>
                         <Field key={"key"} def={keyField} parent={msgName} optChange={onChangeKey} idx={i} config={config} />
                         <Field key={"value"} def={valField} parent={msgName} optChange={onChangeValue} idx={i} config={config} />
                     </div>
@@ -270,28 +275,34 @@ const MapOfField = (props: MapOfFieldProps) => {
         <div className='form-group'>
             <div className='card border-secondary'>
                 <div className='card-header p-2'>
-                    <p className='card-title m-0'>
-                        {`${name}${isOptional(def) ? '' : '*'}`}
-                    </p>
-                    <Button
-                        color="danger"
-                        className={`float-right p-1${min ? ' disabled' : ''}`}
-                        onClick={removeOpt}
-                    >
-                        <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-                    </Button>
-                    <Button
-                        color="primary"
-                        className={`float-right p-1${max ? ' disabled' : ''}`}
-                        onClick={addOpt}
-                    >
-                        <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-                    </Button>
-                    {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                    {err}
+                    <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+                        <div>
+                            <p className='card-title m-0'>
+                                {`${name}${isOptional(def) ? '' : '*'}`}
+                            </p>
+                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            {err}
+                        </div>
+
+                        <Button
+                            color="danger"
+                            className={`float-right p-1${min ? ' disabled' : ''}`}
+                            onClick={removeOpt}
+                        >
+                            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+                        </Button>
+                        <Button
+                            color="primary"
+                            className={`float-right p-1${max ? ' disabled' : ''}`}
+                            onClick={addOpt}
+                        >
+                            <FontAwesomeIcon icon={faPlusSquare} size="lg" />
+                        </Button>
+
+                    </SBToggleBtn>
                 </div>
 
-                <div className='card-body mx-2'>
+                <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
                     {fields}
                 </div>
             </div>

@@ -14,6 +14,7 @@ import { hasProperty } from '../../../../../utils';
 import { merge } from 'lodash';
 import { validateOptDataElem } from '../../utils';
 import { $MINV } from 'components/create/consts';
+import SBToggleBtn from 'components/common/SBToggleBtn';
 
 // Interface
 interface ArrayOfFieldProps {
@@ -33,7 +34,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const [max, setMax] = useState(false);
   const [opts, setOpts] = useState<any[]>([]); //track elem of vtype
   const [errMsg, setErrMsg] = useState<string[]>([]);
-
+  const [toggle, setToggle] = useState(true);
 
   var optData: Record<string, any> = {};
   const [_idx, name, type, args, comment] = def;
@@ -52,18 +53,17 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     setCount(count + 1);
   }
 
-  const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const removeOpt = (removedIndex: number) => {
+    //e.preventDefault();
     //check if min fields exist
     const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
     setMin(count <= minCount);
     if (count <= minCount) {
       return;
     }
-    //remove from end of arr
-    var updatedOpts = opts.filter((_elem, index) => {
-      return index != count - 1;
-    });
+    //remove from arr
+    var updatedOpts = opts.splice(removedIndex, 0);
+
     setOpts(updatedOpts);
 
     //validate data
@@ -187,7 +187,20 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const fields: any[] = [];
   for (let i = 0; i < count; ++i) {
-    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />);
+    fields.push(
+      <div key={i}>
+        <Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />
+
+        <Button
+          color="danger"
+          className={`float-right p-1${min ? ' disabled' : ''}`}
+          onClick={() => removeOpt(i)}
+        >
+          <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+        </Button>
+
+      </div>
+    );
   }
 
   const err = errMsg.map((msg, index) =>
@@ -198,29 +211,25 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     <div className='form-group'>
       <div className='card border-secondary'>
         <div className='card-header p-2'>
-          <p className='card-title m-0'>
-            {`${name}${isOptional(def) ? '' : '*'}`}
-          </p>
-          <Button
-            color="danger"
-            className={`float-right p-1${min ? ' disabled' : ''}`}
-            onClick={removeOpt}
-          >
-            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-          </Button>
+          <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+            <p className='card-title m-0'>
+              {`${name}${isOptional(def) ? '' : '*'}`}
+            </p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+            {err}
+          </SBToggleBtn>
+        </div>
+
+        <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
+          {fields}
           <Button
             color="primary"
-            className={`float-right p-1${max ? ' disabled' : ''}`}
+            className={`btn-block p-1${max ? ' disabled' : ''}`}
+            title='Add Field'
             onClick={addOpt}
           >
             <FontAwesomeIcon icon={faPlusSquare} size="lg" />
           </Button>
-          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          {err}
-        </div>
-
-        <div className='card-body mx-2'>
-          {fields}
         </div>
       </div>
     </div>
