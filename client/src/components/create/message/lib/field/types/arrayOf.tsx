@@ -188,18 +188,15 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const fields: any[] = [];
   for (let i = 0; i < count; ++i) {
     fields.push(
-      <div key={i}>
-        <Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />
-
+      <Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} >
         <Button
           color="danger"
-          className={`float-right p-1${min ? ' disabled' : ''}`}
+          className={`p-1${min ? ' disabled' : ''}`}
           onClick={() => removeOpt(i)}
         >
           <FontAwesomeIcon icon={faMinusSquare} size="lg" />
         </Button>
-
-      </div>
+      </Field>
     );
   }
 

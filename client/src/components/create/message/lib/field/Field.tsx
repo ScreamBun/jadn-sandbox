@@ -18,12 +18,13 @@ interface FieldProps {
   idx?: number;
   parent?: string;
   config: InfoConfig;
+  children: JSX.Element;
 }
 
 // Component
 const Field = (props: FieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN
-  const { def, idx, optChange, parent, config } = props;
+  const { def, idx, optChange, parent, config, children } = props;
   const [_idx, name, type, opts, _comment] = def;
 
   const parentName = parent || '';
@@ -33,6 +34,7 @@ const Field = (props: FieldProps) => {
     def,
     parent: parentName,
     config,
+    children,
     optChange: (k: string, v: any) => optChange(k, v, idx)
   };
 
