@@ -21,6 +21,7 @@ import { DraggableKey } from './DraggableKey';
 import SBOutline, { Item } from 'components/common/outline/SBOutline';
 import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { flushSync } from 'react-dom';
+import SBScrollToTop from 'components/common/SBScrollToTop';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -626,6 +627,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                             </div>
                         </div>
                     </TabPane>
+                    <SBScrollToTop divID='schema-editor' />
                 </TabContent >
             </div>
         </div>
