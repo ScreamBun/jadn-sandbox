@@ -87,7 +87,7 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'binary') {
       return (
         <div className='form-group'>
-          <div className='card'>
+          <div className='card border-secondary'>
             <div className='card-header p-2'>
               <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
               {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
@@ -116,7 +116,7 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'number') {
       return (
         <div className='form-group'>
-          <div className='card'>
+          <div className='card border-secondary'>
             <div className='card-header p-2'>
               <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
               {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
@@ -145,7 +145,7 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'integer') {
       return (
         <div className='form-group'>
-          <div className='card'>
+          <div className='card border-secondary'>
             <div className='card-header p-2'>
               <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
               {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
@@ -174,7 +174,7 @@ const BasicField = (props: BasicFieldProps) => {
   //DEFAULT: STRING 
   return (
     <div className='form-group'>
-      <div className='card'>
+      <div className='card border-secondary'>
         <div className='card-header p-2'>
           <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
           {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}

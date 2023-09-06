@@ -247,7 +247,7 @@ const MapOfField = (props: MapOfFieldProps) => {
     for (let i = 0; i < count; ++i) {
         fields.push(
             <div className='form-group' key={i}>
-                <div className='card'>
+                <div className='card border-secondary'>
                     <div className='card-header p-2'>
                         <p className='card-title m-0'>
                             {name} {i + 1}
@@ -268,7 +268,7 @@ const MapOfField = (props: MapOfFieldProps) => {
 
     return (
         <div className='form-group'>
-            <div className='card'>
+            <div className='card border-secondary'>
                 <div className='card-header p-2'>
                     <p className='card-title m-0'>
                         {`${name}${isOptional(def) ? '' : '*'}`}
