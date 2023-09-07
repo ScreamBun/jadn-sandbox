@@ -45,7 +45,7 @@ const SchemaTranslated = (props: any) => {
                     <div className='col-md-6'>
                         <SBSelect id={"translation-list"} data={translateOpts} onChange={handleTranslation}
                             placeholder={'Translate to...(select at least one)'}
-                            value={translation} isMultiSelect
+                            value={translation} isMultiSelect isSmStyle
                         />
                     </div>
                     <div className='col-md-6'>
@@ -63,7 +63,7 @@ const SchemaTranslated = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0">
+            <div className="card-body-page">
                 {translation.length > 1 && translatedSchema.length > 1 ?
                     <SBCollapseViewer data={translatedSchema} /> :
                     <SBEditor data={translatedSchema[0].schema} isReadOnly={true} convertTo={(translation.length == 1 ? translation[0].value : translation)}></SBEditor>

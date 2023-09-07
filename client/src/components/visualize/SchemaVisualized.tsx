@@ -81,6 +81,7 @@ const SchemaVisualized = (props: any) => {
                         <SBSelect id={"conversion-list"} data={convertOpts} onChange={handleConversion}
                             value={conversion}
                             placeholder={'Convert to...(select at least one)'} isMultiSelect
+                            isSmStyle
                         />
                     </div>
                     <div className='col-md-6'>
@@ -144,13 +145,13 @@ const SchemaVisualized = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className={`card-body p-0 ${spiltViewFlag ? 'd-none' : ''}`}>
+            <div className={`card-body-page ${spiltViewFlag ? 'd-none' : ''}`}>
                 {conversion.length > 1 && convertedSchema.length > 1 ?
                     <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
                     <SBEditor data={convertedSchema[0].schema} isReadOnly={true} convertTo={(conversion.length == 1 ? conversion[0].value : conversion)}></SBEditor>
                 }
             </div>
-            <div className={`card-body p-0 ${spiltViewFlag ? '' : ' d-none'}`}>
+            <div className={`card-body-page ${spiltViewFlag ? '' : ' d-none'}`}>
                 <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'html' && convertedSchema.length != 0 ? '' : ' d-none'}`}>
                     <SBHtmlPreviewer htmlText={convertedSchema[0].schema} showPreviewer={true} conversion={(conversion.length == 1 ? conversion[0].value : conversion)}></SBHtmlPreviewer>
                 </div>

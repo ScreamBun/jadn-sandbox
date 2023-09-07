@@ -106,7 +106,7 @@ const MessageCreator = (props: any) => {
                                 data={exportRecords}
                                 onChange={handleSelection}
                                 placeholder={'Select a message type...'}
-                                value={commandType}
+                                value={commandType} isSmStyle
                             />
                             <div className="input-group-btn ml-1">
                                 <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-right mr-1"} ext={'json'} />

@@ -441,7 +441,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     placeholder={'Select a schema...'}
                                     loc={'schemas'}
                                     value={selectedFile}
-                                    isSmStyle={true}
+                                    isSmStyle
                                     isGrouped isFileUploader />
                                 <div className="input-group-btn ml-1">
                                     <SBSaveFile

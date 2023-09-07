@@ -107,18 +107,11 @@ const smStyle = {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle} = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle } = props;
     const [toggleModal, setToggleModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectStyle, setSelectStyle] = useState(defaultStyle);
 
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        if(isSmStyle) {
-            setSelectStyle(smStyle);
-        }
-    }, [isSmStyle])    
 
     const formatGroupLabel = (data: GroupedOption) => (
         <div style={groupStyles}>
@@ -244,7 +237,7 @@ const SBSelect = (props: any) => {
                         onChange={onChange}
                         menuPortalTarget={document.body}
                         className={customClass}
-                        styles={selectStyle}
+                        styles={isSmStyle ? smStyle : defaultStyle}
                         isMulti={isMultiSelect}
                         components={{ Menu }}
                         value={value}
@@ -259,7 +252,7 @@ const SBSelect = (props: any) => {
                         onChange={onChange}
                         menuPortalTarget={document.body}
                         className={customClass}
-                        styles={selectStyle}
+                        styles={isSmStyle ? smStyle : defaultStyle}
                         isMulti={isMultiSelect}
                         value={value}
                     />

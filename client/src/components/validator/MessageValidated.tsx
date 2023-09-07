@@ -131,7 +131,7 @@ const MessageValidated = (props: any) => {
                                 placeholder={'Select a message...'}
                                 loc={'messages'}
                                 value={selectedFile}
-                                isGrouped isFileUploader />
+                                isGrouped isFileUploader isSmStyle />
                         </div>
                         <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
                             <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
@@ -145,6 +145,7 @@ const MessageValidated = (props: any) => {
                             onChange={(e: Option) => setMsgFormat(e)}
                             value={msgFormat}
                             placeholder={'Message format...'}
+                            isSmStyle
                         />
                     </div>
 
@@ -152,6 +153,7 @@ const MessageValidated = (props: any) => {
                         <SBSelect id={"message-decode-list"} data={decodeSchemaTypes.exports} onChange={(e: Option) => setDecodeMsg(e)}
                             value={decodeMsg}
                             placeholder={'Message type...'}
+                            isSmStyle
                         />
                     </div>
 
@@ -165,7 +167,7 @@ const MessageValidated = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0">
+            <div className="card-body-page">
                 <SBEditor data={loadedMsg} convertTo={msgFormat ? msgFormat.value : ''} onChange={onMsgChange}></SBEditor>
             </div>
         </div>

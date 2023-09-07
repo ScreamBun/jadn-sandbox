@@ -256,7 +256,7 @@ const JADNSchemaLoader = (props: any) => {
                                     loc={'schemas'}
                                     value={selectedFile}
                                     isGrouped isFileUploader
-                                    isSmStyle={true} />
+                                    isSmStyle />
                                 <div className="input-group-btn ml-1">
                                     <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={currSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={setSelectedFile} />
                                 </div>
@@ -287,7 +287,7 @@ const JADNSchemaLoader = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0">
+            <div className="card-body-page">
                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                     <SBEditor data={currSchema} onChange={sbEditorOnChange} convertTo={LANG_JSON}></SBEditor>}
             </div>
