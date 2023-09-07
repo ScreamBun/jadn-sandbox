@@ -21,11 +21,12 @@ interface MapOfFieldProps {
     optChange: (n: string, v: any, i?: number) => void;
     parent?: string;
     config: InfoConfig;
+    children?: JSX.Element;
 }
 
 // MapOf Field Component
 const MapOfField = (props: MapOfFieldProps) => {
-    const { def, parent, optChange, config } = props;
+    const { def, parent, optChange, config, children } = props;
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
     const [count, setCount] = useState(1);
@@ -253,9 +254,19 @@ const MapOfField = (props: MapOfFieldProps) => {
                 <div className='card border-secondary'>
                     <div className='card-header p-2'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
-                            <p className='card-title m-0'>
-                                {name} {i + 1}
-                            </p>
+                            <div className='d-flex justify-content-between'>
+                                <div className='card-title m-2'>
+                                    {name} {i + 1}
+                                </div>
+
+                                <Button
+                                    color="danger"
+                                    className={`float-right p-1${min ? ' disabled' : ''}`}
+                                    onClick={removeOpt}
+                                >
+                                    <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+                                </Button>
+                            </div>
                         </SBToggleBtn>
                     </div>
                     <div className={`card-body mx-2 ${toggleField == `${i}` ? '' : 'collapse'}`} id={`${i}`}>
@@ -274,36 +285,31 @@ const MapOfField = (props: MapOfFieldProps) => {
     return (
         <div className='form-group'>
             <div className='card border-secondary'>
-                <div className='card-header p-2'>
-                    <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-                        <div>
-                            <p className='card-title m-0'>
-                                {`${name}${isOptional(def) ? '' : '*'}`}
-                            </p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                            {err}
-                        </div>
-
-                        <Button
-                            color="danger"
-                            className={`float-right p-1${min ? ' disabled' : ''}`}
-                            onClick={removeOpt}
-                        >
-                            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-                        </Button>
-                        <Button
-                            color="primary"
-                            className={`float-right p-1${max ? ' disabled' : ''}`}
-                            onClick={addOpt}
-                        >
-                            <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-                        </Button>
-
-                    </SBToggleBtn>
+                <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                    <div>
+                        <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+                            <div>
+                                <p className='card-title m-0'>
+                                    {`${name}${isOptional(def) ? '' : '*'}`}
+                                </p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {err}
+                            </div>
+                        </SBToggleBtn>
+                    </div>
+                    {children}
                 </div>
 
                 <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
                     {fields}
+                    <button
+                        type="button"
+                        className={`btn btn-block btn-primary p-1${max ? ' disabled' : ''}`}
+                        title='Add Field'
+                        onClick={addOpt}
+                    >
+                        <FontAwesomeIcon icon={faPlusSquare} size="lg" />
+                    </button>
                 </div>
             </div>
         </div>

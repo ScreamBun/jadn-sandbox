@@ -13,11 +13,12 @@ interface RecordFieldProps {
   optChange: (n: string, v: any) => void;
   parent?: string;
   config: InfoConfig;
+  children?: JSX.Element;
 }
 
 // Component
 const RecordField = (props: RecordFieldProps) => {
-  const { def, optChange, parent, config } = props;
+  const { def, optChange, parent, config, children } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   var optData: Record<string, any> = {};
 
@@ -56,7 +57,7 @@ const RecordField = (props: RecordFieldProps) => {
   }
 
   const fieldDef = (!Array.isArray(typeDef[typeDef.length - 1]) || typeDef[typeDef.length - 1].length == 0) ?
-    <div> No fields </div> :
+    <div className='p-2'> No fields </div> :
     typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} />);
 
   const err = errMsg.map((msg, index) =>
@@ -66,12 +67,15 @@ const RecordField = (props: RecordFieldProps) => {
   return (
     <div className='form-group'>
       <div className='card border-secondary'>
-        <div className='card-header p-2'>
-          <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-            {err}
-          </SBToggleBtn>
+        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+          <div>
+            <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              {err}
+            </SBToggleBtn>
+          </div>
+          {children}
         </div>
 
         <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>

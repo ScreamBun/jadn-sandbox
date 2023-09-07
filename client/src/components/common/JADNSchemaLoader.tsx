@@ -19,7 +19,7 @@ import { FormatJADN } from "components/utils";
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
 
-    const { selectedFile, setSelectedFile, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
+    const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +31,12 @@ const JADNSchemaLoader = (props: any) => {
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
+
+    useEffect(() => {
+        if (loadedSchema == null) {
+            setCurrSchema('');
+        }
+    }, [loadedSchema])
 
     const loadDecodeTypes = (schemaObj: any) => {
         let decodeTypes = {

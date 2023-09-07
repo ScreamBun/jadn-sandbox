@@ -9,7 +9,11 @@ const SBToggleBtn = (props: any) => {
     const onToggleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (index) {
-            setToggle(index);
+            if (index == toggle) {
+                setToggle('');
+            } else {
+                setToggle(index);
+            }
         } else {
             setToggle(!toggle);
         }
@@ -20,8 +24,9 @@ const SBToggleBtn = (props: any) => {
                 {children}
             </div>
             <button onClick={onToggleClick} className='btn btn-sm'
-                title={`${toggle ? 'hide' : 'show'}`} >
-                <FontAwesomeIcon icon={toggle ? faCircleChevronUp : faCircleChevronDown} />
+                title={`${index ? (toggle == index ? 'hide' : 'show') : (toggle ? 'hide' : 'show')}`} >
+                <FontAwesomeIcon icon={index ? (toggle == index ? faCircleChevronUp : faCircleChevronDown) : (toggle ? faCircleChevronUp : faCircleChevronDown)}
+                />
             </button>
         </div>
     );

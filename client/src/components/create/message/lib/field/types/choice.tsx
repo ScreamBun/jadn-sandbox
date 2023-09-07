@@ -13,11 +13,12 @@ interface ChoiceFieldProps {
   optChange: (n: string, v: any) => void;
   parent?: string;
   config: InfoConfig;
+  children?: JSX.Element;
 }
 
 // Component
 const ChoiceField = (props: ChoiceFieldProps) => {
-  const { def, optChange, parent, config } = props;
+  const { def, optChange, parent, config, children } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const [selectedValue, setSelectedValue] = useState<Option | string>('');
 
@@ -65,9 +66,12 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   return (
     <div className='form-group'>
       <div className='card border-secondary'>
-        <div className='card-header p-2'>
-          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {comment && <small className='card-subtitle form-text text-muted'>{comment}</small>}
+        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+          <div>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
+          {children}
         </div>
         <div className='card-body m-0 p-0'>
           <div className='row'>

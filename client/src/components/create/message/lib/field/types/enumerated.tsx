@@ -65,9 +65,11 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
   return (
     <div className='form-group'>
       <div className='card border-secondary'>
-        <div className='card-header p-2 d-flex justify-content-between'>
-          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {idx != 0 && comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+          <div>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {idx != 0 && comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
           {children}
         </div>
         <div className='card-body m-0 p-0'>

@@ -22,11 +22,12 @@ interface ArrayOfFieldProps {
   optChange: (n: string, v: any, i?: number) => void;
   parent?: string;
   config: InfoConfig;
+  children?: JSX.Element;
 }
 
 // ArrayOf Field Component
 const ArrayOfField = (props: ArrayOfFieldProps) => {
-  const { def, parent, optChange, config } = props;
+  const { def, parent, optChange, config, children } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   const [count, setCount] = useState(1);
@@ -207,14 +208,17 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   return (
     <div className='form-group'>
       <div className='card border-secondary'>
-        <div className='card-header p-2'>
-          <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-            <p className='card-title m-0'>
-              {`${name}${isOptional(def) ? '' : '*'}`}
-            </p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-            {err}
-          </SBToggleBtn>
+        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+          <div>
+            <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+              <p className='card-title m-0'>
+                {`${name}${isOptional(def) ? '' : '*'}`}
+              </p>
+              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              {err}
+            </SBToggleBtn>
+          </div>
+          {children}
         </div>
 
         <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>

@@ -14,11 +14,12 @@ interface MapFieldProps {
   optChange: (n: string, v: any) => void;
   parent?: string;
   config: InfoConfig;
+  children?: JSX.Element;
 }
 
 // Component
 const MapField = (props: MapFieldProps) => {
-  const { def, optChange, parent, config } = props;
+  const { def, optChange, parent, config, children } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   var optData: Record<string, any> = {};
@@ -50,7 +51,7 @@ const MapField = (props: MapFieldProps) => {
   }
 
   const fieldDef = (!Array.isArray(typeDef[typeDef.length - 1]) || typeDef[typeDef.length - 1].length == 0) ?
-    <div> No fields </div> :
+    <div className='p-2'> No fields </div> :
     typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} config={config} />);
 
   const err = errMsg.map((msg, index) =>
@@ -60,12 +61,15 @@ const MapField = (props: MapFieldProps) => {
   return (
     <div className='form-group'>
       <div className='card border-secondary'>
-        <div className='card-header p-2'>
-          <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-            {err}
-          </SBToggleBtn>
+        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+          <div>
+            <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              {err}
+            </SBToggleBtn>
+          </div>
+          {children}
         </div>
 
         <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
