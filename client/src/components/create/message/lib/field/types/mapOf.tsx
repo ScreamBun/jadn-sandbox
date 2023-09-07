@@ -253,19 +253,16 @@ const MapOfField = (props: MapOfFieldProps) => {
             <div className='form-group' key={i}>
                 <div className='card border-secondary'>
                     <div className='card-header p-2'>
+                        <Button
+                            color="danger"
+                            className={`float-right btn p-1${min ? ' disabled' : ''}`}
+                            onClick={removeOpt}
+                        >
+                            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+                        </Button>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
-                            <div className='d-flex justify-content-between'>
-                                <div className='card-title m-2'>
-                                    {name} {i + 1}
-                                </div>
-
-                                <Button
-                                    color="danger"
-                                    className={`float-right p-1${min ? ' disabled' : ''}`}
-                                    onClick={removeOpt}
-                                >
-                                    <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-                                </Button>
+                            <div className='card-title m-2'>
+                                {name} {i + 1}
                             </div>
                         </SBToggleBtn>
                     </div>
