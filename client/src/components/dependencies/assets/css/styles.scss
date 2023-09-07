@@ -118,6 +118,14 @@ small {
     height: 100%;
 }  */
 
+/* Custom Styles */
+/* Use frugally, last resort, bootstrap first */
+#command-fields {
+    .form-group {
+        margin: .5em;
+    }
+}
+
 /* Bootstrap Overrides */
 .card-header {
     padding: 8px !important;

@@ -196,7 +196,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   return (
     <div className='form-group'>
-      <div className='card'>
+      <div className='card border-secondary'>
         <div className='card-header p-2'>
           <p className='card-title m-0'>
             {`${name}${isOptional(def) ? '' : '*'}`}
