@@ -58,18 +58,22 @@ const MapOfField = (props: MapOfFieldProps) => {
         if (count <= minCount) {
             return;
         }
-        //remove from end of arr
-        var updatedOpts = opts.filter((_obj, index) => {
-            return index != count - 1;
-        });
-        setOpts(updatedOpts);
-        //TODO? filter null values?
-        //validate data
-        const errCheck = validateOptDataElem(config, optData, updatedOpts);
-        setErrMsg(errCheck);
 
-        //update data
-        optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+        if (opts.length == count) {
+            //remove from end of arr
+            var updatedOpts = opts.filter((_obj, index) => {
+                return index != count - 1;
+            });
+            setOpts(updatedOpts);
+            //TODO? filter null values?
+            //validate data
+            const errCheck = validateOptDataElem(config, optData, updatedOpts);
+            setErrMsg(errCheck);
+
+            //update data
+            optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+        }
+
         setCount(count - 1);
     }
 

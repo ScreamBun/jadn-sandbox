@@ -61,25 +61,30 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     if (count <= minCount) {
       return;
     }
-    //remove from arr
-    var updatedOpts = opts.filter((_elem, index) => {
-      return index != count - 1;
-    });
 
-    setOpts(updatedOpts);
+    if (opts.length == count) {
 
-    //validate data
-    const errCheck = validateOptDataElem(config, optData, updatedOpts);
-    setErrMsg(errCheck);
+      //remove from arr
+      var updatedOpts = opts.filter((_elem, index) => {
+        return index != count - 1;
+      });
 
-    //update data
-    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-      updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
-    } else {
-      updatedOpts = Array.from(Object.values(updatedOpts));
+      setOpts(updatedOpts);
+
+      //validate data
+      const errCheck = validateOptDataElem(config, optData, updatedOpts);
+      setErrMsg(errCheck);
+
+      //update data
+      if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+        updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
+      } else {
+        updatedOpts = Array.from(Object.values(updatedOpts));
+      }
+
+      optChange(msgName, updatedOpts);
     }
 
-    optChange(msgName, updatedOpts);
     setCount(count - 1);
   }
 
