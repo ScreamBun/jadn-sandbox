@@ -1,4 +1,15 @@
 # JADN Sandbox Release Notes
+## v0.5.2
+
+* Visually nested child input fields under parent input fields
+* Updated Scroll To functionality, improved placement and visual representation
+* Fixed unwanted auto scroll up on Field Option save
+* Fixed FieldOption modal popup on Drag and Drop
+* Added missing ArrayOf and MapOf fields
+* Included Show/Hide buttons for Types and Fields
+* Included improved Add/Remove buttons for Fields
+* Improved visual consistency
+* Added Scroll To Top button 
 
 ## v0.5.1
 
