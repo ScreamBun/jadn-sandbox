@@ -12,14 +12,14 @@ interface EnumeratedFieldProps {
   optChange: (n: string, v: any) => void;
   parent?: string;
   children?: JSX.Element;
+  value: any;
 }
 
 // Component
 const EnumeratedField = (props: EnumeratedFieldProps) => {
-  const { def, optChange, parent, children } = props;
+  const { def, optChange, parent, children, value = '' } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const [selectedValue, setSelectedValue] = useState<Option | string>('');
-
+  const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
   var optData: Record<string, any> = {};
   const [idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');

@@ -19,12 +19,13 @@ interface FieldProps {
   parent?: string;
   config: InfoConfig;
   children: JSX.Element;
+  value: any;
 }
 
 // Component
 const Field = (props: FieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN
-  const { def, idx, optChange, parent, config, children } = props;
+  const { def, idx, optChange, parent, config, children, value } = props;
   const [_idx, name, type, opts, _comment] = def;
 
   const parentName = parent || '';
@@ -35,6 +36,7 @@ const Field = (props: FieldProps) => {
     parent: parentName,
     config,
     children,
+    value,
     optChange: (k: string, v: any) => optChange(k, v, idx)
   };
 
@@ -50,7 +52,7 @@ const Field = (props: FieldProps) => {
       return <LinkField {...args} />;
     }
   }
-
+  
   switch (typeDef) {
     case 'Enumerated':
       return <EnumeratedField {...args} />;

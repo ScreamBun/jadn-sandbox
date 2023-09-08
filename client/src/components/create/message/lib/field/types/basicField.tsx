@@ -20,12 +20,13 @@ interface BasicFieldProps {
   parent?: string;
   config: InfoConfig;
   children?: JSX.Element;
+  value: any;
 }
 
 // Component
 const BasicField = (props: BasicFieldProps) => {
 
-  const { arr, def, optChange, parent, config, children } = props;
+  const { arr, def, optChange, parent, config, children, value = '' } = props;
   const [_idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
@@ -53,13 +54,13 @@ const BasicField = (props: BasicFieldProps) => {
   );
 
   if (name >= 0) { // name is type if not field    
-    return (<Field key={def[1]} def={def} parent={msgName} optChange={optChange} config={config} />);
+    return (<Field key={def[1]} def={def} parent={msgName} optChange={optChange} config={config} value={value} children={children} />);
   }
 
   if (hasProperty(optData, 'format')) {
     return (<FormattedField
       basicProps={props} optData={optData}
-      errMsg={errMsg} setErrMsg={setErrMsg} config={config}
+      errMsg={errMsg} setErrMsg={setErrMsg} config={config} value={value} children={children}
     />);
   }
 
@@ -74,7 +75,7 @@ const BasicField = (props: BasicFieldProps) => {
                   <Input
                     type={'checkbox'}
                     name={name}
-                    defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                    defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                     onChange={e => {
                       optChange(msgName, e.target.checked, arr);
                     }}
@@ -107,7 +108,7 @@ const BasicField = (props: BasicFieldProps) => {
               <Input
                 type={'text'}
                 name={name}
-                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                 onChange={e => {
                   //encode into base64 for valid JSON
                   const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
@@ -141,7 +142,7 @@ const BasicField = (props: BasicFieldProps) => {
                 onWheel={(e) => { e.target.blur(); }}
                 step='any'
                 name={name}
-                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                 onChange={e => {
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
@@ -172,7 +173,7 @@ const BasicField = (props: BasicFieldProps) => {
                 type={'number'}
                 onWheel={(e) => { e.target.blur(); }}
                 name={name}
-                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                 onChange={e => {
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
@@ -203,7 +204,7 @@ const BasicField = (props: BasicFieldProps) => {
           <Input
             type={'text'}
             name={name}
-            defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+            defaultValue={hasProperty(optData, 'default') ? optData.default : value}
             placeholder={optData.pattern ? optData.pattern : ''}
             onChange={e => {
               const errCheck = validateOptDataStr(config, optData, e.target.value);

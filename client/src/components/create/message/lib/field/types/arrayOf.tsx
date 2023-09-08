@@ -23,17 +23,18 @@ interface ArrayOfFieldProps {
   parent?: string;
   config: InfoConfig;
   children?: JSX.Element;
+  value: any;
 }
 
 // ArrayOf Field Component
 const ArrayOfField = (props: ArrayOfFieldProps) => {
-  const { def, parent, optChange, config, children } = props;
+  const { def, parent, optChange, config, children, value = [''] } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   const [count, setCount] = useState(1);
   const [min, setMin] = useState(false);
   const [max, setMax] = useState(false);
-  const [opts, setOpts] = useState<any[]>([]); //track elem of vtype
+  const [opts, setOpts] = useState<any[]>(value); //track elem of vtype
   const [errMsg, setErrMsg] = useState<string[]>([]);
   const [toggle, setToggle] = useState(true);
 
@@ -49,8 +50,9 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     if (maxCount <= count) {
       return;
     }
-    // const updatedOpts = [...opts, ''];
-    //setOpts(updatedOpts);
+    // add placeholder
+    const updatedOpts = [...opts, ''];
+    setOpts(updatedOpts);
     setCount(count + 1);
   }
 
@@ -63,26 +65,25 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       return;
     }
 
-    if (opts.length == count) {
-      //remove from arr
-      var updatedOpts = opts.splice(removedIndex, 0);
+    //remove from arr
+    var updatedOpts = opts.filter((_opt, i) => i != removedIndex);
+    setOpts(updatedOpts);
 
-      setOpts(updatedOpts);
+    //remove empty placeholders
+    let filteredOpts = updatedOpts.filter((opt) => opt != '');
 
-      //validate data
-      const errCheck = validateOptDataElem(config, optData, updatedOpts);
-      setErrMsg(errCheck);
+    //validate data
+    const errCheck = validateOptDataElem(config, optData, filteredOpts);
+    setErrMsg(errCheck);
 
-      //update data
-      if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-        updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
-      } else {
-        updatedOpts = Array.from(Object.values(updatedOpts));
-      }
-
-      optChange(msgName, updatedOpts);
+    //update data
+    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+      filteredOpts = Array.from(new Set(Object.values(filteredOpts)));
+    } else {
+      filteredOpts = Array.from(Object.values(filteredOpts));
     }
 
+    optChange(msgName, filteredOpts);
     setCount(count - 1);
   }
 
@@ -146,16 +147,18 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     setOpts(updatedOpts);
 
     //send up arrayOf data
-    const errCheck = validateOptDataElem(config, optData, updatedOpts);
+    let filteredOpts = updatedOpts.filter((opt) => opt != '');
+    const errCheck = validateOptDataElem(config, optData, filteredOpts);
     setErrMsg(errCheck);
 
     if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-      updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
+      filteredOpts = Array.from(new Set(Object.values(filteredOpts)));
     } else {
-      updatedOpts = Array.from(Object.values(updatedOpts));
+      filteredOpts = Array.from(Object.values(filteredOpts));
     }
 
-    optChange(msgName, updatedOpts);
+    //remove empty placeholders
+    optChange(msgName, filteredOpts);
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -167,7 +170,6 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   }
   // MUST include vtype
   // MUST NOT include more than one collection option (set, unique, or unordered).
-
 
   // if vtype is enum/pointer = derived enum
   var fieldDef;
@@ -190,10 +192,9 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       : [0, arrDef.toLowerCase(), arrDef, [], ''];
   }
 
-  const fields: any[] = [];
-  for (let i = 0; i < count; ++i) {
-    fields.push(
-      <Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} >
+  const fields = opts.map((opt, i) => {
+    return (
+      <Field key={self.crypto.randomUUID()} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} value={opt}>
         <Button
           color="danger"
           className={`p-1${min ? ' disabled' : ''}`}
@@ -202,8 +203,8 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
           <FontAwesomeIcon icon={faMinusSquare} size="lg" />
         </Button>
       </Field>
-    );
-  }
+    )
+  });
 
   const err = errMsg.map((msg, index) =>
     <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>

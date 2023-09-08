@@ -1,5 +1,5 @@
 import { deleteFile } from 'actions/save';
-import React, { CSSProperties, Fragment, useEffect, useState } from 'react';
+import React, { CSSProperties, Fragment, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';

@@ -14,13 +14,14 @@ interface ChoiceFieldProps {
   parent?: string;
   config: InfoConfig;
   children?: JSX.Element;
+  value: any;
 }
 
 // Component
 const ChoiceField = (props: ChoiceFieldProps) => {
-  const { def, optChange, parent, config, children } = props;
+  const { def, optChange, parent, config, children, value = '' } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const [selectedValue, setSelectedValue] = useState<Option | string>('');
+  const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
 
 
   const handleChange = (e: Option) => {

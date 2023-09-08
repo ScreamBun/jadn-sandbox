@@ -32,7 +32,7 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [count, setCount] = useState(1);
     const [min, setMin] = useState(false);
     const [max, setMax] = useState(false);
-    const [opts, setOpts] = useState<any[]>([]); //opts: let every obj have a key and value [{key: '', value:''}, ...]
+    const [opts, setOpts] = useState<any[]>(['']); //opts: let every obj have a key and value [{key: '', value:''}, ...]
     const [kopts, setkOpts] = useState<any[]>([]);
     const [vopts, setvOpts] = useState<any[]>([]);
     const [errMsg, setErrMsg] = useState<string[]>([]);
@@ -48,6 +48,12 @@ const MapOfField = (props: MapOfFieldProps) => {
         //check if max fields has been created
         const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
         setMax(maxCount <= count);
+        if (maxCount <= count) {
+            return;
+        }
+        // add placeholder
+        const updatedOpts = [...opts, ''];
+        setOpts(updatedOpts);
         setCount(count + 1);
     }
 
@@ -60,21 +66,27 @@ const MapOfField = (props: MapOfFieldProps) => {
             return;
         }
 
-        if (opts.length == count) {
+        //remove from end of arr
+        var updatedOpts = opts.filter((_opt, i) => i != removedIndex);
+        setOpts(updatedOpts);
 
-            //remove from end of arr
-            var updatedOpts = opts.splice(removedIndex, 0);
+        let filteredOpts = updatedOpts.filter((opt) => opt != '');
 
-            setOpts(updatedOpts);
-            //TODO? filter null values?
-            //validate data
-            const errCheck = validateOptDataElem(config, optData, updatedOpts);
-            setErrMsg(errCheck);
+        //validate data
+        const errCheck = validateOptDataElem(config, optData, filteredOpts);
+        setErrMsg(errCheck);
 
-            //update data
-            optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+        //update data
+        let data;
+        const ktypeDefs = schema.types.filter(t => t[0] === keyField[2]);
+        var ktypeDef = ktypeDefs.length === 1 ? ktypeDefs[0][1] : keyField[2];
+        if (ktypeDef == 'Enumerated' || ktypeDef == 'String') {
+            data = filteredOpts.reduce((opts, obj) => { return Object.assign(opts, { [obj.key]: obj.val }) }, {});
+        } else {
+            data = filteredOpts.reduce((opts, obj) => { return opts.concat([obj.key], [obj.val]) }, []);
         }
 
+        optChange(msgName, Array.from(new Set(Object.values(data))));
         setCount(count - 1);
     }
 
@@ -251,10 +263,9 @@ const MapOfField = (props: MapOfFieldProps) => {
         }
     }
 
-    const fields: any[] = [];
-    for (let i = 0; i < count; ++i) {
-        fields.push(
-            <div className='form-group' key={i}>
+    const fields = opts.map((item, i) => {
+        return (
+            <div className='form-group' key={self.crypto.randomUUID()}>
                 <div className='card border-secondary'>
                     <div className='card-header p-2'>
                         <Button
@@ -271,13 +282,15 @@ const MapOfField = (props: MapOfFieldProps) => {
                         </SBToggleBtn>
                     </div>
                     <div className={`card-body mx-2 ${toggleField == `${i}` ? '' : 'collapse'}`} id={`${i}`}>
-                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChangeKey} idx={i} config={config} />
-                        <Field key={"value"} def={valField} parent={msgName} optChange={onChangeValue} idx={i} config={config} />
+                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChangeKey} idx={i} config={config} value={item.key} />
+                        <Field key={"value"} def={valField} parent={msgName} optChange={onChangeValue} idx={i} config={config} value={item.val} />
                     </div>
                 </div>
             </div >
-        );
-    }
+        )
+    });
+
+
 
     const err = errMsg.map((msg, index) =>
         <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>

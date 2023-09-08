@@ -12,7 +12,7 @@ import { Buffer } from 'buffer';
 const FormattedField = (props: any) => {
 
     const { basicProps, config, optData, errMsg, setErrMsg } = props;
-    const { arr, def, optChange, parent } = basicProps;
+    const { arr, def, optChange, parent, children, value } = basicProps;
     const [_idx, name, _type, _opts, comment] = def;
     const msgName = (parent ? [parent, name] : [name]).join('.');
 
@@ -21,7 +21,7 @@ const FormattedField = (props: any) => {
     );
 
     //UUID
-    const [uuid, setUUID] = useState('');
+    const [uuid, setUUID] = useState(value);
     const createUUID = () => {
         const randomID = uuid4();
         setUUID(randomID);
@@ -53,12 +53,16 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card border-secondary'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
+                                value={value}
                                 name={name}
                                 type={"datetime-local"}
                                 step="any"
@@ -79,12 +83,16 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
+                                value={value}
                                 name={name}
                                 type={"date"}
                                 step="any"
@@ -106,12 +114,16 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
+                                value={value}
                                 name={name}
                                 type={"time"}
                                 step="any"
@@ -133,15 +145,18 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'email'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
@@ -160,15 +175,18 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
@@ -187,15 +205,18 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0 input-group'>
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     ipvNetOnchg(msgName, e.target.value, 0)
                                 }}
@@ -208,7 +229,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 min={0}
                                 max={128}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e =>
                                     ipvNetOnchg(msgName, e.target.value, 1)
                                 }
@@ -225,15 +246,18 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
@@ -252,15 +276,18 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0 input-group'>
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     ipvNetOnchg(msgName, e.target.value, 0);
                                 }}
@@ -273,7 +300,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 min={0}
                                 max={128}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e =>
                                     ipvNetOnchg(msgName, e.target.value, 1)
                                 }
@@ -289,15 +316,18 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64').toUpperCase();
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
@@ -316,10 +346,13 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <Button color='primary' className='float-right' onClick={createUUID}>Generate UUID</Button>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <Button color='primary' className='float-right' onClick={createUUID}>Generate UUID</Button>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
@@ -344,9 +377,12 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
@@ -355,7 +391,7 @@ const FormattedField = (props: any) => {
                                 min={-128}
                                 max={127}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
@@ -373,9 +409,12 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
@@ -384,7 +423,7 @@ const FormattedField = (props: any) => {
                                 min={-32768}
                                 max={32767}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
@@ -402,9 +441,12 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
@@ -413,7 +455,7 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 min={-2147483648}
                                 max={2147483647}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
@@ -433,9 +475,12 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
@@ -444,7 +489,7 @@ const FormattedField = (props: any) => {
                                 min={0}
                                 max={2 ** (parseInt(n) - 1)}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
@@ -462,15 +507,18 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     //TODO : JSON string containing Base16 (hex) encoding of a binary value as defined in RFC 4648 Section 8. 
                                     //Note that the Base16 alphabet does not include lower-case letters.
@@ -502,15 +550,18 @@ const FormattedField = (props: any) => {
             return (
                 <div className='form-group'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                            <div>
+                                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                            </div>
+                            {children}
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                                 onChange={e => {
                                     const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
