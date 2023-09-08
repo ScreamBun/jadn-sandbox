@@ -31,7 +31,7 @@ const BasicField = (props: BasicFieldProps) => {
 
   var optData: Record<string, any> = {};
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const typeDefs = schema.types.filter(t => t[0] === type);
+  const typeDefs = schema.types ? schema.types.filter(t => t[0] === type) : [];
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef.length != 0) {
     optData = (opts2obj(typeDef[2]));

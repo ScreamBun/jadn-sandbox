@@ -15,9 +15,9 @@ const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<String>('');
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
-    const [numOfMsg, setNumOfMsg] = useState<number | undefined>(undefined);
+    const [numOfMsg, setNumOfMsg] = useState<number | String>('');
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -39,7 +39,7 @@ const ExampleGenerator = () => {
         setLoadedSchema(null);
         setNumOfMsg(null);
         setGeneratedMessages([]);
-        //dispatch(setSchema({ types: [] }));
+        dispatch(setSchema(''));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -151,13 +151,11 @@ const ExampleGenerator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            loadedSchema={loadedSchema}  setLoadedSchema={setLoadedSchema} />
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <ExampleCreator
-                                            generatedMessages={generatedMessages}
-                                            loadedSchema={loadedSchema}
-                                            isLoading={isLoading}
+                                            generatedMessages={generatedMessages} isLoading={isLoading}
                                             numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg}
                                         />
                                     </div>

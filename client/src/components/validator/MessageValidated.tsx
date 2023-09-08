@@ -5,7 +5,7 @@ import {
     escaped2cbor, format, hexify
 } from '../utils';
 import { loadFile } from "actions/util";
-import { getMsgFiles, getValidMsgTypes } from "reducers/util";
+import { getMsgFiles, getSelectedSchema, getValidMsgTypes } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
@@ -19,7 +19,8 @@ const MessageValidated = (props: any) => {
     const location = useLocation()
     const { navMsgFormat } = location.state
 
-    const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, loadedSchema, isLoading } = props;
+    const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, isLoading } = props;
+    const validSchema = useSelector(getSelectedSchema);
     const [fileName, setFileName] = useState('');
     const msgOpts = useSelector(getMsgFiles);
     const validMsgFormat = useSelector(getValidMsgTypes)
@@ -160,7 +161,7 @@ const MessageValidated = (props: any) => {
                     <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
-                        {isLoading ? <SBSpinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${loadedSchema && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
+                        {isLoading ? <SBSpinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
                             title={'Validate the message against the given schema'}>
                             Validate Message
                         </Button>}

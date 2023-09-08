@@ -18,12 +18,14 @@ import SBDownloadPDF from "components/common/SBDownloadPDF";
 import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { initConvertedSchemaState } from "./SchemaVisualizer";
+import { getSelectedSchema } from "reducers/util";
 
 const SchemaVisualized = (props: any) => {
     const location = useLocation();
     const { navConvertTo } = location.state;
 
-    const { loadedSchema, conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag, isLoading } = props;
+    const { conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag, isLoading } = props;
+    const validSchema = useSelector(getSelectedSchema);
     const [pumlURL, setPumlURL] = useState('');
     const data = useSelector(getValidVisualizations);
     let convertOpts: Option[] = [];
@@ -90,14 +92,14 @@ const SchemaVisualized = (props: any) => {
                             <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema[0].schema && conversion.length <= 1 ? '' : ' d-none'}`} data={convertedSchema[0].schema} ext={conversion.length == 1 ? conversion[0].value : conversion} />
 
                             <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'html' ? '' : ' d-none'}`}>
-                                <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
+                                <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={validSchema} />
                                 <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(convertedSchema[0].schema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </Button>
                             </div>
 
                             <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'md' ? '' : ' d-none'}`}>
-                                <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
+                                <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={validSchema} />
                                 <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(convertedSchema[0].schema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </Button>
@@ -136,7 +138,7 @@ const SchemaVisualized = (props: any) => {
 
                         <div>
                             {isLoading ? <SBSpinner action={'Converting'} /> : <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
-                                disabled={loadedSchema && conversion.length != 0 ? false : true}
+                                disabled={Object.keys(validSchema).length != 0  && conversion.length != 0 ? false : true}
                                 title={"Convert the given JADN schema to the selected format"}>
 
                                 Convert
@@ -147,7 +149,7 @@ const SchemaVisualized = (props: any) => {
             </div>
             <div className={`card-body-page ${spiltViewFlag ? 'd-none' : ''}`}>
                 {conversion.length > 1 && convertedSchema.length > 1 ?
-                    <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={loadedSchema} /> :
+                    <SBCollapseViewer data={convertedSchema} pumlURL={pumlURL} setPumlURL={setPumlURL} loadedSchema={validSchema} /> :
                     <SBEditor data={convertedSchema[0].schema} isReadOnly={true} convertTo={(conversion.length == 1 ? conversion[0].value : conversion)}></SBEditor>
                 }
             </div>

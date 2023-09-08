@@ -13,7 +13,7 @@ const MessageGenerator = () => {
     const dispatch = useDispatch()
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<String>('');
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [commandType, setCommandType] = useState<Option | null>();
 
@@ -27,16 +27,15 @@ const MessageGenerator = () => {
     useEffect(() => {
         setCommandType(null);
         setGeneratedMessage({});
-        dispatch(setSchema(loadedSchema));
     }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedFile(null);
-        setLoadedSchema(null);
+        setLoadedSchema('');
         setCommandType(null);
         setGeneratedMessage({});
-        dispatch(setSchema({}));
+        dispatch(setSchema(''));
     }
 
     return (
@@ -62,7 +61,7 @@ const MessageGenerator = () => {
                                 <div className='col-md-6 pl-1'>
                                     <MessageCreator
                                         generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                        commandType={commandType} setCommandType={setCommandType} loadedSchema={loadedSchema} />
+                                        commandType={commandType} setCommandType={setCommandType} />
                                 </div>
                             </div>
                         </div>

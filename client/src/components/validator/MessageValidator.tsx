@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { Form, Button } from 'reactstrap'
 import MessageValidated from './MessageValidated'
 import { validateMessage } from 'actions/validate'
-import { info } from 'actions/util'
+import { info, setSchema } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -16,7 +16,7 @@ const MessageValidator = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<String>('');
     const [selectedMsgFile, setSelectedMsgFile] = useState('');
     const [loadedMsg, setLoadedMsg] = useState('');
     const [msgFormat, setMsgFormat] = useState('');
@@ -47,6 +47,7 @@ const MessageValidator = () => {
             all: [],
             exports: []
         });
+        dispatch(setSchema(''));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -121,7 +122,7 @@ const MessageValidator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
-                                            loadedSchema={loadedSchema}  setLoadedSchema={setLoadedSchema}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes} setDecodeSchemaTypes={setDecodeSchemaTypes} />
                                     </div>
@@ -132,7 +133,7 @@ const MessageValidator = () => {
                                             msgFormat={msgFormat} setMsgFormat={setMsgFormat}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes}
-                                            loadedSchema={loadedSchema} isLoading={isLoading}
+                                            isLoading={isLoading}
                                         />
                                     </div>
                                 </div>
