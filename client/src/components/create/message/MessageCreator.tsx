@@ -8,6 +8,7 @@ import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPE
 import SBDownloadFile from 'components/common/SBDownloadFile'
 import SBSaveFile from 'components/common/SBSaveFile'
 import SBSelect, { Option } from 'components/common/SBSelect'
+import SBScrollToTop from 'components/common/SBScrollToTop'
 
 const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType, loadedSchema } = props
@@ -122,7 +123,7 @@ const MessageCreator = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className='card-body-page'>
+            <div className='card-body-page' id="message-editor">
                 <TabContent activeTab={activeView}>
                     <TabPane tabId='creator'>
                         <div id='command-fields' className='p-2'>
@@ -136,6 +137,7 @@ const MessageCreator = (props: any) => {
                     <TabPane tabId='message'>
                         <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
                     </TabPane>
+                    <SBScrollToTop divID='message-editor' />
                 </TabContent>
             </div>
         </div>
