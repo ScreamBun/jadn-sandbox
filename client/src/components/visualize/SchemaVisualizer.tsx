@@ -8,6 +8,7 @@ import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaVisualized from './SchemaVisualized'
 import { Option } from 'components/common/SBSelect'
+import { setSchema } from 'actions/util'
 
 export const initConvertedSchemaState = [{
     schema: '',
@@ -19,7 +20,7 @@ const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<String>('');
     const [conversion, setConversion] = useState<Option[]>([]);
     const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
@@ -44,6 +45,7 @@ const SchemaVisualizer = () => {
         setConversion([]);
         setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
+        dispatch(setSchema(''));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -107,14 +109,14 @@ const SchemaVisualizer = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            setLoadedSchema={setLoadedSchema} />
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaVisualized
                                             convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
                                             conversion={conversion} setConversion={setConversion}
                                             spiltViewFlag={spiltViewFlag} setSplitViewFlag={setSplitViewFlag}
-                                            loadedSchema={loadedSchema} isLoading={isLoading} />
+                                            isLoading={isLoading} />
                                     </div>
                                 </div>
                             </Form>

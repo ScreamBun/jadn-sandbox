@@ -96,17 +96,17 @@ const SBOutline = (props: SBOutlineProps) => {
       })
     };
 
-    console.log("SBOutline useEffect cards state: " + JSON.stringify(cardsState));
+    // console.log("SBOutline useEffect cards state: " + JSON.stringify(cardsState));
 
   }, [props]);
 
   const onClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
-    console.log("SBOutline onClick useCallback text: " + text);
+    // console.log("SBOutline onClick useCallback text: " + text);
     props.onClick(e, text)
   }, []);
 
   const dropCard = useCallback((item: {}) => {
-    console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
+    // console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
     props.onDrop(cardsStateRef.current)
   }, []);
 

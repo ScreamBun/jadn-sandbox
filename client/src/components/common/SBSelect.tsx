@@ -1,5 +1,5 @@
 import { deleteFile } from 'actions/save';
-import React, { CSSProperties, Fragment, useState } from 'react';
+import React, { CSSProperties, Fragment, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
@@ -42,7 +42,28 @@ export interface GroupedOption {
     readonly options: readonly Option[];
 }
 
-const customStyles = {
+
+const defaultStyle = {
+    control: base => ({
+        ...base,
+        cursor: 'pointer'
+    }),
+
+    container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
+
+    option: (styles, state) => ({
+        ...styles,
+        cursor: 'pointer',
+    }),
+
+    menuPortal: base => ({
+        ...base,
+        zIndex: 9999,
+        color: '#172B4D'
+    })
+}
+
+const smStyle = {
     control: base => ({
         ...base,
         height: 30,
@@ -86,7 +107,7 @@ const customStyles = {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle } = props;
     const [toggleModal, setToggleModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -216,7 +237,7 @@ const SBSelect = (props: any) => {
                         onChange={onChange}
                         menuPortalTarget={document.body}
                         className={customClass}
-                        styles={customStyles}
+                        styles={isSmStyle ? smStyle : defaultStyle}
                         isMulti={isMultiSelect}
                         components={{ Menu }}
                         value={value}
@@ -231,7 +252,7 @@ const SBSelect = (props: any) => {
                         onChange={onChange}
                         menuPortalTarget={document.body}
                         className={customClass}
-                        styles={customStyles}
+                        styles={isSmStyle ? smStyle : defaultStyle}
                         isMulti={isMultiSelect}
                         value={value}
                     />

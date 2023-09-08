@@ -1,7 +1,6 @@
 
 //ArrayOf
 import React, { useState } from 'react';
-import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,6 +13,7 @@ import { hasProperty } from '../../../../../utils';
 import { merge } from 'lodash';
 import { validateOptDataElem } from '../../utils';
 import { $MINV } from 'components/create/consts';
+import SBToggleBtn from 'components/common/SBToggleBtn';
 
 // Interface
 interface ArrayOfFieldProps {
@@ -21,11 +21,12 @@ interface ArrayOfFieldProps {
   optChange: (n: string, v: any, i?: number) => void;
   parent?: string;
   config: InfoConfig;
+  children?: JSX.Element;
 }
 
 // ArrayOf Field Component
 const ArrayOfField = (props: ArrayOfFieldProps) => {
-  const { def, parent, optChange, config } = props;
+  const { def, parent, optChange, config, children } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   const [count, setCount] = useState(1);
@@ -33,7 +34,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const [max, setMax] = useState(false);
   const [opts, setOpts] = useState<any[]>([]); //track elem of vtype
   const [errMsg, setErrMsg] = useState<string[]>([]);
-
+  const [toggle, setToggle] = useState(true);
 
   var optData: Record<string, any> = {};
   const [_idx, name, type, args, comment] = def;
@@ -60,24 +61,30 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     if (count <= minCount) {
       return;
     }
-    //remove from end of arr
-    var updatedOpts = opts.filter((_elem, index) => {
-      return index != count - 1;
-    });
-    setOpts(updatedOpts);
 
-    //validate data
-    const errCheck = validateOptDataElem(config, optData, updatedOpts);
-    setErrMsg(errCheck);
+    if (opts.length == count) {
 
-    //update data
-    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-      updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
-    } else {
-      updatedOpts = Array.from(Object.values(updatedOpts));
+      //remove from arr
+      var updatedOpts = opts.filter((_elem, index) => {
+        return index != count - 1;
+      });
+
+      setOpts(updatedOpts);
+
+      //validate data
+      const errCheck = validateOptDataElem(config, optData, updatedOpts);
+      setErrMsg(errCheck);
+
+      //update data
+      if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+        updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
+      } else {
+        updatedOpts = Array.from(Object.values(updatedOpts));
+      }
+
+      optChange(msgName, updatedOpts);
     }
 
-    optChange(msgName, updatedOpts);
     setCount(count - 1);
   }
 
@@ -187,7 +194,9 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const fields: any[] = [];
   for (let i = 0; i < count; ++i) {
-    fields.push(<Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />);
+    fields.push(
+      <Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />
+    );
   }
 
   const err = errMsg.map((msg, index) =>
@@ -196,31 +205,39 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   return (
     <div className='form-group'>
-      <div className='card'>
-        <div className='card-header p-2'>
-          <p className='card-title m-0'>
-            {`${name}${isOptional(def) ? '' : '*'}`}
-          </p>
-          <Button
-            color="danger"
-            className={`float-right p-1${min ? ' disabled' : ''}`}
-            onClick={removeOpt}
-          >
-            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-          </Button>
-          <Button
-            color="primary"
-            className={`float-right p-1${max ? ' disabled' : ''}`}
-            onClick={addOpt}
-          >
-            <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-          </Button>
-          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          {err}
+      <div className='card border-secondary'>
+        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+          <div>
+            <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+              <p className='card-title m-0'>
+                {`${name}${isOptional(def) ? '' : '*'}`}
+              </p>
+              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              {err}
+            </SBToggleBtn>
+          </div>
+          {children}
         </div>
 
-        <div className='card-body mx-2'>
+        <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
           {fields}
+          <div className={`btn-group btn-block`}>
+            <button
+              type="button"
+              className={`btn btn-danger p-1${min ? ' disabled' : ''}`}
+              onClick={removeOpt}
+            >
+              <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+            </button>
+            <button
+              type="button"
+              className={`btn btn-primary p-1${max ? ' disabled' : ''}`}
+              title='Add Field'
+              onClick={addOpt}
+            >
+              <FontAwesomeIcon icon={faPlusSquare} size="lg" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

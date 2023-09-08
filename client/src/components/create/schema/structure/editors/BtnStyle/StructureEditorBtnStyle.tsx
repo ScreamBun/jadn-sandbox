@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-    Button, ButtonGroup, FormGroup, Input, InputGroup, Label
+    Button, ButtonGroup, FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +15,7 @@ import { zip } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
 import FieldEditorBtnStyle from './FieldEditorBtnStyle';
+import { flushSync } from 'react-dom';
 
 // Interface
 interface StructureEditorProps {
@@ -113,10 +114,12 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
         const tmpFieldValues = [...valueObj.fields, field];
         const updatevalue = { ...valueObj, fields: tmpFieldValues };
-        setValueObj(updatevalue);
+        flushSync(() => {
+            setValueObj(updatevalue);
+        });
         change(updatevalue, dataIndex);
         setFieldCollapse(false);
-        scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+        // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
         fieldCount = fieldCount + 1;
     }
 
@@ -224,21 +227,21 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             </div>
                             <div className='col'>
                                 <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
-                                <FontAwesomeIcon icon={faMinusCircle} />
+                                    <FontAwesomeIcon icon={faMinusCircle} />
                                 </Button>
                             </div>
-                        </div>         
+                        </div>
                     </div>
                     <div className="card-body px-2 py-2">
                         <div className="row m-0">
                             <FormGroup className="col-md-4">
                                 <Label>Name</Label>
-                                <Input type="text" placeholder="Name" className='form-control form-control-sm' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                                <Input type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                             </FormGroup>
                             <FormGroup className="col-md-2">
                                 <Label>&nbsp;</Label>
                                 <ButtonGroup>
-                                    <Button color="primary" className='px-2 py-1 btn-sm' onClick={toggleModal}>Type Options</Button>
+                                    <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
                                     <OptionsModal
                                         optionValues={valueObj.options}
                                         isOpen={modal}
@@ -250,7 +253,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             </FormGroup>
                             <FormGroup className="col-md-6">
                                 <Label>Comment</Label>
-                                <Input type="textarea" placeholder="Comment" className='text-area-w100 form-control form-control-sm' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                                <Input type="textarea" placeholder="Comment" className='text-area-w100 form-control' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                             </FormGroup>
                         </div>
                     </div>
@@ -302,7 +305,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                     title={`Move ${valueObj.type} Down`}>
                                     <FontAwesomeIcon icon={faSquareCaretDown} />
                                 </Button>
-                            </ButtonGroup>  
+                            </ButtonGroup>
                         </div>
                     </div>
                 </div>
@@ -311,11 +314,11 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                         <div className="col-md-4">
                             <Label className='mb-0'>Name</Label>
-                            <Input type="text" placeholder="Name" maxLength={64} className='form-control form-control-sm' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                            <Input type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                         </div>
 
                         <div className="col-md-2 mt-4 text-center">
-                            <Button color="primary" className='px-2 py-1 btn-sm' onClick={toggleModal}>Type Options</Button>
+                            <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
                             <OptionsModal
                                 optionValues={valueObj.options}
                                 isOpen={modal}
@@ -326,7 +329,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
                         <div className="col-md-6">
                             <Label className='mb-0'>Comment</Label>
-                            <Input type="textarea" placeholder="Comment" rows={1} className='form-control form-control-sm' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                            <Input type="textarea" placeholder="Comment" rows={1} className='form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                         </div>
                     </div>
                     <div className="row pt-2">
@@ -334,12 +337,12 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             <legend>
                                 {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
 
-                                <span 
+                                <span
                                     className="badge badge-pill badge-primary ml-1 cursor-pointer"
                                     title='Add Field'
                                     onClick={addField}>
                                     <FontAwesomeIcon icon={faPlusSquare} />
-                                </span>                                    
+                                </span>
 
                                 <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
                                     className='float-right btn btn-sm'
@@ -362,7 +365,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
                     </div>
                 </div>
-            </div>        
+            </div>
         </>
     );
 });

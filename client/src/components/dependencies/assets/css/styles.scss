@@ -59,7 +59,8 @@ body {
     }
 }
 
-.code, textarea {
+.code,
+textarea {
     font-family: 'Roboto', Consolas, monaco, monospace;
     font-size: 1em;
     font-style: normal;
@@ -117,6 +118,14 @@ small {
     height: 100%;
 }  */
 
+/* Custom Styles */
+/* Use frugally, last resort, bootstrap first */
+#command-fields {
+    .form-group {
+        margin: .5em;
+    }
+}
+
 /* Bootstrap Overrides */
 .card-header {
     padding: 8px !important;
@@ -130,6 +139,10 @@ small {
     height: 40em;
     overflow-y: auto;
     padding: 0;
+}
+
+.form-control-sm {
+    height: 30px;
 }
 
 .card-body-scroller {
@@ -169,13 +182,13 @@ small {
 .modal-content {
     .modal-header {
         padding: .5rem 1rem !important;
-    
+
         .modal-title {
             width: 100%;
         }
-    
+
     }
-    
+
     .modal-footer {
         padding: .5rem 1rem !important;
     }
@@ -226,6 +239,13 @@ small {
 .text-area-w100 {
     width: 100%;
     max-width: 100%;
+}
+
+.scrollToTopBtn {
+    z-index: 999;
+    position: fixed;
+    right: 1em;
+    bottom: 3em;
 }
 
 // Extra small devices (portrait phones, less than 576px)

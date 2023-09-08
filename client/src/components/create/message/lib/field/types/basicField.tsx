@@ -19,18 +19,19 @@ interface BasicFieldProps {
   optChange: (n: string, v: any, i?: number) => void;
   parent?: string;
   config: InfoConfig;
+  children?: JSX.Element;
 }
 
 // Component
 const BasicField = (props: BasicFieldProps) => {
 
-  const { arr, def, optChange, parent, config } = props;
+  const { arr, def, optChange, parent, config, children } = props;
   const [_idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
 
   var optData: Record<string, any> = {};
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const typeDefs = schema.types.filter(t => t[0] === type);
+  const typeDefs = schema.types ? schema.types.filter(t => t[0] === type) : [];
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef.length != 0) {
     optData = (opts2obj(typeDef[2]));
@@ -66,20 +67,27 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'boolean') {
       return (
         <div className='form-group m-3'>
-          <Label check>
-            <Input
-              type={'checkbox'}
-              name={name}
-              defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
-              onChange={e => {
-                optChange(msgName, e.target.checked, arr);
-              }}
-              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
-            />
-            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          </Label>
-          {err}
+          <div className='card border-secondary'>
+            <div className='card-header p-4 d-flex justify-content-between'>
+              <div>
+                <Label check>
+                  <Input
+                    type={'checkbox'}
+                    name={name}
+                    defaultValue={hasProperty(optData, 'default') ? optData.default : ''}
+                    onChange={e => {
+                      optChange(msgName, e.target.checked, arr);
+                    }}
+                    style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+                  />
+                  <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                  {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                </Label>
+                {err}
+              </div>
+              {children}
+            </div>
+          </div>
         </div>
       );
     }
@@ -87,10 +95,13 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'binary') {
       return (
         <div className='form-group'>
-          <div className='card'>
-            <div className='card-header p-2'>
-              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          <div className='card border-secondary'>
+            <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+              <div>
+                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              </div>
+              {children}
             </div>
             <div className='card-body m-0 p-0'>
               <Input
@@ -116,10 +127,13 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'number') {
       return (
         <div className='form-group'>
-          <div className='card'>
-            <div className='card-header p-2'>
-              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          <div className='card border-secondary'>
+            <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+              <div>
+                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              </div>
+              {children}
             </div>
             <div className='card-body m-0 p-0'>
               <Input
@@ -145,10 +159,13 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'integer') {
       return (
         <div className='form-group'>
-          <div className='card'>
-            <div className='card-header p-2'>
-              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          <div className='card border-secondary'>
+            <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+              <div>
+                <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              </div>
+              {children}
             </div>
             <div className='card-body m-0 p-0'>
               <Input
@@ -174,10 +191,13 @@ const BasicField = (props: BasicFieldProps) => {
   //DEFAULT: STRING 
   return (
     <div className='form-group'>
-      <div className='card'>
-        <div className='card-header p-2'>
-          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+      <div className='card border-secondary'>
+        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+          <div>
+            <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+          </div>
+          {children}
         </div>
         <div className='card-body m-0 p-0'>
           <Input

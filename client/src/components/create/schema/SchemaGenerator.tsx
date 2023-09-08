@@ -10,6 +10,7 @@ import { Option } from 'components/common/SBSelect'
 import SchemaCreatorBtnStyle from './structure/editors/BtnStyle/SchemaCreatorBtnStyle'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { getValidFormatOpts } from 'actions/format'
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const SchemaGenerator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
+        dispatch(getValidFormatOpts());
         dismissAllToast();
     }, [dispatch])
 

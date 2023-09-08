@@ -7,6 +7,7 @@ import { opts2obj } from 'components/create/schema/structure/editors/options/con
 import { validateOptDataElem } from '../../utils';
 import FormattedField from './formattedField';
 import { hasProperty } from 'components/utils';
+import SBToggleBtn from 'components/common/SBToggleBtn';
 
 // Interface
 interface ArrayFieldProps {
@@ -14,6 +15,7 @@ interface ArrayFieldProps {
   optChange: (n: string, v: any) => void;
   parent?: string;
   config: InfoConfig;
+  children?: JSX.Element;
 }
 
 // Component
@@ -21,12 +23,12 @@ const ArrayField = (props: ArrayFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN
   var optData: Record<string, any> = {};
 
-  const { def, optChange, parent, config } = props;
+  const { def, optChange, parent, config, children } = props;
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState<string[]>([]); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
-
+  const [toggle, setToggle] = useState(true);
 
   const onChange = (_k: string, v: any, i: number) => {
     var updatedArr;
@@ -77,13 +79,19 @@ const ArrayField = (props: ArrayFieldProps) => {
 
   return (
     <div className='form-group'>
-      <div className='card'>
-        <div className='card-header p-2'>
-          <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-          {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-          {err}
+      <div className='card border-secondary'>
+        <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+          <div>
+            <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              {err}
+            </SBToggleBtn>
+          </div>
+          {children}
         </div>
-        <div className='card-body mx-2'>
+
+        <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
           {fieldDef}
         </div>
       </div>

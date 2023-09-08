@@ -134,18 +134,15 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
         </div>
       </ModalHeader>
       <ModalBody>
-      { fieldOptions ?
         <FieldOptionsEditor
           deserializedState={data['field']}
           change={saveOptions}
         />
-        : 
         <TypeOptionsEditor
           deserializedState={data['type']}
           change={saveOptions}
           optionType={optionType}
         />
-      }
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={toggleModalhere}>Close</Button>

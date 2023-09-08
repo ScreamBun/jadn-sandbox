@@ -98,7 +98,7 @@ const SBSaveFile = (props: any) => {
                     <div className="form-row">
                         <label htmlFor="filename" className="col-sm-4 col-form-label">File name:</label>
                         <div className="col-sm-8">
-                            <input id='filename' className="form-control form-control-sm" type="text" autoFocus={true} value={fileNameInput} onChange={onChange} />
+                            <input id='filename' className="form-control" type="text" autoFocus={true} value={fileNameInput} onChange={onChange} />
                         </div>
                     </div>
                     <div className="form-row">

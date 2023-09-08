@@ -18,7 +18,7 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
             drop: (item: any) => {
                 if (onDrop) {
                     onDrop(item.itemID)
-                    scrollToRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "end" });
+                    scrollToRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
                     return item
                 }
             },

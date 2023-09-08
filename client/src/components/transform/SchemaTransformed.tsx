@@ -42,11 +42,11 @@ const SchemaTransformed = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-9'>
                         <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectChange}
-                            placeholder={'Select transformation type...'} value={transformationType}
+                            placeholder={'Select transformation type...'} value={transformationType} isSmStyle
                         />
                         {transformationType?.value == 'resolve references' ?
                             <SBSelect id={"base-file"} data={baseFileOpts} onChange={onBaseFileSelect}
-                                placeholder={'Select base file...'} value={baseFile}
+                                placeholder={'Select base file...'} value={baseFile} isSmStyle
                             /> : ""}
                     </div>
                     <div className='col-md-3'>
@@ -64,7 +64,7 @@ const SchemaTransformed = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className="card-body p-0">
+            <div className="card-body-page">
 
                 {transformedSchema.length > 1 ? transformedSchema.map((output: { schema_name: string; schema: Record<string, any>; }, i: number) => (
                     <div className="card" key={i}>

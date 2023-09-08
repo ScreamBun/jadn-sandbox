@@ -9,32 +9,10 @@ const SBCreatableSelect = (props: any) => {
     const customStyles = {
         control: base => ({
             ...base,
-            height: 30,
-            minHeight: 30,
             cursor: 'pointer'
         }),
     
         container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
-    
-        valueContainer: (provided, state) => ({
-            ...provided,
-            height: '30px',
-            padding: '0 6px'
-        }),
-    
-        input: (provided, state) => ({
-            ...provided,
-            margin: '0px',
-        }),
-    
-        indicatorSeparator: state => ({
-            display: 'none',
-        }),
-    
-        indicatorsContainer: (provided, state) => ({
-            ...provided,
-            height: '30px',
-        }),
     
         option: (styles, state) => ({
             ...styles,

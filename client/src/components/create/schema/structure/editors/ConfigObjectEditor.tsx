@@ -48,7 +48,11 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
       placeholder: key,
       value: value[key],
       change: (v: any) => onChange(k, v),
-      removable: false
+      removable: false,
+      required: false,
+      id: 'config-props',
+      labelColumns: 2,
+      fieldColumns: 10
     };
     return <KeyValueEditor key={k} name={k} {...keyProps} />;
   });
@@ -59,7 +63,7 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
         <div className="card-header px-2 py-2">
           <div className='row no-gutters'>
             <div className='col'>
-              <span>{name} <small style={{ fontSize: '10px' }} className="text-muted"> {description} </small></span>
+              <span>{name} <small style={{ fontSize: '10px' }}> {description} </small></span>
             </div>
             <div className='col'>
               <Button color="danger" size="sm" className="float-right" onClick={removeAll} >

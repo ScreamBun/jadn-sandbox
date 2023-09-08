@@ -63,10 +63,10 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
   }
 
   const indices = dataArr.map((val, i) => (
-    <div className="input-group input-group-sm mb-1" key={i}>
+    <div className="input-group mb-1" key={i}>
       <Input
         type="text"
-        className="form-control form-control-sm"
+        className="form-control"
         data-index={i}
         placeholder={placeholder}
         value={val}
@@ -87,7 +87,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
         <div className="card-header px-2 py-2">
             <div className='row no-gutters'>
               <div className='col'>
-              <span>{name} <small style={{ fontSize: '10px' }} className="text-muted"> {description} </small></span>
+              <span>{name} <small style={{ fontSize: '10px' }}> {description} </small></span>
               </div>
               <div className='col'>
                 <ButtonGroup size="sm" className="float-right">
