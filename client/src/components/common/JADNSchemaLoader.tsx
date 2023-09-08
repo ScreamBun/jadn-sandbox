@@ -69,7 +69,10 @@ const JADNSchemaLoader = (props: any) => {
     const onFormatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
-            const schemaObj = JSON.parse(currSchema);
+            let schemaObj = currSchema;
+            if (typeof currSchema == 'string') {
+                schemaObj = JSON.parse(currSchema);
+            }
             const schemaStr = FormatJADN(schemaObj);
             setCurrSchema(schemaStr);
         } catch {
