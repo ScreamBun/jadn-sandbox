@@ -1,6 +1,7 @@
 
 //ArrayOf
 import React, { useState } from 'react';
+import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -53,8 +54,8 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     setCount(count + 1);
   }
 
-  const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const removeOpt = (removedIndex: number) => {
+    //e.preventDefault();
     //check if min fields exist
     const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
     setMin(count <= minCount);
@@ -63,11 +64,8 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     }
 
     if (opts.length == count) {
-
       //remove from arr
-      var updatedOpts = opts.filter((_elem, index) => {
-        return index != count - 1;
-      });
+      var updatedOpts = opts.splice(removedIndex, 0);
 
       setOpts(updatedOpts);
 
@@ -195,7 +193,15 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const fields: any[] = [];
   for (let i = 0; i < count; ++i) {
     fields.push(
-      <Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />
+      <Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} >
+        <Button
+          color="danger"
+          className={`p-1${min ? ' disabled' : ''}`}
+          onClick={() => removeOpt(i)}
+        >
+          <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+        </Button>
+      </Field>
     );
   }
 
@@ -221,23 +227,14 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
         <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
           {fields}
-          <div className={`btn-group btn-block`}>
-            <button
-              type="button"
-              className={`btn btn-danger p-1${min ? ' disabled' : ''}`}
-              onClick={removeOpt}
-            >
-              <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-            </button>
-            <button
-              type="button"
-              className={`btn btn-primary p-1${max ? ' disabled' : ''}`}
-              title='Add Field'
-              onClick={addOpt}
-            >
-              <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-            </button>
-          </div>
+          <Button
+            color="primary"
+            className={`btn-block p-1${max ? ' disabled' : ''}`}
+            title='Add Field'
+            onClick={addOpt}
+          >
+            <FontAwesomeIcon icon={faPlusSquare} size="lg" />
+          </Button>
         </div>
       </div>
     </div>

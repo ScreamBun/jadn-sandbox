@@ -1,6 +1,7 @@
 
-//ArrayOf
+//MapOf
 import React, { useState } from 'react';
+import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -50,8 +51,8 @@ const MapOfField = (props: MapOfFieldProps) => {
         setCount(count + 1);
     }
 
-    const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
+    const removeOpt = (removedIndex: number) => {
+        //e.preventDefault();
         //check if min fields exist
         const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
         setMin(count <= minCount);
@@ -60,10 +61,10 @@ const MapOfField = (props: MapOfFieldProps) => {
         }
 
         if (opts.length == count) {
+
             //remove from end of arr
-            var updatedOpts = opts.filter((_obj, index) => {
-                return index != count - 1;
-            });
+            var updatedOpts = opts.splice(removedIndex, 0);
+
             setOpts(updatedOpts);
             //TODO? filter null values?
             //validate data
@@ -256,6 +257,13 @@ const MapOfField = (props: MapOfFieldProps) => {
             <div className='form-group' key={i}>
                 <div className='card border-secondary'>
                     <div className='card-header p-2'>
+                        <Button
+                            color="danger"
+                            className={`float-right btn p-1${min ? ' disabled' : ''}`}
+                            onClick={() => removeOpt(i)}
+                        >
+                            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+                        </Button>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title m-2'>
                                 {name} {i + 1}
@@ -295,25 +303,14 @@ const MapOfField = (props: MapOfFieldProps) => {
 
                 <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
                     {fields}
-
-                    <div className={`btn-group btn-block`}>
-                        <button
-                            type="button"
-                            className={`btn btn-danger p-1${min ? ' disabled' : ''}`}
-                            onClick={removeOpt}
-                        >
-                            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-                        </button>
-                        <button
-                            type="button"
-                            className={`btn btn-primary p-1${max ? ' disabled' : ''}`}
-                            title='Add Field'
-                            onClick={addOpt}
-                        >
-                            <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-                        </button>
-                    </div>
-
+                    <button
+                        type="button"
+                        className={`btn btn-block btn-primary p-1${max ? ' disabled' : ''}`}
+                        title='Add Field'
+                        onClick={addOpt}
+                    >
+                        <FontAwesomeIcon icon={faPlusSquare} size="lg" />
+                    </button>
                 </div>
             </div>
         </div>
