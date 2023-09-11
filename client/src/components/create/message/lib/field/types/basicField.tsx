@@ -29,6 +29,7 @@ const BasicField = (props: BasicFieldProps) => {
   const { arr, def, optChange, parent, config, children, value = '' } = props;
   const [_idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
+  const [data, setData] = useState(value);
 
   var optData: Record<string, any> = {};
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
@@ -38,6 +39,10 @@ const BasicField = (props: BasicFieldProps) => {
     optData = (opts2obj(typeDef[2]));
   } else {
     optData = (opts ? opts2obj(opts) : []);
+  }
+
+  if (hasProperty(optData, 'default') && value == '') {
+    setData(optData.default);
   }
 
   let dataType;
@@ -108,13 +113,16 @@ const BasicField = (props: BasicFieldProps) => {
               <Input
                 type={'text'}
                 name={name}
-                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
-                onChange={e => {
+                value={data}
+                onBlur={e => {
                   //encode into base64 for valid JSON
                   const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                   const errCheck = validateOptDataBinary(config, optData, encoded);
                   setErrMsg(errCheck);
                   optChange(msgName, encoded, arr);
+                }}
+                onChange={e => {
+                  setData(e.target.value);
                 }}
                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
@@ -142,8 +150,9 @@ const BasicField = (props: BasicFieldProps) => {
                 onWheel={(e) => { e.target.blur(); }}
                 step='any'
                 name={name}
-                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                value={data}
                 onChange={e => {
+                  setData(e.target.value);
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
                   optChange(msgName, parseInt(e.target.value), arr);
@@ -173,8 +182,9 @@ const BasicField = (props: BasicFieldProps) => {
                 type={'number'}
                 onWheel={(e) => { e.target.blur(); }}
                 name={name}
-                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                value={data}
                 onChange={e => {
+                  setData(e.target.value);
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
                   optChange(msgName, parseInt(e.target.value), arr);
@@ -204,9 +214,12 @@ const BasicField = (props: BasicFieldProps) => {
           <Input
             type={'text'}
             name={name}
-            defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+            value={data}
             placeholder={optData.pattern ? optData.pattern : ''}
             onChange={e => {
+              setData(e.target.value);
+            }}
+            onBlur={e => {
               const errCheck = validateOptDataStr(config, optData, e.target.value);
               setErrMsg(errCheck);
               optChange(msgName, e.target.value, arr);

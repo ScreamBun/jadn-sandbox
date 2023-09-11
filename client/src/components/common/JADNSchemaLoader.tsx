@@ -24,19 +24,12 @@ const JADNSchemaLoader = (props: any) => {
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
-    const [currSchema, setCurrSchema] = useState(''); //setLoadedSchema if JADN is valid
     const [fileName, setFileName] = useState('');
     const ref = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         dispatch(info());
     }, [dispatch])
-
-    useEffect(() => {
-        if (loadedSchema == null) {
-            setCurrSchema('');
-        }
-    }, [loadedSchema])
 
     const loadDecodeTypes = (schemaObj: any) => {
         let decodeTypes = {
@@ -69,9 +62,12 @@ const JADNSchemaLoader = (props: any) => {
     const onFormatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
-            const schemaObj = JSON.parse(currSchema);
+            let schemaObj = loadedSchema;
+            if (typeof loadedSchema == 'string') {
+                schemaObj = JSON.parse(loadedSchema);
+            }
             const schemaStr = FormatJADN(schemaObj);
-            setCurrSchema(schemaStr);
+            setLoadedSchema(schemaStr);
         } catch {
             sbToastError('Failed to format: Invalid JSON')
         }
@@ -79,12 +75,15 @@ const JADNSchemaLoader = (props: any) => {
 
     const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        validateJADN(JSON.stringify(currSchema));
+        let schemaStr = loadedSchema;
+        if (typeof loadedSchema != 'string') {
+            schemaStr = JSON.stringify(loadedSchema);
+        }
+        validateJADN(schemaStr);
     }
 
     const validateJADN = (jsonToValidate: any) => {
         setIsValidJADN(false);
-        setLoadedSchema(null);
         setIsValidating(true);
         let jsonObj = validateJSON(jsonToValidate);
         if (!jsonObj) {
@@ -149,7 +148,8 @@ const JADNSchemaLoader = (props: any) => {
 
     const sbEditorOnChange = (data: string) => {
         setIsValidJADN(false);
-        setCurrSchema(data);
+        setLoadedSchema(data);
+        dispatch(setSchema(''));
         try {
             if (setDecodeSchemaTypes && setDecodeMsg) {
                 loadDecodeTypes(JSON.parse(data));
@@ -161,8 +161,7 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFileSelect = (e: Option) => {
         setIsValidJADN(false);
-        setLoadedSchema(null);
-        setCurrSchema('');
+        setLoadedSchema('');
         setSelectedFile(e);
         if (e == null) {
             return;
@@ -183,7 +182,7 @@ const JADNSchemaLoader = (props: any) => {
                     let schemaObj = loadFileVal.payload.data;
                     let schemaStr = JSON.stringify(schemaObj);
                     validateJADN(schemaStr);
-                    setCurrSchema(schemaObj);
+                    setLoadedSchema(schemaObj);
 
                     if (setDecodeSchemaTypes && setDecodeMsg) {
                         loadDecodeTypes(schemaObj);
@@ -200,8 +199,7 @@ const JADNSchemaLoader = (props: any) => {
         e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
-        setLoadedSchema(null);
-        setCurrSchema('');
+        setLoadedSchema('');
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
             const file = e.target.files[0];
@@ -215,7 +213,7 @@ const JADNSchemaLoader = (props: any) => {
                         let dataObj = JSON.parse(dataStr);
                         setIsLoading(false);
                         validateJADN(dataStr);
-                        setCurrSchema(dataObj);
+                        setLoadedSchema(dataObj);
                         if (setDecodeSchemaTypes && setDecodeMsg) {
                             loadDecodeTypes(dataObj);
                         }
@@ -235,8 +233,7 @@ const JADNSchemaLoader = (props: any) => {
         setIsLoading(false);
         setIsValidating(false);
         setIsValidJADN(false);
-        setLoadedSchema(null);
-        setCurrSchema('');
+        setLoadedSchema('');
         setSelectedFile(null);
         setFileName('');
         if (ref.current) {
@@ -258,7 +255,7 @@ const JADNSchemaLoader = (props: any) => {
                                     isGrouped isFileUploader
                                     isSmStyle />
                                 <div className="input-group-btn ml-1">
-                                    <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={currSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={setSelectedFile} />
+                                    <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={setSelectedFile} />
                                 </div>
                             </div>
                         </div>
@@ -267,7 +264,7 @@ const JADNSchemaLoader = (props: any) => {
                         </div>
                     </div>
                     <div className="col">
-                        <SBCopyToClipboard buttonId='copySchema' data={currSchema} customClass='float-right mr-1' />
+                        <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right mr-1' />
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> : <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
                             <span className="m-1">Validate JADN</span>
                             {isValidJADN ? (
@@ -289,7 +286,7 @@ const JADNSchemaLoader = (props: any) => {
             </div>
             <div className="card-body-page">
                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
-                    <SBEditor data={currSchema} onChange={sbEditorOnChange} convertTo={LANG_JSON}></SBEditor>}
+                    <SBEditor data={loadedSchema || ""} onChange={sbEditorOnChange} convertTo={LANG_JSON}></SBEditor>}
             </div>
         </div>
     )

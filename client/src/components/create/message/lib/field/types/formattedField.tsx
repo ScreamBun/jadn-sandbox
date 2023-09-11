@@ -1,30 +1,33 @@
 import React, { useState } from "react";
-import { hasProperty } from "components/utils";
 import { Button, Input } from "reactstrap";
 import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
 import { v4 as uuid4 } from 'uuid';
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
+import { hasProperty } from "components/utils";
 
 //This component is used to help users format/serialize data into valid JSON
 //input fields, basic input validation, and parsing
 //e.g. ipv4 addr : fields for [ipv4][/CIDR ] with field validation then gets parsed into JSON as => ipv4/CIDR 
 const FormattedField = (props: any) => {
 
-    const { basicProps, config, optData, errMsg, setErrMsg } = props;
-    const { arr, def, optChange, parent, children, value } = basicProps;
+    const { basicProps, config, optData, errMsg, setErrMsg, value } = props;
+    const { arr, def, optChange, parent, children } = basicProps;
     const [_idx, name, _type, _opts, comment] = def;
     const msgName = (parent ? [parent, name] : [name]).join('.');
+    const [data, setData] = useState(value);
 
+    if (hasProperty(optData, 'default') && value == '') {
+        setData(optData.default);
+    }
     const err = errMsg.map((msg, index) =>
         <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
     );
 
     //UUID
-    const [uuid, setUUID] = useState(value);
     const createUUID = () => {
         const randomID = uuid4();
-        setUUID(randomID);
+        setData(randomID);
         optChange(msgName, randomID, arr);
     }
 
@@ -62,12 +65,15 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                value={value}
+                                value={data}
                                 name={name}
                                 type={"datetime-local"}
                                 step="any"
                                 min={dayjs().format('YYYY-MM-DDTHH:mm:ssZ[Z]')}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     //TODO? check for min/max?
                                     optChange(msgName, dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'), arr);
                                 }}
@@ -92,12 +98,15 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                value={value}
+                                value={data}
                                 name={name}
                                 type={"date"}
                                 step="any"
                                 min={dayjs().format('YYYY-MM-DD')}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     //TODO? check for min/max?
                                     optChange(msgName, dayjs(e.target.value).format('YYYY-MM-DD'), arr);
                                 }}
@@ -123,12 +132,15 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                value={value}
+                                value={data}
                                 name={name}
                                 type={"time"}
                                 step="any"
                                 min={dayjs().format('HH:mm:ssZ[Z]')}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     //TODO? check for min/max?
                                     optChange(msgName, dayjs(e.target.value).format('HH:mm:ssZ[Z]'), arr);
                                 }}
@@ -156,8 +168,11 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'email'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName, e.target.value, arr);
@@ -186,8 +201,11 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
@@ -216,8 +234,11 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     ipvNetOnchg(msgName, e.target.value, 0)
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
@@ -229,8 +250,11 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 min={0}
                                 max={128}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
-                                onChange={e =>
+                                value={data}
+                                onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e =>
                                     ipvNetOnchg(msgName, e.target.value, 1)
                                 }
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
@@ -257,8 +281,11 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
@@ -287,8 +314,11 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     ipvNetOnchg(msgName, e.target.value, 0);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
@@ -300,8 +330,11 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 min={0}
                                 max={128}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
-                                onChange={e =>
+                                value={data}
+                                onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e =>
                                     ipvNetOnchg(msgName, e.target.value, 1)
                                 }
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
@@ -327,8 +360,11 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64').toUpperCase();
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
@@ -356,11 +392,13 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <Input
-                                value={uuid}
+                                value={data}
                                 type={'text'}
                                 name={name}
                                 onChange={e => {
-                                    setUUID(e.target.value);
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName, e.target.value, arr);
@@ -391,8 +429,11 @@ const FormattedField = (props: any) => {
                                 min={-128}
                                 max={127}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
                                     optChange(msgName, parseInt(e.target.value), arr);
@@ -423,8 +464,11 @@ const FormattedField = (props: any) => {
                                 min={-32768}
                                 max={32767}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
                                     optChange(msgName, parseInt(e.target.value), arr);
@@ -455,8 +499,11 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 min={-2147483648}
                                 max={2147483647}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
                                     optChange(msgName, parseInt(e.target.value), arr);
@@ -489,8 +536,11 @@ const FormattedField = (props: any) => {
                                 min={0}
                                 max={2 ** (parseInt(n) - 1)}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
                                     optChange(msgName, parseInt(e.target.value), arr);
@@ -518,8 +568,11 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     //TODO : JSON string containing Base16 (hex) encoding of a binary value as defined in RFC 4648 Section 8. 
                                     //Note that the Base16 alphabet does not include lower-case letters.
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64').toUpperCase();
@@ -561,8 +614,11 @@ const FormattedField = (props: any) => {
                             <Input
                                 type={'text'}
                                 name={name}
-                                defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                                value={data}
                                 onChange={e => {
+                                    setData(e.target.value);
+                                }}
+                                onBlur={e => {
                                     const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
                                     optChange(msgName, e.target.value, arr);
