@@ -17,6 +17,7 @@ import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 import { flushSync } from 'react-dom';
+import SBScrollToTop from 'components/common/SBScrollToTop';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -606,6 +607,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                             </div>
                         </div>
                     </TabPane>
+                    <SBScrollToTop divID='schema-editor' />
                 </TabContent >
             </div>
         </div>

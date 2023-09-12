@@ -35,12 +35,16 @@ const MapField = (props: MapFieldProps) => {
     }
     const updatedData = { ...data, [k]: v };
     setData(updatedData);
-    const validMsg = validateOptDataElem(config, optData, Object.entries(updatedData));
+
+    const filteredData = Object.fromEntries(Object.entries(updatedData).filter(([_objK, objV]) => objV.length != 0));
+    const validMsg = validateOptDataElem(config, optData, Object.entries(filteredData));
     setErrMsg(validMsg);
+
+    //TODO : fix
     if (hasProperty(optData, 'id') && optData.id) {
-      optChange(k, parseInt(v));
+      optChange(msgName, filteredData);
     } else {
-      optChange(k, v);
+      optChange(msgName, filteredData);
     }
   }
 

@@ -5,11 +5,14 @@ import SBEditor from 'components/common/SBEditor'
 import SBDownloadFile from 'components/common/SBDownloadFile'
 import SBSpinner from 'components/common/SBSpinner'
 import SBSaveFile from 'components/common/SBSaveFile'
+import { useSelector } from 'react-redux'
+import { getSelectedSchema } from 'reducers/util'
 //TODO: create messages in other languages ?
 //TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
-    const { generatedMessages, loadedSchema, isLoading, numOfMsg, setNumOfMsg } = props;
+    const { generatedMessages, isLoading, numOfMsg, setNumOfMsg } = props;
     const [toggle, setToggle] = useState('');
+    const validSchema = useSelector(getSelectedSchema);
 
     const onToggle = (index: number) => {
         if (toggle == index.toString()) {
@@ -55,7 +58,7 @@ const ExampleCreator = (props: any) => {
                     </div>
                     <div className='col-md-3'>
                         {isLoading ? <SBSpinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
-                            disabled={loadedSchema && numOfMsg ? false : true}
+                            disabled={Object.keys(validSchema).length != 0 && numOfMsg != '' ? false : true}
                             title={"Generate example messages based on selected schema"}>
                             Generate
                         </Button>}

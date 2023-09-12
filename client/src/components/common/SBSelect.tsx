@@ -76,7 +76,7 @@ const smStyle = {
     valueContainer: (provided, state) => ({
         ...provided,
         height: '30px',
-        padding: '0 6px'
+        padding: '0 6px',
     }),
 
     input: (provided, state) => ({

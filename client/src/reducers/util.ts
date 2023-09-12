@@ -106,3 +106,4 @@ export const getAllSchemasList = (state: { Util: { loaded: { schemas: { examples
     return ([...state.Util.loaded.schemas.examples, ...state.Util.loaded.schemas.custom]);
   }
 }
+export const getSelectedSchema = (state: { Util: { selectedSchema: any; }; }) => state.Util.selectedSchema;

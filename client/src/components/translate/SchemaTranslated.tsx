@@ -10,12 +10,14 @@ import SBDownloadFile from "components/common/SBDownloadFile";
 import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { initConvertedSchemaState } from "components/visualize/SchemaVisualizer";
+import { getSelectedSchema } from "reducers/util";
 
 const SchemaTranslated = (props: any) => {
     const location = useLocation()
     const { navConvertTo } = location.state
 
-    const { loadedSchema, translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading } = props;
+    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading } = props;
+    const validSchema = useSelector(getSelectedSchema);
     const data = useSelector(getValidTranslations);
     let translateOpts: Option[] = [];
     for (let i = 0; i < Object.keys(data).length; i++) {
@@ -55,7 +57,7 @@ const SchemaTranslated = (props: any) => {
                         </div>
 
                         {isLoading ? <SBSpinner action={'Translating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
-                            disabled={loadedSchema && translation.length != 0 ? false : true}
+                            disabled={Object.keys(validSchema).length != 0 && translation.length != 0 ? false : true}
                             title={"Translate the given JADN schema to the selected format"}
                         >
                             Translate

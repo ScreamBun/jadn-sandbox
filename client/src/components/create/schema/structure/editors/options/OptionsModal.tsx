@@ -63,21 +63,6 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
       }
     }
 
-    //MUST NOT include more than one collection option (set, unique, or unordered)
-    const collectionType = ['unique', 'set', 'unordered'];
-    let collectionCount = 0;
-    if (optionType == 'ArrayOf') {
-      for (let i = 0; i < collectionType.length; i++) {
-        if (collectionType[i] in updatedData['type'] && updatedData['type'][collectionType[i]] != undefined) {
-          collectionCount += 1;
-        }
-      }
-      if (collectionCount > 1) {
-        sbToastError('MUST NOT include more than one collection option (set, unique, or unordered)');
-        return;
-      }
-    }
-
     setData(updatedData);
   }
 
@@ -103,7 +88,7 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
     let collectionCount = 0;
     if (optionType == 'ArrayOf') {
       for (let i = 0; i < collectionType.length; i++) {
-        if (collectionType[i] in data['type'] && data['type'][collectionType[i]] != undefined) {
+        if (collectionType[i] in data['type'] && data['type'][collectionType[i]] == 'true') {
           collectionCount += 1;
           if (collectionCount > 1) {
             sbToastError('MUST NOT include more than one collection option (set, unique, or unordered)');

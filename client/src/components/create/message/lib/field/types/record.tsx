@@ -29,24 +29,32 @@ const RecordField = (props: RecordFieldProps) => {
   const [toggle, setToggle] = useState(true);
 
   const onChange = (k: string, v: any) => {
+    let updatedData: any[] = [];
     if (!data.includes(k)) {
       //add
-      const updatedData = [...data, k];
-      setData(updatedData);
-      const validMsg = validateOptDataElem(config, optData, updatedData);
-      setErrMsg(validMsg);
+      updatedData = [...data, k];
+
     } else {
       if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v) || !v) {
         //remove
-        const updatedData = data.filter((elem) => {
+        updatedData = data.filter((elem) => {
           return elem != k;
         });
-        setData(updatedData);
-        const validMsg = validateOptDataElem(config, optData, updatedData);
-        setErrMsg(validMsg);
       }//else value is updated
     }
+    
+    //TODO : fix
+    setData(updatedData);
+    console.log(updatedData)
+    const filteredData = updatedData.filter((elem) => elem != '');
+    console.log(filteredData)
+    const validMsg = validateOptDataElem(config, optData, filteredData);
+    setErrMsg(validMsg);
+
+
     //TODO?: filter - remove null values
+    console.log(k, v)
+    console.log(msgName, filteredData)
     optChange(k, v)
   }
 

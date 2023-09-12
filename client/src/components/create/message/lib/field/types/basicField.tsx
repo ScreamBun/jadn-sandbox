@@ -82,7 +82,7 @@ const BasicField = (props: BasicFieldProps) => {
                     name={name}
                     defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                     onChange={e => {
-                      optChange(msgName, e.target.checked, arr);
+                      optChange(msgName, `${e.target.checked}`, arr);
                     }}
                     style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                   />
