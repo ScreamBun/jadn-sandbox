@@ -33,7 +33,7 @@ const BasicField = (props: BasicFieldProps) => {
 
   var optData: Record<string, any> = {};
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const typeDefs = schema.types.filter(t => t[0] === type);
+  const typeDefs = schema.types ? schema.types.filter(t => t[0] === type) : [];
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
   if (typeDef.length != 0) {
     optData = (opts2obj(typeDef[2]));
@@ -82,7 +82,7 @@ const BasicField = (props: BasicFieldProps) => {
                     name={name}
                     defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                     onChange={e => {
-                      optChange(msgName, `${e.target.checked}`, arr);
+                      optChange(name, `${e.target.checked}`, arr);
                     }}
                     style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                   />
@@ -119,7 +119,7 @@ const BasicField = (props: BasicFieldProps) => {
                   const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                   const errCheck = validateOptDataBinary(config, optData, encoded);
                   setErrMsg(errCheck);
-                  optChange(msgName, encoded, arr);
+                  optChange(name, encoded, arr);
                 }}
                 onChange={e => {
                   setData(e.target.value);
@@ -155,7 +155,7 @@ const BasicField = (props: BasicFieldProps) => {
                   setData(e.target.value);
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
-                  optChange(msgName, parseInt(e.target.value), arr);
+                  optChange(name, parseInt(e.target.value), arr);
                 }}
                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
@@ -187,7 +187,7 @@ const BasicField = (props: BasicFieldProps) => {
                   setData(e.target.value);
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
-                  optChange(msgName, parseInt(e.target.value), arr);
+                  optChange(name, parseInt(e.target.value), arr);
                 }}
                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
@@ -222,7 +222,7 @@ const BasicField = (props: BasicFieldProps) => {
             onBlur={e => {
               const errCheck = validateOptDataStr(config, optData, e.target.value);
               setErrMsg(errCheck);
-              optChange(msgName, e.target.value, arr);
+              optChange(name, e.target.value, arr);
             }}
             style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} />
         </div>

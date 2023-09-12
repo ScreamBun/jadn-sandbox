@@ -22,17 +22,18 @@ interface MapOfFieldProps {
     parent?: string;
     config: InfoConfig;
     children?: JSX.Element;
+    value: any;
 }
 
 // MapOf Field Component
 const MapOfField = (props: MapOfFieldProps) => {
-    const { def, parent, optChange, config, children } = props;
+    const { def, parent, optChange, config, children, value = [''] } = props;
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
     const [count, setCount] = useState(1);
     const [min, setMin] = useState(false);
     const [max, setMax] = useState(false);
-    const [opts, setOpts] = useState<any[]>(['']); //opts: let every obj have a key and value [{key: '', value:''}, ...]
+    const [opts, setOpts] = useState<any[]>(value); //opts: let every obj have a key and value [{key: '', value:''}, ...]
     const [kopts, setkOpts] = useState<any[]>([]);
     const [vopts, setvOpts] = useState<any[]>([]);
     const [errMsg, setErrMsg] = useState<string[]>([]);
@@ -86,7 +87,7 @@ const MapOfField = (props: MapOfFieldProps) => {
             data = filteredOpts.reduce((opts, obj) => { return opts.concat([obj.key], [obj.val]) }, []);
         }
 
-        optChange(msgName, Array.from(new Set(Object.values(data))));
+        optChange(name, Array.from(new Set(Object.values(data))));
         setCount(count - 1);
     }
 
@@ -201,7 +202,7 @@ const MapOfField = (props: MapOfFieldProps) => {
             data = updatedOpts.reduce((opts, obj) => { return opts.concat([obj.key], [obj.val]) }, []);
         }
 
-        optChange(msgName, data);
+        optChange(name, data);
     }
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -319,7 +320,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                     <button
                         type="button"
                         className={`btn btn-block btn-primary p-1${max ? ' disabled' : ''}`}
-                        title='Add Field'
+                        title={`Add Field to ${name}`}
                         onClick={addOpt}
                     >
                         <FontAwesomeIcon icon={faPlusSquare} size="lg" />

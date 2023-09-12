@@ -83,7 +83,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       filteredOpts = Array.from(Object.values(filteredOpts));
     }
 
-    optChange(msgName, filteredOpts);
+    optChange(name, filteredOpts);
     setCount(count - 1);
   }
 
@@ -158,7 +158,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     }
 
     //remove empty placeholders
-    optChange(msgName, filteredOpts);
+    optChange(name, filteredOpts);
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -231,7 +231,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
           <Button
             color="primary"
             className={`btn-block p-1${max ? ' disabled' : ''}`}
-            title='Add Field'
+            title={`Add Field to ${name}`}
             onClick={addOpt}
           >
             <FontAwesomeIcon icon={faPlusSquare} size="lg" />

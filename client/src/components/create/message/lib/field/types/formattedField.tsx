@@ -28,7 +28,7 @@ const FormattedField = (props: any) => {
     const createUUID = () => {
         const randomID = uuid4();
         setData(randomID);
-        optChange(msgName, randomID, arr);
+        optChange(name, randomID, arr);
     }
 
     //ipv4-net 
@@ -75,7 +75,7 @@ const FormattedField = (props: any) => {
                                 }}
                                 onBlur={e => {
                                     //TODO? check for min/max?
-                                    optChange(msgName, dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'), arr);
+                                    optChange(name, dayjs(e.target.value).format('YYYY-MM-DDTHH:mm:ssZ[Z]'), arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -108,7 +108,7 @@ const FormattedField = (props: any) => {
                                 }}
                                 onBlur={e => {
                                     //TODO? check for min/max?
-                                    optChange(msgName, dayjs(e.target.value).format('YYYY-MM-DD'), arr);
+                                    optChange(name, dayjs(e.target.value).format('YYYY-MM-DD'), arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -142,7 +142,7 @@ const FormattedField = (props: any) => {
                                 }}
                                 onBlur={e => {
                                     //TODO? check for min/max?
-                                    optChange(msgName, dayjs(e.target.value).format('HH:mm:ssZ[Z]'), arr);
+                                    optChange(name, dayjs(e.target.value).format('HH:mm:ssZ[Z]'), arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -175,7 +175,7 @@ const FormattedField = (props: any) => {
                                 onBlur={e => {
                                     const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    optChange(msgName, e.target.value, arr);
+                                    optChange(name, e.target.value, arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -209,7 +209,7 @@ const FormattedField = (props: any) => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    optChange(msgName, encoded, arr);
+                                    optChange(name, encoded, arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -236,10 +236,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 value={data}
                                 onChange={e => {
-                                    setData(e.target.value);
+                                    setIpValue(ipValue => [e.target.value, ipValue[1]]);
                                 }}
                                 onBlur={e => {
-                                    ipvNetOnchg(msgName, e.target.value, 0)
+                                    ipvNetOnchg(name, e.target.value, 0)
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -252,10 +252,10 @@ const FormattedField = (props: any) => {
                                 max={128}
                                 value={data}
                                 onChange={e => {
-                                    setData(e.target.value);
+                                    setIpValue(ipValue => [ipValue[0], e.target.value]);
                                 }}
                                 onBlur={e =>
-                                    ipvNetOnchg(msgName, e.target.value, 1)
+                                    ipvNetOnchg(name, e.target.value, 1)
                                 }
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -289,7 +289,7 @@ const FormattedField = (props: any) => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    optChange(msgName, encoded, arr);
+                                    optChange(name, encoded, arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -316,10 +316,10 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 value={data}
                                 onChange={e => {
-                                    setData(e.target.value);
+                                    setIpValue(ipValue => [e.target.value, ipValue[1]]);
                                 }}
                                 onBlur={e => {
-                                    ipvNetOnchg(msgName, e.target.value, 0);
+                                    ipvNetOnchg(name, e.target.value, 0);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -332,10 +332,10 @@ const FormattedField = (props: any) => {
                                 max={128}
                                 value={data}
                                 onChange={e => {
-                                    setData(e.target.value);
+                                    setIpValue(ipValue => [ipValue[0], e.target.value]);
                                 }}
                                 onBlur={e =>
-                                    ipvNetOnchg(msgName, e.target.value, 1)
+                                    ipvNetOnchg(name, e.target.value, 1)
                                 }
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -368,7 +368,7 @@ const FormattedField = (props: any) => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64').toUpperCase();
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    optChange(msgName, encoded, arr);
+                                    optChange(name, encoded, arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -401,7 +401,7 @@ const FormattedField = (props: any) => {
                                 onBlur={e => {
                                     const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    optChange(msgName, e.target.value, arr);
+                                    optChange(name, e.target.value, arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -436,7 +436,7 @@ const FormattedField = (props: any) => {
                                 onBlur={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
-                                    optChange(msgName, parseInt(e.target.value), arr);
+                                    optChange(name, parseInt(e.target.value), arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -471,7 +471,7 @@ const FormattedField = (props: any) => {
                                 onBlur={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
-                                    optChange(msgName, parseInt(e.target.value), arr);
+                                    optChange(name, parseInt(e.target.value), arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -506,7 +506,7 @@ const FormattedField = (props: any) => {
                                 onBlur={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
-                                    optChange(msgName, parseInt(e.target.value), arr);
+                                    optChange(name, parseInt(e.target.value), arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -543,7 +543,7 @@ const FormattedField = (props: any) => {
                                 onBlur={e => {
                                     const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                                     setErrMsg(errCheck);
-                                    optChange(msgName, parseInt(e.target.value), arr);
+                                    optChange(name, parseInt(e.target.value), arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -578,7 +578,7 @@ const FormattedField = (props: any) => {
                                     const encoded = Buffer.from(e.target.value, "utf8").toString('base64').toUpperCase();
                                     const errCheck = validateOptDataBinary(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    optChange(msgName, encoded, arr);
+                                    optChange(name, encoded, arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
@@ -621,7 +621,7 @@ const FormattedField = (props: any) => {
                                 onBlur={e => {
                                     const errCheck = validateOptDataStr(config, optData, e.target.value);
                                     setErrMsg(errCheck);
-                                    optChange(msgName, e.target.value, arr);
+                                    optChange(name, e.target.value, arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
