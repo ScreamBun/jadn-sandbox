@@ -5,9 +5,14 @@ import { useDrag, useDrop } from 'react-dnd'
 
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGrip } from '@fortawesome/free-solid-svg-icons'
+import { faGrip, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+import { Button } from 'reactstrap'
 
-const style = {
+const fullCardStyle = {
+  padding: '0.5rem 1rem',
+}
+
+const smStyle = {
   padding: '0.5rem 1rem',
   cursor: 'move',
 }
@@ -22,7 +27,8 @@ export interface SBOutlineCardProps {
   index: number;
   moveCard: (dragIndex: number, hoverIndex: number) => void;
   dropCard: (item: {}) => void;
-  onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  isFullCard: boolean
 }
 
 interface DragItem {
@@ -31,7 +37,7 @@ interface DragItem {
   type: string
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCard, dropCard, onClick }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCard, dropCard, onClick, isFullCard }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -115,18 +121,44 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
     onClick(e, text)
   };
 
+  const onRemoveItem = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    // onClick(e, text)
+    // TODO Confirm Model
+  };  
+
   return (
-    <div className='card'>
-        <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+    <>    
+      { isFullCard ? 
+        <div className='border-secondary list-group-item list-group-item-action flex-column align-items-start' ref={ref} style={{ ...fullCardStyle, opacity }} data-handler-id={handlerId}> 
+          <div className="d-flex w-100 justify-content-between">
+            <span className='card-title'>{text}</span>
+            <div>
+              <FontAwesomeIcon className='float-right pt-1 pl-2' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+              <a href="#" onClick={onRemoveItem} ><FontAwesomeIcon className='float-right pt-1' color='red' title={'Remove'} icon={faMinusCircle}></FontAwesomeIcon></a>
+            </div>   
+          </div>        
+          <p className='mb-0'>
+            Card Body Goes Here.....
+          </p>
+        </div>                
+        : 
+        <div className='list-group-item' ref={ref} style={{ ...smStyle, opacity }} data-handler-id={handlerId}> 
             <div className='row'>
                 <div className='col-10'>
-                    <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
+                  {onClick ? 
+                    <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a> 
+                    : 
+                    <span title={'Click to view'}>{text}</span> 
+                  }  
                 </div>
                 <div className='col-2'>
                     <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
                 </div>                
             </div>
         </div>
-    </div>
+      }
+
+    </>
   )
 }

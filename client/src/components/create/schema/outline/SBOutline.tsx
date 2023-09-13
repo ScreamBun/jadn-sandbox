@@ -7,7 +7,7 @@ import { useDragDropManager } from 'react-dnd';
 import { Unsubscribe } from 'redux';
 
 export interface Item {
-  id: number
+  id: number,
   text: string
 }
 
@@ -17,10 +17,11 @@ export interface OutlineContainerState {
 
 export interface SBOutlineProps {
   id: string;
-  title: string;
+  title?: string;
   items: any[];
   onDrop: (arg: Item[]) => void;
-  onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  isFullCard: boolean
 }
 
 const SBOutline = (props: SBOutlineProps) => {
@@ -88,25 +89,36 @@ const SBOutline = (props: SBOutlineProps) => {
     setCardsState(initalState);
     {
       items.map((item, i) => {
+
+        let item_text = ""
+        if(item.text){
+          item_text = item.text
+        } else if(item[0] && typeof item[0] === "string") {
+          item_text = item[0]
+        }
+
+        // TODO: Add field component?
         const new_card = {
           id: i,
-          text: item[0]
+          text: item_text
         }
         setCardsState(prev => [...prev, new_card]);
       })
     };
 
-    // console.log("SBOutline useEffect cards state: " + JSON.stringify(cardsState));
+    console.log("SBOutline useEffect cards state: " + JSON.stringify(cardsState));
 
   }, [props]);
 
   const onClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
-    // console.log("SBOutline onClick useCallback text: " + text);
-    props.onClick(e, text)
+    console.log("SBOutline onClick useCallback text: " + text);
+    if(props.onClick){
+      props.onClick(e, text)
+    }
   }, []);
 
   const dropCard = useCallback((item: {}) => {
-    // console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
+    console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
     props.onDrop(cardsStateRef.current)
   }, []);
 
@@ -131,7 +143,8 @@ const SBOutline = (props: SBOutlineProps) => {
           text={card.text}
           moveCard={moveCard}
           dropCard={dropCard}
-          onClick={onClick}
+          onClick={props.onClick ? onClick : undefined}
+          isFullCard={props.isFullCard}
         />
       )
     },
@@ -142,9 +155,13 @@ const SBOutline = (props: SBOutlineProps) => {
     <div id='scrollContainer'>
       {items && items.length > 0 ? (
         <div id={id}>
-          <ul className="nav nav-pills">
-            <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link">{title}</a></li>
-          </ul>
+          { title ? 
+            <ul className="nav nav-pills">
+              <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link">{title}</a></li>
+            </ul>          
+          : 
+            <></>
+          }
           <div className="sb-outline mt-2">
             <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
           </div>
