@@ -12,12 +12,13 @@ interface LinkFieldProps {
     optChange: (n: string, v: any, i?: number) => void;
     parent?: string;
     config: InfoConfig;
+    value: any;
 }
 
 // Component
 const LinkField = (props: LinkFieldProps) => {
 
-    const { def, optChange, parent, config } = props;
+    const { def, optChange, parent, config, value } = props;
     const [_idx, name, type, _opts, _comment] = def;
 
     var optData: Record<string, any> = {};
@@ -38,7 +39,7 @@ const LinkField = (props: LinkFieldProps) => {
             if (hasProperty(foptData, 'key')) {
                 //create field based on key
                 return linkField = (
-                    <Field key={name} def={newField} parent={parent} optChange={optChange} config={config} />
+                    <Field key={name} def={newField} parent={parent} optChange={optChange} config={config} value={value} />
                 );
             }
         };

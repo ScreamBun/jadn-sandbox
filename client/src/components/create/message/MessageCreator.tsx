@@ -8,9 +8,12 @@ import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPE
 import SBDownloadFile from 'components/common/SBDownloadFile'
 import SBSaveFile from 'components/common/SBSaveFile'
 import SBSelect, { Option } from 'components/common/SBSelect'
+import SBScrollToTop from 'components/common/SBScrollToTop'
+import { getSelectedSchema } from 'reducers/util'
+import { useSelector } from 'react-redux'
 
 const MessageCreator = (props: any) => {
-    const { generatedMessage, setGeneratedMessage, commandType, setCommandType, loadedSchema } = props
+    const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
     const [activeView, setActiveView] = useState('creator');
     const [configOpt, setConfigOpt] = useState({
         $MaxBinary: $MAX_BINARY,
@@ -22,7 +25,7 @@ const MessageCreator = (props: any) => {
         $NSID: $NSID
     })
 
-    const schemaObj = loadedSchema || '';
+    const schemaObj = useSelector(getSelectedSchema);
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
 
@@ -74,6 +77,7 @@ const MessageCreator = (props: any) => {
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (commandType?.value) {
+        //TODO: add value={}
         if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
             if (recordDef[1] && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { //check not choice or enum type
                 const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
@@ -122,7 +126,7 @@ const MessageCreator = (props: any) => {
                     </div>
                 </div>
             </div>
-            <div className='card-body-page'>
+            <div className='card-body-page' id="message-editor">
                 <TabContent activeTab={activeView}>
                     <TabPane tabId='creator'>
                         <div id='command-fields' className='p-2'>
@@ -136,6 +140,7 @@ const MessageCreator = (props: any) => {
                     <TabPane tabId='message'>
                         <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
                     </TabPane>
+                    <SBScrollToTop divID='message-editor' />
                 </TabContent>
             </div>
         </div>

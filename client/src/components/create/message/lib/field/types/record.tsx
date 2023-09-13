@@ -14,48 +14,34 @@ interface RecordFieldProps {
   parent?: string;
   config: InfoConfig;
   children?: JSX.Element;
+  value: any;
 }
 
 // Component
 const RecordField = (props: RecordFieldProps) => {
-  const { def, optChange, parent, config, children } = props;
+  const { def, optChange, parent, config, children, value = {} } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   var optData: Record<string, any> = {};
 
   const [_idx, name, type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-  const [data, setData] = useState<string[]>([]); //track elements
+  const [data, setData] = useState(value); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
   const [toggle, setToggle] = useState(true);
 
   const onChange = (k: string, v: any) => {
-    let updatedData: any[] = [];
-    if (!data.includes(k)) {
-      //add
-      updatedData = [...data, k];
-
+    let updatedData = { ...data };
+    if ((!v || (typeof v == "object" && Object.keys(v).length == 0)) && k in data) {
+      delete updatedData[k]
     } else {
-      if (v == '' || v == undefined || v == null || (typeof v == 'object' && v.length == 0) || Number.isNaN(v) || !v) {
-        //remove
-        updatedData = data.filter((elem) => {
-          return elem != k;
-        });
-      }//else value is updated
+      updatedData = { ...data, [k]: v };
     }
-    
-    //TODO : fix
     setData(updatedData);
-    console.log(updatedData)
-    const filteredData = updatedData.filter((elem) => elem != '');
-    console.log(filteredData)
-    const validMsg = validateOptDataElem(config, optData, filteredData);
+
+    const validMsg = validateOptDataElem(config, optData, Object.entries(updatedData));
     setErrMsg(validMsg);
 
-
-    //TODO?: filter - remove null values
-    console.log(k, v)
-    console.log(msgName, filteredData)
-    optChange(k, v)
+    optChange(name, updatedData);
   }
 
   const typeDefs = schema.types.filter(t => t[0] === type);
@@ -66,7 +52,7 @@ const RecordField = (props: RecordFieldProps) => {
 
   const fieldDef = (!Array.isArray(typeDef[typeDef.length - 1]) || typeDef[typeDef.length - 1].length == 0) ?
     <div className='p-2'> No fields </div> :
-    typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} />);
+    typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} value={data[d[1]]} />);
 
   const err = errMsg.map((msg, index) =>
     <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
