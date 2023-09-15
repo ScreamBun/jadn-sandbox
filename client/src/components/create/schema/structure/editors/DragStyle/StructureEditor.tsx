@@ -15,10 +15,9 @@ import { zip } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
 import update from 'immutability-helper'
-import { Droppable } from './Droppable';  // TODO: Revisit
 import { ModalSize } from '../options/ModalSize';
 import { flushSync } from 'react-dom';
-import SBOutline from 'components/create/schema/outline/SBOutline';
+import FieldsOutlineWrapper from 'components/create/schema/dnd/FieldsOutlineWrapper';
 
 
 interface StructureEditorProps {
@@ -48,10 +47,9 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     setFieldCollapse(collapseAllFields)
   }, [collapseAllFields]);
 
-  useEffect(() => {
-    console.log("fields updated")
-    const test = ""
-  }, [valueObjFields]);  
+  // useEffect(() => {
+  //   console.log("fields updated")
+  // }, [valueObjFields]);  
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
@@ -95,6 +93,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   }
 
   const onAddField = () => {
+    console.log('StructureEditor onAddField');
+
     let field: EnumeratedFieldArray | StandardFieldArray;
     //check field count
     if (config.$MaxElements && fields.length > config.$MaxElements) {
@@ -137,6 +137,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   }
 
   const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
+    console.log('StructureEditor moveField');
+
     let tmpFieldValues = [...valueObjFields];
 
     if (newIndex < 0) {
@@ -178,6 +180,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   }
 
   const fieldChange = (val: FieldArray, idx: number) => {
+    console.log('StructureEditor fieldChange');
 
     const fieldIDsFound = fields.filter(field => {
       const fieldPropValID = getFieldPropValue(field, 0);
@@ -231,7 +234,13 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     change(updatevalue, dataIndex);
   };
 
-  const fieldRemove = (idx: number) => {
+  const fieldRemove = (_i: number) => {
+    console.log("StructureEditor fieldRemove")
+  }  
+
+  const onFieldRemoval = (idx: number) => {
+    console.log("StructureEditor onFieldRemoval")
+
     const tmpFieldValues = [...valueObjFields];
 
     if (idx + 1 == valueObjFields.length) {
@@ -318,28 +327,28 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     );
   }
 
-  const onDrag = useCallback((dragIndex, hoverIndex) => {
-    setValueObjFields((prevFields) =>
-      update(prevFields, {
-        $splice: [
-          [dragIndex, 1],
-          [hoverIndex, 0, prevFields[dragIndex]],
-        ],
-      }),
-    )
-    setValueObj((prevObj) =>
-      update(prevObj, {
-        fields: {
-          $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, prevObj.fields[dragIndex]],
-          ],
-        }
-      }),
-    )
-  }, [])
+  // const onDrag = useCallback((dragIndex, hoverIndex) => {
+  //   setValueObjFields((prevFields) =>
+  //     update(prevFields, {
+  //       $splice: [
+  //         [dragIndex, 1],
+  //         [hoverIndex, 0, prevFields[dragIndex]],
+  //       ],
+  //     }),
+  //   )
+  //   setValueObj((prevObj) =>
+  //     update(prevObj, {
+  //       fields: {
+  //         $splice: [
+  //           [dragIndex, 1],
+  //           [hoverIndex, 0, prevObj.fields[dragIndex]],
+  //         ],
+  //       }
+  //     }),
+  //   )
+  // }, [])
 
-  const renderField = useCallback((field, index) => {
+  const renderField = useCallback((field: StandardFieldArray | EnumeratedFieldArray, index: number) => {
     return (
       <FieldEditor
         key={self.crypto.randomUUID()}
@@ -348,11 +357,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         value={field}
         change={fieldChange}
         remove={fieldRemove}
-        changeIndex={moveField}
         config={config}
-        isDraggable={true}
-        onDrag={onDrag}
-        acceptableType={`Field${dataIndex}`}
       />
     );
   }, [])
@@ -364,14 +369,14 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   };
 
   const fields = valueObjFields?.map((field, i) => {renderField(field, i)}) || [];
-  const items = valueObjFields?.map((field, i) => {
-    const item = {
-      id: field[0],
-      text: field[1]
-    };
-    return item;
-  }
-    ) || [];
+  // const items = valueObjFields?.map((field, i) => {
+  //   const item = {
+  //     id: field[0],
+  //     text: field[1]
+  //   };
+  //   return item;
+  // }
+  //   ) || [];
   // const listID = fields?.map(field => field.props.value[0]);  
 
   return (
@@ -445,11 +450,12 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     <div ref={scrollToFieldRef}>
                       {/* {fields} */}
 
-                      <SBOutline id={'fields-outline'}
-                          items={items}  // TODO: Add in fields somehow
+                      <FieldsOutlineWrapper id={'fields-outline'}
+                          // items={items}  // TODO: Add in fields somehow
+                          fields={valueObjFields}
                           onDrop={onOutlineDrop}
-                          isFullCard={true}
-                      ></SBOutline>
+                          onRemove={onFieldRemoval}
+                      ></FieldsOutlineWrapper>
 
                     </div>
                   {/* </Droppable> */}

@@ -2,33 +2,33 @@
 import update from 'immutability-helper'
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import { SBOutlineCard } from "./SBOutlineCard";
 import { useDragDropManager } from 'react-dnd';
 import { Unsubscribe } from 'redux';
+import { FieldOutlineItem } from './FieldsOutlineItem';
+import { EnumeratedFieldObject, FieldObject, StandardFieldObject } from '../structure/editors/consts';
 
-export interface Item {
-  id: number,
-  text: string
-}
+// export interface Item {
+//   id: number,
+//   text: string
+// }
 
 export interface OutlineContainerState {
-  cards: Item[]
+  cards: FieldObject[]
 }
 
-export interface SBOutlineProps {
+export interface FieldOutlineWrapperProps {
   id: string;
-  title?: string;
-  items: any[];
-  onDrop: (arg: Item[]) => void;
-  onClick?: (e: React.MouseEvent<HTMLElement>, text: string) => void;
-  isFullCard: boolean
+  // items: any[];
+  fields: any[];
+  onDrop: (arg: FieldObject[]) => void;
+  onRemove: (id: number) => void;
 }
 
-const SBOutline = (props: SBOutlineProps) => {
-  const initalState: Item[] = [];
-  const { id = 'sb-outline', title, items = [] } = props;
-  const [cardsState, setCardsState] = useState<Item[]>(initalState);
-  const cardsStateRef = React.useRef(cardsState);
+const FieldsOutlineWrapper = (props: FieldOutlineWrapperProps) => {
+  const { id, fields = [], onRemove } = props;
+  const initalState: FieldObject[] = [];
+  const [fieldsState, setFieldsState] = useState<FieldObject[]>(initalState);
+  const cardsStateRef = React.useRef(fieldsState);
 
   const [dragValue, setDragValue] = useState<boolean>(false);
   const dragDropManager = useDragDropManager();
@@ -82,69 +82,77 @@ const SBOutline = (props: SBOutlineProps) => {
   }, [monitor]);
 
   useEffect(() => {
-    cardsStateRef.current = cardsState;
-  }, [cardsState]);
+    cardsStateRef.current = fieldsState;
+  }, [fieldsState]);
 
   useEffect(() => {
-    setCardsState(initalState);
+    setFieldsState(initalState);
     {
-      items.map((item, i) => {
+      fields.map((field, i) => {
 
-        let item_text = ""
-        if(item.text){
-          item_text = item.text
-        } else if(item[0] && typeof item[0] === "string") {
-          item_text = item[0]
-        }
+        // let item_text = ""
+        // if(item.text){
+        //   item_text = item.text
+        // } else if(item[0] && typeof item[0] === "string") {
+        //   item_text = item[0]
+        // }
 
         // TODO: Add field component?
-        const new_card = {
-          id: i,
-          text: item_text
+        // const new_card_old = {
+        //   id: i,
+        //   text: item_text
+        // }
+
+        const new_card: StandardFieldObject = {
+          id: field[0],
+          name: field[1],
+          type: "",
+          // value: number | string; // Enumeration type only
+          options: [],
+          comment: ""
         }
-        setCardsState(prev => [...prev, new_card]);
+
+        setFieldsState(prev => [...prev, new_card]);
       })
     };
 
-    console.log("SBOutline useEffect cards state: " + JSON.stringify(cardsState));
+    console.log("FieldDnDWrapper useEffect cards state: " + JSON.stringify(fieldsState));
 
-  }, [props]);
+  }, [fields]);
 
-  const onClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
-    console.log("SBOutline onClick useCallback text: " + text);
-    if(props.onClick){
-      props.onClick(e, text)
-    }
+  // const onRemove = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
+  const onRemoveCallback = useCallback((id: number) => {
+    console.log("FieldsOutlineWrapper onRemove useCallback id: " + id);
+    onRemove(id);
   }, []);
 
   const dropCard = useCallback((item: {}) => {
-    console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
-    props.onDrop(cardsStateRef.current)
+    console.log("FieldDnDWrapper dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
+    props.onDrop(cardsStateRef.current);
   }, []);
 
   const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
-    setCardsState((prevCards: Item[]) =>
+    setFieldsState((prevCards: FieldObject[]) =>
       update(prevCards, {
         $splice: [
           [dragIndex, 1],
-          [hoverIndex, 0, prevCards[dragIndex] as Item],
+          [hoverIndex, 0, prevCards[dragIndex] as FieldObject],
         ],
       }),
     )
   }, []);
 
-  const renderCard = useCallback(
-    (card: { id: number; text: string }, index: number) => {
+  const renderField = useCallback(
+    (field: StandardFieldObject | EnumeratedFieldObject, index: number) => {
       return (
-        <SBOutlineCard
-          key={card.id}
+        <FieldOutlineItem
+          field={field}
+          key={field.id}
           index={index}
-          id={card.id}
-          text={card.text}
+          id={field.id}
           moveCard={moveCard}
           dropCard={dropCard}
-          onClick={props.onClick ? onClick : undefined}
-          isFullCard={props.isFullCard}
+          onRemove={onRemoveCallback}
         />
       )
     },
@@ -153,24 +161,12 @@ const SBOutline = (props: SBOutlineProps) => {
 
   return (
     <div id='scrollContainer'>
-      {items && items.length > 0 ? (
-        <div id={id}>
-          { title ? 
-            <ul className="nav nav-pills">
-              <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link">{title}</a></li>
-            </ul>          
-          : 
-            <></>
-          }
-          <div className="sb-outline mt-2">
-            <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
-          </div>
+      <div id={id}>
+        <div className="sb-outline mt-2">
+          <div>{fieldsState.map((field, i) => renderField(field, i))}</div>
         </div>
-      ) : (
-        <></>
-      )
-      }
+      </div>
     </div>
   );
 }
-export default SBOutline;
+export default FieldsOutlineWrapper;

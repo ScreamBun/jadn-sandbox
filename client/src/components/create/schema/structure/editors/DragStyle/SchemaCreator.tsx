@@ -18,10 +18,10 @@ import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
-import SBOutline, { Item } from 'components/create/schema/outline/SBOutline';
 import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
+import OutlineWrapper from 'components/create/schema/dnd/OutlineWrapper';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -524,12 +524,12 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 </div>
                                 <div className='row'>
                                     <div className='col'>
-                                        <SBOutline id={'schema-outline'}
+                                        <OutlineWrapper id={'schema-outline'}
                                             items={generatedSchema.types}
                                             title={'Outline'}
                                             onDrop={onOutlineDrop}
                                             onClick={onOutlineClick}
-                                        ></SBOutline>
+                                        ></OutlineWrapper>
                                     </div>
                                 </div>
                             </div>

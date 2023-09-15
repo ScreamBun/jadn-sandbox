@@ -1,49 +1,43 @@
 import type { Identifier, XYCoord } from 'dnd-core'
 import type { FC } from 'react'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGrip, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
-import { Button } from 'reactstrap'
+import { SBConfirmModal } from 'components/common/SBConfirmModal'
+import { EnumeratedFieldObject, StandardFieldObject } from '../structure/editors/consts'
 
-const fullCardStyle = {
-  padding: '0.5rem 1rem',
-}
 
-const smStyle = {
+const style = {
   padding: '0.5rem 1rem',
-  cursor: 'move',
 }
 
 const ItemTypes = {
   CARD: 'card',
 }
 
-export interface SBOutlineCardProps {
+export interface FieldOutlineItemProps {
+  field: StandardFieldObject | EnumeratedFieldObject;
   id: any;
-  text: string;
+  // text: string;
   index: number;
   moveCard: (dragIndex: number, hoverIndex: number) => void;
   dropCard: (item: {}) => void;
-  onClick?: (e: React.MouseEvent<HTMLElement>, text: string) => void;
-  isFullCard: boolean
+  onRemove?: (id: number) => void;
 }
 
 interface DragItem {
   index: number
-  id: string
+  id: number
   type: string
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCard, dropCard, onClick, isFullCard }) => {
+export const FieldOutlineItem: FC<FieldOutlineItemProps> = ({ field, id, index, moveCard, dropCard, onRemove: onRemove }) => {
+  const [isConformModalOpen, setIsConformModalOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null)
-  const [{ handlerId }, drop] = useDrop<
-    DragItem,
-    void,
-    { handlerId: Identifier | null }
-  >({
+  const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
     accept: ItemTypes.CARD,
     collect(monitor) {
       return {
@@ -51,7 +45,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
       }
     },
     drop(item: DragItem, _monitor) {
-      console.log("SBOutlineCard item dropped: " + JSON.stringify(item));
+      console.log("FieldOutlineItem dropped: " + JSON.stringify(item));
       dropCard(item);
     },
     hover(item: DragItem, monitor) {
@@ -117,48 +111,49 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
   const opacity = isDragging ? 0 : 1
   drag(drop(ref))
 
-  const handleOnClick = (e: React.MouseEvent<HTMLElement>) => {
-    onClick(e, text)
-  };
-
-  const onRemoveItem = (e: React.MouseEvent<HTMLElement>) => {
+  const onRemoveItemClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    // onClick(e, text)
-    // TODO Confirm Model
+    setIsConformModalOpen(true);
   };  
 
-  return (
-    <>    
-      { isFullCard ? 
-        <div className='border-secondary list-group-item list-group-item-action flex-column align-items-start' ref={ref} style={{ ...fullCardStyle, opacity }} data-handler-id={handlerId}> 
-          <div className="d-flex w-100 justify-content-between">
-            <span className='card-title'>{text}</span>
-            <div>
-              <FontAwesomeIcon className='float-right pt-1 pl-2' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
-              <a href="#" onClick={onRemoveItem} ><FontAwesomeIcon className='float-right pt-1' color='red' title={'Remove'} icon={faMinusCircle}></FontAwesomeIcon></a>
-            </div>   
-          </div>        
-          <p className='mb-0'>
-            Card Body Goes Here.....
-          </p>
-        </div>                
-        : 
-        <div className='list-group-item' ref={ref} style={{ ...smStyle, opacity }} data-handler-id={handlerId}> 
-            <div className='row'>
-                <div className='col-10'>
-                  {onClick ? 
-                    <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a> 
-                    : 
-                    <span title={'Click to view'}>{text}</span> 
-                  }  
-                </div>
-                <div className='col-2'>
-                    <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
-                </div>                
-            </div>
-        </div>
-      }
+  const onRemoveCallback = (response: boolean, confirm_value: number) => {
+    console.log('FieldOutlineItem onRemoveCallback response: ' + response);
+    console.log('FieldOutlineItem onRemoveCallback confirm_value: ' + confirm_value);
 
+    if(field.id){
+      console.log('FieldOutlineItem onRemoveCallback field.id: ' + field.id);
+    }
+    
+    setIsConformModalOpen(false);
+    if(response == true){
+      if(onRemove){
+        onRemove(confirm_value)      
+      }      
+    }
+  }  
+
+  const text = "Text";
+
+  return (
+    <>
+      <div className='border-secondary list-group-item list-group-item-action flex-column align-items-start' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}> 
+        <div className="d-flex w-100 justify-content-between">
+          <span className='card-title'>{id} {text}</span>
+          <div>
+            <FontAwesomeIcon className='float-right pt-1 pl-2' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+            <a href="#" onClick={onRemoveItemClick}><FontAwesomeIcon className='float-right pt-1' color='red' title={`Confirm Removal`} icon={faMinusCircle}></FontAwesomeIcon></a>
+          </div>   
+        </div>        
+        <p className='mb-0'>
+          Card Body Goes Here.....
+        </p>
+      </div>
+      <SBConfirmModal 
+        isOpen={isConformModalOpen} 
+        title={`Remove ${text}`}
+        message={`Are you sure you want to remove ${text}?`}
+        confirm_value={id}
+        onResponse={onRemoveCallback}></SBConfirmModal>
     </>
   )
 }
