@@ -17,7 +17,6 @@ import { Option } from 'components/common/SBSelect';
 import { ModalSize } from '../options/ModalSize';
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier, XYCoord } from 'dnd-core'
-import { text } from '@fortawesome/fontawesome-svg-core';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 interface DragItem {
