@@ -103,7 +103,7 @@ const SBCollapseViewer = (props: any) => {
 
                 {toggle == `${i}` ?
                     <div className="card-body" key={i}>
-                        <SBEditor data={obj.schema} isReadOnly={true} height={'20em'}></SBEditor>
+                        <SBEditor data={obj.schema} isReadOnly={true} height={'35vh'}></SBEditor>
                     </div>
                     : ''}
             </div>
