@@ -241,11 +241,16 @@ small {
     max-width: 100%;
 }
 
-.scrollToTopBtn {
+.scroll-top-btn {
     z-index: 999;
     position: fixed;
     right: 1em;
     bottom: 3em;
+}
+
+.bottom-list-btn {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
 }
 
 // Extra small devices (portrait phones, less than 576px)

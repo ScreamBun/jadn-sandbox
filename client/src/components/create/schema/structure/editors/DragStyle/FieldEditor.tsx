@@ -16,12 +16,14 @@ import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import { Option } from 'components/common/SBSelect';
 import { ModalSize } from '../options/ModalSize';
 import { useDrag, useDrop } from 'react-dnd';
+import type { Identifier, XYCoord } from 'dnd-core'
+import { text } from '@fortawesome/fontawesome-svg-core';
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 interface DragItem {
-  itemID: string;
-  originalIndex: number;
-  newIndex: number;
-  itemValue: FieldArray;
+  id: string;
+  dataIndex: number;
+  value: FieldArray;
 }
 
 interface FieldEditorProps {
@@ -32,36 +34,38 @@ interface FieldEditorProps {
   change: (_v: EnumeratedFieldArray | StandardFieldArray, _i: number) => void;
   remove: (_i: number) => void;
   config: InfoConfig;
-  changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
+  //changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
 
   isDraggable: boolean;
-  onDrag: (originalIndex: number, newIndex: number) => void;
+  moveCard: (originalIndex: number, newIndex: number) => void;
+  dropCard: (arg: DragItem) => void;
   acceptableType: string;
 }
 
 
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
-  const { enumerated, value, dataIndex, change, config, acceptableType, isDraggable = true, onDrag, key, changeIndex } = props;
+  const { enumerated, value, dataIndex, change, config, acceptableType, isDraggable = true, moveCard, key, dropCard, remove } = props;
   const types = useAppSelector((state) => ({
     base: state.Util.types.base,
     schema: Object.keys(state.Util.types.schema) || {}
   }));
 
   const [modal, setModal] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const fieldKeys = enumerated ? EnumeratedFieldKeys : StandardFieldKeys;
   const valueObjInit = zip(fieldKeys, value) as FieldObject;
   const [valueObj, setValueObj] = useState(valueObjInit);
   const val = valueObj as StandardFieldObject;
   const [valType, setValType] = useState({ value: val.type, label: val.type });
 
-  const [{ isDragging }, dragRef, dragHandler] = useDrag(
+  const dragRef = useRef<HTMLDivElement>(null)
+  const previewRef = useRef<HTMLDivElement>(null)
+
+  const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: acceptableType,
-      item: () => { return { itemID: key, originalIndex: dataIndex, newIndex: dataIndex, itemValue: value } },
+      item: () => { return { key, dataIndex, value } },
       canDrag: isDraggable,
-      end: (item: DragItem) => {
-        changeIndex(item.itemValue, item.originalIndex, item.newIndex);
-      },
       collect: (monitor) => ({
         item: monitor.getItem(),
         isDragging: monitor.isDragging(),
@@ -69,44 +73,73 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     }), [acceptableType, isDraggable]
   )
 
-  const [, dropRef] = useDrop(
-    () => ({
-      accept: acceptableType,
-      //TODO: scroll page
-      hover: (draggedItem: DragItem, monitor) => {
-        if (!ref.current) {
-          return
-        }
-        const dragIndex = draggedItem.newIndex
-        const hoverIndex = dataIndex
+  const [{ handlerId }, drop] = useDrop<
+    DragItem,
+    void,
+    { handlerId: Identifier | null }
+  >({
+    accept: acceptableType,
+    collect(monitor) {
+      return {
+        handlerId: monitor.getHandlerId(),
+      }
+    },
+    drop(item: DragItem, _monitor) {
+      console.log("SBOutlineCard item dropped: " + JSON.stringify(item));
+      dropCard(item);
+    },
+    hover(draggedItem: DragItem, monitor) {
+      if (!previewRef.current) {
+        return
+      }
+      const dragIndex = draggedItem.dataIndex
+      const hoverIndex = dataIndex
 
-        // Don't replace items with themselves
-        if (dragIndex === hoverIndex) {
-          return
-        }
+      // Don't replace items with themselves
+      if (dragIndex === hoverIndex) {
+        return
+      }
 
-        const hoverBoundingRect = ref.current?.getBoundingClientRect()
-        const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
-        const hoverActualY = monitor.getClientOffset().y - hoverBoundingRect.top
+      // Determine rectangle on screen
+      const hoverBoundingRect = previewRef.current?.getBoundingClientRect()
 
-        // if dragging down, continue only when hover is smaller than middle Y
-        if (dragIndex < hoverIndex && hoverActualY < hoverMiddleY) {
-          return
-        }
-        // if dragging up, continue only when hover is bigger than middle Y
-        if (dragIndex > hoverIndex && hoverActualY > hoverMiddleY) {
-          return
-        }
+      // Get vertical middle
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
 
-        onDrag(dragIndex, hoverIndex)
-        draggedItem.newIndex = hoverIndex
-      },
-    }),
-    [],
-  )
+      // Determine mouse position
+      const clientOffset = monitor.getClientOffset()
 
-  const ref = useRef(null);
-  const dragDropRef = dragRef(dropRef(ref))
+      // Get pixels to the top
+      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
+
+      // Only perform the move when the mouse has crossed half of the items height
+      // When dragging downwards, only move when the cursor is below 50%
+      // When dragging upwards, only move when the cursor is above 50%
+
+      // Dragging downwards
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return
+      }
+
+      // Dragging upwards
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return
+      }
+
+      // Time to actually perform the action
+      moveCard(dragIndex, hoverIndex)
+
+      // Note: we're mutating the monitor item here!
+      // Generally it's better to avoid mutations,
+      // but it's good here for the sake of performance
+      // to avoid expensive index searches.
+      draggedItem.dataIndex = hoverIndex
+    },
+  })
+
+  drag(dragRef)
+  drop(preview(previewRef))
 
   const containerStyle = useMemo(
     () => ({
@@ -177,9 +210,16 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
-  const removeAll = () => {
-    const { dataIndex, remove } = props;
-    remove(dataIndex);
+  const onRemoveItemClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    setIsConfirmModalOpen(true);
+  };
+
+  const removeAll = (response: boolean, confirm_value: number) => {
+    setIsConfirmModalOpen(false);
+    if (response == true) {
+      remove(confirm_value);
+    }
   }
 
   const saveModal = (modalData: Array<string>) => {
@@ -253,7 +293,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
           <div className="col-md-2">
             <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
             <OptionsModal
-              optionValues={val.options}
+              optionValues={val.options || []}
               isOpen={modal}
               saveModal={saveModal}
               toggleModal={toggleModal}
@@ -282,36 +322,34 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   }
 
   return (
-    <div className='card'>
-      <div className='card-body list-group-item' ref={dragHandler} style={containerStyle}>
-        <div className='row'>
-          <div className='col-11'>
-            <div className="card border-secondary mb-2">
-              <div className="card-header px-2 py-2">
-                <div className='row'>
-                  <div className='col'>
-                    <span className="card-title">{enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}</span>
-                  </div>
-                  <div className='col'>
-                    <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete Field`}>
-                      <FontAwesomeIcon icon={faMinusCircle} />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="card-body px-2 py-2">
-                {makeOptions()}
-              </div>
+    <>
+      <div className="card border-secondary mb-2" ref={previewRef} data-handler-id={handlerId} style={containerStyle}>
+        <div className="card-header px-2 py-2" >
+          <div className='row'>
+            <div className='col'>
+              <span className="card-title">{enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}</span>
             </div>
-          </div>
-          <div className='col-1'>
-            <div ref={dragDropRef} style={handleStyle}>
-              <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+            <div className='col'>
+              <div ref={dragRef} style={handleStyle}>
+                <FontAwesomeIcon className='float-right m-2' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+              </div>
+              <Button color="danger" className="float-right btn-sm" onClick={onRemoveItemClick} title={`Delete Field`}>
+                <FontAwesomeIcon icon={faMinusCircle} />
+              </Button>
             </div>
           </div>
         </div>
+        <div className="card-body px-2 py-2">
+          {makeOptions()}
+        </div>
       </div>
-    </div>
+      <SBConfirmModal
+        isOpen={isConfirmModalOpen}
+        title={`Remove ${val.name}`}
+        message={`Are you sure you want to remove ${val.name}?`}
+        confirm_value={dataIndex}
+        onResponse={removeAll}></SBConfirmModal>
+    </>
   );
 });
 

@@ -105,7 +105,7 @@ const SBOutline = (props: SBOutlineProps) => {
     props.onClick(e, text)
   }, []);
 
-  const dropCard = useCallback((item: {}) => {
+  const dropCard = useCallback(() => {
     // console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
     props.onDrop(cardsStateRef.current)
   }, []);
