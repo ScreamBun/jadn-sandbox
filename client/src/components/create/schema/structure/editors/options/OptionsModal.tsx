@@ -107,7 +107,7 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
   }
 
   return (
-    <Modal className={modalSize} isOpen={isOpen}>
+    <Modal className={modalSize} isOpen={isOpen} autoFocus={false} returnFocusAfterClose={false}>
       <ModalHeader>
         <div className='float-left'>
           {fieldOptions ? 'Field' : 'Type'} Options
