@@ -35,6 +35,11 @@ body {
     right: 1em;
 }
 
+.buttom-list-btn {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
 /* Pretty JSON Module theme */
 .json-pretty {
     font-family: 'Roboto', monaco, monospace;

@@ -463,7 +463,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               }
 
               {!fieldCollapse ?
-                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block'
+                <Button color="primary" onClick={onAddField} className={`btn btn-sm btn-block ${valueObjFields.length > 0 ? "buttom-list-btn" : ""}`} 
                   title='Add Field'>
                   <FontAwesomeIcon icon={faPlusSquare} />
                 </Button>
