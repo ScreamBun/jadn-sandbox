@@ -227,7 +227,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 match_count = match_count + 1;
             } else {
                 // dup matches
-                var lastIndex = type[0].lastIndexOf('_');
+                var lastIndex = type[0].lastIndexOf('-');
 
                 if(lastIndex){
 
@@ -252,11 +252,11 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         if(match_count > 0){
 
             if(dups.length == 0){
-                return_name = return_name + "_" + (dups.length + 1);
+                return_name = return_name + "-" + (dups.length + 1);
             } else {
                 dups.sort(function(a, b){return b-a});  // TODO: Move to utils
                 let next_num = parseInt(dups[0]) + 1;
-                return_name = return_name + "_" + next_num;
+                return_name = return_name + "-" + next_num;
             }
 
         }
@@ -293,9 +293,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-            const type_name = get_type_name(tmpTypes, `${key}_name`);
-            const tmpDef = Types[key].edit({ name: type_name });
-            // const tmpDef = Types[key].edit({ name: `${Types[key].key}-Name` });
+            const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
+            const tmpDef = Types[key].edit({ name: type_name });;
             tmpTypes.push(tmpDef);  // unshift drops items at the bottom
             let updatedSchema = {
                 ...generatedSchema,
