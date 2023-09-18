@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import {
-  Button, FormText, Label
+  Button, FormText
 } from 'reactstrap';
 import { InputType } from 'reactstrap/es/Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

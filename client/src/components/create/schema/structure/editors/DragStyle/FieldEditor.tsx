@@ -18,12 +18,7 @@ import { ModalSize } from '../options/ModalSize';
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier, XYCoord } from 'dnd-core'
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
-
-interface DragItem {
-  id: string;
-  dataIndex: number;
-  value: FieldArray;
-}
+import { DragItem } from './SBOutlineFields';
 
 interface FieldEditorProps {
   key: any;
@@ -33,6 +28,7 @@ interface FieldEditorProps {
   change: (_v: EnumeratedFieldArray | StandardFieldArray, _i: number) => void;
   remove: (_i: number) => void;
   config: InfoConfig;
+  editableID: boolean;
   //changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
 
   isDraggable: boolean;
@@ -43,7 +39,7 @@ interface FieldEditorProps {
 
 
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
-  const { enumerated, value, dataIndex, change, config, acceptableType, isDraggable = true, moveCard, key, dropCard, remove } = props;
+  const { enumerated = false, value, dataIndex, change, config, acceptableType, isDraggable = true, moveCard, key, dropCard, remove, editableID } = props;
   const types = useAppSelector((state) => ({
     base: state.Util.types.base,
     schema: Object.keys(state.Util.types.schema) || {}
@@ -84,7 +80,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       }
     },
     drop(item: DragItem, _monitor) {
-      console.log("SBOutlineCard item dropped: " + JSON.stringify(item));
       dropCard(item);
     },
     hover(draggedItem: DragItem, monitor) {
@@ -244,15 +239,16 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         <div className="row m-0">
           <FormGroup className='col-md-2'>
             <Label>ID</Label>
-            <Input type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+            <Input name="FieldEditorID" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
           </FormGroup>
           <div className="col-md-4">
             <Label>Value</Label>
-            <Input type="text" placeholder="Value" className='form-control' value={val.value} onChange={onChange} onBlur={onBlur} />
+            <Input name="FieldEditorValue" type="text" placeholder="Value" className='form-control' value={val.value} onChange={onChange} onBlur={onBlur} />
           </div>
           <FormGroup className='col-md-6'>
             <Label>Comment</Label>
             <Input
+              name="FieldEditorComment"
               type="textarea"
               className='form-control'
               placeholder="Comment"
@@ -281,10 +277,12 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         </div>
         <div className="row">
           <div className="col-md-2">
-            <Input type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+            <Input name="FieldEditorID" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} readOnly={!editableID}
+              title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
+
           </div>
           <div className="col-md-4">
-            <Input type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
+            <Input name="FieldEditorName" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
           </div>
           <div className="col-md-4">
             <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
@@ -306,6 +304,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
           <FormGroup className='col-md-12'>
             <Label>Comment</Label>
             <Input
+              name="FieldEditorComment"
               type="textarea"
               placeholder="Comment"
               rows={1}
@@ -351,9 +350,5 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     </>
   );
 });
-
-FieldEditor.defaultProps = {
-  enumerated: false
-};
 
 export default FieldEditor;
