@@ -389,7 +389,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 {isEditableID ? <FontAwesomeIcon icon={faArrowDown19}
                                     className='float-right btn btn-sm'
                                     onClick={() => sortFields()}
-                                    title={'Sort Fields'} /> : ''}
+                                    title={'Sort Fields by ID'} /> : ''}
 
                             </legend>
 
@@ -400,7 +400,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             {!fieldCollapse && fields.length == 0 ? <p className='mb-2'> No fields to show</p> : ''}
 
                             {!fieldCollapse &&
-                                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block'
+                                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block rounded-pill'
                                     title='Add Field'>
                                     <FontAwesomeIcon icon={faPlusSquare} />
                                 </Button>}

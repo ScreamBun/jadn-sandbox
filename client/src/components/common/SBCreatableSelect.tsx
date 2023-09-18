@@ -4,21 +4,21 @@ import { Option, GroupedOption, groupBadgeStyles, groupStyles } from './SBSelect
 
 const SBCreatableSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value, onFocus, onBlur } = props;
 
     const customStyles = {
         control: base => ({
             ...base,
             cursor: 'pointer'
         }),
-    
+
         container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
-    
+
         option: (styles, state) => ({
             ...styles,
             cursor: 'pointer',
         }),
-    
+
         menuPortal: base => ({
             ...base,
             zIndex: 9999,
@@ -85,6 +85,8 @@ const SBCreatableSelect = (props: any) => {
                 styles={customStyles}
                 isMulti={isMultiSelect}
                 value={value}
+                onFocus={onFocus}
+                onBlur={onBlur}
             />
         </div>
     );
