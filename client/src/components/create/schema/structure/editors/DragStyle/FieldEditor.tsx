@@ -21,7 +21,7 @@ import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { DragItem } from './SBOutlineFields';
 
 interface FieldEditorProps {
-  key: any;
+  id: any;
   enumerated?: boolean;
   dataIndex: number;
   value: EnumeratedFieldArray | StandardFieldArray;
@@ -39,7 +39,7 @@ interface FieldEditorProps {
 
 
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
-  const { enumerated = false, value, dataIndex, change, config, acceptableType, isDraggable = true, moveCard, key, dropCard, remove, editableID } = props;
+  const { enumerated = false, value, dataIndex, change, config, acceptableType, isDraggable = true, moveCard, id, dropCard, remove, editableID } = props;
   const types = useAppSelector((state) => ({
     base: state.Util.types.base,
     schema: Object.keys(state.Util.types.schema) || {}
@@ -59,7 +59,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: acceptableType,
-      item: () => { return { key, dataIndex, value } },
+      item: () => { return { id, dataIndex, value } },
       canDrag: isDraggable,
       collect: (monitor) => ({
         item: monitor.getItem(),

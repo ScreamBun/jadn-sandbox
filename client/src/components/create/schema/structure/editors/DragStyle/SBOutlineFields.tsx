@@ -123,6 +123,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
             return (
                 <FieldEditor
                     key={card.id}
+                    id={card.id}
                     dataIndex={index}
                     enumerated={isEnumerated}
                     value={card.value}
