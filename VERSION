@@ -1,1 +1,30 @@
 v1.0.0
+
+# This is Git's per-user configuration file.
+# Please adapt and uncomment the following lines:
+#	name = Matt
+#	email = matt@priapus.(none)
+
+[alias]
+                co = checkout -m
+                cob = checkout -b
+                br = branch
+                ci = commit
+                st = status
+                unstage = reset HEAD --
+                last = -1 HEAD
+                p = push
+                pl = pull
+                ac = !git add -A && git commit
+                m = merge
+                mm = merge master
+                com = checkout master
+                gl = git pull
+                gp = git
+                ph = push
+                conflicts = diff --name-only --diff-filter=U 
+[user]
+	email = matthew.roberts@bestgateeng.com
+	name = Matt Roberts
+[core]
+	editor = code
