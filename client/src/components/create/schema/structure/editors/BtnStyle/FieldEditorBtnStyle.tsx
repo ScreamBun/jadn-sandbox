@@ -101,7 +101,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
         change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
     }
 
-    const onRemoveItemClick = (e: React.MouseEvent<HTMLElement>) => {
+    const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsConfirmModalOpen(true);
     };

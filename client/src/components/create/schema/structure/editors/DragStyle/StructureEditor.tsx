@@ -62,7 +62,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     return propValue;
   }
 
-  const sortFields = () => {
+  const sortFields = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     let tmpFields = [...valueObj.fields];
     //sort fields
     tmpFields.sort(function (a, b) {
@@ -74,7 +75,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     change(updatevalue, dataIndex);
   }
 
-  const onFocus = () => {
+  const onFocus = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setFocus(true);
   }
 
@@ -84,7 +86,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     setValueObj({ ...valueObj, [key]: value });
   }
 
-  const onBlur = (e: any) => {
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.preventDefault();
     const { placeholder, value } = e.target;
     setFocus(false);
 
@@ -115,11 +118,13 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     change(updatevalue, dataIndex);
   }
 
-  const removeAll = () => {
+  const removeAll = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     remove(dataIndex);
   }
 
-  const onAddField = () => {
+  const onAddField = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     let field: EnumeratedFieldArray | StandardFieldArray;
     //check field count
     if (config.$MaxElements && valueObj.fields?.length > config.$MaxElements) {
@@ -386,7 +391,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
                 {isEditableID ? <FontAwesomeIcon icon={faArrowDown19}
                   className='float-right btn btn-sm'
-                  onClick={() => sortFields()}
+                  onClick={sortFields}
                   title={'Sort Fields by ID'} /> : ''}
 
               </legend>

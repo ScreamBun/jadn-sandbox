@@ -210,7 +210,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
-  const onRemoveItemClick = (e: React.MouseEvent<HTMLElement>) => {
+  const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsConfirmModalOpen(true);
   };
