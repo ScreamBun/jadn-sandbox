@@ -6,7 +6,7 @@ import { Unsubscribe } from 'redux';
 import FieldEditor from './FieldEditor';
 import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from 'components/create/schema/interface';
 
-interface DragItem {
+export interface DragItem {
     id: any;
     dataIndex: number;
     value: FieldArray;
@@ -24,11 +24,12 @@ export interface SBOutlineProps {
     fieldChange: any;
     fieldRemove: any;
     config: InfoConfig;
+    editableID: boolean;
 }
 
 const SBOutlineFields = (props: SBOutlineProps) => {
     const initalState: DragItem[] = [];
-    const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop } = props;
+    const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop, editableID } = props;
     const [cardsState, setCardsState] = useState<DragItem[]>(initalState);
     const cardsStateRef = React.useRef(cardsState);
 
@@ -88,8 +89,6 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     }, [cardsState]);
 
     useEffect(() => {
-        //console.log("SBOutline useEffect cards state: " + JSON.stringify(cardsState));
-
         setCardsState(initalState);
         {
             items.map((item, i) => {
@@ -105,7 +104,6 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     }, [props]);
 
     const dropCard = useCallback(() => {
-        console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
         onDrop(cardsStateRef.current)
     }, []);
 
@@ -125,12 +123,14 @@ const SBOutlineFields = (props: SBOutlineProps) => {
             return (
                 <FieldEditor
                     key={card.id}
+                    id={card.id}
                     dataIndex={index}
                     enumerated={isEnumerated}
                     value={card.value}
                     change={fieldChange}
                     remove={fieldRemove}
                     config={config}
+                    editableID={editableID}
 
                     isDraggable={true}
                     moveCard={moveCard}
