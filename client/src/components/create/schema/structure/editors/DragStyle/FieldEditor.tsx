@@ -52,6 +52,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   const [valueObj, setValueObj] = useState(valueObjInit);
   const val = valueObj as StandardFieldObject;
   const [valType, setValType] = useState({ value: val.type, label: val.type });
+  const [focus, setFocus] = useState(false);
 
   const dragRef = useRef<HTMLDivElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
@@ -160,8 +161,13 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     setValueObj({ ...valueObj, [key]: value });
   }
 
+  const onFocus = () => {
+    setFocus(true);
+  }
+
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
+    setFocus(false);
 
     if (placeholder == "Name") {
       if (value.includes('/')) {
@@ -204,7 +210,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
-  const onRemoveItemClick = (e: React.MouseEvent<HTMLElement>) => {
+  const onRemoveItemClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setIsConfirmModalOpen(true);
   };
@@ -230,6 +236,11 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   const toggleModal = () => {
     setModal(!modal);
+    if (!modal) {
+      setFocus(true);
+    } else {
+      setFocus(false);
+    }
   }
 
   const makeOptions = () => {
@@ -239,11 +250,13 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         <div className="row m-0">
           <FormGroup className='col-md-2'>
             <Label>ID</Label>
-            <Input name="FieldEditorID" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+            <Input name="FieldEditorID" type="number" placeholder="ID" className='form-control' value={valueObj.id}
+              onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
           </FormGroup>
           <div className="col-md-4">
             <Label>Value</Label>
-            <Input name="FieldEditorValue" type="text" placeholder="Value" className='form-control' value={val.value} onChange={onChange} onBlur={onBlur} />
+            <Input name="FieldEditorValue" type="text" placeholder="Value" className='form-control' value={val.value}
+              onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
           </div>
           <FormGroup className='col-md-6'>
             <Label>Comment</Label>
@@ -256,6 +269,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               value={valueObj.comment}
               onChange={onChange}
               onBlur={onBlur}
+              onFocus={onFocus}
             />
           </FormGroup>
         </div>
@@ -277,15 +291,18 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         </div>
         <div className="row">
           <div className="col-md-2">
-            <Input name="FieldEditorID" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} readOnly={!editableID}
+            <Input name="FieldEditorID" type="number" placeholder="ID" className='form-control' value={valueObj.id}
+              onChange={onChange} onBlur={onBlur} readOnly={!editableID} onFocus={onFocus}
               title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
 
           </div>
           <div className="col-md-4">
-            <Input name="FieldEditorName" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
+            <Input name="FieldEditorName" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name}
+              onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
           </div>
           <div className="col-md-4">
-            <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
+            <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types}
+              onFocus={onFocus} onBlur={() => setFocus(false)} isGrouped />
           </div>
           <div className="col-md-2">
             <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
@@ -312,6 +329,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               value={valueObj.comment}
               onChange={onChange}
               onBlur={onBlur}
+              onFocus={onFocus}
             />
           </FormGroup>
         </div>
@@ -321,23 +339,15 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   return (
     <>
-      <div className="card border-secondary mb-2" ref={previewRef} data-handler-id={handlerId} style={containerStyle}>
-        <div className="card-header px-2 py-2" >
-          <div className='row'>
-            <div className='col'>
-              <span className="card-title">{enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}</span>
-            </div>
-            <div className='col'>
-              <div ref={dragRef} style={handleStyle}>
-                <FontAwesomeIcon className='float-right m-2' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
-              </div>
-              <Button color="danger" className="float-right btn-sm" onClick={onRemoveItemClick} title={`Delete Field`}>
-                <FontAwesomeIcon icon={faMinusCircle} />
-              </Button>
-            </div>
-          </div>
-        </div>
+      <div className={`card ${focus ? 'border-primary border-3' : 'border-secondary'} mb-2`} ref={previewRef} data-handler-id={handlerId} style={containerStyle}>
         <div className="card-body px-2 py-2">
+          <div ref={dragRef} style={handleStyle}>
+            <FontAwesomeIcon className='float-right pt-1 pl-2 m-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+            <a href="#" role="button" onClick={onRemoveItemClick}>
+              <FontAwesomeIcon className='float-right pt-1 m-1' color='red' title={`Delete Field`} icon={faMinusCircle}></FontAwesomeIcon>
+            </a>
+          </div>
+
           {makeOptions()}
         </div>
       </div>

@@ -30,7 +30,7 @@ interface StructureEditorProps {
 
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
-    const { value, change, changeIndex, dataIndex, config, collapseAllFields } = props;
+    const { value, change, changeIndex, dataIndex, config, collapseAllFields, remove } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
     const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -56,7 +56,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         return propValue;
     }
 
-    const sortFields = () => {
+    const sortFields = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         let tmpFields = [...valueObj.fields];
         //sort fields
         tmpFields.sort(function (a, b) {
@@ -74,7 +75,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         setValueObj({ ...valueObj, [key]: value });
     }
 
-    const onBlur = (e: any) => {
+    const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        e.preventDefault();
         const { placeholder, value } = e.target;
 
         //VALIDATE NAME
@@ -104,12 +106,13 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         change(updatevalue, dataIndex);
     }
 
-    const removeAll = () => {
-        const { dataIndex, remove } = props;
+    const removeAll = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         remove(dataIndex);
     }
 
-    const onAddField = () => {
+    const onAddField = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         let field: EnumeratedFieldArray | StandardFieldArray;
         //check field count
         if (config.$MaxElements && fields.length > config.$MaxElements) {
@@ -389,7 +392,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 {isEditableID ? <FontAwesomeIcon icon={faArrowDown19}
                                     className='float-right btn btn-sm'
                                     onClick={() => sortFields()}
-                                    title={'Sort Fields'} /> : ''}
+                                    title={'Sort Fields by ID'} /> : ''}
 
                             </legend>
 
@@ -400,7 +403,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             {!fieldCollapse && fields.length == 0 ? <p className='mb-2'> No fields to show</p> : ''}
 
                             {!fieldCollapse &&
-                                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block'
+                                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block rounded-pill'
                                     title='Add Field'>
                                     <FontAwesomeIcon icon={faPlusSquare} />
                                 </Button>}
