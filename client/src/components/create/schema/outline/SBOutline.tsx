@@ -46,7 +46,7 @@ const SBOutline = (props: SBOutlineProps) => {
       unsubscribeRef.current = monitor.subscribeToOffsetChange(() => {
         const offset = monitor.getClientOffset();
         // it can be html, body, div, any container that have scroll
-        const container = document.getElementById("scrollContainer");
+        const container = document.getElementById("scrollContainerForOutline");
 
         if (!offset || !container) return;
 
@@ -105,7 +105,7 @@ const SBOutline = (props: SBOutlineProps) => {
     props.onClick(e, text)
   }, []);
 
-  const dropCard = useCallback((item: {}) => {
+  const dropCard = useCallback(() => {
     // console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
     props.onDrop(cardsStateRef.current)
   }, []);
@@ -139,7 +139,7 @@ const SBOutline = (props: SBOutlineProps) => {
   );
 
   return (
-    <div id='scrollContainer'>
+    <div id='scrollContainerForOutline'>
       {items && items.length > 0 ? (
         <div id={id}>
           <ul className="nav nav-pills">

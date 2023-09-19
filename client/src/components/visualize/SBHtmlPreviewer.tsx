@@ -14,9 +14,9 @@ const SBHtmlPreviewer = (props: any) => {
 
     return (
         <>
-            <SBEditor data={htmlText} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
+            <SBEditor data={htmlText} isReadOnly={true} convertTo={conversion} height="35vh"></SBEditor>
 
-            <div className="card bg-secondary" style={{ 'height': "20em", 'overflow': 'auto' }}>
+            <div className="card bg-secondary" style={{ 'height': "35vh", 'overflow': 'auto' }}>
                 <div className={previewerClassName}>
                     <div id="preview"
                         className="previewer-content"

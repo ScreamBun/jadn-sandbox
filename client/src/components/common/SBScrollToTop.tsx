@@ -41,7 +41,7 @@ const SBScrollToTop = (props: SBScrollToTopProps) => {
         /*    <small style={{ display: isVisible ? '' : 'none' }} className='mr-2 ml-2'>
                <a title="Scroll to the top of the page" onClick={onScrollUp} href="#">[Scroll to Top]</a>
            </small> */
-        <Button color='info' id="scrollToTopBtn" className="btn scrollToTopBtn"
+        <Button color='info' id="scrollToTopBtn" className="btn scroll-top-btn"
             title="Scroll to the top of the page"
             onClick={onScrollUp} style={{ opacity: isVisible ? '100' : '0' }}>
             <FontAwesomeIcon icon={faArrowUp} />

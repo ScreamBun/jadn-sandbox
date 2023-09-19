@@ -41,7 +41,7 @@ const SchemaVisualizer = () => {
     const onReset = () => {
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema(null);
+        setLoadedSchema('');
         setConversion([]);
         setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);

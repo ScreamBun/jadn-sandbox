@@ -16,7 +16,7 @@ const SBEditor = (props: any) => {
 
     const {
         data,
-        height = "40em",
+        height = "70vh",
         isReadOnly = false,
         convertTo,
         onChange

@@ -18,8 +18,8 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
             drop: (item: any) => {
                 if (onDrop) {
                     onDrop(item.itemID)
-                    scrollToRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
-                    return item
+                    // scrollToRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+                    return item;
                 }
             },
             collect: (monitor) => ({
@@ -42,33 +42,33 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
         }, 1);
     };
 
-    useEffect(() => {
-        if (dragValue) {
-            unsubscribeRef.current = monitor.subscribeToOffsetChange(() => {
-                const offset = monitor.getClientOffset();
-                // it can be html, body, div, any container that have scroll
-                const container = document.getElementById("scrollContainer");
+    // useEffect(() => {
+    //     if (dragValue) {
+    //         unsubscribeRef.current = monitor.subscribeToOffsetChange(() => {
+    //             const offset = monitor.getClientOffset();
+    //             // it can be html, body, div, any container that have scroll
+    //             const container = document.getElementById("scrollContainerDroppable");
 
-                if (!offset || !container) return;
+    //             if (!offset || !container) return;
 
-                if (offset.y < container.clientHeight / 2 - 200) {
-                    if (timerRef.current) clearInterval(timerRef.current);
-                    setScrollIntervall(-5, container);
-                } else if (offset.y > container.clientHeight / 2 + 200) {
-                    if (timerRef.current) clearInterval(timerRef.current);
-                    setScrollIntervall(5, container);
-                } else if (
-                    offset.y > container.clientHeight / 2 - 200 &&
-                    offset.y < container.clientHeight / 2 + 200
-                ) {
-                    if (timerRef.current) clearInterval(timerRef.current);
-                }
-            });
-        } else if (unsubscribeRef.current) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            unsubscribeRef.current();
-        }
-    }, [dragValue, monitor]);
+    //             if (offset.y < container.clientHeight / 2 - 200) {
+    //                 if (timerRef.current) clearInterval(timerRef.current);
+    //                 setScrollIntervall(-5, container);
+    //             } else if (offset.y > container.clientHeight / 2 + 200) {
+    //                 if (timerRef.current) clearInterval(timerRef.current);
+    //                 setScrollIntervall(5, container);
+    //             } else if (
+    //                 offset.y > container.clientHeight / 2 - 200 &&
+    //                 offset.y < container.clientHeight / 2 + 200
+    //             ) {
+    //                 if (timerRef.current) clearInterval(timerRef.current);
+    //             }
+    //         });
+    //     } else if (unsubscribeRef.current) {
+    //         if (timerRef.current) clearInterval(timerRef.current);
+    //         unsubscribeRef.current();
+    //     }
+    // }, [dragValue, monitor]);
 
     useEffect(() => {
         const unsubscribe = monitor.subscribeToStateChange(() => {
@@ -90,7 +90,7 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
                 opacity: isOver ? 0.4 : 1,
                 padding: '5px',
             }}
-            id="scrollContainer"
+            name="scrollContainerDroppable"
         >
             <div ref={scrollToRef}>
                 {children}

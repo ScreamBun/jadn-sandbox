@@ -38,7 +38,7 @@ const MessageValidator = () => {
         e.preventDefault();
         setIsLoading(false);
         setSelectedSchemaFile(null);
-        setLoadedSchema(null);
+        setLoadedSchema('');
         setSelectedMsgFile('');
         setLoadedMsg('');
         setMsgFormat('');

@@ -12,17 +12,30 @@ interface EnumeratedFieldProps {
   optChange: (n: string, v: any) => void;
   parent?: string;
   children?: JSX.Element;
+  value: any;
 }
 
 // Component
 const EnumeratedField = (props: EnumeratedFieldProps) => {
-  const { def, optChange, parent, children } = props;
+  const { def, optChange, parent, children, value = '' } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const [selectedValue, setSelectedValue] = useState<Option | string>('');
-
+  const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
   var optData: Record<string, any> = {};
   const [idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
+
+  const handleChange = (e: Option) => {
+    // if (hasProperty(optData, 'id') && optData.id) {
+    //key should already be id
+    if (e == null) {
+      setSelectedValue('');
+      optChange(name, '')
+    } else {
+      setSelectedValue(e);
+      optChange(name, e.value);
+    }
+  }
+
   const typeDefs = schema.types.filter(t => t[0] === type);
   const typeDef = typeDefs.length === 1 ? typeDefs[0] : def;
   if (typeDefs.length === 1) {
@@ -76,19 +89,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
           <div className='row'>
             <div className="col">
               <SBSelect id={name} name={name} data={defOpts}
-                onChange={(e: Option) => {
-                  if (e == null) {
-                    setSelectedValue('');
-                    optChange(msgName, '')
-                  } else {
-                    setSelectedValue(e);
-                    if (hasProperty(optData, 'id') && optData.id) {
-                      optChange(msgName, parseInt(e.value))
-                    } else {
-                      optChange(msgName, e.value)
-                    }
-                  }
-                }}
+                onChange={handleChange}
                 placeholder={`${name} options`}
                 value={selectedValue}
               />

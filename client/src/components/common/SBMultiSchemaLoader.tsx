@@ -128,7 +128,7 @@ const SBMultiSchemaLoader = (props: SBMultiSchemaLoaderProps) => {
 
                 {toggle == `${i}` && fileObj.data != 'err' ?
                     <div className="card-body" key={i}>
-                        <SBEditor data={fileObj.data} isReadOnly={true} height={'20em'}></SBEditor>
+                        <SBEditor data={fileObj.data} isReadOnly={true} height={'35vh'}></SBEditor>
                     </div>
                     : ''}
             </div>
