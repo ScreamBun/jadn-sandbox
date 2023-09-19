@@ -62,7 +62,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     return propValue;
   }
 
-  const sortFields = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const sortFields = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     let tmpFields = [...valueObj.fields];
     //sort fields
@@ -75,7 +75,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     change(updatevalue, dataIndex);
   }
 
-  const onFocus = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     e.preventDefault();
     setFocus(true);
   }
@@ -384,15 +384,18 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   <FontAwesomeIcon icon={faPlusSquare} />
                 </span>
 
-                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                  className='float-right btn btn-sm'
-                  onClick={() => setFieldCollapse(!fieldCollapse)}
-                  title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                <a href="#" role="button"
+                  onClick={() => setFieldCollapse(!fieldCollapse)}>
+                  <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                    className='float-right btn btn-sm'
+                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                </a>
 
-                {isEditableID ? <FontAwesomeIcon icon={faArrowDown19}
-                  className='float-right btn btn-sm'
-                  onClick={sortFields}
-                  title={'Sort Fields by ID'} /> : ''}
+                {isEditableID ? <a href="#" role="button" onClick={sortFields}>
+                  <FontAwesomeIcon icon={faArrowDown19}
+                    className='float-right btn btn-sm'
+                    title={'Sort Fields by ID'} />
+                </a> : ''}
 
               </legend>
 
