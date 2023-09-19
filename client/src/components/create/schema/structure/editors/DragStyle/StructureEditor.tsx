@@ -31,7 +31,6 @@ interface StructureEditorProps {
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
   const { value, change, dataIndex, config, collapseAllFields, remove } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
-  const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
   const [modal, setModal] = useState(false);
@@ -160,7 +159,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
     change(updatevalue, dataIndex);
     setFieldCollapse(false);
-    // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
   }
 
   const fieldChange = (val: FieldArray, idx: number) => {
@@ -400,7 +398,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               </legend>
 
               {!fieldCollapse ? valueObj.fields?.length == 0 ? <p> No fields to show</p> :
-                <div ref={scrollToFieldRef}>
+                <div>
                   <SBOutlineFields id={'fields-outline'}
                     items={valueObj.fields}
                     onDrop={onOutlineDrop}

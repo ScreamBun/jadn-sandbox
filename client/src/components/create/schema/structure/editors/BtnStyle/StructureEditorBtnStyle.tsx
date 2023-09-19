@@ -32,7 +32,6 @@ interface StructureEditorProps {
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
     const { value, change, changeIndex, dataIndex, config, collapseAllFields, remove } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
-    const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
     const [fieldCollapse, setFieldCollapse] = useState(false);
     const [modal, setModal] = useState(false);
@@ -146,7 +145,6 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         });
         change(updatevalue, dataIndex);
         setFieldCollapse(false);
-        // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
     }
 
     const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
@@ -396,7 +394,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                             </legend>
 
-                            <div ref={scrollToFieldRef}>
+                            <div>
                                 {!fieldCollapse && fields}
                             </div>
 

@@ -46,7 +46,7 @@ const SBOutline = (props: SBOutlineProps) => {
       unsubscribeRef.current = monitor.subscribeToOffsetChange(() => {
         const offset = monitor.getClientOffset();
         // it can be html, body, div, any container that have scroll
-        const container = document.getElementById("scrollContainerForOutline");
+        const container = document.getElementById("outlineScrollContainer");
 
         if (!offset || !container) return;
 
@@ -139,7 +139,7 @@ const SBOutline = (props: SBOutlineProps) => {
   );
 
   return (
-    <div id='scrollContainerForOutline'>
+    <div id='outlineScrollContainer'>
       {items && items.length > 0 ? (
         <div id={id}>
           <ul className="nav nav-pills">
