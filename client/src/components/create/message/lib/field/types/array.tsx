@@ -16,6 +16,7 @@ interface ArrayFieldProps {
   parent?: string;
   config: InfoConfig;
   children?: JSX.Element;
+  value: any;
 }
 
 // Component
@@ -23,10 +24,10 @@ const ArrayField = (props: ArrayFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN
   var optData: Record<string, any> = {};
 
-  const { def, optChange, parent, config, children } = props;
+  const { def, optChange, parent, config, children, value = [] } = props;
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-  const [data, setData] = useState<string[]>([]); //track elements
+  const [data, setData] = useState<string[]>(value); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
   const [toggle, setToggle] = useState(true);
 
@@ -52,7 +53,7 @@ const ArrayField = (props: ArrayFieldProps) => {
     const errCheck = validateOptDataElem(config, optData, updatedArr, optData.format ? true : false);
     setErrMsg(errCheck);
 
-    optChange(msgName, updatedArr);
+    optChange(name, updatedArr);
   }
 
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
@@ -74,7 +75,7 @@ const ArrayField = (props: ArrayFieldProps) => {
 
   //Expected: fields (typeDef.length  == 5)
   const fieldDef = typeDef[typeDef.length - 1].map((d: any, i: number) =>
-    <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config} />
+    <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config} value={data[i]} />
   )
 
   return (

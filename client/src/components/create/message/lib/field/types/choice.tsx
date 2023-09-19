@@ -14,26 +14,37 @@ interface ChoiceFieldProps {
   parent?: string;
   config: InfoConfig;
   children?: JSX.Element;
+  value: any;
 }
 
 // Component
 const ChoiceField = (props: ChoiceFieldProps) => {
-  const { def, optChange, parent, config, children } = props;
+  const { def, optChange, parent, config, children, value = {} } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const [selectedValue, setSelectedValue] = useState<Option | string>('');
-
+  const [initSelectedOpt, InitSelectedValues] = Object.keys(value).length != 0 ? Object.entries(value)[0] : ["", ""];
+  const [selectedValue, setSelectedValue] = useState<Option | string>(initSelectedOpt != '' ? { 'label': initSelectedOpt, 'value': initSelectedOpt } : '');
+  const [selectedValueData, setSelectedValueData] = useState<any>(InitSelectedValues);
 
   const handleChange = (e: Option) => {
-    //const { optChange, def } = props;
+    //get selected choice
     if (e == null) {
       setSelectedValue('');
+      setSelectedValueData('');
     } else {
       setSelectedValue(e);
+      setSelectedValueData(InitSelectedValues);
     }
-    optChange(def[1], undefined);
+    optChange(def[1], e.value);
     //target is undefined 
     //this resets selected choice
     //e.target.selectedOptions[0].text
+  }
+
+  const onChange = (k: string, v: any) => {
+    //get fields (k, v) for selected choice 
+    const updatedData = { ...selectedValueData, [k]: v }
+    setSelectedValueData(updatedData);
+    optChange(name, updatedData);
   }
 
   const [_idx, name, type, _args, comment] = def;
@@ -60,7 +71,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
       selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[1] === selectedValue.value);
     }
     const selectedDef = selectedDefs.length === 1 ? selectedDefs[0] : [];
-    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={optChange} config={config} />;
+    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={onChange} config={config} />;
   }
 
   return (

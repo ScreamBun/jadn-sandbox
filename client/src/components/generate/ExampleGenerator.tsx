@@ -36,8 +36,8 @@ const ExampleGenerator = () => {
         e.preventDefault();
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema(null);
-        setNumOfMsg(null);
+        setLoadedSchema('');
+        setNumOfMsg('');
         setGeneratedMessages([]);
         dispatch(setSchema(''));
     }

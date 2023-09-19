@@ -81,7 +81,7 @@ const SchemaTransformed = (props: any) => {
 
                         {toggle == `${i}` ?
                             <div className="card-body" key={i}>
-                                <SBEditor data={output.schema} isReadOnly={true} height={'20em'}></SBEditor>
+                                <SBEditor data={output.schema} isReadOnly={true} height={'35vh'}></SBEditor>
                             </div> : ''}
                     </div>
                 )) :

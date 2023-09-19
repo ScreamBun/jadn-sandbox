@@ -18,10 +18,11 @@ import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
-import SBOutline, { Item } from 'components/common/outline/SBOutline';
+import SBOutline, { Item } from 'components/create/schema/outline/SBOutline';
 import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
+import { sbScrollToView } from 'components/utils/general';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -80,8 +81,12 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     setIsLoading(false);
                     let schemaObj = loadFileVal.payload.data;
                     let schemaStr = JSON.stringify(schemaObj);
+                    
                     validateJADN(schemaStr);
-                    setGeneratedSchema(schemaObj);
+
+                    flushSync(() => {
+                        setGeneratedSchema(schemaObj);
+                    });                    
                 })
                 .catch((loadFileErr) => {
                     setIsLoading(false);
@@ -107,8 +112,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     let data = ev.target.result;
                     try {
                         setIsLoading(false);
-                        setGeneratedSchema(JSON.parse(data));
+
                         validateJADN(data);
+
+                        flushSync(() => {
+                            setGeneratedSchema(JSON.parse(data));
+                        });
+                        
                     } catch (err) {
                         setIsLoading(false);
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
@@ -216,6 +226,54 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         <DraggableKey item={Types[k].key} acceptableType={'TypesKeys'} key={Types[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
     ));
 
+    const get_type_name = (types_to_serach: any[], name: string) => {
+        let return_name = name;
+        let match_count = 0;
+        let dups: any[] = [];
+        types_to_serach.map((type) => {
+
+            // orig name matches
+            if (name == type[0]) {
+                match_count = match_count + 1;
+            } else {
+                // dup matches
+                var lastIndex = type[0].lastIndexOf('-');
+
+                if (lastIndex) {
+
+                    let dup_name = type[0].substr(0, lastIndex);
+
+                    if (name == dup_name) {
+
+                        let dup_num = type[0].substr(lastIndex).substring(1);
+
+                        if (dup_num && !isNaN(dup_num)) {
+
+                            dups.push(dup_num);
+                            match_count = match_count + 1;
+
+                        }
+                    }
+                }
+            }
+
+        });
+
+        if (match_count > 0) {
+
+            if (dups.length == 0) {
+                return_name = return_name + "-" + (dups.length + 1);
+            } else {
+                dups.sort(function (a, b) { return b - a });  // TODO: Move to utils
+                let next_num = parseInt(dups[0]) + 1;
+                return_name = return_name + "-" + next_num;
+            }
+
+        }
+
+        return return_name;
+    }
+
     const onDrop = (key: string) => {
         if (Object.keys(Info).includes(key)) {
             let updatedSchema;
@@ -243,10 +301,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
+            sbScrollToView('', 'scrollContainerDroppable', 0, 0);
+
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-            const tmpDef = Types[key].edit({ name: `${key}_name` });
-            tmpTypes.push(tmpDef);  // unshift drops items at the bottom
+            const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
+            const tmpDef = Types[key].edit({ name: type_name });;
+            tmpTypes.push(tmpDef);  
             let updatedSchema = {
                 ...generatedSchema,
                 types: tmpTypes
@@ -256,6 +317,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             });
             setIsValidJADN(false);
             setIsValidating(false);
+            sbScrollToView('', 'scrollContainerDroppable', 1, 1000);
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -415,13 +477,11 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     };
 
     const onOutlineDrop = (updatedCards: Item[]) => {
-        // console.log("SchemaCreator onOutlineDrop: " + JSON.stringify(updatedCards));
         reorder(updatedCards);
     };
 
     const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
         e.preventDefault();
-        // console.log("SchemaCreator onOutlineClick: " + text);
         const element = document.getElementById(text);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });

@@ -108,7 +108,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                                 <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} title={`Move ${valueObj.type} Down`}>
                                     <FontAwesomeIcon icon={faSquareCaretDown} />
                                 </Button>
-                            </ButtonGroup> 
+                            </ButtonGroup>
                         </div>
                     </div>
                 </div>
@@ -116,14 +116,15 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                     <div className="row m-0">
                         <div className="col-md-4">
                             <Label className='mb-0'>Name</Label>
-                            <Input 
-                                type="text" 
-                                placeholder="Name" 
-                                maxLength={64} 
-                                className='form-control' 
-                                value={valueObj.name} 
-                                onChange={onChange} onBlur={onBlur} 
-                                />
+                            <Input
+                                name="PrimitveEditorName"
+                                type="text"
+                                placeholder="Name"
+                                maxLength={64}
+                                className='form-control'
+                                value={valueObj.name}
+                                onChange={onChange} onBlur={onBlur}
+                            />
                         </div>
                         <div className="col-md-2 mt-4 text-center">
                             <Label className='mb-0'>&nbsp;</Label>
@@ -141,9 +142,10 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                         <div className="col-md-6">
                             <Label className='mb-0'>Comment</Label>
                             <Input
+                                name="PrimitveEditorComment"
                                 type="textarea"
                                 placeholder="Comment"
-                                className='form-control' 
+                                className='form-control'
                                 rows={1}
                                 value={valueObj.comment}
                                 onChange={onChange}
