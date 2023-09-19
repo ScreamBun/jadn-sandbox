@@ -36,3 +36,38 @@ export const isArrayEqual = (x: [], y: []) => {
 export const getIndex = (arr: [], field: string) => {
     return arr.findIndex((obj: any) => obj.field === field);
 };
+
+export const sbScrollToView = (id: string, name: string, el_index: number, time_to_wait: number) => {
+  if(id){
+    const element = document.getElementById(id);
+    if(element){
+      element.scrollIntoView({ block: "end" });
+    }
+  }
+
+  if(name){
+    const elements = document.getElementsByName(name);
+
+    let element: HTMLElement | null = null;
+    if(elements && el_index){
+      if(el_index <= elements.length - 1){
+        element = elements[el_index];
+      } else {
+        element = elements[0];
+      }
+    }
+
+    if(element != null && element instanceof HTMLElement){
+
+      // To make this work with many rerenders we need to wait
+      // a little while before scrolling...
+      // console.log("starting wait....");
+      setTimeout(() => {
+        // console.log("done waiting ***");
+        element.scrollIntoView({ block: "end" });
+      }, time_to_wait);
+
+    }    
+  }
+
+};

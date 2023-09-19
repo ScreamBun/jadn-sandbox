@@ -44,33 +44,33 @@ const SBOutlineFields = (props: SBOutlineProps) => {
         }, 1);
     };
 
-    useEffect(() => {
-        if (dragValue) {
-            unsubscribeRef.current = monitor.subscribeToOffsetChange(() => {
-                const offset = monitor.getClientOffset();
-                // it can be html, body, div, any container that have scroll
-                const container = document.getElementById("scrollContainer");
+    // useEffect(() => {
+    //     if (dragValue) {
+    //         unsubscribeRef.current = monitor.subscribeToOffsetChange(() => {
+    //             const offset = monitor.getClientOffset();
+    //             // it can be html, body, div, any container that have scroll
+    //             const container = document.getElementById("scrollContainerForFields");
 
-                if (!offset || !container) return;
+    //             if (!offset || !container) return;
 
-                if (offset.y < container.clientHeight / 2 - 200) {
-                    if (timerRef.current) clearInterval(timerRef.current);
-                    setScrollIntervall(-5, container);
-                } else if (offset.y > container.clientHeight / 2 + 200) {
-                    if (timerRef.current) clearInterval(timerRef.current);
-                    setScrollIntervall(5, container);
-                } else if (
-                    offset.y > container.clientHeight / 2 - 200 &&
-                    offset.y < container.clientHeight / 2 + 200
-                ) {
-                    if (timerRef.current) clearInterval(timerRef.current);
-                }
-            });
-        } else if (unsubscribeRef.current) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            unsubscribeRef.current();
-        }
-    }, [dragValue, monitor]);
+    //             if (offset.y < container.clientHeight / 2 - 200) {
+    //                 if (timerRef.current) clearInterval(timerRef.current);
+    //                 setScrollIntervall(-5, container);
+    //             } else if (offset.y > container.clientHeight / 2 + 200) {
+    //                 if (timerRef.current) clearInterval(timerRef.current);
+    //                 setScrollIntervall(5, container);
+    //             } else if (
+    //                 offset.y > container.clientHeight / 2 - 200 &&
+    //                 offset.y < container.clientHeight / 2 + 200
+    //             ) {
+    //                 if (timerRef.current) clearInterval(timerRef.current);
+    //             }
+    //         });
+    //     } else if (unsubscribeRef.current) {
+    //         if (timerRef.current) clearInterval(timerRef.current);
+    //         unsubscribeRef.current();
+    //     }
+    // }, [dragValue, monitor]);
 
     useEffect(() => {
         const unsubscribe = monitor.subscribeToStateChange(() => {
@@ -143,7 +143,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     );
 
     return (
-        <div id='scrollContainer'>
+        <div id='scrollContainerForFields'>
             {items && items.length > 0 ? (
                 <div id={id}>
                     <div className="sb-outline mt-2">

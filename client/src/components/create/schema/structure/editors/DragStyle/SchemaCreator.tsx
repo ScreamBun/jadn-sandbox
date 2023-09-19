@@ -22,6 +22,7 @@ import SBOutline, { Item } from 'components/create/schema/outline/SBOutline';
 import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
+import { sbScrollToView } from 'components/utils/general';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -80,8 +81,12 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     setIsLoading(false);
                     let schemaObj = loadFileVal.payload.data;
                     let schemaStr = JSON.stringify(schemaObj);
+                    
                     validateJADN(schemaStr);
-                    setGeneratedSchema(schemaObj);
+
+                    flushSync(() => {
+                        setGeneratedSchema(schemaObj);
+                    });                    
                 })
                 .catch((loadFileErr) => {
                     setIsLoading(false);
@@ -107,8 +112,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     let data = ev.target.result;
                     try {
                         setIsLoading(false);
-                        setGeneratedSchema(JSON.parse(data));
+
                         validateJADN(data);
+
+                        flushSync(() => {
+                            setGeneratedSchema(JSON.parse(data));
+                        });
+                        
                     } catch (err) {
                         setIsLoading(false);
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
@@ -291,11 +301,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
+            sbScrollToView('', 'scrollContainerDroppable', 0, 0);
+
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });;
-            tmpTypes.push(tmpDef);  // unshift drops items at the bottom
+            tmpTypes.push(tmpDef);  
             let updatedSchema = {
                 ...generatedSchema,
                 types: tmpTypes
@@ -305,6 +317,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             });
             setIsValidJADN(false);
             setIsValidating(false);
+            sbScrollToView('', 'scrollContainerDroppable', 1, 1000);
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
