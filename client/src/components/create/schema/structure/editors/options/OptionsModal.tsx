@@ -88,7 +88,7 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
     let collectionCount = 0;
     if (optionType == 'ArrayOf') {
       for (let i = 0; i < collectionType.length; i++) {
-        if (collectionType[i] in data['type'] && data['type'][collectionType[i]] == 'true') {
+        if (collectionType[i] in data['type'] && data['type'][collectionType[i]] == true) {
           collectionCount += 1;
           if (collectionCount > 1) {
             sbToastError('MUST NOT include more than one collection option (set, unique, or unordered)');
