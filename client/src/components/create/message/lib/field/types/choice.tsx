@@ -22,8 +22,10 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   const { def, optChange, parent, config, children, value = {} } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const [initSelectedOpt, InitSelectedValues] = (typeof value == "object" && Object.keys(value).length != 0) ? Object.entries(value)[0] :
-    (typeof value == "string" && Object.keys(value).length != 0) ? [value, ""] : ["", ""];
-  const [selectedValue, setSelectedValue] = useState<Option | string>(initSelectedOpt != '' ? { 'label': initSelectedOpt, 'value': initSelectedOpt } : '');
+    (typeof value == "string" && value.length != 0) ? [value, ""] : ["", ""];
+  const initSelectedOptValue = initSelectedOpt != '' ? { 'label': initSelectedOpt, 'value': initSelectedOpt } : '';
+
+  const [selectedValue, setSelectedValue] = useState<Option | string>(initSelectedOptValue);
   const [selectedValueData, setSelectedValueData] = useState<any>(InitSelectedValues);
 
   const handleChange = (e: Option) => {
@@ -43,7 +45,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
 
   const onChange = (k: string, v: any) => {
     //get fields (k, v) for selected choice 
-    const updatedData = { ...selectedValueData, [k]: v }
+    let updatedData = { [k]: v }
     setSelectedValueData(updatedData);
     optChange(name, updatedData);
   }
@@ -64,7 +66,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   }
 
   let selectedOpts;
-  if (selectedValue >= '0') {
+  if (selectedValue != '') {
     let selectedDefs; //get opt where the key = selected
     if (hasProperty(optData, 'id') && optData.id) {
       selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[0] === selectedValue.value);
@@ -72,7 +74,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
       selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[1] === selectedValue.value);
     }
     const selectedDef = selectedDefs.length === 1 ? selectedDefs[0] : [];
-    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={onChange} config={config} />;
+    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={onChange} config={config} value={[selectedValueData]} />;
   }
 
   return (

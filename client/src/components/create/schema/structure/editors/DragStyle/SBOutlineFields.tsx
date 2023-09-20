@@ -28,8 +28,8 @@ export interface SBOutlineProps {
 }
 
 const SBOutlineFields = (props: SBOutlineProps) => {
-    const initalState: DragItem[] = [];
     const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop, editableID } = props;
+    const initalState: DragItem[] = [];
     const [cardsState, setCardsState] = useState<DragItem[]>(initalState);
     const cardsStateRef = React.useRef(cardsState);
 
