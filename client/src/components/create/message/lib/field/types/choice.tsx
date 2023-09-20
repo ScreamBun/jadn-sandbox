@@ -21,7 +21,8 @@ interface ChoiceFieldProps {
 const ChoiceField = (props: ChoiceFieldProps) => {
   const { def, optChange, parent, config, children, value = {} } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const [initSelectedOpt, InitSelectedValues] = Object.keys(value).length != 0 ? Object.entries(value)[0] : ["", ""];
+  const [initSelectedOpt, InitSelectedValues] = (typeof value == "object" && Object.keys(value).length != 0) ? Object.entries(value)[0] :
+    (typeof value == "string" && Object.keys(value).length != 0) ? [value, ""] : ["", ""];
   const [selectedValue, setSelectedValue] = useState<Option | string>(initSelectedOpt != '' ? { 'label': initSelectedOpt, 'value': initSelectedOpt } : '');
   const [selectedValueData, setSelectedValueData] = useState<any>(InitSelectedValues);
 
