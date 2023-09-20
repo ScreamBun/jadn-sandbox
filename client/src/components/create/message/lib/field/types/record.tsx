@@ -31,7 +31,7 @@ const RecordField = (props: RecordFieldProps) => {
 
   const onChange = (k: string, v: any) => {
     let updatedData = { ...data };
-    if ((!v || (typeof v == "object" && Object.keys(v).length == 0)) && k in data) {
+    if ((!v || (typeof v == "object" && Object.keys(v).length == 0)) && (data && k in data)) {
       delete updatedData[k]
     } else {
       updatedData = { ...data, [k]: v };
