@@ -34,7 +34,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const [count, setCount] = useState(1);
   const [min, setMin] = useState(false);
   const [max, setMax] = useState(false);
-  const [opts, setOpts] = useState<any[]>(value); //track elem of vtype
+  const [opts, setOpts] = useState<any[]>(Array.isArray(value) ? value : [value]); //track elem of vtype
   const [errMsg, setErrMsg] = useState<string[]>([]);
   const [toggle, setToggle] = useState(true);
 
