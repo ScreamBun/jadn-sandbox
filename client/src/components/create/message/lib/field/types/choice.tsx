@@ -37,7 +37,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
       setSelectedValue(e);
       setSelectedValueData(InitSelectedValues);
     }
-    optChange(def[1], e.value);
+    optChange(name, e.value);
     //target is undefined 
     //this resets selected choice
     //e.target.selectedOptions[0].text
@@ -74,7 +74,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
       selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[1] === selectedValue.value);
     }
     const selectedDef = selectedDefs.length === 1 ? selectedDefs[0] : [];
-    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={onChange} config={config} value={[selectedValueData]} />;
+    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={onChange} config={config} value={selectedValueData} />;
   }
 
   return (
