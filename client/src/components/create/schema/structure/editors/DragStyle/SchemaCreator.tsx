@@ -22,7 +22,7 @@ import SBOutline, { Item } from 'components/create/schema/outline/SBOutline';
 import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
-import { sbScrollToView } from 'components/utils/general';
+import { getFilenameOnly, sbScrollToView } from 'components/utils/general';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -105,7 +105,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
-            setFileName(file.name.split('.')[0]);
+            
+            const filename_only = getFilenameOnly(file.name);
+            setFileName(filename_only);
+
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
