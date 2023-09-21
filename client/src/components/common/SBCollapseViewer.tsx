@@ -17,7 +17,7 @@ import SBDownloadPDF from "./SBDownloadPDF";
 //allow user to download or copy to clipboard
 const SBCollapseViewer = (props: any) => {
     const { data, pumlURL, setPumlURL, loadedSchema } = props;
-    const [toggle, setToggle] = useState('');
+    const [toggle, setToggle] = useState({});
 
     useEffect(() => {
         for (const obj of data) {
@@ -31,12 +31,7 @@ const SBCollapseViewer = (props: any) => {
     }, [data]);
 
     const onToggle = (index: number) => {
-        if (toggle == index.toString()) {
-            setToggle('');
-
-        } else {
-            setToggle(`${index}`);
-        }
+        setToggle({ ...toggle, [index]: !toggle[index] });
     }
 
     const onPopOutClick = (data: any, url: string = "") => {
@@ -101,7 +96,7 @@ const SBCollapseViewer = (props: any) => {
                     </h5>
                 </div>
 
-                {toggle == `${i}` ?
+                {toggle[i] == true ?
                     <div className="card-body" key={i}>
                         <SBEditor data={obj.schema} isReadOnly={true} height={'35vh'}></SBEditor>
                     </div>

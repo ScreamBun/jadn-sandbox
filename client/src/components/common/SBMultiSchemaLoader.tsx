@@ -21,7 +21,7 @@ const SBMultiSchemaLoader = (props: SBMultiSchemaLoaderProps) => {
     const dispatch = useDispatch();
     const { data, setData, selectedFileOpts, setSelectedFileOpts } = props;
     const [selectedFile, setSelectedFile] = useState<null | 'file'>(null);
-    const [toggle, setToggle] = useState('');
+    const [toggle, setToggle] = useState({});
     const ref = useRef<HTMLInputElement | null>(null);
 
     const schemaOpts = useSelector(getAllSchemas);
@@ -31,12 +31,7 @@ const SBMultiSchemaLoader = (props: SBMultiSchemaLoaderProps) => {
     }, [dispatch])
 
     const onToggle = (index: number) => {
-        if (toggle == index.toString()) {
-            setToggle('');
-
-        } else {
-            setToggle(`${index}`);
-        }
+        setToggle({ ...toggle, [index]: !toggle[index] });
     }
 
     //onFileUpload : upload file(s) to uploaded file list
@@ -126,7 +121,7 @@ const SBMultiSchemaLoader = (props: SBMultiSchemaLoaderProps) => {
                     </h5>
                 </div>
 
-                {toggle == `${i}` && fileObj.data != 'err' ?
+                {toggle[i] == true && fileObj.data != 'err' ?
                     <div className="card-body" key={i}>
                         <SBEditor data={fileObj.data} isReadOnly={true} height={'35vh'}></SBEditor>
                     </div>
@@ -146,7 +141,7 @@ const SBMultiSchemaLoader = (props: SBMultiSchemaLoaderProps) => {
                                     placeholder={'Select schema...(at least one)'}
                                     loc={'schemas'}
                                     value={selectedFileOpts}
-                                    isGrouped isFileUploader isMultiSelect isSmStyle/>
+                                    isGrouped isFileUploader isMultiSelect isSmStyle />
                             </div>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>

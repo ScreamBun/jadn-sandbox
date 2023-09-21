@@ -13,16 +13,12 @@ import { initTransformedSchema } from "./SchemaTransformer";
 const SchemaTransformed = (props: any) => {
 
     const { transformedSchema, data, transformationType, setTransformationType, setTransformedSchema, isLoading, baseFile, setBaseFile, selectedFiles } = props;
-    const [toggle, setToggle] = useState('');
+    const [toggle, setToggle] = useState({});
     const transformationOpts = useSelector(getValidTransformations);
     const baseFileOpts = selectedFiles.map((file: { name: any; }) => { return (file.name); });
 
     const onToggle = (index: number) => {
-        if (toggle == index.toString()) {
-            setToggle('');
-        } else {
-            setToggle(`${index}`);
-        }
+        setToggle({ ...toggle, [index]: !toggle[index] });
     }
 
     const onSelectChange = (e: Option) => {
@@ -79,7 +75,7 @@ const SchemaTransformed = (props: any) => {
                             </h5>
                         </div>
 
-                        {toggle == `${i}` ?
+                        {toggle[i] == true ?
                             <div className="card-body" key={i}>
                                 <SBEditor data={output.schema} isReadOnly={true} height={'35vh'}></SBEditor>
                             </div> : ''}
