@@ -31,14 +31,14 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
                         </div>
                         <div className='col-2'>
                             <ButtonGroup size="sm" className="float-right mr-1">
-                                <Button color="primary" onClick={() => changeIndex(card, i, i - 1)}
+                                {i == 0 ? '' : <Button color="primary" onClick={() => changeIndex(card, i, i - 1)}
                                     title={`Move ${card.name} Up`}>
                                     <FontAwesomeIcon icon={faSquareCaretUp} />
-                                </Button>
-                                <Button color="primary" onClick={() => changeIndex(card, i, i + 1)}
+                                </Button>}
+                                {i == items.length - 1 ? '' : <Button color="primary" onClick={() => changeIndex(card, i, i + 1)}
                                     title={`Move ${card.name} Down`}>
                                     <FontAwesomeIcon icon={faSquareCaretDown} />
-                                </Button>
+                                </Button>}
                             </ButtonGroup>
                         </div>
                     </div>
