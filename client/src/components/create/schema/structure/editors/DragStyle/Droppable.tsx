@@ -1,9 +1,9 @@
 import React, { ReactNode, memo, useEffect, useRef, useState } from 'react';
 import { useDragDropManager, useDrop } from 'react-dnd'
 import { Unsubscribe } from 'redux';
-
+import { DragItem } from 'components/create/schema/outline/SBOutline';
 interface DroppableProps {
-    onDrop?: (key: string) => void;
+    onDrop?: (item: DragItem) => void;
     acceptableType?: string;
     children: ReactNode;
 }
@@ -16,7 +16,7 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
             accept: [`${acceptableType}`],
             drop: (item: any) => {
                 if (onDrop) {
-                    onDrop(item.itemID)
+                    onDrop(item)
                     return item
                 }
             },

@@ -3,30 +3,33 @@ import update from 'immutability-helper'
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { SBOutlineCard } from "./SBOutlineCard";
-import { useDragDropManager } from 'react-dnd';
+import { useDragDropManager, useDrop } from 'react-dnd';
 import { Unsubscribe } from 'redux';
 
-export interface Item {
-  id: number
-  text: string
+
+export interface DragItem {
+  id: any;
+  index: number;
+  text: string;
 }
 
 export interface OutlineContainerState {
-  cards: Item[]
+  cards: DragItem[]
 }
 
 export interface SBOutlineProps {
   id: string;
   title: string;
   items: any[];
-  onDrop: (arg: Item[]) => void;
+  onDrop: (arg: DragItem[]) => void;
+  onTypesDrop: (arg: DragItem) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
 }
 
 const SBOutline = (props: SBOutlineProps) => {
-  const initalState: Item[] = [];
-  const { id = 'sb-outline', title, items = [] } = props;
-  const [cardsState, setCardsState] = useState<Item[]>(initalState);
+  const initalState: DragItem[] = [];
+  const { id = 'sb-outline', title, onTypesDrop, items = [] } = props;
+  const [cardsState, setCardsState] = useState<DragItem[]>(initalState);
   const cardsStateRef = React.useRef(cardsState);
 
   const [dragValue, setDragValue] = useState<boolean>(false);
@@ -34,6 +37,28 @@ const SBOutline = (props: SBOutlineProps) => {
   const monitor = dragDropManager.getMonitor();
   const timerRef = useRef<NodeJS.Timer>();
   const unsubscribeRef = useRef<Unsubscribe>();
+
+  const [, drop] = useDrop<
+    DragItem,
+    void,
+    { handlerId: Identifier | null }
+  >({
+    accept: ['TypesKeys'],
+    collect(monitor) {
+      return {
+        handlerId: monitor.getHandlerId(),
+      }
+    },
+    drop(item: DragItem, _monitor) {
+      onTypesDrop(item);
+    },
+    hover(item: DragItem, _monitor) {
+      if (cardsState.includes(item)) {
+        return
+      }
+
+    },
+  })
 
   const setScrollIntervall = (speed: number, container: HTMLElement) => {
     timerRef.current = setInterval(() => {
@@ -89,35 +114,41 @@ const SBOutline = (props: SBOutlineProps) => {
     {
       items.map((item, i) => {
         const new_card = {
-          id: i,
+          id: self.crypto.randomUUID(),
+          index: i,
           text: item[0]
         }
         setCardsState(prev => [...prev, new_card]);
       })
     };
-
-    // console.log("SBOutline useEffect cards state: " + JSON.stringify(cardsState));
-
   }, [props]);
 
   const onClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
-    // console.log("SBOutline onClick useCallback text: " + text);
     props.onClick(e, text)
   }, []);
 
   const dropCard = useCallback(() => {
-    // console.log("SBOutline dropCard useCallback cards state: " + JSON.stringify(cardsStateRef.current));
     props.onDrop(cardsStateRef.current)
   }, []);
 
-  const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
-    setCardsState((prevCards: Item[]) =>
+  const moveCard = useCallback((_newItem: DragItem, dragIndex: number, hoverIndex: number) => {
+    setCardsState((prevCards: DragItem[]) =>
       update(prevCards, {
         $splice: [
           [dragIndex, 1],
-          [hoverIndex, 0, prevCards[dragIndex] as Item],
+          [hoverIndex, 0, prevCards[dragIndex] as DragItem],
         ],
       }),
+    )
+  }, []);
+
+  const addCard = useCallback((newItem: DragItem, hoverIndex: number) => {
+    setCardsState((prevCards: DragItem[]) =>
+      update(prevCards, {
+        $splice: [
+          [hoverIndex, 0, newItem as DragItem],
+        ],
+      })
     )
   }, []);
 
@@ -129,6 +160,7 @@ const SBOutline = (props: SBOutlineProps) => {
           index={index}
           id={card.id}
           text={card.text}
+          addCard={addCard}
           moveCard={moveCard}
           dropCard={dropCard}
           onClick={onClick}
@@ -145,7 +177,7 @@ const SBOutline = (props: SBOutlineProps) => {
           <ul className="nav nav-pills">
             <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link">{title}</a></li>
           </ul>
-          <div className="sb-outline mt-2">
+          <div className="sb-outline mt-2" ref={drop}>
             <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
           </div>
         </div>
