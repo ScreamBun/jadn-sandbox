@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-    Button, ButtonGroup, FormGroup, Input, InputGroup, Label
+    Button, ButtonGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
@@ -26,6 +26,7 @@ interface PrimitiveEditorProps {
 const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: PrimitiveEditorProps) {
     const { value, change, changeIndex, dataIndex, config } = props;
     const [modal, setModal] = useState(false);
+    const [focus, setFocus] = useState(false);
 
     let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
     if (Number.isInteger(value[0])) {
@@ -41,8 +42,13 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
         setValueObj({ ...valueObj, [key]: value });
     }
 
+    const onFocus = () => {
+        setFocus(true);
+    }
+
     const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         const { placeholder, value } = e.target;
+        setFocus(false);
 
         if (placeholder == "Name") {
             if (value.length >= 64) {
@@ -85,11 +91,16 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
 
     const toggleModal = () => {
         setModal(modal => !modal);
+        if (!modal) {
+            setFocus(true);
+        } else {
+            setFocus(false);
+        }
     }
 
     return (
         <>
-            <div className="card border-secondary mb-3">
+            <div className={`card ${focus ? 'border-primary border-3' : 'border-secondary'} mb-3`}>
                 <div className="card-header px-2 py-2">
                     <div className='row'>
                         <div className='col'>
@@ -124,6 +135,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                                 className='form-control'
                                 value={valueObj.name}
                                 onChange={onChange} onBlur={onBlur}
+                                onFocus={onFocus}
                             />
                         </div>
                         <div className="col-md-2 mt-4 text-center">
@@ -150,6 +162,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                                 value={valueObj.comment}
                                 onChange={onChange}
                                 onBlur={onBlur}
+                                onFocus={onFocus}
                             />
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
     Button, ButtonGroup, FormGroup, Input, Label
@@ -38,6 +38,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
     const [valueObj, setValueObj] = useState(valueObjInit);
     const isEditableID = valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
+    const [focus, setFocus] = useState(false);
 
     useEffect(() => {
         setFieldCollapse(collapseAllFields)
@@ -55,7 +56,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         return propValue;
     }
 
-    const sortFields = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const sortFields = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         let tmpFields = [...valueObj.fields];
         //sort fields
@@ -68,6 +69,11 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         change(updatevalue, dataIndex);
     }
 
+    const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        setFocus(true);
+    }
+
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { placeholder, value } = e.target;
         const key = placeholder.toLowerCase();
@@ -77,6 +83,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         e.preventDefault();
         const { placeholder, value } = e.target;
+        setFocus(false);
 
         //VALIDATE NAME
         if (placeholder == "Name") {
@@ -251,6 +258,11 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
     const toggleModal = () => {
         setModal(modal => !modal);
+        if (!modal) {
+            setFocus(true);
+        } else {
+            setFocus(false);
+        }
     }
 
     //If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
@@ -258,7 +270,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
         return (
             <>
-                <div className="card border-secondary mb-3">
+                <div className={`card ${focus ? 'border-primary border-3' : 'border-secondary'} mb-2`}>
                     <div className="card-header px-2 py-2">
                         <div className='row'>
                             <div className='col'>
@@ -275,7 +287,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         <div className="row m-0">
                             <FormGroup className="col-md-4">
                                 <Label>Name</Label>
-                                <Input name="StrucutureEditorName" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                                <Input name="StrucutureEditorName" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
+                                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                             </FormGroup>
                             <FormGroup className="col-md-2">
                                 <Label>&nbsp;</Label>
@@ -292,7 +305,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             </FormGroup>
                             <FormGroup className="col-md-6">
                                 <Label>Comment</Label>
-                                <Input name="StrucutureEditorComment" type="textarea" placeholder="Comment" className='text-area-w100 form-control' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                                <Input name="StrucutureEditorComment" type="textarea" placeholder="Comment" className='text-area-w100 form-control' rows={1} value={valueObj.comment}
+                                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                             </FormGroup>
                         </div>
                     </div>
@@ -320,7 +334,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
     return (
         <>
-            <div className="card border-secondary mb-3">
+            <div className={`card ${focus ? 'border-primary border-3' : 'border-secondary'} mb-3`}>
                 <div className="card-header px-2 py-2">
 
                     <div className='row'>
@@ -352,7 +366,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                         <div className="col-md-4">
                             <Label className='mb-0'>Name</Label>
-                            <Input name="StrucutureEditorName" type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                            <Input name="StrucutureEditorName" type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name}
+                                onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                         </div>
 
                         <div className="col-md-2 mt-4 text-center">
@@ -367,7 +382,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
                         <div className="col-md-6">
                             <Label className='mb-0'>Comment</Label>
-                            <Input name="StrucutureEditorComment" type="textarea" placeholder="Comment" rows={1} className='form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                            <Input name="StrucutureEditorComment" type="textarea" placeholder="Comment" rows={1} className='form-control' value={valueObj.comment}
+                                onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                         </div>
                     </div>
                     <div className="row pt-2">
@@ -382,15 +398,18 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                     <FontAwesomeIcon icon={faPlusSquare} />
                                 </span>
 
-                                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                    className='float-right btn btn-sm'
-                                    onClick={() => setFieldCollapse(!fieldCollapse)}
-                                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                <a href="#" role="button"
+                                    onClick={() => setFieldCollapse(!fieldCollapse)}>
+                                    <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                        className='float-right btn btn-sm'
+                                        title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                </a>
 
-                                {isEditableID ? <FontAwesomeIcon icon={faArrowDown19}
-                                    className='float-right btn btn-sm'
-                                    onClick={() => sortFields()}
-                                    title={'Sort Fields by ID'} /> : ''}
+                                {isEditableID ? <a href="#" role="button" onClick={sortFields}>
+                                    <FontAwesomeIcon icon={faArrowDown19}
+                                        className='float-right btn btn-sm'
+                                        title={'Sort Fields by ID'} />
+                                </a> : ''}
 
                             </legend>
 
