@@ -4,7 +4,7 @@ import {
     Button, ButtonGroup, FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
@@ -23,14 +23,13 @@ interface StructureEditorProps {
     value: TypeArray;
     change: (v: PrimitiveTypeObject, i: number) => void;
     remove: (i: number) => void;
-    changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
     config: InfoConfig;
     collapseAllFields: boolean;
 }
 
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
-    const { value, change, changeIndex, dataIndex, config, collapseAllFields, remove } = props;
+    const { value, change, dataIndex, config, collapseAllFields, remove } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
 
     const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -346,16 +345,6 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 <Button color="danger" onClick={removeAll}
                                     title={`Delete ${valueObj.type}`}>
                                     <FontAwesomeIcon icon={faMinusCircle} />
-                                </Button>
-                            </ButtonGroup>
-                            <ButtonGroup size="sm" className="float-right mr-1">
-                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
-                                    title={`Move ${valueObj.type} Up`}>
-                                    <FontAwesomeIcon icon={faSquareCaretUp} />
-                                </Button>
-                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
-                                    title={`Move ${valueObj.type} Down`}>
-                                    <FontAwesomeIcon icon={faSquareCaretDown} />
                                 </Button>
                             </ButtonGroup>
                         </div>

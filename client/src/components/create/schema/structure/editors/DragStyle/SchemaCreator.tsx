@@ -305,7 +305,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
-            const tmpDef = Types[key].edit({ name: type_name });;
+            const tmpDef = Types[key].edit({ name: type_name });
             tmpTypes.push(tmpDef);
             let updatedSchema = {
                 ...generatedSchema,
@@ -424,33 +424,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     setIsValidJADN(false);
                     setIsValidating(false);
                 }
-            },
-            changeIndex: (val, dataIndex: number, idx: number) => {
-                const type = val.type.toLowerCase() as keyof typeof Types;
-                if (idx < 0) {
-                    sbToastError('Error: Cannot move Type up anymore');
-                    return;
-                } else if (idx >= generatedSchema.types.length) {
-                    sbToastError('Error: Cannot move Type down anymore');
-                    return;
-                }
-
-                let tmpTypes = [...generatedSchema.types];
-                tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
-
-                tmpTypes = [
-                    ...tmpTypes.slice(0, idx),
-                    Types[type].edit(val),
-                    ...tmpTypes.slice(idx)
-                ];
-
-                let updatedSchema = {
-                    ...generatedSchema,
-                    types: tmpTypes
-                };
-                setGeneratedSchema(updatedSchema);
-                setIsValidJADN(false);
-                setIsValidating(false);
             },
             config: configOpt
         }))
