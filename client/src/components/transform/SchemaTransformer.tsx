@@ -8,6 +8,7 @@ import SchemaTransformed from './SchemaTransformed'
 import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
 import { info, transformSchema } from 'actions/transform'
 import { Option } from 'components/common/SBSelect'
+// import SBInput from 'components/common/SBInput'
 
 export const initTransformedSchema = {
     schema: '',
@@ -41,8 +42,8 @@ const SchemaTransformer = () => {
         setIsLoading(false);
         setBaseFile(null);
         setTransformationType(null);
-        setSelectedFiles([]);
-        setSelectedFileOpts([]);
+        //setSelectedFiles([]);
+        //setSelectedFileOpts([]);
         setTransformedSchema([initTransformedSchema]);
     }
 
@@ -89,7 +90,12 @@ const SchemaTransformer = () => {
             setIsLoading(false);
             sbToastError('No Transformation type selected');
         }
-    }
+    } 
+
+    const onOptionChange = (options: Option[]) => {
+        console.log("SchemaTransformation onFileOptChange options: " + options.length);
+        setSelectedFileOpts([...options]);
+    }         
 
     return (
         <div>
@@ -108,14 +114,21 @@ const SchemaTransformer = () => {
                             <Form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <SBMultiSchemaLoader data={selectedFiles} setData={setSelectedFiles}
-                                            selectedFileOpts={selectedFileOpts} setSelectedFileOpts={setSelectedFileOpts} />
+                                        <SBMultiSchemaLoader 
+                                            onOptionChange={onOptionChange}
+                                        />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <SchemaTransformed transformedSchema={transformedSchema} data={selectedFiles}
-                                            transformationType={transformationType} setTransformationType={setTransformationType}
+                                        <SchemaTransformed 
+                                            transformedSchema={transformedSchema} 
+                                            data={selectedFileOpts}
+                                            transformationType={transformationType} 
+                                            setTransformationType={setTransformationType}
                                             setTransformedSchema={setTransformedSchema}
-                                            isLoading={isLoading} baseFile={baseFile} setBaseFile={setBaseFile} selectedFiles={selectedFiles}
+                                            isLoading={isLoading} 
+                                            baseFile={baseFile} 
+                                            setBaseFile={setBaseFile} 
+                                            selectedFiles={selectedFileOpts}
                                         />
                                     </div>
                                 </div>

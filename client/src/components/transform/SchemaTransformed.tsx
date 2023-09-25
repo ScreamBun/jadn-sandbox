@@ -12,10 +12,9 @@ import { initTransformedSchema } from "./SchemaTransformer";
 
 const SchemaTransformed = (props: any) => {
 
-    const { transformedSchema, data, transformationType, setTransformationType, setTransformedSchema, isLoading, baseFile, setBaseFile, selectedFiles } = props;
+    const { transformedSchema, transformationType, setTransformationType, setTransformedSchema, isLoading, baseFile, setBaseFile, selectedFiles } = props;
     const [toggle, setToggle] = useState('');
     const transformationOpts = useSelector(getValidTransformations);
-    const baseFileOpts = selectedFiles.map((file: { name: any; }) => { return (file.name); });
 
     const onToggle = (index: number) => {
         if (toggle == index.toString()) {
@@ -25,15 +24,15 @@ const SchemaTransformed = (props: any) => {
         }
     }
 
-    const onSelectChange = (e: Option) => {
+    const onSelectTypeChange = (opt: Option) => {
         setBaseFile(null);
         setTransformedSchema([initTransformedSchema]);
-        setTransformationType(e);
+        setTransformationType(opt);
     }
 
-    const onBaseFileSelect = (e: Option) => {
+    const onBaseFileSelect = (opt: Option) => {
         setTransformedSchema([initTransformedSchema]);
-        setBaseFile(e);
+        setBaseFile(opt);
     }
 
     return (
@@ -41,11 +40,11 @@ const SchemaTransformed = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-9'>
-                        <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectChange}
+                        <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectTypeChange}
                             placeholder={'Select transformation type...'} value={transformationType} isSmStyle
                         />
                         {transformationType?.value == 'resolve references' ?
-                            <SBSelect id={"base-file"} data={baseFileOpts} onChange={onBaseFileSelect}
+                            <SBSelect id={"base-file"} data={selectedFiles} onChange={onBaseFileSelect}
                                 placeholder={'Select base file...'} value={baseFile} isSmStyle
                             /> : ""}
                     </div>
@@ -57,7 +56,7 @@ const SchemaTransformed = (props: any) => {
                         </div>
 
                         {isLoading ? <SBSpinner action={'Transforming'} /> : <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
-                            disabled={data.length != 0 && transformationType && (transformationType?.value == 'resolve references' ? (baseFile ? true : false) : true) ? false : true}
+                            disabled={!baseFile && transformationType && (transformationType?.value == 'resolve references' ? (baseFile ? true : false) : true) ? false : true}
                             title={"Process JADN schema(s) to produce another JADN schema"}>
                             Transform
                         </Button>}

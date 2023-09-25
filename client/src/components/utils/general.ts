@@ -91,3 +91,7 @@ export const sbScrollToView = (id: string, name: string, el_index: number, time_
 
 };
 
+export const isString = (s:any) => {
+  return typeof(s) === 'string' || s instanceof String;
+}
+
