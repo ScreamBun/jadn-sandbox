@@ -38,17 +38,17 @@ const SBOutline = (props: SBOutlineProps) => {
   const timerRef = useRef<NodeJS.Timer>();
   const unsubscribeRef = useRef<Unsubscribe>();
 
-  const [, drop] = useDrop<
+  const [{ isOver, canDrop }, drop] = useDrop<
     DragItem,
     void,
     { handlerId: Identifier | null }
   >({
     accept: ['TypesKeys'],
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      }
-    },
+    collect: (monitor) => ({
+      handlerId: monitor.getHandlerId(),
+      canDrop: monitor.canDrop(),
+      isOver: monitor.isOver(),
+    }),
     drop(item: DragItem, _monitor) {
       onTypesDrop(item);
     },
@@ -177,8 +177,18 @@ const SBOutline = (props: SBOutlineProps) => {
           <ul className="nav nav-pills">
             <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link">{title}</a></li>
           </ul>
-          <div className="sb-outline mt-2" ref={drop}>
-            <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
+          <div className="sb-outline mt-2"
+            ref={drop}
+            style={{
+              minHeight: '10em',
+              backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
+              padding: '5px',
+            }}>
+            <div>{
+              cardsState.length > 0 && canDrop && !isOver ?
+                <p> Add Types at desired spot here </p> :
+                cardsState.map((card, i) => renderCard(card, i))
+            }</div>
           </div>
         </div>
       ) : (
