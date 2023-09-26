@@ -56,7 +56,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
     const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
-    const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
 
     const onFileSelect = (e: Option) => {
         dismissAllToast();
@@ -354,7 +353,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             });
             setIsValidJADN(false);
             setIsValidating(false);
-            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -698,7 +696,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                     </div>
                                                     <div className='card-body'>
                                                         {!typesCollapse &&
-                                                            <div ref={scrollToTypeRef}>
+                                                            <div>
                                                                 {generatedSchema.types ?
                                                                     <>{typesEditors}</>
                                                                     :
