@@ -20,7 +20,6 @@ import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutlineBtnStyle from 'components/create/schema/outline/SBOutlineBtnStyle';
 import { TypeObject } from '../consts';
-import SBCreatableSelect from 'components/common/SBCreatableSelect';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -53,9 +52,19 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const [typesCollapse, setTypesCollapse] = useState(false);
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [insertAt, setInsertAt] = useState(defaultInsertIdx);
+    const indexOpts = generatedSchema.types ? generatedSchema.types.map((_item: any, i: number) => {
+        if (i == 0) {
+            return { value: "beginning", label: "beginning" };
+        } else if (i == (generatedSchema.types.length - 1)) {
+            return { value: "end", label: "end" }
+        } else {
+            return { value: `${i}`, label: `index: ${i}` };
+        }
+    }) : [defaultInsertIdx];
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
     const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
+
 
     const onFileSelect = (e: Option) => {
         dismissAllToast();
@@ -605,13 +614,13 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                 </a>
                                             </li>
                                         </ul>
-                                        <SBCreatableSelect id="addAtIndex" name="addAtIndex" value={insertAt}
+                                        <SBSelect id="addAtIndex" name="addAtIndex" value={insertAt}
                                             placeholder="Select index to insert Types"
                                             isClearable={false}
-                                            onChange={onSelectChange} data={["beginning", "end"]}
+                                            onChange={onSelectChange} data={indexOpts}
                                         />
                                         <small className='text-muted'>
-                                            Type numeric index or select one (Default: end)
+                                            (Default: end)
                                         </small>
                                     </div>
                                 </div>
