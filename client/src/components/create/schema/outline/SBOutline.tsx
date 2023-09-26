@@ -6,7 +6,6 @@ import { SBOutlineCard } from "./SBOutlineCard";
 import { useDragDropManager, useDrop } from 'react-dnd';
 import { Unsubscribe } from 'redux';
 
-
 export interface DragItem {
   id: any;
   index: number;
@@ -38,27 +37,20 @@ const SBOutline = (props: SBOutlineProps) => {
   const timerRef = useRef<NodeJS.Timer>();
   const unsubscribeRef = useRef<Unsubscribe>();
 
-  const [{ isOver, canDrop }, drop] = useDrop<
-    DragItem,
-    void,
-    { handlerId: Identifier | null }
-  >({
+  const [{ handlerId, isOver, canDrop }, drop] = useDrop(() => ({
     accept: ['TypesKeys'],
+    drop: (item: DragItem, _monitor) => {
+      onTypesDrop(item);
+      return item;
+    },
     collect: (monitor) => ({
       handlerId: monitor.getHandlerId(),
       canDrop: monitor.canDrop(),
       isOver: monitor.isOver(),
     }),
-    drop(item: DragItem, _monitor) {
-      onTypesDrop(item);
-    },
-    hover(item: DragItem, _monitor) {
-      if (cardsState.includes(item)) {
-        return
-      }
-
-    },
-  })
+  }),
+    [onTypesDrop],
+  )
 
   const setScrollIntervall = (speed: number, container: HTMLElement) => {
     timerRef.current = setInterval(() => {
@@ -179,6 +171,7 @@ const SBOutline = (props: SBOutlineProps) => {
           </ul>
           <div className="sb-outline mt-2"
             ref={drop}
+            data-handler-id={handlerId}
             style={{
               minHeight: '10em',
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',

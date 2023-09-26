@@ -11,7 +11,7 @@ interface DroppableProps {
 export const Droppable = memo(function Droppable(props: DroppableProps) {
     const { onDrop, acceptableType, children } = props;
 
-    const [{ isOver, canDrop }, drop] = useDrop(
+    const [{ handlerId, isOver, canDrop }, drop] = useDrop(
         () => ({
             accept: [`${acceptableType}`],
             drop: (item: any) => {
@@ -21,6 +21,7 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
                 }
             },
             collect: (monitor) => ({
+                handlerId: monitor.getHandlerId(),
                 isOver: monitor.isOver(),
                 canDrop: monitor.canDrop(),
             }),
@@ -82,6 +83,7 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
     return (
         <div
             ref={drop}
+            data-handler-id={handlerId}
             style={{
                 minHeight: '10em',
                 backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
