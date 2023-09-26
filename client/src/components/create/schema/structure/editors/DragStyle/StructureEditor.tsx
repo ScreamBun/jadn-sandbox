@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState, useRef } from 'react';
 import {
   Button, ButtonGroup, Input
 } from 'reactstrap';
@@ -35,7 +35,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const [modal, setModal] = useState(false);
   const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
   const [valueObj, setValueObj] = useState(valueObjInit);
-  const valueObjRef = React.useRef(valueObj);
+  const valueObjRef = useRef(valueObj);
   const isEditableID = valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
   const [focus, setFocus] = useState(false);
 

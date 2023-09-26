@@ -37,7 +37,7 @@ const configInitialState = {
 const SchemaCreator = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
-    const generatedSchemaRef = React.useRef(generatedSchema);
+    const generatedSchemaRef = useRef(generatedSchema);
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema));

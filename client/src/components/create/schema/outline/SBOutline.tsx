@@ -29,7 +29,7 @@ const SBOutline = (props: SBOutlineProps) => {
   const initalState: DragItem[] = [];
   const { id = 'sb-outline', title, onTypesDrop, items = [] } = props;
   const [cardsState, setCardsState] = useState<DragItem[]>(initalState);
-  const cardsStateRef = React.useRef(cardsState);
+  const cardsStateRef = useRef(cardsState);
 
   const [dragValue, setDragValue] = useState<boolean>(false);
   const dragDropManager = useDragDropManager();
