@@ -1,28 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
-import { Form, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
-import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
 import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
-import { info, transformSchema } from 'actions/transform'
-import { Option } from 'components/common/SBSelect'
-// import SBInput from 'components/common/SBInput'
+import { info } from 'actions/transform'
 
-export const initTransformedSchema = {
-    schema: '',
-    schema_name: ''
-}
+
+export interface SelectedSchema { id: string, name: string, type: string, data: {} };
 
 const SchemaTransformer = () => {
     const dispatch = useDispatch();
 
-    const [selectedFiles, setSelectedFiles] = useState<any[]>([]); //arr of obj: [{name of schema, schema data},...]
-    const [selectedFileOpts, setSelectedFileOpts] = useState<Option[]>([]);
-    const [transformationType, setTransformationType] = useState<Option | null>();
-    const [baseFile, setBaseFile] = useState<Option | null>();
-    const [transformedSchema, setTransformedSchema] = useState([initTransformedSchema]);
+    const schemaTransformedRef = useRef();
+    const sbMultiSchemaLoaderRef = useRef(); 
+
+    const [selectedSchemas, setSelectedSchemas] = useState<SelectedSchema[]>([]);     
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
@@ -33,69 +28,39 @@ const SchemaTransformer = () => {
         dismissAllToast();
     }, [dispatch])
 
-    useEffect(() => {
-        setTransformedSchema([initTransformedSchema]);
-        setBaseFile(null);
-    }, [selectedFiles])
-
     const onReset = () => {
-        setIsLoading(false);
-        setBaseFile(null);
-        setTransformationType(null);
-        //setSelectedFiles([]);
-        //setSelectedFileOpts([]);
-        setTransformedSchema([initTransformedSchema]);
+        setSelectedSchemas([]);
+        schemaTransformedRef.current?.onReset();
+        sbMultiSchemaLoaderRef.current?.onReset();
+    }     
+
+    const onSelectedSchemaAdd = (new_schema: SelectedSchema) => {
+        console.log("SchemaTransformater onSelectedSchemaAdd: " + new_schema.name);
+        setSelectedSchemas([ 
+              ...selectedSchemas, 
+              new_schema
+            ]);        
     }
 
-    const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setIsLoading(true);
-        if (transformationType?.value) {
-            const selectedBasefile = baseFile?.value ? baseFile.value : '';
-            dispatch(transformSchema(selectedFiles, transformationType.value, selectedBasefile))
-                .then((val) => {
-                    if (val.error == true) {
-                        setIsLoading(false);
-                        let invalid_schema_list: any[] = [];
-                        if (typeof val.payload.response == "object") {
-                            val.payload.response.forEach((schema) => {
-                                sbToastError(`${schema.name} : ${schema.err}`);
-                                invalid_schema_list.push(schema.name);
-                            })
-                            //invalidate selectedFiles 
-                            const invalidFiles = selectedFiles.map((f) => {
-                                if (invalid_schema_list.includes(f.name)) {
-                                    return { ...f, 'data': 'err' };
-                                } else {
-                                    return f;
-                                }
-                            })
-                            setSelectedFiles(invalidFiles);
+    const onSelectedSchemaReplaceAll = (new_schemas: SelectedSchema[]) => {
+        console.log("SchemaTransformation onSelectedSchemaReplaceAll: " + new_schemas.length);
+        setSelectedSchemas([...new_schemas]);  // Completely replace...     
+    }    
 
-                        } else {
-                            setIsLoading(false);
-                            sbToastError(val.payload.response);
-                        }
-                    } else {
-                        setIsLoading(false);
-                        sbToastSuccess('Transformed Schema successfully');
-                        setTransformedSchema(val.payload);
-                    }
-                })
-                .catch((err) => {
-                    setIsLoading(false);
-                    sbToastError(err);
-                })
+    // Pass in '' to clear all schemas
+    const onSelectedSchemaRemove = (schema_to_remove: string) => {
+        console.log("SchemaTransformation onSelectedSchemaRemove: " + schema_to_remove);
+        if(schema_to_remove){
+            setSelectedSchemas(selectedSchemas.filter((schema) => schema.name !== schema_to_remove));     
         } else {
-            setIsLoading(false);
-            sbToastError('No Transformation type selected');
+            setSelectedSchemas([]);
         }
-    } 
-
-    const onOptionChange = (options: Option[]) => {
-        console.log("SchemaTransformation onFileOptChange options: " + options.length);
-        setSelectedFileOpts([...options]);
-    }         
+    }
+    
+    const onLoading = (isLoading: boolean) => {
+        console.log("SchemaTransformation onLoading: " + onLoading);
+        setIsLoading(isLoading);
+    }          
 
     return (
         <div>
@@ -111,28 +76,27 @@ const SchemaTransformer = () => {
                             <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                         </div>
                         <div className='card-body p-2'>
-                            <Form onSubmit={submitForm}>
-                                <div className='row'>
-                                    <div className='col-md-6 pr-1'>
-                                        <SBMultiSchemaLoader 
-                                            onOptionChange={onOptionChange}
-                                        />
-                                    </div>
-                                    <div className='col-md-6 pl-1'>
-                                        <SchemaTransformed 
-                                            transformedSchema={transformedSchema} 
-                                            data={selectedFileOpts}
-                                            transformationType={transformationType} 
-                                            setTransformationType={setTransformationType}
-                                            setTransformedSchema={setTransformedSchema}
-                                            isLoading={isLoading} 
-                                            baseFile={baseFile} 
-                                            setBaseFile={setBaseFile} 
-                                            selectedFiles={selectedFileOpts}
-                                        />
-                                    </div>
+                            <div className='row'>
+                                <div className='col-md-6 pr-1'>
+                                    <SBMultiSchemaLoader 
+                                        ref={sbMultiSchemaLoaderRef}
+                                        isLoading={isLoading}
+                                        onLoading={onLoading}
+                                        selectedSchemas={selectedSchemas}
+                                        onSelectedSchemaAdd={onSelectedSchemaAdd}
+                                        onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
+                                        onSelectedSchemaRemove={onSelectedSchemaRemove} 
+                                    />
                                 </div>
-                            </Form>
+                                <div className='col-md-6 pl-1'>
+                                    <SchemaTransformed
+                                        ref={schemaTransformedRef}
+                                        isLoading={isLoading}
+                                        selectedSchemas={selectedSchemas}
+                                        onLoading={onLoading}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
