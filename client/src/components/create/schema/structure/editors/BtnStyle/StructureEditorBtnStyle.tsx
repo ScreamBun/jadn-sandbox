@@ -338,6 +338,9 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                     <div className='row'>
                         <div className='col'>
+                            <a role="button" className="btn btn-sm btn-outline-primary mr-2 disabled" title='index'>
+                                {dataIndex}
+                            </a>
                             <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                         </div>
                         <div className='col'>

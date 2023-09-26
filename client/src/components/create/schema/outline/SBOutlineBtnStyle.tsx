@@ -24,23 +24,21 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
 
         return (
             <div className='card' key={i}>
-                <div className='card-body list-group-item'>
-                    <div className='row'>
-                        <div className='col-10'>
-                            <a title={'Click to view'} href="#" onClick={(e) => onClick(e, card.name)}>{card.name}</a>
-                        </div>
-                        <div className='col-2'>
-                            <ButtonGroup size="sm" className="float-right mr-1">
-                                {i == 0 ? '' : <Button color="primary" onClick={() => changeIndex(card, i, i - 1)}
-                                    title={`Move ${card.name} Up`}>
-                                    <FontAwesomeIcon icon={faSquareCaretUp} />
-                                </Button>}
-                                {i == items.length - 1 ? '' : <Button color="primary" onClick={() => changeIndex(card, i, i + 1)}
-                                    title={`Move ${card.name} Down`}>
-                                    <FontAwesomeIcon icon={faSquareCaretDown} />
-                                </Button>}
-                            </ButtonGroup>
-                        </div>
+                <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
+                    <div>
+                        <a title={'Click to view'} href="#" onClick={(e) => onClick(e, card.name)}>{card.name}</a>
+                    </div>
+                    <div>
+                        <ButtonGroup size="sm">
+                            {i == 0 ? '' : <Button color="primary" onClick={() => changeIndex(card, i, i - 1)}
+                                title={`Move ${card.name} Up`}>
+                                <FontAwesomeIcon icon={faSquareCaretUp} />
+                            </Button>}
+                            {i == items.length - 1 ? '' : <Button color="primary" onClick={() => changeIndex(card, i, i + 1)}
+                                title={`Move ${card.name} Down`}>
+                                <FontAwesomeIcon icon={faSquareCaretDown} />
+                            </Button>}
+                        </ButtonGroup>
                     </div>
                 </div>
             </div>

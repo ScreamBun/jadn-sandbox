@@ -20,6 +20,7 @@ import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutlineBtnStyle from 'components/create/schema/outline/SBOutlineBtnStyle';
 import { TypeObject } from '../consts';
+import SBCreatableSelect from 'components/common/SBCreatableSelect';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -30,6 +31,8 @@ const configInitialState = {
     $FieldName: $FIELDNAME,
     $NSID: $NSID
 }
+
+const defaultInsertIdx = { label: "end", value: "end" };
 
 const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
@@ -49,6 +52,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
+    const [insertAt, setInsertAt] = useState(defaultInsertIdx);
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
     const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
@@ -285,7 +289,13 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
         return return_name;
     }
-
+    const onSelectChange = (e: Option) => {
+        if (e == null || parseInt(e.value) < 0 || parseInt(e.value) > generatedSchema.types.length) {
+            sbToastError("Invalid Index. Setting index to default: end.")
+            e = defaultInsertIdx;
+        }
+        setInsertAt(e);
+    }
 
     const onDrop = (key: string) => {
         if (Object.keys(Info).includes(key)) {
@@ -316,10 +326,25 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else if (Object.keys(Types).includes(key)) {
-            const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
+            let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
-            tmpTypes.push(tmpDef);
+
+            if (insertAt.value == "beginning") {
+                tmpTypes.unshift(tmpDef);
+
+            } else if (insertAt.value == "end") {
+                tmpTypes.push(tmpDef);
+
+            } else {
+                const idx = parseInt(insertAt.value);
+                tmpTypes = [
+                    ...tmpTypes.slice(0, idx),
+                    tmpDef,
+                    ...tmpTypes.slice(idx)
+                ];
+            }
+
             let updatedSchema = {
                 ...generatedSchema,
                 types: tmpTypes
@@ -573,7 +598,26 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         </TabContent>
                                     </div>
                                 </div>
-                                <div className='row'>
+                                <div className='row mt-2'>
+                                    <div className='col'>
+                                        <ul className="nav nav-pills">
+                                            <li className="nav-item pb-0 mb-2">
+                                                <a className="active nav-link" title='Enter numeric index to specify where to insert Type'>
+                                                    Insert Type at index
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <SBCreatableSelect id="addAtIndex" name="addAtIndex" value={insertAt}
+                                            placeholder="Select index to insert Types"
+                                            isClearable={false}
+                                            onChange={onSelectChange} data={["beginning", "end"]}
+                                        />
+                                        <small className='text-muted'>
+                                            Type numeric index or select one (Default: end)
+                                        </small>
+                                    </div>
+                                </div>
+                                <div className='row mt-2'>
                                     <div className='col'>
                                         <SBOutlineBtnStyle id={'schema-outline'}
                                             items={generatedSchema.types}
