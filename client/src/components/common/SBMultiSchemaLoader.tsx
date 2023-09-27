@@ -107,9 +107,9 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
         console.log("SBMultiSchemaLoader onGetSchemaData: " + schema_name);
          return dispatch(loadFile('schemas', schema_name))
             .then((response) => {
-                return { 'id': Date.now().toString(), 'name': schema_name, 'type': 'schemas', 'data': response.payload };  
+                return response.payload.data;  
             })
-            .catch((loadFileErr) => { sbToastError(loadFileErr.payload.data); });
+            .catch((loadFileErr) => { sbToastError(loadFileErr.payload.data); });  
     };
 
 
@@ -149,6 +149,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     }
 
     const listSchemas = props.selectedSchemas?.map((schema: SelectedSchema, i: number) => {
+        const test = schema.data;
         return (
             <div className="card" key={schema.id}>  
                 <div className="card-header">
