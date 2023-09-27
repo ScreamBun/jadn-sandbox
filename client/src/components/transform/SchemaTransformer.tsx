@@ -18,6 +18,7 @@ const SchemaTransformer = () => {
     const sbMultiSchemaLoaderRef = useRef(); 
 
     const [selectedSchemas, setSelectedSchemas] = useState<SelectedSchema[]>([]);     
+    const prevSelectedSchemasRef = useRef<SelectedSchema[]>([]);  // Used to reload schema data that's not on the server
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
@@ -26,7 +27,20 @@ const SchemaTransformer = () => {
     useEffect(() => {
         dispatch(info());
         dismissAllToast();
-    }, [dispatch])
+    }, [dispatch]);
+
+    useEffect(() => {
+        /**
+         * assign the latest render value of count to the ref
+         * However, assigning a value to ref doesn't re-render the app
+         * So, prevCountRef.current in the return statement displays the
+         * last value in the ref at the time of render i.e., the previous state value.
+         */
+        if(selectedSchemas.length > 0){
+            prevSelectedSchemasRef.current = [...selectedSchemas];
+        }
+        
+      }, [selectedSchemas]);
 
     const onReset = () => {
         setSelectedSchemas([]);
@@ -44,6 +58,17 @@ const SchemaTransformer = () => {
 
     const onSelectedSchemaReplaceAll = (new_schemas: SelectedSchema[]) => {
         console.log("SchemaTransformation onSelectedSchemaReplaceAll: " + new_schemas.length);
+
+        // Check for empty data caused by uploaded schemas not saved on the server
+        new_schemas?.map((schema: SelectedSchema) => {
+            if(!schema.data){
+                prevSelectedSchemasRef.current.map((prev_schema: SelectedSchema) => {
+                    if(schema.name == prev_schema.name){
+                        schema.data = prev_schema.data;                    }
+                });
+            }
+        });
+
         setSelectedSchemas([...new_schemas]);  // Completely replace...     
     }    
 

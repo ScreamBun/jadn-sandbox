@@ -125,14 +125,13 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
         props.onSelectedSchemaRemove('');  // clear all
 
         let schemas_to_load: SelectedSchema[] = [];
-        if (options.length != 0) {
-            await Promise.all(
-                options.map(async (option) => {
-                    const schema_data: SelectedSchema = await onGetSchemaData(option.label);
-                    const new_schema: SelectedSchema = { 'id': Date.now().toString(), 'name': option.label, 'type': 'schemas', 'data': schema_data };
-                    schemas_to_load.push(new_schema);                
-            }));         
-        } 
+        await Promise.all(
+            options.map(async (option) => {
+                const schema_data: SelectedSchema = await onGetSchemaData(option.label);
+                const new_schema: SelectedSchema = { 'id': Date.now().toString(), 'name': option.label, 'type': 'schemas', 'data': schema_data };
+                schemas_to_load.push(new_schema);     
+                // props.onSelectedSchemaAdd(new_schema);  // Causes a duplicate bug to appear                           
+        }));         
 
         props.onSelectedSchemaReplaceAll(schemas_to_load);
 

@@ -16,6 +16,7 @@ import { SelectedSchema } from "components/transform/SchemaTransformer";
 interface SchemaTransformedProps {
     isLoading: boolean;
     onLoading: (isLoading: boolean) => void;
+    onSelectedSchemaReplaceAll: (schemas: SelectedSchema[]) => void;
     selectedSchemas: SelectedSchema[];
 }
 
@@ -110,15 +111,14 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                         });
 
                         // invalidate selectedFiles 
-                        // const invalidFiles = selectedFiles.map((f) => {
-                        //     if (invalid_schema_list.includes(f.name)) {
-                        //         return { ...f, 'data': 'err' };
-                        //     } else {
-                        //         return f;
-                        //     }
-                        // });
-
-                        // setSelectedFiles(invalidFiles);
+                        const invalidFiles = props.selectedSchemas.map((ss) => {
+                            if (invalid_schema_list.includes(ss.name)) {
+                                return { ...ss, 'data': 'err' };
+                            } else {
+                                return ss;
+                            }
+                        });
+                        props.onSelectedSchemaReplaceAll(invalidFiles);
 
                     } else {
                         sbToastError(val.payload.response);
