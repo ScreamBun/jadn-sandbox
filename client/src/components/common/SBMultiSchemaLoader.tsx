@@ -58,7 +58,17 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
         }
     }  
 
-    // TODO: Move to utils?
+    const isDupSchemaName = (name: string, schemas: SelectedSchema[]) => {        
+        let is_dup: boolean = false;
+        schemas?.map((schema: SelectedSchema) => {
+            if(name == schema.name){
+                is_dup = true;
+            }
+        });
+
+        return is_dup;
+    }
+
     const onFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log("SBMultiSchemaLoader onFileUpload");
         e.preventDefault();
@@ -66,7 +76,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
         if (e.target.files && e.target.files.length != 0) {
             const chosenFiles = Array.prototype.slice.call(e.target.files);
             chosenFiles.forEach((file) => {
-                if (!props.selectedSchemas.includes(file.name)) {
+                if (!isDupSchemaName(file.name, props.selectedSchemas)) {
                     const fileReader = new FileReader();
                     fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                         if (ev.target && ev.target.result && isString(ev.target.result)) {
@@ -89,6 +99,8 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
                         }
                     };
                     fileReader.readAsText(file);
+                } else {
+                    sbToastError(`${file.name} already exists`);
                 }
             });
         }
@@ -148,17 +160,16 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     }
 
     const listSchemas = props.selectedSchemas?.map((schema: SelectedSchema, i: number) => {
-        const test = schema.data;
         return (
             <div className="card" key={schema.id}>  
                 <div className="card-header">
-                    <h5 className="mb-0">
+                    <h5 className="mb-0 d-flex justify-content-between align-items-center">
                         <button className={schema.data == 'err' ? `btn` : `btn btn-link`} id={`toggleMsg#${i}`} type="button" onClick={() => {
                                 onToggle(i);
                         }}>
                         {schema.name} {schema.data == 'err' ? <FontAwesomeIcon style={{ color: 'red' }} title={'Invalid JADN. Please remove or fix schema.'} icon={faExclamationCircle}></FontAwesomeIcon> : ''}
                         </button>
-                        <Button id='removeFile' color="danger" className='btn-sm float-right' onClick={() => onRemoveSchema(schema.name)}>
+                        <Button id='removeFile' color="danger" className='btn-sm' onClick={() => onRemoveSchema(schema.name)}>
                             <FontAwesomeIcon icon={faTrash} />
                         </Button>
                     </h5>
@@ -195,7 +206,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
                     </div>
                 </div>
             </div>
-            <div className="card-body">
+            <div className="card-body-page">
                 {listSchemas}
             </div>
         </div>

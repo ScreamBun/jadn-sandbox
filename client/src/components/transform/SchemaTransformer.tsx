@@ -118,6 +118,7 @@ const SchemaTransformer = () => {
                                         ref={schemaTransformedRef}
                                         isLoading={isLoading}
                                         selectedSchemas={selectedSchemas}
+                                        onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
                                         onLoading={onLoading}
                                     />
                                 </div>
