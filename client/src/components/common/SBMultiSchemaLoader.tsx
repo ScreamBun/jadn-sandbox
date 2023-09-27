@@ -186,7 +186,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
                                     placeholder={'Select schema...(at least one)'}
                                     loc={'schemas'}
                                     value={selectedOptions}
-                                    isGrouped isFileUploader isMultiSelect/>
+                                    isGrouped isFileUploader isMultiSelect isSmStyle/>
                             </div>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
