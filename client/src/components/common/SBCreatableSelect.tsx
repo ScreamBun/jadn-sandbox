@@ -4,7 +4,7 @@ import { Option, GroupedOption, groupBadgeStyles, groupStyles } from './SBSelect
 
 const SBCreatableSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value, onBlur, isClearable } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value, onBlur, isNotClearable } = props;
 
     const customStyles = {
         control: base => ({
@@ -79,7 +79,7 @@ const SBCreatableSelect = (props: any) => {
                 placeholder={placeholder}
                 options={opts}
                 formatGroupLabel={formatGroupLabel}
-                isClearable={isClearable}
+                isClearable={!isNotClearable}
                 onChange={onChange}
                 menuPortalTarget={document.body}
                 styles={customStyles}

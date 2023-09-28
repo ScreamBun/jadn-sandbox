@@ -23,6 +23,7 @@ import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-
 import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
 import { v4 as uuid4 } from 'uuid';
+import { getFilenameOnly } from 'components/utils/general';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -105,7 +106,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
-            setFileName(file.name.split('.')[0]);
+            const filename_only = getFilenameOnly(file.name);
+            setFileName(filename_only);
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
