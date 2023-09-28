@@ -38,7 +38,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const [valueObj, setValueObj] = useState(valueObjInit);
   const valueObjRef = React.useRef(valueObj);
   const isEditableID = valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
-  const [focus, setFocus] = useState(false);
 
   useEffect(() => {
     valueObjRef.current = valueObj;
@@ -74,11 +73,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     change(updatevalue, dataIndex);
   }
 
-  const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setFocus(true);
-  }
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
@@ -88,7 +82,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     e.preventDefault();
     const { placeholder, value } = e.target;
-    setFocus(false);
 
     //VALIDATE NAME
     if (placeholder == "Name") {
@@ -234,11 +227,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const toggleModal = () => {
     setModal(modal => !modal);
-    if (!modal) {
-      setFocus(true);
-    } else {
-      setFocus(false);
-    }
   }
 
   // If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
@@ -269,7 +257,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 <div className="row">
                   <div className="col-md-4">
                     <Input name="structureName" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
-                      onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                      onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
                     <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
@@ -285,7 +273,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   </div>
                   <div className="col-md-6">
                     <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1}
-                      value={valueObj.comment} onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                      value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                   </div>
                 </div>
               </div>
@@ -323,7 +311,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <>
-      <div className={`card ${focus ? 'border-primary border-3' : 'border-secondary'} mb-2`}>
+      <div className={`card border-secondary mb-2`}>
         <div className="card-header px-2 py-2" >
           <div className='row'>
             <div className='col'>
@@ -350,7 +338,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               <div className="row">
                 <div className="col-md-4">
                   <Input name="structureName" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
-                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                    onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
                   <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
@@ -365,7 +353,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 </div>
                 <div className="col-md-6">
                   <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment}
-                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                    onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
             </div>

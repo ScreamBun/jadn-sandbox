@@ -26,7 +26,6 @@ interface PrimitiveEditorProps {
 const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
   const { value, change, dataIndex, config } = props;
   const [modal, setModal] = useState(false);
-  const [focus, setFocus] = useState(false);
 
   let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
   if (Number.isInteger(value[0])) {
@@ -42,13 +41,8 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
     setValueObj({ ...valueObj, [key]: value });
   }
 
-  const onFocus = () => {
-    setFocus(true);
-  }
-
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
-    setFocus(false);
 
     if (placeholder == "Name") {
       if (value.length >= 64) {
@@ -91,16 +85,11 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
 
   const toggleModal = () => {
     setModal(modal => !modal);
-    if (!modal) {
-      setFocus(true);
-    } else {
-      setFocus(false);
-    }
   }
 
   return (
     <>
-      <div className={`card ${focus ? 'border-primary border-3' : 'border-secondary'} mb-3`}>
+      <div className={`card border-secondary mb-3`}>
         <div className="card-header px-2 py-2">
           <div className='row'>
             <div className='col'>
@@ -127,7 +116,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
               <div className="row">
                 <div className="col-md-4">
                   <Input name="primitiveEditorName" type="text" placeholder="Name" maxLength={64} value={valueObj.name}
-                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                    onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
                   <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
@@ -141,7 +130,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
                 </div>
                 <div className="col-md-6">
                   <Input name="primitiveEditorComment" type="textarea" placeholder="Comment" className='form-control'
-                    rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                    rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
             </div>

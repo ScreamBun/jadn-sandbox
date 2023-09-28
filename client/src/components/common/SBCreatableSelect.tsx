@@ -4,7 +4,7 @@ import { Option, GroupedOption, groupBadgeStyles, groupStyles } from './SBSelect
 
 const SBCreatableSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value, onFocus, onBlur } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value } = props;
 
     const customStyles = {
         control: base => ({
@@ -85,8 +85,6 @@ const SBCreatableSelect = (props: any) => {
                 styles={customStyles}
                 isMulti={isMultiSelect}
                 value={value}
-                onFocus={onFocus}
-                onBlur={onBlur}
             />
         </div>
     );
