@@ -1,10 +1,10 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
     Button, ButtonGroup, FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
 import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
@@ -23,14 +23,13 @@ interface StructureEditorProps {
     value: TypeArray;
     change: (v: PrimitiveTypeObject, i: number) => void;
     remove: (i: number) => void;
-    changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
     config: InfoConfig;
     collapseAllFields: boolean;
 }
 
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
-    const { value, change, changeIndex, dataIndex, config, collapseAllFields, remove } = props;
+    const { value, change, dataIndex, config, collapseAllFields, remove } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
 
     const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -55,7 +54,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         return propValue;
     }
 
-    const sortFields = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const sortFields = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         let tmpFields = [...valueObj.fields];
         //sort fields
@@ -262,38 +261,42 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                     <div className="card-header px-2 py-2">
                         <div className='row'>
                             <div className='col'>
+                                <a role="button" className="btn btn-sm btn-outline-primary mr-2 disabled" title='index'>
+                                    {dataIndex}
+                                </a>
                                 <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                             </div>
                             <div className='col'>
-                                <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
-                                    <FontAwesomeIcon icon={faMinusCircle} />
-                                </Button>
+                                <ButtonGroup size="sm" className="float-right">
+                                    <Button color="danger" onClick={removeAll}
+                                        title={`Delete ${valueObj.type}`}>
+                                        <FontAwesomeIcon icon={faMinusCircle} />
+                                    </Button>
+                                </ButtonGroup>
                             </div>
                         </div>
                     </div>
                     <div className="card-body px-2 py-2">
-                        <div className="row m-0">
-                            <FormGroup className="col-md-4">
-                                <Label>Name</Label>
-                                <Input name="StrucutureEditorName" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
-                            </FormGroup>
-                            <FormGroup className="col-md-2">
-                                <Label>&nbsp;</Label>
-                                <ButtonGroup>
-                                    <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
-                                    <OptionsModal
-                                        optionValues={valueObj.options}
-                                        isOpen={modal}
-                                        optionType={valueObj.type}
-                                        toggleModal={toggleModal}
-                                        saveModal={saveModal}
-                                    />
-                                </ButtonGroup>
-                            </FormGroup>
-                            <FormGroup className="col-md-6">
-                                <Label>Comment</Label>
-                                <Input name="StrucutureEditorComment" type="textarea" placeholder="Comment" className='text-area-w100 form-control' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
-                            </FormGroup>
+                        <div className="row">
+                            <div className="col-md-4">
+                                <Label className='mb-0'>Name</Label>
+                                <Input name="name" type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                            </div>
+
+                            <div className="col-md-2 mt-4 text-center">
+                                <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                                <OptionsModal
+                                    optionValues={valueObj.options}
+                                    isOpen={modal}
+                                    optionType={valueObj.type}
+                                    toggleModal={toggleModal}
+                                    saveModal={saveModal}
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <Label className='mb-0'>Comment</Label>
+                                <Input name="comment" type="textarea" placeholder="Comment" rows={1} className='form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -325,6 +328,9 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                     <div className='row'>
                         <div className='col'>
+                            <a role="button" className="btn btn-sm btn-outline-primary mr-2 disabled" title='index'>
+                                {dataIndex}
+                            </a>
                             <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                         </div>
                         <div className='col'>
@@ -332,16 +338,6 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 <Button color="danger" onClick={removeAll}
                                     title={`Delete ${valueObj.type}`}>
                                     <FontAwesomeIcon icon={faMinusCircle} />
-                                </Button>
-                            </ButtonGroup>
-                            <ButtonGroup size="sm" className="float-right mr-1">
-                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
-                                    title={`Move ${valueObj.type} Up`}>
-                                    <FontAwesomeIcon icon={faSquareCaretUp} />
-                                </Button>
-                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
-                                    title={`Move ${valueObj.type} Down`}>
-                                    <FontAwesomeIcon icon={faSquareCaretDown} />
                                 </Button>
                             </ButtonGroup>
                         </div>
@@ -352,7 +348,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                         <div className="col-md-4">
                             <Label className='mb-0'>Name</Label>
-                            <Input name="StrucutureEditorName" type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                            <Input name="name" type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                         </div>
 
                         <div className="col-md-2 mt-4 text-center">
@@ -367,7 +363,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
                         <div className="col-md-6">
                             <Label className='mb-0'>Comment</Label>
-                            <Input name="StrucutureEditorComment" type="textarea" placeholder="Comment" rows={1} className='form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                            <Input name="comment" type="textarea" placeholder="Comment" rows={1} className='form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                         </div>
                     </div>
                     <div className="row pt-2">
@@ -382,15 +378,18 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                     <FontAwesomeIcon icon={faPlusSquare} />
                                 </span>
 
-                                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                    className='float-right btn btn-sm'
-                                    onClick={() => setFieldCollapse(!fieldCollapse)}
-                                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                <a href="#" role="button"
+                                    onClick={() => setFieldCollapse(!fieldCollapse)}>
+                                    <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                        className='float-right btn btn-sm'
+                                        title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                </a>
 
-                                {isEditableID ? <FontAwesomeIcon icon={faArrowDown19}
-                                    className='float-right btn btn-sm'
-                                    onClick={() => sortFields()}
-                                    title={'Sort Fields by ID'} /> : ''}
+                                {isEditableID ? <a href="#" role="button" onClick={sortFields}>
+                                    <FontAwesomeIcon icon={faArrowDown19}
+                                        className='float-right btn btn-sm'
+                                        title={'Sort Fields by ID'} />
+                                </a> : ''}
 
                             </legend>
 

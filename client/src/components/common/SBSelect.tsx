@@ -107,7 +107,7 @@ const smStyle = {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle, isClearable } = props;
     const [toggleModal, setToggleModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -233,7 +233,7 @@ const SBSelect = (props: any) => {
                         placeholder={placeholder}
                         options={opts}
                         formatGroupLabel={formatGroupLabel}
-                        isClearable
+                        isClearable={isClearable}
                         onChange={onChange}
                         menuPortalTarget={document.body}
                         className={customClass}
@@ -248,7 +248,7 @@ const SBSelect = (props: any) => {
                         placeholder={placeholder}
                         options={opts}
                         formatGroupLabel={formatGroupLabel}
-                        isClearable
+                        isClearable={isClearable}
                         onChange={onChange}
                         menuPortalTarget={document.body}
                         className={customClass}

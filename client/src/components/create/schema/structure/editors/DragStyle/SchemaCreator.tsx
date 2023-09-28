@@ -18,10 +18,11 @@ import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
-import SBOutline, { Item } from 'components/create/schema/outline/SBOutline';
+import SBOutline, { DragItem as Item } from 'components/create/schema/outline/SBOutline';
 import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
+import { v4 as uuid4 } from 'uuid';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -36,7 +37,7 @@ const configInitialState = {
 const SchemaCreator = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
-    const generatedSchemaRef = React.useRef(generatedSchema);
+    const generatedSchemaRef = useRef(generatedSchema);
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema));
@@ -213,16 +214,16 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
 
         infoKeys = Object.keys(unusedInfo).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
         ));
     } else {
         infoKeys = Object.keys(Info).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={Info[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
         ));
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <DraggableKey item={Types[k].key} acceptableType={'TypesKeys'} key={Types[k].key} id={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+        <DraggableKey item={Types[k].key} acceptableType={'TypesKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
     ));
 
     const get_type_name = (types_to_serach: any[], name: string) => {
@@ -273,7 +274,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         return return_name;
     }
 
-    const onDrop = (key: string) => {
+    const onSchemaDrop = (item: Item) => {
+        let key = item.text;
         if (Object.keys(Info).includes(key)) {
             let updatedSchema;
             if (key == 'config') {
@@ -303,7 +305,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
-            const tmpDef = Types[key].edit({ name: type_name });;
+            const tmpDef = Types[key].edit({ name: type_name });
             tmpTypes.push(tmpDef);
             let updatedSchema = {
                 ...generatedSchema,
@@ -423,33 +425,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     setIsValidating(false);
                 }
             },
-            changeIndex: (val, dataIndex: number, idx: number) => {
-                const type = val.type.toLowerCase() as keyof typeof Types;
-                if (idx < 0) {
-                    sbToastError('Error: Cannot move Type up anymore');
-                    return;
-                } else if (idx >= generatedSchema.types.length) {
-                    sbToastError('Error: Cannot move Type down anymore');
-                    return;
-                }
-
-                let tmpTypes = [...generatedSchema.types];
-                tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
-
-                tmpTypes = [
-                    ...tmpTypes.slice(0, idx),
-                    Types[type].edit(val),
-                    ...tmpTypes.slice(idx)
-                ];
-
-                let updatedSchema = {
-                    ...generatedSchema,
-                    types: tmpTypes
-                };
-                setGeneratedSchema(updatedSchema);
-                setIsValidJADN(false);
-                setIsValidating(false);
-            },
             config: configOpt
         }))
     }).filter(Boolean);
@@ -483,6 +458,29 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
+
+    const onTypesToOutlineDrop = (item: Item) => {
+        let key = item.text;
+        let insertAt = item.index;
+        const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
+        const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
+        const tmpDef = Types[key].edit({ name: type_name });
+
+        let updatedTypes = [
+            ...tmpTypes.slice(0, insertAt),
+            tmpDef,
+            ...tmpTypes.slice(insertAt)
+        ];
+
+        let updatedSchema = {
+            ...generatedSchema,
+            types: updatedTypes
+        };
+        flushSync(() => {
+            setGeneratedSchema(updatedSchema);
+        });
+        setIsValidating(false);
+    }
 
     return (
         <div className='card'>
@@ -583,6 +581,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                         <SBOutline id={'schema-outline'}
                                             items={generatedSchema.types}
                                             title={'Outline'}
+                                            onTypesDrop={onTypesToOutlineDrop}
                                             onDrop={onOutlineDrop}
                                             onClick={onOutlineClick}
                                         ></SBOutline>
@@ -614,7 +613,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                     </div>
                                                     <div className='card-body'>
                                                         {!infoCollapse &&
-                                                            <Droppable onDrop={onDrop} acceptableType={'InfoKeys'} >
+                                                            <Droppable onDrop={onSchemaDrop} acceptableType={'InfoKeys'} >
                                                                 {generatedSchema.info ?
                                                                     <>{infoEditors}</>
                                                                     :
@@ -658,7 +657,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                     </div>
                                                     <div className='card-body'>
                                                         {!typesCollapse &&
-                                                            <Droppable onDrop={onDrop} acceptableType={"TypesKeys"} >
+                                                            <Droppable onDrop={onSchemaDrop} acceptableType={"TypesKeys"} >
                                                                 {generatedSchema.types ?
                                                                     <>{typesEditors}</>
                                                                     :

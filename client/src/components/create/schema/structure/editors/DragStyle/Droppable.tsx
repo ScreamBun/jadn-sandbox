@@ -16,7 +16,7 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
             accept: [`${acceptableType}`],
             drop: (item: any) => {
                 if (onDrop) {
-                    onDrop(item.itemID)
+                    onDrop(item)
                     return item
                 }
             },

@@ -31,7 +31,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop, editableID } = props;
     const initalState: DragItem[] = [];
     const [cardsState, setCardsState] = useState<DragItem[]>(initalState);
-    const cardsStateRef = React.useRef(cardsState);
+    const cardsStateRef = useRef(cardsState);
 
     const [dragValue, setDragValue] = useState<boolean>(false);
     const dragDropManager = useDragDropManager();
