@@ -55,3 +55,8 @@ export const getFilenameExt = (full_name: string) => {
   }
   return ext;
 };
+
+export const isString = (s: any) => {
+  return typeof (s) === 'string' || s instanceof String;
+}
+

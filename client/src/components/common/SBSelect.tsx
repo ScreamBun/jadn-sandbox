@@ -66,7 +66,7 @@ const defaultStyle = {
 const smStyle = {
     control: base => ({
         ...base,
-        height: 30,
+        // height: 30,
         minHeight: 30,
         cursor: 'pointer'
     }),
@@ -75,7 +75,7 @@ const smStyle = {
 
     valueContainer: (provided, state) => ({
         ...provided,
-        height: '30px',
+        minHeight: 30,
         padding: '0 6px',
     }),
 
@@ -84,13 +84,9 @@ const smStyle = {
         margin: '0px',
     }),
 
-    indicatorSeparator: state => ({
-        display: 'none',
-    }),
-
     indicatorsContainer: (provided, state) => ({
         ...provided,
-        height: '30px',
+        minHeight: 30,
     }),
 
     option: (styles, state) => ({
