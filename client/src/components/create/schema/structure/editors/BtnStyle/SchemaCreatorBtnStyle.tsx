@@ -529,14 +529,12 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                                 <h6 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }}> metadata </small></h6>
                                                             </div>
                                                             <div className='col'>
-                                                                {generatedSchema.info &&
-                                                                    <legend>
-                                                                        <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                            className='float-right btn btn-sm'
-                                                                            onClick={() => setInfoCollapse(!infoCollapse)}
-                                                                            title={infoCollapse ? ' Show Info' : ' Hide Info'} />
-                                                                    </legend>
-                                                                }
+                                                                <legend>
+                                                                    <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                        className='float-right btn btn-sm text-light'
+                                                                        onClick={() => setInfoCollapse(!infoCollapse)}
+                                                                        title={infoCollapse ? ' Show Info' : ' Hide Info'} />
+                                                                </legend>
                                                             </div>
                                                         </div>
                                                     </div>
