@@ -105,7 +105,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
-            
+
             const filename_only = getFilenameOnly(file.name);
             setFileName(filename_only);
 
@@ -458,26 +458,12 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         }))
     }).filter(Boolean);
 
-    const reorder = (updatedOrder: Item[]) => {
-        let reordered_types: any[] = [];
-
-        {
-            updatedOrder.map((updated_item, i) => {
-                const item_text = updated_item.text;
-                const filtered_item = generatedSchemaRef.current.types.filter((item: []) => item[0] === item_text);
-                reordered_types[i] = filtered_item[0];
-            })
-        };
-
+    const onOutlineDrop = (updatedCards: Item[]) => {
         let updatedSchema = {
-            ...generatedSchemaRef.current,
-            types: reordered_types
+            ...generatedSchema,
+            types: updatedCards
         };
         setGeneratedSchema(updatedSchema);
-    };
-
-    const onOutlineDrop = (updatedCards: Item[]) => {
-        reorder(updatedCards);
     };
 
     const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {

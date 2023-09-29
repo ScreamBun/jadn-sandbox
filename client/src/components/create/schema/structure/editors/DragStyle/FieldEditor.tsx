@@ -29,9 +29,7 @@ interface FieldEditorProps {
   remove: (_i: number) => void;
   config: InfoConfig;
   editableID: boolean;
-  //changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
 
-  isDraggable: boolean;
   moveCard: (originalIndex: number, newIndex: number) => void;
   dropCard: (arg: DragItem) => void;
   acceptableType: string;
@@ -39,7 +37,7 @@ interface FieldEditorProps {
 
 
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
-  const { enumerated = false, value, dataIndex, change, config, acceptableType, isDraggable = true, moveCard, id, dropCard, remove, editableID } = props;
+  const { enumerated = false, value, dataIndex, change, config, acceptableType, moveCard, id, dropCard, remove, editableID } = props;
   const types = useAppSelector((state) => ({
     base: state.Util.types.base,
     schema: Object.keys(state.Util.types.schema) || {}
@@ -60,12 +58,11 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     () => ({
       type: acceptableType,
       item: () => { return { id, dataIndex, value } },
-      canDrag: isDraggable,
       collect: (monitor) => ({
         item: monitor.getItem(),
         isDragging: monitor.isDragging(),
       }),
-    }), [acceptableType, isDraggable]
+    }), [acceptableType]
   )
 
   const [{ handlerId }, drop] = useDrop<
@@ -80,7 +77,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       }
     },
     drop(item: DragItem, _monitor) {
-      dropCard(item);
+      dropCard(item)
     },
     hover(draggedItem: DragItem, monitor) {
       if (!previewRef.current) {
@@ -137,16 +134,9 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   const containerStyle = useMemo(
     () => ({
-      opacity: isDragging || !isDraggable ? 0.4 : 1,
+      opacity: isDragging ? 0.4 : 1,
     }),
-    [isDragging, isDraggable],
-  )
-
-  const handleStyle = useMemo(
-    () => ({
-      cursor: isDraggable ? 'move' : 'default',
-    }),
-    [isDragging, isDraggable],
+    [isDragging],
   )
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -328,7 +318,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     <>
       <div className={`card border-secondary mb-2`} ref={previewRef} data-handler-id={handlerId} style={containerStyle}>
         <div className="card-body px-2 py-2">
-          <div ref={dragRef} style={handleStyle}>
+          <div ref={dragRef} style={{ cursor: 'move' }}>
             <FontAwesomeIcon className='float-right pt-1 pl-2 m-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
             <a href="#" role="button" onClick={onRemoveItemClick}>
               <FontAwesomeIcon className='float-right pt-1 m-1' color='red' title={`Delete Field`} icon={faMinusCircle}></FontAwesomeIcon>

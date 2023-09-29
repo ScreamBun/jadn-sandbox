@@ -15,7 +15,7 @@ import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
 import { ModalSize } from '../options/ModalSize';
 import { flushSync } from 'react-dom';
-import SBOutlineFields from './SBOutlineFields';
+import SBOutlineFields, { DragItem } from './SBOutlineFields';
 
 
 interface StructureEditorProps {
@@ -36,12 +36,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const [modal, setModal] = useState(false);
   const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
   const [valueObj, setValueObj] = useState(valueObjInit);
-  const valueObjRef = React.useRef(valueObj);
   const isEditableID = valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
-
-  useEffect(() => {
-    valueObjRef.current = valueObj;
-  }, [valueObj])
 
   useEffect(() => {
     setFieldCollapse(collapseAllFields)
@@ -284,14 +279,12 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     );
   }
 
-  const onOutlineDrop = (updatedCards: any) => {
-    let reordered_types: any[] = [];
+  const onOutlineDrop = (item: DragItem) => {
+    let reordered_types: any[] = [...valueObj.fields];
 
-    updatedCards.map((updated_item: { value: any; }, i: number) => {
-      const item_value = updated_item.value;
-      const filtered_item = valueObjRef.current.fields.filter((item) => item === item_value);
-      reordered_types[i] = filtered_item[0];
-    })
+    const old_index = reordered_types.findIndex(f => f[0] == item.id);
+    reordered_types.splice(old_index, 1);
+    reordered_types.splice(item.dataIndex, 0, item.value);
 
     //If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.
     if (!isEditableID) {
@@ -302,7 +295,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     }
 
     let updatedData = {
-      ...valueObjRef.current,
+      ...valueObj,
       fields: reordered_types
     };
     setValueObj(updatedData);
@@ -387,7 +380,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
               {!fieldCollapse ? valueObj.fields?.length == 0 ? <p> No fields to show</p> :
                 <div>
-                  <SBOutlineFields id={'fields-outline'}
+                  <SBOutlineFields
+                    id={'fields-outline'}
                     items={valueObj.fields}
                     onDrop={onOutlineDrop}
                     isEnumerated={valueObj.type.toLowerCase() === 'enumerated'}
@@ -395,7 +389,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     fieldRemove={onFieldRemoval}
                     editableID={isEditableID}
                     config={config}
-                  ></SBOutlineFields>
+                    acceptableType={valueObj.name}
+                  />
                 </div>
                 : ''
               }

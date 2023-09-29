@@ -1,10 +1,10 @@
 
 import update from 'immutability-helper'
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDragDropManager } from 'react-dnd';
+import { useDragDropManager, useDrop } from 'react-dnd';
 import { Unsubscribe } from 'redux';
 import FieldEditor from './FieldEditor';
-import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from 'components/create/schema/interface';
+import { FieldArray, InfoConfig } from 'components/create/schema/interface';
 
 export interface DragItem {
     id: any;
@@ -18,20 +18,19 @@ export interface OutlineContainerState {
 export interface SBOutlineProps {
     id: string;
     items: any[];
-    onDrop: (arg: DragItem[]) => void;
+    onDrop: (arg: DragItem) => void;
     onClick?: (e: React.MouseEvent<HTMLElement>, text: string) => void;
     isEnumerated: boolean;
     fieldChange: any;
     fieldRemove: any;
     config: InfoConfig;
     editableID: boolean;
+    acceptableType: string;
 }
 
 const SBOutlineFields = (props: SBOutlineProps) => {
-    const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop, editableID } = props;
-    const initalState: DragItem[] = [];
-    const [cardsState, setCardsState] = useState<DragItem[]>(initalState);
-    const cardsStateRef = React.useRef(cardsState);
+    const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop, editableID, acceptableType } = props;
+    const [cardsState, setCardsState] = useState<DragItem[]>(items);
 
     const [dragValue, setDragValue] = useState<boolean>(false);
     const dragDropManager = useDragDropManager();
@@ -50,7 +49,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
             unsubscribeRef.current = monitor.subscribeToOffsetChange(() => {
                 const offset = monitor.getClientOffset();
                 // it can be html, body, div, any container that have scroll
-                const container = document.getElementById("fieldsScrollContainer");
+                const container = document.getElementById(id);
 
                 if (!offset || !container) return;
 
@@ -84,27 +83,18 @@ const SBOutlineFields = (props: SBOutlineProps) => {
         };
     }, [monitor]);
 
-    useEffect(() => {
-        cardsStateRef.current = cardsState;
-    }, [cardsState]);
+    const [{ canDrop }, drop] = useDrop(
+        () => ({
+            accept: acceptableType,
+            collect: (monitor) => ({
+                canDrop: monitor.canDrop(),
+            }),
+        }),
+        [],
+    )
 
-    useEffect(() => {
-        setCardsState(initalState);
-        {
-            items.map((item, i) => {
-                const new_card = {
-                    id: self.crypto.randomUUID(),
-                    dataIndex: i,
-                    value: item
-                }
-                setCardsState(prev => [...prev, new_card]);
-            })
-        };
-
-    }, [props]);
-
-    const dropCard = useCallback(() => {
-        onDrop(cardsStateRef.current)
+    const dropCard = useCallback((item: DragItem) => {
+        onDrop(item)
     }, []);
 
     const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
@@ -116,26 +106,26 @@ const SBOutlineFields = (props: SBOutlineProps) => {
                 ],
             }),
         )
+
     }, []);
 
     const renderCard = useCallback(
-        (card: { id: number; value: EnumeratedFieldArray | StandardFieldArray; dataIndex: number }, index: number) => {
+        (card: any, index: number) => {
             return (
                 <FieldEditor
-                    key={card.id}
-                    id={card.id}
+                    key={card[0]}
+                    id={card[0]}
                     dataIndex={index}
                     enumerated={isEnumerated}
-                    value={card.value}
+                    value={card}
                     change={fieldChange}
                     remove={fieldRemove}
                     config={config}
                     editableID={editableID}
 
-                    isDraggable={true}
                     moveCard={moveCard}
                     dropCard={dropCard}
-                    acceptableType={`Field`}
+                    acceptableType={acceptableType}
                 />
             )
         },
@@ -143,17 +133,12 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     );
 
     return (
-        <div id='fieldsScrollContainer'>
-            {items && items.length > 0 ? (
-                <div id={id}>
-                    <div className="sb-outline mt-2">
-                        <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
-                    </div>
-                </div>
-            ) : (
-                <></>
-            )
-            }
+        <div id={id} className="sb-outline mt-2" ref={drop}
+            style={{
+                backgroundColor: canDrop ? 'lightgreen' : 'inherit',
+                padding: '5px',
+            }}>
+            {cardsState.map((card, i) => renderCard(card, i))}
         </div>
     );
 }
