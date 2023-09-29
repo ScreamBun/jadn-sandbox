@@ -95,7 +95,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
 
     const dropCard = useCallback((item: DragItem) => {
         onDrop(item)
-    }, []);
+    }, [cardsState]);
 
     const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
         setCardsState((prevCards: DragItem[]) =>
