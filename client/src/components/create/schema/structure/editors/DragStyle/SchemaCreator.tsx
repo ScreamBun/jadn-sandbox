@@ -22,6 +22,7 @@ import SBOutline, { Item } from 'components/create/schema/outline/SBOutline';
 import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
+import { getFilenameOnly } from 'components/utils/general';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -104,7 +105,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
-            setFileName(file.name.split('.')[0]);
+            
+            const filename_only = getFilenameOnly(file.name);
+            setFileName(filename_only);
+
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
@@ -601,14 +605,12 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                                 <h6 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }}> metadata </small></h6>
                                                             </div>
                                                             <div className='col'>
-                                                                {generatedSchema.info &&
-                                                                    <legend>
-                                                                        <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                            className='float-right btn btn-sm'
-                                                                            onClick={() => setInfoCollapse(!infoCollapse)}
-                                                                            title={infoCollapse ? ' Show Info' : ' Hide Info'} />
-                                                                    </legend>
-                                                                }
+                                                                <legend>
+                                                                    <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                        className='float-right btn btn-sm text-light'
+                                                                        onClick={() => setInfoCollapse(!infoCollapse)}
+                                                                        title={infoCollapse ? ' Show Info' : ' Hide Info'} />
+                                                                </legend>
                                                             </div>
                                                         </div>
                                                     </div>

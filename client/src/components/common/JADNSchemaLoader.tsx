@@ -15,6 +15,7 @@ import SBSaveFile from "./SBSaveFile";
 import SBSelect, { Option } from "./SBSelect";
 import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
+import { getFilenameOnly } from "components/utils/general";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -204,7 +205,10 @@ const JADNSchemaLoader = (props: any) => {
             setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
-            setFileName(file.name.split('.')[0]);
+            
+            const filename_only = getFilenameOnly(file.name);
+            setFileName(filename_only);
+
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
