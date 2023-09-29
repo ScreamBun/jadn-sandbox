@@ -389,7 +389,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     fieldRemove={onFieldRemoval}
                     editableID={isEditableID}
                     config={config}
-                    acceptableType={valueObj.name}
+                    acceptableType={`${dataIndex}`}
                   />
                 </div>
                 : ''
