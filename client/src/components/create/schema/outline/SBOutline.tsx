@@ -177,11 +177,7 @@ const SBOutline = (props: SBOutlineProps) => {
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
               padding: '5px',
             }}>
-            <div>{
-              cardsState.length > 0 && canDrop && !isOver ?
-                <p> Add Types at desired spot here </p> :
-                cardsState.map((card, i) => renderCard(card, i))
-            }</div>
+            <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
           </div>
         </div>
       ) : (
