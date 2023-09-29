@@ -83,11 +83,12 @@ const SBOutlineFields = (props: SBOutlineProps) => {
         };
     }, [monitor]);
 
-    const [{ canDrop }, drop] = useDrop(
+    const [{ canDrop, isOver }, drop] = useDrop(
         () => ({
             accept: acceptableType,
             collect: (monitor) => ({
                 canDrop: monitor.canDrop(),
+                isOver: monitor.isOver()
             }),
         }),
         [],
@@ -135,7 +136,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     return (
         <div id={id} className="sb-outline mt-2" ref={drop}
             style={{
-                backgroundColor: canDrop ? 'lightgreen' : 'inherit',
+                backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
                 padding: '5px',
             }}>
             {cardsState.map((card, i) => renderCard(card, i))}
