@@ -7,6 +7,7 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGrip } from '@fortawesome/free-solid-svg-icons'
 import { DragItem } from './SBOutline'
+import { StandardFieldArray } from '../interface'
 
 const style = {
   padding: '0.5rem 1rem',
@@ -21,13 +22,14 @@ export interface SBOutlineCardProps {
   id: any;
   text: string;
   index: number;
+  value: StandardFieldArray;
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;
   dropCard: (item: {}) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCard, addCard, dropCard, onClick }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, moveCard, addCard, dropCard, onClick }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -41,7 +43,8 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
       }
     },
     drop(item: DragItem, _monitor) {
-      dropCard(item);
+      console.log(item)
+      dropCard(item.value);
     },
     hover(item: DragItem, monitor) {
       if (!ref.current) {
@@ -100,7 +103,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.CARD,
     item: () => {
-      return { id, index, text }
+      return { id, index, text, value }
     },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),

@@ -24,6 +24,7 @@ import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
 import { getFilenameOnly } from 'components/utils/general';
 import { v4 as uuid4 } from 'uuid';
+import { StandardFieldArray } from 'components/create/schema/interface';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -456,7 +457,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setIsValidating(false);
     }
 
-    const onOutlineDrop = (updatedCards: Item[]) => {
+    const onOutlineDrop = (updatedCards: StandardFieldArray[]) => {
         let updatedSchema = {
             ...generatedSchema,
             types: updatedCards

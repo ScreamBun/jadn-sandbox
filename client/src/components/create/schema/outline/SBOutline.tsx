@@ -5,11 +5,13 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SBOutlineCard } from "./SBOutlineCard";
 import { useDragDropManager, useDrop } from 'react-dnd';
 import { Unsubscribe } from 'redux';
+import { StandardFieldArray } from '../interface';
 
 export interface DragItem {
   id: any;
   index: number;
   text: string;
+  value: StandardFieldArray;
 }
 
 export interface OutlineContainerState {
@@ -20,14 +22,19 @@ export interface SBOutlineProps {
   id: string;
   title: string;
   items: any[];
-  onDrop: (arg: DragItem[]) => void;
+  onDrop: (arg: StandardFieldArray[]) => void;
   onTypesDrop: (arg: DragItem) => void;
-  onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  onclick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
 }
 
 const SBOutline = (props: SBOutlineProps) => {
   const initalState: DragItem[] = [];
-  const { id = 'sb-outline', title, onTypesDrop, items = [] } = props;
+  const { id = 'sb-outline',
+    title,
+    onDrop,
+    onTypesDrop,
+    onclick,
+    items = [] } = props;
   const [cardsState, setCardsState] = useState<DragItem[]>(initalState);
   const cardsStateRef = useRef(cardsState);
 
@@ -108,7 +115,8 @@ const SBOutline = (props: SBOutlineProps) => {
         const new_card = {
           id: self.crypto.randomUUID(),
           index: i,
-          text: item[0]
+          text: item[0],
+          value: item
         }
         setCardsState(prev => [...prev, new_card]);
       })
@@ -116,11 +124,12 @@ const SBOutline = (props: SBOutlineProps) => {
   }, [props]);
 
   const onClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
-    props.onClick(e, text)
+    onclick(e, text)
   }, []);
 
   const dropCard = useCallback(() => {
-    props.onDrop(cardsStateRef.current)
+    const fieldArray: StandardFieldArray[] = cardsStateRef.current.map(item => item.value);
+    onDrop(fieldArray);
   }, []);
 
   const moveCard = useCallback((_newItem: DragItem, dragIndex: number, hoverIndex: number) => {
@@ -145,13 +154,14 @@ const SBOutline = (props: SBOutlineProps) => {
   }, []);
 
   const renderCard = useCallback(
-    (card: { id: number; text: string }, index: number) => {
+    (card: { id: number; text: string, value: StandardFieldArray }, index: number) => {
       return (
         <SBOutlineCard
           key={card.id}
           index={index}
           id={card.id}
           text={card.text}
+          value={card.value}
           addCard={addCard}
           moveCard={moveCard}
           dropCard={dropCard}
