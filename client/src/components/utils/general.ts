@@ -56,25 +56,6 @@ export const getFilenameExt = (full_name: string) => {
   return ext;
 };
 
-export const getFilenameOnly = (full_name: string) => {
-  const lastIndex = full_name.lastIndexOf('.');
-  const name_only = full_name.substring(0, lastIndex);
-  return name_only;
-};
-
-export const getFilenameExt = (full_name: string) => {
-  const lastIndex = full_name.lastIndexOf('.');
-  const dot_ext = full_name.substring(lastIndex);
-  let ext = null;
-  if (dot_ext) {
-    let dot_char = dot_ext.charAt(0);
-    if (dot_char == ".") {
-      ext = dot_ext.slice(1);
-    }
-  }
-  return ext;
-};
-
 export const isString = (s: any) => {
   return typeof (s) === 'string' || s instanceof String;
 }
