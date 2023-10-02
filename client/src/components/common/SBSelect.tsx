@@ -256,7 +256,7 @@ const SBSelect = (props: any) => {
 
             </>
 
-            <Modal isOpen={toggleModal}>
+            <Modal isOpen={toggleModal} autoFocus={false} returnFocusAfterClose={false}>
                 <ModalHeader>
                     Delete Custom Files
                 </ModalHeader>

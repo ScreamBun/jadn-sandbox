@@ -31,7 +31,7 @@ export const SBConfirmModal = (props: any) => {
 
     return (
         <>
-            <Modal className={modalSize} isOpen={isOpen}>
+            <Modal className={modalSize} isOpen={isOpen} autoFocus={false} returnFocusAfterClose={false}>
                 <ModalHeader>
                     <div className='float-left'>
                         {title}
