@@ -21,6 +21,7 @@ import SBScrollToTop from 'components/common/SBScrollToTop';
 import { getFilenameOnly } from 'components/utils/general';
 import SBOutlineBtnStyle from 'components/create/schema/outline/SBOutlineBtnStyle';
 import { TypeObject } from '../consts';
+import { AddToIndexDropDown } from './AddToIndexDropDown';
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
     $MaxString: $MAX_STRING,
@@ -52,18 +53,41 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const [typesCollapse, setTypesCollapse] = useState(false);
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [insertAt, setInsertAt] = useState(defaultInsertIdx);
-    const indexOpts = generatedSchema.types ? generatedSchema.types.map((_item: any, i: number) => {
-        if (i == 0) {
-            return { value: "beginning", label: "beginning" };
-        } else if (i == (generatedSchema.types.length - 1)) {
-            return { value: "end", label: "end" }
-        } else {
-            return { value: `${i}`, label: `index: ${i}` };
-        }
-    }) : [defaultInsertIdx];
+    let indexOpts = generatedSchema.types ?
+        (generatedSchema.types.length == 1) ?
+            [{ value: "0", label: `${generatedSchema.types[0][0]} (beginning)` }, { value: "end", label: "end" }] :
+            generatedSchema.types.map((item: any, i: number) => {
+                if (i == 0) {
+                    return { value: "0", label: `${item[0]} (beginning)` };
+                } else if (i == (generatedSchema.types.length - 1)) {
+                    return { value: "end", label: `${item[0]} (end)` }
+                } else {
+                    return { value: `${i}`, label: `${item[0]} (index: ${i})` };
+                }
+            }) :
+        [defaultInsertIdx];
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
     const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        indexOpts = generatedSchema.types ?
+            (generatedSchema.types.length == 1) ?
+                [{ value: "0", label: `${generatedSchema.types[0][0]} (beginning)` }, { value: "end", label: "end" }] :
+                generatedSchema.types.map((item: any, i: number) => {
+                    if (i == 0) {
+                        return { value: "0", label: `${item[0]} (beginning)` };
+                    } else if (i == (generatedSchema.types.length - 1)) {
+                        return { value: "end", label: `${item[0]} (end)` }
+                    } else {
+                        return { value: `${i}`, label: `${item[0]} (index: ${i})` };
+                    }
+                }) :
+            [defaultInsertIdx];
+        const optionValue = generatedSchema.types ? insertAt.value : defaultInsertIdx.value;
+        const selectedOption = indexOpts.filter((option: Option) => option.value == optionValue);
+        setInsertAt(selectedOption[0]);
+    }, [generatedSchema])
 
 
     const onFileSelect = (e: Option) => {
@@ -341,7 +365,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
 
-            if (insertAt.value == "beginning") {
+            if (insertAt.value == "0") {
                 tmpTypes.unshift(tmpDef);
 
             } else if (insertAt.value == "end") {
@@ -609,23 +633,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                     </div>
                                 </div>
                                 <div className='row mt-2'>
-                                    <div className='col'>
-                                        <ul className="nav nav-pills">
-                                            <li className="nav-item pb-0 mb-2">
-                                                <a className="active nav-link" title='Enter numeric index to specify where to insert Type'>
-                                                    Insert Type at index
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        <SBSelect id="addAtIndex" name="addAtIndex" value={insertAt}
-                                            placeholder="Select index to insert Types"
-                                            isClearable={false}
-                                            onChange={onSelectChange} data={indexOpts}
-                                        />
-                                        <small className='text-muted'>
-                                            (Default: end)
-                                        </small>
-                                    </div>
+                                    <AddToIndexDropDown insertAt={insertAt} indexOpts={indexOpts} onSelectChange={onSelectChange} />
                                 </div>
                                 <div className='row mt-2'>
                                     <div className='col'>

@@ -17,7 +17,7 @@ interface KeyValueEditorProps {
   value: boolean | number | string;
   type?: InputType;
   options?: Array<string>; // only for type='select'
-  change?: (_v: boolean | number | string) => void;
+  change?: (v: boolean | number | string) => void;
   remove?: (_id: string | number) => void;
   required: boolean;
   removable?: boolean;
