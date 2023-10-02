@@ -24,7 +24,7 @@ export interface SBOutlineProps {
   items: any[];
   onDrop: (arg: StandardFieldArray[]) => void;
   onTypesDrop: (arg: DragItem) => void;
-  onclick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
 }
 
 const SBOutline = (props: SBOutlineProps) => {
@@ -33,7 +33,7 @@ const SBOutline = (props: SBOutlineProps) => {
     title,
     onDrop,
     onTypesDrop,
-    onclick,
+    onClick,
     items = [] } = props;
   const [cardsState, setCardsState] = useState<DragItem[]>(initalState);
   const cardsStateRef = useRef(cardsState);
@@ -123,8 +123,8 @@ const SBOutline = (props: SBOutlineProps) => {
     };
   }, [props]);
 
-  const onClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
-    onclick(e, text)
+  const onCardClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
+    onClick(e, text)
   }, []);
 
   const dropCard = useCallback(() => {
@@ -165,7 +165,7 @@ const SBOutline = (props: SBOutlineProps) => {
           addCard={addCard}
           moveCard={moveCard}
           dropCard={dropCard}
-          onClick={onClick}
+          onClick={onCardClick}
         />
       )
     },
