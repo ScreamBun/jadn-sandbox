@@ -1,4 +1,16 @@
 # JADN Sandbox Release Notes
+
+## v0.6.0
+
+* Fixed field re-rendering issue
+* Fixed multi schema uploading logic 
+* Improved field UI design 
+* Changed accordion logic to multicollapse
+* Added insert at index Logic 
+* Added button style outline
+* Added logic to check for duplicate Type names
+
+
 ## v0.5.2
 
 * Visually nested child input fields under parent input fields
