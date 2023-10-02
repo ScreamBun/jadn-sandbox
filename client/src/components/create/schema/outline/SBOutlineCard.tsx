@@ -6,6 +6,8 @@ import { useDrag, useDrop } from 'react-dnd'
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGrip } from '@fortawesome/free-solid-svg-icons'
+import { DragItem } from './SBOutline'
+import { StandardFieldArray } from '../interface'
 
 const style = {
   padding: '0.5rem 1rem',
@@ -20,33 +22,29 @@ export interface SBOutlineCardProps {
   id: any;
   text: string;
   index: number;
-  moveCard: (dragIndex: number, hoverIndex: number) => void;
+  value: StandardFieldArray;
+  moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
+  addCard: (item: DragItem, hoverIndex: number) => void;
   dropCard: (item: {}) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
 }
 
-interface DragItem {
-  index: number
-  id: string
-  type: string
-}
-
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCard, dropCard, onClick }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, moveCard, addCard, dropCard, onClick }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
     void,
     { handlerId: Identifier | null }
   >({
-    accept: ItemTypes.CARD,
+    accept: [ItemTypes.CARD, 'TypesKeys'],
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
       }
     },
     drop(item: DragItem, _monitor) {
-      console.log("SBOutlineCard item dropped: " + JSON.stringify(item));
-      dropCard(item);
+      console.log(item)
+      dropCard(item.value);
     },
     hover(item: DragItem, monitor) {
       if (!ref.current) {
@@ -88,7 +86,11 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
       }
 
       // Time to actually perform the action
-      moveCard(dragIndex, hoverIndex)
+      if (item.index == -1) {
+        addCard(item, hoverIndex)
+      } else {
+        moveCard(item, dragIndex, hoverIndex)
+      }
 
       // Note: we're mutating the monitor item here!
       // Generally it's better to avoid mutations,
@@ -101,7 +103,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.CARD,
     item: () => {
-      return { id, index }
+      return { id, index, text, value }
     },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
@@ -117,16 +119,16 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, moveCar
 
   return (
     <div className='card'>
-        <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
-            <div className='row'>
-                <div className='col-10'>
-                    <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
-                </div>
-                <div className='col-2'>
-                    <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
-                </div>                
-            </div>
+      <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+        <div className='row'>
+          <div className='col-10'>
+            <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
+          </div>
+          <div className='col-2'>
+            <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+          </div>
         </div>
+      </div>
     </div>
   )
 }

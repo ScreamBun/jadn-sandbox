@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
     Button, ButtonGroup, FormGroup, Input, Label
@@ -23,16 +23,14 @@ interface StructureEditorProps {
     value: TypeArray;
     change: (v: PrimitiveTypeObject, i: number) => void;
     remove: (i: number) => void;
-    changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
     config: InfoConfig;
     collapseAllFields: boolean;
 }
 
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
-    const { value, change, changeIndex, dataIndex, config, collapseAllFields } = props;
+    const { value, change, dataIndex, config, collapseAllFields, remove } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
-    const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
     const [fieldCollapse, setFieldCollapse] = useState(false);
     const [modal, setModal] = useState(false);
@@ -56,7 +54,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         return propValue;
     }
 
-    const sortFields = () => {
+    const sortFields = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
         let tmpFields = [...valueObj.fields];
         //sort fields
         tmpFields.sort(function (a, b) {
@@ -74,7 +73,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         setValueObj({ ...valueObj, [key]: value });
     }
 
-    const onBlur = (e: any) => {
+    const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        e.preventDefault();
         const { placeholder, value } = e.target;
 
         //VALIDATE NAME
@@ -104,12 +104,13 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         change(updatevalue, dataIndex);
     }
 
-    const removeAll = () => {
-        const { dataIndex, remove } = props;
+    const removeAll = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         remove(dataIndex);
     }
 
-    const onAddField = () => {
+    const onAddField = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         let field: EnumeratedFieldArray | StandardFieldArray;
         //check field count
         if (config.$MaxElements && fields.length > config.$MaxElements) {
@@ -143,7 +144,6 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         });
         change(updatevalue, dataIndex);
         setFieldCollapse(false);
-        // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
     }
 
     const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
@@ -324,6 +324,9 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                     <div className='row'>
                         <div className='col'>
+                            <a role="button" className="btn btn-sm btn-outline-primary mr-2 disabled" title='index'>
+                                {dataIndex}
+                            </a>
                             <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                         </div>
                         <div className='col'>
@@ -331,16 +334,6 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 <Button color="danger" onClick={removeAll}
                                     title={`Delete ${valueObj.type}`}>
                                     <FontAwesomeIcon icon={faMinusCircle} />
-                                </Button>
-                            </ButtonGroup>
-                            <ButtonGroup size="sm" className="float-right mr-1">
-                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)}
-                                    title={`Move ${valueObj.type} Up`}>
-                                    <FontAwesomeIcon icon={faSquareCaretUp} />
-                                </Button>
-                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)}
-                                    title={`Move ${valueObj.type} Down`}>
-                                    <FontAwesomeIcon icon={faSquareCaretDown} />
                                 </Button>
                             </ButtonGroup>
                         </div>
@@ -381,26 +374,29 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                     <FontAwesomeIcon icon={faPlusSquare} />
                                 </span>
 
-                                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                    className='float-right btn btn-sm'
-                                    onClick={() => setFieldCollapse(!fieldCollapse)}
-                                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                <a href="#" role="button"
+                                    onClick={() => setFieldCollapse(!fieldCollapse)}>
+                                    <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                        className='float-right btn btn-sm'
+                                        title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                </a>
 
-                                {isEditableID ? <FontAwesomeIcon icon={faArrowDown19}
-                                    className='float-right btn btn-sm'
-                                    onClick={() => sortFields()}
-                                    title={'Sort Fields'} /> : ''}
+                                {isEditableID ? <a href="#" role="button" onClick={sortFields}>
+                                    <FontAwesomeIcon icon={faArrowDown19}
+                                        className='float-right btn btn-sm'
+                                        title={'Sort Fields by ID'} />
+                                </a> : ''}
 
                             </legend>
 
-                            <div ref={scrollToFieldRef}>
+                            <div>
                                 {!fieldCollapse && fields}
                             </div>
 
                             {!fieldCollapse && fields.length == 0 ? <p className='mb-2'> No fields to show</p> : ''}
 
                             {!fieldCollapse &&
-                                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block'
+                                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block rounded-pill'
                                     title='Add Field'>
                                     <FontAwesomeIcon icon={faPlusSquare} />
                                 </Button>}

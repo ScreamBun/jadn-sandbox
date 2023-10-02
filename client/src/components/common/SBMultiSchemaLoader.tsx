@@ -23,6 +23,13 @@ interface SBMultiSchemaLoaderProps {
 }
 
 const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) => {
+    const {
+        onLoading,
+        selectedSchemas,
+        onSelectedSchemaAdd,
+        onSelectedSchemaReplaceAll,
+        onSelectedSchemaRemove } = props;
+
     const dispatch = useDispatch();
 
     // Used by SBFileUploader
@@ -30,7 +37,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     const sbFileUploaderRef = useRef<HTMLInputElement | null>(null);
 
     const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
-    const [toggle, setToggle] = useState('');
+    const [toggle, setToggle] = useState({});
 
     // Used by SBSelector, preloads with schemas selections
     const schemaOpts = useSelector(getAllSchemas);
@@ -42,26 +49,20 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     // Allows parent to call child function
     useImperativeHandle(ref, () => ({
         onReset() {
-            console.log("SBMultiSchemaLoader onReset");
             setToggle('');
             setSelectedFile(null);
-            setSelectedOptions([]);      
+            setSelectedOptions([]);
         },
-    }));      
+    }));
 
     const onToggle = (index: number) => {
-        if (toggle == index.toString()) {
-            setToggle('');
+        setToggle({ ...toggle, [index]: !toggle[index] });
+    }
 
-        } else {
-            setToggle(`${index}`);
-        }
-    }  
-
-    const isDupSchemaName = (name: string, schemas: SelectedSchema[]) => {        
+    const isDupSchemaName = (name: string, schemas: SelectedSchema[]) => {
         let is_dup: boolean = false;
         schemas?.map((schema: SelectedSchema) => {
-            if(name == schema.name){
+            if (name == schema.name) {
                 is_dup = true;
             }
         });
@@ -72,11 +73,11 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     const onFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log("SBMultiSchemaLoader onFileUpload");
         e.preventDefault();
-        props.onLoading(true);
+        onLoading(true);
         if (e.target.files && e.target.files.length != 0) {
             const chosenFiles = Array.prototype.slice.call(e.target.files);
             chosenFiles.forEach((file) => {
-                if (!isDupSchemaName(file.name, props.selectedSchemas)) {
+                if (!isDupSchemaName(file.name, selectedSchemas)) {
                     const fileReader = new FileReader();
                     fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                         if (ev.target && ev.target.result && isString(ev.target.result)) {
@@ -85,13 +86,13 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
 
                                 // Add to schemas
                                 const new_schema: SelectedSchema = { 'id': Date.now().toString(), 'name': file['name'], 'type': 'schemas', 'data': dataObj };
-                                props.onSelectedSchemaAdd(new_schema);
+                                onSelectedSchemaAdd(new_schema);
 
                                 // Add to seleted options
                                 setSelectedOptions([
                                     ...selectedOptions,
-                                    { 'value' : file['name'], 'label' : file['name'] }
-                                ]);   
+                                    { 'value': file['name'], 'label': file['name'] }
+                                ]);
 
                             } catch (err) {
                                 sbToastError(`File cannot be loaded: Invalid JSON`);
@@ -105,69 +106,65 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
             });
         }
         setSelectedFile(null);
-        props.onLoading(false);
+        onLoading(false);
     }
 
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         console.log("SBMultiSchemaLoader onCancelFileUpload");
         e.preventDefault();
-        props.onLoading(false);
+        onLoading(false);
         setSelectedFile(null);
     }
 
     const onGetSchemaData = (schema_name: string) => {
-        console.log("SBMultiSchemaLoader onGetSchemaData: " + schema_name);
-         return dispatch(loadFile('schemas', schema_name))
+        return dispatch(loadFile('schemas', schema_name))
             .then((response) => {
-                return response.payload.data;  
+                return response.payload.data;
             })
-            .catch((loadFileErr) => { sbToastError(loadFileErr.payload.data); });  
+            .catch((loadFileErr) => { sbToastError(loadFileErr.payload.data); });
     };
 
 
     const onSelectChange = async (options: Option[]) => {
-        console.log("SBMultiSchemaLoader onSelectChange");
-
         // If user clicks 'file upload'...
         if (options.value == 'file') {
             sbFileUploaderRef.current?.click();
             return;
         }
 
-        props.onSelectedSchemaRemove('');  // clear all
+        onSelectedSchemaRemove('');  // clear all
 
         let schemas_to_load: SelectedSchema[] = [];
         await Promise.all(
             options.map(async (option) => {
                 const schema_data: SelectedSchema = await onGetSchemaData(option.label);
                 const new_schema: SelectedSchema = { 'id': Date.now().toString(), 'name': option.label, 'type': 'schemas', 'data': schema_data };
-                schemas_to_load.push(new_schema);     
+                schemas_to_load.push(new_schema);
                 // props.onSelectedSchemaAdd(new_schema);  // Causes a duplicate bug to appear                           
-        }));         
+            }));
 
-        props.onSelectedSchemaReplaceAll(schemas_to_load);
+        onSelectedSchemaReplaceAll(schemas_to_load);
 
-        setSelectedOptions([  
+        setSelectedOptions([
             ...options
-        ]);  
+        ]);
 
     }
 
     const onRemoveSchema = (name: string) => {
-        console.log("SBMultiSchemaLoader onRemoveSchema");
-        props.onSelectedSchemaRemove(name);
+        onSelectedSchemaRemove(name);
         setSelectedOptions(selectedOptions.filter((option) => option.value !== name));
     }
 
-    const listSchemas = props.selectedSchemas?.map((schema: SelectedSchema, i: number) => {
+    const listSchemas = selectedSchemas?.map((schema: SelectedSchema, i: number) => {
         return (
-            <div className="card" key={schema.id}>  
+            <div className="card" key={schema.id}>
                 <div className="card-header">
                     <h5 className="mb-0 d-flex justify-content-between align-items-center">
                         <button className={schema.data == 'err' ? `btn` : `btn btn-link`} id={`toggleMsg#${i}`} type="button" onClick={() => {
-                                onToggle(i);
+                            onToggle(i);
                         }}>
-                        {schema.name} {schema.data == 'err' ? <FontAwesomeIcon style={{ color: 'red' }} title={'Invalid JADN. Please remove or fix schema.'} icon={faExclamationCircle}></FontAwesomeIcon> : ''}
+                            {schema.name} {schema.data == 'err' ? <FontAwesomeIcon style={{ color: 'red' }} title={'Invalid JADN. Please remove or fix schema.'} icon={faExclamationCircle}></FontAwesomeIcon> : ''}
                         </button>
                         <Button id='removeFile' color="danger" className='btn-sm' onClick={() => onRemoveSchema(schema.name)}>
                             <FontAwesomeIcon icon={faTrash} />
@@ -175,7 +172,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
                     </h5>
                 </div>
 
-                {toggle == `${i}` && schema.data != 'err' ?
+                {toggle[i] == true && schema.data != 'err' ?
                     <div className="card-body" key={schema.id}>
                         <SBEditor data={schema.data} isReadOnly={true} height={'35vh'}></SBEditor>
                     </div>
@@ -191,13 +188,13 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
                     <div className="col-md-6">
                         <div className={`${selectedFile == 'file' ? ' d-none' : ''}`}>
                             <div className="input-group">
-                                <SBSelect id={"schema-list"} 
-                                    data={schemaOpts} 
+                                <SBSelect id={"schema-list"}
+                                    data={schemaOpts}
                                     onChange={onSelectChange}
                                     placeholder={'Select schema...(at least one)'}
                                     loc={'schemas'}
                                     value={selectedOptions}
-                                    isGrouped isFileUploader isMultiSelect isSmStyle/>
+                                    isGrouped isFileUploader isMultiSelect isSmStyle />
                             </div>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>

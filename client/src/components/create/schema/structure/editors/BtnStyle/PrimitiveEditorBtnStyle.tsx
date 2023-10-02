@@ -1,10 +1,10 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-    Button, ButtonGroup, FormGroup, Input, InputGroup, Label
+    Button, ButtonGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
@@ -18,13 +18,12 @@ interface PrimitiveEditorProps {
     value: Array<any>;
     change: (v: any, i: number) => void;
     remove: (i: number) => void;
-    changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
     config: InfoConfig;
 }
 
 // Primitive Editor
 const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: PrimitiveEditorProps) {
-    const { value, change, changeIndex, dataIndex, config } = props;
+    const { value, change, dataIndex, config } = props;
     const [modal, setModal] = useState(false);
 
     let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
@@ -93,20 +92,15 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                 <div className="card-header px-2 py-2">
                     <div className='row'>
                         <div className='col'>
+                            <a role="button" className="btn btn-sm btn-outline-primary mr-2 disabled" title='index'>
+                                {dataIndex}
+                            </a>
                             <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                         </div>
                         <div className='col'>
                             <ButtonGroup size="sm" className="float-right">
                                 <Button color="danger" onClick={removeAll} title={`Delete ${valueObj.type}`}>
                                     <FontAwesomeIcon icon={faMinusCircle} />
-                                </Button>
-                            </ButtonGroup>
-                            <ButtonGroup size="sm" className="float-right mr-1">
-                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex - 1)} title={`Move ${valueObj.type} Up`}>
-                                    <FontAwesomeIcon icon={faSquareCaretUp} />
-                                </Button>
-                                <Button color="primary" onClick={() => changeIndex(valueObj, dataIndex, dataIndex + 1)} title={`Move ${valueObj.type} Down`}>
-                                    <FontAwesomeIcon icon={faSquareCaretDown} />
                                 </Button>
                             </ButtonGroup>
                         </div>

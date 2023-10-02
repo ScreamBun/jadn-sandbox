@@ -101,7 +101,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
         change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
     }
 
-    const onRemoveItemClick = (e: React.MouseEvent<HTMLElement>) => {
+    const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsConfirmModalOpen(true);
     };
@@ -217,15 +217,8 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
     return (
         <>
             <div className="card border-secondary mb-2">
-                <div className="card-header px-2 py-2">
-                    <span>{enumerated ? (valueObj as EnumeratedFieldObject).value : (valueObj as StandardFieldObject).name}</span>
+                <div className="card-body px-2 py-2">
                     <ButtonGroup size="sm" className="float-right">
-                        <Button color="danger" onClick={onRemoveItemClick}
-                            title={`Delete Field`}>
-                            <FontAwesomeIcon icon={faMinusCircle} />
-                        </Button>
-                    </ButtonGroup>
-                    <ButtonGroup size="sm" className="float-right mr-1">
                         <Button color="primary" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)}
                             title={`Move Field Up`}>
                             <FontAwesomeIcon icon={faSquareCaretUp} />
@@ -235,8 +228,14 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             <FontAwesomeIcon icon={faSquareCaretDown} />
                         </Button>
                     </ButtonGroup>
-                </div>
-                <div className="card-body px-2 py-2">
+                    <ButtonGroup size="sm" className="float-right mr-1">
+                        <Button color="danger" className="rounded-circle"
+                            onClick={onRemoveItemClick}
+                            title={`Delete Field`}>
+                            <FontAwesomeIcon icon={faMinusCircle} />
+                        </Button>
+                    </ButtonGroup>
+
                     {makeOptions()}
                 </div>
             </div>

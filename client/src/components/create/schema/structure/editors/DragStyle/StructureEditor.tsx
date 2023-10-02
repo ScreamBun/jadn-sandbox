@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
   Button, ButtonGroup, Input
 } from 'reactstrap';
@@ -15,7 +15,7 @@ import { sbToastError } from 'components/common/SBToast';
 import { useAppSelector } from 'reducers';
 import { ModalSize } from '../options/ModalSize';
 import { flushSync } from 'react-dom';
-import SBOutlineFields from './SBOutlineFields';
+import SBOutlineFields, { DragItem } from './SBOutlineFields';
 
 
 interface StructureEditorProps {
@@ -23,26 +23,19 @@ interface StructureEditorProps {
   value: TypeArray;
   change: (v: PrimitiveTypeObject, i: number) => void;
   remove: (i: number) => void;
-  changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
   config: InfoConfig;
   collapseAllFields: boolean;
 }
 
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, change, dataIndex, config, collapseAllFields } = props;
+  const { value, change, dataIndex, config, collapseAllFields, remove } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
-  const scrollToFieldRef = useRef<HTMLInputElement | null>(null);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
   const [modal, setModal] = useState(false);
   const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
   const [valueObj, setValueObj] = useState(valueObjInit);
-  const valueObjRef = React.useRef(valueObj);
   const isEditableID = valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
-
-  useEffect(() => {
-    valueObjRef.current = valueObj;
-  }, [valueObj])
 
   useEffect(() => {
     setFieldCollapse(collapseAllFields)
@@ -61,7 +54,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     return propValue;
   }
 
-  const sortFields = () => {
+  const sortFields = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
     let tmpFields = [...valueObj.fields];
     //sort fields
     tmpFields.sort(function (a, b) {
@@ -79,7 +73,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     setValueObj({ ...valueObj, [key]: value });
   }
 
-  const onBlur = (e: any) => {
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.preventDefault();
     const { placeholder, value } = e.target;
 
     //VALIDATE NAME
@@ -109,12 +104,13 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     change(updatevalue, dataIndex);
   }
 
-  const removeAll = () => {
-    const { dataIndex, remove } = props;
+  const removeAll = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     remove(dataIndex);
   }
 
-  const onAddField = () => {
+  const onAddField = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     let field: EnumeratedFieldArray | StandardFieldArray;
     //check field count
     if (config.$MaxElements && valueObj.fields?.length > config.$MaxElements) {
@@ -150,7 +146,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
     change(updatevalue, dataIndex);
     setFieldCollapse(false);
-    // scrollToFieldRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
   }
 
   const fieldChange = (val: FieldArray, idx: number) => {
@@ -255,7 +250,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 </div>
                 <div className="row">
                   <div className="col-md-4">
-                    <Input name="structureName" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                    <Input name="structureName" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
+                      onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
                     <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
@@ -270,7 +266,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     />
                   </div>
                   <div className="col-md-6">
-                    <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                    <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1}
+                      value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                   </div>
                 </div>
               </div>
@@ -281,14 +278,12 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     );
   }
 
-  const onOutlineDrop = (updatedCards: any) => {
-    let reordered_types: any[] = [];
+  const onOutlineDrop = (item: DragItem) => {
+    let reordered_types: any[] = [...valueObj.fields];
 
-    updatedCards.map((updated_item: { value: any; }, i: number) => {
-      const item_value = updated_item.value;
-      const filtered_item = valueObjRef.current.fields.filter((item) => item === item_value);
-      reordered_types[i] = filtered_item[0];
-    })
+    const old_index = reordered_types.findIndex(f => f[0] == item.id);
+    reordered_types.splice(old_index, 1);
+    reordered_types.splice(item.dataIndex, 0, item.value);
 
     //If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.
     if (!isEditableID) {
@@ -299,7 +294,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     }
 
     let updatedData = {
-      ...valueObjRef.current,
+      ...valueObj,
       fields: reordered_types
     };
     setValueObj(updatedData);
@@ -308,8 +303,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <>
-      <div className="card border-secondary mb-2">
-        <div className="card-header px-2 py-2">
+      <div className={`card border-secondary mb-2`}>
+        <div className="card-header px-2 py-2" >
           <div className='row'>
             <div className='col'>
               <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
@@ -334,7 +329,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               </div>
               <div className="row">
                 <div className="col-md-4">
-                  <Input name="structureName" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                  <Input name="structureName" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
+                    onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
                   <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
@@ -348,7 +344,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   />
                 </div>
                 <div className="col-md-6">
-                  <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                  <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment}
+                    onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
             </div>
@@ -365,21 +362,25 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   <FontAwesomeIcon icon={faPlusSquare} />
                 </span>
 
-                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                  className='float-right btn btn-sm'
-                  onClick={() => setFieldCollapse(!fieldCollapse)}
-                  title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                <a href="#" role="button"
+                  onClick={() => setFieldCollapse(!fieldCollapse)}>
+                  <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                    className='float-right btn btn-sm'
+                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                </a>
 
-                {isEditableID ? <FontAwesomeIcon icon={faArrowDown19}
-                  className='float-right btn btn-sm'
-                  onClick={() => sortFields()}
-                  title={'Sort Fields'} /> : ''}
+                {isEditableID ? <a href="#" role="button" onClick={sortFields}>
+                  <FontAwesomeIcon icon={faArrowDown19}
+                    className='float-right btn btn-sm'
+                    title={'Sort Fields by ID'} />
+                </a> : ''}
 
               </legend>
 
               {!fieldCollapse ? valueObj.fields?.length == 0 ? <p> No fields to show</p> :
-                <div ref={scrollToFieldRef}>
-                  <SBOutlineFields id={'fields-outline'}
+                <div>
+                  <SBOutlineFields
+                    id={'fields-outline'}
                     items={valueObj.fields}
                     onDrop={onOutlineDrop}
                     isEnumerated={valueObj.type.toLowerCase() === 'enumerated'}
@@ -387,13 +388,14 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     fieldRemove={onFieldRemoval}
                     editableID={isEditableID}
                     config={config}
-                  ></SBOutlineFields>
+                    acceptableType={`${dataIndex}`}
+                  />
                 </div>
                 : ''
               }
 
               {!fieldCollapse ?
-                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block'
+                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block rounded-pill'
                   title='Add Field'>
                   <FontAwesomeIcon icon={faPlusSquare} />
                 </Button>

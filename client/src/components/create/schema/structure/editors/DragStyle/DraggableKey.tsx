@@ -7,20 +7,22 @@ import { useDrag } from 'react-dnd'
 interface DraggableKeyProps {
     item: any;
     acceptableType: string;
-    id: string | number;
+    id: any;
+    index: number;
+    text: string;
     isDraggable: boolean;
 }
 
 export const DraggableKey = memo(function DraggableKey(props: DraggableKeyProps) {
-    const { item, acceptableType, id, isDraggable = true } = props;
+    const { item, acceptableType, id, index, text, isDraggable = true } = props;
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: acceptableType,
-            item: { itemID: id },
+            item: { id, index, text },
             canDrag: isDraggable,
             collect: (monitor) => ({
                 item: monitor.getItem(),
-                isDragging: monitor.isDragging()
+                isDragging: monitor.isDragging(),
             }),
         }), [item, acceptableType, isDraggable]
     )

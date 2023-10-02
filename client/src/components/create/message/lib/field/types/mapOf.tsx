@@ -38,7 +38,7 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [vopts, setvOpts] = useState<any[]>([]);
     const [errMsg, setErrMsg] = useState<string[]>([]);
     const [toggle, setToggle] = useState(true);
-    const [toggleField, setToggleField] = useState('0');
+    const [toggleField, setToggleField] = useState({ [0]: true });
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
@@ -282,7 +282,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                             </div>
                         </SBToggleBtn>
                     </div>
-                    <div className={`card-body mx-2 ${toggleField == `${i}` ? '' : 'collapse'}`} id={`${i}`}>
+                    <div className={`card-body mx-2 ${toggleField[i] == true ? '' : 'collapse'}`} id={`${i}`}>
                         <Field key={"key"} def={keyField} parent={msgName} optChange={onChangeKey} idx={i} config={config} value={item.key} />
                         <Field key={"value"} def={valField} parent={msgName} optChange={onChangeValue} idx={i} config={config} value={item.val} />
                     </div>

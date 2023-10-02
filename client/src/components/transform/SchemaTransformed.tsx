@@ -26,11 +26,12 @@ export const initTransformedSchema = {
 }
 
 const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
+    const { isLoading, onLoading, onSelectedSchemaReplaceAll, selectedSchemas } = props;
     const dispatch = useDispatch();
 
     const transformationOpts = useSelector(getValidTransformations);
 
-    const [toggle, setToggle] = useState('');
+    const [toggle, setToggle] = useState({});
     const [isTransformDisabled, setIsTransformDisabled] = useState(true);
     const [baseFile, setBaseFile] = useState<Option | null>();
     const [transformationType, setTransformationType] = useState<Option | null>();
@@ -41,29 +42,27 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     const resolve_references: string = 'resolve references';
 
     useEffect(() => {
-        console.log("SchemaTransformed useEffect props.selectedSchemas");
         setTransformedSchema([initTransformedSchema]);
         setBaseFile(null);
-    }, [props.selectedSchemas]);
+    }, [selectedSchemas]);
 
     useEffect(() => {
-        console.log("SchemaTransformed useEffect props.selectedSchemas, baseFile, transformationType");
         setIsTransformDisabled(true);
-        if(props.selectedSchemas && props.selectedSchemas.length > 0 && transformationType && transformationType.value){
-            if(transformationType.value == strip_comments){
+        if (selectedSchemas && selectedSchemas.length > 0 && transformationType && transformationType.value) {
+            if (transformationType.value == strip_comments) {
                 setIsTransformDisabled(false);
             }
-            if(transformationType.value == resolve_references && baseFile){
+            if (transformationType.value == resolve_references && baseFile) {
                 setIsTransformDisabled(false);
-            }            
+            }
         }
 
-        let base_opts: Option[] = props.selectedSchemas.map((ss: SelectedSchema) => {
-            return { 'label' : ss.name, 'value' : ss.name };
-        });  
-        setBaseFileOpts([...base_opts]);      
+        let base_opts: Option[] = selectedSchemas.map((ss: SelectedSchema) => {
+            return { 'label': ss.name, 'value': ss.name };
+        });
+        setBaseFileOpts([...base_opts]);
 
-    }, [props.selectedSchemas, baseFile, transformationType]);    
+    }, [selectedSchemas, baseFile, transformationType]);
 
     // Allows parent to call child function
     useImperativeHandle(ref, () => ({
@@ -72,16 +71,12 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
             setToggle('');
             setBaseFile(null);
             setTransformedSchema([initTransformedSchema]);
-            setTransformationType(null);          
+            setTransformationType(null);
         },
-    }));    
+    }));
 
     const onToggle = (index: number) => {
-        if (toggle == index.toString()) {
-            setToggle('');
-        } else {
-            setToggle(`${index}`);
-        }
+        setToggle({ ...toggle, [index]: !toggle[index] });
     }
 
     const onSelectTypeChange = (opt: Option) => {
@@ -97,9 +92,9 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        props.onLoading(true);
+        onLoading(true);
         const selectedBasefile = baseFile?.value ? baseFile.value : '';
-        dispatch(transformSchema(props.selectedSchemas, transformationType.value, selectedBasefile))
+        dispatch(transformSchema(selectedSchemas, transformationType.value, selectedBasefile))
             .then((val) => {
                 if (val.error == true) {
                     let invalid_schema_list: any[] = [];
@@ -111,14 +106,14 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                         });
 
                         // invalidate selectedFiles 
-                        const invalidFiles = props.selectedSchemas.map((ss) => {
+                        const invalidFiles = selectedSchemas.map((ss) => {
                             if (invalid_schema_list.includes(ss.name)) {
                                 return { ...ss, 'data': 'err' };
                             } else {
                                 return ss;
                             }
                         });
-                        props.onSelectedSchemaReplaceAll(invalidFiles);
+                        onSelectedSchemaReplaceAll(invalidFiles);
 
                     } else {
                         sbToastError(val.payload.response);
@@ -133,9 +128,9 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                 sbToastError(err);
             })
             .finally(() => {
-                props.onLoading(false);
+                onLoading(false);
             });
-    }     
+    }
 
     return (
         <div className="card">
@@ -158,10 +153,10 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                                 <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right`} filename={baseFile} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
                             </div>
 
-                            {props.isLoading ? <SBSpinner action={'Transforming'} /> : <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
+                            {isLoading ? <SBSpinner action={'Transforming'} /> : <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
                                 disabled={isTransformDisabled}
                                 title={"Process JADN schema(s) to produce another JADN schema"}>
-                                Transform 
+                                Transform
                             </Button>}
                         </div>
                     </div>
@@ -181,7 +176,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                             </h5>
                         </div>
 
-                        {toggle == `${i}` ?
+                        {toggle[i] == true ?
                             <div className="card-body" key={i}>
                                 <SBEditor data={output.schema} isReadOnly={true} height={'35vh'}></SBEditor>
                             </div> : ''}

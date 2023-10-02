@@ -11,14 +11,14 @@ const SBCreatableSelect = (props: any) => {
             ...base,
             cursor: 'pointer'
         }),
-    
+
         container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
-    
+
         option: (styles, state) => ({
             ...styles,
             cursor: 'pointer',
         }),
-    
+
         menuPortal: base => ({
             ...base,
             zIndex: 9999,
