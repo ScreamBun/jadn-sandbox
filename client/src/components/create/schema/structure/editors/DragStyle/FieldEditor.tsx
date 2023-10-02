@@ -330,8 +330,8 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       </div>
       <SBConfirmModal
         isOpen={isConfirmModalOpen}
-        title={`Remove ${val.name}`}
-        message={`Are you sure you want to remove ${val.name}?`}
+        title={`Remove ${enumerated ? val.value : val.name}`}
+        message={`Are you sure you want to remove ${enumerated ? val.value : val.name}?`}
         confirm_value={dataIndex}
         onResponse={removeAll}></SBConfirmModal>
     </>
