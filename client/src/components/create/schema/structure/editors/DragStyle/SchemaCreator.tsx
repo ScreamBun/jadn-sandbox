@@ -324,6 +324,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             });
             setIsValidJADN(false);
             setIsValidating(false);
+            setIsEditing(updatedSchema.types.length - 1);
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
