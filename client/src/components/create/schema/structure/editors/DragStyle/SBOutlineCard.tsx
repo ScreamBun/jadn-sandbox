@@ -4,7 +4,7 @@ import { useDrag, useDrop } from 'react-dnd'
 import type { Identifier, XYCoord } from 'dnd-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGrip } from '@fortawesome/free-solid-svg-icons'
-import { StandardFieldArray } from '../interface'
+import { StandardFieldArray } from '../../../interface'
 import { DragItem } from './SBOutline'
 
 const style = {

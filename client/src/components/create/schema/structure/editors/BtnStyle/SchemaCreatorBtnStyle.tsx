@@ -20,7 +20,7 @@ import SBFileUploader from 'components/common/SBFileUploader';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSpinner from 'components/common/SBSpinner';
 import SBScrollToTop from 'components/common/SBScrollToTop';
-import SBOutlineBtnStyle from 'components/create/schema/outline/SBOutlineBtnStyle';
+import SBOutlineBtnStyle from './SBOutlineBtnStyle';
 import { AddToIndexDropDown } from './AddToIndexDropDown';
 
 
