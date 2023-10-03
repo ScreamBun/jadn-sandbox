@@ -203,6 +203,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   const onRemoveItemClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    onFocus(true);
     setIsConfirmModalOpen(true);
   };
 
@@ -211,7 +212,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     if (response == true) {
       remove(confirm_value);
     }
-    onFocus(false);
   }
 
   const saveModal = (modalData: Array<string>) => {
@@ -228,6 +228,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   const toggleModal = () => {
     setModal(!modal);
+    onFocus(true);
   }
 
   const makeOptions = () => {
@@ -290,7 +291,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
           </div>
           <div className="col-md-4">
             <SBCreatableSelect id="Type" name="type" value={valType} onChange={onSelectChange} data={types}
-              isGrouped />
+              isGrouped onFocus={handleOnFocus} />
           </div>
           <div className="col-md-2">
             <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>

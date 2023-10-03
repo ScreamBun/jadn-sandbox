@@ -24,11 +24,12 @@ interface StructureEditorProps {
   remove: (i: number) => void;
   config: InfoConfig;
   collapseAllFields: boolean;
+  isEditing: number | null;
   setIsEditing: (idx: number | null) => void;
 }
 
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, dataIndex, config, collapseAllFields, change, remove, setIsEditing } = props;
+  const { value, dataIndex, config, collapseAllFields, change, remove, isEditing, setIsEditing } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -69,7 +70,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
-    setIsEditing(dataIndex);
     const key = placeholder.toLowerCase();
     setValueObj({ ...valueObj, [key]: value });
   }
@@ -80,8 +80,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   }
 
   const onFieldFocus = (bool: boolean) => {
-    console.log(bool)
-    if (!bool) {
+    if (!bool && isEditing == dataIndex) {
       setIsEditing(null);
       return;
     }
@@ -116,7 +115,9 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       return;
     }
     setValueObj(updatevalue);
-    setIsEditing(null);
+    if (isEditing == dataIndex) {
+      setIsEditing(null);
+    }
     change(updatevalue, dataIndex);
   }
 
@@ -162,6 +163,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     });
 
     change(updatevalue, dataIndex);
+    setIsEditing(dataIndex);
     setFieldCollapse(false);
   }
 
@@ -238,6 +240,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const toggleModal = () => {
     setModal(modal => !modal);
+    setIsEditing(dataIndex);
   }
 
   // If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.

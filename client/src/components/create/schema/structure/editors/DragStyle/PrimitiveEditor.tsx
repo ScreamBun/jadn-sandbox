@@ -18,12 +18,13 @@ interface PrimitiveEditorProps {
   change: (v: any, i: number) => void;
   remove: (i: number) => void;
   config: InfoConfig;
+  isEditing: number | null;
   setIsEditing: (idx: number | null) => void;
 }
 
 // Primitive Editor
 const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
-  const { value, change, dataIndex, config, setIsEditing } = props;
+  const { value, change, dataIndex, config, isEditing, setIsEditing } = props;
   const [modal, setModal] = useState(false);
 
   let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
@@ -68,13 +69,16 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
       return;
     }
     setValueObj(updatevalue);
-    setIsEditing(null);
+    if (isEditing == dataIndex) {
+      setIsEditing(null);
+    }
     change(updatevalue, dataIndex);
   }
 
   const removeAll = () => {
     const { dataIndex, remove } = props;
     remove(dataIndex);
+    setIsEditing(null);
   }
 
   const saveModal = (modalData: Array<string>) => {
@@ -90,6 +94,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
 
   const toggleModal = () => {
     setModal(modal => !modal);
+    setIsEditing(dataIndex);
   }
 
   return (

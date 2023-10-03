@@ -400,6 +400,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             value: def,
             dataIndex: i,
             collapseAllFields: allFieldsCollapse,
+            isEditing: isEditing,
             setIsEditing: setIsEditing,
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
