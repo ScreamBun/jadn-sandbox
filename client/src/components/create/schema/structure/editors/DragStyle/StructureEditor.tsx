@@ -10,7 +10,7 @@ import { zip } from '../../../../../utils';
 import {
   EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
 } from '../../../interface';
-import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
+import { StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import { sbToastError } from 'components/common/SBToast';
@@ -20,14 +20,15 @@ import SBOutlineFields, { DragItem } from './SBOutlineFields';
 interface StructureEditorProps {
   dataIndex: number; //index changes based on obj in arr (tracks the parent index)
   value: TypeArray;
-  change: (v: PrimitiveTypeObject, i: number) => void;
+  change: (v: string | Record<string, any>, i: number) => void;
   remove: (i: number) => void;
   config: InfoConfig;
   collapseAllFields: boolean;
+  setIsEditing: (idx: number | null) => void;
 }
 
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, change, dataIndex, config, collapseAllFields, remove } = props;
+  const { value, dataIndex, config, collapseAllFields, change, remove, setIsEditing } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -68,8 +69,23 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
+    setIsEditing(dataIndex);
     const key = placeholder.toLowerCase();
     setValueObj({ ...valueObj, [key]: value });
+  }
+
+  const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setIsEditing(dataIndex);
+  }
+
+  const onFieldFocus = (bool: boolean) => {
+    console.log(bool)
+    if (!bool) {
+      setIsEditing(null);
+      return;
+    }
+    setIsEditing(dataIndex);
   }
 
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -100,12 +116,14 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       return;
     }
     setValueObj(updatevalue);
+    setIsEditing(null);
     change(updatevalue, dataIndex);
   }
 
   const removeAll = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     remove(dataIndex);
+    setIsEditing(null);
   }
 
   const onAddField = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -249,8 +267,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 </div>
                 <div className="row">
                   <div className="col-md-4">
-                    <Input name="structureName" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
-                      onChange={onChange} onBlur={onBlur} />
+                    <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
+                      onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                   </div>
                   <div className="col-md-2 text-center px-0">
                     <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
@@ -265,8 +283,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     />
                   </div>
                   <div className="col-md-6">
-                    <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1}
-                      value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                    <Input name="comment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1}
+                      value={valueObj.comment} onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                   </div>
                 </div>
               </div>
@@ -328,8 +346,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               </div>
               <div className="row">
                 <div className="col-md-4">
-                  <Input name="structureName" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
-                    onChange={onChange} onBlur={onBlur} />
+                  <Input name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
+                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                 </div>
                 <div className="col-md-2 text-center px-0">
                   <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
@@ -343,8 +361,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   />
                 </div>
                 <div className="col-md-6">
-                  <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment}
-                    onChange={onChange} onBlur={onBlur} />
+                  <Input name="comment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment}
+                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                 </div>
               </div>
             </div>
@@ -388,6 +406,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     editableID={isEditableID}
                     config={config}
                     acceptableType={`${dataIndex}`}
+                    onFocus={onFieldFocus}
                   />
                 </div>
                 : ''

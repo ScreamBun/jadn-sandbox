@@ -50,6 +50,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isEditing, setIsEditing] = useState(null);
 
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
@@ -399,6 +400,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             value: def,
             dataIndex: i,
             collapseAllFields: allFieldsCollapse,
+            setIsEditing: setIsEditing,
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
@@ -578,6 +580,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                             onTypesDrop={onTypesToOutlineDrop}
                                             onDrop={onOutlineDrop}
                                             onClick={onOutlineClick}
+                                            isEditing={isEditing}
                                         ></SBOutline>
                                     </div>
                                 </div>

@@ -11,6 +11,7 @@ export interface DragItem {
   index: number;
   text: string;
   value: StandardFieldArray;
+  isEditingBool: boolean;
 }
 
 export interface OutlineContainerState {
@@ -24,12 +25,14 @@ export interface SBOutlineProps {
   onDrop: (arg: StandardFieldArray[]) => void;
   onTypesDrop: (arg: DragItem) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  isEditing: number | null;
 }
 
 const SBOutline = (props: SBOutlineProps) => {
   const initalState: DragItem[] = [];
   const { id = 'sb-outline',
     title,
+    isEditing,
     onDrop,
     onTypesDrop,
     onClick,
@@ -42,21 +45,6 @@ const SBOutline = (props: SBOutlineProps) => {
   const monitor = dragDropManager.getMonitor();
   const timerRef = useRef<NodeJS.Timer>();
   const unsubscribeRef = useRef<Unsubscribe>();
-
-  const [{ handlerId, isOver, canDrop }, drop] = useDrop(() => ({
-    accept: ['TypesKeys'],
-    drop: (item: DragItem, _monitor) => {
-      onTypesDrop(item);
-      return item;
-    },
-    collect: (monitor) => ({
-      handlerId: monitor.getHandlerId(),
-      canDrop: monitor.canDrop(),
-      isOver: monitor.isOver(),
-    }),
-  }),
-    [onTypesDrop],
-  )
 
   const setScrollIntervall = (speed: number, container: HTMLElement) => {
     timerRef.current = setInterval(() => {
@@ -103,6 +91,21 @@ const SBOutline = (props: SBOutlineProps) => {
     };
   }, [monitor]);
 
+  const [{ handlerId, isOver, canDrop }, drop] = useDrop(() => ({
+    accept: ['TypesKeys'],
+    drop: (item: DragItem, _monitor) => {
+      onTypesDrop(item);
+      return item;
+    },
+    collect: (monitor) => ({
+      handlerId: monitor.getHandlerId(),
+      canDrop: monitor.canDrop(),
+      isOver: monitor.isOver(),
+    }),
+  }),
+    [onTypesDrop],
+  )
+
   useEffect(() => {
     cardsStateRef.current = cardsState;
   }, [cardsState]);
@@ -115,7 +118,8 @@ const SBOutline = (props: SBOutlineProps) => {
           id: self.crypto.randomUUID(),
           index: i,
           text: item[0],
-          value: item
+          value: item,
+          isEditingBool: isEditing == i
         }
         setCardsState(prev => [...prev, new_card]);
       })
@@ -153,7 +157,7 @@ const SBOutline = (props: SBOutlineProps) => {
   }, []);
 
   const renderCard = useCallback(
-    (card: { id: number; text: string, value: StandardFieldArray }, index: number) => {
+    (card: { id: number; text: string, value: StandardFieldArray, isEditingBool: boolean }, index: number) => {
       return (
         <SBOutlineCard
           key={card.id}
@@ -165,6 +169,7 @@ const SBOutline = (props: SBOutlineProps) => {
           moveCard={moveCard}
           dropCard={dropCard}
           onClick={onCardClick}
+          isEditing={card.isEditingBool}
         />
       )
     },
@@ -173,7 +178,7 @@ const SBOutline = (props: SBOutlineProps) => {
 
   return (
     <div id='outlineScrollContainer'>
-      {items && items.length > 0 ? (
+      {items && items.length > 0 ?
         <div id={id}>
           <ul className="nav nav-pills">
             <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link">{title}</a></li>
@@ -189,9 +194,7 @@ const SBOutline = (props: SBOutlineProps) => {
             <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
           </div>
         </div>
-      ) : (
-        <></>
-      )
+        : <></>
       }
     </div>
   );

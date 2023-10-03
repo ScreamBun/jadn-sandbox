@@ -21,7 +21,7 @@ import SBCreatableSelect from 'components/common/SBCreatableSelect';
 interface FieldEditorProps {
     enumerated?: boolean;
     dataIndex: number;
-    value: EnumeratedFieldArray | StandardFieldArray;
+    value: FieldObject;
     change: (_v: EnumeratedFieldArray | StandardFieldArray, _i: number) => void;
     remove: (_i: number) => void;
     config: InfoConfig;

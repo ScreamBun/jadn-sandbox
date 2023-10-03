@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import type { Identifier, XYCoord } from 'dnd-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGrip } from '@fortawesome/free-solid-svg-icons'
+import { faGrip, faStar } from '@fortawesome/free-solid-svg-icons'
 import { StandardFieldArray } from '../interface'
 import { DragItem } from './SBOutline'
 
@@ -25,9 +25,10 @@ export interface SBOutlineCardProps {
   addCard: (item: DragItem, hoverIndex: number) => void;
   dropCard: (item: {}) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  isEditing: boolean;
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, moveCard, addCard, dropCard, onClick }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isEditing, moveCard, addCard, dropCard, onClick }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -41,7 +42,6 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
       }
     },
     drop(item: DragItem, _monitor) {
-      console.log(item)
       dropCard(item.value);
     },
     hover(item: DragItem, monitor) {
@@ -101,7 +101,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.CARD,
     item: () => {
-      return { id, index, text, value }
+      return { id, index, text, value, isEditing }
     },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
@@ -120,6 +120,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
       <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
         <div className='row'>
           <div className='col-10'>
+            {isEditing ? <FontAwesomeIcon icon={faStar} /> : ''}
             <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
           </div>
           <div className='col-2'>

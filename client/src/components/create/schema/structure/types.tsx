@@ -9,9 +9,9 @@ interface EditorProps {
   value: StandardTypeArray;
   change?: (v: string | Record<string, any>, i: number) => void;  // eslint-disable-line react/require-default-props
   remove?: (i: number) => void;  // eslint-disable-line react/require-default-props
-  changeIndex?: (v: string | Record<string, any>, dataIndex: number, i: number) => void;  // eslint-disable-line react/require-default-props
   config: InfoConfig;
   collapseAllFields: boolean;
+  setIsEditing: (idx: number | null) => void;
 }
 
 const typeDef = (props: StructureDef) => {
