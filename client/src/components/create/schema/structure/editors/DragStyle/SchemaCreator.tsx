@@ -21,7 +21,7 @@ import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 import SBScrollToTop from 'components/common/SBScrollToTop';
-import SBOutline, { DragItem as Item } from 'components/create/schema/outline/SBOutline';
+import SBOutline, { DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
 

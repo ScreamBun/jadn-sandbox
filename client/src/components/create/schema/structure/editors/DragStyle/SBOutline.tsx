@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Unsubscribe } from 'redux';
 import update from 'immutability-helper'
 import { useDragDropManager, useDrop } from 'react-dnd';
-import { StandardFieldArray } from '../interface';
+import { StandardFieldArray } from '../../../interface';
 import { SBOutlineCard } from "./SBOutlineCard";
 
 export interface DragItem {

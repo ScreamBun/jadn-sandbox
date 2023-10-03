@@ -2,8 +2,8 @@ import React from "react";
 import { ButtonGroup, Button } from "reactstrap";
 import { faSquareCaretDown, faSquareCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { zip } from '../../../utils';
-import { StandardTypeObject, TypeKeys, TypeObject } from "../structure/editors/consts";
+import { zip } from '../../../../../utils';
+import { StandardTypeObject, TypeKeys, TypeObject } from "../consts";
 
 export interface SBOutlineBtnStyleProps {
     id: string;
