@@ -1,6 +1,6 @@
 import React from "react";
 import { ButtonGroup, Button } from "reactstrap";
-import { faSquareCaretDown, faSquareCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { faSquareCaretDown, faSquareCaretUp, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { zip } from '../../../../../utils';
 import { StandardTypeObject, TypeKeys, TypeObject } from "../consts";
@@ -11,20 +11,21 @@ export interface SBOutlineBtnStyleProps {
     items: any[];
     onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
     changeIndex: (v: TypeObject, dataIndex: number, i: number) => void;
+    isEditing: number | null;
 }
 
 const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
 
-    const { id = 'sb-outline', title, items = [], onClick, changeIndex } = props;
-
+    const { id = 'sb-outline', title, items = [], onClick, changeIndex, isEditing } = props;
 
     const renderCards = items.map((card, i) => {
         card = zip(TypeKeys, card) as StandardTypeObject;
-
+        const isEditingBool = (isEditing == i);
         return (
             <div className='card' key={i}>
                 <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
                     <div>
+                        {isEditingBool ? <FontAwesomeIcon icon={faStar} /> : ''}
                         <a title={'Click to view'} href="#" onClick={(e) => onClick(e, card.name)}>{card.name}</a>
                     </div>
                     <div>

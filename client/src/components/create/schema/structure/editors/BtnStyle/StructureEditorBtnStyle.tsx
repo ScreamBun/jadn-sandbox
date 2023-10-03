@@ -24,11 +24,13 @@ interface StructureEditorProps {
     remove: (i: number) => void;
     config: InfoConfig;
     collapseAllFields: boolean;
+    isEditing: number | null;
+    setIsEditing: (idx: number | null) => void;
 }
 
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
-    const { value, change, dataIndex, config, collapseAllFields, remove } = props;
+    const { value, change, dataIndex, config, collapseAllFields, remove, isEditing, setIsEditing } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
 
     const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -72,6 +74,20 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         setValueObj({ ...valueObj, [key]: value });
     }
 
+    const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        setIsEditing(dataIndex);
+    }
+
+
+    const onFieldFocus = (bool: boolean) => {
+        if (!bool && isEditing == dataIndex) {
+            setIsEditing(null);
+            return;
+        }
+        setIsEditing(dataIndex);
+    }
+
     const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         e.preventDefault();
         const { placeholder, value } = e.target;
@@ -100,12 +116,16 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
             return;
         }
         setValueObj(updatevalue);
+        if (isEditing == dataIndex) {
+            setIsEditing(null);
+        }
         change(updatevalue, dataIndex);
     }
 
     const removeAll = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         remove(dataIndex);
+        setIsEditing(null);
     }
 
     const onAddField = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -142,10 +162,12 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
             setValueObj(updatevalue);
         });
         change(updatevalue, dataIndex);
+        setIsEditing(dataIndex);
         setFieldCollapse(false);
     }
 
     const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
+        setIsEditing(dataIndex);
         let tmpFieldValues = [...valueObj.fields];
 
         if (newIndex < 0) {
@@ -249,6 +271,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
     const toggleModal = () => {
         setModal(modal => !modal);
+        setIsEditing(dataIndex);
     }
 
     //If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
@@ -273,7 +296,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         <div className="row m-0">
                             <FormGroup className="col-md-4">
                                 <Label>Name</Label>
-                                <Input name="StrucutureEditorName" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                                <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
+                                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                             </FormGroup>
                             <FormGroup className="col-md-2">
                                 <Label>&nbsp;</Label>
@@ -290,7 +314,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             </FormGroup>
                             <FormGroup className="col-md-6">
                                 <Label>Comment</Label>
-                                <Input name="StrucutureEditorComment" type="textarea" placeholder="Comment" className='text-area-w100 form-control' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                                <Input name="comment" type="textarea" placeholder="Comment" className='text-area-w100 form-control' rows={1}
+                                    value={valueObj.comment} onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                             </FormGroup>
                         </div>
                     </div>
@@ -312,6 +337,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                 changeIndex={moveField}
                 config={config}
                 editableID={isEditableID}
+                onFocus={onFieldFocus}
             />);
         }
     }
@@ -343,7 +369,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                         <div className="col-md-4">
                             <Label className='mb-0'>Name</Label>
-                            <Input name="StrucutureEditorName" type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                            <Input name="name" type="text" placeholder="Name" maxLength={64} className='form-control'
+                                value={valueObj.name} onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                         </div>
 
                         <div className="col-md-2 mt-4 text-center">
@@ -358,7 +385,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
                         <div className="col-md-6">
                             <Label className='mb-0'>Comment</Label>
-                            <Input name="StrucutureEditorComment" type="textarea" placeholder="Comment" rows={1} className='form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                            <Input name="comment" type="textarea" placeholder="Comment" rows={1} className='form-control'
+                                value={valueObj.comment} onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
                         </div>
                     </div>
                     <div className="row pt-2">

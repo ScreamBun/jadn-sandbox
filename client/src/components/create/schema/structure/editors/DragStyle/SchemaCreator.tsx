@@ -461,6 +461,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setGeneratedSchema(updatedSchema);
         });
         setIsValidating(false);
+        setIsEditing(insertAt);
     }
 
     const onOutlineDrop = (updatedCards: StandardFieldArray[]) => {

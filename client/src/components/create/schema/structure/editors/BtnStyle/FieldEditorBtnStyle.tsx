@@ -25,13 +25,14 @@ interface FieldEditorProps {
     change: (_v: EnumeratedFieldArray | StandardFieldArray, _i: number) => void;
     remove: (_i: number) => void;
     config: InfoConfig;
-    changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
+    changeIndex: (_v: FieldObject, _i: number, _j: number) => void;
     editableID: boolean;
+    onFocus: (bool: boolean) => void;
 }
 
 
 const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditorProps) {
-    const { enumerated, value, dataIndex, change, config, changeIndex, remove, editableID } = props;
+    const { enumerated, value, dataIndex, change, config, changeIndex, remove, editableID, onFocus } = props;
 
     const types = useAppSelector((state) => ({
         base: state.Util.types.base,
@@ -45,6 +46,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
     const [valueObj, setValueObj] = useState(valueObjInit);
     const val = valueObj as StandardFieldObject;
     const [valType, setValType] = useState({ value: val.type, label: val.type });
+    let SBConfirmModalValName = val.name;
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { placeholder, value } = e.target;
@@ -55,6 +57,12 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
         }
         const key = placeholder.toLowerCase();
         setValueObj({ ...valueObj, [key]: value });
+    }
+
+
+    const handleOnFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        onFocus(true);
     }
 
     const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -81,6 +89,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
             return;
         }
         setValueObj(updatevalue);
+        onFocus(false);
         change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
     }
 
@@ -104,6 +113,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
     const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsConfirmModalOpen(true);
+        onFocus(true);
     };
 
     const removeAll = (response: boolean, confirm_value: number) => {
@@ -126,25 +136,29 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
 
     const toggleModal = () => {
         setModal(modal => !modal);
+        onFocus(true);
     }
 
     const makeOptions = () => {
         if (enumerated) {
             const val = valueObj as EnumeratedFieldObject;
+            SBConfirmModalValName = `${val.value}`;
             return (
                 <div className="row m-0">
                     <FormGroup className='col-md-2'>
                         <Label>ID</Label>
-                        <Input name="FieldEditorID" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+                        <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
+                            onChange={onChange} onBlur={onBlur} onFocus={handleOnFocus} />
                     </FormGroup>
                     <div className="col-md-4">
                         <Label>Value</Label>
-                        <Input name="FieldEditorValue" type="text" placeholder="Value" className='form-control' value={val.value} onChange={onChange} onBlur={onBlur} />
+                        <Input name="value" type="text" placeholder="Value" className='form-control'
+                            value={val.value} onChange={onChange} onBlur={onBlur} onFocus={handleOnFocus} />
                     </div>
                     <FormGroup className='col-md-6'>
                         <Label>Comment</Label>
                         <Input
-                            name="FieldEditorComment"
+                            name="comment"
                             type="textarea"
                             className='form-control'
                             placeholder="Comment"
@@ -152,6 +166,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             value={valueObj.comment}
                             onChange={onChange}
                             onBlur={onBlur}
+                            onFocus={handleOnFocus}
                         />
                     </FormGroup>
                 </div>
@@ -173,14 +188,17 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                 </div>
                 <div className="row">
                     <div className="col-md-2">
-                        <Input name="FieldEditorID" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} readOnly={!editableID}
+                        <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
+                            onChange={onChange} onBlur={onBlur} readOnly={!editableID} onFocus={handleOnFocus}
                             title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
                     </div>
                     <div className="col-md-4">
-                        <Input name="FieldEditorName" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
+                        <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64}
+                            value={val.name} onChange={onChange} onBlur={onBlur} onFocus={handleOnFocus} />
                     </div>
                     <div className="col-md-4">
-                        <SBCreatableSelect id="Type" name="Type" value={valType} onChange={onSelectChange} data={types} isGrouped />
+                        <SBCreatableSelect id="Type" name="type" value={valType}
+                            onChange={onSelectChange} data={types} onFocus={handleOnFocus} isGrouped />
                     </div>
                     <div className="col-md-2">
                         <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
@@ -199,7 +217,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                     <FormGroup className='col-md-12'>
                         <Label>Comment</Label>
                         <Input
-                            name="FieldEditorComment"
+                            name="comment"
                             type="textarea"
                             placeholder="Comment"
                             rows={1}
@@ -207,6 +225,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             value={valueObj.comment}
                             onChange={onChange}
                             onBlur={onBlur}
+                            onFocus={handleOnFocus}
                         />
                     </FormGroup>
                 </div>
@@ -241,8 +260,8 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
             </div>
             <SBConfirmModal
                 isOpen={isConfirmModalOpen}
-                title={`Remove ${val.name}`}
-                message={`Are you sure you want to remove ${val.name}?`}
+                title={`Remove ${SBConfirmModalValName}`}
+                message={`Are you sure you want to remove ${SBConfirmModalValName}?`}
                 confirm_value={dataIndex}
                 onResponse={removeAll}></SBConfirmModal>
         </>

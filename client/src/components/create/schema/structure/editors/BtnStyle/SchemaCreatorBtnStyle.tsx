@@ -50,11 +50,15 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isEditing, setIsEditing] = useState(null);
+
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
+
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
 
@@ -368,15 +372,18 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
+            let idx;
 
             if (insertAt.value == "0") {
                 tmpTypes.unshift(tmpDef);
+                idx = 0;
 
             } else if (insertAt.value == "end") {
                 tmpTypes.push(tmpDef);
+                idx = tmpTypes.length - 1;
 
             } else {
-                const idx = parseInt(insertAt.value);
+                idx = parseInt(insertAt.value);
                 tmpTypes = [
                     ...tmpTypes.slice(0, idx),
                     tmpDef,
@@ -393,6 +400,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             });
             setIsValidJADN(false);
             setIsValidating(false);
+            setIsEditing(idx);
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -505,6 +513,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             value: def,
             dataIndex: i,
             collapseAllFields: allFieldsCollapse,
+            isEditing: isEditing,
+            setIsEditing: setIsEditing,
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
@@ -646,6 +656,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                             title={'Outline'}
                                             onClick={onOutlineClick}
                                             changeIndex={changeIndex}
+                                            isEditing={isEditing}
                                         />
                                     </div>
                                 </div>
