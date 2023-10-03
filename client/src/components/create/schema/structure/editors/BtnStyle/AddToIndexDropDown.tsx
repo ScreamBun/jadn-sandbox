@@ -1,5 +1,5 @@
-import SBSelect, { Option } from 'components/common/SBSelect';
 import React, { memo } from 'react';
+import SBSelect, { Option } from 'components/common/SBSelect';
 
 interface AddToIndexDropDownProps {
     indexOpts: Option[];

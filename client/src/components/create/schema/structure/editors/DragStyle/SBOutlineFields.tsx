@@ -1,10 +1,9 @@
-
-import update from 'immutability-helper'
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDragDropManager, useDrop } from 'react-dnd';
 import { Unsubscribe } from 'redux';
-import FieldEditor from './FieldEditor';
+import { useDragDropManager, useDrop } from 'react-dnd';
+import update from 'immutability-helper'
 import { FieldArray, InfoConfig } from 'components/create/schema/interface';
+import FieldEditor from './FieldEditor';
 
 export interface DragItem {
     id: any;

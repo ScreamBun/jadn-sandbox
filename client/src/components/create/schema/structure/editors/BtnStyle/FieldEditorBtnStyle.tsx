@@ -4,18 +4,18 @@ import {
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { useAppSelector } from '../../../../../../reducers';
+import { objectValues, zip } from '../../../../../utils';
+import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../../interface';
 import {
     FieldObject, EnumeratedFieldObject, EnumeratedFieldKeys, StandardFieldKeys, StandardFieldObject
 } from '../consts';
-import OptionsModal from '../options/OptionsModal';
-import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../../interface';
-import { objectValues, zip } from '../../../../../utils';
-import { useAppSelector } from '../../../../../../reducers';
-import { sbToastError } from 'components/common/SBToast';
-import SBCreatableSelect from 'components/common/SBCreatableSelect';
-import { Option } from 'components/common/SBSelect';
 import { ModalSize } from '../options/ModalSize';
+import OptionsModal from '../options/OptionsModal';
+import { sbToastError } from 'components/common/SBToast';
+import { Option } from 'components/common/SBSelect';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
+import SBCreatableSelect from 'components/common/SBCreatableSelect';
 
 // Interface
 interface FieldEditorProps {

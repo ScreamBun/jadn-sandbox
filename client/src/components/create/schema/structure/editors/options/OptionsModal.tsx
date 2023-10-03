@@ -2,16 +2,16 @@ import React, { memo, useState } from 'react';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import {
   OptionTypes, Val, opts2arr, opts2obj, RequiredOptions
 } from './consts';
+import { objectFromTuple } from '../../../../../utils';
+import { ModalSize } from './ModalSize';
+import { sbToastError } from 'components/common/SBToast';
 import TypeOptionsEditor from './TypeOptionsEditor';
 import FieldOptionsEditor from './FieldOptionsEditor';
-import { objectFromTuple } from '../../../../../utils';
-import { sbToastError } from 'components/common/SBToast';
-import { ModalSize } from './ModalSize';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 // Interface
 interface OptionsModalProps {

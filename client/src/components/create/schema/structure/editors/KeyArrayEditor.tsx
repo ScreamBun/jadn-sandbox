@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import {
-  Button, ButtonGroup, FormText, Input
+  Button, ButtonGroup, Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';

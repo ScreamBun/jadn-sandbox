@@ -1,4 +1,6 @@
 import React, { memo, useMemo, useRef, useState } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
+import type { Identifier, XYCoord } from 'dnd-core'
 import {
   Button, FormGroup, Input, Label
 } from 'reactstrap';
@@ -7,16 +9,14 @@ import { faGrip, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {
   FieldObject, EnumeratedFieldObject, EnumeratedFieldKeys, StandardFieldKeys, StandardFieldObject
 } from '../consts';
-import OptionsModal from '../options/OptionsModal';
-import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../../interface';
-import { objectValues, zip } from '../../../../../utils';
 import { useAppSelector } from '../../../../../../reducers';
+import { objectValues, zip } from '../../../../../utils';
+import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../../interface';
+import { ModalSize } from '../options/ModalSize';
+import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import { Option } from 'components/common/SBSelect';
-import { ModalSize } from '../options/ModalSize';
-import { useDrag, useDrop } from 'react-dnd';
-import type { Identifier, XYCoord } from 'dnd-core'
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { DragItem } from './SBOutlineFields';
 

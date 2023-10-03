@@ -1,21 +1,20 @@
 import React, { memo, useEffect, useState } from 'react';
 //import equal from 'fast-deep-equal';
+import { flushSync } from 'react-dom';
 import {
     Button, ButtonGroup, FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
-
-import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
-import OptionsModal from '../options/OptionsModal';
+import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { useAppSelector } from 'reducers';
+import { zip } from '../../../../../utils';
 import {
     EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
 } from '../../../interface';
-import { zip } from '../../../../../utils';
+import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
+import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
-import { useAppSelector } from 'reducers';
 import FieldEditorBtnStyle from './FieldEditorBtnStyle';
-import { flushSync } from 'react-dom';
 
 // Interface
 interface StructureEditorProps {

@@ -1,9 +1,8 @@
+import React, { memo, useMemo } from "react";
+import { useDrag } from 'react-dnd'
+import { ListGroupItem } from "reactstrap";
 import { faGripLines } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { memo, useMemo } from "react";
-import { ListGroupItem } from "reactstrap";
-import { useDrag } from 'react-dnd'
-
 interface DraggableKeyProps {
     item: any;
     acceptableType: string;

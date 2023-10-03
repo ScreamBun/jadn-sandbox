@@ -1,10 +1,10 @@
 import React, { memo } from 'react';
-import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
-import KeyValueEditor from '../KeyValueEditor';
-import { safeGet } from '../../../../../utils';
 import { useSelector } from 'react-redux';
+import { safeGet } from '../../../../../utils';
 import { useAppSelector } from 'reducers';
 import { getFormatOptions } from 'reducers/format';
+import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
+import KeyValueEditor from '../KeyValueEditor';
 
 interface TypeOptionsEditorProps {
   id: string;

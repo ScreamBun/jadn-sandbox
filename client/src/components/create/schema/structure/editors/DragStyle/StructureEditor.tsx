@@ -1,20 +1,19 @@
 import React, { memo, useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 import {
   Button, ButtonGroup, Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-
-import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
-import OptionsModal from '../options/OptionsModal';
+import { useAppSelector } from 'reducers';
+import { zip } from '../../../../../utils';
 import {
   EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
 } from '../../../interface';
-import { zip } from '../../../../../utils';
-import { sbToastError } from 'components/common/SBToast';
-import { useAppSelector } from 'reducers';
+import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
+import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
-import { flushSync } from 'react-dom';
+import { sbToastError } from 'components/common/SBToast';
 import SBOutlineFields, { DragItem } from './SBOutlineFields';
 
 

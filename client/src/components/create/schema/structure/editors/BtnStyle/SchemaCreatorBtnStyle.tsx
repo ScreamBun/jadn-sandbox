@@ -1,27 +1,30 @@
 import React, { useEffect, memo, useRef, useState } from 'react'
-import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
-import { Info, Types } from '../../structure';
-import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
+import { flushSync } from 'react-dom';
+import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { faCheck, faCircleChevronDown, faCircleChevronUp, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
+import { Info, Types } from '../../structure';
+import { loadFile, setSchema } from 'actions/util';
+import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
+import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
+import { TypeObject } from '../consts';
+import { getFilenameOnly } from 'components/utils/general';
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
+import SBSelect, { Option } from 'components/common/SBSelect';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBEditor from 'components/common/SBEditor';
-import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
-import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
-import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
-import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
-import { getFilenameOnly } from 'components/utils/general';
 import SBOutlineBtnStyle from 'components/create/schema/outline/SBOutlineBtnStyle';
-import { TypeObject } from '../consts';
 import { AddToIndexDropDown } from './AddToIndexDropDown';
+
+
+
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
     $MaxString: $MAX_STRING,
@@ -49,9 +52,12 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const [isLoading, setIsLoading] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+    const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
-    const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
+    const schemaOpts = useSelector(getAllSchemas);
+    const ref = useRef<HTMLInputElement | null>(null);
+
     const [insertAt, setInsertAt] = useState(defaultInsertIdx);
     let indexOpts = generatedSchema.types ?
         (generatedSchema.types.length == 1) ?
@@ -66,8 +72,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                 }
             }) :
         [defaultInsertIdx];
-    const schemaOpts = useSelector(getAllSchemas);
-    const ref = useRef<HTMLInputElement | null>(null);
     const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {

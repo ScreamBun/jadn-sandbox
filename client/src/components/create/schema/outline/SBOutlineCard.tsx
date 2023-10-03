@@ -1,13 +1,11 @@
-import type { Identifier, XYCoord } from 'dnd-core'
+import React, { useRef } from 'react'
 import type { FC } from 'react'
-import { useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
-
-import React from 'react'
+import type { Identifier, XYCoord } from 'dnd-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGrip } from '@fortawesome/free-solid-svg-icons'
-import { DragItem } from './SBOutline'
 import { StandardFieldArray } from '../interface'
+import { DragItem } from './SBOutline'
 
 const style = {
   padding: '0.5rem 1rem',

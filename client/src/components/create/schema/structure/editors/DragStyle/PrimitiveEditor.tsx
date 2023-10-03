@@ -5,12 +5,11 @@ import {
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
-
+import { zip } from '../../../../../utils';
+import { InfoConfig } from '../../../interface';
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
-import { zip } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
-import { InfoConfig } from '../../../interface';
 
 // Interface
 interface PrimitiveEditorProps {

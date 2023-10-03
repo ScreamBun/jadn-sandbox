@@ -1,30 +1,31 @@
 import React, { useEffect, memo, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { flushSync } from 'react-dom';
 import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
+import { faCheck, faXmark, faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { v4 as uuid4 } from 'uuid';
 import { Info, Types } from '../../structure';
 import { loadFile, setSchema } from 'actions/util';
-import { useDispatch, useSelector } from 'react-redux';
-import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
+import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
+import { getFilenameOnly } from 'components/utils/general';
+import { StandardFieldArray } from 'components/create/schema/interface';
+import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBEditor from 'components/common/SBEditor';
-import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
-import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
+import SBScrollToTop from 'components/common/SBScrollToTop';
+import SBOutline, { DragItem as Item } from 'components/create/schema/outline/SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
-import SBOutline, { DragItem as Item } from 'components/create/schema/outline/SBOutline';
-import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
-import { flushSync } from 'react-dom';
-import SBScrollToTop from 'components/common/SBScrollToTop';
-import { getFilenameOnly } from 'components/utils/general';
-import { v4 as uuid4 } from 'uuid';
-import { StandardFieldArray } from 'components/create/schema/interface';
+
+
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -39,11 +40,9 @@ const configInitialState = {
 const SchemaCreator = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
-    const generatedSchemaRef = useRef(generatedSchema);
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema));
-        generatedSchemaRef.current = generatedSchema;
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
@@ -51,11 +50,14 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
+
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
 

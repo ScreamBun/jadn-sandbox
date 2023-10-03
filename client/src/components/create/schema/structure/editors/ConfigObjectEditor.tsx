@@ -2,10 +2,10 @@ import React, { memo } from 'react';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
-import { ConfigOptions } from './consts';
-import KeyValueEditor from './KeyValueEditor';
 import { InfoConfig } from '../../interface';
+import { ConfigOptions } from './consts';
 import { sbToastInfo } from 'components/common/SBToast';
+import KeyValueEditor from './KeyValueEditor';
 
 // Interfaces
 interface ConfigObjectEditorProps {
@@ -70,16 +70,16 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
                 <FontAwesomeIcon
                   icon={faMinusCircle}
                 />
-              </Button> 
+              </Button>
             </div>
-          </div>     
+          </div>
         </div>
         <div className="card-body px-2 py-2">
-            <div className="row m-0">
-              <div className="col-12 m-0">
-                {keys}
-              </div>
+          <div className="row m-0">
+            <div className="col-12 m-0">
+              {keys}
             </div>
+          </div>
         </div>
       </div>
     </>
