@@ -315,12 +315,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             tmpTypes.push(tmpDef);
+            
             flushSync(() => {
                 setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
             });
             setIsValidJADN(false);
             setIsValidating(false);
-            setIsEditing(updatedSchema.types.length - 1);
+            setIsEditing(tmpTypes.length - 1);
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
