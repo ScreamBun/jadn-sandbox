@@ -22,7 +22,7 @@ export interface SBOutlineProps {
   id: string;
   title: string;
   items: any[];
-  onDrop: (arg: StandardFieldArray[]) => void;
+  onDrop: (arr: StandardFieldArray[], idx: number) => void;
   onTypesDrop: (arg: DragItem) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
   isEditing: number | null;
@@ -130,9 +130,9 @@ const SBOutline = (props: SBOutlineProps) => {
     onClick(e, text)
   }, []);
 
-  const dropCard = useCallback(() => {
+  const dropCard = useCallback((item: DragItem) => {
     const fieldArray: StandardFieldArray[] = cardsStateRef.current.map(item => item.value);
-    onDrop(fieldArray);
+    onDrop(fieldArray, item.index);
   }, []);
 
   const moveCard = useCallback((_newItem: DragItem, dragIndex: number, hoverIndex: number) => {

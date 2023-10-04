@@ -456,8 +456,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setIsEditing(insertAt);
     }
 
-    const onOutlineDrop = (updatedCards: StandardFieldArray[]) => {
+    const onOutlineDrop = (updatedCards: StandardFieldArray[], idx: number) => {
         setGeneratedSchema((prev: any) => ({ ...prev, types: updatedCards }));
+        setIsEditing(idx);
     };
 
     const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {

@@ -42,7 +42,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
       }
     },
     drop(item: DragItem, _monitor) {
-      dropCard(item.value);
+      dropCard(item);
     },
     hover(item: DragItem, monitor) {
       if (!ref.current) {
