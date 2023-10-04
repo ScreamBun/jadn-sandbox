@@ -77,7 +77,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsLoading(true);
 
             dispatch(loadFile('schemas', e.value))
-                .then((loadFileVal) => {
+                .then((loadFileVal: { error: any; payload: { response: string; data: any; }; }) => {
                     if (loadFileVal.error) {
                         setIsLoading(false);
                         sbToastError(loadFileVal.payload.response);
@@ -93,7 +93,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         setGeneratedSchema(schemaObj);
                     });
                 })
-                .catch((loadFileErr) => {
+                .catch((loadFileErr: { payload: { data: string; }; }) => {
                     setIsLoading(false);
                     sbToastError(loadFileErr.payload.data);
                 })
@@ -179,7 +179,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         sbToastError(validateSchemaVal.payload.valid_msg);
                     }
                 })
-                .catch((validateSchemaErr) => {
+                .catch((validateSchemaErr: { payload: { valid_msg: string; }; }) => {
                     setIsValidating(false);
                     sbToastError(validateSchemaErr.payload.valid_msg)
                 })
@@ -285,7 +285,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const onSchemaDrop = (item: Item) => {
         let key = item.text;
         if (Object.keys(Info).includes(key)) {
-            let updatedSchema;
+            let updatedSchema: any;
             if (key == 'config') {
                 updatedSchema = {
                     ...generatedSchema,
@@ -315,12 +315,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             tmpTypes.push(tmpDef);
-            let updatedSchema = {
-                ...generatedSchema,
-                types: tmpTypes
-            };
             flushSync(() => {
-                setGeneratedSchema(updatedSchema);
+                setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
             });
             setIsValidJADN(false);
             setIsValidating(false);
@@ -343,15 +339,15 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     if (key == 'config') {
                         setConfigOpt(val);
                     }
-                    let updatedSchema = {
-                        ...generatedSchema,
+
+                    setGeneratedSchema((prev: any) => ({
+                        ...prev,
                         info: {
-                            ...generatedSchema.info,
+                            ...prev.info,
                             ...Info[key].edit(val)
                         }
-                    };
+                    }));
 
-                    setGeneratedSchema(updatedSchema);
                     setIsValidJADN(false);
                     setIsValidating(false);
 
@@ -386,7 +382,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         return null;
     });
 
-    const typesEditors = (generatedSchema.types || []).map((def, i) => {
+    const typesEditors = (generatedSchema.types || []).map((def: string[], i: any) => {
         let type = def[1].toLowerCase() as keyof typeof Types;
 
         //CHECK FOR VALID TYPE
@@ -406,11 +402,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
-                let updatedSchema = {
-                    ...generatedSchema,
+                setGeneratedSchema((prev: any) => ({
+                    ...prev,
                     types: tmpTypes
-                };
-                setGeneratedSchema(updatedSchema);
+                }));
                 setIsValidJADN(false);
                 setIsValidating(false);
             }
@@ -453,23 +448,16 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             ...tmpTypes.slice(insertAt)
         ];
 
-        let updatedSchema = {
-            ...generatedSchema,
-            types: updatedTypes
-        };
         flushSync(() => {
-            setGeneratedSchema(updatedSchema);
+            setGeneratedSchema((prev: any) => ({ ...prev, ['types']: updatedTypes }));
         });
+
         setIsValidating(false);
         setIsEditing(insertAt);
     }
 
     const onOutlineDrop = (updatedCards: StandardFieldArray[]) => {
-        let updatedSchema = {
-            ...generatedSchema,
-            types: updatedCards
-        };
-        setGeneratedSchema(updatedSchema);
+        setGeneratedSchema((prev: any) => ({ ...prev, types: updatedCards }));
     };
 
     const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
