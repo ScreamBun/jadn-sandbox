@@ -190,13 +190,19 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   };
 
   const onFieldRemoval = (idx: number) => {
-    const tmpFieldValues = [...valueObj.fields];
+    let tmpFieldValues = [...valueObj.fields];
 
     if (idx + 1 == valueObj.fields?.length) {
       tmpFieldValues.pop();
     } else {
       tmpFieldValues.splice(idx, 1);
     }
+
+    //If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.
+    tmpFieldValues = tmpFieldValues.map((item, index) => {
+      item[0] = index + 1;
+      return item;
+    });
 
     const updatevalue = { ...valueObj, fields: tmpFieldValues };
     setValueObj(updatevalue);
