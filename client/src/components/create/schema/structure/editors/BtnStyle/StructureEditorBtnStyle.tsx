@@ -338,6 +338,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                 config={config}
                 editableID={isEditableID}
                 onFocus={onFieldFocus}
+                isFirst={i == 0}
+                isLast={i == valueObj.fields.length - 1}
             />);
         }
     }

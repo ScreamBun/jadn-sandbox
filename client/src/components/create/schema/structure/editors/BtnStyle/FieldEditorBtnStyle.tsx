@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { useAppSelector } from '../../../../../../reducers';
 import { objectValues, zip } from '../../../../../utils';
-import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../../interface';
+import { FieldArray, InfoConfig } from '../../../interface';
 import {
     FieldObject, EnumeratedFieldObject, EnumeratedFieldKeys, StandardFieldKeys, StandardFieldObject
 } from '../consts';
@@ -19,20 +19,22 @@ import SBCreatableSelect from 'components/common/SBCreatableSelect';
 
 // Interface
 interface FieldEditorProps {
+    editableID: boolean;
     enumerated?: boolean;
     dataIndex: number;
     value: FieldObject;
-    change: (_v: EnumeratedFieldArray | StandardFieldArray, _i: number) => void;
+    change: (_v: FieldArray, _i: number) => void;
     remove: (_i: number) => void;
-    config: InfoConfig;
-    changeIndex: (_v: FieldObject, _i: number, _j: number) => void;
-    editableID: boolean;
+    changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
     onFocus: (bool: boolean) => void;
+    config: InfoConfig;
+    isFirst: boolean;
+    isLast: boolean;
 }
 
 
 const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditorProps) {
-    const { enumerated, value, dataIndex, change, config, changeIndex, remove, editableID, onFocus } = props;
+    const { enumerated, value, dataIndex, config, editableID, isFirst, isLast, change, changeIndex, remove, onFocus } = props;
 
     const types = useAppSelector((state) => ({
         base: state.Util.types.base,
@@ -238,14 +240,15 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
             <div className="card border-secondary mb-2">
                 <div className="card-body px-2 py-2">
                     <ButtonGroup size="sm" className="float-right">
-                        <Button color="primary" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)}
+                        {!isFirst && <Button color="primary" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)}
                             title={`Move Field Up`}>
                             <FontAwesomeIcon icon={faSquareCaretUp} />
-                        </Button>
-                        <Button color="primary" onClick={() => changeIndex(value, dataIndex, dataIndex + 1)}
+                        </Button>}
+                        {!isLast && <Button color="primary" onClick={() => changeIndex(value, dataIndex, dataIndex + 1)}
                             title={`Move Field Down`} >
                             <FontAwesomeIcon icon={faSquareCaretDown} />
                         </Button>
+                        }
                     </ButtonGroup>
                     <ButtonGroup size="sm" className="float-right mr-1">
                         <Button color="danger" className="rounded-circle"
