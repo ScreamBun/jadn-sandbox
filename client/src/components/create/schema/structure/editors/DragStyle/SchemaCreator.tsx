@@ -10,7 +10,7 @@ import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { getFilenameOnly } from 'components/utils/general';
-import { StandardFieldArray } from 'components/create/schema/interface';
+import { StandardFieldArray, StandardTypeArray } from 'components/create/schema/interface';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
@@ -50,7 +50,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isEditing, setIsEditing] = useState(null);
+    const [isEditing, setIsEditing] = useState<number | null>(null);
 
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
@@ -117,7 +117,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
-                    let data = ev.target.result;
+                    let data: any = ev.target.result;
                     try {
                         setIsLoading(false);
 
@@ -315,7 +315,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             tmpTypes.push(tmpDef);
-            
+
             flushSync(() => {
                 setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
             });
@@ -383,7 +383,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         return null;
     });
 
-    const typesEditors = (generatedSchema.types || []).map((def: string[], i: any) => {
+    const typesEditors = (generatedSchema.types || []).map((def: StandardTypeArray, i: any) => {
         let type = def[1].toLowerCase() as keyof typeof Types;
 
         //CHECK FOR VALID TYPE

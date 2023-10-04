@@ -22,7 +22,7 @@ interface FieldEditorProps {
     editableID: boolean;
     enumerated?: boolean;
     dataIndex: number;
-    value: FieldObject;
+    value: FieldArray;
     change: (_v: FieldArray, _i: number) => void;
     remove: (_i: number) => void;
     changeIndex: (_v: FieldArray, _i: number, _j: number) => void;

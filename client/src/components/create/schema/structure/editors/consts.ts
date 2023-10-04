@@ -28,7 +28,7 @@ export interface PrimitiveTypeObject {
   comment: string;
 }
 export interface StandardTypeObject extends PrimitiveTypeObject {
-  fields: Array<FieldObject>;
+  fields: Array<FieldObject> | Array<FieldArray>;
 }
 export type TypeObject = PrimitiveTypeObject | StandardTypeObject
 

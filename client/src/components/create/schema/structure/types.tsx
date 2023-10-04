@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { PrimitiveEditor, StructureEditor, StructureEditorBtnStyle, PrimitiveEditorBtnStyle } from './editors/editors';
 import { PrimitiveDef, StructureDef } from './interfaces';
 import { InfoConfig, StandardTypeArray } from '../interface';
@@ -11,7 +11,8 @@ interface EditorProps {
   remove?: (i: number) => void;  // eslint-disable-line react/require-default-props
   config: InfoConfig;
   collapseAllFields: boolean;
-  setIsEditing: (idx: number | null) => void;
+  isEditing: number | null;
+  setIsEditing: Dispatch<SetStateAction<any>>;
 }
 
 const typeDef = (props: StructureDef) => {
