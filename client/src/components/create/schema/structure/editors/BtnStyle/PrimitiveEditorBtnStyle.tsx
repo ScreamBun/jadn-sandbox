@@ -18,13 +18,11 @@ interface PrimitiveEditorProps {
     change: (v: any, i: number) => void;
     remove: (i: number) => void;
     config: InfoConfig;
-    isEditing: number | null;
-    setIsEditing: (idx: number | null) => void;
 }
 
 // Primitive Editor
 const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: PrimitiveEditorProps) {
-    const { value, change, dataIndex, config, isEditing, setIsEditing } = props;
+    const { value, change, dataIndex, config } = props;
     const [modal, setModal] = useState(false);
 
     let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
@@ -39,11 +37,6 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
         const { placeholder, value } = e.target;
         const key = placeholder.toLowerCase();
         setValueObj({ ...valueObj, [key]: value });
-    }
-
-    const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        setIsEditing(dataIndex);
     }
 
     const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -69,16 +62,12 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
             return;
         }
         setValueObj(updatevalue);
-        if (isEditing == dataIndex) {
-            setIsEditing(null);
-        }
         change(updatevalue, dataIndex);
     }
 
     const removeAll = () => {
         const { dataIndex, remove } = props;
         remove(dataIndex);
-        setIsEditing(null);
     }
 
     const saveModal = (modalData: Array<string>) => {
@@ -94,7 +83,6 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
 
     const toggleModal = () => {
         setModal(modal => !modal);
-        setIsEditing(dataIndex);
     }
 
     return (
@@ -130,7 +118,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                                 value={valueObj.name}
                                 onChange={onChange}
                                 onBlur={onBlur}
-                                onFocus={onFocus}
+
                             />
                         </div>
                         <div className="col-md-2 mt-4 text-center">
@@ -157,7 +145,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                                 value={valueObj.comment}
                                 onChange={onChange}
                                 onBlur={onBlur}
-                                onFocus={onFocus}
+
                             />
                         </div>
                     </div>

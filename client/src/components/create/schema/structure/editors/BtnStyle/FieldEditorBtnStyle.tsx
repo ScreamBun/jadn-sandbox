@@ -26,7 +26,6 @@ interface FieldEditorProps {
     change: (_v: FieldArray, _i: number) => void;
     remove: (_i: number) => void;
     changeIndex: (_v: FieldArray, _i: number, _j: number) => void;
-    onFocus: (bool: boolean) => void;
     config: InfoConfig;
     isFirst: boolean;
     isLast: boolean;
@@ -34,7 +33,7 @@ interface FieldEditorProps {
 
 
 const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditorProps) {
-    const { enumerated, value, dataIndex, config, editableID, isFirst, isLast, change, changeIndex, remove, onFocus } = props;
+    const { enumerated, value, dataIndex, config, editableID, isFirst, isLast, change, changeIndex, remove } = props;
 
     const types = useAppSelector((state) => ({
         base: state.Util.types.base,
@@ -61,12 +60,6 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
         setValueObj({ ...valueObj, [key]: value });
     }
 
-
-    const handleOnFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        onFocus(true);
-    }
-
     const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         const { placeholder, value } = e.target;
 
@@ -91,7 +84,6 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
             return;
         }
         setValueObj(updatevalue);
-        onFocus(false);
         change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
     }
 
@@ -115,7 +107,6 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
     const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsConfirmModalOpen(true);
-        onFocus(true);
     };
 
     const removeAll = (response: boolean, confirm_value: number) => {
@@ -138,7 +129,6 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
 
     const toggleModal = () => {
         setModal(modal => !modal);
-        onFocus(true);
     }
 
     const makeOptions = () => {
@@ -150,12 +140,12 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                     <FormGroup className='col-md-2'>
                         <Label>ID</Label>
                         <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
-                            onChange={onChange} onBlur={onBlur} onFocus={handleOnFocus} />
+                            onChange={onChange} onBlur={onBlur} />
                     </FormGroup>
                     <div className="col-md-4">
                         <Label>Value</Label>
                         <Input name="value" type="text" placeholder="Value" className='form-control'
-                            value={val.value} onChange={onChange} onBlur={onBlur} onFocus={handleOnFocus} />
+                            value={val.value} onChange={onChange} onBlur={onBlur} />
                     </div>
                     <FormGroup className='col-md-6'>
                         <Label>Comment</Label>
@@ -168,7 +158,6 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             value={valueObj.comment}
                             onChange={onChange}
                             onBlur={onBlur}
-                            onFocus={handleOnFocus}
                         />
                     </FormGroup>
                 </div>
@@ -191,16 +180,16 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                 <div className="row">
                     <div className="col-md-2">
                         <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
-                            onChange={onChange} onBlur={onBlur} readOnly={!editableID} onFocus={handleOnFocus}
+                            onChange={onChange} onBlur={onBlur} readOnly={!editableID}
                             title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
                     </div>
                     <div className="col-md-4">
                         <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64}
-                            value={val.name} onChange={onChange} onBlur={onBlur} onFocus={handleOnFocus} />
+                            value={val.name} onChange={onChange} onBlur={onBlur} />
                     </div>
                     <div className="col-md-4">
                         <SBCreatableSelect id="Type" name="type" value={valType}
-                            onChange={onSelectChange} data={types} onFocus={handleOnFocus} isGrouped />
+                            onChange={onSelectChange} data={types} isGrouped />
                     </div>
                     <div className="col-md-2">
                         <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
@@ -227,7 +216,6 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             value={valueObj.comment}
                             onChange={onChange}
                             onBlur={onBlur}
-                            onFocus={handleOnFocus}
                         />
                     </FormGroup>
                 </div>
