@@ -398,8 +398,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             value: def,
             dataIndex: i,
             collapseAllFields: allFieldsCollapse,
-            isEditing: isEditing,
-            setIsEditing: setIsEditing,
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
@@ -409,6 +407,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 }));
                 setIsValidJADN(false);
                 setIsValidating(false);
+                setIsEditing(i);
             }
             ,
             remove: (idx: number) => {
@@ -430,6 +429,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     setGeneratedSchema(updatedSchema);
                     setIsValidJADN(false);
                     setIsValidating(false);
+                    setIsEditing(null);
                 }
             },
             config: configOpt

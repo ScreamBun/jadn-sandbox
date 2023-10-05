@@ -18,13 +18,11 @@ interface PrimitiveEditorProps {
   change: (v: any, i: number) => void;
   remove: (i: number) => void;
   config: InfoConfig;
-  isEditing: number | null;
-  setIsEditing: (idx: number | null) => void;
 }
 
 // Primitive Editor
 const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
-  const { value, change, dataIndex, config, isEditing, setIsEditing } = props;
+  const { value, change, dataIndex, config } = props;
   const [modal, setModal] = useState(false);
 
   let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
@@ -39,11 +37,6 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
     const { placeholder, value } = e.target;
     const key = placeholder.toLowerCase();
     setValueObj({ ...valueObj, [key]: value });
-  }
-
-  const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setIsEditing(dataIndex);
   }
 
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -69,16 +62,12 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
       return;
     }
     setValueObj(updatevalue);
-    if (isEditing == dataIndex) {
-      setIsEditing(null);
-    }
     change(updatevalue, dataIndex);
   }
 
   const removeAll = () => {
     const { dataIndex, remove } = props;
     remove(dataIndex);
-    setIsEditing(null);
   }
 
   const saveModal = (modalData: Array<string>) => {
@@ -94,7 +83,6 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
 
   const toggleModal = () => {
     setModal(modal => !modal);
-    setIsEditing(dataIndex);
   }
 
   return (
@@ -126,7 +114,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
               <div className="row">
                 <div className="col-md-4">
                   <Input name="name" type="text" placeholder="Name" maxLength={64} value={valueObj.name}
-                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                    onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
                   <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
@@ -140,7 +128,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
                 </div>
                 <div className="col-md-6">
                   <Input name="comment" type="textarea" placeholder="Comment" className='form-control'
-                    rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                    rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
             </div>

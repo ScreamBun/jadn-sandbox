@@ -24,12 +24,10 @@ interface StructureEditorProps {
   remove: (i: number) => void;
   config: InfoConfig;
   collapseAllFields: boolean;
-  isEditing: number | null;
-  setIsEditing: (idx: number | null) => void;
 }
 
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, dataIndex, config, collapseAllFields, change, remove, isEditing, setIsEditing } = props;
+  const { value, dataIndex, config, collapseAllFields, change, remove } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -74,18 +72,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     setValueObj({ ...valueObj, [key]: value });
   }
 
-  const onFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setIsEditing(dataIndex);
-  }
-
-  const onFieldFocus = (bool: boolean) => {
-    if (!bool && isEditing == dataIndex) {
-      setIsEditing(null);
-      return;
-    }
-    setIsEditing(dataIndex);
-  }
 
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -115,16 +101,12 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
       return;
     }
     setValueObj(updatevalue);
-    if (isEditing == dataIndex) {
-      setIsEditing(null);
-    }
     change(updatevalue, dataIndex);
   }
 
   const removeAll = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     remove(dataIndex);
-    setIsEditing(null);
   }
 
   const onAddField = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -163,7 +145,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
     });
 
     change(updatevalue, dataIndex);
-    setIsEditing(dataIndex);
     setFieldCollapse(false);
   }
 
@@ -246,7 +227,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const toggleModal = () => {
     setModal(modal => !modal);
-    setIsEditing(dataIndex);
   }
 
   // If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
@@ -277,7 +257,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 <div className="row">
                   <div className="col-md-4">
                     <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
-                      onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                      onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
                     <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
@@ -293,7 +273,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   </div>
                   <div className="col-md-6">
                     <Input name="comment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1}
-                      value={valueObj.comment} onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                      value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                   </div>
                 </div>
               </div>
@@ -356,7 +336,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               <div className="row">
                 <div className="col-md-4">
                   <Input name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
-                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                    onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
                   <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
@@ -371,7 +351,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 </div>
                 <div className="col-md-6">
                   <Input name="comment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment}
-                    onChange={onChange} onBlur={onBlur} onFocus={onFocus} />
+                    onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
             </div>
@@ -415,7 +395,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     editableID={isEditableID}
                     config={config}
                     acceptableType={`${dataIndex}`}
-                    onFocus={onFieldFocus}
                   />
                 </div>
                 : ''

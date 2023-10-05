@@ -23,7 +23,7 @@ export interface SBOutlineCardProps {
   value: StandardFieldArray;
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;
-  dropCard: (item: {}) => void;
+  dropCard: (item: DragItem) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
   isEditing: boolean;
 }

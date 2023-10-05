@@ -29,7 +29,6 @@ interface FieldEditorProps {
   remove: (_i: number) => void;
   config: InfoConfig;
   editableID: boolean;
-  onFocus: (bool: boolean) => void;
   moveCard: (originalIndex: number, newIndex: number) => void;
   dropCard: (arg: DragItem) => void;
   acceptableType: string;
@@ -37,7 +36,7 @@ interface FieldEditorProps {
 
 
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
-  const { enumerated = false, value, dataIndex, config, acceptableType, id, editableID, dropCard, remove, change, moveCard, onFocus } = props;
+  const { enumerated = false, value, dataIndex, config, acceptableType, id, editableID, dropCard, remove, change, moveCard } = props;
   const types = useAppSelector((state) => ({
     base: state.Util.types.base,
     schema: Object.keys(state.Util.types.schema) || {}
@@ -151,11 +150,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     setValueObj({ ...valueObj, [key]: value });
   }
 
-  const handleOnFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    onFocus(true);
-  }
-
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
 
@@ -180,7 +174,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       return;
     }
     setValueObj(updatevalue);
-    onFocus(false);
     change(objectValues(updatevalue as Record<string, any>) as FieldArray, dataIndex);
   }
 
@@ -203,7 +196,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   const onRemoveItemClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    onFocus(true);
     setIsConfirmModalOpen(true);
   };
 
@@ -228,7 +220,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   const toggleModal = () => {
     setModal(!modal);
-    onFocus(true);
   }
 
   const makeOptions = () => {
@@ -240,12 +231,12 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
           <FormGroup className='col-md-2'>
             <Label>ID</Label>
             <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
-              onChange={onChange} onBlur={onBlur} onFocus={handleOnFocus} />
+              onChange={onChange} onBlur={onBlur} />
           </FormGroup>
           <div className="col-md-4">
             <Label>Value</Label>
             <Input name="value" type="text" placeholder="Value" className='form-control' value={val.value}
-              onChange={onChange} onBlur={onBlur} onFocus={handleOnFocus} />
+              onChange={onChange} onBlur={onBlur} />
           </div>
           <FormGroup className='col-md-6'>
             <Label>Comment</Label>
@@ -258,7 +249,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               value={valueObj.comment}
               onChange={onChange}
               onBlur={onBlur}
-              onFocus={handleOnFocus}
             />
           </FormGroup>
         </div>
@@ -281,17 +271,17 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         <div className="row">
           <div className="col-md-2">
             <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
-              onChange={onChange} onBlur={onBlur} readOnly={!editableID} onFocus={handleOnFocus}
+              onChange={onChange} onBlur={onBlur} readOnly={!editableID}
               title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
 
           </div>
           <div className="col-md-4">
             <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name}
-              onChange={onChange} onBlur={onBlur} onFocus={handleOnFocus} />
+              onChange={onChange} onBlur={onBlur} />
           </div>
           <div className="col-md-4">
             <SBCreatableSelect id="Type" name="type" value={valType} onChange={onSelectChange} data={types}
-              isGrouped onFocus={handleOnFocus} />
+              isGrouped />
           </div>
           <div className="col-md-2">
             <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
@@ -318,7 +308,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               value={valueObj.comment}
               onChange={onChange}
               onBlur={onBlur}
-              onFocus={handleOnFocus}
             />
           </FormGroup>
         </div>

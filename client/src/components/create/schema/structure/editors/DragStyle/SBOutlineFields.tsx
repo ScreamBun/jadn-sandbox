@@ -25,11 +25,10 @@ export interface SBOutlineProps {
     config: InfoConfig;
     editableID: boolean;
     acceptableType: string;
-    onFocus: (bool: boolean) => void;
 }
 
 const SBOutlineFields = (props: SBOutlineProps) => {
-    const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, editableID, acceptableType, onDrop, onFocus } = props;
+    const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, editableID, acceptableType, onDrop } = props;
     const [cardsState, setCardsState] = useState<DragItem[]>(items);
 
     const [dragValue, setDragValue] = useState<boolean>(false);
@@ -95,12 +94,10 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     )
 
     const dropCard = useCallback((item: DragItem) => {
-        onFocus(false);
         onDrop(item)
     }, [cardsState]);
 
     const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
-        onFocus(true);
         setCardsState((prevCards: DragItem[]) =>
             update(prevCards, {
                 $splice: [
@@ -125,7 +122,6 @@ const SBOutlineFields = (props: SBOutlineProps) => {
                     remove={fieldRemove}
                     config={config}
                     editableID={editableID}
-                    onFocus={onFocus}
                     moveCard={moveCard}
                     dropCard={dropCard}
                     acceptableType={acceptableType}
