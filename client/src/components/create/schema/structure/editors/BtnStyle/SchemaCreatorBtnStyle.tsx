@@ -441,6 +441,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         setGeneratedSchema(updatedSchema);
         setIsValidJADN(false);
         setIsValidating(false);
+        setIsEditing(idx);
     }
 
     const infoEditors = Object.keys(Info).map((k, i) => {
@@ -523,6 +524,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                 setGeneratedSchema(updatedSchema);
                 setIsValidJADN(false);
                 setIsValidating(false);
+                setIsEditing(i);
             }
             ,
             remove: (idx: number) => {
@@ -544,6 +546,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     setGeneratedSchema(updatedSchema);
                     setIsValidJADN(false);
                     setIsValidating(false);
+                    setIsEditing(null);
                 }
             },
             config: configOpt
