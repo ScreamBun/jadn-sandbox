@@ -5996,7 +5996,7 @@ __metadata:
     marked: ^4.3.0
     min-document: ^2.19.0
     mini-css-extract-plugin: ^2.7.5
-    node-sass: ^8.0.0
+    node-sass: ^9.0.0
     path: ^0.12.7
     plantuml-encoder: ^1.4.0
     prettier: ^2.8.8
@@ -6021,7 +6021,7 @@ __metadata:
     redux-persist: ^6.0.0
     redux-thunk: ^2.4.2
     resolve-url-loader: ^5.0.0
-    sass-loader: ^13.2.2
+    sass-loader: ^13.3.2
     source-map-explorer: ^2.5.3
     style-loader: ^3.3.2
     terser-webpack-plugin: ^5.3.7
@@ -10003,13 +10003,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"klona@npm:^2.0.6":
-  version: 2.0.6
-  resolution: "klona@npm:2.0.6"
-  checksum: ac9ee3732e42b96feb67faae4d27cf49494e8a3bf3fa7115ce242fe04786788e0aff4741a07a45a2462e2079aa983d73d38519c85d65b70ef11447bbc3c58ce7
-  languageName: node
-  linkType: hard
-
 "language-subtag-registry@npm:~0.3.2":
   version: 0.3.22
   resolution: "language-subtag-registry@npm:0.3.22"
@@ -10769,9 +10762,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-sass@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "node-sass@npm:8.0.0"
+"node-sass@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "node-sass@npm:9.0.0"
   dependencies:
     async-foreach: ^0.1.3
     chalk: ^4.1.2
@@ -10789,7 +10782,7 @@ __metadata:
     true-case-path: ^2.2.1
   bin:
     node-sass: bin/node-sass
-  checksum: 92c1c78600a89b9cc03ce1fe1212e107163973dbdd2c548751cd3187c56713c944952a477aedcb8f2c332fba6e098fd992e25ee62552c1ba80f75e252f6ef3c3
+  checksum: b15fa76b1564c37d65cde7556731e3c09b49c74a6919cd5cff6f71ddbe454bd1ad9e458f5f02f0f81f43919b8755b5f56cf657fa4e32a0a2644a48fbc07147bb
   languageName: node
   linkType: hard
 
@@ -12340,15 +12333,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^13.2.2":
-  version: 13.2.2
-  resolution: "sass-loader@npm:13.2.2"
+"sass-loader@npm:^13.3.2":
+  version: 13.3.2
+  resolution: "sass-loader@npm:13.3.2"
   dependencies:
-    klona: ^2.0.6
     neo-async: ^2.6.2
   peerDependencies:
     fibers: ">= 3.1.0"
-    node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
+    node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
     sass: ^1.3.0
     sass-embedded: "*"
     webpack: ^5.0.0
@@ -12361,7 +12353,7 @@ __metadata:
       optional: true
     sass-embedded:
       optional: true
-  checksum: 0368e4eaa4e2109bb6c6b6bc7dbfb9d8e412a0ab965f98672d336e84bd103575a1551cfe98395f20335b350f2a94e67f7c816cc8e3f4ab85147a1c1221e22fd8
+  checksum: 7394a8d1b818a289b9caabd979543c907b83e28ae08bc80ccb836e0ccabc4ae574c077ab2fa520ba5fb8abb2ec3e7c9822a1cbd8c58a28ff30018be9d1dc6c27
   languageName: node
   linkType: hard
 
