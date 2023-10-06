@@ -11,16 +11,11 @@ import { getSelectedSchema } from 'reducers/util'
 //TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
     const { generatedMessages, isLoading, numOfMsg, setNumOfMsg } = props;
-    const [toggle, setToggle] = useState('');
+    const [toggle, setToggle] = useState({});
     const validSchema = useSelector(getSelectedSchema);
 
     const onToggle = (index: number) => {
-        if (toggle == index.toString()) {
-            setToggle('');
-
-        } else {
-            setToggle(`${index}`);
-        }
+        setToggle({ ...toggle, [index]: !toggle[index] });
     }
 
     const onNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,9 +36,9 @@ const ExampleCreator = (props: any) => {
                 </h5>
             </div>
 
-            {toggle == `${i}` ?
+            {toggle[i] == true ?
                 <div className="card-body" key={i}>
-                    <SBEditor data={message} isReadOnly={true} height={'20em'}></SBEditor>
+                    <SBEditor data={message} isReadOnly={true} height={'35vh'}></SBEditor>
                 </div> : ''}
         </div>
     ));

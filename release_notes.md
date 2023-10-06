@@ -1,15 +1,34 @@
 # JADN Sandbox Release Notes
+
+## v0.6.0
+
+* Fixed field re-rendering issue
+* Fixed multi schema uploading logic 
+* Improved field UI design 
+* Changed accordion logic to multicollapse
+* Added insert at index Logic 
+* Added button style outline
+* Added logic to check for duplicate Type names
+
+
 ## v0.5.2
 
 * Visually nested child input fields under parent input fields
+* Fixed unwanted auto scroll up on Field Option modal save
+* Fixed Field Option modal popup on Drag and Drop
+* Fixed unwanted auto scroll up on Type Option modal save
+* Fixed Field Option - Collection Option selection error handling
 * Updated Scroll To functionality, improved placement and visual representation
-* Fixed unwanted auto scroll up on Field Option save
-* Fixed FieldOption modal popup on Drag and Drop
-* Added missing ArrayOf and MapOf fields
+* Improved visual consistency
+* Improved logic for the drag and drop duplicate Type and Field names
+* Improved field drag and drop logic
+* Improved field ID logic for Record and Array Type
 * Included Show/Hide buttons for Types and Fields
 * Included improved Add/Remove buttons for Fields
-* Improved visual consistency
 * Added Scroll To Top button 
+* Added ability to remove fields by index
+* Added missing ArrayOf and MapOf fields
+* Applied a fixed drag and drop scroll to
 
 ## v0.5.1
 

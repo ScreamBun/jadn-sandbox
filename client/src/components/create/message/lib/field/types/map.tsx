@@ -15,33 +15,38 @@ interface MapFieldProps {
   parent?: string;
   config: InfoConfig;
   children?: JSX.Element;
+  value: any;
 }
 
 // Component
 const MapField = (props: MapFieldProps) => {
-  const { def, optChange, parent, config, children } = props;
+  const { def, optChange, parent, config, children, value = {} } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   var optData: Record<string, any> = {};
   const [_idx, name, _type, _args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
-  const [data, setData] = useState({}); //track elements
+  const [data, setData] = useState(value); //track elements
   const [errMsg, setErrMsg] = useState<string[]>([]);
   const [toggle, setToggle] = useState(true);
 
   const onChange = (k: string, v: any) => {
-    if (!v) {
-      v = '';
+    //if (hasProperty(optData, 'id') && optData.id) { 
+    //k should be already be id 
+
+    let updatedData = { ...data };
+    if ((!v || (typeof v == "object" && Object.keys(v).length == 0)) && k in data) {
+      delete updatedData[k]
+    } else {
+      updatedData = { ...data, [k]: v };
     }
-    const updatedData = { ...data, [k]: v };
+
     setData(updatedData);
+
     const validMsg = validateOptDataElem(config, optData, Object.entries(updatedData));
     setErrMsg(validMsg);
-    if (hasProperty(optData, 'id') && optData.id) {
-      optChange(k, parseInt(v));
-    } else {
-      optChange(k, v);
-    }
+
+    optChange(name, updatedData);
   }
 
   const typeDefs = schema.types.filter(t => t[0] === def[2]);
@@ -52,7 +57,7 @@ const MapField = (props: MapFieldProps) => {
 
   const fieldDef = (!Array.isArray(typeDef[typeDef.length - 1]) || typeDef[typeDef.length - 1].length == 0) ?
     <div className='p-2'> No fields </div> :
-    typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} config={config} />);
+    typeDef[typeDef.length - 1].map((d: any) => <Field key={hasProperty(optData, 'id') && optData.id ? d[0] : d[1]} def={d} parent={msgName} optChange={onChange} config={config} value={data[d[1]]} />);
 
   const err = errMsg.map((msg, index) =>
     <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>

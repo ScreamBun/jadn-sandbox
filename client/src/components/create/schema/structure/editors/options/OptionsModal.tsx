@@ -2,16 +2,16 @@ import React, { memo, useState } from 'react';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import {
   OptionTypes, Val, opts2arr, opts2obj, RequiredOptions
 } from './consts';
+import { objectFromTuple } from '../../../../../utils';
+import { ModalSize } from './ModalSize';
+import { sbToastError } from 'components/common/SBToast';
 import TypeOptionsEditor from './TypeOptionsEditor';
 import FieldOptionsEditor from './FieldOptionsEditor';
-import { objectFromTuple } from '../../../../../utils';
-import { sbToastError } from 'components/common/SBToast';
-import { ModalSize } from './ModalSize';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 // Interface
 interface OptionsModalProps {
@@ -63,21 +63,6 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
       }
     }
 
-    //MUST NOT include more than one collection option (set, unique, or unordered)
-    const collectionType = ['unique', 'set', 'unordered'];
-    let collectionCount = 0;
-    if (optionType == 'ArrayOf') {
-      for (let i = 0; i < collectionType.length; i++) {
-        if (collectionType[i] in updatedData['type'] && updatedData['type'][collectionType[i]] != undefined) {
-          collectionCount += 1;
-        }
-      }
-      if (collectionCount > 1) {
-        sbToastError('MUST NOT include more than one collection option (set, unique, or unordered)');
-        return;
-      }
-    }
-
     setData(updatedData);
   }
 
@@ -103,7 +88,7 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
     let collectionCount = 0;
     if (optionType == 'ArrayOf') {
       for (let i = 0; i < collectionType.length; i++) {
-        if (collectionType[i] in data['type'] && data['type'][collectionType[i]] != undefined) {
+        if (collectionType[i] in data['type'] && data['type'][collectionType[i]] == true) {
           collectionCount += 1;
           if (collectionCount > 1) {
             sbToastError('MUST NOT include more than one collection option (set, unique, or unordered)');
@@ -122,7 +107,7 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
   }
 
   return (
-    <Modal className={modalSize} isOpen={isOpen}>
+    <Modal className={modalSize} isOpen={isOpen} autoFocus={false} returnFocusAfterClose={false}>
       <ModalHeader>
         <div className='float-left'>
           {fieldOptions ? 'Field' : 'Type'} Options

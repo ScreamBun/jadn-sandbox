@@ -63,7 +63,7 @@ const SBDownloadFile = (props: any) => {
                 <FontAwesomeIcon icon={faFileDownload} />
             </Button>}
 
-            <Modal isOpen={toggleDownloadDialog} autoFocus={false}>
+            <Modal isOpen={toggleDownloadDialog} autoFocus={false} returnFocusAfterClose={false}>
                 <ModalHeader>
                     Download File As...
                     <div>

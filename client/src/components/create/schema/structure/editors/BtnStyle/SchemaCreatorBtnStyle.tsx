@@ -1,23 +1,29 @@
 import React, { useEffect, memo, useRef, useState } from 'react'
-import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
-import { Info, Types } from '../../structure';
-import { loadFile, setSchema } from 'actions/util';
 import { useDispatch, useSelector } from 'react-redux';
+import { flushSync } from 'react-dom';
+import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { faCheck, faCircleChevronDown, faCircleChevronUp, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
+import { Info, Types } from '../../structure';
+import { loadFile, setSchema } from 'actions/util';
+import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
+import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
+import { TypeObject } from '../consts';
+import { getFilenameOnly } from 'components/utils/general';
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
+import SBSelect, { Option } from 'components/common/SBSelect';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBEditor from 'components/common/SBEditor';
-import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBFileUploader from 'components/common/SBFileUploader';
-import { validateSchema } from 'actions/validate';
 import SBSaveFile from 'components/common/SBSaveFile';
-import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
-import { flushSync } from 'react-dom';
 import SBScrollToTop from 'components/common/SBScrollToTop';
+import SBOutlineBtnStyle from './SBOutlineBtnStyle';
+import { AddToIndexDropDown } from './AddToIndexDropDown';
+
+
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -28,6 +34,8 @@ const configInitialState = {
     $FieldName: $FIELDNAME,
     $NSID: $NSID
 }
+
+const defaultInsertIdx = { label: "end", value: "end" };
 
 const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
@@ -44,13 +52,47 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const [isLoading, setIsLoading] = useState(false);
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+    const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
-    const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
+
+    const [insertAt, setInsertAt] = useState(defaultInsertIdx);
+    let indexOpts = generatedSchema.types ?
+        (generatedSchema.types.length == 1) ?
+            [{ value: "0", label: `${generatedSchema.types[0][0]} (beginning)` }, { value: "end", label: "end" }] :
+            generatedSchema.types.map((item: any, i: number) => {
+                if (i == 0) {
+                    return { value: "0", label: `${item[0]} (beginning)` };
+                } else if (i == (generatedSchema.types.length - 1)) {
+                    return { value: "end", label: `${item[0]} (end)` }
+                } else {
+                    return { value: `${i}`, label: `${item[0]} (index: ${i})` };
+                }
+            }) :
+        [defaultInsertIdx];
     const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
-    const scrollToTypeRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        indexOpts = generatedSchema.types ?
+            (generatedSchema.types.length == 1) ?
+                [{ value: "0", label: `${generatedSchema.types[0][0]} (beginning)` }, { value: "end", label: "end" }] :
+                generatedSchema.types.map((item: any, i: number) => {
+                    if (i == 0) {
+                        return { value: "0", label: `${item[0]} (beginning)` };
+                    } else if (i == (generatedSchema.types.length - 1)) {
+                        return { value: "end", label: `${item[0]} (end)` }
+                    } else {
+                        return { value: `${i}`, label: `${item[0]} (index: ${i})` };
+                    }
+                }) :
+            [defaultInsertIdx];
+        const optionValue = generatedSchema.types ? insertAt.value : defaultInsertIdx.value;
+        const selectedOption = indexOpts.filter((option: Option) => option.value == optionValue);
+        setInsertAt(selectedOption[0]);
+    }, [generatedSchema])
+
 
     const onFileSelect = (e: Option) => {
         dismissAllToast();
@@ -96,7 +138,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
-            setFileName(file.name.split('.')[0]);
+
+            const filename_only = getFilenameOnly(file.name);
+            setFileName(filename_only);
+
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
@@ -236,6 +281,61 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         </div>
     ));
 
+    const get_type_name = (types_to_serach: any[], name: string) => {
+        let return_name = name;
+        let match_count = 0;
+        let dups: any[] = [];
+        types_to_serach.map((type) => {
+
+            // orig name matches
+            if (name == type[0]) {
+                match_count = match_count + 1;
+            } else {
+                // dup matches
+                var lastIndex = type[0].lastIndexOf('-');
+
+                if (lastIndex) {
+
+                    let dup_name = type[0].substr(0, lastIndex);
+
+                    if (name == dup_name) {
+
+                        let dup_num = type[0].substr(lastIndex).substring(1);
+
+                        if (dup_num && !isNaN(dup_num)) {
+
+                            dups.push(dup_num);
+                            match_count = match_count + 1;
+
+                        }
+                    }
+                }
+            }
+
+        });
+
+        if (match_count > 0) {
+
+            if (dups.length == 0) {
+                return_name = return_name + "-" + (dups.length + 1);
+            } else {
+                dups.sort(function (a, b) { return b - a });  // TODO: Move to utils
+                let next_num = parseInt(dups[0]) + 1;
+                return_name = return_name + "-" + next_num;
+            }
+
+        }
+
+        return return_name;
+    }
+    const onSelectChange = (e: Option) => {
+        if (e == null || parseInt(e.value) < 0 || parseInt(e.value) > generatedSchema.types.length) {
+            sbToastError("Invalid Index. Setting index to default: end.")
+            e = defaultInsertIdx;
+        }
+        setInsertAt(e);
+    }
+
     const onDrop = (key: string) => {
         if (Object.keys(Info).includes(key)) {
             let updatedSchema;
@@ -265,9 +365,25 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else if (Object.keys(Types).includes(key)) {
-            const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-            const tmpDef = Types[key].edit({ name: `${key}_name` });
-            tmpTypes.push(tmpDef);  // unshift drops items at the bottom
+            let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
+            const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
+            const tmpDef = Types[key].edit({ name: type_name });
+
+            if (insertAt.value == "0") {
+                tmpTypes.unshift(tmpDef);
+
+            } else if (insertAt.value == "end") {
+                tmpTypes.push(tmpDef);
+
+            } else {
+                const idx = parseInt(insertAt.value);
+                tmpTypes = [
+                    ...tmpTypes.slice(0, idx),
+                    tmpDef,
+                    ...tmpTypes.slice(idx)
+                ];
+            }
+
             let updatedSchema = {
                 ...generatedSchema,
                 types: tmpTypes
@@ -277,11 +393,46 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             });
             setIsValidJADN(false);
             setIsValidating(false);
-            scrollToTypeRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
         }
+    }
+
+    const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
+        e.preventDefault();
+        const element = document.getElementById(text);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    const changeIndex = (val: TypeObject, dataIndex: number, idx: number) => {
+        const type = val.type.toLowerCase() as keyof typeof Types;
+        if (idx < 0) {
+            sbToastError('Error: Cannot move Type up anymore');
+            return;
+        } else if (idx >= generatedSchema.types.length) {
+            sbToastError('Error: Cannot move Type down anymore');
+            return;
+        }
+
+        let tmpTypes = [...generatedSchema.types];
+        tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
+
+        tmpTypes = [
+            ...tmpTypes.slice(0, idx),
+            Types[type].edit(val),
+            ...tmpTypes.slice(idx)
+        ];
+
+        let updatedSchema = {
+            ...generatedSchema,
+            types: tmpTypes
+        };
+        setGeneratedSchema(updatedSchema);
+        setIsValidJADN(false);
+        setIsValidating(false);
     }
 
     const infoEditors = Object.keys(Info).map((k, i) => {
@@ -387,33 +538,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     setIsValidating(false);
                 }
             },
-            changeIndex: (val, dataIndex: number, idx: number) => {
-                const type = val.type.toLowerCase() as keyof typeof Types;
-                if (idx < 0) {
-                    sbToastError('Error: Cannot move Type up anymore');
-                    return;
-                } else if (idx >= generatedSchema.types.length) {
-                    sbToastError('Error: Cannot move Type down anymore');
-                    return;
-                }
-
-                let tmpTypes = [...generatedSchema.types];
-                tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
-
-                tmpTypes = [
-                    ...tmpTypes.slice(0, idx),
-                    Types[type].edit(val),
-                    ...tmpTypes.slice(idx)
-                ];
-
-                let updatedSchema = {
-                    ...generatedSchema,
-                    types: tmpTypes
-                };
-                setGeneratedSchema(updatedSchema);
-                setIsValidJADN(false);
-                setIsValidating(false);
-            },
             config: configOpt
         }))
     }).filter(Boolean);
@@ -512,7 +636,21 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         </TabContent>
                                     </div>
                                 </div>
+                                <div className='row mt-2'>
+                                    <AddToIndexDropDown insertAt={insertAt} indexOpts={indexOpts} onSelectChange={onSelectChange} />
+                                </div>
+                                <div className='row mt-2'>
+                                    <div className='col'>
+                                        <SBOutlineBtnStyle id={'schema-outline'}
+                                            items={generatedSchema.types}
+                                            title={'Outline'}
+                                            onClick={onOutlineClick}
+                                            changeIndex={changeIndex}
+                                        />
+                                    </div>
+                                </div>
                             </div>
+
                             <div id="schema-editor" className='col-md-9 px-2 card-body-scroller'>
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                                     <>
@@ -525,14 +663,12 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                                 <h6 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }}> metadata </small></h6>
                                                             </div>
                                                             <div className='col'>
-                                                                {generatedSchema.info &&
-                                                                    <legend>
-                                                                        <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                            className='float-right btn btn-sm'
-                                                                            onClick={() => setInfoCollapse(!infoCollapse)}
-                                                                            title={infoCollapse ? ' Show Info' : ' Hide Info'} />
-                                                                    </legend>
-                                                                }
+                                                                <legend>
+                                                                    <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                        className='float-right btn btn-sm text-light'
+                                                                        onClick={() => setInfoCollapse(!infoCollapse)}
+                                                                        title={infoCollapse ? ' Show Info' : ' Hide Info'} />
+                                                                </legend>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -582,7 +718,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                     </div>
                                                     <div className='card-body'>
                                                         {!typesCollapse &&
-                                                            <div ref={scrollToTypeRef}>
+                                                            <div>
                                                                 {generatedSchema.types ?
                                                                     <>{typesEditors}</>
                                                                     :

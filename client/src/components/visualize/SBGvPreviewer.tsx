@@ -56,11 +56,11 @@ const SBGvPreviewer = (props: any) => {
 
     return (
         <>
-            <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
+            <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="35vh"></SBEditor>
 
-            <div id="content" className="card bg-secondary" style={{ 'height': "20em", overflow: 'hidden' }}>
+            <div id="content" className="card bg-secondary" style={{ 'height': "35vh", overflow: 'hidden' }}>
                 <Button id="diagramReset" title="Reset the View" color="info" className="btn-sm m-1" style={{ zIndex: '1', position: 'absolute' }} onClick={onDiagramReset}>Reset</Button>
-                <div id="gv" style={{ 'height': "20em", textAlign: 'center', zIndex: '0' }}>
+                <div id="gv" style={{ 'height': "35vh", textAlign: 'center', zIndex: '0' }}>
                 </div>
                 <div id="fullGV" style={{ visibility: 'hidden', overflow: 'hidden' }}>
                 </div>

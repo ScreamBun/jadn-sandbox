@@ -1,24 +1,22 @@
 import React, { ReactNode, memo, useEffect, useRef, useState } from 'react';
 import { useDragDropManager, useDrop } from 'react-dnd'
 import { Unsubscribe } from 'redux';
-
+import { DragItem } from 'components/create/schema/outline/SBOutline';
 interface DroppableProps {
-    onDrop?: (key: string) => void;
+    onDrop?: (item: DragItem) => void;
     acceptableType?: string;
     children: ReactNode;
 }
 
 export const Droppable = memo(function Droppable(props: DroppableProps) {
     const { onDrop, acceptableType, children } = props;
-    const scrollToRef = useRef<HTMLInputElement | null>(null);
 
     const [{ isOver, canDrop }, drop] = useDrop(
         () => ({
             accept: [`${acceptableType}`],
             drop: (item: any) => {
                 if (onDrop) {
-                    onDrop(item.itemID)
-                    scrollToRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+                    onDrop(item)
                     return item
                 }
             },
@@ -47,7 +45,7 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
             unsubscribeRef.current = monitor.subscribeToOffsetChange(() => {
                 const offset = monitor.getClientOffset();
                 // it can be html, body, div, any container that have scroll
-                const container = document.getElementById("scrollContainer");
+                const container = document.getElementById("DroppableScrollContainer");
 
                 if (!offset || !container) return;
 
@@ -90,9 +88,9 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
                 opacity: isOver ? 0.4 : 1,
                 padding: '5px',
             }}
-            id="scrollContainer"
+            id="DroppableScrollContainer"
         >
-            <div ref={scrollToRef}>
+            <div>
                 {children}
             </div>
         </div>

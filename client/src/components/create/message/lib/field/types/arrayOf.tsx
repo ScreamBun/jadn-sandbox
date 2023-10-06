@@ -1,6 +1,7 @@
 
 //ArrayOf
 import React, { useState } from 'react';
+import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -22,17 +23,18 @@ interface ArrayOfFieldProps {
   parent?: string;
   config: InfoConfig;
   children?: JSX.Element;
+  value: any;
 }
 
 // ArrayOf Field Component
 const ArrayOfField = (props: ArrayOfFieldProps) => {
-  const { def, parent, optChange, config, children } = props;
+  const { def, parent, optChange, config, children, value = [''] } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
   const [count, setCount] = useState(1);
   const [min, setMin] = useState(false);
   const [max, setMax] = useState(false);
-  const [opts, setOpts] = useState<any[]>([]); //track elem of vtype
+  const [opts, setOpts] = useState<any[]>(Array.isArray(value) ? value : [value]); //track elem of vtype
   const [errMsg, setErrMsg] = useState<string[]>([]);
   const [toggle, setToggle] = useState(true);
 
@@ -48,13 +50,14 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     if (maxCount <= count) {
       return;
     }
-    // const updatedOpts = [...opts, ''];
-    //setOpts(updatedOpts);
+    // add placeholder
+    const updatedOpts = [...opts, ''];
+    setOpts(updatedOpts);
     setCount(count + 1);
   }
 
-  const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const removeOpt = (removedIndex: number) => {
+    //e.preventDefault();
     //check if min fields exist
     const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
     setMin(count <= minCount);
@@ -62,29 +65,25 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       return;
     }
 
-    if (opts.length == count) {
+    //remove from arr
+    var updatedOpts = opts.filter((_opt, i) => i != removedIndex);
+    setOpts(updatedOpts);
 
-      //remove from arr
-      var updatedOpts = opts.filter((_elem, index) => {
-        return index != count - 1;
-      });
+    //remove empty placeholders
+    let filteredOpts = updatedOpts.filter((opt) => opt != '');
 
-      setOpts(updatedOpts);
+    //validate data
+    const errCheck = validateOptDataElem(config, optData, filteredOpts);
+    setErrMsg(errCheck);
 
-      //validate data
-      const errCheck = validateOptDataElem(config, optData, updatedOpts);
-      setErrMsg(errCheck);
-
-      //update data
-      if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-        updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
-      } else {
-        updatedOpts = Array.from(Object.values(updatedOpts));
-      }
-
-      optChange(msgName, updatedOpts);
+    //update data
+    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
+      filteredOpts = Array.from(new Set(Object.values(filteredOpts)));
+    } else {
+      filteredOpts = Array.from(Object.values(filteredOpts));
     }
 
+    optChange(name, filteredOpts);
     setCount(count - 1);
   }
 
@@ -148,16 +147,18 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     setOpts(updatedOpts);
 
     //send up arrayOf data
-    const errCheck = validateOptDataElem(config, optData, updatedOpts);
+    let filteredOpts = updatedOpts.filter((opt) => opt != '');
+    const errCheck = validateOptDataElem(config, optData, filteredOpts);
     setErrMsg(errCheck);
 
     if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-      updatedOpts = Array.from(new Set(Object.values(updatedOpts)));
+      filteredOpts = Array.from(new Set(Object.values(filteredOpts)));
     } else {
-      updatedOpts = Array.from(Object.values(updatedOpts));
+      filteredOpts = Array.from(Object.values(filteredOpts));
     }
 
-    optChange(msgName, updatedOpts);
+    //remove empty placeholders
+    optChange(name, filteredOpts);
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -169,7 +170,6 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   }
   // MUST include vtype
   // MUST NOT include more than one collection option (set, unique, or unordered).
-
 
   // if vtype is enum/pointer = derived enum
   var fieldDef;
@@ -192,12 +192,19 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
       : [0, arrDef.toLowerCase(), arrDef, [], ''];
   }
 
-  const fields: any[] = [];
-  for (let i = 0; i < count; ++i) {
-    fields.push(
-      <Field key={i} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} />
-    );
-  }
+  const fields = opts.map((opt, i) => {
+    return (
+      <Field key={self.crypto.randomUUID()} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} value={opt}>
+        <Button
+          color="danger"
+          className={`p-1${min ? ' disabled' : ''}`}
+          onClick={() => removeOpt(i)}
+        >
+          <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+        </Button>
+      </Field>
+    )
+  });
 
   const err = errMsg.map((msg, index) =>
     <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
@@ -221,23 +228,14 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
         <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
           {fields}
-          <div className={`btn-group btn-block`}>
-            <button
-              type="button"
-              className={`btn btn-danger p-1${min ? ' disabled' : ''}`}
-              onClick={removeOpt}
-            >
-              <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-            </button>
-            <button
-              type="button"
-              className={`btn btn-primary p-1${max ? ' disabled' : ''}`}
-              title='Add Field'
-              onClick={addOpt}
-            >
-              <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-            </button>
-          </div>
+          <Button
+            color="primary"
+            className={`btn-block p-1${max ? ' disabled' : ''}`}
+            title={`Add Field to ${name}`}
+            onClick={addOpt}
+          >
+            <FontAwesomeIcon icon={faPlusSquare} size="lg" />
+          </Button>
         </div>
       </div>
     </div>

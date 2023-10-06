@@ -1,16 +1,15 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-  Button, ButtonGroup, FormGroup, Input, InputGroup, Label
+  Button, Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
-
+import { zip } from '../../../../../utils';
+import { InfoConfig } from '../../../interface';
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
-import { zip } from '../../../../../utils';
 import { sbToastError } from 'components/common/SBToast';
-import { InfoConfig } from '../../../interface';
 
 // Interface
 interface PrimitiveEditorProps {
@@ -89,52 +88,54 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
 
   return (
     <>
-      <div className="card border-secondary mb-3"> 
-          <div className="card-header px-2 py-2">
-            <div className='row'>
-              <div className='col'>
-                <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
+      <div className={`card border-secondary mb-3`}>
+        <div className="card-header px-2 py-2">
+          <div className='row'>
+            <div className='col'>
+              <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
+            </div>
+            <div className='col'>
+              <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
+                <FontAwesomeIcon icon={faMinusCircle} />
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="card-body px-2 pt-2 pb-3">
+          <div className="row">
+            <div className="col-md-12">
+              <div className='row'>
+                <div className='col-md-4'>
+                  <label htmlFor="name" className='mb-0'>Name</label>
+                </div>
+                <div className='col-md-6 offset-md-2'>
+                  <label htmlFor="name" className='mb-0'>Comment</label>
+                </div>
               </div>
-              <div className='col'>
-                <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
-                  <FontAwesomeIcon icon={faMinusCircle} />
-                </Button>
+              <div className="row">
+                <div className="col-md-4">
+                  <Input name="primitiveEditorName" type="text" placeholder="Name" maxLength={64} value={valueObj.name}
+                    onChange={onChange} onBlur={onBlur} />
+                </div>
+                <div className="col-md-2 text-center px-0">
+                  <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                  <OptionsModal
+                    optionValues={valueObj.options}
+                    isOpen={modal}
+                    optionType={valueObj.type}
+                    toggleModal={toggleModal}
+                    saveModal={saveModal}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <Input name="primitiveEditorComment" type="textarea" placeholder="Comment" className='form-control'
+                    rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                </div>
               </div>
             </div>
           </div>
-          <div className="card-body px-2 pt-2 pb-3">
-            <div className="row">
-              <div className="col-md-12">
-                <div className='row'>
-                  <div className='col-md-4'>
-                    <label htmlFor="name" className='mb-0'>Name</label>
-                  </div>             
-                  <div className='col-md-6 offset-md-2'>
-                    <label htmlFor="name" className='mb-0'>Comment</label>
-                  </div>                                
-                </div>
-                <div className="row">
-                  <div className="col-md-4">
-                    <Input type="text" placeholder="Name" maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
-                  </div>
-                  <div className="col-md-2 text-center px-0">
-                    <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
-                      <OptionsModal
-                        optionValues={valueObj.options}
-                        isOpen={modal}
-                        optionType={valueObj.type}
-                        toggleModal={toggleModal}
-                        saveModal={saveModal}
-                      />
-                  </div>
-                  <div className="col-md-6">
-                    <Input type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>    
+        </div>
+      </div>
     </>
   );
 });

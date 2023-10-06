@@ -1,5 +1,5 @@
 import { deleteFile } from 'actions/save';
-import React, { CSSProperties, Fragment, useEffect, useState } from 'react';
+import React, { CSSProperties, Fragment, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
@@ -66,7 +66,7 @@ const defaultStyle = {
 const smStyle = {
     control: base => ({
         ...base,
-        height: 30,
+        // height: 30,
         minHeight: 30,
         cursor: 'pointer'
     }),
@@ -75,8 +75,8 @@ const smStyle = {
 
     valueContainer: (provided, state) => ({
         ...provided,
-        height: '30px',
-        padding: '0 6px'
+        minHeight: 30,
+        padding: '0 6px',
     }),
 
     input: (provided, state) => ({
@@ -84,13 +84,9 @@ const smStyle = {
         margin: '0px',
     }),
 
-    indicatorSeparator: state => ({
-        display: 'none',
-    }),
-
     indicatorsContainer: (provided, state) => ({
         ...provided,
-        height: '30px',
+        minHeight: 30,
     }),
 
     option: (styles, state) => ({
@@ -260,7 +256,7 @@ const SBSelect = (props: any) => {
 
             </>
 
-            <Modal isOpen={toggleModal}>
+            <Modal isOpen={toggleModal} autoFocus={false} returnFocusAfterClose={false}>
                 <ModalHeader>
                     Delete Custom Files
                 </ModalHeader>

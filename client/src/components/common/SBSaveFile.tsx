@@ -87,7 +87,7 @@ const SBSaveFile = (props: any) => {
             </Button>
             }
 
-            <Modal isOpen={toggleSaveDialog} autoFocus={false} >
+            <Modal isOpen={toggleSaveDialog} autoFocus={false} returnFocusAfterClose={false} >
                 <ModalHeader>
                     Save File As...
                     <div>

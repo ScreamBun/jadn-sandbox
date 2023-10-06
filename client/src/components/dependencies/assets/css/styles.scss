@@ -136,7 +136,7 @@ small {
 }
 
 .card-body-page {
-    height: 40em;
+    height: 70vh;
     overflow-y: auto;
     padding: 0;
 }
@@ -146,7 +146,7 @@ small {
 }
 
 .card-body-scroller {
-    height: 40em;
+    height: 70vh;
     overflow-y: auto;
     overflow-x: hidden;
     width: fit-content;
@@ -241,7 +241,7 @@ small {
     max-width: 100%;
 }
 
-.scrollToTopBtn {
+.scroll-top-btn {
     z-index: 999;
     position: fixed;
     right: 1em;

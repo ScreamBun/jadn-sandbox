@@ -20,9 +20,9 @@ const SBPumlPreviewer = (props: any) => {
 
     return (
         <>
-            <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="20em"></SBEditor>
+            <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="35vh"></SBEditor>
 
-            <div id="content" className="card bg-secondary" style={{ 'height': "20em", 'overflow': 'auto' }}>
+            <div id="content" className="card bg-secondary" style={{ 'height': "35vh", 'overflow': 'auto' }}>
                 <TransformWrapper>
                     <TransformComponent>
                         <img src={data}

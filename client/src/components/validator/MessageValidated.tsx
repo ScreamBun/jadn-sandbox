@@ -14,6 +14,7 @@ import SBFileUploader from "components/common/SBFileUploader";
 import SBSpinner from "components/common/SBSpinner";
 import SBSaveFile from "components/common/SBSaveFile";
 import SBSelect, { Option } from "components/common/SBSelect";
+import { getFilenameExt, getFilenameOnly } from "components/utils/general";
 
 const MessageValidated = (props: any) => {
     const location = useLocation()
@@ -80,8 +81,11 @@ const MessageValidated = (props: any) => {
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0];
-            const type = file.name.split('.')[1];
-            setFileName(file.name.split('.')[0]);
+
+            const filename_only = getFilenameOnly(file.name);
+            setFileName(filename_only);
+
+            const type = getFilenameExt(file.name);       
 
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -161,7 +165,7 @@ const MessageValidated = (props: any) => {
                     <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
-                        {isLoading ? <SBSpinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm ${Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? '' : ' disabled'}`} type="submit"
+                        {isLoading ? <SBSpinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm`} disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true} type="submit"
                             title={'Validate the message against the given schema'}>
                             Validate Message
                         </Button>}

@@ -1,6 +1,7 @@
 
-//ArrayOf
+//MapOf
 import React, { useState } from 'react';
+import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -21,22 +22,23 @@ interface MapOfFieldProps {
     parent?: string;
     config: InfoConfig;
     children?: JSX.Element;
+    value: any;
 }
 
 // MapOf Field Component
 const MapOfField = (props: MapOfFieldProps) => {
-    const { def, parent, optChange, config, children } = props;
+    const { def, parent, optChange, config, children, value = [''] } = props;
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
     const [count, setCount] = useState(1);
     const [min, setMin] = useState(false);
     const [max, setMax] = useState(false);
-    const [opts, setOpts] = useState<any[]>([]); //opts: let every obj have a key and value [{key: '', value:''}, ...]
+    const [opts, setOpts] = useState<any[]>(value); //opts: let every obj have a key and value [{key: '', value:''}, ...]
     const [kopts, setkOpts] = useState<any[]>([]);
     const [vopts, setvOpts] = useState<any[]>([]);
     const [errMsg, setErrMsg] = useState<string[]>([]);
     const [toggle, setToggle] = useState(true);
-    const [toggleField, setToggleField] = useState('0');
+    const [toggleField, setToggleField] = useState({ [0]: true });
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
@@ -47,11 +49,17 @@ const MapOfField = (props: MapOfFieldProps) => {
         //check if max fields has been created
         const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
         setMax(maxCount <= count);
+        if (maxCount <= count) {
+            return;
+        }
+        // add placeholder
+        const updatedOpts = [...opts, ''];
+        setOpts(updatedOpts);
         setCount(count + 1);
     }
 
-    const removeOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
+    const removeOpt = (removedIndex: number) => {
+        //e.preventDefault();
         //check if min fields exist
         const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
         setMin(count <= minCount);
@@ -59,21 +67,27 @@ const MapOfField = (props: MapOfFieldProps) => {
             return;
         }
 
-        if (opts.length == count) {
-            //remove from end of arr
-            var updatedOpts = opts.filter((_obj, index) => {
-                return index != count - 1;
-            });
-            setOpts(updatedOpts);
-            //TODO? filter null values?
-            //validate data
-            const errCheck = validateOptDataElem(config, optData, updatedOpts);
-            setErrMsg(errCheck);
+        //remove from end of arr
+        var updatedOpts = opts.filter((_opt, i) => i != removedIndex);
+        setOpts(updatedOpts);
 
-            //update data
-            optChange(msgName, Array.from(new Set(Object.values(updatedOpts))));
+        let filteredOpts = updatedOpts.filter((opt) => opt != '');
+
+        //validate data
+        const errCheck = validateOptDataElem(config, optData, filteredOpts);
+        setErrMsg(errCheck);
+
+        //update data
+        let data;
+        const ktypeDefs = schema.types.filter(t => t[0] === keyField[2]);
+        var ktypeDef = ktypeDefs.length === 1 ? ktypeDefs[0][1] : keyField[2];
+        if (ktypeDef == 'Enumerated' || ktypeDef == 'String') {
+            data = filteredOpts.reduce((opts, obj) => { return Object.assign(opts, { [obj.key]: obj.val }) }, {});
+        } else {
+            data = filteredOpts.reduce((opts, obj) => { return opts.concat([obj.key], [obj.val]) }, []);
         }
 
+        optChange(name, Array.from(new Set(Object.values(data))));
         setCount(count - 1);
     }
 
@@ -188,7 +202,7 @@ const MapOfField = (props: MapOfFieldProps) => {
             data = updatedOpts.reduce((opts, obj) => { return opts.concat([obj.key], [obj.val]) }, []);
         }
 
-        optChange(msgName, data);
+        optChange(name, data);
     }
 
     const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -250,26 +264,34 @@ const MapOfField = (props: MapOfFieldProps) => {
         }
     }
 
-    const fields: any[] = [];
-    for (let i = 0; i < count; ++i) {
-        fields.push(
-            <div className='form-group' key={i}>
+    const fields = opts.map((item, i) => {
+        return (
+            <div className='form-group' key={self.crypto.randomUUID()}>
                 <div className='card border-secondary'>
                     <div className='card-header p-2'>
+                        <Button
+                            color="danger"
+                            className={`float-right btn p-1${min ? ' disabled' : ''}`}
+                            onClick={() => removeOpt(i)}
+                        >
+                            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+                        </Button>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title m-2'>
                                 {name} {i + 1}
                             </div>
                         </SBToggleBtn>
                     </div>
-                    <div className={`card-body mx-2 ${toggleField == `${i}` ? '' : 'collapse'}`} id={`${i}`}>
-                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChangeKey} idx={i} config={config} />
-                        <Field key={"value"} def={valField} parent={msgName} optChange={onChangeValue} idx={i} config={config} />
+                    <div className={`card-body mx-2 ${toggleField[i] == true ? '' : 'collapse'}`} id={`${i}`}>
+                        <Field key={"key"} def={keyField} parent={msgName} optChange={onChangeKey} idx={i} config={config} value={item.key} />
+                        <Field key={"value"} def={valField} parent={msgName} optChange={onChangeValue} idx={i} config={config} value={item.val} />
                     </div>
                 </div>
             </div >
-        );
-    }
+        )
+    });
+
+
 
     const err = errMsg.map((msg, index) =>
         <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
@@ -295,25 +317,14 @@ const MapOfField = (props: MapOfFieldProps) => {
 
                 <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
                     {fields}
-
-                    <div className={`btn-group btn-block`}>
-                        <button
-                            type="button"
-                            className={`btn btn-danger p-1${min ? ' disabled' : ''}`}
-                            onClick={removeOpt}
-                        >
-                            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-                        </button>
-                        <button
-                            type="button"
-                            className={`btn btn-primary p-1${max ? ' disabled' : ''}`}
-                            title='Add Field'
-                            onClick={addOpt}
-                        >
-                            <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-                        </button>
-                    </div>
-
+                    <button
+                        type="button"
+                        className={`btn btn-block btn-primary p-1${max ? ' disabled' : ''}`}
+                        title={`Add Field to ${name}`}
+                        onClick={addOpt}
+                    >
+                        <FontAwesomeIcon icon={faPlusSquare} size="lg" />
+                    </button>
                 </div>
             </div>
         </div>

@@ -14,26 +14,40 @@ interface ChoiceFieldProps {
   parent?: string;
   config: InfoConfig;
   children?: JSX.Element;
+  value: any;
 }
 
 // Component
 const ChoiceField = (props: ChoiceFieldProps) => {
-  const { def, optChange, parent, config, children } = props;
+  const { def, optChange, parent, config, children, value = {} } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
-  const [selectedValue, setSelectedValue] = useState<Option | string>('');
+  const [initSelectedOpt, InitSelectedValues] = (typeof value == "object" && Object.keys(value).length != 0) ? Object.entries(value)[0] :
+    (typeof value == "string" && value.length != 0) ? [value, ""] : ["", ""];
+  const initSelectedOptValue = initSelectedOpt != '' ? { 'label': initSelectedOpt, 'value': initSelectedOpt } : '';
 
+  const [selectedValue, setSelectedValue] = useState<Option | string>(initSelectedOptValue);
+  const [selectedValueData, setSelectedValueData] = useState<any>(InitSelectedValues);
 
   const handleChange = (e: Option) => {
-    //const { optChange, def } = props;
+    //get selected choice
     if (e == null) {
       setSelectedValue('');
+      setSelectedValueData('');
     } else {
       setSelectedValue(e);
+      setSelectedValueData(InitSelectedValues);
     }
-    optChange(def[1], undefined);
+    optChange(name, e.value);
     //target is undefined 
     //this resets selected choice
     //e.target.selectedOptions[0].text
+  }
+
+  const onChange = (k: string, v: any) => {
+    //get fields (k, v) for selected choice 
+    let updatedData = { [k]: v }
+    setSelectedValueData(updatedData);
+    optChange(name, updatedData);
   }
 
   const [_idx, name, type, _args, comment] = def;
@@ -52,7 +66,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   }
 
   let selectedOpts;
-  if (selectedValue >= '0') {
+  if (selectedValue != '') {
     let selectedDefs; //get opt where the key = selected
     if (hasProperty(optData, 'id') && optData.id) {
       selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[0] === selectedValue.value);
@@ -60,7 +74,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
       selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[1] === selectedValue.value);
     }
     const selectedDef = selectedDefs.length === 1 ? selectedDefs[0] : [];
-    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={optChange} config={config} />;
+    selectedOpts = <Field key={selectedDef[1]} def={selectedDef} parent={msgName} optChange={onChange} config={config} value={selectedValueData} />;
   }
 
   return (

@@ -138,7 +138,7 @@ const SchemaVisualized = (props: any) => {
 
                         <div>
                             {isLoading ? <SBSpinner action={'Converting'} /> : <Button color="success" type="submit" id="convertSchema" className="btn-sm mr-1 float-right"
-                                disabled={Object.keys(validSchema).length != 0  && conversion.length != 0 ? false : true}
+                                disabled={Object.keys(validSchema).length != 0 && conversion.length != 0 ? false : true}
                                 title={"Convert the given JADN schema to the selected format"}>
 
                                 Convert
