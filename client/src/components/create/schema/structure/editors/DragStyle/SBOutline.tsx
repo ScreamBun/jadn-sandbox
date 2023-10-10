@@ -22,7 +22,7 @@ export interface SBOutlineProps {
   id: string;
   title: string;
   cards: any[];
-  onDrop: (arg: StandardFieldArray[]) => void;
+  onDrop: (arg: DragItem[]) => void;
   onTypesDrop: (arg: DragItem) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
   onStarToggle: (updatedCards: DragItem[]) => void;
@@ -40,12 +40,6 @@ const SBOutline = (props: SBOutlineProps) => {
   const [items, setItems] = useState(cards);
   const cardsStateRef = useRef(items);
 
-  const [dragValue, setDragValue] = useState<boolean>(false);
-  const dragDropManager = useDragDropManager();
-  const monitor = dragDropManager.getMonitor();
-  const timerRef = useRef<NodeJS.Timer>();
-  const unsubscribeRef = useRef<Unsubscribe>();
-
   useEffect(() => {
     setItems(cards);
   }, [cards])
@@ -54,9 +48,16 @@ const SBOutline = (props: SBOutlineProps) => {
     cardsStateRef.current = items;
   }, [items])
 
+  const [dragValue, setDragValue] = useState<boolean>(false);
+  const dragDropManager = useDragDropManager();
+  const monitor = dragDropManager.getMonitor();
+  const timerRef = useRef<NodeJS.Timer>();
+  const unsubscribeRef = useRef<Unsubscribe>();
+
   const [{ handlerId, isOver, canDrop }, drop] = useDrop(() => ({
     accept: ['TypesKeys'],
     drop: (item: DragItem, _monitor) => {
+      console.log(item)
       onTypesDrop(item);
       return item;
     },
@@ -132,8 +133,7 @@ const SBOutline = (props: SBOutlineProps) => {
   }, []);
 
   const dropCard = useCallback(() => {
-    const fieldArray: StandardFieldArray[] = cardsStateRef.current.map(item => item.value);
-    onDrop(fieldArray);
+    onDrop(cardsStateRef.current);
   }, []);
 
   const moveCard = useCallback((_newItem: DragItem, dragIndex: number, hoverIndex: number) => {

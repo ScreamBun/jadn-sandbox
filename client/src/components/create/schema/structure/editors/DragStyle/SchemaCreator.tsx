@@ -10,7 +10,7 @@ import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { getFilenameOnly } from 'components/utils/general';
-import { StandardFieldArray, StandardTypeArray } from 'components/create/schema/interface';
+import { StandardTypeArray } from 'components/create/schema/interface';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
@@ -24,7 +24,6 @@ import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
-
 
 
 const configInitialState = {
@@ -316,18 +315,19 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             tmpTypes.push(tmpDef);
+
+            const new_card = {
+                id: self.crypto.randomUUID(),
+                index: generatedSchema.types?.length || 0,
+                text: type_name,
+                value: tmpDef,
+                isStarred: false
+            }
             flushSync(() => {
                 setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
-                const new_card = {
-                    id: self.crypto.randomUUID(),
-                    index: generatedSchema.types?.length || 0,
-                    text: type_name,
-                    value: tmpDef,
-                    isStarred: false
-                }
                 setCardsState((prev: any) => ([...prev, new_card]));
-
             });
+
             setIsValidJADN(false);
             setIsValidating(false);
 
@@ -418,29 +418,14 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             }
             ,
             remove: (idx: number) => {
-                if (generatedSchema.types.length >= idx) {
-                    const tmpTypes = [...generatedSchema.types];
-                    tmpTypes.splice(idx, 1);
-                    //remove types if empty
-                    let updatedSchema;
-                    if (tmpTypes.length == 0) {
-                        const tmpData = { ...generatedSchema };
-                        delete tmpData['types'];
-                        updatedSchema = tmpData;
-                    } else {
-                        updatedSchema = {
-                            ...generatedSchema,
-                            types: tmpTypes
-                        };
-                    }
-                    setGeneratedSchema(updatedSchema);
-                    setIsValidJADN(false);
-                    setIsValidating(false);
+                const tmpTypes = generatedSchema.types.filter((_type: StandardTypeArray, i: number) => i != idx);
+                setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
 
-                    const tmpCards = [...cardsState];
-                    tmpCards.splice(idx, 1);
-                    setCardsState(tmpCards);
-                }
+                setIsValidJADN(false);
+                setIsValidating(false);
+
+                const tmpCards = cardsState.filter((_card, index) => index != idx);
+                setCardsState(tmpCards);
             },
             config: configOpt
         }))
@@ -459,28 +444,32 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             ...tmpTypes.slice(insertAt)
         ];
 
+        const new_card = {
+            id: self.crypto.randomUUID(),
+            index: insertAt,
+            text: type_name,
+            value: tmpDef,
+            isStarred: false
+        }
+
+        let updatedCards = [
+            ...cardsState.slice(0, insertAt),
+            new_card,
+            ...cardsState.slice(insertAt)
+        ];
+
         flushSync(() => {
             setGeneratedSchema((prev: any) => ({ ...prev, ['types']: updatedTypes }));
-            const new_card = {
-                id: self.crypto.randomUUID(),
-                index: insertAt,
-                text: type_name,
-                value: tmpDef,
-                isStarred: false
-            }
-            let updatedCards = [
-                ...cardsState.slice(0, insertAt),
-                new_card,
-                ...cardsState.slice(insertAt)
-            ];
             setCardsState(updatedCards);
         });
 
         setIsValidating(false);
     }
 
-    const onOutlineDrop = (updatedCards: StandardFieldArray[]) => {
-        setGeneratedSchema((prev: any) => ({ ...prev, types: updatedCards }));
+    const onOutlineDrop = (updatedCards: DragItem[]) => {
+        const updatedTypes = updatedCards.map(item => item.value);
+        setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
+        setCardsState(updatedCards);
     };
 
     const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {

@@ -25,13 +25,14 @@ export interface SBOutlineCardProps {
   isStarred: boolean;
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;
-  dropCard: (item: {}) => void;
+  dropCard: (item: DragItem) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
   handleStarToggle: (idx: number) => void;
 }
 
 export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isStarred, handleStarToggle, moveCard, addCard, dropCard, onClick }) => {
 
+  const originalIndex = index;
   const [toggleStar, setToggleStar] = useState(isStarred);
 
   const ref = useRef<HTMLDivElement>(null)
@@ -45,10 +46,6 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
       return {
         handlerId: monitor.getHandlerId(),
       }
-    },
-    drop(item: DragItem, _monitor) {
-      console.log(item)
-      dropCard(item.value);
     },
     hover(item: DragItem, monitor) {
       if (!ref.current) {
@@ -107,7 +104,16 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.CARD,
     item: () => {
-      return { id, index, text, value, isStarred: toggleStar }
+      return { id, originalIndex, index, text, value, isStarred: toggleStar }
+    },
+    end: (item, monitor) => {
+      const didDrop = monitor.didDrop()
+      console.log(item, didDrop)
+      if (!didDrop) {
+        moveCard(item, item.index, item.originalIndex)
+      } else {
+        dropCard(item);
+      }
     },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
