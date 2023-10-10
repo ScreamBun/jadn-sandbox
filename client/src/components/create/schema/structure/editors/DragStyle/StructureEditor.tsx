@@ -10,7 +10,7 @@ import { zip } from '../../../../../utils';
 import {
   EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
 } from '../../../interface';
-import { PrimitiveTypeObject, StandardTypeObject, TypeKeys } from '../consts';
+import { StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import { sbToastError } from 'components/common/SBToast';
@@ -20,7 +20,7 @@ import SBOutlineFields, { DragItem } from './SBOutlineFields';
 interface StructureEditorProps {
   dataIndex: number; //index changes based on obj in arr (tracks the parent index)
   value: TypeArray;
-  change: (v: PrimitiveTypeObject, i: number) => void;
+  change: (v: StandardTypeObject, i: number) => void;
   remove: (i: number) => void;
   config: InfoConfig;
   collapseAllFields: boolean;

@@ -3,14 +3,14 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Unsubscribe } from 'redux';
 import update from 'immutability-helper'
 import { useDragDropManager, useDrop } from 'react-dnd';
-import { StandardFieldArray } from '../../../interface';
+import { TypeArray } from '../../../interface';
 import { SBOutlineCard } from "./SBOutlineCard";
 
 export interface DragItem {
   id: any;
   index: number;
   text: string;
-  value: StandardFieldArray;
+  value: TypeArray;
   isStarred: boolean;
 }
 
@@ -159,7 +159,7 @@ const SBOutline = (props: SBOutlineProps) => {
 
   const renderCard = useCallback(
     (card: {
-      id: number, text: string, value: StandardFieldArray, isStarred: boolean
+      id: number, text: string, value: TypeArray, isStarred: boolean
     }, index: number) => {
       return (
         <SBOutlineCard

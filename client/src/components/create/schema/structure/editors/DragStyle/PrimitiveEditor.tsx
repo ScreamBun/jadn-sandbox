@@ -15,9 +15,8 @@ import { sbToastError } from 'components/common/SBToast';
 interface PrimitiveEditorProps {
   dataIndex: number;
   value: Array<any>;
-  change: (v: any, i: number) => void;
+  change: (v: PrimitiveTypeObject, i: number) => void;
   remove: (i: number) => void;
-  changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
   config: InfoConfig;
 }
 

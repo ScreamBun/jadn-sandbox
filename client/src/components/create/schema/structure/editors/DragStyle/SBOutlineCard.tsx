@@ -5,7 +5,7 @@ import type { Identifier, XYCoord } from 'dnd-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGrip, faStar } from '@fortawesome/free-solid-svg-icons'
 import { faStar as farStar } from '@fortawesome/free-regular-svg-icons'
-import { StandardFieldArray } from '../../../interface'
+import { TypeArray } from '../../../interface'
 import { DragItem } from './SBOutline'
 
 const style = {
@@ -21,7 +21,7 @@ export interface SBOutlineCardProps {
   id: any;
   text: string;
   index: number;
-  value: StandardFieldArray;
+  value: TypeArray;
   isStarred: boolean;
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;

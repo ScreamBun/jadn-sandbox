@@ -2,13 +2,14 @@ import React from 'react';
 import { PrimitiveEditor, StructureEditor, StructureEditorBtnStyle, PrimitiveEditorBtnStyle } from './editors/editors';
 import { PrimitiveDef, StructureDef } from './interfaces';
 import { InfoConfig, StandardTypeArray } from '../interface';
+import { TypeObject } from './editors/consts';
 
 interface EditorProps {
   key?: number | string | undefined;  // eslint-disable-line react/require-default-props
   dataIndex: number;
   value: StandardTypeArray;
-  change?: (v: string | Record<string, any>, i: number) => void;  // eslint-disable-line react/require-default-props
-  remove?: (i: number) => void;  // eslint-disable-line react/require-default-props
+  change: (v: TypeObject, i: number) => void;  // eslint-disable-line react/require-default-props
+  remove: (i: number) => void;  // eslint-disable-line react/require-default-props
   changeIndex?: (v: string | Record<string, any>, dataIndex: number, i: number) => void;  // eslint-disable-line react/require-default-props
   config: InfoConfig;
   collapseAllFields: boolean;

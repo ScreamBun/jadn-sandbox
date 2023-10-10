@@ -10,8 +10,9 @@ import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { getFilenameOnly } from 'components/utils/general';
-import { StandardTypeArray } from 'components/create/schema/interface';
+import { StandardTypeArray, TypeArray } from 'components/create/schema/interface';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
+import { TypeObject } from '../consts';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBEditor from 'components/common/SBEditor';
@@ -406,13 +407,27 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             value: def,
             dataIndex: i,
             collapseAllFields: allFieldsCollapse,
-            change: (val, idx: number) => {
+            change: (val: TypeObject, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
+                const valArray: TypeArray = Object.values(val);
+                const updatedCards = cardsState.map((card, i) => {
+                    if (i === idx) {
+                        return ({
+                            ...card,
+                            text: val.name,
+                            value: valArray
+                        });
+                    } else {
+                        return card;
+                    }
+                });
+
                 setGeneratedSchema((prev: any) => ({
                     ...prev,
                     types: tmpTypes
                 }));
+                setCardsState(updatedCards);
                 setIsValidJADN(false);
                 setIsValidating(false);
             }
