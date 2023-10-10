@@ -374,7 +374,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         setIsValidating(false);
                     }
                 },
-                config: configInitialState
+                config: generatedSchema.info[key] ? generatedSchema.info[key] : configInitialState
             });
         }
         return null;
