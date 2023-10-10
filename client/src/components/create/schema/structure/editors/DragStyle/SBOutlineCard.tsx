@@ -1,9 +1,10 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import type { FC } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import type { Identifier, XYCoord } from 'dnd-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGrip } from '@fortawesome/free-solid-svg-icons'
+import { faGrip, faStar } from '@fortawesome/free-solid-svg-icons'
+import { faStar as farStar } from '@fortawesome/free-regular-svg-icons'
 import { StandardFieldArray } from '../../../interface'
 import { DragItem } from './SBOutline'
 
@@ -21,13 +22,18 @@ export interface SBOutlineCardProps {
   text: string;
   index: number;
   value: StandardFieldArray;
+  isStarred: boolean;
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;
   dropCard: (item: {}) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  handleStarToggle: (idx: number) => void;
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, moveCard, addCard, dropCard, onClick }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isStarred, handleStarToggle, moveCard, addCard, dropCard, onClick }) => {
+
+  const [toggleStar, setToggleStar] = useState(isStarred);
+
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -101,7 +107,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.CARD,
     item: () => {
-      return { id, index, text, value }
+      return { id, index, text, value, isStarred: toggleStar }
     },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
@@ -115,11 +121,20 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
     onClick(e, text)
   };
 
+  const onToggleStar = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    setToggleStar(prev => !prev);
+    handleStarToggle(index);
+  };
+
   return (
     <div className='card'>
       <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
         <div className='row'>
           <div className='col-10'>
+            <span onClick={onToggleStar}>
+              <FontAwesomeIcon icon={toggleStar ? faStar : farStar} />
+            </span>
             <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
           </div>
           <div className='col-2'>

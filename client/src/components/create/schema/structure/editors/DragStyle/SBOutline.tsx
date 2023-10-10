@@ -11,6 +11,7 @@ export interface DragItem {
   index: number;
   text: string;
   value: StandardFieldArray;
+  isStarred: boolean;
 }
 
 export interface OutlineContainerState {
@@ -20,28 +21,38 @@ export interface OutlineContainerState {
 export interface SBOutlineProps {
   id: string;
   title: string;
-  items: any[];
+  cards: any[];
   onDrop: (arg: StandardFieldArray[]) => void;
   onTypesDrop: (arg: DragItem) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  onStarToggle: (updatedCards: DragItem[]) => void;
 }
 
 const SBOutline = (props: SBOutlineProps) => {
-  const initalState: DragItem[] = [];
   const { id = 'sb-outline',
     title,
     onDrop,
     onTypesDrop,
     onClick,
-    items = [] } = props;
-  const [cardsState, setCardsState] = useState<DragItem[]>(initalState);
-  const cardsStateRef = useRef(cardsState);
+    onStarToggle,
+    cards = [] } = props;
+
+  const [items, setItems] = useState(cards);
+  const cardsStateRef = useRef(items);
 
   const [dragValue, setDragValue] = useState<boolean>(false);
   const dragDropManager = useDragDropManager();
   const monitor = dragDropManager.getMonitor();
   const timerRef = useRef<NodeJS.Timer>();
   const unsubscribeRef = useRef<Unsubscribe>();
+
+  useEffect(() => {
+    setItems(cards);
+  }, [cards])
+
+  useEffect(() => {
+    cardsStateRef.current = items;
+  }, [items])
 
   const [{ handlerId, isOver, canDrop }, drop] = useDrop(() => ({
     accept: ['TypesKeys'],
@@ -103,27 +114,21 @@ const SBOutline = (props: SBOutlineProps) => {
     };
   }, [monitor]);
 
-  useEffect(() => {
-    cardsStateRef.current = cardsState;
-  }, [cardsState]);
-
-  useEffect(() => {
-    setCardsState(initalState);
-    {
-      items.map((item, i) => {
-        const new_card = {
-          id: self.crypto.randomUUID(),
-          index: i,
-          text: item[0],
-          value: item
-        }
-        setCardsState(prev => [...prev, new_card]);
-      })
-    };
-  }, [props]);
-
   const onCardClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
     onClick(e, text)
+  }, []);
+
+  const onStarClick = useCallback((idx: number) => {
+    const updatedItems = cardsStateRef.current.map((item, i) => {
+      if (i === idx) {
+        return ({ ...item, isStarred: !item.isStarred });
+      } else {
+        return item;
+      }
+    });
+
+    setItems(updatedItems);
+    onStarToggle(updatedItems);
   }, []);
 
   const dropCard = useCallback(() => {
@@ -132,7 +137,7 @@ const SBOutline = (props: SBOutlineProps) => {
   }, []);
 
   const moveCard = useCallback((_newItem: DragItem, dragIndex: number, hoverIndex: number) => {
-    setCardsState((prevCards: DragItem[]) =>
+    setItems((prevCards: DragItem[]) =>
       update(prevCards, {
         $splice: [
           [dragIndex, 1],
@@ -143,7 +148,7 @@ const SBOutline = (props: SBOutlineProps) => {
   }, []);
 
   const addCard = useCallback((newItem: DragItem, hoverIndex: number) => {
-    setCardsState((prevCards: DragItem[]) =>
+    setItems((prevCards: DragItem[]) =>
       update(prevCards, {
         $splice: [
           [hoverIndex, 0, newItem as DragItem],
@@ -153,7 +158,9 @@ const SBOutline = (props: SBOutlineProps) => {
   }, []);
 
   const renderCard = useCallback(
-    (card: { id: number; text: string, value: StandardFieldArray }, index: number) => {
+    (card: {
+      id: number, text: string, value: StandardFieldArray, isStarred: boolean
+    }, index: number) => {
       return (
         <SBOutlineCard
           key={card.id}
@@ -161,10 +168,12 @@ const SBOutline = (props: SBOutlineProps) => {
           id={card.id}
           text={card.text}
           value={card.value}
+          isStarred={card.isStarred}
           addCard={addCard}
           moveCard={moveCard}
           dropCard={dropCard}
           onClick={onCardClick}
+          handleStarToggle={onStarClick}
         />
       )
     },
@@ -186,7 +195,7 @@ const SBOutline = (props: SBOutlineProps) => {
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
               padding: '5px',
             }}>
-            <div>{cardsState.map((card, i) => renderCard(card, i))}</div>
+            <div>{items.map((card, i) => renderCard(card, i))}</div>
           </div>
         </div>
       ) : (

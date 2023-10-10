@@ -10,7 +10,7 @@ import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { getFilenameOnly } from 'components/utils/general';
-import { StandardFieldArray } from 'components/create/schema/interface';
+import { StandardFieldArray, StandardTypeArray } from 'components/create/schema/interface';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
@@ -21,7 +21,7 @@ import SBSaveFile from 'components/common/SBSaveFile';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 import SBScrollToTop from 'components/common/SBScrollToTop';
-import SBOutline, { DragItem as Item } from './SBOutline';
+import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
 
@@ -57,6 +57,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
+
+    const [cardsState, setCardsState] = useState<DragItem[]>([]);
 
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
@@ -316,6 +318,15 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             tmpTypes.push(tmpDef);
             flushSync(() => {
                 setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                const new_card = {
+                    id: self.crypto.randomUUID(),
+                    index: generatedSchema.types?.length || 0,
+                    text: type_name,
+                    value: tmpDef,
+                    isStarred: false
+                }
+                setCardsState((prev: any) => ([...prev, new_card]));
+
             });
             setIsValidJADN(false);
             setIsValidating(false);
@@ -380,7 +391,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         return null;
     });
 
-    const typesEditors = (generatedSchema.types || []).map((def: string[], i: any) => {
+    const typesEditors = (generatedSchema.types || []).map((def: StandardTypeArray, i: any) => {
         let type = def[1].toLowerCase() as keyof typeof Types;
 
         //CHECK FOR VALID TYPE
@@ -425,6 +436,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     setGeneratedSchema(updatedSchema);
                     setIsValidJADN(false);
                     setIsValidating(false);
+
+                    const tmpCards = [...cardsState];
+                    tmpCards.splice(idx, 1);
+                    setCardsState(tmpCards);
                 }
             },
             config: configOpt
@@ -446,6 +461,19 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
         flushSync(() => {
             setGeneratedSchema((prev: any) => ({ ...prev, ['types']: updatedTypes }));
+            const new_card = {
+                id: self.crypto.randomUUID(),
+                index: insertAt,
+                text: type_name,
+                value: tmpDef,
+                isStarred: false
+            }
+            let updatedCards = [
+                ...cardsState.slice(0, insertAt),
+                new_card,
+                ...cardsState.slice(insertAt)
+            ];
+            setCardsState(updatedCards);
         });
 
         setIsValidating(false);
@@ -462,6 +490,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
+
+    const onStarClick = (updatedCards: DragItem[]) => {
+        setCardsState(updatedCards);
+    }
 
     return (
         <div className='card'>
@@ -561,11 +593,12 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     <div className='col'>
                                         <SBOutline
                                             id={'schema-outline'}
-                                            items={generatedSchema.types}
+                                            cards={cardsState}
                                             title={'Outline'}
                                             onTypesDrop={onTypesToOutlineDrop}
                                             onDrop={onOutlineDrop}
                                             onClick={onOutlineClick}
+                                            onStarToggle={onStarClick}
                                         ></SBOutline>
                                     </div>
                                 </div>
