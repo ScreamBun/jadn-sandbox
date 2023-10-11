@@ -43,6 +43,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema));
+        if (!generatedSchema || generatedSchema.types?.length == 0) {
+            setCardsState([]);
+        }
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
@@ -68,6 +71,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setIsValidJADN(false);
         setIsValidating(false);
         setGeneratedSchema('');
+        setCardsState([]);
         setSelectedFile(e);
         if (e == null) {
             return;
@@ -92,6 +96,14 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
                     flushSync(() => {
                         setGeneratedSchema(schemaObj);
+                        setCardsState(schemaObj.types.map((item, i) => ({
+                            id: self.crypto.randomUUID(),
+                            index: i,
+                            text: item[0],
+                            value: item,
+                            isStarred: false
+                        })));
+
                     });
                 })
                 .catch((loadFileErr: { payload: { data: string; }; }) => {
@@ -107,6 +119,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setIsValidJADN(false);
         setIsValidating(false);
         setGeneratedSchema('');
+        setCardsState([]);
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
             const file = e.target.files[0];
@@ -123,9 +136,16 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         setIsLoading(false);
 
                         validateJADN(data);
-
+                        const dataObj = JSON.parse(data);
                         flushSync(() => {
-                            setGeneratedSchema(JSON.parse(data));
+                            setGeneratedSchema(dataObj);
+                            setCardsState(dataObj.types.map((item, i) => ({
+                                id: self.crypto.randomUUID(),
+                                index: i,
+                                text: item[0],
+                                value: item,
+                                isStarred: false
+                            })));
                         });
 
                     } catch (err) {
@@ -147,6 +167,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setFileName('');
         setSelectedFile(null);
         setGeneratedSchema('');
+        setCardsState([]);
         if (ref.current) {
             ref.current.value = '';
         }
@@ -324,6 +345,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 value: tmpDef,
                 isStarred: false
             }
+
             flushSync(() => {
                 setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                 setCardsState((prev: any) => ([...prev, new_card]));
