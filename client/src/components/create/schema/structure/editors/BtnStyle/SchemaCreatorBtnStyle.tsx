@@ -9,8 +9,8 @@ import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
-import { TypeObject } from '../consts';
-import { getFilenameOnly } from 'components/utils/general';
+import { StandardTypeObject, TypeKeys } from '../consts';
+import { getFilenameOnly, zip } from 'components/utils/general';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
@@ -22,6 +22,8 @@ import SBSpinner from 'components/common/SBSpinner';
 import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutlineBtnStyle from './SBOutlineBtnStyle';
 import { AddToIndexDropDown } from './AddToIndexDropDown';
+import { DragItem } from '../DragStyle/SBOutline';
+import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
 
 
 
@@ -39,7 +41,7 @@ const defaultInsertIdx = { label: "end", value: "end" };
 
 const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
-    const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
+    const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema));
@@ -99,6 +101,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         setIsValidJADN(false);
         setIsValidating(false);
         setGeneratedSchema('');
+        setCardsState([]);
         setSelectedFile(e);
         if (e == null) {
             return;
@@ -120,6 +123,13 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     let schemaStr = JSON.stringify(schemaObj);
                     validateJADN(schemaStr);
                     setGeneratedSchema(schemaObj);
+                    setCardsState(schemaObj.types.map((item, i) => ({
+                        id: self.crypto.randomUUID(),
+                        index: i,
+                        text: item[0],
+                        value: item,
+                        isStarred: false
+                    })));
                 })
                 .catch((loadFileErr) => {
                     setIsLoading(false);
@@ -134,6 +144,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         setIsValidJADN(false);
         setIsValidating(false);
         setGeneratedSchema('');
+        setCardsState([]);
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
             const file = e.target.files[0];
@@ -148,7 +159,15 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     let data = ev.target.result;
                     try {
                         setIsLoading(false);
-                        setGeneratedSchema(JSON.parse(data));
+                        const dataObj = JSON.parse(data);
+                        setGeneratedSchema(dataObj);
+                        setCardsState(dataObj.types.map((item, i) => ({
+                            id: self.crypto.randomUUID(),
+                            index: i,
+                            text: item[0],
+                            value: item,
+                            isStarred: false
+                        })));
                         validateJADN(data);
                     } catch (err) {
                         setIsLoading(false);
@@ -169,6 +188,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         setFileName('');
         setSelectedFile(null);
         setGeneratedSchema('');
+        setCardsState([]);
         if (ref.current) {
             ref.current.value = '';
         }
@@ -366,14 +386,25 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
         } else if (Object.keys(Types).includes(key)) {
             let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
+            let tmpCards = [...cardsState];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
 
+            const new_card = {
+                id: self.crypto.randomUUID(),
+                index: generatedSchema.types?.length || 0,
+                text: type_name,
+                value: tmpDef,
+                isStarred: false
+            }
+
             if (insertAt.value == "0") {
                 tmpTypes.unshift(tmpDef);
+                tmpCards.unshift(new_card);
 
             } else if (insertAt.value == "end") {
                 tmpTypes.push(tmpDef);
+                tmpCards.push(new_card);
 
             } else {
                 const idx = parseInt(insertAt.value);
@@ -382,14 +413,21 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     tmpDef,
                     ...tmpTypes.slice(idx)
                 ];
+                tmpCards = [
+                    ...tmpCards.slice(0, idx),
+                    new_card,
+                    ...tmpCards.slice(idx)
+                ];
             }
 
             let updatedSchema = {
                 ...generatedSchema,
                 types: tmpTypes
             };
+
             flushSync(() => {
                 setGeneratedSchema(updatedSchema);
+                setCardsState(tmpCards);
             });
             setIsValidJADN(false);
             setIsValidating(false);
@@ -407,7 +445,22 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         }
     };
 
-    const changeIndex = (val: TypeObject, dataIndex: number, idx: number) => {
+    const onStarClick = (idx: number) => {
+        const updatedCards = cardsState.map((item: DragItem, i: number) => {
+            if (i === idx) {
+                return ({ ...item, isStarred: !item.isStarred });
+            } else {
+                return item;
+            }
+        });
+
+        setCardsState(updatedCards);
+    };
+
+
+
+    const changeIndex = (arrVal: TypeArray, dataIndex: number, idx: number) => {
+        const val = zip(TypeKeys, arrVal) as StandardTypeObject;
         const type = val.type.toLowerCase() as keyof typeof Types;
         if (idx < 0) {
             sbToastError('Error: Cannot move Type up anymore');
@@ -430,7 +483,20 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             ...generatedSchema,
             types: tmpTypes
         };
+
+        let tmpCards = [...cardsState];
+        const moved_card = tmpCards[dataIndex];
+        tmpCards = tmpCards.filter((_t, i) => i !== dataIndex);
+
+        tmpCards = [
+            ...tmpCards.slice(0, idx),
+            moved_card,
+            ...tmpCards.slice(idx)
+        ];
+
         setGeneratedSchema(updatedSchema);
+        setCardsState(tmpCards);
+
         setIsValidJADN(false);
         setIsValidating(false);
     }
@@ -490,7 +556,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         return null;
     });
 
-    const typesEditors = (generatedSchema.types || []).map((def, i) => {
+    const typesEditors = (generatedSchema.types || []).map((def: StandardTypeArray, i: number) => {
         let type = def[1].toLowerCase() as keyof typeof Types;
 
         //CHECK FOR VALID TYPE
@@ -508,35 +574,36 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
-                let updatedSchema = {
-                    ...generatedSchema,
+
+                const valArray: TypeArray = Object.values(val);
+                const updatedCards = cardsState.map((card: DragItem, i: number) => {
+                    if (i === idx) {
+                        return ({
+                            ...card,
+                            text: val.name,
+                            value: valArray
+                        });
+                    } else {
+                        return card;
+                    }
+                });
+
+                setGeneratedSchema((prev: any) => ({
+                    ...prev,
                     types: tmpTypes
-                };
-                setGeneratedSchema(updatedSchema);
+                }));
+                setCardsState(updatedCards);
                 setIsValidJADN(false);
                 setIsValidating(false);
             }
             ,
             remove: (idx: number) => {
-                if (generatedSchema.types.length >= idx) {
-                    const tmpTypes = [...generatedSchema.types];
-                    tmpTypes.splice(idx, 1);
-                    //remove types if empty
-                    let updatedSchema;
-                    if (tmpTypes.length == 0) {
-                        const tmpData = { ...generatedSchema };
-                        delete tmpData['types'];
-                        updatedSchema = tmpData;
-                    } else {
-                        updatedSchema = {
-                            ...generatedSchema,
-                            types: tmpTypes
-                        };
-                    }
-                    setGeneratedSchema(updatedSchema);
-                    setIsValidJADN(false);
-                    setIsValidating(false);
-                }
+                const tmpTypes = generatedSchema.types.filter((_type: StandardTypeArray, i: number) => i != idx);
+                const tmpCards = cardsState.filter((_card: DragItem, index: number) => index != idx);
+                setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                setCardsState(tmpCards);
+                setIsValidJADN(false);
+                setIsValidating(false);
             },
             config: configOpt
         }))
@@ -642,10 +709,11 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                 <div className='row mt-2'>
                                     <div className='col'>
                                         <SBOutlineBtnStyle id={'schema-outline'}
-                                            items={generatedSchema.types}
+                                            items={cardsState}
                                             title={'Outline'}
                                             onClick={onOutlineClick}
                                             changeIndex={changeIndex}
+                                            onStarClick={onStarClick}
                                         />
                                     </div>
                                 </div>

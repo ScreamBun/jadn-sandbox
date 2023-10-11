@@ -15,7 +15,7 @@ const ExampleCreator = (props: any) => {
     const validSchema = useSelector(getSelectedSchema);
 
     const onToggle = (index: number) => {
-        setToggle({ ...toggle, [index]: !toggle[index] });
+        setToggle((prev) => ({ ...prev, [index]: !prev[index] }));
     }
 
     const onNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {

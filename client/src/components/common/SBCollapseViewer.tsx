@@ -31,7 +31,7 @@ const SBCollapseViewer = (props: any) => {
     }, [data]);
 
     const onToggle = (index: number) => {
-        setToggle({ ...toggle, [index]: !toggle[index] });
+        setToggle((prev) => ({ ...prev, [index]: !prev[index] }));
     }
 
     const onPopOutClick = (data: any, url: string = "") => {

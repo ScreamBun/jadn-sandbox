@@ -9,7 +9,7 @@ const SBToggleBtn = (props: any) => {
     const onToggleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (index != undefined) {
-            setToggle({ ...toggle, [index]: !toggle[index] });
+            setToggle((prev) => ({ ...prev, [index]: !prev[index] }));
         } else {
             setToggle(!toggle);
         }

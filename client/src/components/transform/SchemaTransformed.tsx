@@ -76,7 +76,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     }));
 
     const onToggle = (index: number) => {
-        setToggle({ ...toggle, [index]: !toggle[index] });
+        setToggle((prev) => ({ ...prev, [index]: !prev[index] }));
     }
 
     const onSelectTypeChange = (opt: Option) => {

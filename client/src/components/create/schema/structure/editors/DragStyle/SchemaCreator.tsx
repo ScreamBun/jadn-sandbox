@@ -39,13 +39,10 @@ const configInitialState = {
 
 const SchemaCreator = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
-    const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema } = props;
+    const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema));
-        if (!generatedSchema || generatedSchema.types?.length == 0) {
-            setCardsState([]);
-        }
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
@@ -60,8 +57,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
-
-    const [cardsState, setCardsState] = useState<DragItem[]>([]);
 
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
@@ -432,6 +427,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             change: (val: TypeObject, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
+
                 const valArray: TypeArray = Object.values(val);
                 const updatedCards = cardsState.map((card, i) => {
                     if (i === idx) {
@@ -456,13 +452,11 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             ,
             remove: (idx: number) => {
                 const tmpTypes = generatedSchema.types.filter((_type: StandardTypeArray, i: number) => i != idx);
+                const tmpCards = cardsState.filter((_card: DragItem, index: number) => index != idx);
                 setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
-
+                setCardsState(tmpCards);
                 setIsValidJADN(false);
                 setIsValidating(false);
-
-                const tmpCards = cardsState.filter((_card, index) => index != idx);
-                setCardsState(tmpCards);
             },
             config: configOpt
         }))
