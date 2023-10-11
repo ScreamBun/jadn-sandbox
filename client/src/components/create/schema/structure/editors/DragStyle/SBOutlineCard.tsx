@@ -108,7 +108,6 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
     },
     end: (item, monitor) => {
       const didDrop = monitor.didDrop()
-      console.log(item, didDrop)
       if (!didDrop) {
         moveCard(item, item.index, item.originalIndex)
       } else {

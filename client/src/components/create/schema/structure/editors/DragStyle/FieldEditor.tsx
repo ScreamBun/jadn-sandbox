@@ -53,15 +53,26 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   const dragRef = useRef<HTMLDivElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
+  const originalIndex = dataIndex;
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: acceptableType,
-      item: () => { return { id, dataIndex, value } },
+      item: () => { return { id, originalIndex, dataIndex, value } },
       collect: (monitor) => ({
         item: monitor.getItem(),
         isDragging: monitor.isDragging(),
       }),
+      end: (item, monitor) => {
+        const didDrop = monitor.didDrop()
+
+        console.log(didDrop, item)
+        if (!didDrop) {
+          moveCard(item.dataIndex, item.originalIndex)
+        } else {
+          dropCard(item);
+        }
+      },
     }), [acceptableType]
   )
 
@@ -75,9 +86,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       return {
         handlerId: monitor.getHandlerId(),
       }
-    },
-    drop(item: DragItem, _monitor) {
-      dropCard(item)
     },
     hover(draggedItem: DragItem, monitor) {
       if (!previewRef.current) {
