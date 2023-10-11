@@ -27,7 +27,7 @@ interface StructureEditorProps {
 }
 
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, change, dataIndex, config, collapseAllFields, remove } = props;
+  const { value, dataIndex, config, collapseAllFields, change, remove } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -255,7 +255,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 </div>
                 <div className="row">
                   <div className="col-md-4">
-                    <Input name="structureName" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
+                    <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
                       onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
@@ -271,7 +271,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     />
                   </div>
                   <div className="col-md-6">
-                    <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1}
+                    <Input name="comment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1}
                       value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                   </div>
                 </div>
@@ -334,7 +334,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               </div>
               <div className="row">
                 <div className="col-md-4">
-                  <Input name="structureName" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
+                  <Input name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
@@ -349,7 +349,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   />
                 </div>
                 <div className="col-md-6">
-                  <Input name="structureComment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment}
+                  <Input name="comment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
