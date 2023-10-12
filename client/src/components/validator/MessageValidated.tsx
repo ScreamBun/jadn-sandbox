@@ -17,8 +17,7 @@ import SBSelect, { Option } from "components/common/SBSelect";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
 
 const MessageValidated = (props: any) => {
-    const location = useLocation()
-    const { navMsgFormat } = location.state
+    const location = useLocation();
 
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, isLoading } = props;
     const validSchema = useSelector(getSelectedSchema);
@@ -29,8 +28,8 @@ const MessageValidated = (props: any) => {
     const ref = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        if (navMsgFormat != '') {
-            const index = Object.values(validMsgFormat).indexOf(navMsgFormat)
+        if (location.state) {
+            const index = Object.values(validMsgFormat).indexOf(location.state)
             setMsgFormat({ value: Object.values(validMsgFormat)[index], label: Object.values(validMsgFormat)[index] });
         }
     }, [])
@@ -85,7 +84,7 @@ const MessageValidated = (props: any) => {
             const filename_only = getFilenameOnly(file.name);
             setFileName(filename_only);
 
-            const type = getFilenameExt(file.name);       
+            const type = getFilenameExt(file.name);
 
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {

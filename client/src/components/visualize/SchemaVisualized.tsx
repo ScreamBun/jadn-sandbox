@@ -22,7 +22,6 @@ import { getSelectedSchema } from "reducers/util";
 
 const SchemaVisualized = (props: any) => {
     const location = useLocation();
-    const { navConvertTo } = location.state;
 
     const { conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag, isLoading } = props;
     const validSchema = useSelector(getSelectedSchema);
@@ -34,8 +33,8 @@ const SchemaVisualized = (props: any) => {
     }
 
     useEffect(() => {
-        if (navConvertTo != '') {
-            const index = Object.values(data).indexOf(navConvertTo)
+        if (location.state) {
+            const index = Object.values(data).indexOf(location.state)
             setConversion({ value: Object.values(data)[index], label: Object.keys(data)[index] });
         }
     }, []);

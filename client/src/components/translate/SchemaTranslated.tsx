@@ -13,8 +13,7 @@ import { initConvertedSchemaState } from "components/visualize/SchemaVisualizer"
 import { getSelectedSchema } from "reducers/util";
 
 const SchemaTranslated = (props: any) => {
-    const location = useLocation()
-    const { navConvertTo } = location.state
+    const location = useLocation();
 
     const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading } = props;
     const validSchema = useSelector(getSelectedSchema);
@@ -25,8 +24,8 @@ const SchemaTranslated = (props: any) => {
     }
 
     useEffect(() => {
-        if (navConvertTo != '') {
-            const index = Object.values(data).indexOf(navConvertTo)
+        if (location.state) {
+            const index = Object.values(data).indexOf(location.state)
             setTranslation({ value: Object.values(data)[index], label: Object.keys(data)[index] });
         }
     }, [])
