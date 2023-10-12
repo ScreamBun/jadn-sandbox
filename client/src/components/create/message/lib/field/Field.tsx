@@ -41,7 +41,7 @@ const Field = (props: FieldProps) => {
   };
 
   //Circular Dependency Check: Create Primitive Field
-  if (name && parent && parent.split('.').includes(name)) {
+  if (name && parent && parent.split('.')[parent.split('.').length - 2] == name) {
     return <BasicField {...args} />;
   }
 
