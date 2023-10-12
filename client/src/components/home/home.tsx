@@ -54,7 +54,7 @@ const Home = () => {
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "" }}>Schema Visualization</Link>
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} >Schema Visualization</Link>
                 </h5>
                 <p className="card-text">Convert a JADN Schema into different visualization formats. </p>
                 <div className="card-text">
@@ -65,11 +65,11 @@ const Home = () => {
                 </div>
               </div>
               <div className="card-footer">
-                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "gv" }}>GraphViz</Link>
-                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "html" }}>HTML</Link>
-                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "jidl" }}>JIDL</Link>
-                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "md" }}>MarkDown</Link>
-                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={{ navConvertTo: "puml" }}>PlantUML</Link>
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"gv"}>GraphViz</Link>
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"html"}>HTML</Link>
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"jidl"}>JIDL</Link>
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"md"}>MarkDown</Link>
+                <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"puml"}>PlantUML</Link>
               </div>
             </div>
             <div className="card">
@@ -78,14 +78,14 @@ const Home = () => {
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "" }}>Schema Translation</Link>
+                  <Link className="card-link" to={NAV_TRANSLATE} >Schema Translation</Link>
                 </h5>
                 <p className="card-text">Translate a Schema and its data from JADN to another Schema or data format.</p>
               </div>
               <div className="card-footer">
-                <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "json" }}>JSON</Link>
-                <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "rng" }}>Relax (XML)</Link>
-                <Link className="card-link" to={NAV_TRANSLATE} state={{ navConvertTo: "" }}>XSD (Coming Soon)</Link>
+                <Link className="card-link" to={NAV_TRANSLATE} state={"json"}>JSON</Link>
+                <Link className="card-link" to={NAV_TRANSLATE} state={"rng"}>Relax (XML)</Link>
+                <Link className="card-link" to={NAV_TRANSLATE} >XSD (Coming Soon)</Link>
               </div>
             </div>
           </div>
@@ -96,14 +96,14 @@ const Home = () => {
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "" }}>Message Validation</Link>
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE} >Message Validation</Link>
                 </h5>
                 <p className="card-text">Validate data (messages) against a JADN Schema and convert them from one data format to another.</p>
               </div>
               <div className="card-footer">
-                <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "cbor" }}>CBOR</Link>
-                <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "json" }}>JSON</Link>
-                <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={{ navMsgFormat: "xml" }}>Relax (XML)</Link>
+                <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"cbor"}>CBOR</Link>
+                <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"json"}>JSON</Link>
+                <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"xml"}>Relax (XML)</Link>
               </div>
             </div>
             <div className="card mt-3">
