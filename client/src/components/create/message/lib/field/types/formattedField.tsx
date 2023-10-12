@@ -384,27 +384,29 @@ const FormattedField = (props: any) => {
                     <div className='card'>
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
-                                <Button color='primary' className='float-right' onClick={createUUID}>Generate UUID</Button>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
                                 {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                value={data}
-                                type={'text'}
-                                name={name}
-                                onChange={e => {
-                                    setData(e.target.value);
-                                }}
-                                onBlur={e => {
-                                    const errCheck = validateOptDataStr(config, optData, e.target.value);
-                                    setErrMsg(errCheck);
-                                    optChange(name, e.target.value, arr);
-                                }}
-                                style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
-                            />
+                            <div className='d-flex justify-content-between'>
+                                <Input
+                                    value={data}
+                                    type={'text'}
+                                    name={name}
+                                    onChange={e => {
+                                        setData(e.target.value);
+                                    }}
+                                    onBlur={e => {
+                                        const errCheck = validateOptDataStr(config, optData, e.target.value);
+                                        setErrMsg(errCheck);
+                                        optChange(name, e.target.value, arr);
+                                    }}
+                                    style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+                                />
+                                <button type="button" className='btn btn-sm btn-primary float-right text-nowrap' onClick={createUUID}>Generate UUID</button>
+                            </div>
                         </div>
                         {err}
                     </div>
