@@ -19,6 +19,7 @@ import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import { Option } from 'components/common/SBSelect';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { DragItem } from './SBOutlineFields';
+import { shallowEqual } from 'react-redux';
 
 interface FieldEditorProps {
   id: any;
@@ -38,11 +39,11 @@ interface FieldEditorProps {
 
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   const { enumerated = false, value, dataIndex, change, config, acceptableType, moveCard, id, dropCard, remove, editableID } = props;
+  const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
   const types = useAppSelector((state) => ({
-    base: state.Util.types.base,
-    schema: Object.keys(state.Util.types.schema) || {}
-  }));
-
+    base: (state.Util.types.base),
+    schema: schemaTypes
+  }), shallowEqual);
   const [modal, setModal] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const fieldKeys = enumerated ? EnumeratedFieldKeys : StandardFieldKeys;

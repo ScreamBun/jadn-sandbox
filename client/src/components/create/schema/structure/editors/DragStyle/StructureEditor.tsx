@@ -15,6 +15,7 @@ import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import { sbToastError } from 'components/common/SBToast';
 import SBOutlineFields, { DragItem } from './SBOutlineFields';
+import { shallowEqual } from 'react-redux';
 
 
 interface StructureEditorProps {
@@ -28,7 +29,7 @@ interface StructureEditorProps {
 
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
   const { value, change, dataIndex, config, collapseAllFields, remove } = props;
-  const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
+  const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
   const [modal, setModal] = useState(false);
