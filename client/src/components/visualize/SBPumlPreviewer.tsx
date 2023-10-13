@@ -32,9 +32,9 @@ const SBPumlPreviewer = (props: any) => {
                     {({ zoomIn, zoomOut, resetTransform }) => (
                         <React.Fragment>
                             <div className="tools">
-                                <button type="button" className="btn btn-sm" onClick={(e) => { e.preventDefault(); zoomIn() }}>+</button>
-                                <button type="button" className="btn btn-sm" onClick={(e) => { e.preventDefault(); zoomOut() }}>-</button>
-                                <button type="button" className="btn btn-sm" onClick={(e) => { e.preventDefault(); resetTransform() }}>
+                                <button type="button" className="btn btn-sm" title="Zoom In" onClick={(e) => { e.preventDefault(); zoomIn() }}>+</button>
+                                <button type="button" className="btn btn-sm" title="Zoom Out" onClick={(e) => { e.preventDefault(); zoomOut() }}>-</button>
+                                <button type="button" className="btn btn-sm" title="Reset" onClick={(e) => { e.preventDefault(); resetTransform() }}>
                                     <FontAwesomeIcon icon={faUndo} />
                                 </button>
                             </div>

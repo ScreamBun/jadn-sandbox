@@ -4,6 +4,8 @@ import * as d3 from "d3-graphviz";
 import SBEditor from "../common/SBEditor";
 import saveAs from "file-saver";
 import { sbToastError } from "../common/SBToast";
+import { faUndo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const convertToGvSplitView = (data: any, height = 320, width = 920) => {
     d3.graphviz("#gv")
@@ -59,7 +61,12 @@ const SBGvPreviewer = (props: any) => {
             <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="35vh"></SBEditor>
 
             <div id="content" className="card bg-secondary" style={{ 'height': "35vh", overflow: 'hidden' }}>
-                <Button id="diagramReset" title="Reset the View" color="info" className="btn-sm m-1" style={{ zIndex: '1', position: 'absolute' }} onClick={onDiagramReset}>Reset</Button>
+                <div className="tools">
+                    <button type="button" title="Reset" className="btn btn-sm"
+                        onClick={onDiagramReset}>
+                        <FontAwesomeIcon icon={faUndo} />
+                    </button>
+                </div>
                 <div id="gv" style={{ 'height': "35vh", textAlign: 'center', zIndex: '0' }}>
                 </div>
                 <div id="fullGV" style={{ visibility: 'hidden', overflow: 'hidden' }}>
