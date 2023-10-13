@@ -3213,6 +3213,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@codemirror/language@npm:^6.9.0":
+  version: 6.9.1
+  resolution: "@codemirror/language@npm:6.9.1"
+  dependencies:
+    "@codemirror/state": ^6.0.0
+    "@codemirror/view": ^6.0.0
+    "@lezer/common": ^1.1.0
+    "@lezer/highlight": ^1.0.0
+    "@lezer/lr": ^1.0.0
+    style-mod: ^4.0.0
+  checksum: 62265f1042d2edfd3a091c408d9d0071f23889099b2f6ce8275fa910118bd2c45b8c4b29228c7be6e6d5f0e0812a522de902bc75ba8d8b2e62e42ade1692a49a
+  languageName: node
+  linkType: hard
+
 "@codemirror/legacy-modes@npm:^6.0.0, @codemirror/legacy-modes@npm:^6.1.0":
   version: 6.3.2
   resolution: "@codemirror/legacy-modes@npm:6.3.2"
@@ -4049,6 +4063,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lezer/common@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@lezer/common@npm:1.1.0"
+  checksum: 93c208a44d1c0bdf7407853ba7c4ddcedf1c52d1b82170813d83b9bd6301aa23587405ac54332fe39ce8bc37f706936ab237ceb4d3d535d1dead650153b6474c
+  languageName: node
+  linkType: hard
+
 "@lezer/cpp@npm:^1.0.0":
   version: 1.1.0
   resolution: "@lezer/cpp@npm:1.1.0"
@@ -4075,6 +4096,15 @@ __metadata:
   dependencies:
     "@lezer/common": ^1.0.0
   checksum: 90ec143ce46b32f6779c3b245f1b5a540d66686939816d3daed8318821acc4bc719466dc222336cfd483bf04a8de4fdc6f279e904cf114d4d9f786f9feccbbd8
+  languageName: node
+  linkType: hard
+
+"@lezer/highlight@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "@lezer/highlight@npm:1.1.6"
+  dependencies:
+    "@lezer/common": ^1.0.0
+  checksum: 411a702394c4c996b7d7f145a38f3a85a8cc698b3918acc7121c629255bb76d4ab383753f69009e011dc415210c6acbbb5b27bde613259ab67e600b29397b03b
   languageName: node
   linkType: hard
 
@@ -4144,6 +4174,15 @@ __metadata:
   dependencies:
     "@lezer/common": ^1.0.0
   checksum: 58bc25a9ba891dc6ca713fc8768706935e65d6e54d79a8ddb40c742cc799e87eddf4f49a6d6566a649c4726a9ab79a4200d36c9351608285a9bee6cdf3b33341
+  languageName: node
+  linkType: hard
+
+"@lezer/lr@npm:^1.3.10":
+  version: 1.3.13
+  resolution: "@lezer/lr@npm:1.3.13"
+  dependencies:
+    "@lezer/common": ^1.0.0
+  checksum: aad0cb8908796a6b49116842fd490093aa0de54b48150a60a4f418815c014f7a1b4355615832e305caea5c0ba8c5ab577f82aebcd0ea04586b8199284ef0fec8
   languageName: node
   linkType: hard
 
@@ -4915,12 +4954,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.8.4":
-  version: 20.8.4
-  resolution: "@types/node@npm:20.8.4"
+"@types/node@npm:^20.8.5":
+  version: 20.8.5
+  resolution: "@types/node@npm:20.8.5"
   dependencies:
     undici-types: ~5.25.1
-  checksum: 2106b9ef9750297cac68249428d7067c4d22c26908854165b70a164e34e900f4c34bb9bf3887c9391206b500d3e87171d03b1846e25788925236a0354390d278
+  checksum: 4bca4e4f6307a6f5dc78812015eca9c5a998b35fcf3ba4058c9851d3dde2b22c914fa25a85b804eab5af2ab95375d15943dce8e9ba5e01d15f4bf516ca0d2816
   languageName: node
   linkType: hard
 
@@ -5376,9 +5415,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-extensions-basic-setup@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-extensions-basic-setup@npm:4.21.19"
+"@uiw/codemirror-extensions-basic-setup@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-extensions-basic-setup@npm:4.21.20"
   dependencies:
     "@codemirror/autocomplete": ^6.0.0
     "@codemirror/commands": ^6.0.0
@@ -5395,13 +5434,13 @@ __metadata:
     "@codemirror/search": ">=6.0.0"
     "@codemirror/state": ">=6.0.0"
     "@codemirror/view": ">=6.0.0"
-  checksum: 85a1f8b3e071b4587f13609d8449406baa8dead51aa588b914ffa95aac1bdfe1e1aa78689d7927fb90a554b747409cc59cada18fcbe2c204f5936e5441fbade1
+  checksum: 76a6caf05bbcf06c515c680ab952e79b8470ca10c9d8c3166fdb05310232239782b170da276b1dbf33900ca894332fc2aba3bd6955665b2c2580548c7e17cbc0
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-extensions-langs@npm:^4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-extensions-langs@npm:4.21.19"
+"@uiw/codemirror-extensions-langs@npm:^4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-extensions-langs@npm:4.21.20"
   dependencies:
     "@codemirror/lang-angular": ^0.1.0
     "@codemirror/lang-cpp": ^6.0.0
@@ -5428,366 +5467,366 @@ __metadata:
     "@replit/codemirror-lang-nix": ^6.0.1
     "@replit/codemirror-lang-solidity": ^6.0.1
     "@replit/codemirror-lang-svelte": ^6.0.0
-    codemirror-lang-mermaid: ^0.2.1
+    codemirror-lang-mermaid: ^0.5.0
   peerDependencies:
     "@codemirror/language-data": ">=6.0.0"
     "@codemirror/legacy-modes": ">=6.0.0"
-  checksum: e808d7677b570072c083b2b77c457474c92c3f5578a6bc799e70dad28e756f8ef8b5cb947fc4aafbc00468bba0bc78e3d6034a1950448827dd2b426382bb3e4c
+  checksum: 929b8eae79b4e23cdb71c25de2ddef43750f4540075e5897b4164cd037b594769b18246e61799ee8f68e4792f2ee5f1026ab3c937859e600c3b84277b629d5fc
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-abcdef@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-abcdef@npm:4.21.19"
+"@uiw/codemirror-theme-abcdef@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-abcdef@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 890c2a83adf9755780194d4c129ffa104617936cb2861f446569bd91db9afc1b30ae8a3ae3a572a7d712068fe4c8b48b2920efb64c418c37cf863f30dd607da3
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 609455e4659853f044da63aded2445dc0e3956cbd171e7407351c03be72a855261f56ebd78368d5b40735dc25096546a11d56a8d4c25cc983b121c3e55ddf432
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-abyss@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-abyss@npm:4.21.19"
+"@uiw/codemirror-theme-abyss@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-abyss@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: e16287c3e2a407ea86850f4448c42d7bdfd4543d672dd3f52acb59bd982ce1541279b013c1c6570b78714894689c05a58d6dadb53817bb0c2ae1ed774e7f156d
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 1b430bb1f65f3b0d1a4b234cfb988b764793db5802f5440b4b1823a8700b1471551e08f101cc6a1cb064341cf5b386f274c79d239f4f83b0740417776fe94230
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-androidstudio@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-androidstudio@npm:4.21.19"
+"@uiw/codemirror-theme-androidstudio@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-androidstudio@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: a74bbcc263388e95846b12eb9d227fe4d76bb1e9f52c00932c40cd567a25496d1feb676846cbfbbea18547b591d9b0e261bf6d5179a685765c6bd926e78815cb
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 6b4c81a765fac07cfc3d9b2194bca9c843ac58610c01067058b8661cd5d230e2cf489f48079bead25dac62a98b8725ca3d7356f074667100d16a7a0dc8a57ac4
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-andromeda@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-andromeda@npm:4.21.19"
+"@uiw/codemirror-theme-andromeda@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-andromeda@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: b3780418a1f7fcbfb842e2c105447ecc67221cecd7e12ca0955e0cf7fd124ae01d5d9fa873e1f85ed936cd1258349eb8d8f3f0ae99991fb8777cd6524e07805a
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 7066308d094bd86f29b44b990c26a84f86c1c2d63ee234b368ea81b72bdf11fb0ad06c91aecec5c72cb176ab276e780ba7f398769d37ef042b9d5c7a8f4a59fe
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-atomone@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-atomone@npm:4.21.19"
+"@uiw/codemirror-theme-atomone@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-atomone@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 90b7b8f42d03da5ac723933e9e8f5379437e449c94fb786fa28a97fb10d440aee9d624c223bcd1a54fe73b5e4f02d04e8cf51cdc0a949d8c528e27ba61bccb14
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 87c2843b896e617bc0e493d08712e7db402c8860a292fb79d436b81d2808c35c38cc6e5e30f49cae4889c37c53c84ab42a5ffa73a10df3a7bcb0f5e6a1e37bc7
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-aura@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-aura@npm:4.21.19"
+"@uiw/codemirror-theme-aura@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-aura@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: ec472caacf41a5f1951b6df22db780adcef5525ff894ddbba1423453068be402955bdb40298e5c05cc5d18c5710acca5a2faa85b57da5ed22aa288da48fe7317
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: ea923493d9592d055f7dabfc6ec036aae74544769f30dfd1f79a9a011b4ae9d3b181cd7d45c7c0325d212424d355c9ea17f5d3a42b59e979b4a5cf2040db81ff
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-basic@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-basic@npm:4.21.19"
+"@uiw/codemirror-theme-basic@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-basic@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: a96a759c57a71eca9ace467ca1feb59cabad8aaa2c9247e078a479ace61cfe909ad23cc5a9c2231deb250afbe8c443ee6c751f1c2bdf42ada4544472d5390c3f
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 6c0cc9241db37d9af768cb83c057cfe957a98cc1eade8b223c1553f32e0029923ea1c2751e0952eda003729282fd4d5d76cbd98d2f9323d9ea8c162cfdf6a562
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-bbedit@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-bbedit@npm:4.21.19"
+"@uiw/codemirror-theme-bbedit@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-bbedit@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 67379228838b605dd40e1f599022dacbc2230205739325338a6319fff11bcb3e6d8440d3a6773aeb084e075c10b598e0f544f74c9f053269849ab58745d0acb7
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: f3431c4f1c5643ea6d680926b01fdc735a97fb62c0dd24ab64982b2457a9f14f508d975ccfb00ae6f620a64d24cc6197f204af56e95a9c152dfb45c4ec6e93d0
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-bespin@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-bespin@npm:4.21.19"
+"@uiw/codemirror-theme-bespin@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-bespin@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 04c9b0d0d6340b81b95bf626a065e8162fe67f15aba735c8842ca51af0f02f191160b470915c75784f3b03134437a081dc6acbbf50224ba22198a101516388c8
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 706793fa4931201d785f7e56293a48f88ec87ffe2464ee81c04987b69b078cd840452a342f1a75aa838a7c01e9058051b14133b4f9b28b4d213ea65802eaf793
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-copilot@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-copilot@npm:4.21.19"
+"@uiw/codemirror-theme-copilot@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-copilot@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 6cae4b5a91bfbff6e9fb2213cd7dcc1f89dd970cc25b9ecbb13767edb8a8ddb481fb415649f5f62518c683362f0ba0b899eca9adef3cc741a9b002cf8567687c
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: cbe965d30ebb178f9e962bdc1e4d60dd3e9f4fe6a1aa898b1fead5e1ab0022034470b75bf657c05934aa9adc138146cfa66e9a80bb3caa83c78e10e91a1054b5
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-darcula@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-darcula@npm:4.21.19"
+"@uiw/codemirror-theme-darcula@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-darcula@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 4bf8096c8dceacdfe63f5ae81ae3441342441969b46a1b8efa6d40155eac48b95e2ee7afc4b19c0a45310b63a907adc622f512c9cf4d1d7d5859575c1edf7ee2
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 382fdab26c73199ef68fe31f2e76b6d67e5c384ae3598865455267783ef446d45f4ef9c0acd9473b37505de408b577fc541e13a60e5dbd7eac5be43d41cee83e
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-dracula@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-dracula@npm:4.21.19"
+"@uiw/codemirror-theme-dracula@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-dracula@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 27096d2f86e91d61c9aaacf0944ab8c02647552e1021f0b7ecf490254fccff60cdefae4320aaade3a62edfd9a1a94252954027e94962d81c358b388005cee81f
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 136fca5acc2976d148f71bf2b97935169f342a8e326d4fe0332f2e572aa46b6de4f2727da8f67712a8466045ec40cda59e2b5f0076c54df4c2beb4b919753f92
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-duotone@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-duotone@npm:4.21.19"
+"@uiw/codemirror-theme-duotone@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-duotone@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: b952bd992978abe395a3bc17e8e3cb9cc24ba0369a27f9cdfa6c425a7c5d49c2054b885daee5231a2e3fc39d88820e2d78d75ef0e0b4a217b6396741135b31b5
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 766b1f2851231aaae469474a3dc9d132b297001f6674b9c9e64343514e0c569bad43d81b9e15ed53241dd3297c0ac738fb7f918b575ea23020775cc52ea35d5a
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-eclipse@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-eclipse@npm:4.21.19"
+"@uiw/codemirror-theme-eclipse@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-eclipse@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: d1216660c7cfefc4ad5cdf95215522e2c962d53abafb14bc471e1f07c7d6c1a068a9acefbd50d2bd545dab449bad81fedd78117078367ca21a9424dd1f7eb944
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 900a6e4b413e49f9232f281fce660c1eb87032e761c23790e5d1d974f5d2173c440bf57143dda9b3797373c3c67200991caf85c57e2df4e3bea49e9b019c031a
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-github@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-github@npm:4.21.19"
+"@uiw/codemirror-theme-github@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-github@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 14d52eabc48ebaef0d6eeddc397d4e4f75854105636b8c99b5b97d15055057d2a694c34ab7918d71a2cc6503f29d88edc27fc3a98e8bd872cb3967514b2db811
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: a82e4cf644966149cbfd1b085156e9a05b2b13f5d9e37d9e961d0c72bb14dfdd81eba810565f379cef32f793e2ea53f67b887efc818474121b09ca9a3afd11b1
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-gruvbox-dark@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-gruvbox-dark@npm:4.21.19"
+"@uiw/codemirror-theme-gruvbox-dark@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-gruvbox-dark@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 9e97c989cd88ec1e04cc632be9fd0a5cb94bf35648769995c4abe0dc280d52bb2a57df22c1d69e13b95264ea5e6ebdc3aeade72a884f883506834b9c75d04590
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 1e45bc70b52b37b171cc5be199541cb8559f2d38f807db4960b471af0b0a3c520840d60120aadf35d388f238b7e5ab8a12d1c5be2c88d3d2c373d18005c24bcd
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-kimbie@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-kimbie@npm:4.21.19"
+"@uiw/codemirror-theme-kimbie@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-kimbie@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 16b253f6f81716e5f306d5f8cfbdf4b52dfdecb363ef87a84180d5e131b24bc0359ed3ff90a6ccd1266132d0fb23d532b1f667bce227adf12b5c2ab0b23d509d
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 82545b207c8cdb6caf1a4e5664d124182255aaee86febe2ec04ecdf0efc0d5b73b9bf57238c0620be51ae87d4518dbb965ba92dcc958420ef6b6d6ccb88757a4
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-material@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-material@npm:4.21.19"
+"@uiw/codemirror-theme-material@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-material@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 6b6d92f7a63db18a58eedb379cde2aa92cdec96007df4259b6e3e415b2c90bc3ad6d4662de95be66efe49e40c40126231800d8dfa1e6812663372132b17b98f1
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 40a590928701dbf3541e047566bc3de7d87d992c39ce1e52df0063fd4110a9e86f5273e4618d0ff94e16af61c680d39bcbe4d34f9ce39904357c3f4f9d18444b
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-monokai-dimmed@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-monokai-dimmed@npm:4.21.19"
+"@uiw/codemirror-theme-monokai-dimmed@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-monokai-dimmed@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 67372ee3f7ff3efa2f503e52d7ccefc673035f938910792617509ca660fa94739fa7c1e9247e5d8dff6543ea9afba64575e0420df87973ce85f224a2535145f8
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 0fd8b79dd2c94e7e068cbf92ce9c3ed3677ae940aa1c3d58d83b53b4a838994c31d03adc7429907e1049cbb73ecde4e31ab89cc3534901af2354a8f54be45252
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-monokai@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-monokai@npm:4.21.19"
+"@uiw/codemirror-theme-monokai@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-monokai@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: fbd23359b70480532a9638e0a306bc718ecece86434ae88b59b08c888415bf37ae560dce3de8dc4968e2b148e3ecc16c466aba31d442736f93817aef7af7b6eb
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 2ae53817ef5b69b7042e2825d72d22319dd36d6b3a2448d11ddb0072dae7bdc759b8fdb40b6b7945116aa7f1995adbbf30b7b49761d26a3d3edcfafb93dfa9ff
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-noctis-lilac@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-noctis-lilac@npm:4.21.19"
+"@uiw/codemirror-theme-noctis-lilac@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-noctis-lilac@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: af75cb640890b8d779809dce14cc923940c8f50a283416099d4a45daf2290ab95c2dbd99370ae60b485bdd1d445fcdb18a317143c03f2e718ba417e1ec18977c
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 62082d82ced4770cb7fba61163679fc5e98a2a46bdd305c3290f9c534599c6eec589101b3c598ad085baba289915e386c8a3e9209f41d793c2d9ef8647a3dc56
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-nord@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-nord@npm:4.21.19"
+"@uiw/codemirror-theme-nord@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-nord@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 4c25fb0e2fc1511e31cfaa92e8ce22578137f5f711b887072b8a4c5fd173c65b4b342175161f1428e0e454b7a3217588c92cf34f43ed8802407b2f7919237f69
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: d6c77899918ba59468f07bc73335eb38d5d27371df8c71374d507cd1dc3cbd701bbcc090e1acf57f1f949a2cddadffaead446f953a11f0e3fe2c36bcf4cafc0a
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-okaidia@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-okaidia@npm:4.21.19"
+"@uiw/codemirror-theme-okaidia@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-okaidia@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: f7adf43c9967ae7244bbd7dce43569bde30be760d72d63ee155558ca5e513652645ded26deb68c4cb89757582db5c3ce9eb99516b6d9216624751cf04860844f
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 81943fcc5125e15853c18e6e813fddb7081f9a1b1d516b5232079a73751e1c62b1a600ddf5068cd9dcf3f7d1377296d149719676efa513b8a0fe87499f8723a6
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-quietlight@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-quietlight@npm:4.21.19"
+"@uiw/codemirror-theme-quietlight@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-quietlight@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 41b3d1e8ec28a1e987b29825a402eb3a07c5a9b74b597b5983086b0d8a186623576b6e5adbdbf26f112dfb2844b5a414ea02a85b48b374115922f3c9bb9e4b0c
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: d20c58a7d5cbbcb4cdaa9b8ab753738c6ba6ac898db78c043f1863bfa1dbd9482ee28ea5db52252d489af4e6fb2bc12338cf2fcc519dcda71c5018a0ff44f2d4
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-red@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-red@npm:4.21.19"
+"@uiw/codemirror-theme-red@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-red@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 8fc403c071f932084b2a8553cc29be584640dc4ec500a85c59fad87e8dfd30ad8268d51338ba8a39d48ddf2b1a2d6257c65e597e6f4726633893cb9a5445754c
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 636411e18e445d067bf1eedb46b2a670d4a9fb3c03ba6783b9d868987810555259eea1e7cd95e4967c6e7ce6448bdd4f59da28eccad21ef34bfc034d96c3ee14
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-solarized@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-solarized@npm:4.21.19"
+"@uiw/codemirror-theme-solarized@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-solarized@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 0add3a00d451e9d936cae2a3f8b33780af59277b09434965a8d57cf3e6431c4a520650a09a1ac4b9276399333693097b138480c642e14718fa8f742575bc5a13
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: f9775cc8d309b6873cc5376ec23c6e1b49a6635928bddf0b72111e5d5b28107bebd758ff69cdb1c04285e1195e75732638b191db08fec0ea181937d2e3051d54
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-sublime@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-sublime@npm:4.21.19"
+"@uiw/codemirror-theme-sublime@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-sublime@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 6856b2289fb49296840fbcae92d07e19954ff9c3e38a193ad53a1edd4fe1c331b2187a7f1c95c3980b375d8e4a0c1f81aec9cf03304f8ed555a699d5206e4750
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: d0cfc4f97fbdafb29e7e8326e879f9145481ecfda0b56b2623f8c9ab62c2b536592d5544c71a504610a267abf07fc2c42b012ace85f1ff994af98fdb2fef5fd1
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-tokyo-night-day@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-tokyo-night-day@npm:4.21.19"
+"@uiw/codemirror-theme-tokyo-night-day@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-tokyo-night-day@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 011b84a8e266c174e352e9a6756bc51ab46efa2e08f606e1773356af102da16f715fe1facd2c32315633c9b76b0bdbccc2d8ee5b784fa36fc2fe4cd259d285d6
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: cd3e705c122db9f3d018789bf3484779052fd5e83b99f684df859882fcf18e17a5c9b5f41b2d7858f7aeee38612c5463bf6612bf15cf6352880435773539eebc
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-tokyo-night-storm@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-tokyo-night-storm@npm:4.21.19"
+"@uiw/codemirror-theme-tokyo-night-storm@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-tokyo-night-storm@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 20ee3b384c4be1b3c5b68fb6337859af6cfc9417522e1a619f345e79c052c0a61fc978671f818803080b3d20f8999c5b91594cb249d67a9c1bfd27872c1cd419
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 69730564155c67ea0984861259c8e7052dc0db384e99b6058b6477685b8e3039362685ff5e2fe08427cf40239856db1eb13c73d341ad407f7791d12f5a01f8c1
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-tokyo-night@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-tokyo-night@npm:4.21.19"
+"@uiw/codemirror-theme-tokyo-night@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-tokyo-night@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: e563fafbf54b49cbad8f4b66b7dbda2fe0de463f953a3b4247219ba70d973f2df7f99fdccda4dabf618a93ea8a74e5a4dc222066c268324b62d8adab1cfe23c2
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 654dcb0e10b1648b450b83dd96735c5f8e8e39e9bd585482eca490b45114c60a424565af75723a55260665965448c862ef04d420b950f6aa784dbe2e57eeff54
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-tomorrow-night-blue@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-tomorrow-night-blue@npm:4.21.19"
+"@uiw/codemirror-theme-tomorrow-night-blue@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-tomorrow-night-blue@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 2c2e6a97a4513225334bfe3fb84292526346eda1304109e951ba4fd65f9ab42982d24456fbaf13516a3041d2a08e49deca49cacce6ef36cd7dc9cedc92adaa0e
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 3c75571ad637c719864dff0c5d84ef326b9da81c62bea83744e432a2c0388ed117f77242008d046180cb435e8481ed4ad29a6858b1a628fc1a7be54d069bc2bb
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-vscode@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-vscode@npm:4.21.19"
+"@uiw/codemirror-theme-vscode@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-vscode@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: b8471456299003648d14aea366e66e1e47154d0f01a462ffb3bf1cd111d9c14e2fadb8a2052a91077be857204f2478b6cfb4f4dfad414865ec2ae53e169b1677
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: b880bc997b8564ed8b3363abd18ebfee3b46140c389afd7e324090a5540566df8dd7ce4b645abac6ce85f51053120b0ea2c91ebe818d8e8a9177a8ba4a835e60
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-white@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-white@npm:4.21.19"
+"@uiw/codemirror-theme-white@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-white@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: b36edb77e3d50c4dd2c5623102d21a7629da5a2d2209370db25a7c3596e26c51d43256f22cf8995d9a98c8b462b019dc03cf73bd0ad322c0841e56af407506fb
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 75845e0828dc96c8144cd7ad8fc9de730c9f24579a9050b316e6b85e0be82d4fa42755afded42246b26d71fbe285ff0fe7ca8373ba25e5de9b63241b9a198df6
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-theme-xcode@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-theme-xcode@npm:4.21.19"
+"@uiw/codemirror-theme-xcode@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-theme-xcode@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 377bacac99c04bec511979eb0246708a1e1c6b60c44b4c04444c0744186972c865fff9bbad6b9cde351bd8ee6882e4356926ca4c6aa27b30b65ff0491f1402d6
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 8c3ef5b2505fdcb4ee6e7a171578645b459cd7a8b5652d10a0d9c9418a8fed9d6dff9edbf2f69f3b7c4cb2841259cf91109fbbe25bf73489e76676029aae442f
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-themes-all@npm:^4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-themes-all@npm:4.21.19"
+"@uiw/codemirror-themes-all@npm:^4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-themes-all@npm:4.21.20"
   dependencies:
-    "@uiw/codemirror-theme-abcdef": 4.21.19
-    "@uiw/codemirror-theme-abyss": 4.21.19
-    "@uiw/codemirror-theme-androidstudio": 4.21.19
-    "@uiw/codemirror-theme-andromeda": 4.21.19
-    "@uiw/codemirror-theme-atomone": 4.21.19
-    "@uiw/codemirror-theme-aura": 4.21.19
-    "@uiw/codemirror-theme-basic": 4.21.19
-    "@uiw/codemirror-theme-bbedit": 4.21.19
-    "@uiw/codemirror-theme-bespin": 4.21.19
-    "@uiw/codemirror-theme-copilot": 4.21.19
-    "@uiw/codemirror-theme-darcula": 4.21.19
-    "@uiw/codemirror-theme-dracula": 4.21.19
-    "@uiw/codemirror-theme-duotone": 4.21.19
-    "@uiw/codemirror-theme-eclipse": 4.21.19
-    "@uiw/codemirror-theme-github": 4.21.19
-    "@uiw/codemirror-theme-gruvbox-dark": 4.21.19
-    "@uiw/codemirror-theme-kimbie": 4.21.19
-    "@uiw/codemirror-theme-material": 4.21.19
-    "@uiw/codemirror-theme-monokai": 4.21.19
-    "@uiw/codemirror-theme-monokai-dimmed": 4.21.19
-    "@uiw/codemirror-theme-noctis-lilac": 4.21.19
-    "@uiw/codemirror-theme-nord": 4.21.19
-    "@uiw/codemirror-theme-okaidia": 4.21.19
-    "@uiw/codemirror-theme-quietlight": 4.21.19
-    "@uiw/codemirror-theme-red": 4.21.19
-    "@uiw/codemirror-theme-solarized": 4.21.19
-    "@uiw/codemirror-theme-sublime": 4.21.19
-    "@uiw/codemirror-theme-tokyo-night": 4.21.19
-    "@uiw/codemirror-theme-tokyo-night-day": 4.21.19
-    "@uiw/codemirror-theme-tokyo-night-storm": 4.21.19
-    "@uiw/codemirror-theme-tomorrow-night-blue": 4.21.19
-    "@uiw/codemirror-theme-vscode": 4.21.19
-    "@uiw/codemirror-theme-white": 4.21.19
-    "@uiw/codemirror-theme-xcode": 4.21.19
-    "@uiw/codemirror-themes": 4.21.19
-  checksum: 875397f4c6dced9b451dc17527b5fbc063e147d2b53f2619efd903b1d9ff8a7d09affe0a6bc87b00e39b58ca22cb138ef1be9aa1230ba528c1b5079fb6159aff
+    "@uiw/codemirror-theme-abcdef": 4.21.20
+    "@uiw/codemirror-theme-abyss": 4.21.20
+    "@uiw/codemirror-theme-androidstudio": 4.21.20
+    "@uiw/codemirror-theme-andromeda": 4.21.20
+    "@uiw/codemirror-theme-atomone": 4.21.20
+    "@uiw/codemirror-theme-aura": 4.21.20
+    "@uiw/codemirror-theme-basic": 4.21.20
+    "@uiw/codemirror-theme-bbedit": 4.21.20
+    "@uiw/codemirror-theme-bespin": 4.21.20
+    "@uiw/codemirror-theme-copilot": 4.21.20
+    "@uiw/codemirror-theme-darcula": 4.21.20
+    "@uiw/codemirror-theme-dracula": 4.21.20
+    "@uiw/codemirror-theme-duotone": 4.21.20
+    "@uiw/codemirror-theme-eclipse": 4.21.20
+    "@uiw/codemirror-theme-github": 4.21.20
+    "@uiw/codemirror-theme-gruvbox-dark": 4.21.20
+    "@uiw/codemirror-theme-kimbie": 4.21.20
+    "@uiw/codemirror-theme-material": 4.21.20
+    "@uiw/codemirror-theme-monokai": 4.21.20
+    "@uiw/codemirror-theme-monokai-dimmed": 4.21.20
+    "@uiw/codemirror-theme-noctis-lilac": 4.21.20
+    "@uiw/codemirror-theme-nord": 4.21.20
+    "@uiw/codemirror-theme-okaidia": 4.21.20
+    "@uiw/codemirror-theme-quietlight": 4.21.20
+    "@uiw/codemirror-theme-red": 4.21.20
+    "@uiw/codemirror-theme-solarized": 4.21.20
+    "@uiw/codemirror-theme-sublime": 4.21.20
+    "@uiw/codemirror-theme-tokyo-night": 4.21.20
+    "@uiw/codemirror-theme-tokyo-night-day": 4.21.20
+    "@uiw/codemirror-theme-tokyo-night-storm": 4.21.20
+    "@uiw/codemirror-theme-tomorrow-night-blue": 4.21.20
+    "@uiw/codemirror-theme-vscode": 4.21.20
+    "@uiw/codemirror-theme-white": 4.21.20
+    "@uiw/codemirror-theme-xcode": 4.21.20
+    "@uiw/codemirror-themes": 4.21.20
+  checksum: 923309e44df5fdefb758738ca9e0f276acdca4bdb9aece2f0e25da03eccc9e3c30dc167517bfcb0b23260077d3307c9ce364179b599437040800c56faf3e6907
   languageName: node
   linkType: hard
 
-"@uiw/codemirror-themes@npm:4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/codemirror-themes@npm:4.21.19"
+"@uiw/codemirror-themes@npm:4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/codemirror-themes@npm:4.21.20"
   dependencies:
     "@codemirror/language": ^6.0.0
     "@codemirror/state": ^6.0.0
@@ -5796,19 +5835,19 @@ __metadata:
     "@codemirror/language": ">=6.0.0"
     "@codemirror/state": ">=6.0.0"
     "@codemirror/view": ">=6.0.0"
-  checksum: 4b5f8823c80585392da26e5c49e870da31498a89c959254e9cf9307ff1d9f3819d67cb03e0eee6bac94d955dbecbfb4673297a4e11c96ba88319537ddbebe067
+  checksum: 883fe8810daa2cf13e2f0b3812ac7653b2df0a91df74564fbe19d09eeb535ff2a5a9e5a9477168e2fef1aef8a993099fce6c1862e8d181778e2f76e3576f16af
   languageName: node
   linkType: hard
 
-"@uiw/react-codemirror@npm:^4.21.19":
-  version: 4.21.19
-  resolution: "@uiw/react-codemirror@npm:4.21.19"
+"@uiw/react-codemirror@npm:^4.21.20":
+  version: 4.21.20
+  resolution: "@uiw/react-codemirror@npm:4.21.20"
   dependencies:
     "@babel/runtime": ^7.18.6
     "@codemirror/commands": ^6.1.0
     "@codemirror/state": ^6.1.1
     "@codemirror/theme-one-dark": ^6.0.0
-    "@uiw/codemirror-extensions-basic-setup": 4.21.19
+    "@uiw/codemirror-extensions-basic-setup": 4.21.20
     codemirror: ^6.0.0
   peerDependencies:
     "@babel/runtime": ">=7.11.0"
@@ -5818,7 +5857,7 @@ __metadata:
     codemirror: ">=6.0.0"
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: bcd016ac806ff34ab3ab16e17090c80c0ed7f835835575c7a15b21238cae9169662444323cbbc8ef2a62c5e8fd7d8b668fd3562cf79b509ededaf7cd4970adf0
+  checksum: 63ea348a922c535ff91c8bff1c1dac40ced0227d1c17139142dbc28017bb254cc32428a15686660ec4f4cd6935c574d627b6a4872910357af51da8e90faaf4da
   languageName: node
   linkType: hard
 
@@ -7354,7 +7393,7 @@ __metadata:
     "@types/jest": ^29.5.5
     "@types/lodash": ^4.14.199
     "@types/min-document": ^2.19.0
-    "@types/node": ^20.8.4
+    "@types/node": ^20.8.5
     "@types/plantuml-encoder": ^1.4.0
     "@types/react": ^18.2.28
     "@types/react-dom": ^18.2.13
@@ -7368,9 +7407,9 @@ __metadata:
     "@types/webpack-env": ^1.18.2
     "@typescript-eslint/eslint-plugin": ^6.7.5
     "@typescript-eslint/parser": ^6.7.5
-    "@uiw/codemirror-extensions-langs": ^4.21.19
-    "@uiw/codemirror-themes-all": ^4.21.19
-    "@uiw/react-codemirror": ^4.21.19
+    "@uiw/codemirror-extensions-langs": ^4.21.20
+    "@uiw/codemirror-themes-all": ^4.21.20
+    "@uiw/react-codemirror": ^4.21.20
     babel-loader: ^9.1.3
     babel-plugin-dev-expression: ^0.2.3
     babel-plugin-transform-react-remove-prop-types: ^0.4.24
@@ -7499,14 +7538,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-lang-mermaid@npm:^0.2.1":
-  version: 0.2.2
-  resolution: "codemirror-lang-mermaid@npm:0.2.2"
+"codemirror-lang-mermaid@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "codemirror-lang-mermaid@npm:0.5.0"
   dependencies:
-    "@codemirror/language": ^6.0.0
-    "@lezer/highlight": ^1.0.0
-    "@lezer/lr": ^1.0.0
-  checksum: d73e0ff9ac04ec1a795bba0ff14351e05e924950ed909d640d7290d09e56cd851e778d964479bd654a3d19a200174afa05aff66175a1f8e16b0a50d0e29c1f3c
+    "@codemirror/language": ^6.9.0
+    "@lezer/highlight": ^1.1.6
+    "@lezer/lr": ^1.3.10
+  checksum: 4b94f7139c56671853de50005150fb8026c93c996f99f6f78c2eae745da82074f8415c7d87ecf9b44efc06df1068e00ff7f07d7ed52b7284eaa6e6940778827a
   languageName: node
   linkType: hard
 
