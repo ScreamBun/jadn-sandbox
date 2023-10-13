@@ -7453,7 +7453,7 @@ __metadata:
     plantuml-encoder: ^1.4.0
     prettier: ^3.0.3
     react: ^18.2.0
-    react-bootswatch-theme-switcher: "https://git@github.com/screambun/react-bootswatch-theme-switcher.git"
+    react-bootswatch-theme-switcher: "https://git@github.com/screambun/react-bootswatch-theme-switcher.git#commit=c52c163e193bda603e560d4ea25950cf9b87f63e"
     react-dnd: ^16.0.1
     react-dnd-html5-backend: ^16.0.1
     react-dom: ^18.2.0
@@ -13607,9 +13607,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-bootswatch-theme-switcher@https://git@github.com/screambun/react-bootswatch-theme-switcher.git":
+"react-bootswatch-theme-switcher@https://git@github.com/screambun/react-bootswatch-theme-switcher.git#commit=c52c163e193bda603e560d4ea25950cf9b87f63e":
   version: 1.2.0
-  resolution: "react-bootswatch-theme-switcher@https://git@github.com/screambun/react-bootswatch-theme-switcher.git#commit=144717cfbc695138a0e858a6a2782f6bd3dc34e5"
+  resolution: "react-bootswatch-theme-switcher@https://git@github.com/screambun/react-bootswatch-theme-switcher.git#commit=c52c163e193bda603e560d4ea25950cf9b87f63e"
   dependencies:
     "@babel/runtime": ^7.18.3
     axios: ^0.27.2
@@ -13617,7 +13617,7 @@ __metadata:
     react: ">=17.0.2"
     react-dom: ">=17.0.2"
     reactstrap: ">=8.10.0"
-  checksum: 1df4e6b12892fd93d8e6af4d241c6df6764d98870a1af2a8c1afd80dc3e52d7df317ad9b0399888de2f0c5e050e2f225aba241937b50067874e541ba8b2f2c9a
+  checksum: 1330024b9e31670a9429de25c683dc52f6f8762065ca1c7bca8fc7f3ec5cec2317d4fcf4e9fefdc7ec173220d08ae4cfbd69e7f11da0a1a0399716ae4518d1df
   languageName: node
   linkType: hard
 
