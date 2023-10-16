@@ -231,74 +231,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         return jsonObj;
     }
 
-    let infoKeys;
-    if (generatedSchema.info) {
-        const unusedInfoKeys = Object.keys(Info).filter(k =>
-            !(Object.keys(generatedSchema.info).includes(k)));
-
-        const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
-
-        infoKeys = Object.keys(unusedInfo).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
-        ));
-    } else {
-        infoKeys = Object.keys(Info).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
-        ));
-    }
-
-    const typesKeys = Object.keys(Types).map(k => (
-        <DraggableKey item={Types[k].key} acceptableType={'TypesKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
-    ));
-
-    const get_type_name = (types_to_serach: any[], name: string) => {
-        let return_name = name;
-        let match_count = 0;
-        let dups: any[] = [];
-        types_to_serach.map((type) => {
-
-            // orig name matches
-            if (name == type[0]) {
-                match_count = match_count + 1;
-            } else {
-                // dup matches
-                var lastIndex = type[0].lastIndexOf('-');
-
-                if (lastIndex) {
-
-                    let dup_name = type[0].substr(0, lastIndex);
-
-                    if (name == dup_name) {
-
-                        let dup_num = type[0].substr(lastIndex).substring(1);
-
-                        if (dup_num && !isNaN(dup_num)) {
-
-                            dups.push(dup_num);
-                            match_count = match_count + 1;
-
-                        }
-                    }
-                }
-            }
-
-        });
-
-        if (match_count > 0) {
-
-            if (dups.length == 0) {
-                return_name = return_name + "-" + (dups.length + 1);
-            } else {
-                dups.sort(function (a, b) { return b - a });  // TODO: Move to utils
-                let next_num = parseInt(dups[0]) + 1;
-                return_name = return_name + "-" + next_num;
-            }
-
-        }
-
-        return return_name;
-    }
-
     const onSchemaDrop = (item: Item) => {
         let key = item.text;
         if (Object.keys(Info).includes(key)) {
@@ -353,6 +285,129 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
         }
     }
+
+    const onOutlineDrop = (updatedCards: DragItem[]) => {
+        const updatedTypes = updatedCards.map(item => item.value);
+        setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
+        setCardsState(updatedCards);
+    };
+
+    const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
+        e.preventDefault();
+        const element = document.getElementById(text);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    const onStarClick = (updatedCards: DragItem[]) => {
+        setCardsState(updatedCards);
+    }
+
+    const onTypesToOutlineDrop = (item: any) => {
+        let key = item.text;
+        let insertAt = item.index;
+        const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
+        const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
+        const tmpDef = Types[key].edit({ name: type_name });
+
+        let updatedTypes = [
+            ...tmpTypes.slice(0, insertAt),
+            tmpDef,
+            ...tmpTypes.slice(insertAt)
+        ];
+
+        const new_card = {
+            id: self.crypto.randomUUID(),
+            index: insertAt,
+            text: type_name,
+            value: tmpDef,
+            isStarred: false
+        }
+
+        let updatedCards = [
+            ...cardsState.slice(0, insertAt),
+            new_card,
+            ...cardsState.slice(insertAt)
+        ];
+
+        flushSync(() => {
+            setGeneratedSchema((prev: any) => ({ ...prev, ['types']: updatedTypes }));
+            setCardsState(updatedCards);
+        });
+
+        setIsValidating(false);
+    }
+
+    const get_type_name = (types_to_serach: any[], name: string) => {
+        let return_name = name;
+        let match_count = 0;
+        let dups: any[] = [];
+        types_to_serach.map((type) => {
+
+            // orig name matches
+            if (name == type[0]) {
+                match_count = match_count + 1;
+            } else {
+                // dup matches
+                var lastIndex = type[0].lastIndexOf('-');
+
+                if (lastIndex) {
+
+                    let dup_name = type[0].substr(0, lastIndex);
+
+                    if (name == dup_name) {
+
+                        let dup_num = type[0].substr(lastIndex).substring(1);
+
+                        if (dup_num && !isNaN(dup_num)) {
+
+                            dups.push(dup_num);
+                            match_count = match_count + 1;
+
+                        }
+                    }
+                }
+            }
+
+        });
+
+        if (match_count > 0) {
+
+            if (dups.length == 0) {
+                return_name = return_name + "-" + (dups.length + 1);
+            } else {
+                dups.sort(function (a, b) { return b - a });  // TODO: Move to utils
+                let next_num = parseInt(dups[0]) + 1;
+                return_name = return_name + "-" + next_num;
+            }
+
+        }
+
+        return return_name;
+    }
+
+    let infoKeys;
+    if (generatedSchema.info) {
+        const unusedInfoKeys = Object.keys(Info).filter(k =>
+            !(Object.keys(generatedSchema.info).includes(k)));
+
+        const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
+
+        infoKeys = Object.keys(unusedInfo).map(k => (
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+        ));
+    } else {
+        infoKeys = Object.keys(Info).map(k => (
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+        ));
+    }
+
+    const typesKeys = Object.keys(Types).map(k => (
+        <DraggableKey item={Types[k].key} acceptableType={'TypesKeys'} key={uuid4()} id={uuid4()} index={-1} text={k}
+            isDraggable={selectedFile?.value == 'file' ? false : true} onTypesDrop={onTypesToOutlineDrop}
+        />
+    ));
 
     const infoEditors = Object.keys(Info).map((k, i) => {
         const key = k as keyof typeof Info;
@@ -410,6 +465,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     });
 
     const typesEditors = (generatedSchema.types || []).map((def: StandardTypeArray, i: any) => {
+        console.log(def)
         let type = def[1].toLowerCase() as keyof typeof Types;
 
         //CHECK FOR VALID TYPE
@@ -461,59 +517,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             config: configOpt
         }))
     }).filter(Boolean);
-
-    const onTypesToOutlineDrop = (item: Item) => {
-        let key = item.text;
-        let insertAt = item.index;
-        const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-        const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
-        const tmpDef = Types[key].edit({ name: type_name });
-
-        let updatedTypes = [
-            ...tmpTypes.slice(0, insertAt),
-            tmpDef,
-            ...tmpTypes.slice(insertAt)
-        ];
-
-        const new_card = {
-            id: self.crypto.randomUUID(),
-            index: insertAt,
-            text: type_name,
-            value: tmpDef,
-            isStarred: false
-        }
-
-        let updatedCards = [
-            ...cardsState.slice(0, insertAt),
-            new_card,
-            ...cardsState.slice(insertAt)
-        ];
-
-        flushSync(() => {
-            setGeneratedSchema((prev: any) => ({ ...prev, ['types']: updatedTypes }));
-            setCardsState(updatedCards);
-        });
-
-        setIsValidating(false);
-    }
-
-    const onOutlineDrop = (updatedCards: DragItem[]) => {
-        const updatedTypes = updatedCards.map(item => item.value);
-        setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
-        setCardsState(updatedCards);
-    };
-
-    const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
-        e.preventDefault();
-        const element = document.getElementById(text);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
-
-    const onStarClick = (updatedCards: DragItem[]) => {
-        setCardsState(updatedCards);
-    }
 
     return (
         <div className='card'>
@@ -615,7 +618,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                             id={'schema-outline'}
                                             cards={cardsState}
                                             title={'Outline'}
-                                            onTypesDrop={onTypesToOutlineDrop}
+                                            //onTypesDrop={onTypesToOutlineDrop}
                                             onDrop={onOutlineDrop}
                                             onClick={onOutlineClick}
                                             onStarToggle={onStarClick}

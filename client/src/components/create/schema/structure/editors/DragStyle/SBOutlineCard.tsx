@@ -13,7 +13,7 @@ const style = {
   cursor: 'move',
 }
 
-const ItemTypes = {
+export const ItemTypes = {
   CARD: 'card',
 }
 

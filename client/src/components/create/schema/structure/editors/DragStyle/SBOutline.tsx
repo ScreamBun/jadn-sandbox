@@ -4,7 +4,7 @@ import { Unsubscribe } from 'redux';
 import update from 'immutability-helper'
 import { useDragDropManager, useDrop } from 'react-dnd';
 import { TypeArray } from '../../../interface';
-import { SBOutlineCard } from "./SBOutlineCard";
+import { ItemTypes, SBOutlineCard } from "./SBOutlineCard";
 
 export interface DragItem {
   id: any;
@@ -23,7 +23,6 @@ export interface SBOutlineProps {
   title: string;
   cards: any[];
   onDrop: (arg: DragItem[]) => void;
-  onTypesDrop: (arg: DragItem) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
   onStarToggle: (updatedCards: DragItem[]) => void;
 }
@@ -32,7 +31,6 @@ const SBOutline = (props: SBOutlineProps) => {
   const { id = 'sb-outline',
     title,
     onDrop,
-    onTypesDrop,
     onClick,
     onStarToggle,
     cards = [] } = props;
@@ -55,11 +53,9 @@ const SBOutline = (props: SBOutlineProps) => {
   const unsubscribeRef = useRef<Unsubscribe>();
 
   const [{ handlerId, isOver, canDrop }, drop] = useDrop(() => ({
-    accept: ['TypesKeys'],
+    accept: [ItemTypes.CARD, 'TypesKeys'],
     drop: (item: DragItem, _monitor) => {
-      console.log(item)
-      onTypesDrop(item);
-      return item;
+      return { item, location: 'outline' };
     },
     collect: (monitor) => ({
       handlerId: monitor.getHandlerId(),
@@ -67,7 +63,7 @@ const SBOutline = (props: SBOutlineProps) => {
       isOver: monitor.isOver(),
     }),
   }),
-    [onTypesDrop],
+    [],
   )
 
   const setScrollIntervall = (speed: number, container: HTMLElement) => {
