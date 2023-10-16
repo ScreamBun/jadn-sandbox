@@ -102,7 +102,11 @@ class Validator:
                     for error in err.errors():
                         err_msg = getValidationErrorMsg(error)
                         err_path = getValidationErrorPath(error)
-                        errorMsgs.append(err_msg + " at " +  err_path)
+
+                        path = [i for i in err_path.split('/') if i != '__root__'] 
+                        new_path = '/'.join(path)
+                        
+                        errorMsgs.append(err_msg + " at " +  new_path)
                     return False, errorMsgs, "", msg
                 else:
                     return False, err, "", msg
