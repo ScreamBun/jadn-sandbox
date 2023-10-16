@@ -138,7 +138,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
         <div className='row'>
           <div className='col-10'>
             <span onClick={onToggleStar}>
-              <FontAwesomeIcon icon={toggleStar ? faStar : farStar} />
+              <FontAwesomeIcon className='mr-1' icon={toggleStar ? faStar : farStar} />
             </span>
             <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
           </div>
