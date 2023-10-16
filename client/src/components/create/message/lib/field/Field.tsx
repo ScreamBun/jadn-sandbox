@@ -8,7 +8,7 @@ import {
 } from '../../../schema/interface';
 import { useAppSelector } from '../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { hasProperty } from 'react-json-editor/dist/utils';
+import { hasProperty } from 'components/utils';
 import LinkField from './types/linkField';
 
 // Interfaces
