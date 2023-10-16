@@ -17,7 +17,7 @@ import SBDownloadPDF from "./SBDownloadPDF";
 //allow user to download or copy to clipboard
 const SBCollapseViewer = (props: any) => {
     const { data, pumlURL, setPumlURL, loadedSchema } = props;
-    const [toggle, setToggle] = useState({});
+    const [toggle, setToggle] = useState<{ [key: number]: boolean }>({});
 
     useEffect(() => {
         for (const obj of data) {

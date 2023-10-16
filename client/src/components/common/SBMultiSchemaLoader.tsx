@@ -37,7 +37,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     const sbFileUploaderRef = useRef<HTMLInputElement | null>(null);
 
     const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
-    const [toggle, setToggle] = useState({});
+    const [toggle, setToggle] = useState<{ [key: number]: boolean }>({});
 
     // Used by SBSelector, preloads with schemas selections
     const schemaOpts = useSelector(getAllSchemas);
@@ -49,7 +49,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     // Allows parent to call child function
     useImperativeHandle(ref, () => ({
         onReset() {
-            setToggle('');
+            setToggle({});
             setSelectedFile(null);
             setSelectedOptions([]);
         },
@@ -182,7 +182,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     })
 
     return (
-        <div className="card">
+        <div className="card resizeable-card">
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-md-6">

@@ -31,7 +31,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
 
     const transformationOpts = useSelector(getValidTransformations);
 
-    const [toggle, setToggle] = useState({});
+    const [toggle, setToggle] = useState<{ [key: number]: boolean }>({});
     const [isTransformDisabled, setIsTransformDisabled] = useState(true);
     const [baseFile, setBaseFile] = useState<Option | null>();
     const [transformationType, setTransformationType] = useState<Option | null>();
@@ -133,7 +133,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     }
 
     return (
-        <div className="card">
+        <div className="card resizeable-card">
             <div className="card-header p-2">
                 <Form onSubmit={submitForm}>
                     <div className='row no-gutters'>

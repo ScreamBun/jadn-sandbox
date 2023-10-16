@@ -15,9 +15,9 @@ const SchemaTransformer = () => {
     const dispatch = useDispatch();
 
     const schemaTransformedRef = useRef();
-    const sbMultiSchemaLoaderRef = useRef(); 
+    const sbMultiSchemaLoaderRef = useRef();
 
-    const [selectedSchemas, setSelectedSchemas] = useState<SelectedSchema[]>([]);     
+    const [selectedSchemas, setSelectedSchemas] = useState<SelectedSchema[]>([]);
     const prevSelectedSchemasRef = useRef<SelectedSchema[]>([]);  // Used to reload schema data that's not on the server
     const [isLoading, setIsLoading] = useState(false);
 
@@ -36,24 +36,24 @@ const SchemaTransformer = () => {
          * So, prevCountRef.current in the return statement displays the
          * last value in the ref at the time of render i.e., the previous state value.
          */
-        if(selectedSchemas.length > 0){
+        if (selectedSchemas.length > 0) {
             prevSelectedSchemasRef.current = [...selectedSchemas];
         }
-        
-      }, [selectedSchemas]);
+
+    }, [selectedSchemas]);
 
     const onReset = () => {
         setSelectedSchemas([]);
         schemaTransformedRef.current?.onReset();
         sbMultiSchemaLoaderRef.current?.onReset();
-    }     
+    }
 
     const onSelectedSchemaAdd = (new_schema: SelectedSchema) => {
         console.log("SchemaTransformater onSelectedSchemaAdd: " + new_schema.name);
-        setSelectedSchemas([ 
-              ...selectedSchemas, 
-              new_schema
-            ]);        
+        setSelectedSchemas([
+            ...selectedSchemas,
+            new_schema
+        ]);
     }
 
     const onSelectedSchemaReplaceAll = (new_schemas: SelectedSchema[]) => {
@@ -61,31 +61,32 @@ const SchemaTransformer = () => {
 
         // Check for empty data caused by uploaded schemas not saved on the server
         new_schemas?.map((schema: SelectedSchema) => {
-            if(!schema.data){
+            if (!schema.data) {
                 prevSelectedSchemasRef.current.map((prev_schema: SelectedSchema) => {
-                    if(schema.name == prev_schema.name){
-                        schema.data = prev_schema.data;                    }
+                    if (schema.name == prev_schema.name) {
+                        schema.data = prev_schema.data;
+                    }
                 });
             }
         });
 
         setSelectedSchemas([...new_schemas]);  // Completely replace...     
-    }    
+    }
 
     // Pass in '' to clear all schemas
     const onSelectedSchemaRemove = (schema_to_remove: string) => {
         console.log("SchemaTransformation onSelectedSchemaRemove: " + schema_to_remove);
-        if(schema_to_remove){
-            setSelectedSchemas(selectedSchemas.filter((schema) => schema.name !== schema_to_remove));     
+        if (schema_to_remove) {
+            setSelectedSchemas(selectedSchemas.filter((schema) => schema.name !== schema_to_remove));
         } else {
             setSelectedSchemas([]);
         }
     }
-    
+
     const onLoading = (isLoading: boolean) => {
         console.log("SchemaTransformation onLoading: " + onLoading);
         setIsLoading(isLoading);
-    }          
+    }
 
     return (
         <div>
@@ -93,36 +94,32 @@ const SchemaTransformer = () => {
                 <title>{meta_title}</title>
                 <link rel="canonical" href={meta_canonical} />
             </Helmet>
-            <div className='row'>
-                <div className='col-md-12'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Transformation</span></h5>
-                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
+            <div className='card'>
+                <div className='card-header p-2'>
+                    <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Transformation</span></h5>
+                    <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                </div>
+                <div className='card-body p-2'>
+                    <div className='row'>
+                        <div className='col'>
+                            <SBMultiSchemaLoader
+                                ref={sbMultiSchemaLoaderRef}
+                                isLoading={isLoading}
+                                onLoading={onLoading}
+                                selectedSchemas={selectedSchemas}
+                                onSelectedSchemaAdd={onSelectedSchemaAdd}
+                                onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
+                                onSelectedSchemaRemove={onSelectedSchemaRemove}
+                            />
                         </div>
-                        <div className='card-body p-2'>
-                            <div className='row'>
-                                <div className='col-md-6 pr-1'>
-                                    <SBMultiSchemaLoader 
-                                        ref={sbMultiSchemaLoaderRef}
-                                        isLoading={isLoading}
-                                        onLoading={onLoading}
-                                        selectedSchemas={selectedSchemas}
-                                        onSelectedSchemaAdd={onSelectedSchemaAdd}
-                                        onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
-                                        onSelectedSchemaRemove={onSelectedSchemaRemove} 
-                                    />
-                                </div>
-                                <div className='col-md-6 pl-1'>
-                                    <SchemaTransformed
-                                        ref={schemaTransformedRef}
-                                        isLoading={isLoading}
-                                        selectedSchemas={selectedSchemas}
-                                        onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
-                                        onLoading={onLoading}
-                                    />
-                                </div>
-                            </div>
+                        <div className='col'>
+                            <SchemaTransformed
+                                ref={schemaTransformedRef}
+                                isLoading={isLoading}
+                                selectedSchemas={selectedSchemas}
+                                onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
+                                onLoading={onLoading}
+                            />
                         </div>
                     </div>
                 </div>

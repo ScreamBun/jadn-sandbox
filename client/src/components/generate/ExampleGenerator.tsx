@@ -17,7 +17,7 @@ const ExampleGenerator = () => {
     const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [loadedSchema, setLoadedSchema] = useState<String>('');
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
-    const [numOfMsg, setNumOfMsg] = useState<number | String>('');
+    const [numOfMsg, setNumOfMsg] = useState<number>(1);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -37,7 +37,7 @@ const ExampleGenerator = () => {
         setIsLoading(false);
         setSelectedFile(null);
         setLoadedSchema('');
-        setNumOfMsg('');
+        setNumOfMsg(1);
         setGeneratedMessages([]);
         dispatch(setSchema(''));
     }
@@ -84,7 +84,7 @@ const ExampleGenerator = () => {
                 let i = 0;
 
                 while (i < numOfMsg) {
-                    let ex = JSONSchemaFaker.generate(schema);
+                    let ex: any = JSONSchemaFaker.generate(schema);
                     if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
                         for (const [k, v] of Object.entries(ex)) {
                             if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
@@ -138,31 +138,27 @@ const ExampleGenerator = () => {
                 <title>{meta_title}</title>
                 <link rel="canonical" href={meta_canonical} />
             </Helmet>
-            <div className='row'>
-                <div className='col-md-12'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Generation</span></h5>
-                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
+            <div className='card'>
+                <div className='card-header p-2'>
+                    <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Generation</span></h5>
+                    <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                </div>
+                <div className='card-body p-2'>
+                    <Form onSubmit={submitForm}>
+                        <div className='row'>
+                            <div className='col'>
+                                <JADNSchemaLoader
+                                    selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                    loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                            </div>
+                            <div className='col'>
+                                <ExampleCreator
+                                    generatedMessages={generatedMessages} isLoading={isLoading}
+                                    numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg}
+                                />
+                            </div>
                         </div>
-                        <div className='card-body p-2'>
-                            <Form onSubmit={submitForm}>
-                                <div className='row'>
-                                    <div className='col-md-6 pr-1'>
-                                        <JADNSchemaLoader
-                                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                                    </div>
-                                    <div className='col-md-6 pl-1'>
-                                        <ExampleCreator
-                                            generatedMessages={generatedMessages} isLoading={isLoading}
-                                            numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg}
-                                        />
-                                    </div>
-                                </div>
-                            </Form>
-                        </div>
-                    </div>
+                    </Form>
                 </div>
             </div>
         </div>

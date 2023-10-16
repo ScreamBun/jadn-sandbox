@@ -205,7 +205,7 @@ const JADNSchemaLoader = (props: any) => {
             setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
-            
+
             const filename_only = getFilenameOnly(file.name);
             setFileName(filename_only);
 
@@ -228,10 +228,12 @@ const JADNSchemaLoader = (props: any) => {
                 }
             };
             fileReader.readAsText(file);
+        } else {
+            onCancelFileUpload(e);
         }
     }
 
-    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         dismissAllToast();
         setIsLoading(false);
@@ -246,7 +248,7 @@ const JADNSchemaLoader = (props: any) => {
     }
 
     return (
-        <div className="card">
+        <div className="card resizeable-card">
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-md-6">

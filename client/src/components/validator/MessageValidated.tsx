@@ -78,7 +78,7 @@ const MessageValidated = (props: any) => {
     }
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
+        if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
 
             const filename_only = getFilenameOnly(file.name);
@@ -107,10 +107,12 @@ const MessageValidated = (props: any) => {
             };
             fileReader.readAsText(file);
             // sbToastError(`Schema cannot be loaded. Please upload a message file.`);
+        } else {
+            onCancelFileUpload(e);
         }
     }
 
-    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setSelectedFile('');
         setFileName('');
@@ -123,45 +125,49 @@ const MessageValidated = (props: any) => {
     }
 
     return (
-        <div className="card">
+        <div className="card resizeable-card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className={`${selectedFile?.value != 'file' ? 'col-md-3' : ' col-md-6'}`}>
-                        <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
-                            <SBSelect id={"message-list"}
-                                customClass={'mr-1'}
-                                data={msgOpts}
-                                onChange={onFileSelect}
-                                placeholder={'Select a message...'}
-                                loc={'messages'}
-                                value={selectedFile}
-                                isGrouped isFileUploader isSmStyle />
+                    <div className="col-md-9">
+                        <div className="row no-gutters">
+                            <div className='col'>
+                                <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
+                                    <SBSelect id={"message-list"}
+                                        customClass={'mr-1'}
+                                        data={msgOpts}
+                                        onChange={onFileSelect}
+                                        placeholder={'Select a message...'}
+                                        loc={'messages'}
+                                        value={selectedFile}
+                                        isGrouped isFileUploader isSmStyle />
+                                </div>
+                                <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                                    <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
+                                </div>
+                            </div>
+
+                            <div className='col'>
+                                <SBSelect id={"message-format-list"}
+                                    customClass={'mr-1'}
+                                    data={validMsgFormat}
+                                    onChange={(e: Option) => setMsgFormat(e)}
+                                    value={msgFormat}
+                                    placeholder={'Message format...'}
+                                    isSmStyle
+                                />
+                            </div>
+
+                            <div className='col'>
+                                <SBSelect id={"message-decode-list"} data={decodeSchemaTypes.exports} onChange={(e: Option) => setDecodeMsg(e)}
+                                    value={decodeMsg}
+                                    placeholder={'Message type...'}
+                                    isSmStyle
+                                />
+                            </div>
                         </div>
-                        <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
-                        </div>
                     </div>
 
-                    <div className={`col-md-3`}>
-                        <SBSelect id={"message-format-list"}
-                            customClass={'mr-1'}
-                            data={validMsgFormat}
-                            onChange={(e: Option) => setMsgFormat(e)}
-                            value={msgFormat}
-                            placeholder={'Message format...'}
-                            isSmStyle
-                        />
-                    </div>
-
-                    <div className='col-md-3'>
-                        <SBSelect id={"message-decode-list"} data={decodeSchemaTypes.exports} onChange={(e: Option) => setDecodeMsg(e)}
-                            value={decodeMsg}
-                            placeholder={'Message type...'}
-                            isSmStyle
-                        />
-                    </div>
-
-                    <div className='col-md float-end'>
+                    <div className='col-md-3 float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
                         {isLoading ? <SBSpinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm`} disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true} type="submit"

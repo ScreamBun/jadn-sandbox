@@ -11,7 +11,7 @@ import { getSelectedSchema } from 'reducers/util'
 //TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
     const { generatedMessages, isLoading, numOfMsg, setNumOfMsg } = props;
-    const [toggle, setToggle] = useState({});
+    const [toggle, setToggle] = useState<{ [key: number]: boolean }>({});
     const validSchema = useSelector(getSelectedSchema);
 
     const onToggle = (index: number) => {
@@ -44,7 +44,7 @@ const ExampleCreator = (props: any) => {
     ));
 
     return (
-        <div className="card">
+        <div className="card resizeable-card ">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-9'>

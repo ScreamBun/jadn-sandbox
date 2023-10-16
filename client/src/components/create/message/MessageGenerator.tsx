@@ -45,26 +45,22 @@ const MessageGenerator = () => {
                 <title>{meta_title}</title>
                 <link rel="canonical" href={meta_canonical} />
             </Helmet>
-            <div className='row'>
-                <div className='col-md-12'>
-                    <div className='card'>
-                        <div className='card-header p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Creation</span></h5>
-                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
+            <div className='card'>
+                <div className='card-header p-2'>
+                    <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Creation</span></h5>
+                    <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                </div>
+                <div className='card-body p-2'>
+                    <div className='row'>
+                        <div className='col'>
+                            <JADNSchemaLoader
+                                selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                         </div>
-                        <div className='card-body p-2'>
-                            <div className='row'>
-                                <div className='col-md-6 pr-1'>
-                                    <JADNSchemaLoader
-                                        selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                        loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                                </div>
-                                <div className='col-md-6 pl-1'>
-                                    <MessageCreator
-                                        generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                        commandType={commandType} setCommandType={setCommandType} />
-                                </div>
-                            </div>
+                        <div className='col'>
+                            <MessageCreator
+                                generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
+                                commandType={commandType} setCommandType={setCommandType} />
                         </div>
                     </div>
                 </div>
