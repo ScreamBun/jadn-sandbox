@@ -259,6 +259,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
+            var scrollSpyContentEl = document.getElementById(`${key}`)
+            scrollSpyContentEl?.scrollIntoView();
+
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);

@@ -83,38 +83,34 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
 
   return (
     <>
-      <div className="card border-secondary mb-2">
+      <div className="card border-secondary mb-2" id={name.toLowerCase()}>
         <div className="card-header px-2 py-2">
-            <div className='row no-gutters'>
-              <div className='col'>
+          <div className='row no-gutters'>
+            <div className='col'>
               <span>{name} <small style={{ fontSize: '10px' }}> {description} </small></span>
-              </div>
-              <div className='col'>
-                <ButtonGroup size="sm" className="float-right">
-                    <Button color="primary" onClick={addIndex} >
-                      <FontAwesomeIcon icon={faPlusSquare} />
-                    </Button>
-                    <Button color="danger" onClick={removeAll} >
-                      <FontAwesomeIcon icon={faMinusCircle} />
-                    </Button>
-                  </ButtonGroup>
-              </div>
-            </div>     
+            </div>
+            <div className='col'>
+              <ButtonGroup size="sm" className="float-right">
+                <Button color="primary" onClick={addIndex} >
+                  <FontAwesomeIcon icon={faPlusSquare} />
+                </Button>
+                <Button color="danger" onClick={removeAll} >
+                  <FontAwesomeIcon icon={faMinusCircle} />
+                </Button>
+              </ButtonGroup>
+            </div>
           </div>
-          <div className="card-body px-2 py-2">
-              <div className="row m-0">
-                <div className="col-12 m-0">
-                  {indices}
-                </div>
-              </div>
+        </div>
+        <div className="card-body px-2 py-2">
+          <div className="row m-0">
+            <div className="col-12 m-0">
+              {indices}
+            </div>
           </div>
-      </div>     
+        </div>
+      </div>
     </>
   );
 })
-
-KeyArrayEditor.defaultProps = {
-  placeholder: 'KeyArrayEditor'
-};
 
 export default KeyArrayEditor;

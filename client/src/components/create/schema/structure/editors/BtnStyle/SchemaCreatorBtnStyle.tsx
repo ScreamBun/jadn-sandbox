@@ -74,7 +74,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                 }
             }) :
         [defaultInsertIdx];
-    const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         indexOpts = generatedSchema.types ?
@@ -382,7 +381,9 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             });
             setIsValidJADN(false);
             setIsValidating(false);
-            scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+
+            var scrollSpyContentEl = document.getElementById(`${key}`)
+            scrollSpyContentEl?.scrollIntoView();
 
         } else if (Object.keys(Types).includes(key)) {
             let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
@@ -742,7 +743,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                     </div>
                                                     <div className='card-body'>
                                                         {!infoCollapse &&
-                                                            <div ref={scrollToInfoRef}>
+                                                            <div>
                                                                 {generatedSchema.info ?
                                                                     <>{infoEditors}</>
                                                                     :
