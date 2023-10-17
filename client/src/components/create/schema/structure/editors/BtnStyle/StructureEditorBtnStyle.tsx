@@ -15,6 +15,7 @@ import { StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
 import FieldEditorBtnStyle from './FieldEditorBtnStyle';
+import { shallowEqual } from 'react-redux';
 
 // Interface
 interface StructureEditorProps {
@@ -29,7 +30,7 @@ interface StructureEditorProps {
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
     const { value, dataIndex, config, collapseAllFields, change, remove } = props;
-    const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
+    const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
 
     const [fieldCollapse, setFieldCollapse] = useState(false);
     const [modal, setModal] = useState(false);
