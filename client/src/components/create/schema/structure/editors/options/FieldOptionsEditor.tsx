@@ -13,41 +13,36 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
   const { change, deserializedState, id } = props;
 
   const validOptions = () => {
-    return Object.keys(FieldOptionInputArgs).map(key => {
+    return Object.keys(FieldOptionInputArgs).map((key: string) => {
       return (
-          <KeyValueEditor
-            key={key}
-            id={key}
-            name={key}
-            {...FieldOptionInputArgs[key]}
-            placeholder={key}
-            removable={false}
-            change={val => change([key, val], 'field')}
-            value={deserializedState[key]}
-          />
+        <KeyValueEditor
+          key={key}
+          id={key}
+          name={key}
+          {...FieldOptionInputArgs[key]}
+          placeholder={key}
+          removable={false}
+          change={val => change([key, val], 'field')}
+          value={deserializedState[key]}
+        />
       );
     });
   };
 
   return (
-      <>
-        <div className='row'>
-          <div className='col-md-12'>
-            <strong>{id}</strong>
-          </div>
+    <>
+      <div className='row'>
+        <div className='col-md-12'>
+          <strong>{id}</strong>
         </div>
-        <div className='row'>
-          <div className='col-md-12'>
-            {validOptions()}  
-          </div>
+      </div>
+      <div className='row'>
+        <div className='col-md-12'>
+          {validOptions()}
         </div>
-      </>
+      </div>
+    </>
   );
 });
-
-FieldOptionsEditor.defaultProps = {
-  fieldOptions: false,
-  placeholder: 'Set Field Options'
-};
 
 export default FieldOptionsEditor;

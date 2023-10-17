@@ -46,7 +46,7 @@ const serializeOptions = (type: Record<string | number, string | number | boolea
 // Component
 const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
 
-  const { optionValues, saveModal, fieldOptions, isOpen, optionType, toggleModal, modalSize = ModalSize.md } = props;
+  const { optionValues, saveModal, fieldOptions = false, isOpen, optionType = "string", toggleModal, modalSize = ModalSize.md } = props;
   const [data, setData] = useState(deserializeOptions(optionValues));
   const tmpData = { ...deserializeOptions(optionValues) };
 
@@ -136,10 +136,5 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
     </Modal>
   );
 });
-
-OptionsModal.defaultProps = {
-  fieldOptions: false,
-  optionType: ''
-};
 
 export default OptionsModal;
