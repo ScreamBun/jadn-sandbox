@@ -399,6 +399,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             }
 
             if (insertAt.value == "0") {
+                new_card.index = 0;
                 tmpTypes.unshift(tmpDef);
                 tmpCards.unshift(new_card);
 
@@ -408,6 +409,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
             } else {
                 const idx = parseInt(insertAt.value);
+                new_card.index = idx;
+
                 tmpTypes = [
                     ...tmpTypes.slice(0, idx),
                     tmpDef,
@@ -432,7 +435,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
-            var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
+            var scrollSpyContentEl = document.getElementById(`${new_card.index}`)
             scrollSpyContentEl?.scrollIntoView();
 
         } else {
