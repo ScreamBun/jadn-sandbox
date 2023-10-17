@@ -111,6 +111,8 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
         moveCard(item, item.index, item.originalIndex)
       } else {
         dropCard(item);
+        var scrollSpyContentEl = document.getElementById(`${item.index}`)
+        scrollSpyContentEl?.scrollIntoView();
       }
     },
     collect: (monitor: any) => ({

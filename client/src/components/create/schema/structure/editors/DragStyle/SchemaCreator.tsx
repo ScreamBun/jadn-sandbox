@@ -264,10 +264,11 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             tmpTypes.push(tmpDef);
+            const dataIndex = generatedSchema.types?.length || 0;
 
             const new_card = {
                 id: self.crypto.randomUUID(),
-                index: generatedSchema.types?.length || 0,
+                index: dataIndex,
                 text: type_name,
                 value: tmpDef,
                 isStarred: false
@@ -280,6 +281,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
             setIsValidJADN(false);
             setIsValidating(false);
+
+            var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
+            scrollSpyContentEl?.scrollIntoView();
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -329,6 +333,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         });
 
         setIsValidating(false);
+
+        var scrollSpyContentEl = document.getElementById(`${insertAt}`)
+        scrollSpyContentEl?.scrollIntoView();
     }
 
     const get_type_name = (types_to_serach: any[], name: string) => {
