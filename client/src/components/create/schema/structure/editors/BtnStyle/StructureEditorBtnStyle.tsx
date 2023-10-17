@@ -320,7 +320,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
     return (
         <>
-            <div className="card border-secondary mb-3">
+            <div className="card border-secondary mb-3" id={`${dataIndex}`}>
                 <div className="card-header px-2 py-2">
 
                     <div className='row'>

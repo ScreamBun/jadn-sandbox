@@ -389,10 +389,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             let tmpCards = [...cardsState];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
-
+            const dataIndex = generatedSchema.types?.length || 0;
             const new_card = {
                 id: self.crypto.randomUUID(),
-                index: generatedSchema.types?.length || 0,
+                index: dataIndex,
                 text: type_name,
                 value: tmpDef,
                 isStarred: false
@@ -432,18 +432,13 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
+            var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
+            scrollSpyContentEl?.scrollIntoView();
+
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
         }
     }
-
-    const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
-        e.preventDefault();
-        const element = document.getElementById(text);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
 
     const onStarClick = (idx: number) => {
         const updatedCards = cardsState.map((item: DragItem, i: number) => {
@@ -499,6 +494,9 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
         setIsValidJADN(false);
         setIsValidating(false);
+
+        var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
+        scrollSpyContentEl?.scrollIntoView();
     }
 
     const infoEditors = Object.keys(Info).map((k, i) => {
@@ -711,7 +709,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         <SBOutlineBtnStyle id={'schema-outline'}
                                             items={cardsState}
                                             title={'Outline'}
-                                            onClick={onOutlineClick}
                                             changeIndex={changeIndex}
                                             onStarClick={onStarClick}
                                         />

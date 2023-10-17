@@ -613,15 +613,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 </div>
                                 <div className='row'>
                                     <div className='col'>
-                                        <div id="list-example" className="list-group">
-                                            <SBOutline
-                                                id={'schema-outline'}
-                                                cards={cardsState}
-                                                title={'Outline'}
-                                                onDrop={onOutlineDrop}
-                                                onStarToggle={onStarClick}
-                                            ></SBOutline>
-                                        </div>
+                                        <SBOutline
+                                            id={'schema-outline'}
+                                            cards={cardsState}
+                                            title={'Outline'}
+                                            onDrop={onOutlineDrop}
+                                            onStarToggle={onStarClick}
+                                        ></SBOutline>
                                     </div>
                                 </div>
                             </div>
@@ -694,10 +692,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                         {!typesCollapse &&
                                                             <Droppable onDrop={onSchemaDrop} acceptableType={"TypesKeys"} >
                                                                 {generatedSchema.types ?
-                                                                    <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-offset="0" className="scrollspy-example" tabIndex={0}>
-                                                                        {typesEditors}
-                                                                    </div>
-                                                                    :
+                                                                    <>{typesEditors}</> :
                                                                     <><p>To add schema content click and drag items from Types</p></>
                                                                 }
                                                             </Droppable>
