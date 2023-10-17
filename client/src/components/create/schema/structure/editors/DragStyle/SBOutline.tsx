@@ -23,7 +23,6 @@ export interface SBOutlineProps {
   title: string;
   cards: any[];
   onDrop: (arg: DragItem[]) => void;
-  onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
   onStarToggle: (updatedCards: DragItem[]) => void;
 }
 
@@ -31,7 +30,6 @@ const SBOutline = (props: SBOutlineProps) => {
   const { id = 'sb-outline',
     title,
     onDrop,
-    onClick,
     onStarToggle,
     cards = [] } = props;
 
@@ -111,10 +109,6 @@ const SBOutline = (props: SBOutlineProps) => {
     };
   }, [monitor]);
 
-  const onCardClick = useCallback((e: React.MouseEvent<HTMLElement>, text: string) => {
-    onClick(e, text)
-  }, []);
-
   const onStarClick = useCallback((idx: number) => {
     const updatedItems = cardsStateRef.current.map((item, i) => {
       if (i === idx) {
@@ -168,7 +162,6 @@ const SBOutline = (props: SBOutlineProps) => {
           addCard={addCard}
           moveCard={moveCard}
           dropCard={dropCard}
-          onClick={onCardClick}
           handleStarToggle={onStarClick}
         />
       )

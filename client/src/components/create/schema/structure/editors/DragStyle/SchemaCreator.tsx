@@ -292,14 +292,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setCardsState(updatedCards);
     };
 
-    const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
-        e.preventDefault();
-        const element = document.getElementById(text);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
-
     const onStarClick = (updatedCards: DragItem[]) => {
         setCardsState(updatedCards);
     }
@@ -614,15 +606,15 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 </div>
                                 <div className='row'>
                                     <div className='col'>
-                                        <SBOutline
-                                            id={'schema-outline'}
-                                            cards={cardsState}
-                                            title={'Outline'}
-                                            //onTypesDrop={onTypesToOutlineDrop}
-                                            onDrop={onOutlineDrop}
-                                            onClick={onOutlineClick}
-                                            onStarToggle={onStarClick}
-                                        ></SBOutline>
+                                        <div id="list-example" className="list-group">
+                                            <SBOutline
+                                                id={'schema-outline'}
+                                                cards={cardsState}
+                                                title={'Outline'}
+                                                onDrop={onOutlineDrop}
+                                                onStarToggle={onStarClick}
+                                            ></SBOutline>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -695,7 +687,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                         {!typesCollapse &&
                                                             <Droppable onDrop={onSchemaDrop} acceptableType={"TypesKeys"} >
                                                                 {generatedSchema.types ?
-                                                                    <>{typesEditors}</>
+                                                                    <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-offset="0" className="scrollspy-example" tabIndex={0}>
+                                                                        {typesEditors}
+                                                                    </div>
                                                                     :
                                                                     <><p>To add schema content click and drag items from Types</p></>
                                                                 }
