@@ -33,11 +33,12 @@ const ChoiceField = (props: ChoiceFieldProps) => {
     if (e == null) {
       setSelectedValue('');
       setSelectedValueData('');
+      optChange(name, "");
     } else {
       setSelectedValue(e);
       setSelectedValueData(InitSelectedValues);
+      optChange(name, e.value);
     }
-    optChange(name, e.value);
     //target is undefined 
     //this resets selected choice
     //e.target.selectedOptions[0].text
