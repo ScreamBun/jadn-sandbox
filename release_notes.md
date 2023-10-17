@@ -1,5 +1,87 @@
 # JADN Sandbox Release Notes
 
+## v0.7.0
+
+* Fixed arrayOf validation logic
+* Fixed min/max length validation logic
+* Create Schema: Allow the user to highlight or star the Type they are working on
+* Dependencies updated
+  * @‌babel/core ^7.21.4 → ^7.23.0
+  * @‌babel/eslint-parser ^7.21.3 → ^7.22.15
+  * @‌babel/plugin-proposal-decorators ^7.21.0 → ^7.23.0
+  * @‌babel/plugin-proposal-do-expressions ^7.18.6 → ^7.22.5
+  * @‌babel/plugin-proposal-export-default-from ^7.18.10 → ^7.22.17
+  * @‌babel/plugin-proposal-function-bind ^7.18.9 → ^7.22.5
+  * @‌babel/plugin-proposal-function-sent ^7.18.6 → ^7.22.5
+  * @‌babel/plugin-proposal-pipeline-operator ^7.18.9 → ^7.22.15
+  * @‌babel/plugin-proposal-throw-expressions ^7.18.6 → ^7.22.5
+  * @‌babel/plugin-transform-react-constant-elements ^7.21.3 → ^7.22.5
+  * @‌babel/plugin-transform-react-inline-elements ^7.21.0 → ^7.22.5
+  * @‌babel/plugin-transform-runtime ^7.21.4 → ^7.22.15
+  * @‌babel/preset-env ^7.21.4 → ^7.22.20
+  * @‌babel/preset-react ^7.18.6 → ^7.22.15
+  * @‌babel/preset-typescript ^7.21.4 → ^7.23.0
+  * @‌babel/register ^7.21.0 → ^7.22.15
+  * @‌babel/runtime ^7.21.0 → ^7.23.1
+  * @‌fortawesome/fontawesome-svg-core ^6.4.0 → ^6.4.2
+  * @‌fortawesome/free-solid-svg-icons ^6.4.0 → ^6.4.2
+  * @‌types/d3-graphviz ^2.6.7 → ^2.6.8
+  * @‌types/jest ^29.5.1 → ^29.5.5
+  * @‌types/lodash ^4.14.194 → ^4.14.199
+  * @‌types/node ^18.16.1 → ^20.8.4
+  * @‌types/react ^18.2.0 → ^18.2.27
+  * @‌types/react-dom ^18.2.1 → ^18.2.12
+  * @‌types/react-redux ^7.1.25 → ^7.1.27
+  * @‌types/redux-api-middleware ^3.2.3 → ^3.2.4
+  * @‌types/redux-logger ^3.0.9 → ^3.0.10
+  * @‌types/uuid ^9.0.1 → ^9.0.5
+  * @‌types/webpack ^5.28.1 → ^5.28.3
+  * @‌types/webpack-env ^1.18.0 → ^1.18.2
+  * @‌typescript-eslint/eslint-plugin ^5.59.1 → ^6.7.5
+  * @‌typescript-eslint/parser ^5.59.1 → ^6.7.5
+  * @‌uiw/codemirror-extensions-langs ^4.19.16 → ^4.21.19
+  * @‌uiw/codemirror-themes-all ^4.19.16 → ^4.21.19
+  * @‌uiw/react-codemirror ^4.19.16 → ^4.21.19
+  * babel-loader ^9.1.2 → ^9.1.3
+  * css-loader ^6.7.3 → ^6.8.1
+  * d3-graphviz ^5.0.2 → ^5.1.0
+  * dayjs ^1.11.7 → ^1.11.10
+  * eslint ^8.39.0 → ^8.51.0
+  * eslint-config-prettier ^8.8.0 → ^9.0.0
+  * eslint-import-resolver-typescript ^3.5.5 → ^3.6.1
+  * eslint-import-resolver-webpack ^0.13.2 → ^0.13.7
+  * eslint-plugin-compat ^4.1.4 → ^4.2.0
+  * eslint-plugin-eslint-plugin ^5.0.8 → ^5.1.1
+  * eslint-plugin-import ^2.27.5 → ^2.28.1
+  * eslint-plugin-jest ^27.2.1 → ^27.4.2
+  * eslint-plugin-prettier ^4.2.1 → ^5.0.0
+  * eslint-plugin-react ^7.32.2 → ^7.33.2
+  * html-react-parser ^3.0.16 → ^4.2.2
+  * html-webpack-plugin ^5.5.1 → ^5.5.3
+  * jest ^29.5.0 → ^29.7.0
+  * marked ^4.3.0 → ^9.1.0
+  * mini-css-extract-plugin ^2.7.5 → ^2.7.6
+  * node-sass ^8.0.0 → ^9.0.0
+  * prettier ^2.8.8 → ^3.0.3
+  * react-redux ^8.0.5 → ^8.1.3
+  * react-router-dom ^6.10.0 → ^6.16.0
+  * react-select ^5.7.4 → ^5.7.7
+  * react-toastify ^9.1.2 → ^9.1.3
+  * react-zoom-pan-pinch ^3.0.7 → ^3.1.0
+  * reactstrap ^9.1.9 → ^9.2.0
+  * sass-loader ^13.2.2 → ^13.3.2
+  * style-loader ^3.3.2 → ^3.3.3
+  * terser-webpack-plugin ^5.3.7 → ^5.3.9
+  * typescript ^4.9.5 → ^5.2.2
+  * uuid ^9.0.0 → ^9.0.1
+  * webpack ^5.81.0 → ^5.88.2
+  * webpack-bundle-analyzer 4.8.0 → 4.9.1
+  * webpack-cli ^5.0.2 → ^5.1.4
+  * webpack-dev-server ^4.13.3 → ^4.15.1
+  * webpack-merge ^5.8.0 → ^5.9.0
+  * workbox-webpack-plugin ^6.5.4 → ^7.0.0
+
+
 ## v0.6.0
 
 * Fixed field re-rendering issue
