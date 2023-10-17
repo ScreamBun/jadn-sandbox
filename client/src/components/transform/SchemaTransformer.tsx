@@ -100,7 +100,7 @@ const SchemaTransformer = () => {
                     <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                 </div>
                 <div className='card-body p-2'>
-                    <div className='row'>
+                    <div className='row no-gutters'>
                         <div className='col'>
                             <SBMultiSchemaLoader
                                 ref={sbMultiSchemaLoaderRef}

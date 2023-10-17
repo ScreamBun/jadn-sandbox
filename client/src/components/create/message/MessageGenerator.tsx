@@ -51,7 +51,7 @@ const MessageGenerator = () => {
                     <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
                 </div>
                 <div className='card-body p-2'>
-                    <div className='row'>
+                    <div className='row no-gutters'>
                         <div className='col'>
                             <JADNSchemaLoader
                                 selectedFile={selectedFile} setSelectedFile={setSelectedFile}

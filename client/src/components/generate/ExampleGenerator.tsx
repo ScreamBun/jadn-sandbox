@@ -145,7 +145,7 @@ const ExampleGenerator = () => {
                 </div>
                 <div className='card-body p-2'>
                     <Form onSubmit={submitForm}>
-                        <div className='row'>
+                        <div className='row no-gutters'>
                             <div className='col'>
                                 <JADNSchemaLoader
                                     selectedFile={selectedFile} setSelectedFile={setSelectedFile}
