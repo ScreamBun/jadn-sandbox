@@ -133,7 +133,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     }
 
     return (
-        <div className="card resizeable-card">
+        <div className="card">
             <div className="card-header p-2">
                 <Form onSubmit={submitForm}>
                     <div className='row no-gutters'>

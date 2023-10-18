@@ -102,18 +102,16 @@ const SchemaTranslator = () => {
                 </div>
                 <div className='card-body p-2'>
                     <Form onSubmit={submitForm}>
-                        <div className='row no-gutters'>
-                            <div className='col'>
-                                <JADNSchemaLoader
-                                    selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                    loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                            </div>
-                            <div className='col'>
-                                <SchemaTranslated
-                                    translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
-                                    translation={translation} setTranslation={setTranslation}
-                                    isLoading={isLoading} />
-                            </div>
+                        <div className='d-flex flex-wrap'>
+
+                            <JADNSchemaLoader
+                                selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+
+                            <SchemaTranslated
+                                translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
+                                translation={translation} setTranslation={setTranslation}
+                                isLoading={isLoading} />
                         </div>
                     </Form>
                 </div>

@@ -111,6 +111,14 @@ small {
     height: 100% !important;
 }
 
+.d-flex {
+    gap: 10px;
+
+    >* {
+        flex: 1 1 auto !important;
+    }
+}
+
 /* Custom Styles */
 /* Use frugally, last resort, bootstrap first */
 #command-fields {
@@ -120,6 +128,10 @@ small {
 }
 
 /* Bootstrap Overrides */
+.card {
+    min-width: 50%;
+}
+
 .card-header {
     padding: 8px !important;
 }

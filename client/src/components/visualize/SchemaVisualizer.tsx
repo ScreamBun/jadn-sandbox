@@ -103,19 +103,16 @@ const SchemaVisualizer = () => {
                 </div>
                 <div className='card-body p-2'>
                     <Form onSubmit={submitForm}>
-                        <div className='row no-gutters'>
-                            <div className='col'>
-                                <JADNSchemaLoader
-                                    selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                    loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                            </div>
-                            <div className='col'>
-                                <SchemaVisualized
-                                    convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
-                                    conversion={conversion} setConversion={setConversion}
-                                    spiltViewFlag={spiltViewFlag} setSplitViewFlag={setSplitViewFlag}
-                                    isLoading={isLoading} />
-                            </div>
+                        <div className='d-flex flex-wrap'>
+                            <JADNSchemaLoader
+                                selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+
+                            <SchemaVisualized
+                                convertedSchema={convertedSchema} setConvertedSchema={setConvertedSchema}
+                                conversion={conversion} setConversion={setConversion}
+                                spiltViewFlag={spiltViewFlag} setSplitViewFlag={setSplitViewFlag}
+                                isLoading={isLoading} />
                         </div>
                     </Form>
                 </div>

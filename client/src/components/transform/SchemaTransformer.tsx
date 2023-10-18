@@ -100,27 +100,25 @@ const SchemaTransformer = () => {
                     <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
                 </div>
                 <div className='card-body p-2'>
-                    <div className='row no-gutters'>
-                        <div className='col'>
-                            <SBMultiSchemaLoader
-                                ref={sbMultiSchemaLoaderRef}
-                                isLoading={isLoading}
-                                onLoading={onLoading}
-                                selectedSchemas={selectedSchemas}
-                                onSelectedSchemaAdd={onSelectedSchemaAdd}
-                                onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
-                                onSelectedSchemaRemove={onSelectedSchemaRemove}
-                            />
-                        </div>
-                        <div className='col'>
-                            <SchemaTransformed
-                                ref={schemaTransformedRef}
-                                isLoading={isLoading}
-                                selectedSchemas={selectedSchemas}
-                                onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
-                                onLoading={onLoading}
-                            />
-                        </div>
+                    <div className='d-flex flex-wrap'>
+
+                        <SBMultiSchemaLoader
+                            ref={sbMultiSchemaLoaderRef}
+                            isLoading={isLoading}
+                            onLoading={onLoading}
+                            selectedSchemas={selectedSchemas}
+                            onSelectedSchemaAdd={onSelectedSchemaAdd}
+                            onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
+                            onSelectedSchemaRemove={onSelectedSchemaRemove}
+                        />
+
+                        <SchemaTransformed
+                            ref={schemaTransformedRef}
+                            isLoading={isLoading}
+                            selectedSchemas={selectedSchemas}
+                            onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
+                            onLoading={onLoading}
+                        />
                     </div>
                 </div>
             </div>

@@ -75,7 +75,7 @@ const SchemaVisualized = (props: any) => {
     }
 
     return (
-        <div className="card resizeable-card">
+        <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-6'>

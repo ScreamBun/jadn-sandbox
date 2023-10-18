@@ -116,24 +116,21 @@ const MessageValidator = () => {
                 </div>
                 <div className='card-body p-2'>
                     <Form onSubmit={submitForm}>
-                        <div className='row no-gutters'>
-                            <div className='col'>
-                                <JADNSchemaLoader
-                                    selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
-                                    loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
-                                    decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
-                                    decodeSchemaTypes={decodeSchemaTypes} setDecodeSchemaTypes={setDecodeSchemaTypes} />
-                            </div>
-                            <div className='col'>
-                                <MessageValidated
-                                    selectedFile={selectedMsgFile} setSelectedFile={setSelectedMsgFile}
-                                    loadedMsg={loadedMsg} setLoadedMsg={setLoadedMsg}
-                                    msgFormat={msgFormat} setMsgFormat={setMsgFormat}
-                                    decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
-                                    decodeSchemaTypes={decodeSchemaTypes}
-                                    isLoading={isLoading}
-                                />
-                            </div>
+                        <div className='d-flex flex-wrap'>
+                            <JADNSchemaLoader
+                                selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
+                                loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
+                                decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
+                                decodeSchemaTypes={decodeSchemaTypes} setDecodeSchemaTypes={setDecodeSchemaTypes} />
+
+                            <MessageValidated
+                                selectedFile={selectedMsgFile} setSelectedFile={setSelectedMsgFile}
+                                loadedMsg={loadedMsg} setLoadedMsg={setLoadedMsg}
+                                msgFormat={msgFormat} setMsgFormat={setMsgFormat}
+                                decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
+                                decodeSchemaTypes={decodeSchemaTypes}
+                                isLoading={isLoading}
+                            />
                         </div>
                     </Form>
                 </div>

@@ -51,17 +51,14 @@ const MessageGenerator = () => {
                     <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
                 </div>
                 <div className='card-body p-2'>
-                    <div className='row no-gutters'>
-                        <div className='col'>
-                            <JADNSchemaLoader
-                                selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                        </div>
-                        <div className='col'>
-                            <MessageCreator
-                                generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                commandType={commandType} setCommandType={setCommandType} />
-                        </div>
+                    <div className='d-flex flex-wrap'>
+                        <JADNSchemaLoader
+                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+
+                        <MessageCreator
+                            generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
+                            commandType={commandType} setCommandType={setCommandType} />
                     </div>
                 </div>
             </div>

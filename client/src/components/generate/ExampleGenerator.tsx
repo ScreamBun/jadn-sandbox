@@ -145,18 +145,17 @@ const ExampleGenerator = () => {
                 </div>
                 <div className='card-body p-2'>
                     <Form onSubmit={submitForm}>
-                        <div className='row no-gutters'>
-                            <div className='col'>
-                                <JADNSchemaLoader
-                                    selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                    loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                            </div>
-                            <div className='col'>
-                                <ExampleCreator
-                                    generatedMessages={generatedMessages} isLoading={isLoading}
-                                    numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg}
-                                />
-                            </div>
+                        <div className='d-flex flex-wrap'>
+
+                            <JADNSchemaLoader
+                                selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+
+                            <ExampleCreator
+                                generatedMessages={generatedMessages} isLoading={isLoading}
+                                numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg}
+                            />
+
                         </div>
                     </Form>
                 </div>
