@@ -1,40 +1,41 @@
 import React from "react";
 import { ButtonGroup, Button } from "reactstrap";
-import { faSquareCaretDown, faSquareCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { faSquareCaretDown, faSquareCaretUp, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar as farStar } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { zip } from '../../../../../utils';
-import { StandardTypeObject, TypeKeys, TypeObject } from "../consts";
+import { TypeArray } from "components/create/schema/interface";
 
 export interface SBOutlineBtnStyleProps {
     id: string;
     title: string;
     items: any[];
     onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
-    changeIndex: (v: TypeObject, dataIndex: number, i: number) => void;
+    changeIndex: (v: TypeArray, dataIndex: number, i: number) => void;
+    onStarClick: (index: number) => void;
 }
 
 const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
 
-    const { id = 'sb-outline', title, items = [], onClick, changeIndex } = props;
-
+    const { id = 'sb-outline', title, items = [], onClick, onStarClick, changeIndex } = props;
 
     const renderCards = items.map((card, i) => {
-        card = zip(TypeKeys, card) as StandardTypeObject;
-
         return (
             <div className='card' key={i}>
                 <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
                     <div>
-                        <a title={'Click to view'} href="#" onClick={(e) => onClick(e, card.name)}>{card.name}</a>
+                        <span onClick={() => onStarClick(i)}>
+                            <FontAwesomeIcon icon={card.isStarred == true ? faStar : farStar} />
+                        </span>
+                        <a title={'Click to view'} href="#" onClick={(e) => onClick(e, card.text)}>{card.text}</a>
                     </div>
                     <div>
                         <ButtonGroup size="sm">
-                            {i == 0 ? '' : <Button color="primary" onClick={() => changeIndex(card, i, i - 1)}
-                                title={`Move ${card.name} Up`}>
+                            {i == 0 ? '' : <Button color="primary" onClick={() => changeIndex(card.value, i, i - 1)}
+                                title={`Move ${card.text} Up`}>
                                 <FontAwesomeIcon icon={faSquareCaretUp} />
                             </Button>}
-                            {i == items.length - 1 ? '' : <Button color="primary" onClick={() => changeIndex(card, i, i + 1)}
-                                title={`Move ${card.name} Down`}>
+                            {i == items.length - 1 ? '' : <Button color="primary" onClick={() => changeIndex(card.value, i, i + 1)}
+                                title={`Move ${card.text} Down`}>
                                 <FontAwesomeIcon icon={faSquareCaretDown} />
                             </Button>}
                         </ButtonGroup>

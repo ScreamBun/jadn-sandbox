@@ -56,7 +56,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     }));
 
     const onToggle = (index: number) => {
-        setToggle({ ...toggle, [index]: !toggle[index] });
+        setToggle((prev) => ({ ...prev, [index]: !prev[index] }));
     }
 
     const isDupSchemaName = (name: string, schemas: SelectedSchema[]) => {

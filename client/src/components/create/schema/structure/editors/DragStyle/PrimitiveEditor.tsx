@@ -15,15 +15,14 @@ import { sbToastError } from 'components/common/SBToast';
 interface PrimitiveEditorProps {
   dataIndex: number;
   value: Array<any>;
-  change: (v: any, i: number) => void;
+  change: (v: PrimitiveTypeObject, i: number) => void;
   remove: (i: number) => void;
-  changeIndex: (v: PrimitiveTypeObject, dataIndex: number, i: number) => void;
   config: InfoConfig;
 }
 
 // Primitive Editor
 const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
-  const { value, change, dataIndex, config } = props;
+  const { value, dataIndex, config, change } = props;
   const [modal, setModal] = useState(false);
 
   let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
@@ -114,7 +113,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
               </div>
               <div className="row">
                 <div className="col-md-4">
-                  <Input name="primitiveEditorName" type="text" placeholder="Name" maxLength={64} value={valueObj.name}
+                  <Input name="name" type="text" placeholder="Name" maxLength={64} value={valueObj.name}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
@@ -128,7 +127,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
                   />
                 </div>
                 <div className="col-md-6">
-                  <Input name="primitiveEditorComment" type="textarea" placeholder="Comment" className='form-control'
+                  <Input name="comment" type="textarea" placeholder="Comment" className='form-control'
                     rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>

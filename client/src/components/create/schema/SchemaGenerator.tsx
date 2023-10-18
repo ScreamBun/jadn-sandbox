@@ -11,12 +11,14 @@ import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 import SchemaCreator from './structure/editors/DragStyle/SchemaCreator'
 import SchemaCreatorBtnStyle from './structure/editors/BtnStyle/SchemaCreatorBtnStyle'
+import { DragItem } from './structure/editors/DragStyle/SBOutline'
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
     const [generatedSchema, setGeneratedSchema] = useState('');
+    const [cardsState, setCardsState] = useState<DragItem[]>([]);
     const [isButtonStyle, setIsButtonStyle] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -32,6 +34,7 @@ const SchemaGenerator = () => {
         e.preventDefault();
         setSelectedSchemaFile(null);
         setGeneratedSchema('');
+        setCardsState([]);
     }
 
     return (
@@ -66,10 +69,12 @@ const SchemaGenerator = () => {
                             {isButtonStyle ?
                                 <SchemaCreatorBtnStyle
                                     selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
-                                    generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema} /> :
+                                    generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema}
+                                    cardsState={cardsState} setCardsState={setCardsState} /> :
                                 <SchemaCreator
                                     selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
-                                    generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema} />}
+                                    generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema}
+                                    cardsState={cardsState} setCardsState={setCardsState} />}
                         </div>
                     </div>
                 </div>

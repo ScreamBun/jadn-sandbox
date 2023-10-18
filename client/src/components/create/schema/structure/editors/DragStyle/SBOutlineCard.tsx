@@ -1,10 +1,11 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import type { FC } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import type { Identifier, XYCoord } from 'dnd-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGrip } from '@fortawesome/free-solid-svg-icons'
-import { StandardFieldArray } from '../../../interface'
+import { faGrip, faStar } from '@fortawesome/free-solid-svg-icons'
+import { faStar as farStar } from '@fortawesome/free-regular-svg-icons'
+import { TypeArray } from '../../../interface'
 import { DragItem } from './SBOutline'
 
 const style = {
@@ -12,7 +13,7 @@ const style = {
   cursor: 'move',
 }
 
-const ItemTypes = {
+export const ItemTypes = {
   CARD: 'card',
 }
 
@@ -20,14 +21,20 @@ export interface SBOutlineCardProps {
   id: any;
   text: string;
   index: number;
-  value: StandardFieldArray;
+  value: TypeArray;
+  isStarred: boolean;
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;
-  dropCard: (item: {}) => void;
+  dropCard: (item: DragItem) => void;
   onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
+  handleStarToggle: (idx: number) => void;
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, moveCard, addCard, dropCard, onClick }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isStarred, handleStarToggle, moveCard, addCard, dropCard, onClick }) => {
+
+  const originalIndex = index;
+  const [toggleStar, setToggleStar] = useState(isStarred);
+
   const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -39,10 +46,6 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
       return {
         handlerId: monitor.getHandlerId(),
       }
-    },
-    drop(item: DragItem, _monitor) {
-      console.log(item)
-      dropCard(item.value);
     },
     hover(item: DragItem, monitor) {
       if (!ref.current) {
@@ -101,7 +104,15 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.CARD,
     item: () => {
-      return { id, index, text, value }
+      return { id, originalIndex, index, text, value, isStarred: toggleStar }
+    },
+    end: (item, monitor) => {
+      const didDrop = monitor.didDrop()
+      if (!didDrop) {
+        moveCard(item, item.index, item.originalIndex)
+      } else {
+        dropCard(item);
+      }
     },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
@@ -115,11 +126,20 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
     onClick(e, text)
   };
 
+  const onToggleStar = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    setToggleStar(prev => !prev);
+    handleStarToggle(index);
+  };
+
   return (
     <div className='card'>
       <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
         <div className='row'>
           <div className='col-10'>
+            <span onClick={onToggleStar}>
+              <FontAwesomeIcon className='mr-1' icon={toggleStar ? faStar : farStar} />
+            </span>
             <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
           </div>
           <div className='col-2'>

@@ -3,6 +3,13 @@ import { useDrag } from 'react-dnd'
 import { ListGroupItem } from "reactstrap";
 import { faGripLines } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+interface KeyItem {
+    id: any;
+    index: number;
+    text: string;
+}
+
 interface DraggableKeyProps {
     item: any;
     acceptableType: string;
@@ -10,20 +17,28 @@ interface DraggableKeyProps {
     index: number;
     text: string;
     isDraggable: boolean;
+    onTypesDrop?: (arg: KeyItem) => void;
 }
 
 export const DraggableKey = memo(function DraggableKey(props: DraggableKeyProps) {
-    const { item, acceptableType, id, index, text, isDraggable = true } = props;
+    const { item, acceptableType, id, index, text, isDraggable = true, onTypesDrop } = props;
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: acceptableType,
             item: { id, index, text },
             canDrag: isDraggable,
+            end: (item, monitor) => {
+                const dropResult = monitor.getDropResult();
+                const didDrop = monitor.didDrop()
+                if (didDrop && dropResult.location == 'outline' && acceptableType == 'TypesKeys' && onTypesDrop) {
+                    onTypesDrop(item);
+                }
+            },
             collect: (monitor) => ({
                 item: monitor.getItem(),
                 isDragging: monitor.isDragging(),
             }),
-        }), [item, acceptableType, isDraggable]
+        }), [item, acceptableType, isDraggable, onTypesDrop]
     )
 
     const containerStyle = useMemo(

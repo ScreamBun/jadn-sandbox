@@ -22,7 +22,7 @@ interface PrimitiveEditorProps {
 
 // Primitive Editor
 const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: PrimitiveEditorProps) {
-    const { value, change, dataIndex, config } = props;
+    const { value, dataIndex, config, change } = props;
     const [modal, setModal] = useState(false);
 
     let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
@@ -110,13 +110,14 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                         <div className="col-md-4">
                             <Label className='mb-0'>Name</Label>
                             <Input
-                                name="PrimitveEditorName"
+                                name="name"
                                 type="text"
                                 placeholder="Name"
                                 maxLength={64}
                                 className='form-control'
                                 value={valueObj.name}
-                                onChange={onChange} onBlur={onBlur}
+                                onChange={onChange}
+                                onBlur={onBlur}
                             />
                         </div>
                         <div className="col-md-2 mt-4 text-center">
@@ -135,7 +136,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                         <div className="col-md-6">
                             <Label className='mb-0'>Comment</Label>
                             <Input
-                                name="PrimitveEditorComment"
+                                name="PrimitveEditorCcommentomment"
                                 type="textarea"
                                 placeholder="Comment"
                                 className='form-control'

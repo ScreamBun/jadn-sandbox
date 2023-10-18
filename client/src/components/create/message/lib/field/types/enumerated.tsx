@@ -3,7 +3,7 @@ import { isOptional } from '../../GenMsgLib';
 import { SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
 import { useAppSelector } from '../../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
-import { hasProperty } from 'react-json-editor/dist/utils';
+import { hasProperty } from 'components/utils';
 import SBSelect, { Option } from 'components/common/SBSelect';
 
 // Interface
