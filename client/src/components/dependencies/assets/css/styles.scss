@@ -106,7 +106,6 @@ small {
 .resizeable-card {
     resize: horizontal;
     overflow: auto;
-    min-width: 50% !important;
     max-width: 99%;
     height: 100% !important;
 }
@@ -128,10 +127,6 @@ small {
 }
 
 /* Bootstrap Overrides */
-.card {
-    min-width: 50%;
-}
-
 .card-header {
     padding: 8px !important;
 }

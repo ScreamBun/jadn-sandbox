@@ -163,6 +163,7 @@ const JADNSchemaLoader = (props: any) => {
     const onFileSelect = (e: Option) => {
         setIsValidJADN(false);
         setLoadedSchema('');
+        dispatch(setSchema(''));
         setSelectedFile(e);
         if (e == null) {
             return;
@@ -201,6 +202,7 @@ const JADNSchemaLoader = (props: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setLoadedSchema('');
+        dispatch(setSchema(''));
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
             const file = e.target.files[0];
@@ -240,6 +242,7 @@ const JADNSchemaLoader = (props: any) => {
         setIsValidating(false);
         setIsValidJADN(false);
         setLoadedSchema('');
+        dispatch(setSchema(''));
         setSelectedFile(null);
         setFileName('');
         if (ref.current) {

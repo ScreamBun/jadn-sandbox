@@ -169,10 +169,13 @@ const MessageValidated = (props: any) => {
                     <div className='col-md-3'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
-                        {isLoading ? <SBSpinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm`} disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true} type="submit"
-                            title={'Validate the message against the given schema'}>
-                            Validate Message
-                        </Button>}
+                        {isLoading ? <SBSpinner action={'Validating'} /> :
+                            <Button color="success" className={`float-right mr-1 btn-sm`}
+                                disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
+                                type="submit"
+                                title={'Validate the message against the given schema'}>
+                                Validate Message
+                            </Button>}
                     </div>
                 </div>
             </div>

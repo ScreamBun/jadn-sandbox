@@ -66,9 +66,8 @@ const defaultStyle = {
 const smStyle = {
     control: base => ({
         ...base,
-        // height: 30,
         minHeight: 30,
-        cursor: 'pointer'
+        cursor: 'pointer',
     }),
 
     container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
@@ -76,6 +75,8 @@ const smStyle = {
     valueContainer: (provided, state) => ({
         ...provided,
         minHeight: 30,
+        height: 30,
+        overflow: 'auto',
         padding: '0 6px',
     }),
 
