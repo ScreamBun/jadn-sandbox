@@ -78,6 +78,9 @@ const smStyle = {
         height: 30,
         overflow: 'auto',
         padding: '0 6px',
+        "::-webkit-scrollbar": {
+            display: "hidden",
+        },
     }),
 
     input: (provided, state) => ({

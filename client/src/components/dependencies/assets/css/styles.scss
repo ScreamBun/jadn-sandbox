@@ -130,6 +130,12 @@ small {
 .card-header {
     padding: 8px !important;
     height: 50px;
+
+    .row {
+        height: 50px;
+        overflow: auto;
+        min-width: 50%;
+    }
 }
 
 .card-body {
