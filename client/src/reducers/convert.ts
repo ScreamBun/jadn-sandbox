@@ -10,6 +10,7 @@ export interface ConvertState {
     convert: string;
     fmt: string;
     fmt_ext: string;
+    err: boolean;
   }
 }
 
@@ -22,7 +23,8 @@ const initialState: ConvertState = {
   converted: {
     convert: '',
     fmt: '',
-    fmt_ext: ''
+    fmt_ext: '',
+    err: false
   },
 };
 
