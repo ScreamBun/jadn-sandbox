@@ -47,7 +47,7 @@ const SBCollapseViewer = (props: any) => {
 
     const listData = data.map((obj: any, i: number) => {
         return (
-            <div className="card" key={i}>
+            obj.err == false && <div className="card" key={i}>
                 <div className="card-header">
                     <h5 className="mb-0">
                         <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
