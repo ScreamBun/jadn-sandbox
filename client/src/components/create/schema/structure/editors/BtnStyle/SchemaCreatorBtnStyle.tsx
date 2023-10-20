@@ -616,7 +616,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-sm-3'>
-                        <div className="input-group flex-nowrap">
+                        <div className="input-group">
                             <SBSelect id={"schema-list"}
                                 data={schemaOpts}
                                 onChange={onFileSelect}
@@ -625,15 +625,14 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                 value={selectedFile}
                                 isSmStyle
                                 isGrouped isFileUploader />
-                            <div className="input-group-btn ml-1">
-                                <SBSaveFile
-                                    buttonId={'saveSchema'}
-                                    toolTip={'Save Schema'}
-                                    data={generatedSchema}
-                                    loc={'schemas'}
-                                    filename={fileName}
-                                    setDropdown={onFileSelect} />
-                            </div>
+                            <SBSaveFile
+                                buttonId={'saveSchema'}
+                                toolTip={'Save Schema'}
+                                customClass={"float-right m-1"}
+                                data={generatedSchema}
+                                loc={'schemas'}
+                                filename={fileName}
+                                setDropdown={onFileSelect} />
                         </div>
                         <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
