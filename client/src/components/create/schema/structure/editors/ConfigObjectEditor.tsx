@@ -21,7 +21,7 @@ interface ConfigObjectEditorProps {
 
 // Config Editor
 const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectEditorProps) {
-  const { name, description, value, change, remove, config } = props;
+  const { name, description = '', value, change, remove, config } = props;
 
   const onChange = (k: string, v: any) => {
     const tmpValues = { ...value };
@@ -85,11 +85,6 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
     </>
   );
 });
-
-ConfigObjectEditor.defaultProps = {
-  placeholder: 'ConfigObjectEditor',
-  description: ''
-};
 
 export default ConfigObjectEditor;
 

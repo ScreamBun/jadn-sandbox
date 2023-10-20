@@ -157,8 +157,4 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
   );
 });
 
-KeyObjectEditor.defaultProps = {
-  placeholder: 'KeyObjectEditor'
-};
-
 export default KeyObjectEditor;
