@@ -537,7 +537,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                             <SBSaveFile
                                 buttonId={'saveSchema'}
                                 toolTip={'Save Schema'}
-                                customClass={"float-right m-1"}
+                                customClass={"float-right ml-1"}
                                 data={generatedSchema}
                                 loc={'schemas'}
                                 filename={fileName}

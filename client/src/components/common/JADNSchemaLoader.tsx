@@ -258,7 +258,7 @@ const JADNSchemaLoader = (props: any) => {
                                 value={selectedFile}
                                 isGrouped isFileUploader
                                 isSmStyle />
-                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-right m-1"} filename={fileName} setDropdown={setSelectedFile} />
+                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-right ml-1"} filename={fileName} setDropdown={setSelectedFile} />
                         </div>
                         <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />

@@ -112,7 +112,7 @@ const MessageCreator = (props: any) => {
                                 placeholder={'Select a message type...'}
                                 value={commandType} isSmStyle
                             />
-                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-right m-1"} ext={'json'} />
+                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-right ml-1"} ext={'json'} />
                         </div>
                     </div>
                     <div className='col'>
