@@ -35,16 +35,18 @@ const MessageValidated = (props: any) => {
     }, [])
 
     const onFileSelect = (e: Option) => {
-        setLoadedMsg('');
+        //setLoadedMsg('');
         //setDecodeMsg('');
         //setMsgFormat('');
-        setSelectedFile(e);
         if (e == null) {
+            setSelectedFile(e);
+            setLoadedMsg('');
             return;
         } else if (e.value == "file") {
+            ref.current.value = '';
             ref.current?.click();
-
         } else {
+            setSelectedFile(e);
             setFileName(e.label.split('.')[0]);
 
             const fmt = e.value.split('.')[1];
@@ -71,15 +73,16 @@ const MessageValidated = (props: any) => {
     };
 
     const onMsgChange = (data: any) => {
-        setSelectedFile('');
+        //setSelectedFile('');
         // setDecodeMsg('');
         // setMsgFormat('');
         setLoadedMsg(data);
     }
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
+        if (e.target.files && e.target.files.length != 0) {
             const file = e.target.files[0];
+            setSelectedFile({ 'value': file.name, 'label': file.name });
 
             const filename_only = getFilenameOnly(file.name);
             setFileName(filename_only);
@@ -126,18 +129,16 @@ const MessageValidated = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className={`${selectedFile?.value != 'file' ? 'col-md-3' : ' col-md-6'}`}>
-                        <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
-                            <SBSelect id={"message-list"}
-                                customClass={'mr-1'}
-                                data={msgOpts}
-                                onChange={onFileSelect}
-                                placeholder={'Select a message...'}
-                                loc={'messages'}
-                                value={selectedFile}
-                                isGrouped isFileUploader isSmStyle />
-                        </div>
-                        <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                    <div className='col-md-3'>
+                        <SBSelect id={"message-list"}
+                            customClass={'mr-1'}
+                            data={msgOpts}
+                            onChange={onFileSelect}
+                            placeholder={'Select a message...'}
+                            loc={'messages'}
+                            value={selectedFile}
+                            isGrouped isFileUploader isSmStyle />
+                        <div className='d-none'>
                             <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>

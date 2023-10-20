@@ -105,7 +105,7 @@ const MessageCreator = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-6'>
-                        <div className="input-group">
+                        <div className="input-group flex-nowrap">
                             <SBSelect id={"command-list"}
                                 data={exportRecords}
                                 onChange={handleSelection}
