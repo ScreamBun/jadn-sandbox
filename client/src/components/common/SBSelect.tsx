@@ -75,7 +75,6 @@ const smStyle = {
     valueContainer: (provided, state) => ({
         ...provided,
         minHeight: 30,
-        padding: '0 6px',
     }),
 
     input: (provided, state) => ({
@@ -86,7 +85,6 @@ const smStyle = {
     indicatorsContainer: (provided, state) => ({
         ...provided,
         minHeight: 30,
-        padding: 0
     }),
 
     option: (styles, state) => ({
