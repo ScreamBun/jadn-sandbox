@@ -66,7 +66,6 @@ const defaultStyle = {
 const smStyle = {
     control: base => ({
         ...base,
-        // height: 30,
         minHeight: 30,
         cursor: 'pointer'
     }),
@@ -224,34 +223,38 @@ const SBSelect = (props: any) => {
         <>
             <>
                 {isFileUploader ?
-                    <Select<Option, false, GroupedOption>
-                        id={id}
-                        placeholder={placeholder}
-                        options={opts}
-                        formatGroupLabel={formatGroupLabel}
-                        isClearable
-                        onChange={onChange}
-                        menuPortalTarget={document.body}
-                        className={customClass}
-                        styles={isSmStyle ? smStyle : defaultStyle}
-                        isMulti={isMultiSelect}
-                        components={{ Menu }}
-                        value={value}
-                    />
+                    <div className="smSelectStyle">
+                        <Select<Option, false, GroupedOption>
+                            id={id}
+                            placeholder={placeholder}
+                            options={opts}
+                            formatGroupLabel={formatGroupLabel}
+                            isClearable
+                            onChange={onChange}
+                            menuPortalTarget={document.body}
+                            className={customClass}
+                            styles={isSmStyle ? smStyle : defaultStyle}
+                            isMulti={isMultiSelect}
+                            components={{ Menu }}
+                            value={value}
+                        />
+                    </div>
                     :
-                    <Select<Option, false, GroupedOption>
-                        id={id}
-                        placeholder={placeholder}
-                        options={opts}
-                        formatGroupLabel={formatGroupLabel}
-                        isClearable
-                        onChange={onChange}
-                        menuPortalTarget={document.body}
-                        className={customClass}
-                        styles={isSmStyle ? smStyle : defaultStyle}
-                        isMulti={isMultiSelect}
-                        value={value}
-                    />
+                    <div className="smSelectStyle">
+                        <Select<Option, false, GroupedOption>
+                            id={id}
+                            placeholder={placeholder}
+                            options={opts}
+                            formatGroupLabel={formatGroupLabel}
+                            isClearable
+                            onChange={onChange}
+                            menuPortalTarget={document.body}
+                            className={customClass}
+                            styles={isSmStyle ? smStyle : defaultStyle}
+                            isMulti={isMultiSelect}
+                            value={value}
+                        />
+                    </div>
                 }
 
             </>
