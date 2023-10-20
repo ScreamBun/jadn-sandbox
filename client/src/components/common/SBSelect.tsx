@@ -82,6 +82,11 @@ const smStyle = {
         margin: '0px',
     }),
 
+    dropdownIndicator: (provided, state) => ({
+        ...provided,
+        padding: '0',
+    }),
+
     indicatorsContainer: (provided, state) => ({
         ...provided,
         minHeight: 30,
