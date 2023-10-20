@@ -2,7 +2,6 @@ import React, { memo, useState } from 'react';
 import {
   Button, FormText
 } from 'reactstrap';
-import { InputType } from 'reactstrap/es/Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
@@ -15,7 +14,7 @@ interface KeyValueEditorProps {
   description?: string;
   placeholder?: string;
   value: boolean | number | string;
-  type?: InputType;
+  type?: string;
   options?: Array<string>; // only for type='select'
   change?: (v: boolean | number | string) => void;
   remove?: (_id: string | number) => void;
@@ -30,10 +29,10 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   const {
     name,
     value,
-    description,
-    options,
+    description = '',
+    options = [],
     placeholder,
-    type,
+    type = 'text',
     change,
     remove,
     required,
@@ -219,12 +218,5 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     </>
   );
 });
-
-KeyValueEditor.defaultProps = {
-  description: '',
-  options: [],
-  placeholder: 'KeyValueEditor',
-  type: 'text' as InputType
-};
 
 export default KeyValueEditor;

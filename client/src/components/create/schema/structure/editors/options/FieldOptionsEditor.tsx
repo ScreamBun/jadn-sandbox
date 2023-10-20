@@ -5,31 +5,33 @@ import KeyValueEditor from '../KeyValueEditor';
 interface FieldOptionsEditorProps {
   id?: string;
   deserializedState: Record<string, any>;
-  change: OptionChange;
   placeholder?: string;
+  fieldOptions: boolean;
+  change: OptionChange;
 }
 
 const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsEditorProps) {
-  const { change, deserializedState, id } = props;
+  const { change, deserializedState, id, fieldOptions } = props;
 
   const validOptions = () => {
     return Object.keys(FieldOptionInputArgs).map(key => {
       return (
-          <KeyValueEditor
-            key={key}
-            id={key}
-            name={key}
-            {...FieldOptionInputArgs[key]}
-            placeholder={key}
-            removable={false}
-            change={val => change([key, val], 'field')}
-            value={deserializedState[key]}
-          />
+        <KeyValueEditor
+          key={key}
+          id={key}
+          name={key}
+          {...FieldOptionInputArgs[key]}
+          placeholder={key}
+          removable={false}
+          change={val => change([key, val], 'field')}
+          value={deserializedState[key]}
+        />
       );
     });
   };
 
-  return (
+  if (fieldOptions) {
+    return (
       <>
         <div className='row'>
           <div className='col-md-12'>
@@ -38,16 +40,13 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
         </div>
         <div className='row'>
           <div className='col-md-12'>
-            {validOptions()}  
+            {validOptions()}
           </div>
         </div>
       </>
-  );
+    );
+  }
+  return '';
 });
-
-FieldOptionsEditor.defaultProps = {
-  fieldOptions: false,
-  placeholder: 'Set Field Options'
-};
 
 export default FieldOptionsEditor;
