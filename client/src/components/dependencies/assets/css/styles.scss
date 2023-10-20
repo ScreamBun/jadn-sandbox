@@ -121,6 +121,13 @@ small {
     }
 }
 
+.scrollspy-example {
+    position: relative;
+    height: 200px;
+    margin-top: 0.5rem;
+    overflow: auto;
+}
+
 /* Bootstrap Overrides */
 .card-header {
     padding: 8px !important;
