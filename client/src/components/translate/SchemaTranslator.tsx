@@ -71,9 +71,13 @@ const SchemaTranslator = () => {
                     const convertedArr = convertSchemaVal.payload.schema.convert.map(obj => obj.fmt_ext);
                     for (let i = 0; i < arr.length; i++) {
                         if (convertedArr.includes(arr[i])) {
-                            sbToastSuccess(`Schema translated to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                            if (convertSchemaVal.payload.schema.convert[i].err == false) {
+                                sbToastSuccess(`Schema translated to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                            } else {
+                                sbToastError(`Schema failed to translate to ${convertSchemaVal.payload.schema.convert[i].fmt} : ${convertSchemaVal.payload.schema.convert[i].schema}`);
+                            }
                         } else {
-                            sbToastError(`Failed to convert to ${translation[i].label}`);
+                            sbToastError(`Failed to translate to ${translation[i].label}`);
                         }
                     }
                 })

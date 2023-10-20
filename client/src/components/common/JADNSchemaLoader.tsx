@@ -162,13 +162,15 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFileSelect = (e: Option) => {
         setIsValidJADN(false);
-        setLoadedSchema('');
-        setSelectedFile(e);
         if (e == null) {
+            setSelectedFile(e);
+            setLoadedSchema('');
             return;
         } else if (e.value == "file") {
+            ref.current.value = '';
             ref.current?.click();
         } else {
+            setSelectedFile(e);
             setFileName(e.label.split('.')[0]);
             setIsLoading(true);
 
@@ -200,12 +202,11 @@ const JADNSchemaLoader = (props: any) => {
         e.preventDefault();
         dismissAllToast();
         setIsValidJADN(false);
-        setLoadedSchema('');
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
-            
+
             const filename_only = getFilenameOnly(file.name);
             setFileName(filename_only);
 
@@ -231,7 +232,7 @@ const JADNSchemaLoader = (props: any) => {
         }
     }
 
-    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         dismissAllToast();
         setIsLoading(false);
@@ -250,20 +251,16 @@ const JADNSchemaLoader = (props: any) => {
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-md-6">
-                        <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
-                            <div className="input-group">
-                                <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
-                                    placeholder={'Select a schema...'}
-                                    loc={'schemas'}
-                                    value={selectedFile}
-                                    isGrouped isFileUploader
-                                    isSmStyle />
-                                <div className="input-group-btn ml-1">
-                                    <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-right mr-1"} filename={fileName} setDropdown={setSelectedFile} />
-                                </div>
-                            </div>
+                        <div className="input-group">
+                            <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
+                                placeholder={'Select a schema...'}
+                                loc={'schemas'}
+                                value={selectedFile}
+                                isGrouped isFileUploader
+                                isSmStyle />
+                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-right m-1"} filename={fileName} setDropdown={setSelectedFile} />
                         </div>
-                        <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>

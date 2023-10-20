@@ -15,7 +15,7 @@ interface TypeOptionsEditorProps {
 }
 
 const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEditorProps) {
-  const { change, deserializedState, id, optionType = "" } = props;
+  const { change, deserializedState, id, optionType = '' } = props;
   const schemaTypes = useAppSelector((state) => ({
     base: state.Util.types.base,
     schema: Object.keys(state.Util.types.schema) || {}
@@ -44,7 +44,7 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
   };
 
   const validOptions = () => {
-    return safeGet(ValidOptions, optionType, []).map(key => {
+    return safeGet(ValidOptions, optionType, []).map((key: string) => {
       return (
         <KeyValueEditor
           key={key}

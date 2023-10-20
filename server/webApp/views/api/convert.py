@@ -45,11 +45,12 @@ class Convert(Resource):
                 
             try:
                 conv = self.convertTo(schema_checked, conv_fmt)
-                convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv})
-            except:
+                convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv, 'err': False})
+            
+            except (TypeError, ValueError) as err:
                 tb = traceback.format_exc()
                 print(tb)
-                return "Failed to Convert", 500
+                return f"Failed to Convert: {err}", 500
             
         else:     
             for i in request_json["convert-to"]:
@@ -60,10 +61,13 @@ class Convert(Resource):
                     
                 try:
                     conv = self.convertTo(schema_checked, conv_fmt)
-                    convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv})
-                except:
+                    convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv, 'err': False})
+
+                except (TypeError, ValueError) as err:
                     tb = traceback.format_exc()
                     print(tb)
+                    convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': f"{err}", 'err': True})
+
                         
         return jsonify({
             "schema": {

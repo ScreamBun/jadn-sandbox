@@ -66,9 +66,8 @@ const defaultStyle = {
 const smStyle = {
     control: base => ({
         ...base,
-        // height: 30,
         minHeight: 30,
-        cursor: 'pointer'
+        cursor: 'pointer',
     }),
 
     container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
@@ -76,7 +75,6 @@ const smStyle = {
     valueContainer: (provided, state) => ({
         ...provided,
         minHeight: 30,
-        padding: '0 6px',
     }),
 
     input: (provided, state) => ({
@@ -222,39 +220,36 @@ const SBSelect = (props: any) => {
 
     return (
         <>
-            <>
-                {isFileUploader ?
-                    <Select<Option, false, GroupedOption>
-                        id={id}
-                        placeholder={placeholder}
-                        options={opts}
-                        formatGroupLabel={formatGroupLabel}
-                        isClearable
-                        onChange={onChange}
-                        menuPortalTarget={document.body}
-                        className={customClass}
-                        styles={isSmStyle ? smStyle : defaultStyle}
-                        isMulti={isMultiSelect}
-                        components={{ Menu }}
-                        value={value}
-                    />
-                    :
-                    <Select<Option, false, GroupedOption>
-                        id={id}
-                        placeholder={placeholder}
-                        options={opts}
-                        formatGroupLabel={formatGroupLabel}
-                        isClearable
-                        onChange={onChange}
-                        menuPortalTarget={document.body}
-                        className={customClass}
-                        styles={isSmStyle ? smStyle : defaultStyle}
-                        isMulti={isMultiSelect}
-                        value={value}
-                    />
-                }
-
-            </>
+            {isFileUploader ?
+                <Select<Option, false, GroupedOption>
+                    id={id}
+                    placeholder={placeholder}
+                    options={opts}
+                    formatGroupLabel={formatGroupLabel}
+                    isClearable
+                    onChange={onChange}
+                    menuPortalTarget={document.body}
+                    className={customClass}
+                    styles={isSmStyle ? smStyle : defaultStyle}
+                    isMulti={isMultiSelect}
+                    components={{ Menu }}
+                    value={value}
+                />
+                :
+                <Select<Option, false, GroupedOption>
+                    id={id}
+                    placeholder={placeholder}
+                    options={opts}
+                    formatGroupLabel={formatGroupLabel}
+                    isClearable
+                    onChange={onChange}
+                    menuPortalTarget={document.body}
+                    className={customClass}
+                    styles={isSmStyle ? smStyle : defaultStyle}
+                    isMulti={isMultiSelect}
+                    value={value}
+                />
+            }
 
             <Modal isOpen={toggleModal} autoFocus={false} returnFocusAfterClose={false}>
                 <ModalHeader>

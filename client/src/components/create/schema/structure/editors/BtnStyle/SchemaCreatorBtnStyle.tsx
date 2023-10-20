@@ -99,14 +99,16 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
-        setGeneratedSchema('');
-        setCardsState([]);
-        setSelectedFile(e);
         if (e == null) {
+            setSelectedFile(e);
+            setGeneratedSchema('');
+            setCardsState([]);
             return;
         } else if (e.value == "file") {
+            ref.current.value = '';
             ref.current?.click();
         } else {
+            setSelectedFile(e);
             setFileName(e.label.split('.')[0]);
             setIsLoading(true);
 
@@ -616,28 +618,25 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-sm-3'>
-                        <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
-                            <div className="input-group flex-nowrap">
-                                <SBSelect id={"schema-list"}
-                                    data={schemaOpts}
-                                    onChange={onFileSelect}
-                                    placeholder={'Select a schema...'}
-                                    loc={'schemas'}
-                                    value={selectedFile}
-                                    isSmStyle
-                                    isGrouped isFileUploader />
-                                <div className="input-group-btn ml-1">
-                                    <SBSaveFile
-                                        buttonId={'saveSchema'}
-                                        toolTip={'Save Schema'}
-                                        data={generatedSchema}
-                                        loc={'schemas'}
-                                        filename={fileName}
-                                        setDropdown={onFileSelect} />
-                                </div>
-                            </div>
+                        <div className="input-group">
+                            <SBSelect id={"schema-list"}
+                                data={schemaOpts}
+                                onChange={onFileSelect}
+                                placeholder={'Select a schema...'}
+                                loc={'schemas'}
+                                value={selectedFile}
+                                isSmStyle
+                                isGrouped isFileUploader />
+                            <SBSaveFile
+                                buttonId={'saveSchema'}
+                                toolTip={'Save Schema'}
+                                customClass={"float-right m-1"}
+                                data={generatedSchema}
+                                loc={'schemas'}
+                                filename={fileName}
+                                setDropdown={onFileSelect} />
                         </div>
-                        <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>

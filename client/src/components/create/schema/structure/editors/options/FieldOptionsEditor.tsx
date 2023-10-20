@@ -5,12 +5,13 @@ import KeyValueEditor from '../KeyValueEditor';
 interface FieldOptionsEditorProps {
   id?: string;
   deserializedState: Record<string, any>;
-  change: OptionChange;
   placeholder?: string;
+  fieldOptions: boolean;
+  change: OptionChange;
 }
 
 const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsEditorProps) {
-  const { change, deserializedState, id } = props;
+  const { change, deserializedState, id, fieldOptions } = props;
 
   const validOptions = () => {
     return Object.keys(FieldOptionInputArgs).map((key: string) => {
@@ -29,20 +30,23 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
     });
   };
 
-  return (
-    <>
-      <div className='row'>
-        <div className='col-md-12'>
-          <strong>{id}</strong>
+  if (fieldOptions) {
+    return (
+      <>
+        <div className='row'>
+          <div className='col-md-12'>
+            <strong>{id}</strong>
+          </div>
         </div>
-      </div>
-      <div className='row'>
-        <div className='col-md-12'>
-          {validOptions()}
+        <div className='row'>
+          <div className='col-md-12'>
+            {validOptions()}
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  }
+  return '';
 });
 
 export default FieldOptionsEditor;

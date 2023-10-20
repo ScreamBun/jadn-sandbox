@@ -76,8 +76,17 @@ const SchemaVisualizer = () => {
                     }
                     setIsLoading(false);
                     setConvertedSchema(convertSchemaVal.payload.schema.convert);
+                    const convertedArr = convertSchemaVal.payload.schema.convert.map(obj => obj.fmt_ext);
                     for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
-                        sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                        if (convertedArr.includes(arr[i])) {
+                            if (convertSchemaVal.payload.schema.convert[i].err == false) {
+                                sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                            } else {
+                                sbToastError(`Schema failed to convert to ${convertSchemaVal.payload.schema.convert[i].fmt} : ${convertSchemaVal.payload.schema.convert[i].schema}`);
+                            }
+                        } else {
+                            sbToastError(`Failed to convert to ${translation[i].label}`);
+                        }
                     }
                 })
                 .catch((convertSchemaErr: string) => {

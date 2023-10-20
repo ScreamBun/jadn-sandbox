@@ -23,7 +23,9 @@
 $max-width: 1400px;
 $max-scroll: 20em;
 
-/* Custom CSS Styles */
+/* Custom Styles */
+/* Use frugally, last resort, bootstrap first */
+
 body {
     padding-top: 75px;
 }
@@ -33,6 +35,10 @@ body {
     position: fixed;
     bottom: 1em;
     right: 1em;
+}
+
+.input-group {
+    flex-wrap: nowrap !important;
 }
 
 /* Pretty JSON Module theme */
@@ -103,23 +109,6 @@ small {
     font-size: 12px;
 }
 
-//ALLOW CARD RESIZE; ADD 'ITEM' TO CLASS
-//REMOVE COL SIZE
-/* .card {
-    display: flex;
-    flex-basis: auto;
-}
-
-.card.item {
-    resize: horizontal;
-    overflow: auto;
-    min-width: 10%;
-    max-width: 99%;
-    height: 100%;
-}  */
-
-/* Custom Styles */
-/* Use frugally, last resort, bootstrap first */
 #command-fields {
     .form-group {
         margin: .5em;

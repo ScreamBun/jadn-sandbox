@@ -1,5 +1,10 @@
 # JADN Sandbox Release Notes
 
+## v0.7.1
+
+* Fixed pydantic reserved word validation logic
+* Updated translation error handling
+
 ## v0.7.0
 
 * Fixed arrayOf validation logic
