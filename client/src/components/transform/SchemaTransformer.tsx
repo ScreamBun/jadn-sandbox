@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { dismissAllToast } from 'components/common/SBToast'
 import SchemaTransformed from './SchemaTransformed'
@@ -98,7 +97,7 @@ const SchemaTransformer = () => {
                     <div className='card'>
                         <div className='card-header p-2'>
                             <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Transformation</span></h5>
-                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                            <button type='reset' className='btn btn-sm btn-danger float-right' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             <div className='row'>

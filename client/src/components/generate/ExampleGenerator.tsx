@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { Button, Form } from 'reactstrap'
+import { Form } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
@@ -143,7 +143,7 @@ const ExampleGenerator = () => {
                     <div className='card'>
                         <div className='card-header p-2'>
                             <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Generation</span></h5>
-                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                            <button type='reset' className='btn btn-sm btn-danger float-right' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             <Form onSubmit={submitForm}>

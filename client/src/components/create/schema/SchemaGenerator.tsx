@@ -62,8 +62,7 @@ const SchemaGenerator = () => {
                                 </DropdownMenu>
                             </Dropdown>
 
-                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
-
+                            <button type='reset' className='btn btn-sm btn-danger float-right ml-1' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             {isButtonStyle ?

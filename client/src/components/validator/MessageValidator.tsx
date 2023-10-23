@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { Form, Button } from 'reactstrap'
+import { Form } from 'reactstrap'
 import MessageValidated from './MessageValidated'
 import { validateMessage } from 'actions/validate'
 import { info, setSchema } from 'actions/util'
@@ -114,7 +114,7 @@ const MessageValidator = () => {
                     <div className='card'>
                         <div className='card-header p-2'>
                             <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Validation</span></h5>
-                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                            <button type='reset' className='btn btn-sm btn-danger float-right' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             <Form onSubmit={submitForm}>
