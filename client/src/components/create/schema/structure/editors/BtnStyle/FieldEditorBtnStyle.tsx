@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import {
-    FormGroup, Label
+    FormGroup
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
@@ -21,6 +21,7 @@ import { shallowEqual } from 'react-redux';
 // Interface
 interface FieldEditorProps {
     enumerated?: boolean;
+    parentIndex: number;
     dataIndex: number;
     value: EnumeratedFieldArray | StandardFieldArray;
     change: (_v: EnumeratedFieldArray | StandardFieldArray, _i: number) => void;
@@ -34,7 +35,7 @@ interface FieldEditorProps {
 
 
 const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditorProps) {
-    const { enumerated, value, dataIndex, config, editableID, isFirst, isLast, change, changeIndex, remove } = props;
+    const { enumerated, value, parentIndex, dataIndex, config, editableID, isFirst, isLast, change, changeIndex, remove } = props;
 
     const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
     const types = useAppSelector((state) => ({
@@ -140,16 +141,17 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
             return (
                 <div className="row m-0">
                     <FormGroup className='col-md-2'>
-                        <Label>ID</Label>
-                        <input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
+                        <label htmlFor={`id-${parentIndex}-${dataIndex}`}>ID</label>
+                        <input id={`id-${parentIndex}-${dataIndex}`} name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
                     </FormGroup>
                     <div className="col-md-4">
-                        <Label>Value</Label>
-                        <input name="value" type="text" placeholder="Value" className='form-control' value={val.value} onChange={onChange} onBlur={onBlur} />
+                        <label htmlFor={`value-${parentIndex}-${dataIndex}`} >Value</label>
+                        <input id={`value-${parentIndex}-${dataIndex}`} name="value" type="text" placeholder="Value" className='form-control' value={val.value} onChange={onChange} onBlur={onBlur} />
                     </div>
                     <FormGroup className='col-md-6'>
-                        <Label>Comment</Label>
+                        <label htmlFor={`comment-${parentIndex}-${dataIndex}`}>Comment</label>
                         <input
+                            id={`comment-${parentIndex}-${dataIndex}`}
                             name="comment"
                             type="textarea"
                             className='form-control'
@@ -167,25 +169,25 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
             <>
                 <div className="row">
                     <div className="col-md-2">
-                        <Label className='mb-0'>ID</Label>
+                        <label htmlFor={`id-${parentIndex}-${dataIndex}`} className='mb-0'>ID</label>
                     </div>
                     <div className="col-md-4">
-                        <Label className='mb-0'>Name</Label>
+                        <label htmlFor={`name-${parentIndex}-${dataIndex}`} className='mb-0'>Name</label>
                     </div>
                     <div className="col-md-4">
-                        <Label className='mb-0'>Type</Label>
+                        <label htmlFor={`type-${parentIndex}-${dataIndex}`} className='mb-0'>Type</label>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-md-2">
-                        <input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} readOnly={!editableID}
+                        <input id={`id-${parentIndex}-${dataIndex}`} name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} readOnly={!editableID}
                             title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
                     </div>
                     <div className="col-md-4">
-                        <input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
+                        <input id={`name-${parentIndex}-${dataIndex}`} name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name} onChange={onChange} onBlur={onBlur} />
                     </div>
                     <div className="col-md-4">
-                        <SBCreatableSelect id="Type" name="type" value={valType} onChange={onSelectChange} data={types} isGrouped />
+                        <SBCreatableSelect id={`type-${parentIndex}-${dataIndex}`} name="type" value={valType} onChange={onSelectChange} data={types} isGrouped />
                     </div>
                     <div className="col-md-2">
                         <button type='button' className='btn btn-sm btn-primary p-2' onClick={toggleModal}>Field Options</button>
@@ -202,8 +204,9 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                 </div>
                 <div className="row">
                     <FormGroup className='col-md-12'>
-                        <Label>Comment</Label>
+                        <label htmlFor={`comment-${parentIndex}-${dataIndex}`} >Comment</label>
                         <input
+                            id={`comment-${parentIndex}-${dataIndex}`}
                             name="comment"
                             type="textarea"
                             placeholder="Comment"

@@ -243,15 +243,15 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               <div className="col-md-12">
                 <div className='row'>
                   <div className='col-md-4'>
-                    <label htmlFor="name" className='mb-0'>Name</label>
+                    <label htmlFor={`name-${dataIndex}`} className='mb-0'>Name</label>
                   </div>
                   <div className='col-md-6 offset-md-2'>
-                    <label htmlFor="name" className='mb-0'>Comment</label>
+                    <label htmlFor={`comment-${dataIndex}`} className='mb-0'>Comment</label>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-md-4">
-                    <input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
+                    <input id={`name-${dataIndex}`} name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
                       onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
@@ -267,7 +267,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     />
                   </div>
                   <div className="col-md-6">
-                    <input name="comment" type="textarea" placeholder="Comment" className='form-control text-area-w100'
+                    <input id={`comment-${dataIndex}`} name="comment" type="textarea" placeholder="Comment" className='form-control text-area-w100'
                       value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                   </div>
                 </div>
@@ -322,15 +322,15 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
             <div className="col-md-12">
               <div className='row'>
                 <div className='col-md-4'>
-                  <label htmlFor="name" className='mb-0'>Name</label>
+                  <label htmlFor={`name-${dataIndex}`} className='mb-0'>Name</label>
                 </div>
                 <div className='col-md-6 offset-md-2'>
-                  <label htmlFor="name" className='mb-0'>Comment</label>
+                  <label htmlFor={`comment-${dataIndex}`} className='mb-0'>Comment</label>
                 </div>
               </div>
               <div className="row">
                 <div className="col-md-4">
-                  <input name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
+                  <input id={`name-${dataIndex}`} name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
@@ -345,7 +345,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   />
                 </div>
                 <div className="col-md-6">
-                  <input name="comment" type="textarea" placeholder="Comment" className='form-control' value={valueObj.comment}
+                  <input id={`comment-${dataIndex}`} name="comment" type="textarea" placeholder="Comment" className='form-control' value={valueObj.comment}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
@@ -390,6 +390,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     editableID={isEditableID}
                     config={config}
                     acceptableType={`${dataIndex}`}
+                    parentIndex={dataIndex}
                   />
                 </div>
                 : ''

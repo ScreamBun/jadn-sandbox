@@ -132,10 +132,10 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
             </div>
             <div className='col'>
               <div className="btn-group float-right" role="group" aria-label="button group">
-                <button type='button' className='btn btn-primary' onClick={addIndex} >
+                <button type='button' className='btn btn-sm btn-primary' onClick={addIndex} >
                   <FontAwesomeIcon icon={faPlusSquare} />
                 </button>
-                <button type='button' className='btn btn-danger' onClick={removeAll} >
+                <button type='button' className='btn btn-sm btn-danger' onClick={removeAll} >
                   <FontAwesomeIcon icon={faMinusCircle} />
                 </button>
               </div>

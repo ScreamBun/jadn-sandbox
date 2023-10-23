@@ -25,10 +25,11 @@ export interface SBOutlineProps {
     config: InfoConfig;
     editableID: boolean;
     acceptableType: string;
+    parentIndex: number;
 }
 
 const SBOutlineFields = (props: SBOutlineProps) => {
-    const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop, editableID, acceptableType } = props;
+    const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop, editableID, acceptableType, parentIndex } = props;
     const [cardsState, setCardsState] = useState<DragItem[]>(items);
 
     const [dragValue, setDragValue] = useState<boolean>(false);
@@ -116,6 +117,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
                     key={card[0]}
                     id={card[0]}
                     dataIndex={index}
+                    parentIndex={parentIndex}
                     enumerated={isEnumerated}
                     value={card}
                     change={fieldChange}

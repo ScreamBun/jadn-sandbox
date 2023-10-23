@@ -1,7 +1,5 @@
 //basic
 import React, { useState } from 'react';
-import { Label } from 'reactstrap';
-
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
 import { InfoConfig, SchemaJADN, StandardFieldArray } from '../../../../schema/interface';
@@ -27,7 +25,7 @@ interface BasicFieldProps {
 const BasicField = (props: BasicFieldProps) => {
 
   const { arr, def, optChange, parent, config, children, value = '' } = props;
-  const [_idx, name, type, opts, comment] = def;
+  const [idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState(value);
 
@@ -76,8 +74,9 @@ const BasicField = (props: BasicFieldProps) => {
           <div className='card border-secondary'>
             <div className='card-header p-4 d-flex justify-content-between'>
               <div>
-                <Label check>
+                <label htmlFor={`checkbox-${idx}`} className="custom-control-label">
                   <input
+                    id={`checkbox-${idx}`}
                     type='checkbox'
                     name={name}
                     defaultValue={hasProperty(optData, 'default') ? optData.default : value}
@@ -88,7 +87,7 @@ const BasicField = (props: BasicFieldProps) => {
                   />
                   <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
                   {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
-                </Label>
+                </label>
                 {err}
               </div>
               {children}

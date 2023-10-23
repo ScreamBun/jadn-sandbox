@@ -59,9 +59,9 @@ const SBCreatableSelect = (props: any) => {
         }
 
         customOptList = customOpts.map((opt, index) => (
-            <label className="list-group-item" style={{ textAlign: 'center' }} key={index}>
-                <input className="form-check-input me-1" type="checkbox" name={'custom-file'} value={opt.label} />
-                {opt.label}
+            <label htmlFor={`${opt.label}`} className="list-group-item" style={{ textAlign: 'center' }} key={index}>
+                <input id={`${opt.label}`} className="form-check-input me-1" type="checkbox" name={'custom-file'} value={`${opt.label}`} />
+                {`${opt.label}`}
             </label>
         ));
 
