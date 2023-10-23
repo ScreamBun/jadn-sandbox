@@ -95,6 +95,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
   const indices = valueObj.map((obj, i) => (
     <div className="input-group mb-1 p-0" key={i}>
       <input
+        id={`keyObjectEditorKey-${i}`}
         type="text"
         className="form-control"
         data-index={i}
@@ -105,6 +106,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
         onBlur={onBlur}
       />
       <input
+        id={`keyObjectEditorValue-${i}`}
         type="text"
         className="form-control"
         data-index={i}
