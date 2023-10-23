@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import { flushSync } from 'react-dom';
 import {
-    FormGroup, Input, Label
+    FormGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -274,7 +274,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         <div className="row m-0">
                             <FormGroup className="col-md-4">
                                 <Label>Name</Label>
-                                <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                                <input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                             </FormGroup>
                             <FormGroup className="col-md-2">
                                 <Label>&nbsp;</Label>
@@ -289,7 +289,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             </FormGroup>
                             <FormGroup className="col-md-6">
                                 <Label>Comment</Label>
-                                <Input name="comment" type="textarea" placeholder="Comment" className='text-area-w100 form-control' rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                                <input name="comment" type="textarea" placeholder="Comment" className='text-area-w100 form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                             </FormGroup>
                         </div>
                     </div>
@@ -342,7 +342,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
                         <div className="col-md-4">
                             <Label className='mb-0'>Name</Label>
-                            <Input name="name" type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
+                            <input name="name" type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                         </div>
 
                         <div className="col-md-2 mt-4 text-center">
@@ -357,7 +357,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
                         <div className="col-md-6">
                             <Label className='mb-0'>Comment</Label>
-                            <Input name="comment" type="textarea" placeholder="Comment" rows={1} className='form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                            <input name="comment" type="textarea" placeholder="Comment" className='form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                         </div>
                     </div>
                     <div className="row pt-2">

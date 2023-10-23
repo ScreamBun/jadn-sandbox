@@ -1,6 +1,6 @@
 //basic
 import React, { useState } from 'react';
-import { Input, Label } from 'reactstrap';
+import { Label } from 'reactstrap';
 
 import Field from '../Field';
 import { isOptional } from '../../GenMsgLib';
@@ -77,8 +77,8 @@ const BasicField = (props: BasicFieldProps) => {
             <div className='card-header p-4 d-flex justify-content-between'>
               <div>
                 <Label check>
-                  <Input
-                    type={'checkbox'}
+                  <input
+                    type='checkbox'
                     name={name}
                     defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                     onChange={e => {
@@ -110,8 +110,8 @@ const BasicField = (props: BasicFieldProps) => {
               {children}
             </div>
             <div className='card-body m-0 p-0'>
-              <Input
-                type={'text'}
+              <input
+                type='text'
                 name={name}
                 value={data}
                 onBlur={e => {
@@ -145,8 +145,8 @@ const BasicField = (props: BasicFieldProps) => {
               {children}
             </div>
             <div className='card-body m-0 p-0'>
-              <Input
-                type={'number'}
+              <input
+                type='number'
                 onWheel={(e) => { e.target.blur(); }}
                 step='any'
                 name={name}
@@ -178,8 +178,8 @@ const BasicField = (props: BasicFieldProps) => {
               {children}
             </div>
             <div className='card-body m-0 p-0'>
-              <Input
-                type={'number'}
+              <input
+                type='number'
                 onWheel={(e) => { e.target.blur(); }}
                 name={name}
                 value={data}
@@ -211,8 +211,8 @@ const BasicField = (props: BasicFieldProps) => {
           {children}
         </div>
         <div className='card-body m-0 p-0'>
-          <Input
-            type={'text'}
+          <input
+            type='text'
             name={name}
             value={data}
             placeholder={optData.pattern ? optData.pattern : ''}

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Input } from "reactstrap";
 import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
 import { v4 as uuid4 } from 'uuid';
 import dayjs from 'dayjs';
@@ -64,7 +63,7 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
+                            <input
                                 value={data}
                                 name={name}
                                 type={"datetime-local"}
@@ -97,7 +96,7 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
+                            <input
                                 value={data}
                                 name={name}
                                 type={"date"}
@@ -131,10 +130,10 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
+                            <input
                                 value={data}
                                 name={name}
-                                type={"time"}
+                                type='time'
                                 step="any"
                                 min={dayjs().format('HH:mm:ssZ[Z]')}
                                 onChange={e => {
@@ -165,8 +164,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'email'}
+                            <input
+                                type='email'
                                 name={name}
                                 value={data}
                                 onChange={e => {
@@ -198,8 +197,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
+                            <input
+                                type='text'
                                 name={name}
                                 value={data}
                                 onChange={e => {
@@ -231,8 +230,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0 input-group'>
-                            <Input
-                                type={'text'}
+                            <input
+                                type='text'
                                 name={name}
                                 value={data}
                                 onChange={e => {
@@ -244,8 +243,8 @@ const FormattedField = (props: any) => {
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
                             <span className="input-group-text"> / </span>
-                            <Input
-                                type={'number'}
+                            <input
+                                type='number'
                                 onWheel={(e) => { e.target.blur(); }}
                                 name={name}
                                 min={0}
@@ -278,8 +277,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
+                            <input
+                                type='text'
                                 name={name}
                                 value={data}
                                 onChange={e => {
@@ -311,8 +310,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0 input-group'>
-                            <Input
-                                type={'text'}
+                            <input
+                                type='text'
                                 name={name}
                                 value={data}
                                 onChange={e => {
@@ -324,7 +323,7 @@ const FormattedField = (props: any) => {
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />
                             <span className="input-group-text"> / </span>
-                            <Input
+                            <input
                                 type={'number'}
                                 onWheel={(e) => { e.target.blur(); }}
                                 name={name}
@@ -357,8 +356,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
+                            <input
+                                type='text'
                                 name={name}
                                 value={data}
                                 onChange={e => {
@@ -391,9 +390,9 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <div className='d-flex justify-content-between'>
-                                <Input
+                                <input
                                     value={data}
-                                    type={'text'}
+                                    type='text'
                                     name={name}
                                     onChange={e => {
                                         setData(e.target.value);
@@ -425,8 +424,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'number'}
+                            <input
+                                type='number'
                                 onWheel={(e) => { e.target.blur(); }}
                                 min={-128}
                                 max={127}
@@ -460,8 +459,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'number'}
+                            <input
+                                type='number'
                                 onWheel={(e) => { e.target.blur(); }}
                                 min={-32768}
                                 max={32767}
@@ -495,8 +494,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'number'}
+                            <input
+                                type='number'
                                 onWheel={(e) => { e.target.blur(); }}
                                 name={name}
                                 min={-2147483648}
@@ -532,8 +531,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'number'}
+                            <input
+                                type='number'
                                 onWheel={(e) => { e.target.blur(); }}
                                 min={0}
                                 max={2 ** (parseInt(n) - 1)}
@@ -567,8 +566,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
+                            <input
+                                type='text'
                                 name={name}
                                 value={data}
                                 onChange={e => {
@@ -613,8 +612,8 @@ const FormattedField = (props: any) => {
                             {children}
                         </div>
                         <div className='card-body m-0 p-0'>
-                            <Input
-                                type={'text'}
+                            <input
+                                type='text'
                                 name={name}
                                 value={data}
                                 onChange={e => {

@@ -1,7 +1,4 @@
 import React, { memo, useState } from 'react';
-import {
-  Input
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -64,7 +61,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
 
   const indices = dataArr.map((val, i) => (
     <div className="input-group mb-1" key={i}>
-      <Input
+      <input
         type="text"
         className="form-control"
         data-index={i}

@@ -1,7 +1,4 @@
 import React, { memo, useState } from 'react';
-import {
-  Input
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { InfoConfig } from '../../interface';
@@ -97,7 +94,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
 
   const indices = valueObj.map((obj, i) => (
     <div className="input-group mb-1 p-0" key={i}>
-      <Input
+      <input
         type="text"
         className="form-control"
         data-index={i}
@@ -107,7 +104,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
         onChange={onChange}
         onBlur={onBlur}
       />
-      <Input
+      <input
         type="text"
         className="form-control"
         data-index={i}

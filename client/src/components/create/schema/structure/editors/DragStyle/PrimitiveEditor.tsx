@@ -1,8 +1,5 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
-import {
-  Input
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { zip } from '../../../../../utils';
@@ -113,7 +110,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
               </div>
               <div className="row">
                 <div className="col-md-4">
-                  <Input name="name" type="text" placeholder="Name" maxLength={64} value={valueObj.name}
+                  <input name="name" type="text" placeholder="Name" maxLength={64} value={valueObj.name}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
@@ -127,8 +124,8 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
                   />
                 </div>
                 <div className="col-md-6">
-                  <Input name="comment" type="textarea" placeholder="Comment" className='form-control'
-                    rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                  <input name="comment" type="textarea" placeholder="Comment" className='form-control'
+                    value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
             </div>

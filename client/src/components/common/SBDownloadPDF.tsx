@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Input, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { sbToastError, sbToastInfo } from "./SBToast";
 import SBSpinner from "./SBSpinner";
 
@@ -83,7 +83,7 @@ const SBDownloadPDF = (props: any) => {
                     <div className="form-row">
                         <label htmlFor="filename" className="col-sm-4 col-form-label">File name:</label>
                         <div className="col-sm-8">
-                            <Input id='filename' className="form-control" type="text" onChange={onChange}></Input>
+                            <input id='filename' className="form-control" type="text" onChange={onChange} />
                         </div>
                     </div>
                 </ModalBody>

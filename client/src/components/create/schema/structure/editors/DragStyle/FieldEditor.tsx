@@ -2,7 +2,7 @@ import React, { memo, useMemo, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier, XYCoord } from 'dnd-core'
 import {
-  FormGroup, Input, Label
+  FormGroup, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGrip, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -240,22 +240,21 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         <div className="row m-0">
           <FormGroup className='col-md-2'>
             <Label>ID</Label>
-            <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
+            <input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
               onChange={onChange} onBlur={onBlur} />
           </FormGroup>
           <div className="col-md-4">
             <Label>Value</Label>
-            <Input name="value" type="text" placeholder="Value" className='form-control' value={val.value}
+            <input name="value" type="text" placeholder="Value" className='form-control' value={val.value}
               onChange={onChange} onBlur={onBlur} />
           </div>
           <FormGroup className='col-md-6'>
             <Label>Comment</Label>
-            <Input
+            <input
               name="comment"
               type="textarea"
               className='form-control'
               placeholder="Comment"
-              rows={1}
               value={valueObj.comment}
               onChange={onChange}
               onBlur={onBlur}
@@ -280,13 +279,13 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         </div>
         <div className="row">
           <div className="col-md-2">
-            <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
+            <input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
               onChange={onChange} onBlur={onBlur} readOnly={!editableID}
               title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
 
           </div>
           <div className="col-md-4">
-            <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name}
+            <input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name}
               onChange={onChange} onBlur={onBlur} />
           </div>
           <div className="col-md-4">
@@ -309,11 +308,10 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         <div className="row">
           <FormGroup className='col-md-12'>
             <Label>Comment</Label>
-            <Input
+            <input
               name="comment"
               type="textarea"
               placeholder="Comment"
-              rows={1}
               className='form-control'
               value={valueObj.comment}
               onChange={onChange}

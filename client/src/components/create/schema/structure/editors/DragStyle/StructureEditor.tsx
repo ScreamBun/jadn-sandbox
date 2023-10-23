@@ -1,8 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
-import {
-  Input
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { useAppSelector } from 'reducers';
@@ -254,7 +251,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 </div>
                 <div className="row">
                   <div className="col-md-4">
-                    <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
+                    <input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
                       onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
@@ -270,7 +267,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     />
                   </div>
                   <div className="col-md-6">
-                    <Input name="comment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1}
+                    <input name="comment" type="textarea" placeholder="Comment" className='form-control text-area-w100'
                       value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                   </div>
                 </div>
@@ -333,7 +330,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               </div>
               <div className="row">
                 <div className="col-md-4">
-                  <Input name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
+                  <input name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
@@ -348,7 +345,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   />
                 </div>
                 <div className="col-md-6">
-                  <Input name="comment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment}
+                  <input name="comment" type="textarea" placeholder="Comment" className='form-control' value={valueObj.comment}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>

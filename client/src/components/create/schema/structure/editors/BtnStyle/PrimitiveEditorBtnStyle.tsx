@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-    Input, Label
+    Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -106,7 +106,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                 <div className="row m-0">
                     <div className="col-md-4">
                         <Label className='mb-0'>Name</Label>
-                        <Input
+                        <input
                             name="name"
                             type="text"
                             placeholder="Name"
@@ -130,12 +130,11 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                     </div>
                     <div className="col-md-6">
                         <Label className='mb-0'>Comment</Label>
-                        <Input
+                        <input
                             name="PrimitveEditorCcommentomment"
                             type="textarea"
                             placeholder="Comment"
                             className='form-control'
-                            rows={1}
                             value={valueObj.comment}
                             onChange={onChange}
                             onBlur={onBlur}
