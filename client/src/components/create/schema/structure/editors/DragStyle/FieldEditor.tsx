@@ -1,9 +1,6 @@
 import React, { memo, useMemo, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier, XYCoord } from 'dnd-core'
-import {
-  FormGroup
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGrip, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -238,18 +235,18 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       const val = valueObj as EnumeratedFieldObject;
       SBConfirmModalValName = `${val.value}`;
       return (
-        <div className="row m-0">
-          <FormGroup className='col-md-2'>
+        <div className="form-row m-0">
+          <div className='form-group col-md-2'>
             <label htmlFor={`id-${parentIndex}-${dataIndex}`}>ID</label>
             <input id={`id-${parentIndex}-${dataIndex}`} name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
               onChange={onChange} onBlur={onBlur} />
-          </FormGroup>
-          <div className="col-md-4">
+          </div>
+          <div className="form-group col-md-4">
             <label htmlFor={`value-${parentIndex}-${dataIndex}`} >Value</label>
             <input id={`value-${parentIndex}-${dataIndex}`} name="value" type="text" placeholder="Value" className='form-control' value={val.value}
               onChange={onChange} onBlur={onBlur} />
           </div>
-          <FormGroup className='col-md-6'>
+          <div className='form-group col-md-6'>
             <label htmlFor={`comment-${parentIndex}-${dataIndex}`}>Comment</label>
             <input
               id={`comment-${parentIndex}-${dataIndex}`}
@@ -261,41 +258,50 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               onChange={onChange}
               onBlur={onBlur}
             />
-          </FormGroup>
+          </div>
         </div>
       );
     }
 
     return (
       <>
-        <div className="row">
-          <div className="col-md-2">
+        <div className="form-row">
+          <div className="form-group col-md-2">
             <label htmlFor={`id-${parentIndex}-${dataIndex}`} className='mb-0'>ID</label>
-          </div>
-          <div className="col-md-4">
-            <label htmlFor={`name-${parentIndex}-${dataIndex}`} className='mb-0'>Name</label>
-          </div>
-          <div className="col-md-4">
-            <label htmlFor={`type-${parentIndex}-${dataIndex}`} className='mb-0'>Type</label>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-2">
-            <input id={`id-${parentIndex}-${dataIndex}`} name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
-              onChange={onChange} onBlur={onBlur} readOnly={!editableID}
+            <input id={`id-${parentIndex}-${dataIndex}`}
+              name="id"
+              type="number"
+              placeholder="ID"
+              className='form-control'
+              value={valueObj.id}
+              onChange={onChange}
+              onBlur={onBlur}
+              readOnly={!editableID}
               title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
-
           </div>
-          <div className="col-md-4">
-            <input id={`name-${parentIndex}-${dataIndex}`} name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name}
-              onChange={onChange} onBlur={onBlur} />
+          <div className="form-group col-md-4">
+            <label htmlFor={`name-${parentIndex}-${dataIndex}`} className='mb-0'>Name</label>
+            <input id={`name-${parentIndex}-${dataIndex}`}
+              name="name"
+              type="text"
+              placeholder="Name"
+              className='form-control'
+              maxLength={64}
+              value={val.name}
+              onChange={onChange}
+              onBlur={onBlur} />
           </div>
-          <div className="col-md-4">
-            <SBCreatableSelect id={`type-${parentIndex}-${dataIndex}`} name="type" value={valType} onChange={onSelectChange} data={types}
+          <div className="form-group col-md-4">
+            <label htmlFor={`type-${parentIndex}-${dataIndex}`} className='mb-0'>Type</label>
+            <SBCreatableSelect id={`type-${parentIndex}-${dataIndex}`}
+              name="type"
+              value={valType}
+              onChange={onSelectChange}
+              data={types}
               isGrouped />
           </div>
-          <div className="col-md-2">
-            <button type='button' className='btn btn-primary btn-sm p-2' onClick={toggleModal}>Field Options</button>
+          <div className="form-group col-md-2 d-flex">
+            <button type='button' className='btn btn-primary btn-sm p-2 mt-auto' onClick={toggleModal}>Field Options</button>
             <OptionsModal
               optionValues={val.options || []}
               isOpen={modal}
@@ -307,9 +313,10 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
             />
           </div>
         </div>
-        <div className="row">
-          <FormGroup className='col-md-12'>
-            <label htmlFor={`comment-${parentIndex}-${dataIndex}`} >Comment</label>
+
+        <div className="form-group row">
+          <div className='col-md-12'>
+            <label htmlFor={`comment-${parentIndex}-${dataIndex}`} className='mb-0'>Comment</label>
             <input
               id={`comment-${parentIndex}-${dataIndex}`}
               name="comment"
@@ -320,7 +327,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               onChange={onChange}
               onBlur={onBlur}
             />
-          </FormGroup>
+          </div>
         </div>
       </>
     );

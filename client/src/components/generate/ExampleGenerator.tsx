@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { Form } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
@@ -146,7 +145,7 @@ const ExampleGenerator = () => {
                             <button type='reset' className='btn btn-sm btn-danger float-right' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
-                            <Form onSubmit={submitForm}>
+                            <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
@@ -160,7 +159,7 @@ const ExampleGenerator = () => {
                                         />
                                     </div>
                                 </div>
-                            </Form>
+                            </form>
                         </div>
                     </div>
                 </div>

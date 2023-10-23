@@ -1,5 +1,4 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Form } from "reactstrap";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import SBDownloadFile from "components/common/SBDownloadFile";
@@ -135,7 +134,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     return (
         <div className="card">
             <div className="card-header p-2">
-                <Form onSubmit={submitForm}>
+                <form onSubmit={submitForm}>
                     <div className='row no-gutters'>
                         <div className='col-md-9'>
                             <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectTypeChange}
@@ -161,7 +160,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                                 </button>}
                         </div>
                     </div>
-                </Form>
+                </form>
             </div>
             <div className="card-body-page">
                 {transformedSchema.length > 1 ? transformedSchema.map((output, i: number) => (

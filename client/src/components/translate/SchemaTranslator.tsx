@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
-import { Form } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
@@ -107,7 +106,7 @@ const SchemaTranslator = () => {
                             <button type='reset' className='btn btn-sm btn-danger float-right' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
-                            <Form onSubmit={submitForm}>
+                            <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
@@ -121,7 +120,7 @@ const SchemaTranslator = () => {
                                             isLoading={isLoading} />
                                     </div>
                                 </div>
-                            </Form>
+                            </form>
                         </div>
                     </div>
                 </div>

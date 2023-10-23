@@ -25,7 +25,7 @@ interface KeyValueEditorProps {
 const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) {
   const {
     name,
-    value,
+    value = '',
     description = '',
     options = [],
     placeholder,

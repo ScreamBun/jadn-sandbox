@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TabContent, TabPane, FormText } from 'reactstrap'
+import { TabContent, TabPane } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib/GenMsgLib'
 import { StandardFieldArray } from '../schema/interface'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
@@ -68,10 +68,10 @@ const MessageCreator = (props: any) => {
 
     if (recordDef.length > 1 && recordDef[recordDef.length - 2].length > 0) {
         commandFields = (
-            <FormText color="muted">
+            <small id="exportHelpBlock" className="form-text text-muted">
                 <b>Comment: </b>
                 {recordDef[recordDef.length - 2]}
-            </FormText>
+            </small>
         );
     }
 
@@ -92,11 +92,11 @@ const MessageCreator = (props: any) => {
         }
     } else {
         fieldDefs = (
-            <FormText color="muted">
+            <small id="msgGenHelpBlock" className="form-text text-muted">
                 Message generator will appear here after selecting a message type
                 &nbsp;
                 {commandType?.value}
-            </FormText>
+            </small>
         );
     }
 
