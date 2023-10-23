@@ -1,7 +1,6 @@
 
 //MapOf
 import React, { useState } from 'react';
-import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -38,7 +37,7 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [vopts, setvOpts] = useState<any[]>([]);
     const [errMsg, setErrMsg] = useState<string[]>([]);
     const [toggle, setToggle] = useState(true);
-    const [toggleField, setToggleField] = useState({ [0]: true });
+    const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
 
     var optData: Record<string, any> = {};
     const [_idx, name, type, args, comment] = def;
@@ -269,13 +268,13 @@ const MapOfField = (props: MapOfFieldProps) => {
             <div className='form-group' key={self.crypto.randomUUID()}>
                 <div className='card border-secondary'>
                     <div className='card-header p-2'>
-                        <Button
-                            color="danger"
-                            className={`float-right btn p-1${min ? ' disabled' : ''}`}
+                        <button
+                            type='button'
+                            className={`btn-danger float-right btn p-1${min ? ' disabled' : ''}`}
                             onClick={() => removeOpt(i)}
                         >
                             <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-                        </Button>
+                        </button>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title m-2'>
                                 {name} {i + 1}

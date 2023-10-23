@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-  Button, Input
+  Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -94,9 +94,9 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
               <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
             </div>
             <div className='col'>
-              <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
+              <button type='button' className="float-right btn btn-danger btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
                 <FontAwesomeIcon icon={faMinusCircle} />
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -117,7 +117,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
-                  <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                  <button type='button' className='p-2 btn btn-primary btn-sm' onClick={toggleModal}>Type Options</button>
                   <OptionsModal
                     optionValues={valueObj.options}
                     isOpen={modal}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TabContent, TabPane, Button, FormText } from 'reactstrap'
+import { TabContent, TabPane, FormText } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib/GenMsgLib'
 import { StandardFieldArray } from '../schema/interface'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
@@ -119,8 +119,8 @@ const MessageCreator = (props: any) => {
                         <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-right' shouldStringify={true} />
                         <SBDownloadFile buttonId='msgDownload' customClass='float-right mr-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
 
-                        <Button onClick={() => setActiveView('message')} className={`float-right btn-sm mr-1 ${activeView == 'message' ? ' d-none' : ''}`} color="primary">View Message</Button>
-                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary">View Creator</Button>
+                        <button type='button' onClick={() => setActiveView('message')} className={`btn btn-primary float-right btn-sm mr-1 ${activeView == 'message' ? ' d-none' : ''}`} >View Message</button>
+                        <button type='button' onClick={() => setActiveView('creator')} className={`btn btn-primary float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} >View Creator</button>
                     </div>
                 </div>
             </div>

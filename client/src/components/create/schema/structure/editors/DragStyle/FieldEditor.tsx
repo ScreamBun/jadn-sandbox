@@ -2,7 +2,7 @@ import React, { memo, useMemo, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier, XYCoord } from 'dnd-core'
 import {
-  Button, FormGroup, Input, Label
+  FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGrip, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -294,7 +294,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               isGrouped />
           </div>
           <div className="col-md-2">
-            <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
+            <button type='button' className='btn btn-primary btn-sm p-2' onClick={toggleModal}>Field Options</button>
             <OptionsModal
               optionValues={val.options || []}
               isOpen={modal}

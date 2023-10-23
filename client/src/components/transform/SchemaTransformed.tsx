@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Button, Form } from "reactstrap";
+import { Form } from "reactstrap";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import SBDownloadFile from "components/common/SBDownloadFile";
@@ -31,7 +31,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
 
     const transformationOpts = useSelector(getValidTransformations);
 
-    const [toggle, setToggle] = useState({});
+    const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
     const [isTransformDisabled, setIsTransformDisabled] = useState(true);
     const [baseFile, setBaseFile] = useState<Option | null>();
     const [transformationType, setTransformationType] = useState<Option | null>();
@@ -153,11 +153,12 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                                 <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right`} filename={baseFile} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
                             </div>
 
-                            {isLoading ? <SBSpinner action={'Transforming'} /> : <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
-                                disabled={isTransformDisabled}
-                                title={"Process JADN schema(s) to produce another JADN schema"}>
-                                Transform
-                            </Button>}
+                            {isLoading ? <SBSpinner action={'Transforming'} /> :
+                                <button type="submit" id="transformSchema" className="btn btn-success btn-sm mr-1 float-right"
+                                    disabled={isTransformDisabled}
+                                    title={"Process JADN schema(s) to produce another JADN schema"}>
+                                    Transform
+                                </button>}
                         </div>
                     </div>
                 </Form>

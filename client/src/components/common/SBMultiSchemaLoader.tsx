@@ -1,6 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "reactstrap";
 import { getAllSchemas } from "reducers/util";
 import { sbToastError } from "./SBToast";
 import { faExclamationCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -37,7 +36,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     const sbFileUploaderRef = useRef<HTMLInputElement | null>(null);
 
     const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
-    const [toggle, setToggle] = useState({});
+    const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
 
     // Used by SBSelector, preloads with schemas selections
     const schemaOpts = useSelector(getAllSchemas);
@@ -166,9 +165,9 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
                         }}>
                             {schema.name} {schema.data == 'err' ? <FontAwesomeIcon style={{ color: 'red' }} title={'Invalid JADN. Please remove or fix schema.'} icon={faExclamationCircle}></FontAwesomeIcon> : ''}
                         </button>
-                        <Button id='removeFile' color="danger" className='btn-sm' onClick={() => onRemoveSchema(schema.name)}>
+                        <button id='removeFile' type='button' className='btn btn-sm btn-danger' onClick={() => onRemoveSchema(schema.name)}>
                             <FontAwesomeIcon icon={faTrash} />
-                        </Button>
+                        </button>
                     </h5>
                 </div>
 

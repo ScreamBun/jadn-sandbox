@@ -2,7 +2,7 @@ import { deleteFile } from 'actions/save';
 import React, { CSSProperties, Fragment, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
 import { info } from 'actions/util';
 import SBSpinner from './SBSpinner';
@@ -266,8 +266,9 @@ const SBSelect = (props: any) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    {isLoading ? <SBSpinner action={"Deleting"} /> : <Button color="danger" onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</Button>}
-                    <Button color="secondary" onClick={() => { setIsLoading(false); setToggleModal(false); }}>Cancel</Button>
+                    {isLoading ? <SBSpinner action={"Deleting"} /> :
+                        <button type='button' className='btn btn-danger' onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</button>}
+                    <button type='button' className='btn btn-secondary' onClick={() => { setIsLoading(false); setToggleModal(false); }}>Cancel</button>
                 </ModalFooter>
             </Modal >
         </>

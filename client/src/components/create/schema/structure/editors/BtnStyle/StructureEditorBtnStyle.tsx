@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import { flushSync } from 'react-dom';
 import {
-    Button, ButtonGroup, FormGroup, Input, Label
+    FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -264,9 +264,9 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                             </div>
                             <div className='col'>
-                                <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
+                                <button type='button' className="float-right btn btn-danger btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
                                     <FontAwesomeIcon icon={faMinusCircle} />
-                                </Button>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -278,16 +278,14 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             </FormGroup>
                             <FormGroup className="col-md-2">
                                 <Label>&nbsp;</Label>
-                                <ButtonGroup>
-                                    <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
-                                    <OptionsModal
-                                        optionValues={valueObj.options}
-                                        isOpen={modal}
-                                        optionType={valueObj.type}
-                                        toggleModal={toggleModal}
-                                        saveModal={saveModal}
-                                    />
-                                </ButtonGroup>
+                                <button type='button' className="btn btn-primary btn-sm" onClick={toggleModal}>Type Options</button>
+                                <OptionsModal
+                                    optionValues={valueObj.options}
+                                    isOpen={modal}
+                                    optionType={valueObj.type}
+                                    toggleModal={toggleModal}
+                                    saveModal={saveModal}
+                                />
                             </FormGroup>
                             <FormGroup className="col-md-6">
                                 <Label>Comment</Label>
@@ -332,12 +330,10 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                         </div>
                         <div className='col'>
-                            <ButtonGroup size="sm" className="float-right">
-                                <Button color="danger" onClick={removeAll}
-                                    title={`Delete ${valueObj.type}`}>
-                                    <FontAwesomeIcon icon={faMinusCircle} />
-                                </Button>
-                            </ButtonGroup>
+                            <button type='button' className="btn btn-danger btn-sm float-right" onClick={removeAll}
+                                title={`Delete ${valueObj.type}`}>
+                                <FontAwesomeIcon icon={faMinusCircle} />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -350,7 +346,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
 
                         <div className="col-md-2 mt-4 text-center">
-                            <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                            <button type='button' className="btn btn-primary btn-sm p-2" onClick={toggleModal}>Type Options</button>
                             <OptionsModal
                                 optionValues={valueObj.options}
                                 isOpen={modal}
@@ -398,10 +394,10 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             {!fieldCollapse && fields.length == 0 ? <p className='mb-2'> No fields to show</p> : ''}
 
                             {!fieldCollapse &&
-                                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block rounded-pill'
+                                <button type='button' onClick={onAddField} className='btn btn-sm btn-primary btn-block rounded-pill'
                                     title='Add Field'>
                                     <FontAwesomeIcon icon={faPlusSquare} />
-                                </Button>}
+                                </button>}
 
                         </div>
                     </div>

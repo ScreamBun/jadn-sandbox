@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import {
-    Button, ButtonGroup, FormGroup, Input, Label
+    FormGroup, Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
@@ -189,7 +189,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                         <SBCreatableSelect id="Type" name="type" value={valType} onChange={onSelectChange} data={types} isGrouped />
                     </div>
                     <div className="col-md-2">
-                        <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
+                        <button type='button' className='btn btn-sm btn-primary p-2' onClick={toggleModal}>Field Options</button>
                         <OptionsModal
                             optionValues={val.options}
                             isOpen={modal}
@@ -224,23 +224,22 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
         <>
             <div className="card border-secondary mb-2">
                 <div className="card-body px-2 py-2">
-                    <ButtonGroup size="sm" className="float-right">
-                        {!isFirst && <Button color="primary" onClick={() => changeIndex(value, dataIndex, dataIndex - 1)}
-                            title={`Move Field Up`}>
-                            <FontAwesomeIcon icon={faSquareCaretUp} />
-                        </Button>}
-                        {!isLast && <Button color="primary" onClick={() => changeIndex(value, dataIndex, dataIndex + 1)}
+                    <div className="btn-group float-right" role="group" aria-label="first button group">
+                        {!isFirst &&
+                            <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(value, dataIndex, dataIndex - 1)}
+                                title={`Move Field Up`}>
+                                <FontAwesomeIcon icon={faSquareCaretUp} />
+                            </button>}
+                        {!isLast && <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(value, dataIndex, dataIndex + 1)}
                             title={`Move Field Down`} >
                             <FontAwesomeIcon icon={faSquareCaretDown} />
-                        </Button>}
-                    </ButtonGroup>
-                    <ButtonGroup size="sm" className="float-right mr-1">
-                        <Button color="danger" className="rounded-circle"
-                            onClick={onRemoveItemClick}
-                            title={`Delete Field`}>
-                            <FontAwesomeIcon icon={faMinusCircle} />
-                        </Button>
-                    </ButtonGroup>
+                        </button>}
+                    </div>
+                    <button type='button' className='btn btn-sm btn-danger float-right mr-1 rounded-circle'
+                        onClick={onRemoveItemClick}
+                        title={`Delete Field`}>
+                        <FontAwesomeIcon icon={faMinusCircle} />
+                    </button>
 
                     {makeOptions()}
                 </div>

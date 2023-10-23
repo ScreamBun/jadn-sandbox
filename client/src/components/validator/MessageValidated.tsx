@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "reactstrap";
 import {
     escaped2cbor, format, hexify
 } from '../utils';
@@ -165,10 +164,13 @@ const MessageValidated = (props: any) => {
                     <div className='col-md float-end'>
                         <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
                         <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
-                        {isLoading ? <SBSpinner action={'Validating'} /> : <Button color="success" className={`float-right mr-1 btn-sm`} disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true} type="submit"
-                            title={'Validate the message against the given schema'}>
-                            Validate Message
-                        </Button>}
+                        {isLoading ? <SBSpinner action={'Validating'} /> :
+                            <button className='float-right mr-1 btn btn-success btn-sm'
+                                disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
+                                type="submit"
+                                title={'Validate the message against the given schema'}>
+                                Validate Message
+                            </button>}
                     </div>
                 </div>
             </div>

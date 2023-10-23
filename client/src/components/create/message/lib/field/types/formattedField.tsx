@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input } from "reactstrap";
+import { Input } from "reactstrap";
 import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
 import { v4 as uuid4 } from 'uuid';
 import dayjs from 'dayjs';

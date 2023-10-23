@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import {
-  Button, ButtonGroup, Input
+  Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -118,9 +118,9 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
         onBlur={onBlur}
       />
       <div className="input-group-append">
-        <Button color="danger" onClick={removeIndex} data-index={i}>
+        <button type='button' className='btn btn-danger' onClick={removeIndex} data-index={i}>
           <FontAwesomeIcon icon={faMinusSquare} />
-        </Button>
+        </button>
       </div>
     </div>
   ));
@@ -134,14 +134,14 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
               <span>{name} <small style={{ fontSize: '10px' }}> {description} </small></span>
             </div>
             <div className='col'>
-              <ButtonGroup size="sm" className="float-right">
-                <Button color="primary" onClick={addIndex} >
+              <div className="btn-group float-right" role="group" aria-label="button group">
+                <button type='button' className='btn btn-primary' onClick={addIndex} >
                   <FontAwesomeIcon icon={faPlusSquare} />
-                </Button>
-                <Button color="danger" onClick={removeAll} >
+                </button>
+                <button type='button' className='btn btn-danger' onClick={removeAll} >
                   <FontAwesomeIcon icon={faMinusCircle} />
-                </Button>
-              </ButtonGroup>
+                </button>
+              </div>
             </div>
           </div>
         </div>

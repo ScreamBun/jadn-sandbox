@@ -1,7 +1,6 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { forwardRef } from "react";
-import { Button } from "reactstrap";
 
 const SBFileUploader = forwardRef(function SBfileUploader(props: any, ref) {
     const { id, accept, onChange, onCancel, isMultiple } = props;
@@ -9,9 +8,9 @@ const SBFileUploader = forwardRef(function SBfileUploader(props: any, ref) {
     return (
         <>
             <input type="file" id={id} name={id} accept={accept} onChange={onChange} ref={ref} multiple={isMultiple ? true : false} />
-            <Button id="cancelFileUpload" color="secondary" size="sm" className="ml-0" onClick={onCancel} style={{ display: 'inline' }}>
+            <button id="cancelFileUpload" type='button' className="btn btn-sm btn-secondary ml-0" onClick={onCancel} style={{ display: 'inline' }}>
                 <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
-            </Button>
+            </button>
         </>
     );
 });

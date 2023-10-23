@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter
+  Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
@@ -113,9 +113,9 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
           {fieldOptions ? 'Field' : 'Type'} Options
         </div>
         <div className='float-right'>
-          <Button color="secondary" className='float-right btn-sm' title='Close' onClick={toggleModalhere}>
+          <button type='button' className='float-right btn btn-secondary btn-sm' title='Close' onClick={toggleModalhere}>
             <FontAwesomeIcon icon={faClose} />
-          </Button>
+          </button>
         </div>
       </ModalHeader>
       <ModalBody>
@@ -131,8 +131,8 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
         />
       </ModalBody>
       <ModalFooter>
-        <Button color="secondary" onClick={toggleModalhere}>Close</Button>
-        <Button color="success" onClick={saveData}>Save</Button>
+        <button type='button' className='btn btn-success' onClick={saveData}>Save</button>
+        <button type='button' className='btn btn-secondary' onClick={toggleModalhere}>Close</button>
       </ModalFooter>
     </Modal>
   );

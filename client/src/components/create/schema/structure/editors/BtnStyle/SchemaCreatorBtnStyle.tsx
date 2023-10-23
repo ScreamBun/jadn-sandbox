@@ -1,7 +1,7 @@
 import React, { useEffect, memo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
-import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
+import { TabContent, TabPane, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { faCheck, faCircleChevronDown, faCircleChevronUp, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Info, Types } from '../../structure';
@@ -269,11 +269,11 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='list-group-item p-2' key={k}>
                 {Info[k].key}
 
-                <Button color="info" onClick={() => onDrop(k)} outline className='float-right btn btn-sm'
+                <button type='button' onClick={() => onDrop(k)} className='float-right btn btn-sm btn-outline-info'
                     disabled={selectedFile?.value == 'file' ? true : false}
                     title='Add to Schema'>
                     <FontAwesomeIcon icon={faPlusSquare} />
-                </Button>
+                </button>
             </div>
         ));
     } else {
@@ -281,11 +281,11 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='list-group-item p-2' key={k}>
                 {Info[k].key}
 
-                <Button color="info" onClick={() => onDrop(k)} outline className='float-right btn btn-sm'
+                <button type='button' onClick={() => onDrop(k)} className='float-right btn btn-sm btn-outline-info'
                     disabled={selectedFile?.value == 'file' ? true : false}
                     title='Add to Schema'>
                     <FontAwesomeIcon icon={faPlusSquare} />
-                </Button>
+                </button>
             </div>
         ));
     }
@@ -294,11 +294,11 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         <div className='list-group-item p-2' key={k}>
             {Types[k].key}
 
-            <Button color="info" onClick={() => onDrop(k)} outline className='float-right btn btn-sm'
+            <button type='button' onClick={() => onDrop(k)} className='float-right btn btn-sm btn-outline-info'
                 disabled={selectedFile?.value == 'file' ? true : false}
                 title='Add to Schema'>
                 <FontAwesomeIcon icon={faPlusSquare} />
-            </Button>
+            </button>
         </div>
     ));
 
@@ -643,10 +643,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     <div className='col-sm-9'>
                         <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-right'} />
                         <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-right mr-1'} />
-                        <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="primary" title="View in JSON">View JSON</Button>
-                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary" title="View via Input Form">View Form</Button>
+                        <button type='button' onClick={() => setActiveView('schema')} className={`float-right btn btn-sm btn-primary mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
+                        <button type='button' onClick={() => setActiveView('creator')} className={`float-right btn btn-sm btn-primary mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
+                            <button id='validateJADNButton' type='button' className="float-right btn btn-sm btn-primary mr-1" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
                                     <span className="badge badge-pill badge-success">
@@ -656,7 +656,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         <FontAwesomeIcon icon={faXmark} />
                                     </span>)
                                 }
-                            </Button>
+                            </button>
                         }
                     </div>
                 </div>

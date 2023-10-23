@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { Input, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { sbToastError, sbToastInfo } from "./SBToast";
 import SBSpinner from "./SBSpinner";
 
@@ -71,9 +71,9 @@ const SBDownloadPDF = (props: any) => {
     return (
         <>
             {isLoading ? <SBSpinner color={'info'} /> :
-                <Button id={buttonId || 'downloadPDF'} title="Download PDF" color="info" className={'btn-sm ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
+                <button id={buttonId || 'downloadPDF'} type='button' title="Download PDF" className={'btn btn-sm btn-info ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
                     <FontAwesomeIcon icon={faFilePdf} />
-                </Button>}
+                </button>}
 
             <Modal isOpen={toggleDownloadDialog}>
                 <ModalHeader>
@@ -88,8 +88,8 @@ const SBDownloadPDF = (props: any) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="success" onClick={onDownloadClick}>Save</Button>
-                    <Button color="secondary" onClick={onCancel}>Cancel</Button>
+                    <button type='button' className='btn btn-sm btn-success' onClick={onDownloadClick}>Save</button>
+                    <button type='button' className='btn btn-sm btn-secondary' onClick={onCancel}>Cancel</button>
                 </ModalFooter>
             </Modal>
         </>

@@ -2,7 +2,7 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModalSize } from "components/create/schema/structure/editors/options/ModalSize";
 import React from "react";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 
 export const SBConfirmModal = (props: any) => {
@@ -37,17 +37,17 @@ export const SBConfirmModal = (props: any) => {
                         {title}
                     </div>
                     <div className='float-right'>
-                        <Button color="secondary" className='float-right btn-sm' title='Close' onClick={onCloseClick}>
+                        <button type='button' className='btn btn-sm btn-secondary float-right' title='Close' onClick={onCloseClick}>
                             <FontAwesomeIcon icon={faClose} />
-                        </Button>
+                        </button>
                     </div>
                 </ModalHeader>
                 <ModalBody>
                     <p>{message}</p>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={onNoClick}>No</Button>
-                    <Button color="success" onClick={onYesClick}>Yes</Button>
+                    <button type='button' className='btn btn-sm btn-success' onClick={onYesClick}>Yes</button>
+                    <button type='button' className='btn btn-sm btn-secondary' onClick={onNoClick}>No</button>
                 </ModalFooter>
             </Modal>
         </>

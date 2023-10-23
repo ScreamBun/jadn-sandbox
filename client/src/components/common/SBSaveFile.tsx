@@ -4,7 +4,7 @@ import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import { useDispatch } from "react-redux";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import {  Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { info } from "actions/util";
 import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
@@ -82,9 +82,13 @@ const SBSaveFile = (props: any) => {
 
     return (
         <>
-            {isLoading ? <SBSpinner color={"primary"} /> : <Button id={buttonId || 'saveFile'} title={toolTip || "Save File"} color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleSaveDialog(true); setFileNameInput(filename); }}>
-                <FontAwesomeIcon icon={faSave} />
-            </Button>
+            {isLoading ? <SBSpinner color={"primary"} /> :
+                <button type='button' id={buttonId || 'saveFile'}
+                    title={toolTip || "Save File"}
+                    className={'btn btn-primary btn-sm ' + customClass}
+                    onClick={() => { setToggleSaveDialog(true); setFileNameInput(filename); }}>
+                    <FontAwesomeIcon icon={faSave} />
+                </button>
             }
 
             <Modal isOpen={toggleSaveDialog} autoFocus={false} returnFocusAfterClose={false} >
@@ -114,15 +118,15 @@ const SBSaveFile = (props: any) => {
                         <ModalHeader>Confirm Overwrite</ModalHeader>
                         <ModalBody>File {filename} already exists. Please confirm that you would like to overwrite this file? </ModalBody>
                         <ModalFooter>
-                            <Button color="success" onClick={() => onSaveFile(data, ext, true)}>Confirm</Button>
-                            <Button color="secondary" onClick={() => { setIsLoading(false); setToggleOverwriteDialog(false); }}>Cancel</Button>
+                            <button type='button' className='btn btn-success' onClick={() => onSaveFile(data, ext, true)}>Confirm</button>
+                            <button type='button' className='btn btn-secondary' onClick={() => { setIsLoading(false); setToggleOverwriteDialog(false); }}>Cancel</button>
                         </ModalFooter>
                     </Modal>
 
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="success" onClick={() => onSaveFile(data, ext)}>Save</Button>
-                    <Button color="secondary" onClick={() => setToggleSaveDialog(false)}>Cancel</Button>
+                    <button type='button' className='btn btn-success' onClick={() => onSaveFile(data, ext)}>Save</button>
+                    <button type='button' className='btn btn-secondary' onClick={() => setToggleSaveDialog(false)}>Cancel</button>
                 </ModalFooter>
             </Modal>
         </>

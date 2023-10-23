@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { Button, ButtonGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getValidFormatOpts } from 'actions/format'
@@ -55,10 +55,10 @@ const SchemaGenerator = () => {
                                 </DropdownToggle>
                                 <DropdownMenu >
                                     <DropdownItem header>Editor Style</DropdownItem>
-                                    <ButtonGroup className='float-right'>
-                                        <Button onClick={() => { setIsButtonStyle(false); setIsDropdownOpen(false); }} className='btn btn-sm m-1' color={isButtonStyle == false ? 'success' : ''}>Drag and Drop</Button>
-                                        <Button onClick={() => { setIsButtonStyle(true); setIsDropdownOpen(false); }} className='btn btn-sm m-1' color={isButtonStyle == true ? 'success' : ''}>Button</Button>
-                                    </ButtonGroup>
+                                    <div className="btn-group float-right" role="group" aria-label="button group">
+                                        <button type='button' onClick={() => { setIsButtonStyle(false); setIsDropdownOpen(false); }} className={`btn btn-sm m-1 ${isButtonStyle == false ? 'btn-success' : ''}`}>Drag and Drop</button>
+                                        <button type='button' onClick={() => { setIsButtonStyle(true); setIsDropdownOpen(false); }} className={`btn btn-sm m-1 ${isButtonStyle == true ? 'btn-success' : ''}`}>Button</button>
+                                    </div>
                                 </DropdownMenu>
                             </Dropdown>
 

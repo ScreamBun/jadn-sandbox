@@ -4,7 +4,6 @@ import SBEditor from "./SBEditor";
 import SBDownloadFile from "./SBDownloadFile";
 import { faWindowMaximize, faFileImage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "reactstrap";
 import { convertToGvFullView, onDownloadSVGClick, onGVPopOutClick } from "../visualize/SBGvPreviewer";
 import { onHTMLPopOutClick } from "../visualize/SBHtmlPreviewer";
 import { onMDPopOutClick } from "../visualize/SBMarkdownPreviewer";
@@ -17,7 +16,7 @@ import SBDownloadPDF from "./SBDownloadPDF";
 //allow user to download or copy to clipboard
 const SBCollapseViewer = (props: any) => {
     const { data, pumlURL, setPumlURL, loadedSchema } = props;
-    const [toggle, setToggle] = useState({});
+    const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
 
     useEffect(() => {
         for (const obj of data) {
@@ -50,7 +49,7 @@ const SBCollapseViewer = (props: any) => {
             obj.err == false && <div className="card" key={i}>
                 <div className="card-header">
                     <h5 className="mb-0">
-                        <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
+                        <button id={`toggleMsg#${i}`} type="button" className="btn btn-link" onClick={() => onToggle(i)} >
                             {obj.fmt}
                         </button>
                         <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-right' />
@@ -58,40 +57,40 @@ const SBCollapseViewer = (props: any) => {
 
                         <span className={`${obj.fmt == 'HTML' ? '' : ' d-none'}`}>
                             <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
-                            <Button id="htmlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(obj.schema)}>
+                            <button id="htmlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onHTMLPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
-                            </Button>
+                            </button>
                         </span>
 
                         <span className={`${obj.fmt == 'MarkDown' ? '' : ' d-none'}`}>
                             <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
-                            <Button id="mdPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(obj.schema)}>
+                            <button id="mdPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onMDPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
-                            </Button>
+                            </button>
                         </span>
 
                         <span className={`${obj.fmt == 'JIDL' ? '' : ' d-none'}`}>
-                            <Button id="jidlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onPopOutClick(obj.schema)}>
+                            <button id="jidlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
-                            </Button>
+                            </button>
                         </span>
 
                         <span className={`${obj.fmt == 'PlantUML' ? '' : ' d-none'}`}>
-                            <Button id="pumlPngDownload" title="Download PNG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={() => onDownloadPNGClick(pumlURL)}>
+                            <button id="pumlPngDownload" type='button' title="Download PNG of the schema" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onDownloadPNGClick(pumlURL)}>
                                 <FontAwesomeIcon icon={faFileImage} />
-                            </Button>
-                            <Button id="pumlPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={() => onPopOutClick('', pumlURL)}>
+                            </button>
+                            <button id="pumlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onPopOutClick('', pumlURL)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
-                            </Button>
+                            </button>
                         </span>
 
                         <span className={`${obj.fmt == 'GraphViz' ? '' : ' d-none'}`}>
-                            <Button id="gvSvgDownload" title="Download SVG of the schema" color="info" className="btn-sm mr-1 float-right" onClick={onDownloadSVGClick}>
+                            <button id="gvSvgDownload" type='button' title="Download SVG of the schema" className="btn btn-sm btn-info mr-1 float-right" onClick={onDownloadSVGClick}>
                                 <FontAwesomeIcon icon={faFileImage} />
-                            </Button>
-                            <Button id="gvPopOut" title="View Schema in new window" color="info" className="btn-sm mr-1 float-right" onClick={onGVPopOutClick}>
+                            </button>
+                            <button id="gvPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={onGVPopOutClick}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
-                            </Button>
+                            </button>
                         </span>
                     </h5>
                 </div>

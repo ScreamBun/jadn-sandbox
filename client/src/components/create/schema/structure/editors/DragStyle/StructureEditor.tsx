@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import {
-  Button, ButtonGroup, Input
+  Input
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -237,11 +237,9 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         <div className="card border-secondary mb-3">
           <div className="card-header px-2 py-2">
             <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name} (${valueObj.type})`}</span>
-            <ButtonGroup size="sm" className="float-right">
-              <Button color="danger" onClick={removeAll} >
-                <FontAwesomeIcon icon={faMinusCircle} />
-              </Button>
-            </ButtonGroup>
+            <button type='button' className='btn btn-sm btn-danger float-right' onClick={removeAll} >
+              <FontAwesomeIcon icon={faMinusCircle} />
+            </button>
           </div>
           <div className="card-body px-2 py-2">
             <div className="row">
@@ -260,7 +258,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                       onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
-                    <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
+                    <button type='button' className='btn btn-primary btn-sm p-2' onClick={toggleModal}>Type Options</button>
                     <OptionsModal
                       optionValues={valueObj.options}
                       isOpen={modal}
@@ -316,9 +314,9 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
             </div>
             <div className='col'>
-              <Button color="danger" className="float-right btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
+              <button type='button' className="float-right btn btn-danger btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
                 <FontAwesomeIcon icon={faMinusCircle} />
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -339,7 +337,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
-                  <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
+                  <button type='button' className='btn btn-primary btn-sm p-2' onClick={toggleModal}>Type Options</button>
                   <OptionsModal
                     optionValues={valueObj.options}
                     isOpen={modal}
@@ -401,10 +399,10 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               }
 
               {!fieldCollapse ?
-                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block rounded-pill'
+                <button type='button' onClick={onAddField} className='btn btn-sm btn-primary btn-block rounded-pill'
                   title='Add Field'>
                   <FontAwesomeIcon icon={faPlusSquare} />
-                </Button>
+                </button>
                 : ''
               }
 

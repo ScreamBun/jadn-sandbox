@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
@@ -59,9 +59,10 @@ const SBDownloadFile = (props: any) => {
 
     return (
         <>
-            {isLoading ? <SBSpinner color={"primary"} /> : <Button id={buttonId || 'downloadFile'} title="Download File" color="primary" className={'btn-sm ' + customClass} onClick={() => { setToggleDownloadDialog(true); setFileNameInput(filename); }}>
-                <FontAwesomeIcon icon={faFileDownload} />
-            </Button>}
+            {isLoading ? <SBSpinner color={"primary"} /> :
+                <button id={buttonId || 'downloadFile'} type='button' title="Download File" className={'btn btn-sm btn-primary ' + customClass} onClick={() => { setToggleDownloadDialog(true); setFileNameInput(filename); }}>
+                    <FontAwesomeIcon icon={faFileDownload} />
+                </button>}
 
             <Modal isOpen={toggleDownloadDialog} autoFocus={false} returnFocusAfterClose={false}>
                 <ModalHeader>
@@ -85,8 +86,8 @@ const SBDownloadFile = (props: any) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="success" onClick={() => onDownloadClick(ext)}>Download</Button>
-                    <Button color="secondary" onClick={() => { setIsLoading(false); setToggleDownloadDialog(false); }}>Cancel</Button>
+                    <button type='button' className='btn btn-sm btn-success' onClick={() => onDownloadClick(ext)}>Download</button>
+                    <button type='button' className='btn btn-sm btn-secondary' onClick={() => { setIsLoading(false); setToggleDownloadDialog(false); }}>Cancel</button>
                 </ModalFooter>
             </Modal>
         </>

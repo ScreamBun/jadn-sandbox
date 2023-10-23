@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import {
-    Button, ButtonGroup, Input, Label
+    Input, Label
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -96,11 +96,9 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                         <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                     </div>
                     <div className='col'>
-                        <ButtonGroup size="sm" className="float-right">
-                            <Button color="danger" onClick={removeAll} title={`Delete ${valueObj.type}`}>
-                                <FontAwesomeIcon icon={faMinusCircle} />
-                            </Button>
-                        </ButtonGroup>
+                        <button type='button' className='btn btn-sm btn-danger float-right' onClick={removeAll} title={`Delete ${valueObj.type}`}>
+                            <FontAwesomeIcon icon={faMinusCircle} />
+                        </button>
                     </div>
                 </div>
             </div>
@@ -121,16 +119,14 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                     </div>
                     <div className="col-md-2 mt-4 text-center">
                         <Label className='mb-0'>&nbsp;</Label>
-                        <ButtonGroup>
-                            <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
-                            <OptionsModal
-                                optionValues={valueObj.options}
-                                isOpen={modal}
-                                optionType={valueObj.type}
-                                toggleModal={toggleModal}
-                                saveModal={saveModal}
-                            />
-                        </ButtonGroup>
+                        <button type='button' className='btn btn-primary p-2 btn-sm' onClick={toggleModal}>Type Options</button>
+                        <OptionsModal
+                            optionValues={valueObj.options}
+                            isOpen={modal}
+                            optionType={valueObj.type}
+                            toggleModal={toggleModal}
+                            saveModal={saveModal}
+                        />
                     </div>
                     <div className="col-md-6">
                         <Label className='mb-0'>Comment</Label>
