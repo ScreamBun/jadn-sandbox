@@ -1,9 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import { flushSync } from 'react-dom';
-import {
-    FormGroup
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { useAppSelector } from 'reducers';

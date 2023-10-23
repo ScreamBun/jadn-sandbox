@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from "react";
 import { useDrag } from 'react-dnd'
-import { ListGroupItem } from "reactstrap";
 import { faGripLines } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -51,10 +50,10 @@ export const DraggableKey = memo(function DraggableKey(props: DraggableKeyProps)
 
     return (
         <div ref={drag} style={containerStyle}>
-            <ListGroupItem title={'Drag and drop to add'} style={{ color: 'inherit', padding: '8px' }}>
+            <li className="list-group-item" title={'Drag and drop to add'} style={{ color: 'inherit', padding: '8px' }}>
                 {item}
                 <FontAwesomeIcon icon={faGripLines} className='float-right' />
-            </ListGroupItem>
+            </li>
         </div>
     );
 

@@ -1,7 +1,7 @@
 import React, { useEffect, memo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
-import { TabContent, TabPane, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
+import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
 import { faCheck, faCircleChevronDown, faCircleChevronUp, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Info, Types } from '../../structure';
@@ -692,14 +692,14 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         </Nav>
                                         <TabContent className='mb-2' activeTab={activeOpt}>
                                             <TabPane tabId='info'>
-                                                <ListGroup>
+                                                <ul className="list-group">
                                                     {infoKeys.length != 0 ? infoKeys : <div className='col'>No Info to add</div>}
-                                                </ListGroup>
+                                                </ul>
                                             </TabPane>
                                             <TabPane tabId='types'>
-                                                <ListGroup>
+                                                <ul className="list-group">
                                                     {typesKeys}
-                                                </ListGroup>
+                                                </ul>
                                             </TabPane>
                                         </TabContent>
                                     </div>
