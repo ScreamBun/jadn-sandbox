@@ -116,8 +116,9 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                         />
                     </div>
                     <div className="col-md-2 mt-4 text-center">
-                        <button type='button' className='btn btn-primary p-2 btn-sm' onClick={toggleModal}>Type Options</button>
+                        <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
                         <OptionsModal
+                            id={`${dataIndex}`}
                             optionValues={valueObj.options}
                             isOpen={modal}
                             optionType={valueObj.type}

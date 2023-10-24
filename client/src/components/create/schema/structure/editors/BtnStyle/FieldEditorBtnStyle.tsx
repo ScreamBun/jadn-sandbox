@@ -201,8 +201,9 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             isGrouped />
                     </div>
                     <div className="form-group col-md-2 d-flex">
-                        <button type='button' className='btn btn-sm btn-primary p-2 mt-auto' onClick={toggleModal}>Field Options</button>
+                        <button type='button' className='btn btn-primary btn-sm p-2 mt-auto' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Field Options</button>
                         <OptionsModal
+                            id={`${parentIndex}-${dataIndex}`}
                             optionValues={val.options}
                             isOpen={modal}
                             saveModal={saveModal}

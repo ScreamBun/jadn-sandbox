@@ -114,8 +114,9 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
-                  <button type='button' className='p-2 btn btn-primary btn-sm' onClick={toggleModal}>Type Options</button>
+                  <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
                   <OptionsModal
+                    id={`${dataIndex}`}
                     optionValues={valueObj.options}
                     isOpen={modal}
                     optionType={valueObj.type}
