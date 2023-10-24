@@ -255,15 +255,15 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                       onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
-                    <button type='button' className='btn btn-primary btn-sm p-2' onClick={toggleModal}>Type Options</button>
+                    <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
                     <OptionsModal
+                      id={`${dataIndex}`}
                       optionValues={valueObj.options}
                       isOpen={modal}
                       optionType={valueObj.type}
                       toggleModal={toggleModal}
                       saveModal={saveModal}
                       modalSize={ModalSize.lg}
-                      fieldOptions={false}
                     />
                   </div>
                   <div className="col-md-6">
@@ -334,8 +334,9 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
-                  <button type='button' className='btn btn-primary btn-sm p-2' onClick={toggleModal}>Type Options</button>
+                  <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
                   <OptionsModal
+                    id={`${dataIndex}`}
                     optionValues={valueObj.options}
                     isOpen={modal}
                     optionType={valueObj.type}
