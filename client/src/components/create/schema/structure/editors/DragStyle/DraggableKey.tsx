@@ -50,9 +50,9 @@ export const DraggableKey = memo(function DraggableKey(props: DraggableKeyProps)
 
     return (
         <div ref={drag} style={containerStyle}>
-            <li className="list-group-item" title={'Drag and drop to add'} style={{ color: 'inherit', padding: '8px' }}>
+            <li className="list-group-item d-flex justify-content-between align-items-center p-2" title={'Drag and drop to add'}>
                 {item}
-                <FontAwesomeIcon icon={faGripLines} className='float-right' />
+                <FontAwesomeIcon icon={faGripLines} />
             </li>
         </div>
     );

@@ -1,7 +1,6 @@
 import React, { useEffect, memo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
-import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
 import { faCheck, faXmark, faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { v4 as uuid4 } from 'uuid';
@@ -569,46 +568,50 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 </div>
             </div>
             <div className='card-body p-2'>
-                <TabContent activeTab={activeView}>
-                    <TabPane tabId='creator' className='container-fluid'>
+                <div className='tab-content mb-2'>
+                    <div className={`container-fluid tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
                         <div className='row'>
                             <div id="schema-options" className='col-sm-3 pl-0 card-body-scroller'>
                                 <div className='row'>
                                     <div className='col'>
-                                        <Nav pills className='pb-2'>
-                                            <NavItem className='mr-2'>
-                                                <NavLink
-                                                    className={activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                        <ul className="nav nav-pills pb-2" id="editorKeys" role="tablist">
+                                            <li className='nav-item mr-2'>
+                                                <a
+                                                    className={`nav-link 
+                                                    ${activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('info')}
                                                     title="meta data (about a schema package)"
+                                                    data-bs-toggle="pill"
                                                 >
                                                     Info
-                                                </NavLink>
-                                            </NavItem>
-                                            <NavItem>
-                                                <NavLink
-                                                    className={activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                                </a>
+                                            </li>
+                                            <li className='nav-item'>
+                                                <a
+                                                    className={`nav-link 
+                                                    ${activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('types')}
                                                     title="schema content (the information model)"
+                                                    data-bs-toggle="pill"
                                                 >
                                                     Types*
-                                                </NavLink>
-                                            </NavItem>
-                                        </Nav>
-                                        <TabContent className='mb-2' activeTab={activeOpt}>
-                                            <TabPane tabId='info'>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div className='tab-content mb-2'>
+                                            <div className={`tab-pane fade ${activeOpt == 'info' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
                                                 <ul className="list-group">
                                                     {infoKeys.length != 0 ? infoKeys : <div className='col'>No Info to add</div>}
                                                 </ul>
-                                            </TabPane>
-                                            <TabPane tabId='types'>
+                                            </div>
+                                            <div className={`tab-pane fade ${activeOpt == 'types' ? 'show active' : ''}`} id="types" role="tabpanel" aria-labelledby="types-tab" tabIndex={0}>
                                                 <ul className="list-group">
                                                     {typesKeys}
                                                 </ul>
-                                            </TabPane>
-                                        </TabContent>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='row'>
@@ -705,17 +708,17 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 }
                             </div>
                         </div>
-                    </TabPane>
+                    </div>
 
-                    <TabPane tabId='schema'>
+                    <div className={`tab-pane fade ${activeView == 'schema' ? 'show active' : ''}`} id="schema" role="tabpanel" aria-labelledby="schema-tab" tabIndex={0}>
                         <div className='card'>
                             <div className='card-body p-0'>
                                 <SBEditor data={generatedSchema} isReadOnly={true}></SBEditor>
                             </div>
                         </div>
-                    </TabPane>
+                    </div>
                     <SBScrollToTop divID='schema-editor' />
-                </TabContent >
+                </div >
             </div>
         </div>
     )

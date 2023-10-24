@@ -22,23 +22,22 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
                 <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
                     <div>
                         <span onClick={() => onStarClick(i)}>
-                            <FontAwesomeIcon icon={card.isStarred == true ? faStar : farStar} />
+                            <FontAwesomeIcon className='mr-1' icon={card.isStarred == true ? faStar : farStar} />
                         </span>
                         <a title={'Click to view'} href={`#${i}`}>{card.text}</a>
                     </div>
-                    <div>
-                        <div className="btn-group" role="group" aria-label="button group">
-                            {i == 0 ? '' :
-                                <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i - 1)}
-                                    title={`Move ${card.text} Up`}>
-                                    <FontAwesomeIcon icon={faSquareCaretUp} />
-                                </button>}
-                            {i == items.length - 1 ? '' :
-                                <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i + 1)}
-                                    title={`Move ${card.text} Down`}>
-                                    <FontAwesomeIcon icon={faSquareCaretDown} />
-                                </button>}
-                        </div>
+
+                    <div className="btn-group" role="group" aria-label="button group">
+                        {i == 0 ? '' :
+                            <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i - 1)}
+                                title={`Move ${card.text} Up`}>
+                                <FontAwesomeIcon icon={faSquareCaretUp} />
+                            </button>}
+                        {i == items.length - 1 ? '' :
+                            <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i + 1)}
+                                title={`Move ${card.text} Down`}>
+                                <FontAwesomeIcon icon={faSquareCaretDown} />
+                            </button>}
                     </div>
                 </div>
             </div>

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { NavItem, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 
 import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { toast, ToastContainer } from 'react-toastify';
@@ -12,21 +10,21 @@ import { useAppSelector } from '../../reducers';
 const AppLayout = () => {
 
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
-  const [navActive, setNavActive] = useState('home');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const version_info = useAppSelector((state => state.Util.version_info));
 
   const onToggleNav = () => {
     setIsNavCollapsed(isNavCollapsed => !isNavCollapsed);
   };
 
-  const onNavClick = (navClickEvent: any) => {
-    setNavActive(navClickEvent.currentTarget.textContent);
+  const onDropDownClick = () => {
+    setIsDropdownOpen(prev => !prev);
   };
 
   return (
     <div>
       <div className='fixed-top'>
-        <nav className='navbar navbar-expand-md navbar-dark bg-primary py-0'>
+        <nav className='navbar navbar-expand-md bg-primary py-0' data-bs-theme="dark">
           <button className='navbar-toggler collapsed' type='button' onClick={onToggleNav} data-toggle='collapse' data-target='#navToggle' aria-controls='navToggle' aria-expanded='false' aria-label='Toggle navigation'>
             <span className='navbar-toggler-icon' />
           </button>
@@ -36,42 +34,47 @@ const AppLayout = () => {
           </a>
           <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id='navToggle'>
             <ul className='nav navbar-nav'>
-              <NavItem>
-                <NavLink className='nav-link px-0' to={NAV_HOME} onClick={onNavClick}>Home</NavLink>
-              </NavItem>
-              <UncontrolledDropdown nav inNavbar setActiveFromChild>
-                <DropdownToggle className="nav-link px-0" nav caret size='sm' title='Create a JADN Schema or Message'>
+              <li className="nav-item">
+                <NavLink className='nav-link px-0' to={NAV_HOME}>Home</NavLink>
+              </li>
+
+              <li className="nav-item dropdown">
+                <NavLink className="nav-link dropdown-toggle px-0"
+                  to="create"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  data-bs-auto-close="true"
+                  aria-expanded="false"
+                  title='Create a JADN Schema or Message'
+                  onClick={() => setIsDropdownOpen(prevState => !prevState)} >
                   Creation
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem tag={Link} to={NAV_CREATE_SCHEMA} onClick={onNavClick} active={navActive == 'Schema Creation'}>
-                    Schema Creation
-                  </DropdownItem>
-                  <DropdownItem tag={Link} to={NAV_CREATE_MESSAGE} onClick={onNavClick} active={navActive == 'Message Creation'}>
-                    Message Creation
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-              <NavItem>
-                <NavLink className='nav-link px-0' to={NAV_CONVERT_SCHEMA} onClick={onNavClick} title='Convert a Schema into a visual representation'>Visualization</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className='nav-link px-0' to={NAV_TRANSLATE} onClick={onNavClick} title='Translate between JADN Schemas and other data types'>Translation</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} onClick={onNavClick} title='Validate a message against a provided schema'>Validation</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className='nav-link px-0' to={NAV_TRANSFORM} onClick={onNavClick} title='Merge two or more schemas into one'>Transformation</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className='nav-link px-0' to={NAV_GENERATE} onClick={onNavClick} title='Generate example messages based on a provided schema'>Generation</NavLink>
-              </NavItem>
+                </NavLink>
+                <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
+                  <li><NavLink className='dropdown-item nav-link' to={NAV_CREATE_SCHEMA} onClick={onDropDownClick}>Schema Creation</NavLink></li>
+                  <li><NavLink className='dropdown-item nav-link' to={NAV_CREATE_MESSAGE} onClick={onDropDownClick}>Message Creation</NavLink></li>
+                </ul>
+              </li>
+
+              <li className="nav-item">
+                <NavLink className='nav-link px-0' to={NAV_CONVERT_SCHEMA} title='Convert a Schema into a visual representation'>Visualization</NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className='nav-link px-0' to={NAV_TRANSLATE} title='Translate between JADN Schemas and other data types'>Translation</NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} title='Validate a message against a provided schema'>Validation</NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className='nav-link px-0' to={NAV_TRANSFORM} title='Merge two or more schemas into one'>Transformation</NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className='nav-link px-0' to={NAV_GENERATE} title='Generate example messages based on a provided schema'>Generation</NavLink>
+              </li>
             </ul>
             <ul className="nav navbar-nav navbar-right ml-auto">
-              <NavItem>
-                <NavLink className='nav-link px-0' to={NAV_ABOUT} onClick={onNavClick}>About</NavLink>
-              </NavItem>
+              <li className="nav-item">
+                <NavLink className='nav-link px-0' to={NAV_ABOUT} >About</NavLink>
+              </li>
             </ul>
           </div>
         </nav>
@@ -83,7 +86,7 @@ const AppLayout = () => {
       <br />
       <br />
 
-      <nav className='navbar navbar-dark bg-secondary fixed-bottom py-1'>
+      <nav className='navbar bg-secondary fixed-bottom py-1' data-bs-theme="dark">
         <ThemeChooser size='sm' />
         <div className='ml-auto'>
           <small className=''>{version_info}</small>

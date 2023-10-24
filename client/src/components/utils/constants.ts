@@ -6,14 +6,17 @@ export const LANG_MARKDOWN = 'md';
 export const LANG_XML = 'xml';
 
 export const NAV_HOME = '/home';
-export const NAV_VALIDATE_MESSAGE = '/validate-message';
+
+export const NAV_CREATE_MESSAGE = '/create/message';
+export const NAV_CREATE_SCHEMA = '/create/schema';
+
 export const NAV_CONVERT_SCHEMA = '/convert-schema';
-export const NAV_CREATE_MESSAGE = '/create-message';
-export const NAV_CREATE_SCHEMA = '/create-schema';
+export const NAV_TRANSLATE = '/translate-schema';
 
 export const NAV_TRANSFORM = '/transform-schema';
+
+export const NAV_VALIDATE_MESSAGE = '/validate-message';
 export const NAV_GENERATE = '/generate-message';
-export const NAV_TRANSLATE = '/translate-schema';
 
 export const NAV_ABOUT = '/about';
 

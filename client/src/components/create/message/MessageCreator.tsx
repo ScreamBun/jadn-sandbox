@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { TabContent, TabPane } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib/GenMsgLib'
 import { StandardFieldArray } from '../schema/interface'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
@@ -125,21 +124,21 @@ const MessageCreator = (props: any) => {
                 </div>
             </div>
             <div className='card-body-page' id="message-editor">
-                <TabContent activeTab={activeView}>
-                    <TabPane tabId='creator'>
+                <div className='tab-content mb-2'>
+                    <div className={`container-fluid tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
                         <div id='command-fields' className='p-2'>
                             {commandFields}
                             <div id="fieldDefs">
                                 {fieldDefs}
                             </div>
                         </div>
-                    </TabPane>
+                    </div>
 
-                    <TabPane tabId='message'>
+                    <div className={`tab-pane fade ${activeView == 'message' ? 'show active' : ''}`} id="message" role="tabpanel" aria-labelledby="message-tab" tabIndex={0}>
                         <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
-                    </TabPane>
+                    </div>
                     <SBScrollToTop divID='message-editor' />
-                </TabContent>
+                </div>
             </div>
         </div>
     )
