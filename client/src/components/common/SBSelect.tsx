@@ -2,7 +2,6 @@ import { deleteFile } from 'actions/save';
 import React, { CSSProperties, Fragment, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
 import { info } from 'actions/util';
 import SBSpinner from './SBSpinner';
@@ -256,21 +255,30 @@ const SBSelect = (props: any) => {
                 />
             }
 
-            <Modal isOpen={toggleModal} autoFocus={false} returnFocusAfterClose={false}>
-                <ModalHeader>
-                    Delete Custom Files
-                </ModalHeader>
-                <ModalBody>
-                    <div className="list-group">
-                        {customOptList && customOptList.length != 0 ? customOptList : 'No custom files exist'}
+            <div id="selectModal" className={`modal fade ${toggleModal ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
+                <div className={`modal-dialog modal-dialog-centered`} role='document'>
+                    <div className='modal-content'>
+                        <div className="modal-header">
+                            <h5 className='modal-title'> Delete Custom Files
+                            </h5>
+                            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={() => setToggleModal(false)} />
+                        </div>
+                        <div className="modal-body">
+                            <div className="list-group">
+                                {customOptList && customOptList.length != 0 ? customOptList : 'No custom files exist'}
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            {isLoading ? <SBSpinner action={"Deleting"} /> :
+                                <button type='button' className='btn btn-danger' onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</button>}
+                            <button type='button' className='btn btn-secondary' onClick={() => { setIsLoading(false); setToggleModal(false); }}>Cancel</button>
+                        </div>
                     </div>
-                </ModalBody>
-                <ModalFooter>
-                    {isLoading ? <SBSpinner action={"Deleting"} /> :
-                        <button type='button' className='btn btn-danger' onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</button>}
-                    <button type='button' className='btn btn-secondary' onClick={() => { setIsLoading(false); setToggleModal(false); }}>Cancel</button>
-                </ModalFooter>
-            </Modal >
+                </div>
+                <div className={`modal-backdrop fade ${toggleModal ? 'show' : ''}`} style={{
+                    zIndex: -1
+                }}></div>
+            </div>
         </>
     );
 }

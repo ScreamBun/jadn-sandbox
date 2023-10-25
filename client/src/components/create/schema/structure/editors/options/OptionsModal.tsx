@@ -105,14 +105,13 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
   return (
     <div id="optionsModal" className={`modal fade ${isOpen ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
       <div className={`modal-dialog modal-dialog-centered ${modalSize}`} role='document'>
-        <div className='modal-content'>
+        <div className='modal-content p-2'>
           <div className="modal-header">
             <h5 className='modal-title'>
               {fieldOptions ? 'Field' : 'Type'} Options
             </h5>
             <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={toggleModalhere} />
           </div>
-
           <div className="modal-body">
             <FieldOptionsEditor
               id={id}
@@ -127,7 +126,6 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
               optionType={optionType}
             />
           </div>
-
           <div className="modal-footer">
             <button type='button' className='btn btn-sm btn-success' onClick={saveData}>Save</button>
             <button type='button' className='btn btn-sm btn-secondary' data-bs-dismiss='modal' onClick={toggleModalhere}>Close</button>

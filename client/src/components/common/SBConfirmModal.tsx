@@ -1,9 +1,5 @@
-import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ModalSize } from "components/create/schema/structure/editors/options/ModalSize";
 import React from "react";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-
+import { ModalSize } from "components/create/schema/structure/editors/options/ModalSize";
 
 export const SBConfirmModal = (props: any) => {
     const {
@@ -31,25 +27,28 @@ export const SBConfirmModal = (props: any) => {
 
     return (
         <>
-            <Modal className={modalSize} isOpen={isOpen} autoFocus={false} returnFocusAfterClose={false}>
-                <ModalHeader>
-                    <div className='float-left'>
-                        {title}
+            <div id="confirmationModal" className={`modal fade ${isOpen ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
+                <div className={`modal-dialog modal-dialog-centered ${modalSize}`} role='document'>
+                    <div className='modal-content'>
+                        <div className="modal-header">
+                            <h5 className='modal-title'>
+                                {title}
+                            </h5>
+                            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={onCloseClick} />
+                        </div>
+                        <div className="modal-body">
+                            <p>{message}</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button type='button' className='btn btn-sm btn-success' onClick={onYesClick}>Yes</button>
+                            <button type='button' className='btn btn-sm btn-secondary' onClick={onNoClick}>No</button>
+                        </div>
                     </div>
-                    <div className='float-right'>
-                        <button type='button' className='btn btn-sm btn-secondary float-right' title='Close' onClick={onCloseClick}>
-                            <FontAwesomeIcon icon={faClose} />
-                        </button>
-                    </div>
-                </ModalHeader>
-                <ModalBody>
-                    <p>{message}</p>
-                </ModalBody>
-                <ModalFooter>
-                    <button type='button' className='btn btn-sm btn-success' onClick={onYesClick}>Yes</button>
-                    <button type='button' className='btn btn-sm btn-secondary' onClick={onNoClick}>No</button>
-                </ModalFooter>
-            </Modal>
+                </div>
+                <div className={`modal-backdrop fade ${isOpen ? 'show' : ''}`} style={{
+                    zIndex: -1
+                }}></div>
+            </div>
         </>
     )
 };
