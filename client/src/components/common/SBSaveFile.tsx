@@ -4,7 +4,6 @@ import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import { useDispatch } from "react-redux";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {  Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { info } from "actions/util";
 import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
@@ -91,44 +90,69 @@ const SBSaveFile = (props: any) => {
                 </button>
             }
 
-            <Modal isOpen={toggleSaveDialog} autoFocus={false} returnFocusAfterClose={false} >
-                <ModalHeader>
-                    Save File As...
-                    <div>
-                        <small className="text-muted"> {`Save file in pre-populated list of ${loc}`}</small>
-                    </div>
-                </ModalHeader>
-                <ModalBody>
-                    <div className="form-row">
-                        <label htmlFor="filename" className="col-sm-4 col-form-label">File name:</label>
-                        <div className="col-sm-8">
-                            <input id='filename' className="form-control" type="text" autoFocus={true} value={fileNameInput} onChange={onChange} />
+            <div id="saveFileModal" className={`modal fade ${toggleSaveDialog ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
+                <div className={`modal-dialog modal-dialog-centered`} role='document'>
+                    <div className='modal-content'>
+                        <div className="modal-header">
+                            <div className="form-col">
+                                <div className="form-row">
+                                    <h5 className='modal-title'>
+                                        Save File As...
+                                    </h5>
+                                </div>
+                                <div className="form-row">
+                                    <small className="text-muted"> {`Save file in pre-populated list of ${loc}`}</small>
+                                </div>
+                            </div>
+                            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={() => setToggleSaveDialog(false)} />
+                        </div>
+                        <div className="modal-body">
+                            <div className="form-row">
+                                <label htmlFor="filename" className="col-sm-4 col-form-label">File name:</label>
+                                <div className="col-sm-8">
+                                    <input id='filename' className="form-control" type="text" autoFocus={true} value={fileNameInput} onChange={onChange} />
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <label htmlFor="filename" className="col-sm-4 col-form-label">Save as type:</label>
+                                <div className="col-sm-8 my-auto">
+                                    {ext ? ext : 'jadn'}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type='button' className='btn btn-success' onClick={() => onSaveFile(data, ext)}>Save</button>
+                            <button type='button' className='btn btn-secondary' onClick={() => setToggleSaveDialog(false)}>Cancel</button>
                         </div>
                     </div>
-                    <div className="form-row">
-                        <label htmlFor="filename" className="col-sm-4 col-form-label">Save as type:</label>
-                        <div className="col-sm-8 my-auto">
-                            {ext ? ext : 'jadn'}
-                        </div>
-                    </div>
+                </div>
+                <div className={`modal-backdrop fade ${toggleSaveDialog ? 'show' : ''}`} style={{
+                    zIndex: -1
+                }}></div>
+            </div>
 
-                    <Modal
-                        isOpen={toggleOverwriteDialog}
-                    >
-                        <ModalHeader>Confirm Overwrite</ModalHeader>
-                        <ModalBody>File {filename} already exists. Please confirm that you would like to overwrite this file? </ModalBody>
-                        <ModalFooter>
+            <div id="confirmationOverwriteModal" className={`modal fade ${toggleOverwriteDialog ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
+                <div className={`modal-dialog modal-dialog-centered`} role='document'>
+                    <div className='modal-content'>
+                        <div className="modal-header">
+                            <h5 className='modal-title'>
+                                Confirm Overwrite
+                            </h5>
+                            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={() => setToggleOverwriteDialog(false)} />
+                        </div>
+                        <div className="modal-body">
+                            File <strong>{filename}</strong> already exists. Please confirm that you would like to overwrite this file?
+                        </div>
+                        <div className="modal-footer">
                             <button type='button' className='btn btn-success' onClick={() => onSaveFile(data, ext, true)}>Confirm</button>
                             <button type='button' className='btn btn-secondary' onClick={() => { setIsLoading(false); setToggleOverwriteDialog(false); }}>Cancel</button>
-                        </ModalFooter>
-                    </Modal>
-
-                </ModalBody>
-                <ModalFooter>
-                    <button type='button' className='btn btn-success' onClick={() => onSaveFile(data, ext)}>Save</button>
-                    <button type='button' className='btn btn-secondary' onClick={() => setToggleSaveDialog(false)}>Cancel</button>
-                </ModalFooter>
-            </Modal>
+                        </div>
+                    </div>
+                </div>
+                <div className={`modal-backdrop fade ${toggleOverwriteDialog ? 'show' : ''}`} style={{
+                    zIndex: -1
+                }}></div>
+            </div>
         </>
     );
 }
