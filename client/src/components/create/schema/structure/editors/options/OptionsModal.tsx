@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter
+  Button, Modal, ModalHeader, ModalBody
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
@@ -106,6 +106,10 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
     toggleModal();
   }
 
+  const clearData = () => {
+    setData(deserializeOptions([]));
+  }
+
   return (
     <Modal className={modalSize} isOpen={isOpen} autoFocus={false} returnFocusAfterClose={false}>
       <ModalHeader>
@@ -130,10 +134,11 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
           optionType={optionType}
         />
       </ModalBody>
-      <ModalFooter>
-        <Button color="secondary" onClick={toggleModalhere}>Close</Button>
-        <Button color="success" onClick={saveData}>Save</Button>
-      </ModalFooter>
+      <div className='modal-footer'>
+        <button type="button" color="secondary" className='btn btn-secondary mr-auto' onClick={clearData}>Clear</button>
+        <button type="button" color="secondary" className='btn btn-secondary' onClick={toggleModalhere}>Close</button>
+        <button type="button" color="success" className='btn btn-primary' onClick={saveData}>Save</button>
+      </div>
     </Modal>
   );
 });

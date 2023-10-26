@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
   Button, FormText
 } from 'reactstrap';
@@ -28,7 +28,7 @@ interface KeyValueEditorProps {
 const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) {
   const {
     name,
-    value,
+    value = '',
     description = '',
     options = [],
     placeholder,
@@ -41,6 +41,8 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     fieldColumns = 10
   } = props;
   const [valueData, setValueData] = useState(value);
+
+  useEffect(() => {setValueData(value)}, [value])
 
   const [val, setVal] = useState(value ? { value: value, label: value } : ''); //for select
   const onSelectChange = (e: Option) => {
