@@ -28,7 +28,7 @@ interface StructureEditorProps {
 }
 
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, change, dataIndex, config, collapseAllFields, remove } = props;
+  const { value, dataIndex, config, collapseAllFields, change, remove } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -309,7 +309,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <>
-      <div className={`card border-secondary mb-2`}>
+      <div className={`card border-secondary mb-2`} id={`${dataIndex}`}>
         <div className="card-header px-2 py-2" >
           <div className='row'>
             <div className='col'>

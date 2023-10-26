@@ -65,14 +65,16 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
-        setGeneratedSchema('');
-        setCardsState([]);
-        setSelectedFile(e);
         if (e == null) {
+            setSelectedFile(e);
+            setGeneratedSchema('');
+            setCardsState([]);
             return;
         } else if (e.value == "file") {
+            ref.current.value = '';
             ref.current?.click();
         } else {
+            setSelectedFile(e);
             setFileName(e.label.split('.')[0]);
             setIsLoading(true);
 
@@ -113,8 +115,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
-        setGeneratedSchema('');
-        setCardsState([]);
         if (e.target.files && e.target.files.length != 0) {
             setIsLoading(true);
             const file = e.target.files[0];
@@ -259,15 +259,19 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
+            var scrollSpyContentEl = document.getElementById(`${key}`)
+            scrollSpyContentEl?.scrollIntoView();
+
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             tmpTypes.push(tmpDef);
+            const dataIndex = generatedSchema.types?.length || 0;
 
             const new_card = {
                 id: self.crypto.randomUUID(),
-                index: generatedSchema.types?.length || 0,
+                index: dataIndex,
                 text: type_name,
                 value: tmpDef,
                 isStarred: false
@@ -281,6 +285,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
+            var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
+            scrollSpyContentEl?.scrollIntoView();
+
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
         }
@@ -290,14 +297,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         const updatedTypes = updatedCards.map(item => item.value);
         setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
         setCardsState(updatedCards);
-    };
-
-    const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
-        e.preventDefault();
-        const element = document.getElementById(text);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
     };
 
     const onStarClick = (updatedCards: DragItem[]) => {
@@ -337,6 +336,9 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         });
 
         setIsValidating(false);
+
+        var scrollSpyContentEl = document.getElementById(`${insertAt}`)
+        scrollSpyContentEl?.scrollIntoView();
     }
 
     const get_type_name = (types_to_serach: any[], name: string) => {
@@ -523,28 +525,25 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-sm-3'>
-                        <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
-                            <div className="input-group flex-nowrap">
-                                <SBSelect id={"schema-list"}
-                                    data={schemaOpts}
-                                    onChange={onFileSelect}
-                                    placeholder={'Select a schema...'}
-                                    loc={'schemas'}
-                                    value={selectedFile}
-                                    isSmStyle
-                                    isGrouped isFileUploader />
-                                <div className="input-group-btn ml-1">
-                                    <SBSaveFile
-                                        buttonId={'saveSchema'}
-                                        toolTip={'Save Schema'}
-                                        data={generatedSchema}
-                                        loc={'schemas'}
-                                        filename={fileName}
-                                        setDropdown={onFileSelect} />
-                                </div>
-                            </div>
+                        <div className="input-group">
+                            <SBSelect id={"schema-list"}
+                                data={schemaOpts}
+                                onChange={onFileSelect}
+                                placeholder={'Select a schema...'}
+                                loc={'schemas'}
+                                value={selectedFile}
+                                isSmStyle
+                                isGrouped isFileUploader />
+                            <SBSaveFile
+                                buttonId={'saveSchema'}
+                                toolTip={'Save Schema'}
+                                customClass={"float-right ml-1"}
+                                data={generatedSchema}
+                                loc={'schemas'}
+                                filename={fileName}
+                                setDropdown={onFileSelect} />
                         </div>
-                        <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
@@ -618,9 +617,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                             id={'schema-outline'}
                                             cards={cardsState}
                                             title={'Outline'}
-                                            //onTypesDrop={onTypesToOutlineDrop}
                                             onDrop={onOutlineDrop}
-                                            onClick={onOutlineClick}
                                             onStarToggle={onStarClick}
                                         ></SBOutline>
                                     </div>
@@ -695,8 +692,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                         {!typesCollapse &&
                                                             <Droppable onDrop={onSchemaDrop} acceptableType={"TypesKeys"} >
                                                                 {generatedSchema.types ?
-                                                                    <>{typesEditors}</>
-                                                                    :
+                                                                    <>{typesEditors}</> :
                                                                     <><p>To add schema content click and drag items from Types</p></>
                                                                 }
                                                             </Droppable>

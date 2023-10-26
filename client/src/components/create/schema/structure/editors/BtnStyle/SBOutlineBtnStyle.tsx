@@ -9,14 +9,13 @@ export interface SBOutlineBtnStyleProps {
     id: string;
     title: string;
     items: any[];
-    onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
     changeIndex: (v: TypeArray, dataIndex: number, i: number) => void;
     onStarClick: (index: number) => void;
 }
 
 const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
 
-    const { id = 'sb-outline', title, items = [], onClick, onStarClick, changeIndex } = props;
+    const { id = 'sb-outline', title, items = [], onStarClick, changeIndex } = props;
 
     const renderCards = items.map((card, i) => {
         return (
@@ -26,7 +25,7 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
                         <span onClick={() => onStarClick(i)}>
                             <FontAwesomeIcon icon={card.isStarred == true ? faStar : farStar} />
                         </span>
-                        <a title={'Click to view'} href="#" onClick={(e) => onClick(e, card.text)}>{card.text}</a>
+                        <a title={'Click to view'} href={`#${i}`}>{card.text}</a>
                     </div>
                     <div>
                         <ButtonGroup size="sm">

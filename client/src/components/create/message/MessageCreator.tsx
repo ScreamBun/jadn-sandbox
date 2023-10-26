@@ -105,16 +105,14 @@ const MessageCreator = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-6'>
-                        <div className="input-group">
+                        <div className="input-group flex-nowrap">
                             <SBSelect id={"command-list"}
                                 data={exportRecords}
                                 onChange={handleSelection}
                                 placeholder={'Select a message type...'}
                                 value={commandType} isSmStyle
                             />
-                            <div className="input-group-btn ml-1">
-                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-right mr-1"} ext={'json'} />
-                            </div>
+                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-right ml-1"} ext={'json'} />
                         </div>
                     </div>
                     <div className='col'>

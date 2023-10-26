@@ -16,6 +16,7 @@ import { sbToastError } from 'components/common/SBToast';
 import { Option } from 'components/common/SBSelect';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
+import { shallowEqual } from 'react-redux';
 
 // Interface
 interface FieldEditorProps {
@@ -35,10 +36,11 @@ interface FieldEditorProps {
 const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditorProps) {
     const { enumerated, value, dataIndex, config, editableID, isFirst, isLast, change, changeIndex, remove } = props;
 
+    const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
     const types = useAppSelector((state) => ({
-        base: state.Util.types.base,
-        schema: Object.keys(state.Util.types.schema) || {}
-    }));
+        base: (state.Util.types.base),
+        schema: schemaTypes
+    }), shallowEqual);
 
     const [modal, setModal] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
