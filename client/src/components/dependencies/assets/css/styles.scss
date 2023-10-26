@@ -246,3 +246,10 @@ small {
 @media (min-width: 1200px) {}
 
 @import '~bootstrap/scss/bootstrap.scss';
+
+// Color mode variables in _root.scss
+@include color-mode(dark) {
+    :root {
+        background-color: black;
+    }
+}

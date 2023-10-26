@@ -26,7 +26,6 @@
   - [HTML Parser](https://www.npmjs.com/package/html-react-parser) - HTML string to React
   - [Lodash](https://www.npmjs.com/package/lodash) - JSON and String parsing and querying utility
   - [React](https://reactjs.org/) - Core Framework
-    - [Theme Switching](https://www.npmjs.com/react-bootswatch-theme-switcher) - Bootstrap Theme Switcher
     - [Redux Binding](https://www.npmjs.com/package/connected-react-router) - Synchronize router state with redux store
     - [DOM](https://www.npmjs.com/package/react-dom) - Entry point to the DOM for React
     - [Drag and Drop](https://www.npmjs.com/package/react-dnd) - UI Drag and drop

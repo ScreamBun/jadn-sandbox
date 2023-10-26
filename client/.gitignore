@@ -35,7 +35,6 @@ yarn-error.log*
 !.yarn/versions
 
 # Yarn Custom cache
-!.yarn/cache/react-bootswatch-theme-switcher-*
 !.yarn/cache/react-json-generator-*
 
 ### Custom Ignore

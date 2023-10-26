@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useContext } from 'react';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -24,8 +24,9 @@ const ExampleGenerator = lazy(() => import('components/generate/ExampleGenerator
 const SchemaTransformer = lazy(() => import('components/transform/SchemaTransformer'));
 
 export const App = () => {
+
   return (
-    <div className="container-fluid" >
+    <div className="container-fluid">
 
       <Router>
         <Suspense fallback={<SBSpinner action={"Loading"} isDiv />}>

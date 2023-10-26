@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 
-import { ThemeChooser } from 'react-bootswatch-theme-switcher';
 import { toast, ToastContainer } from 'react-toastify';
 import favicon from '../dependencies/assets/img/jadn-favicon.png';
 import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE, NAV_ABOUT } from 'components/utils/constants';
 import { useAppSelector } from '../../reducers';
+import { ThemeContext } from './ThemeProvider';
 
 const AppLayout = () => {
 
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isThemeChooserOpen, setIsThemeChooserOpen] = useState(false);
+  const [theme, setTheme] = useContext(ThemeContext);
+
   const version_info = useAppSelector((state => state.Util.version_info));
 
   const onToggleNav = () => {
@@ -24,7 +27,7 @@ const AppLayout = () => {
   return (
     <div>
       <div className='fixed-top'>
-        <nav className='navbar navbar-expand-md bg-primary py-0' data-bs-theme="dark">
+        <nav className='navbar navbar-expand-md bg-primary py-0'>
           <button className='navbar-toggler collapsed' type='button' onClick={onToggleNav} data-toggle='collapse' data-target='#navToggle' aria-controls='navToggle' aria-expanded='false' aria-label='Toggle navigation'>
             <span className='navbar-toggler-icon' />
           </button>
@@ -46,7 +49,7 @@ const AppLayout = () => {
                   data-bs-auto-close="true"
                   aria-expanded="false"
                   title='Create a JADN Schema or Message'
-                  onClick={() => setIsDropdownOpen(prevState => !prevState)} >
+                  onClick={(e) => { e.preventDefault(); setIsDropdownOpen(prevState => !prevState) }} >
                   Creation
                 </NavLink>
                 <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
@@ -86,16 +89,30 @@ const AppLayout = () => {
       <br />
       <br />
 
-      <nav className='navbar bg-secondary fixed-bottom py-1' data-bs-theme="dark">
-        <ThemeChooser size='sm' />
+      <nav className='navbar bg-secondary fixed-bottom py-1'>
+
+        <div className="btn-group dropup">
+          <div id="bd-theme" className="dropdown" onClick={() => setIsThemeChooserOpen(prev => !prev)}>
+            <ul className={`dropdown-menu bottom-0 ${isThemeChooserOpen ? 'show' : ''}`}>
+              <li><button type="button" className={`dropdown-item d-flex align-items-center ${theme == "light" ? 'active' : ''}`} data-bs-theme-value="light"
+                onClick={() => { setTheme('light'); }}>Light</button></li>
+              <li><button type="button" className={`dropdown-item d-flex align-items-center ${theme == "dark" ? 'active' : ''}`} data-bs-theme-value="dark"
+                onClick={() => { setTheme('dark'); }}>Dark</button></li>
+            </ul>
+            <button id="bd-theme-text" className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Theme
+            </button>
+          </div>
+        </div>
+
         <div className='ml-auto'>
           <small className=''>{version_info}</small>
         </div>
       </nav>
 
       <ToastContainer position={toast.POSITION.TOP_RIGHT} autoClose={4000} theme='colored' />
-
     </div>
+
   );
 };
 
