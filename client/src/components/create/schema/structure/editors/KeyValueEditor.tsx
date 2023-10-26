@@ -159,7 +159,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                 </label>
                 <div className={`col-md-${fieldColumns} col-form-label d-flex align-items-start`}>
                   <input type={type} id={`editor-${placeholder}-${id}`} className={type} {...inputArgs} />
-                  <button type="button" title={`Remove ${placeholder}`} className="btn btn-danger ml-2" onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                  <button type="button" title={`Remove ${placeholder}`} className="btn btn-danger ms-2" onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
                 </div>
               </div>
             </div>

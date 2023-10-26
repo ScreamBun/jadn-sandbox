@@ -86,49 +86,49 @@ const SchemaVisualized = (props: any) => {
                     </div>
                     <div className='col-md-6'>
                         <div className={`${conversion.length == 1 && convertedSchema[0].schema ? '' : ' d-none'}`}>
-                            <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema[0].schema} customClass='float-right' />
-                            <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right${convertedSchema[0].schema && conversion.length <= 1 ? '' : ' d-none'}`} data={convertedSchema[0].schema} ext={conversion.length == 1 ? conversion[0].value : conversion} />
+                            <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema[0].schema} customClass='float-end' />
+                            <SBDownloadFile buttonId='schemaDownload' customClass={`me-1 float-end${convertedSchema[0].schema && conversion.length <= 1 ? '' : ' d-none'}`} data={convertedSchema[0].schema} ext={conversion.length == 1 ? conversion[0].value : conversion} />
 
                             <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'html' ? '' : ' d-none'}`}>
-                                <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={validSchema} />
-                                <button type='button' id="htmlPopOut" title="View Schema in new window" className="btn btn-info btn-sm mr-1 float-right" onClick={() => onHTMLPopOutClick(convertedSchema[0].schema)}>
+                                <SBDownloadPDF buttonId="htmlPdfDownload" customClass='me-1 float-end' data={validSchema} />
+                                <button type='button' id="htmlPopOut" title="View Schema in new window" className="btn btn-info btn-sm me-1 float-end" onClick={() => onHTMLPopOutClick(convertedSchema[0].schema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </button>
                             </div>
 
                             <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'md' ? '' : ' d-none'}`}>
-                                <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={validSchema} />
-                                <button type='button' id="mdPopOut" title="View Schema in new window" className="btn btn-info btn-sm mr-1 float-right" onClick={() => onMDPopOutClick(convertedSchema[0].schema)}>
+                                <SBDownloadPDF buttonId="mdPdfDownload" customClass='me-1 float-end' data={validSchema} />
+                                <button type='button' id="mdPopOut" title="View Schema in new window" className="btn btn-info btn-sm me-1 float-end" onClick={() => onMDPopOutClick(convertedSchema[0].schema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </button>
                             </div>
 
                             <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'jidl' ? '' : ' d-none'}`}>
-                                <button type='button' id="jidlPopOut" title="View Schema in new window" className="btn btn-info btn-sm mr-1 float-right" onClick={onPopOutClick}>
+                                <button type='button' id="jidlPopOut" title="View Schema in new window" className="btn btn-info btn-sm me-1 float-end" onClick={onPopOutClick}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </button>
                             </div>
 
                             <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'puml' ? '' : ' d-none'}`}>
-                                <button type='button' id="pumlPngDownload" title="Download PNG of the schema" className="btn btn-info btn-sm mr-1 float-right" onClick={() => onDownloadPNGClick(pumlURL)}>
+                                <button type='button' id="pumlPngDownload" title="Download PNG of the schema" className="btn btn-info btn-sm me-1 float-end" onClick={() => onDownloadPNGClick(pumlURL)}>
                                     <FontAwesomeIcon icon={faFileImage} />
                                 </button>
-                                <a role='button' id="pumlPopOut" title="View Schema in new window" className="btn btn-info btn-sm mr-1 float-right" target="_blank" href={pumlURL}>
+                                <a role='button' id="pumlPopOut" title="View Schema in new window" className="btn btn-info btn-sm me-1 float-end" target="_blank" href={pumlURL}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </a>
                             </div>
 
                             <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'gv' ? '' : ' d-none'}`}>
-                                <button type='button' id="gvSvgDownload" title="Download SVG of the schema" className="btn btn-info btn-sm mr-1 float-right" onClick={onDownloadSVGClick}>
+                                <button type='button' id="gvSvgDownload" title="Download SVG of the schema" className="btn btn-info btn-sm me-1 float-end" onClick={onDownloadSVGClick}>
                                     <FontAwesomeIcon icon={faFileImage} />
                                 </button>
-                                <button type='button' id="gvPopOut" title="View Schema in new window" className="btn btn-info btn-sm mr-1 float-right" onClick={onGVPopOutClick}>
+                                <button type='button' id="gvPopOut" title="View Schema in new window" className="btn btn-info btn-sm me-1 float-end" onClick={onGVPopOutClick}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </button>
                             </div>
 
                             <div className={`${((conversion.length == 1 ? conversion[0].value : conversion) != 'jidl') ? '' : ' d-none'}`}>
-                                <button type='button' id="SplitView" title="View Schema and Preview together" className="btn btn-info btn-sm mr-1 float-right" onClick={toggleSplitView}>
+                                <button type='button' id="SplitView" title="View Schema and Preview together" className="btn btn-info btn-sm me-1 float-end" onClick={toggleSplitView}>
                                     <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
                                 </button>
                             </div>
@@ -138,7 +138,7 @@ const SchemaVisualized = (props: any) => {
                             {isLoading ? <SBSpinner action={'Converting'} /> :
                                 <button type="submit"
                                     id="convertSchema"
-                                    className="btn btn-success btn-sm mr-1 float-right"
+                                    className="btn btn-success btn-sm me-1 float-end"
                                     disabled={Object.keys(validSchema).length != 0 && conversion.length != 0 ? false : true}
                                     title={"Convert the given JADN schema to the selected format"}>
                                     Convert

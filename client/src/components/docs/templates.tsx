@@ -27,7 +27,7 @@ export const CardTemplate: FunctionComponent<CardTemplateProps> = ({
       <div className='card-header'>
         <button
           id={`${underEscape(header)}-toggle`}
-          className="btn btn-info float-right"
+          className="btn btn-info float-end"
           type="button"
         >
           API

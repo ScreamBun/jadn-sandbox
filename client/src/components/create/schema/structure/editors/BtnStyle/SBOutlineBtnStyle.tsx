@@ -22,7 +22,7 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
                 <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
                     <div>
                         <span onClick={() => onStarClick(i)}>
-                            <FontAwesomeIcon className='mr-1' icon={card.isStarred == true ? faStar : farStar} />
+                            <FontAwesomeIcon className='me-1' icon={card.isStarred == true ? faStar : farStar} />
                         </span>
                         <a title={'Click to view'} href={`#${i}`}>{card.text}</a>
                     </div>

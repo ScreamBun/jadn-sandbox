@@ -629,7 +629,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                             <SBSaveFile
                                 buttonId={'saveSchema'}
                                 toolTip={'Save Schema'}
-                                customClass={"float-right ml-1"}
+                                customClass={"float-end ms-1"}
                                 data={generatedSchema}
                                 loc={'schemas'}
                                 filename={fileName}
@@ -640,12 +640,12 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                         </div>
                     </div>
                     <div className='col-sm-9'>
-                        <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-right'} />
-                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-right mr-1'} />
-                        <button type='button' onClick={() => setActiveView('schema')} className={`float-right btn btn-sm btn-primary mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
-                        <button type='button' onClick={() => setActiveView('creator')} className={`float-right btn btn-sm btn-primary mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
+                        <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-end'} />
+                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-end me-1'} />
+                        <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
+                        <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className="float-right btn btn-sm btn-primary mr-1" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
+                            <button id='validateJADNButton' type='button' className="float-end btn btn-sm btn-primary me-1" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
                                     <span className="badge badge-pill badge-success">
@@ -668,7 +668,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                 <div className='row'>
                                     <div className='col'>
                                         <ul className="nav nav-pills pb-2" id="editorKeys" role="tablist">
-                                            <li className='nav-item mr-2'>
+                                            <li className='nav-item me-2'>
                                                 <a
                                                     className={`nav-link 
                                                     ${activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
@@ -736,7 +736,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                             <div className='col'>
                                                                 <legend>
                                                                     <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                        className='float-right btn btn-sm text-light'
+                                                                        className='float-end btn btn-sm text-light'
                                                                         onClick={() => setInfoCollapse(!infoCollapse)}
                                                                         title={infoCollapse ? ' Show Info' : ' Hide Info'} />
                                                                 </legend>
@@ -768,17 +768,17 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                             <div className='col'>
                                                                 {generatedSchema.types &&
                                                                     <>
-                                                                        <div className="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
+                                                                        <div className="btn-group btn-group-sm float-end" role="group" aria-label="Basic example">
                                                                             <button type="button" className="btn btn-secondary" onClick={() => setTypesCollapse(!typesCollapse)}>
                                                                                 {typesCollapse ? 'Show Types' : ' Hide Types'}
                                                                                 <FontAwesomeIcon icon={typesCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                    className='float-right btn btn-sm'
+                                                                                    className='float-end btn btn-sm'
                                                                                     title={typesCollapse ? 'Show Types' : 'Hide Types'} />
                                                                             </button>
                                                                             <button type="button" className="btn btn-secondary" onClick={() => setAllFieldsCollapse(!allFieldsCollapse)}>
                                                                                 {allFieldsCollapse ? 'Show Fields' : 'Hide Fields'}
                                                                                 <FontAwesomeIcon icon={allFieldsCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                    className='float-right btn btn-sm'
+                                                                                    className='float-end btn btn-sm'
                                                                                     title={allFieldsCollapse ? 'Show Fields' : 'Hide Fields'} />
                                                                             </button>
                                                                         </div>

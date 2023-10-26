@@ -339,9 +339,9 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       <div className={`card border-secondary mb-2`} ref={previewRef} data-handler-id={handlerId} style={containerStyle}>
         <div className="card-body px-2 py-2">
           <div ref={dragRef} style={{ cursor: 'move' }}>
-            <FontAwesomeIcon className='float-right pt-1 pl-2 m-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+            <FontAwesomeIcon className='float-end pt-1 pl-2 m-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
             <a href="#" role="button" onClick={onRemoveItemClick}>
-              <FontAwesomeIcon className='float-right pt-1 m-1' color='red' title={`Delete Field`} icon={faMinusCircle}></FontAwesomeIcon>
+              <FontAwesomeIcon className='float-end pt-1 m-1' color='red' title={`Delete Field`} icon={faMinusCircle}></FontAwesomeIcon>
             </a>
           </div>
 

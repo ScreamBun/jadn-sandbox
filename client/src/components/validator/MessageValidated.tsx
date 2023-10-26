@@ -130,7 +130,7 @@ const MessageValidated = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-3'>
                         <SBSelect id={"message-list"}
-                            customClass={'mr-1'}
+                            customClass={'me-1'}
                             data={msgOpts}
                             onChange={onFileSelect}
                             placeholder={'Select a message...'}
@@ -144,7 +144,7 @@ const MessageValidated = (props: any) => {
 
                     <div className={`col-md-3`}>
                         <SBSelect id={"message-format-list"}
-                            customClass={'mr-1'}
+                            customClass={'me-1'}
                             data={validMsgFormat}
                             onChange={(e: Option) => setMsgFormat(e)}
                             value={msgFormat}
@@ -162,10 +162,10 @@ const MessageValidated = (props: any) => {
                     </div>
 
                     <div className='col-md float-end'>
-                        <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-right' />
-                        <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-right mr-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
+                        <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-end' />
+                        <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end me-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
                         {isLoading ? <SBSpinner action={'Validating'} /> :
-                            <button className='float-right mr-1 btn btn-success btn-sm'
+                            <button className='float-end me-1 btn btn-success btn-sm'
                                 disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
                                 type="submit"
                                 title={'Validate the message against the given schema'}>

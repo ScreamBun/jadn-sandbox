@@ -65,7 +65,7 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
               <span>{name} <small style={{ fontSize: '10px' }}> {description} </small></span>
             </div>
             <div className='col'>
-              <button type="button" className="btn btn-sm btn-danger float-right" onClick={removeAll} >
+              <button type="button" className="btn btn-sm btn-danger float-end" onClick={removeAll} >
                 <FontAwesomeIcon
                   icon={faMinusCircle}
                 />

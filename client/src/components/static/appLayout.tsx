@@ -74,7 +74,7 @@ const AppLayout = () => {
                 <NavLink className='nav-link px-0' to={NAV_GENERATE} title='Generate example messages based on a provided schema'>Generation</NavLink>
               </li>
             </ul>
-            <ul className="nav navbar-nav navbar-right ml-auto">
+            <ul className="nav navbar-nav navbar-right ms-auto">
               <li className="nav-item">
                 <NavLink className='nav-link px-0' to={NAV_ABOUT} >About</NavLink>
               </li>
@@ -105,7 +105,7 @@ const AppLayout = () => {
           </div>
         </div>
 
-        <div className='ml-auto'>
+        <div className='ms-auto'>
           <small className=''>{version_info}</small>
         </div>
       </nav>

@@ -49,7 +49,7 @@ const MessageGenerator = () => {
                     <div className='card'>
                         <div className='card-header p-2'>
                             <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Creation</span></h5>
-                            <button type='reset' className='btn btn-sm btn-danger float-right ml-1' onClick={onReset}>Reset</button>
+                            <button type='reset' className='btn btn-sm btn-danger float-end ms-1' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             <div className='row'>

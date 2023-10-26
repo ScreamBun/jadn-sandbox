@@ -37,7 +37,7 @@ const SBScrollToTop = (props: SBScrollToTopProps) => {
     }
 
     return (
-        /*    <small style={{ display: isVisible ? '' : 'none' }} className='mr-2 ml-2'>
+        /*    <small style={{ display: isVisible ? '' : 'none' }} className='me-2 ms-2'>
                <a title="Scroll to the top of the page" onClick={onScrollUp} href="#">[Scroll to Top]</a>
            </small> */
         <button id="scrollToTopBtn" className="btn btn-info scroll-top-btn"

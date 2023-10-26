@@ -404,7 +404,7 @@ const FormattedField = (props: any) => {
                                     }}
                                     style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                                 />
-                                <button type="button" className='btn btn-sm btn-primary float-right text-nowrap' onClick={createUUID}>Generate UUID</button>
+                                <button type="button" className='btn btn-sm btn-primary float-end text-nowrap' onClick={createUUID}>Generate UUID</button>
                             </div>
                         </div>
                         {err}

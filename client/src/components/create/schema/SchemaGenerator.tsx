@@ -48,8 +48,8 @@ const SchemaGenerator = () => {
                         <div className='card-header p-2'>
                             <h5 style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
 
-                            <div className='btn-group float-right'>
-                                <button type='reset' className='btn btn-sm btn-danger ml-1' onClick={onReset}>Reset</button>
+                            <div className='btn-group float-end'>
+                                <button type='reset' className='btn btn-sm btn-danger ms-1' onClick={onReset}>Reset</button>
                                 <div className='dropdown'>
                                     <button className="btn btn-sm btn-secondary"
                                         type="button"

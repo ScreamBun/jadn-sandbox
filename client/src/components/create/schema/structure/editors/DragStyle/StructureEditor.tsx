@@ -234,7 +234,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         <div className="card border-secondary mb-3">
           <div className="card-header px-2 py-2">
             <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name} (${valueObj.type})`}</span>
-            <button type='button' className='btn btn-sm btn-danger float-right' onClick={removeAll} >
+            <button type='button' className='btn btn-sm btn-danger float-end' onClick={removeAll} >
               <FontAwesomeIcon icon={faMinusCircle} />
             </button>
           </div>
@@ -311,7 +311,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
               <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
             </div>
             <div className='col'>
-              <button type='button' className="float-right btn btn-danger btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
+              <button type='button' className="float-end btn btn-danger btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
                 <FontAwesomeIcon icon={faMinusCircle} />
               </button>
             </div>
@@ -358,7 +358,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{valueObj.fields?.length}</span>
 
                 <span
-                  className="badge badge-pill badge-primary ml-1 cursor-pointer"
+                  className="badge badge-pill badge-primary ms-1 cursor-pointer"
                   title='Add Field'
                   onClick={onAddField}>
                   <FontAwesomeIcon icon={faPlusSquare} />
@@ -367,13 +367,13 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 <a href="#" role="button"
                   onClick={() => setFieldCollapse(!fieldCollapse)}>
                   <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                    className='float-right btn btn-sm'
+                    className='float-end btn btn-sm'
                     title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
                 </a>
 
                 {isEditableID ? <a href="#" role="button" onClick={sortFields}>
                   <FontAwesomeIcon icon={faArrowDown19}
-                    className='float-right btn btn-sm'
+                    className='float-end btn btn-sm'
                     title={'Sort Fields by ID'} />
                 </a> : ''}
 

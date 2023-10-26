@@ -257,16 +257,16 @@ const JADNSchemaLoader = (props: any) => {
                                 value={selectedFile}
                                 isGrouped isFileUploader
                                 isSmStyle />
-                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-right ml-1"} filename={fileName} setDropdown={setSelectedFile} />
+                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-end ms-1"} filename={fileName} setDropdown={setSelectedFile} />
                         </div>
                         <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
                     <div className="col">
-                        <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right mr-1' />
+                        <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-right mr-1' title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
+                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end me-1' title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
                                     <span className="badge badge-pill badge-success">
@@ -278,7 +278,7 @@ const JADNSchemaLoader = (props: any) => {
                                 }
                             </button>
                         }
-                        <button id='formatButton' type='button' className="btn btn-sm btn-primary float-right mr-1" onClick={onFormatClick}
+                        <button id='formatButton' type='button' className="btn btn-sm btn-primary float-end me-1" onClick={onFormatClick}
                             title='Attempts to Parse and Format.'>
                             <span className="m-1">Format JADN</span>
                         </button>

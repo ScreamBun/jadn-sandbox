@@ -87,13 +87,13 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
             <div className="card-header px-2 py-2">
                 <div className='row'>
                     <div className='col'>
-                        <a role="button" className="btn btn-sm btn-outline-primary mr-2 disabled" title='index'>
+                        <a role="button" className="btn btn-sm btn-outline-primary me-2 disabled" title='index'>
                             {dataIndex}
                         </a>
                         <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                     </div>
                     <div className='col'>
-                        <button type='button' className='btn btn-sm btn-danger float-right' onClick={removeAll} title={`Delete ${valueObj.type}`}>
+                        <button type='button' className='btn btn-sm btn-danger float-end' onClick={removeAll} title={`Delete ${valueObj.type}`}>
                             <FontAwesomeIcon icon={faMinusCircle} />
                         </button>
                     </div>

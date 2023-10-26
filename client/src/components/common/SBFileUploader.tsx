@@ -8,7 +8,7 @@ const SBFileUploader = forwardRef(function SBfileUploader(props: any, ref) {
     return (
         <>
             <input type="file" id={id} name={id} accept={accept} onChange={onChange} ref={ref} multiple={isMultiple ? true : false} />
-            <button id="cancelFileUpload" type='button' className="btn btn-sm btn-secondary ml-0" onClick={onCancel} style={{ display: 'inline' }}>
+            <button id="cancelFileUpload" type='button' className="btn btn-sm btn-secondary ms-0" onClick={onCancel} style={{ display: 'inline' }}>
                 <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
             </button>
         </>

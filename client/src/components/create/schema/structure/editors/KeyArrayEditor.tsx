@@ -88,7 +88,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
               <span>{name} <small style={{ fontSize: '10px' }}> {description} </small></span>
             </div>
             <div className='col'>
-              <div className="btn-group float-right" role="group" aria-label="button group">
+              <div className="btn-group float-end" role="group" aria-label="button group">
                 <button type='button' className='btn btn-sm btn-primary' onClick={addIndex} >
                   <FontAwesomeIcon icon={faPlusSquare} />
                 </button>

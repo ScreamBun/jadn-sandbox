@@ -147,13 +147,13 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                         </div>
                         <div className='col-md-3'>
                             <div className={`${transformedSchema && (transformedSchema.length == 1) && transformedSchema[0].schema != '' ? '' : ' d-none'}`}>
-                                <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-right`} />
-                                <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`mr-1 float-right`} filename={baseFile} ext={transformedSchema[0].schema_fmt || 'jadn'} />
-                                <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right`} filename={baseFile} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                                <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-end`} />
+                                <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`me-1 float-end`} filename={baseFile} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                                <SBDownloadFile buttonId='schemaDownload' customClass={`me-1 float-end`} filename={baseFile} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
                             </div>
 
                             {isLoading ? <SBSpinner action={'Transforming'} /> :
-                                <button type="submit" id="transformSchema" className="btn btn-success btn-sm mr-1 float-right"
+                                <button type="submit" id="transformSchema" className="btn btn-success btn-sm me-1 float-end"
                                     disabled={isTransformDisabled}
                                     title={"Process JADN schema(s) to produce another JADN schema"}>
                                     Transform
@@ -170,9 +170,9 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                                 <button className="btn btn-link" id={`toggleSchema#${i}`} type="button" onClick={() => onToggle(i)} >
                                     {output.schema_name}
                                 </button>
-                                <SBCopyToClipboard buttonId={`copySchema${i}`} data={output.schema} customClass='float-right' />
-                                <SBSaveFile data={output.schema} loc={'schemas'} customClass={"float-right mr-1"} filename={`${output.schema_name}`} ext={'jadn'} />
-                                <SBDownloadFile buttonId={`downloadSchema${i}`} customClass='mr-1 float-right' filename={`${output.schema_name}`} data={output.schema} ext={'jadn'} />
+                                <SBCopyToClipboard buttonId={`copySchema${i}`} data={output.schema} customClass='float-end' />
+                                <SBSaveFile data={output.schema} loc={'schemas'} customClass={"float-end me-1"} filename={`${output.schema_name}`} ext={'jadn'} />
+                                <SBDownloadFile buttonId={`downloadSchema${i}`} customClass='me-1 float-end' filename={`${output.schema_name}`} data={output.schema} ext={'jadn'} />
                             </h5>
                         </div>
 

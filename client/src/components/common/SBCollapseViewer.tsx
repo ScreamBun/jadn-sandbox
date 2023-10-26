@@ -52,43 +52,43 @@ const SBCollapseViewer = (props: any) => {
                         <button id={`toggleMsg#${i}`} type="button" className="btn btn-link" onClick={() => onToggle(i)} >
                             {obj.fmt}
                         </button>
-                        <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-right' />
-                        <SBDownloadFile buttonId={`download${i}`} customClass='mr-1 float-right' data={obj.schema} ext={obj.fmt_ext} />
+                        <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-end' />
+                        <SBDownloadFile buttonId={`download${i}`} customClass='me-1 float-end' data={obj.schema} ext={obj.fmt_ext} />
 
                         <span className={`${obj.fmt == 'HTML' ? '' : ' d-none'}`}>
-                            <SBDownloadPDF buttonId="htmlPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
-                            <button id="htmlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onHTMLPopOutClick(obj.schema)}>
+                            <SBDownloadPDF buttonId="htmlPdfDownload" customClass='me-1 float-end' data={loadedSchema} />
+                            <button id="htmlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={() => onHTMLPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>
 
                         <span className={`${obj.fmt == 'MarkDown' ? '' : ' d-none'}`}>
-                            <SBDownloadPDF buttonId="mdPdfDownload" customClass='mr-1 float-right' data={loadedSchema} />
-                            <button id="mdPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onMDPopOutClick(obj.schema)}>
+                            <SBDownloadPDF buttonId="mdPdfDownload" customClass='me-1 float-end' data={loadedSchema} />
+                            <button id="mdPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={() => onMDPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>
 
                         <span className={`${obj.fmt == 'JIDL' ? '' : ' d-none'}`}>
-                            <button id="jidlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onPopOutClick(obj.schema)}>
+                            <button id="jidlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={() => onPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>
 
                         <span className={`${obj.fmt == 'PlantUML' ? '' : ' d-none'}`}>
-                            <button id="pumlPngDownload" type='button' title="Download PNG of the schema" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onDownloadPNGClick(pumlURL)}>
+                            <button id="pumlPngDownload" type='button' title="Download PNG of the schema" className="btn btn-sm btn-info me-1 float-end" onClick={() => onDownloadPNGClick(pumlURL)}>
                                 <FontAwesomeIcon icon={faFileImage} />
                             </button>
-                            <button id="pumlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={() => onPopOutClick('', pumlURL)}>
+                            <button id="pumlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={() => onPopOutClick('', pumlURL)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>
 
                         <span className={`${obj.fmt == 'GraphViz' ? '' : ' d-none'}`}>
-                            <button id="gvSvgDownload" type='button' title="Download SVG of the schema" className="btn btn-sm btn-info mr-1 float-right" onClick={onDownloadSVGClick}>
+                            <button id="gvSvgDownload" type='button' title="Download SVG of the schema" className="btn btn-sm btn-info me-1 float-end" onClick={onDownloadSVGClick}>
                                 <FontAwesomeIcon icon={faFileImage} />
                             </button>
-                            <button id="gvPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info mr-1 float-right" onClick={onGVPopOutClick}>
+                            <button id="gvPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={onGVPopOutClick}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>

@@ -133,7 +133,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
       <div className='card-body list-group-item d-flex justify-content-between align-items-center' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
         <div>
           <span onClick={onToggleStar}>
-            <FontAwesomeIcon className='mr-1' icon={toggleStar ? faStar : farStar} />
+            <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
           </span>
           <a title={'Click to view'} href={`#${index}`}>{text}</a>
         </div>

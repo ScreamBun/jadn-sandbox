@@ -270,7 +270,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                     <div className='card-header p-2'>
                         <button
                             type='button'
-                            className={`btn-danger float-right btn p-1${min ? ' disabled' : ''}`}
+                            className={`btn-danger float-end btn p-1${min ? ' disabled' : ''}`}
                             onClick={() => removeOpt(i)}
                         >
                             <FontAwesomeIcon icon={faMinusSquare} size="lg" />

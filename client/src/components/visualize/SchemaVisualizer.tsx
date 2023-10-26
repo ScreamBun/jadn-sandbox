@@ -109,7 +109,7 @@ const SchemaVisualizer = () => {
                     <div className='card'>
                         <div className='card-header p-2'>
                             <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Visualization</span></h5>
-                            <button type='reset' className='btn btn-sm btn-danger float-right' onClick={onReset}>Reset</button>
+                            <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             <form onSubmit={submitForm}>
