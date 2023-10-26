@@ -23,7 +23,9 @@
 $max-width: 1400px;
 $max-scroll: 20em;
 
-/* Custom CSS Styles */
+/* Custom Styles */
+/* Use frugally, last resort, bootstrap first */
+
 body {
     padding-top: 75px;
 }
@@ -33,6 +35,10 @@ body {
     position: fixed;
     bottom: 1em;
     right: 1em;
+}
+
+.input-group {
+    flex-wrap: nowrap;
 }
 
 /* Pretty JSON Module theme */
@@ -118,8 +124,12 @@ small {
     height: 100%;
 }  */
 
-/* Custom Styles */
-/* Use frugally, last resort, bootstrap first */
+.smSelectStyle {
+
+    display: block;
+    width: 100%;
+}
+
 #command-fields {
     .form-group {
         margin: .5em;

@@ -66,7 +66,6 @@ const defaultStyle = {
 const smStyle = {
     control: base => ({
         ...base,
-        // height: 30,
         minHeight: 30,
         cursor: 'pointer'
     }),
@@ -84,10 +83,20 @@ const smStyle = {
         margin: '0px',
     }),
 
+    dropdownIndicator: (provided, state) => ({
+        ...provided,
+        padding: '0',
+    }),
+
     indicatorsContainer: (provided, state) => ({
         ...provided,
-        minHeight: 30,
+        padding: '0',
     }),
+
+    clearIndicator: (provided, state) => ({
+        ...provided,
+        padding: '0',
+    }),    
 
     option: (styles, state) => ({
         ...styles,
@@ -224,34 +233,38 @@ const SBSelect = (props: any) => {
         <>
             <>
                 {isFileUploader ?
-                    <Select<Option, false, GroupedOption>
-                        id={id}
-                        placeholder={placeholder}
-                        options={opts}
-                        formatGroupLabel={formatGroupLabel}
-                        isClearable
-                        onChange={onChange}
-                        menuPortalTarget={document.body}
-                        className={customClass}
-                        styles={isSmStyle ? smStyle : defaultStyle}
-                        isMulti={isMultiSelect}
-                        components={{ Menu }}
-                        value={value}
-                    />
+                    <div className="smSelectStyle">
+                        <Select<Option, false, GroupedOption>
+                            id={id}
+                            placeholder={placeholder}
+                            options={opts}
+                            formatGroupLabel={formatGroupLabel}
+                            isClearable
+                            onChange={onChange}
+                            menuPortalTarget={document.body}
+                            className={customClass}
+                            styles={isSmStyle ? smStyle : defaultStyle}
+                            isMulti={isMultiSelect}
+                            components={{ Menu }}
+                            value={value}
+                        />
+                    </div>
                     :
-                    <Select<Option, false, GroupedOption>
-                        id={id}
-                        placeholder={placeholder}
-                        options={opts}
-                        formatGroupLabel={formatGroupLabel}
-                        isClearable
-                        onChange={onChange}
-                        menuPortalTarget={document.body}
-                        className={customClass}
-                        styles={isSmStyle ? smStyle : defaultStyle}
-                        isMulti={isMultiSelect}
-                        value={value}
-                    />
+                    <div className="smSelectStyle">
+                        <Select<Option, false, GroupedOption>
+                            id={id}
+                            placeholder={placeholder}
+                            options={opts}
+                            formatGroupLabel={formatGroupLabel}
+                            isClearable
+                            onChange={onChange}
+                            menuPortalTarget={document.body}
+                            className={customClass}
+                            styles={isSmStyle ? smStyle : defaultStyle}
+                            isMulti={isMultiSelect}
+                            value={value}
+                        />
+                    </div>
                 }
 
             </>
