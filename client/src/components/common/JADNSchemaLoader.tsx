@@ -251,7 +251,7 @@ const JADNSchemaLoader = (props: any) => {
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-md-6">
-                        <div className="input-group">
+                        <div className="input-group flex-nowrap">
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
                                 loc={'schemas'}
