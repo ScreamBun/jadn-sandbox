@@ -89,9 +89,9 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     }
                 }) :
             [defaultInsertIdx];
-        const optionValue = generatedSchema.types ? insertAt.value : defaultInsertIdx.value;
+        const optionValue = generatedSchema.types && insertAt ? insertAt.value : defaultInsertIdx.value;
         const selectedOption = indexOpts.filter((option: Option) => option.value == optionValue);
-        setInsertAt(selectedOption[0]);
+        setInsertAt(selectedOption ? selectedOption[0] : defaultInsertIdx);
     }, [generatedSchema])
 
 
@@ -400,30 +400,31 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                 value: tmpDef,
                 isStarred: false
             }
-
-            if (insertAt.value == "0") {
-                new_card.index = 0;
-                tmpTypes.unshift(tmpDef);
-                tmpCards.unshift(new_card);
-
-            } else if (insertAt.value == "end") {
+            console.log(insertAt)
+            if (!insertAt || (insertAt && insertAt.value == "end")) {
                 tmpTypes.push(tmpDef);
                 tmpCards.push(new_card);
-
             } else {
-                const idx = parseInt(insertAt.value);
-                new_card.index = idx;
+                if (insertAt.value == "0") {
+                    new_card.index = 0;
+                    tmpTypes.unshift(tmpDef);
+                    tmpCards.unshift(new_card);
 
-                tmpTypes = [
-                    ...tmpTypes.slice(0, idx),
-                    tmpDef,
-                    ...tmpTypes.slice(idx)
-                ];
-                tmpCards = [
-                    ...tmpCards.slice(0, idx),
-                    new_card,
-                    ...tmpCards.slice(idx)
-                ];
+                } else {
+                    const idx = parseInt(insertAt.value);
+                    new_card.index = idx;
+
+                    tmpTypes = [
+                        ...tmpTypes.slice(0, idx),
+                        tmpDef,
+                        ...tmpTypes.slice(idx)
+                    ];
+                    tmpCards = [
+                        ...tmpCards.slice(0, idx),
+                        new_card,
+                        ...tmpCards.slice(idx)
+                    ];
+                }
             }
 
             let updatedSchema = {
