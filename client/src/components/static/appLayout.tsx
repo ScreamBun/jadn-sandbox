@@ -41,7 +41,10 @@ const AppLayout = () => {
                 <NavLink className='nav-link px-0' to={NAV_HOME}>Home</NavLink>
               </li>
 
-              <li className="nav-item dropdown">
+              <li className="nav-item dropdown"
+                onMouseEnter={() => setIsDropdownOpen(true)}
+                onMouseLeave={() => setIsDropdownOpen(false)}
+              >
                 <NavLink className="nav-link dropdown-toggle px-0"
                   to="create"
                   role="button"
@@ -49,10 +52,11 @@ const AppLayout = () => {
                   data-bs-auto-close="true"
                   aria-expanded="false"
                   title='Create a JADN Schema or Message'
-                  onClick={(e) => { e.preventDefault(); setIsDropdownOpen(prevState => !prevState) }} >
+                  onClick={(e) => e.preventDefault()}
+                >
                   Creation
                 </NavLink>
-                <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
+                <ul className={`dropdown-menu m-0 ${isDropdownOpen ? 'show' : ''}`}>
                   <li><NavLink className='dropdown-item nav-link' to={NAV_CREATE_SCHEMA} onClick={onDropDownClick}>Schema Creation</NavLink></li>
                   <li><NavLink className='dropdown-item nav-link' to={NAV_CREATE_MESSAGE} onClick={onDropDownClick}>Message Creation</NavLink></li>
                 </ul>
