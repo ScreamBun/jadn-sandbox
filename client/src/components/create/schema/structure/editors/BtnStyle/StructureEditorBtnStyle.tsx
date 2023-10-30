@@ -16,6 +16,7 @@ import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
 import FieldEditorBtnStyle from './FieldEditorBtnStyle';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
+import { shallowEqual } from 'react-redux';
 
 // Interface
 interface StructureEditorProps {
@@ -30,7 +31,7 @@ interface StructureEditorProps {
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
     const { value, dataIndex, config, collapseAllFields, change, remove } = props;
-    const predefinedTypes = useAppSelector((state) => [...state.Util.types.base]);
+    const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -331,7 +332,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
     return (
         <>
-            <div className="card border-secondary mb-3">
+            <div className="card border-secondary mb-3" id={`${dataIndex}`}>
                 <div className="card-header px-2 py-2">
 
                     <div className='row'>

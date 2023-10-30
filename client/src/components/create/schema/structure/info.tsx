@@ -12,8 +12,8 @@ interface EditorProps {
   dataIndex: number;
   description?: string;  // eslint-disable-line react/require-default-props
   placeholder: string;
-  change?: (val: string | Record<string, any>, idx: number) => void;  // eslint-disable-line react/require-default-props
-  remove?: (idx: string) => void;  // eslint-disable-line react/require-default-props
+  change: (val: any) => void;  // eslint-disable-line react/require-default-props
+  remove: (idx: string) => void;  // eslint-disable-line react/require-default-props
   config: InfoConfig; //defaults for Config Object Editor
 }
 
@@ -133,9 +133,6 @@ export default {
         id="Exports"
         name="Exports"
         description="Type definitions exported by this module"
-        fieldColumns={10}
-        required={false}
-        removable={true}
       />
     )
   },
