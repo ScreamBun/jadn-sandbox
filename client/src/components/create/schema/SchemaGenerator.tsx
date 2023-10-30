@@ -62,7 +62,7 @@ const SchemaGenerator = () => {
                                         onClick={() => setIsDropdownOpen(prevState => !prevState)} >
                                         <FontAwesomeIcon icon={faEllipsisV} />
                                     </button>
-                                    <ul className={`dropdown-menu dropdown-menu-right ${isDropdownOpen ? 'show' : ''}`} aria-labelledby="dropdownMenuButton">
+                                    <ul className={`dropdown-menu dropdown-menu-end ${isDropdownOpen ? 'show' : ''}`} aria-labelledby="dropdownMenuButton">
                                         <li><h6 className="dropdown-header">Editor Style</h6></li>
                                         <li><a href="#" onClick={() => { setIsButtonStyle(false); setIsDropdownOpen(false); }} className={`dropdown-item ${isButtonStyle == false ? 'active' : ''}`}>Drag and Drop</a></li>
                                         <li><a href="#" onClick={() => { setIsButtonStyle(true); setIsDropdownOpen(false); }} className={`dropdown-item ${isButtonStyle == true ? 'active' : ''}`}>Button</a></li>

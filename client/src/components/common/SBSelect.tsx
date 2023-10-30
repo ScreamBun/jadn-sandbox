@@ -104,7 +104,7 @@ const smStyle = {
     })
 };
 
-const getSelectTheme = (theme: 'dark' | 'light') => {
+export const getSelectTheme = (theme: 'dark' | 'light') => {
     if (theme == 'dark') {
         return ({
             neutral0: 'black',

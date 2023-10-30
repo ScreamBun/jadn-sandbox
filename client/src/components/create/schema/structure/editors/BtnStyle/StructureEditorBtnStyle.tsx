@@ -268,12 +268,12 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                         </div>
                     </div>
                     <div className="card-body px-2 py-2">
-                        <div className="form-row m-0">
-                            <div className="form-group col-md-4">
+                        <div className="row m-0">
+                            <div className="col-md-4">
                                 <label htmlFor={`name-${dataIndex}`} >Name</label>
                                 <input id={`name-${dataIndex}`} name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                             </div>
-                            <div className="form-group col-md-2">
+                            <div className="col-md-2">
                                 <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
                                 <OptionsModal
                                     id={`${dataIndex}`}
@@ -284,7 +284,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                     saveModal={saveModal}
                                 />
                             </div>
-                            <div className="form-group col-md-6">
+                            <div className="col-md-6">
                                 <label htmlFor={`comment-${dataIndex}`} >Comment</label>
                                 <input id={`comment-${dataIndex}`} name="comment" type="textarea" placeholder="Comment" className='text-area-w100 form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                             </div>
@@ -335,12 +335,12 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                     </div>
                 </div>
                 <div className="card-body px-2 py-2">
-                    <div className="form-row">
-                        <div className="form-group col-md-4">
+                    <div className="row">
+                        <div className="col-md-4">
                             <label htmlFor={`name-${dataIndex}`} className='mb-0'>Name</label>
                             <input id={`name-${dataIndex}`} name="name" type="text" placeholder="Name" maxLength={64} className='form-control' value={valueObj.name} onChange={onChange} onBlur={onBlur} />
                         </div>
-                        <div className="form-group col-md-2 mt-4 text-center">
+                        <div className="col-md-2 mt-4 text-center">
                             <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
                             <OptionsModal
                                 id={`${dataIndex}`}
@@ -351,7 +351,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 saveModal={saveModal}
                             />
                         </div>
-                        <div className="form-group col-md-6">
+                        <div className="col-md-6">
                             <label htmlFor={`comment-${dataIndex}`} className='mb-0'>Comment</label>
                             <input id={`comment-${dataIndex}`} name="comment" type="textarea" placeholder="Comment" className='form-control' value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                         </div>

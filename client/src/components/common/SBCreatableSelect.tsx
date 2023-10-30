@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import CreatableSelect from 'react-select/creatable';
-import { Option, GroupedOption, groupBadgeStyles, groupStyles } from './SBSelect';
+import { Option, GroupedOption, groupBadgeStyles, groupStyles, getSelectTheme } from './SBSelect';
+import { ThemeContext } from 'components/static/ThemeProvider';
 
 const SBCreatableSelect = (props: any) => {
 
     const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value } = props;
+    const theme = useContext(ThemeContext);
+    const themeColors = getSelectTheme(theme[0]);
 
     const customStyles = {
         control: base => ({
@@ -17,12 +20,12 @@ const SBCreatableSelect = (props: any) => {
         option: (styles, state) => ({
             ...styles,
             cursor: 'pointer',
+            color: 'inherit'
         }),
 
         menuPortal: base => ({
             ...base,
             zIndex: 9999,
-            color: '#172B4D'
         })
     };
 
@@ -85,6 +88,13 @@ const SBCreatableSelect = (props: any) => {
                 styles={customStyles}
                 isMulti={isMultiSelect}
                 value={value}
+                theme={theme => ({
+                    ...theme,
+                    colors: {
+                        ...theme.colors,
+                        ...themeColors
+                    }
+                })}
             />
         </div>
     );

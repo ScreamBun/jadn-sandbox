@@ -136,16 +136,16 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
             const val = valueObj as EnumeratedFieldObject;
             SBConfirmModalValName = `${val.value}`;
             return (
-                <div className="form-row m-0">
-                    <div className='form-group col-md-2'>
+                <div className="row m-0">
+                    <div className='col-md-2'>
                         <label htmlFor={`id-${parentIndex}-${dataIndex}`}>ID</label>
                         <input id={`id-${parentIndex}-${dataIndex}`} name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id} onChange={onChange} onBlur={onBlur} />
                     </div>
-                    <div className="form-group col-md-4">
+                    <div className="col-md-4">
                         <label htmlFor={`value-${parentIndex}-${dataIndex}`} >Value</label>
                         <input id={`value-${parentIndex}-${dataIndex}`} name="value" type="text" placeholder="Value" className='form-control' value={val.value} onChange={onChange} onBlur={onBlur} />
                     </div>
-                    <div className='form-group col-md-6'>
+                    <div className='col-md-6'>
                         <label htmlFor={`comment-${parentIndex}-${dataIndex}`}>Comment</label>
                         <input
                             id={`comment-${parentIndex}-${dataIndex}`}
@@ -164,8 +164,8 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
 
         return (
             <>
-                <div className="form-row">
-                    <div className="form-group col-md-2">
+                <div className="row">
+                    <div className="col-md-2">
                         <label htmlFor={`id-${parentIndex}-${dataIndex}`} className='mb-0'>ID</label>
                         <input id={`id-${parentIndex}-${dataIndex}`}
                             name="id"
@@ -178,7 +178,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             readOnly={!editableID}
                             title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
                     </div>
-                    <div className="form-group col-md-4">
+                    <div className="col-md-4">
                         <label htmlFor={`name-${parentIndex}-${dataIndex}`} className='mb-0'>Name</label>
                         <input id={`name-${parentIndex}-${dataIndex}`}
                             name="name"
@@ -190,7 +190,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             onChange={onChange}
                             onBlur={onBlur} />
                     </div>
-                    <div className="form-group col-md-4">
+                    <div className="col-md-4">
                         <label htmlFor={`type-${parentIndex}-${dataIndex}`} className='mb-0'>Type</label>
                         <SBCreatableSelect
                             id={`type-${parentIndex}-${dataIndex}`}
@@ -200,7 +200,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             data={types}
                             isGrouped />
                     </div>
-                    <div className="form-group col-md-2 d-flex">
+                    <div className="col-md-2 d-flex">
                         <button type='button' className='btn btn-primary btn-sm p-2 mt-auto' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Field Options</button>
                         <OptionsModal
                             id={`${parentIndex}-${dataIndex}`}
@@ -215,7 +215,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                     </div>
                 </div>
 
-                <div className="form-group row">
+                <div className="row">
                     <div className='col-md-12'>
                         <label htmlFor={`comment-${parentIndex}-${dataIndex}`} className='mb-0'>Comment</label>
                         <input

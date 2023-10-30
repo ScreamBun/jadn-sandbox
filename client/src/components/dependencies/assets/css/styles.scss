@@ -49,6 +49,12 @@ input {
     flex-wrap: nowrap !important;
 }
 
+.dropdown-menu-end {
+    left: auto;
+    right: 0;
+    text-align: right;
+}
+
 /* Pretty JSON Module theme */
 .json-pretty {
     font-family: 'Roboto', monaco, monospace;

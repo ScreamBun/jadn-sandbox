@@ -265,8 +265,8 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
     return (
       <>
-        <div className="form-row">
-          <div className="form-group col-md-2">
+        <div className="row">
+          <div className="col-md-2">
             <label htmlFor={`id-${parentIndex}-${dataIndex}`} className='mb-0'>ID</label>
             <input id={`id-${parentIndex}-${dataIndex}`}
               name="id"
@@ -279,7 +279,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               readOnly={!editableID}
               title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
           </div>
-          <div className="form-group col-md-4">
+          <div className="col-md-4">
             <label htmlFor={`name-${parentIndex}-${dataIndex}`} className='mb-0'>Name</label>
             <input id={`name-${parentIndex}-${dataIndex}`}
               name="name"
@@ -291,7 +291,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               onChange={onChange}
               onBlur={onBlur} />
           </div>
-          <div className="form-group col-md-4">
+          <div className="col-md-4">
             <label htmlFor={`type-${parentIndex}-${dataIndex}`} className='mb-0'>Type</label>
             <SBCreatableSelect id={`type-${parentIndex}-${dataIndex}`}
               name="type"
@@ -300,7 +300,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
               data={types}
               isGrouped />
           </div>
-          <div className="form-group col-md-2 d-flex">
+          <div className="col-md-2 d-flex">
             <button type='button' className='btn btn-primary btn-sm p-2 mt-auto' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Field Options</button>
             <OptionsModal
               id={`${parentIndex}-${dataIndex}`}
@@ -315,7 +315,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className="row">
           <div className='col-md-12'>
             <label htmlFor={`comment-${parentIndex}-${dataIndex}`} className='mb-0'>Comment</label>
             <input
