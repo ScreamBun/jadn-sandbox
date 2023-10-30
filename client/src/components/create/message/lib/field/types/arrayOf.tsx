@@ -229,7 +229,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
           {fields}
           <button
             type='button'
-            className={`btn btn-primary btn-block p-1${max ? ' disabled' : ''}`}
+            className={`btn btn-primary btn-sm btn-block p-1${max ? ' disabled' : ''}`}
             title={`Add Field to ${name}`}
             onClick={addOpt}
           >

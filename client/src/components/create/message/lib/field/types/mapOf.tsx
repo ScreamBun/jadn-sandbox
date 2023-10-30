@@ -318,7 +318,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                     {fields}
                     <button
                         type="button"
-                        className={`btn btn-block btn-primary p-1${max ? ' disabled' : ''}`}
+                        className={`btn btn-sm btn-block btn-primary p-1${max ? ' disabled' : ''}`}
                         title={`Add Field to ${name}`}
                         onClick={addOpt}
                     >
