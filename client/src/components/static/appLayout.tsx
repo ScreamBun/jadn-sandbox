@@ -27,7 +27,7 @@ const AppLayout = () => {
   return (
     <div>
       <div className='fixed-top'>
-        <nav className='navbar navbar-expand-md bg-primary py-0'>
+        <nav className='navbar navbar-expand-md bg-primary py-0' data-bs-theme="dark">
           <button className='navbar-toggler collapsed' type='button' onClick={onToggleNav} data-toggle='collapse' data-target='#navToggle' aria-controls='navToggle' aria-expanded='false' aria-label='Toggle navigation'>
             <span className='navbar-toggler-icon' />
           </button>

@@ -116,6 +116,10 @@ small {
 }
 
 /* Bootstrap Overrides */
+a {
+    text-decoration: none !important;
+}
+
 .card-header {
     padding: 8px !important;
 }
