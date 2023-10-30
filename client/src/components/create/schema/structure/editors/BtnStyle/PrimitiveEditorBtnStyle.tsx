@@ -83,7 +83,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
     }
 
     return (
-        <div className="card border-secondary mb-3" id={`${dataIndex}`}>
+        <div className="card border border-secondary mb-3" id={`${dataIndex}`}>
             <div className="card-header px-2 py-2">
                 <div className='row'>
                     <div className='col'>

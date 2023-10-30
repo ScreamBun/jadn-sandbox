@@ -336,7 +336,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   return (
     <>
-      <div className={`card border-secondary mb-2`} ref={previewRef} data-handler-id={handlerId} style={containerStyle}>
+      <div className={`card border border-secondary mb-2`} ref={previewRef} data-handler-id={handlerId} style={containerStyle}>
         <div className="card-body px-2 py-2">
           <div ref={dragRef} style={{ cursor: 'move' }}>
             <FontAwesomeIcon className='float-end pt-1 pl-2 m-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>

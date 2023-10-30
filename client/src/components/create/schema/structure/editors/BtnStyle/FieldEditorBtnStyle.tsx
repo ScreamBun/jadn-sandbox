@@ -236,7 +236,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
 
     return (
         <>
-            <div className="card border-secondary mb-2">
+            <div className="card border border-secondary mb-2">
                 <div className="card-body px-2 py-2">
                     <div className="btn-group float-end" role="group" aria-label="first button group">
                         {!isFirst &&

@@ -231,7 +231,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
     return (
       <>
-        <div className="card border-secondary mb-3">
+        <div className="card border border-secondary mb-3">
           <div className="card-header px-2 py-2">
             <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name} (${valueObj.type})`}</span>
             <button type='button' className='btn btn-sm btn-danger float-end' onClick={removeAll} >
@@ -304,7 +304,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <>
-      <div className={`card border-secondary mb-2`} id={`${dataIndex}`}>
+      <div className={`card border border-secondary mb-2`} id={`${dataIndex}`}>
         <div className="card-header px-2 py-2" >
           <div className='row'>
             <div className='col'>

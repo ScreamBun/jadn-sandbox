@@ -631,7 +631,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     <>
                                         <div className='row'>
                                             <div className="col pt-2">
-                                                <div className='card border-secondary'>
+                                                <div className='card border border-secondary'>
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
@@ -663,7 +663,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                         </div>
                                         <div className='row mt-2'>
                                             <div className="col pt-2">
-                                                <div className='card border-secondary'>
+                                                <div className='card border border-secondary'>
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
