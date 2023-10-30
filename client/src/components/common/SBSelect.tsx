@@ -1,10 +1,11 @@
 import { deleteFile } from 'actions/save';
-import React, { CSSProperties, Fragment, useState } from 'react';
+import React, { CSSProperties, Fragment, useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
 import { sbToastError, sbToastSuccess } from './SBToast';
 import { info } from 'actions/util';
 import SBSpinner from './SBSpinner';
+import { ThemeContext } from 'components/static/ThemeProvider';
 
 
 export const groupStyles: CSSProperties = {
@@ -73,7 +74,7 @@ const smStyle = {
 
     valueContainer: (provided, state) => ({
         ...provided,
-        minHeight: 30,
+        maxHeight: 30,
     }),
 
     input: (provided, state) => ({
@@ -94,14 +95,25 @@ const smStyle = {
     option: (styles, state) => ({
         ...styles,
         cursor: 'pointer',
+        color: 'inherit'
     }),
 
     menuPortal: base => ({
         ...base,
         zIndex: 9999,
-        color: '#172B4D'
     })
 };
+
+const getSelectTheme = (theme: 'dark' | 'light') => {
+    if (theme == 'dark') {
+        return ({
+            neutral0: 'black',
+            neutral80: 'white',
+            primary25: 'gray',
+        })
+    }
+    return;
+}
 
 const SBSelect = (props: any) => {
 
@@ -110,6 +122,9 @@ const SBSelect = (props: any) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const dispatch = useDispatch();
+
+    const theme = useContext(ThemeContext);
+    const themeColors = getSelectTheme(theme[0]);
 
     const formatGroupLabel = (data: GroupedOption) => (
         <div style={groupStyles}>
@@ -238,6 +253,13 @@ const SBSelect = (props: any) => {
                     isMulti={isMultiSelect}
                     components={{ Menu }}
                     value={value}
+                    theme={theme => ({
+                        ...theme,
+                        colors: {
+                            ...theme.colors,
+                            ...themeColors
+                        }
+                    })}
                 />
                 :
                 <Select<Option, false, GroupedOption>
@@ -252,6 +274,13 @@ const SBSelect = (props: any) => {
                     styles={isSmStyle ? smStyle : defaultStyle}
                     isMulti={isMultiSelect}
                     value={value}
+                    theme={theme => ({
+                        ...theme,
+                        colors: {
+                            ...theme.colors,
+                            themeColors
+                        }
+                    })}
                 />
             }
 
