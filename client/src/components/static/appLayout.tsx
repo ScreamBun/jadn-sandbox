@@ -42,7 +42,7 @@ const AppLayout = () => {
               </li>
 
               <li className="nav-item dropdown"
-                onMouseEnter={() => setIsDropdownOpen(true)}
+                onClick={() => setIsDropdownOpen(true)}
                 onMouseLeave={() => setIsDropdownOpen(false)}
               >
                 <NavLink className="nav-link dropdown-toggle px-0"
@@ -96,12 +96,14 @@ const AppLayout = () => {
       <nav className='navbar bg-secondary fixed-bottom py-1'>
 
         <div className="btn-group dropup">
-          <div id="bd-theme" className="dropdown" onClick={() => setIsThemeChooserOpen(prev => !prev)}>
+          <div id="bd-theme" className="dropdown"
+            onClick={() => setIsThemeChooserOpen(true)}
+            onMouseLeave={() => setIsThemeChooserOpen(false)}>
             <ul className={`dropdown-menu bottom-0 ${isThemeChooserOpen ? 'show' : ''}`}>
               <li><button type="button" className={`dropdown-item d-flex align-items-center ${theme == "light" ? 'active' : ''}`} data-bs-theme-value="light"
-                onClick={() => { setTheme('light'); }}>Light</button></li>
+                onClick={() => { setTheme('light'); document.documentElement.setAttribute('data-bs-theme', 'light') }}>Light</button></li>
               <li><button type="button" className={`dropdown-item d-flex align-items-center ${theme == "dark" ? 'active' : ''}`} data-bs-theme-value="dark"
-                onClick={() => { setTheme('dark'); }}>Dark</button></li>
+                onClick={() => { setTheme('dark'); document.documentElement.setAttribute('data-bs-theme', 'dark') }}>Dark</button></li>
             </ul>
             <button id="bd-theme-text" className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               Theme

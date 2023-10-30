@@ -248,8 +248,4 @@ small {
 @import '~bootstrap/scss/bootstrap.scss';
 
 // Color mode variables in _root.scss
-@include color-mode(dark) {
-    :root {
-        background-color: black;
-    }
-}
+@include color-mode(dark) {}
