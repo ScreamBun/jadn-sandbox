@@ -118,7 +118,7 @@ export const ValidOptions: Record<string, Array<string>> = {
   Record: ['extend', 'minv', 'maxv']
 };
 
-export const FieldOptionInputArgs = {
+export const FieldOptionInputArgs: { [key: string]: any } = {
   minc: {
     type: 'number',
     description: 'Minimum cardinality'

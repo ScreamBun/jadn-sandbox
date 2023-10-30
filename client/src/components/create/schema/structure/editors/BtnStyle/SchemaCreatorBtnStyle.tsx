@@ -74,7 +74,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                 }
             }) :
         [defaultInsertIdx];
-    const scrollToInfoRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         indexOpts = generatedSchema.types ?
@@ -100,14 +99,16 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
-        setGeneratedSchema('');
-        setCardsState([]);
-        setSelectedFile(e);
         if (e == null) {
+            setSelectedFile(e);
+            setGeneratedSchema('');
+            setCardsState([]);
             return;
         } else if (e.value == "file") {
+            ref.current.value = '';
             ref.current?.click();
         } else {
+            setSelectedFile(e);
             setFileName(e.label.split('.')[0]);
             setIsLoading(true);
 
@@ -382,23 +383,26 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             });
             setIsValidJADN(false);
             setIsValidating(false);
-            scrollToInfoRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: "center" });
+
+            var scrollSpyContentEl = document.getElementById(`${key}`)
+            scrollSpyContentEl?.scrollIntoView();
 
         } else if (Object.keys(Types).includes(key)) {
             let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             let tmpCards = [...cardsState];
             const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
-
+            const dataIndex = generatedSchema.types?.length || 0;
             const new_card = {
                 id: self.crypto.randomUUID(),
-                index: generatedSchema.types?.length || 0,
+                index: dataIndex,
                 text: type_name,
                 value: tmpDef,
                 isStarred: false
             }
 
             if (insertAt.value == "0") {
+                new_card.index = 0;
                 tmpTypes.unshift(tmpDef);
                 tmpCards.unshift(new_card);
 
@@ -408,6 +412,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
             } else {
                 const idx = parseInt(insertAt.value);
+                new_card.index = idx;
+
                 tmpTypes = [
                     ...tmpTypes.slice(0, idx),
                     tmpDef,
@@ -432,18 +438,13 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
+            var scrollSpyContentEl = document.getElementById(`${new_card.index}`)
+            scrollSpyContentEl?.scrollIntoView();
+
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
         }
     }
-
-    const onOutlineClick = (e: React.MouseEvent<HTMLElement>, text: string) => {
-        e.preventDefault();
-        const element = document.getElementById(text);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
 
     const onStarClick = (idx: number) => {
         const updatedCards = cardsState.map((item: DragItem, i: number) => {
@@ -499,6 +500,9 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
         setIsValidJADN(false);
         setIsValidating(false);
+
+        var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
+        scrollSpyContentEl?.scrollIntoView();
     }
 
     const infoEditors = Object.keys(Info).map((k, i) => {
@@ -614,28 +618,25 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-sm-3'>
-                        <div className={`${selectedFile?.value == 'file' ? ' d-none' : ''}`}>
-                            <div className="input-group flex-nowrap">
-                                <SBSelect id={"schema-list"}
-                                    data={schemaOpts}
-                                    onChange={onFileSelect}
-                                    placeholder={'Select a schema...'}
-                                    loc={'schemas'}
-                                    value={selectedFile}
-                                    isSmStyle
-                                    isGrouped isFileUploader />
-                                <div className="input-group-btn ml-1">
-                                    <SBSaveFile
-                                        buttonId={'saveSchema'}
-                                        toolTip={'Save Schema'}
-                                        data={generatedSchema}
-                                        loc={'schemas'}
-                                        filename={fileName}
-                                        setDropdown={onFileSelect} />
-                                </div>
-                            </div>
+                        <div className="input-group">
+                            <SBSelect id={"schema-list"}
+                                data={schemaOpts}
+                                onChange={onFileSelect}
+                                placeholder={'Select a schema...'}
+                                loc={'schemas'}
+                                value={selectedFile}
+                                isSmStyle
+                                isGrouped isFileUploader />
+                            <SBSaveFile
+                                buttonId={'saveSchema'}
+                                toolTip={'Save Schema'}
+                                customClass={"float-right ml-1"}
+                                data={generatedSchema}
+                                loc={'schemas'}
+                                filename={fileName}
+                                setDropdown={onFileSelect} />
                         </div>
-                        <div className={`${selectedFile?.value == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
+                        <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
@@ -711,7 +712,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         <SBOutlineBtnStyle id={'schema-outline'}
                                             items={cardsState}
                                             title={'Outline'}
-                                            onClick={onOutlineClick}
                                             changeIndex={changeIndex}
                                             onStarClick={onStarClick}
                                         />
@@ -742,7 +742,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                     </div>
                                                     <div className='card-body'>
                                                         {!infoCollapse &&
-                                                            <div ref={scrollToInfoRef}>
+                                                            <div>
                                                                 {generatedSchema.info ?
                                                                     <>{infoEditors}</>
                                                                     :

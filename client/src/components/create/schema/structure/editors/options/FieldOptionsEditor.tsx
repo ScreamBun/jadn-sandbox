@@ -14,7 +14,7 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
   const { change, deserializedState, id, fieldOptions } = props;
 
   const validOptions = () => {
-    return Object.keys(FieldOptionInputArgs).map(key => {
+    return Object.keys(FieldOptionInputArgs).map((key: string) => {
       return (
         <KeyValueEditor
           key={key}

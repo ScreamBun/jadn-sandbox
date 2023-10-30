@@ -26,11 +26,10 @@ export interface SBOutlineCardProps {
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;
   dropCard: (item: DragItem) => void;
-  onClick: (e: React.MouseEvent<HTMLElement>, text: string) => void;
   handleStarToggle: (idx: number) => void;
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isStarred, handleStarToggle, moveCard, addCard, dropCard, onClick }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isStarred, handleStarToggle, moveCard, addCard, dropCard }) => {
 
   const originalIndex = index;
   const [toggleStar, setToggleStar] = useState(isStarred);
@@ -112,6 +111,8 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
         moveCard(item, item.index, item.originalIndex)
       } else {
         dropCard(item);
+        var scrollSpyContentEl = document.getElementById(`${item.index}`)
+        scrollSpyContentEl?.scrollIntoView();
       }
     },
     collect: (monitor: any) => ({
@@ -121,10 +122,6 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
 
   const opacity = isDragging ? 0 : 1
   drag(drop(ref))
-
-  const handleOnClick = (e: React.MouseEvent<HTMLElement>) => {
-    onClick(e, text)
-  };
 
   const onToggleStar = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -140,7 +137,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
             <span onClick={onToggleStar}>
               <FontAwesomeIcon className='mr-1' icon={toggleStar ? faStar : farStar} />
             </span>
-            <a title={'Click to view'} href="#" onClick={handleOnClick}>{text}</a>
+            <a href={`#${index}`}>{text}</a>
           </div>
           <div className='col-2'>
             <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
