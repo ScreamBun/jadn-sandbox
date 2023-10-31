@@ -355,10 +355,10 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
           <div className="row pt-2">
             <div className="col-12">
               <legend>
-                {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{valueObj.fields?.length}</span>
+                {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge rounded-pill text-bg-secondary">{valueObj.fields?.length}</span>
 
                 <span
-                  className="badge badge-pill badge-primary ms-1 cursor-pointer"
+                  className="badge rounded-pill text-bg-primary ms-1 cursor-pointer"
                   title='Add Field'
                   onClick={onAddField}>
                   <FontAwesomeIcon icon={faPlusSquare} />

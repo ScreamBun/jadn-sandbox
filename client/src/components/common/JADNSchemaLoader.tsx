@@ -270,10 +270,10 @@ const JADNSchemaLoader = (props: any) => {
                             <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end me-1' title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
-                                    <span className="badge badge-pill badge-success">
+                                    <span className="badge rounded-pill text-bg-success">
                                         <FontAwesomeIcon icon={faCheck} />
                                     </span>) : (
-                                    <span className="badge badge-pill badge-danger">
+                                    <span className="badge rounded-pill text-bg-danger">
                                         <FontAwesomeIcon icon={faXmark} />
                                     </span>)
                                 }

@@ -359,10 +359,10 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                     <div className="row pt-2">
                         <div className="col-12">
                             <legend>
-                                {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{fields.length}</span>
+                                {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge rounded-pill text-bg-secondary">{fields.length}</span>
 
                                 <span
-                                    className="badge badge-pill badge-primary ms-1 cursor-pointer"
+                                    className="badge rounded-pill text-bg-primary ms-1 cursor-pointer"
                                     title='Add Field'
                                     onClick={onAddField}>
                                     <FontAwesomeIcon icon={faPlusSquare} />

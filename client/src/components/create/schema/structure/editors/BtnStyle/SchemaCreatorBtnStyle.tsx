@@ -648,10 +648,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                             <button id='validateJADNButton' type='button' className="float-end btn btn-sm btn-primary me-1" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
-                                    <span className="badge badge-pill badge-success">
+                                    <span className="badge rounded-pill text-bg-success">
                                         <FontAwesomeIcon icon={faCheck} />
                                     </span>) : (
-                                    <span className="badge badge-pill badge-danger">
+                                    <span className="badge rounded-pill text-bg-danger">
                                         <FontAwesomeIcon icon={faXmark} />
                                     </span>)
                                 }
