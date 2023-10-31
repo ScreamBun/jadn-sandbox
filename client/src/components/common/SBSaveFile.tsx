@@ -141,7 +141,7 @@ const SBSaveFile = (props: any) => {
                             <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={() => setToggleOverwriteDialog(false)} />
                         </div>
                         <div className="modal-body">
-                            File <strong>{filename}</strong> already exists. Please confirm that you would like to overwrite this file?
+                            File <b>{filename}</b> already exists. Please confirm that you would like to overwrite this file?
                         </div>
                         <div className="modal-footer">
                             <button type='button' className='btn btn-success' onClick={() => onSaveFile(data, ext, true)}>Confirm</button>

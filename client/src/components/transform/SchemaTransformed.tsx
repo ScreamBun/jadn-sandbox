@@ -34,7 +34,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     const [isTransformDisabled, setIsTransformDisabled] = useState(true);
     const [baseFile, setBaseFile] = useState<Option | null>();
     const [transformationType, setTransformationType] = useState<Option | null>();
-    const [baseFileOpts, setBaseFileOpts] = useState<Option[]>();
+    const [baseFileOpts, setBaseFileOpts] = useState<String[]>([]);
     const [transformedSchema, setTransformedSchema] = useState([initTransformedSchema]);
 
     const strip_comments: string = 'strip comments';
@@ -56,10 +56,8 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
             }
         }
 
-        let base_opts: Option[] = selectedSchemas.map((ss: SelectedSchema) => {
-            return { 'label': ss.name, 'value': ss.name };
-        });
-        setBaseFileOpts([...base_opts]);
+        let base_opts: String[] = selectedSchemas.map((ss: SelectedSchema) => { return (ss.name) });
+        setBaseFileOpts(base_opts);
 
     }, [selectedSchemas, baseFile, transformationType]);
 
@@ -67,7 +65,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     useImperativeHandle(ref, () => ({
         onReset() {
             console.log("SchemaTransformed onReset");
-            setToggle('');
+            setToggle({});
             setBaseFile(null);
             setTransformedSchema([initTransformedSchema]);
             setTransformationType(null);
@@ -137,19 +135,24 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                 <form onSubmit={submitForm}>
                     <div className='row no-gutters'>
                         <div className='col-md-9'>
-                            <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectTypeChange}
-                                placeholder={'Select transformation type...'} value={transformationType} isSmStyle
-                            />
-                            {transformationType?.value == 'resolve references' ?
-                                <SBSelect id={"base-file"} data={baseFileOpts} onChange={onBaseFileSelect}
-                                    placeholder={'Select base file...'} value={baseFile} isSmStyle
-                                /> : ""}
+                            <div className="row">
+                                <div className="col">
+                                    <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectTypeChange}
+                                        placeholder={'Select transformation type...'} value={transformationType} isSmStyle
+                                    />
+                                </div>
+                                <div className={`col ${transformationType?.value == 'resolve references' ? '' : ' d-none'}`}>
+                                    <SBSelect id={"base-file"} data={baseFileOpts} onChange={onBaseFileSelect}
+                                        placeholder={'Select base file...'} value={baseFile} isSmStyle
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className='col-md-3'>
                             <div className={`${transformedSchema && (transformedSchema.length == 1) && transformedSchema[0].schema != '' ? '' : ' d-none'}`}>
                                 <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-end`} />
-                                <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`me-1 float-end`} filename={baseFile} ext={transformedSchema[0].schema_fmt || 'jadn'} />
-                                <SBDownloadFile buttonId='schemaDownload' customClass={`me-1 float-end`} filename={baseFile} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                                <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`me-1 float-end`} filename={baseFile?.value} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                                <SBDownloadFile buttonId='schemaDownload' customClass={`me-1 float-end`} filename={baseFile?.value} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
                             </div>
 
                             {isLoading ? <SBSpinner action={'Transforming'} /> :

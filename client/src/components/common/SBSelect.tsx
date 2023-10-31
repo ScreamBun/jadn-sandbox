@@ -1,5 +1,5 @@
 import { deleteFile } from 'actions/save';
-import React, { CSSProperties, Fragment, useContext, useRef, useState } from 'react';
+import React, { CSSProperties, Fragment, useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
 import { sbToastError, sbToastSuccess } from './SBToast';
@@ -80,6 +80,7 @@ const smStyle = {
         ...provided,
         maxHeight: state.hasValue && state.isMulti && state.selectProps.menuIsOpen ? '' : 30,
         textOverflow: "ellipsis",
+        overflowY: state.hasValue && state.isMulti && !state.selectProps.menuIsOpen ? 'auto' : 'hidden'
     }),
 
     input: (provided, state) => ({
@@ -124,11 +125,10 @@ export const getSelectTheme = (theme: 'dark' | 'light') => {
 const SBSelect = (props: any) => {
 
     const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle } = props;
+    const dispatch = useDispatch();
+
     const [toggleModal, setToggleModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const selectRef = useRef(null);
-
-    const dispatch = useDispatch();
 
     const theme = useContext(ThemeContext);
     const themeColors = getSelectTheme(theme[0]);
@@ -139,40 +139,6 @@ const SBSelect = (props: any) => {
             <span style={groupBadgeStyles}>{data.options.length}</span>
         </div>
     );
-
-    const ValueContainer = ({ children, ...props }) => {
-        let [values, input] = children;
-        let overflowCount;
-        if (Array.isArray(values)) {
-            const { length } = values;
-            switch (length) {
-                case input.props.options.length:
-                    values = `All options selected (${length})`;
-                    break;
-                case 1: case 2: case 3:
-                    break;
-                default:
-                    values = values.slice(0, 3);
-                    overflowCount = length - 3;
-                    break;
-            }
-        }
-
-        if (input.props.selectProps.menuIsOpen) {
-            return (
-                <components.ValueContainer {...props}>
-                    {children}
-                </components.ValueContainer>
-            );
-        }
-
-        return (
-            <components.ValueContainer {...props}>
-                {values} {overflowCount && <div className='badge rounded-pill text-bg-info'> + {overflowCount} selected</div>}
-                {input}
-            </components.ValueContainer>
-        );
-    };
 
     const Menu = (props: any) => {
         return (
@@ -307,8 +273,6 @@ const SBSelect = (props: any) => {
                 :
                 <Select<Option, false, GroupedOption>
                     id={id}
-                    ref={selectRef}
-                    onMenuClose={() => selectRef.current?.blur()}
                     placeholder={placeholder}
                     options={opts}
                     formatGroupLabel={formatGroupLabel}
@@ -321,7 +285,6 @@ const SBSelect = (props: any) => {
                     closeMenuOnSelect={isMultiSelect ? false : true}
                     backspaceRemovesValue={false}
                     value={value}
-                    components={{ ValueContainer }}
                     theme={theme => ({
                         ...theme,
                         colors: {
