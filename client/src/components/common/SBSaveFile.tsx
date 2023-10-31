@@ -107,16 +107,16 @@ const SBSaveFile = (props: any) => {
                             <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={() => setToggleSaveDialog(false)} />
                         </div>
                         <div className="modal-body">
-                            <div className="form-row">
-                                <label htmlFor="filename" className="col-sm-4 col-form-label">File name:</label>
+                            <div className="row">
+                                <label htmlFor={buttonId + "filenameSave"} className="col-sm-4 col-label">File name:</label>
                                 <div className="col-sm-8">
-                                    <input id='filename' className="form-control" type="text" autoFocus={true} value={fileNameInput} onChange={onChange} />
+                                    <input id={buttonId + "filenameSave"} className="form-control" type="text" autoFocus={true} value={fileNameInput} onChange={onChange} />
                                 </div>
                             </div>
-                            <div className="form-row">
-                                <label htmlFor="filename" className="col-sm-4 col-form-label">Save as type:</label>
-                                <div className="col-sm-8 my-auto">
-                                    {ext ? ext : 'jadn'}
+                            <div className="row">
+                                <label htmlFor={buttonId + "saveFileAsType"} className="col-sm-4 col-label">Save as type:</label>
+                                <div className="col-sm-8">
+                                    <input type="text" readOnly className="form-control-plaintext" id={buttonId + "saveFileAsType"} value={ext ? ext : 'jadn'} />
                                 </div>
                             </div>
                         </div>

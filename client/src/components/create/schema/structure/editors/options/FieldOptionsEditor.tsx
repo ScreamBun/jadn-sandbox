@@ -11,14 +11,14 @@ interface FieldOptionsEditorProps {
 }
 
 const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsEditorProps) {
-  const { change, deserializedState, fieldOptions } = props;
+  const { id, change, deserializedState, fieldOptions } = props;
 
   const validOptions = () => {
     return Object.keys(FieldOptionInputArgs).map((key: string) => {
       return (
         <KeyValueEditor
           key={key}
-          id={key}
+          id={id}
           name={key}
           {...FieldOptionInputArgs[key]}
           placeholder={key}

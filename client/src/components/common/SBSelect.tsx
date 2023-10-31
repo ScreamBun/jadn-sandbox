@@ -108,6 +108,7 @@ export const getSelectTheme = (theme: 'dark' | 'light') => {
     if (theme == 'dark') {
         return ({
             neutral0: 'black',
+            neutral10: 'gray',
             neutral80: 'white',
             primary25: 'gray',
         })
@@ -278,7 +279,7 @@ const SBSelect = (props: any) => {
                         ...theme,
                         colors: {
                             ...theme.colors,
-                            themeColors
+                            ...themeColors
                         }
                     })}
                 />

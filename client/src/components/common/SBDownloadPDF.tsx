@@ -85,9 +85,9 @@ const SBDownloadPDF = (props: any) => {
                         </div>
                         <div className="modal-body">
                             <div className="form-row">
-                                <label htmlFor="filename" className="col-sm-4 col-form-label">File name:</label>
+                                <label htmlFor={buttonId + "filenamePDFDownload"} className="col-sm-4 col-label">File name:</label>
                                 <div className="col-sm-8">
-                                    <input id='filename' className="form-control" type="text" onChange={onChange} />
+                                    <input id={buttonId + "filenamePDFDownload"} className="form-control" type="text" onChange={onChange} />
                                 </div>
                             </div>
                         </div>

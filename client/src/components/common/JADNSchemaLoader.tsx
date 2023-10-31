@@ -250,12 +250,13 @@ const JADNSchemaLoader = (props: any) => {
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-md-6">
-                        <div className="input-group">
+                        <div className="d-flex">
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
                                 loc={'schemas'}
                                 value={selectedFile}
-                                isGrouped isFileUploader
+                                isGrouped
+                                isFileUploader
                                 isSmStyle />
                             <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-end ms-1"} filename={fileName} setDropdown={setSelectedFile} />
                         </div>
