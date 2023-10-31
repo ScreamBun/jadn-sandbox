@@ -1,5 +1,5 @@
 import { deleteFile } from 'actions/save';
-import React, { CSSProperties, Fragment, useContext, useState } from 'react';
+import React, { CSSProperties, Fragment, useContext, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
 import { sbToastError, sbToastSuccess } from './SBToast';
@@ -54,12 +54,12 @@ const defaultStyle = {
     option: (styles, state) => ({
         ...styles,
         cursor: 'pointer',
+        color: 'inherit'
     }),
 
     menuPortal: base => ({
         ...base,
         zIndex: 9999,
-        color: '#172B4D'
     })
 }
 
@@ -70,11 +70,17 @@ const smStyle = {
         cursor: 'pointer',
     }),
 
-    container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
+    container: css => ({
+        ...css,
+        flex: '1 1 auto',
+        alignSelf: 'stretch',
+    }),
 
     valueContainer: (provided, state) => ({
         ...provided,
         maxHeight: 30,
+        textOverflow: "ellipsis",
+        overflowY: state.hasValue && state.isMulti && state.selectProps.menuIsOpen ? 'auto' : 'hidden'
     }),
 
     input: (provided, state) => ({
@@ -121,6 +127,7 @@ const SBSelect = (props: any) => {
     const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle } = props;
     const [toggleModal, setToggleModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const selectRef = useRef(null);
 
     const dispatch = useDispatch();
 
@@ -133,6 +140,40 @@ const SBSelect = (props: any) => {
             <span style={groupBadgeStyles}>{data.options.length}</span>
         </div>
     );
+
+    const ValueContainer = ({ children, ...props }) => {
+        let [values, input] = children;
+        let overflowCount;
+        if (Array.isArray(values)) {
+            const { length } = values;
+            switch (length) {
+                case input.props.options.length:
+                    values = `All options selected (${length})`;
+                    break;
+                case 1: case 2: case 3:
+                    break;
+                default:
+                    values = values.slice(0, 3);
+                    overflowCount = length - 3;
+                    break;
+            }
+        }
+
+        if (input.props.selectProps.menuIsOpen) {
+            return (
+                <components.ValueContainer {...props}>
+                    {children}
+                </components.ValueContainer>
+            );
+        }
+
+        return (
+            <components.ValueContainer {...props}>
+                {values} {overflowCount && <div className='badge rounded-pill text-bg-info'> + {overflowCount} selected</div>}
+                {input}
+            </components.ValueContainer>
+        );
+    };
 
     const Menu = (props: any) => {
         return (
@@ -252,6 +293,8 @@ const SBSelect = (props: any) => {
                     className={customClass}
                     styles={isSmStyle ? smStyle : defaultStyle}
                     isMulti={isMultiSelect}
+                    closeMenuOnSelect={isMultiSelect ? false : true}
+                    backspaceRemovesValue={false}
                     components={{ Menu }}
                     value={value}
                     theme={theme => ({
@@ -265,6 +308,8 @@ const SBSelect = (props: any) => {
                 :
                 <Select<Option, false, GroupedOption>
                     id={id}
+                    ref={selectRef}
+                    onMenuClose={() => selectRef.current?.blur()}
                     placeholder={placeholder}
                     options={opts}
                     formatGroupLabel={formatGroupLabel}
@@ -274,7 +319,10 @@ const SBSelect = (props: any) => {
                     className={customClass}
                     styles={isSmStyle ? smStyle : defaultStyle}
                     isMulti={isMultiSelect}
+                    closeMenuOnSelect={isMultiSelect ? false : true}
+                    backspaceRemovesValue={false}
                     value={value}
+                    components={{ ValueContainer }}
                     theme={theme => ({
                         ...theme,
                         colors: {

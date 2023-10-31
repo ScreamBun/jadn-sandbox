@@ -87,6 +87,7 @@ const SBCreatableSelect = (props: any) => {
                 menuPortalTarget={document.body}
                 styles={customStyles}
                 isMulti={isMultiSelect}
+                closeMenuOnSelect={isMultiSelect ? false : true}
                 value={value}
                 theme={theme => ({
                     ...theme,

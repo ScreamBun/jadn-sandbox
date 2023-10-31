@@ -136,6 +136,8 @@ a {
 
 .card-header {
     padding: 8px !important;
+    height: 100%;
+    min-height: 50px;
 }
 
 .card-body {
@@ -157,8 +159,6 @@ a {
     overflow-y: auto;
     overflow-x: hidden;
     width: fit-content;
-    position: sticky;
-    top: 0;
 }
 
 .card-title {
