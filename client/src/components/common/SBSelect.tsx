@@ -78,9 +78,8 @@ const smStyle = {
 
     valueContainer: (provided, state) => ({
         ...provided,
-        maxHeight: 30,
+        maxHeight: state.hasValue && state.isMulti && state.selectProps.menuIsOpen ? '' : 30,
         textOverflow: "ellipsis",
-        overflowY: state.hasValue && state.isMulti && state.selectProps.menuIsOpen ? 'auto' : 'hidden'
     }),
 
     input: (provided, state) => ({
