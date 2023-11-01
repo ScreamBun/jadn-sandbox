@@ -113,10 +113,10 @@ const smStyle = {
 export const getSelectTheme = (theme: 'dark' | 'light') => {
     if (theme == 'dark') {
         return ({
-            neutral0: 'black',
-            neutral10: 'gray',
-            neutral80: 'white',
-            primary25: 'gray',
+            neutral0: 'var(--bs-body-bg)', //menu background
+            neutral80: 'var(--bs-body-color)', //selected option text
+            primary25: 'var(--bs-secondary-color)', //hover options
+            primary75: 'var(--bs-primary-color)' //selected option indicator
         })
     }
     return;
