@@ -1,17 +1,16 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSchemas } from "reducers/util";
-import { sbToastError } from "./SBToast";
+import { v4 as uuidv4 } from 'uuid';
 import { faExclamationCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { info, loadFile } from "actions/util";
+import { getAllSchemas } from "reducers/util";
+import { isString } from "components/utils/general";
+import { SelectedSchema } from "components/transform/SchemaTransformer";
+import { sbToastError } from "./SBToast";
 import SBEditor from "./SBEditor";
 import SBFileUploader from "./SBFileUploader";
 import SBSelect, { Option } from "./SBSelect";
-import { isString } from "components/utils/general";
-import { SelectedSchema } from "components/transform/SchemaTransformer";
-
-
 interface SBMultiSchemaLoaderProps {
     isLoading: boolean;
     onLoading: (isLoading: boolean) => void;
@@ -48,7 +47,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     // Allows parent to call child function
     useImperativeHandle(ref, () => ({
         onReset() {
-            setToggle('');
+            setToggle({});
             setSelectedFile(null);
             setSelectedOptions([]);
         },
@@ -84,7 +83,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
                                 let dataObj = JSON.parse(ev.target.result);
 
                                 // Add to schemas
-                                const new_schema: SelectedSchema = { 'id': Date.now().toString(), 'name': file['name'], 'type': 'schemas', 'data': dataObj };
+                                const new_schema: SelectedSchema = { 'id': uuidv4(), 'name': file['name'], 'type': 'schemas', 'data': dataObj };
                                 onSelectedSchemaAdd(new_schema);
 
                                 // Add to seleted options
@@ -137,7 +136,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
         await Promise.all(
             options.map(async (option) => {
                 const schema_data: SelectedSchema = await onGetSchemaData(option.label);
-                const new_schema: SelectedSchema = { 'id': Date.now().toString(), 'name': option.label, 'type': 'schemas', 'data': schema_data };
+                const new_schema: SelectedSchema = { 'id': uuidv4(), 'name': option.label, 'type': 'schemas', 'data': schema_data };
                 schemas_to_load.push(new_schema);
                 // props.onSelectedSchemaAdd(new_schema);  // Causes a duplicate bug to appear                           
             }));
@@ -156,6 +155,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     }
 
     const listSchemas = selectedSchemas?.map((schema: SelectedSchema, i: number) => {
+        console.log(schema)
         return (
             <div className="card" key={schema.id}>
                 <div className="card-header">
