@@ -235,18 +235,18 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       const val = valueObj as EnumeratedFieldObject;
       SBConfirmModalValName = `${val.value}`;
       return (
-        <div className="form-row m-0">
-          <div className='form-group col-md-2'>
+        <div className="row m-0">
+          <div className='col-md-2'>
             <label htmlFor={`id-${parentIndex}-${dataIndex}`}>ID</label>
             <input id={`id-${parentIndex}-${dataIndex}`} name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
               onChange={onChange} onBlur={onBlur} />
           </div>
-          <div className="form-group col-md-4">
+          <div className="col-md-4">
             <label htmlFor={`value-${parentIndex}-${dataIndex}`} >Value</label>
             <input id={`value-${parentIndex}-${dataIndex}`} name="value" type="text" placeholder="Value" className='form-control' value={val.value}
               onChange={onChange} onBlur={onBlur} />
           </div>
-          <div className='form-group col-md-6'>
+          <div className='col-md-6'>
             <label htmlFor={`comment-${parentIndex}-${dataIndex}`}>Comment</label>
             <input
               id={`comment-${parentIndex}-${dataIndex}`}

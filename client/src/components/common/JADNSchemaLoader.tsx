@@ -28,6 +28,12 @@ const JADNSchemaLoader = (props: any) => {
     const ref = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
+        if (!loadedSchema) {
+            setIsValidJADN(false);
+        }
+    }, [loadedSchema])
+
+    useEffect(() => {
         dispatch(info());
     }, [dispatch])
 

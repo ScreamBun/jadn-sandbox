@@ -46,16 +46,25 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         dispatch(setSchema(generatedSchema));
     }, [generatedSchema])
 
+    useEffect(() => {
+        if (!generatedSchema) {
+            setIsValidJADN(false);
+        }
+    }, [generatedSchema])
+
     const [configOpt, setConfigOpt] = useState(configInitialState);
     const [fileName, setFileName] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
+
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
 
@@ -456,8 +465,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
         setCardsState(updatedCards);
     };
-
-
 
     const changeIndex = (arrVal: TypeArray, dataIndex: number, idx: number) => {
         const val = zip(TypeKeys, arrVal) as StandardTypeObject;

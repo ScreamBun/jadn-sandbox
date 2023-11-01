@@ -44,6 +44,12 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         dispatch(setSchema(generatedSchema));
     }, [generatedSchema])
 
+    useEffect(() => {
+        if (!generatedSchema) {
+            setIsValidJADN(false);
+        }
+    }, [generatedSchema])
+
     const [configOpt, setConfigOpt] = useState(configInitialState);
     const [fileName, setFileName] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
@@ -128,8 +134,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     let data = ev.target.result;
                     try {
                         setIsLoading(false);
-
-                        validateJADN(data);
                         const dataObj = JSON.parse(data);
                         flushSync(() => {
                             setGeneratedSchema(dataObj);
@@ -140,8 +144,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 value: item,
                                 isStarred: false
                             })));
+                            validateJADN(data);
                         });
-
                     } catch (err) {
                         setIsLoading(false);
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
