@@ -70,7 +70,7 @@ const SBDownloadPDF = (props: any) => {
     return (
         <>
             {isLoading ? <SBSpinner color={'info'} /> :
-                <button id={buttonId || 'downloadPDF'} type='button' title="Download PDF" className={'btn btn-sm btn-info ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
+                <button id={buttonId || 'downloadPDF'} type='button' title="Download PDF" className={'btn btn-sm btn-primary ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
                     <FontAwesomeIcon icon={faFilePdf} />
                 </button>}
 

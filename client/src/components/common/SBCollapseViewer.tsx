@@ -57,38 +57,38 @@ const SBCollapseViewer = (props: any) => {
 
                         <span className={`${obj.fmt == 'HTML' ? '' : ' d-none'}`}>
                             <SBDownloadPDF buttonId="htmlPdfDownload" customClass='me-1 float-end' data={loadedSchema} />
-                            <button id="htmlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={() => onHTMLPopOutClick(obj.schema)}>
+                            <button id="htmlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onHTMLPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>
 
                         <span className={`${obj.fmt == 'MarkDown' ? '' : ' d-none'}`}>
                             <SBDownloadPDF buttonId="mdPdfDownload" customClass='me-1 float-end' data={loadedSchema} />
-                            <button id="mdPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={() => onMDPopOutClick(obj.schema)}>
+                            <button id="mdPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onMDPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>
 
                         <span className={`${obj.fmt == 'JIDL' ? '' : ' d-none'}`}>
-                            <button id="jidlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={() => onPopOutClick(obj.schema)}>
+                            <button id="jidlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onPopOutClick(obj.schema)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>
 
                         <span className={`${obj.fmt == 'PlantUML' ? '' : ' d-none'}`}>
-                            <button id="pumlPngDownload" type='button' title="Download PNG of the schema" className="btn btn-sm btn-info me-1 float-end" onClick={() => onDownloadPNGClick(pumlURL)}>
+                            <button id="pumlPngDownload" type='button' title="Download PNG of the schema" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onDownloadPNGClick(pumlURL)}>
                                 <FontAwesomeIcon icon={faFileImage} />
                             </button>
-                            <button id="pumlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={() => onPopOutClick('', pumlURL)}>
+                            <button id="pumlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onPopOutClick('', pumlURL)}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>
 
                         <span className={`${obj.fmt == 'GraphViz' ? '' : ' d-none'}`}>
-                            <button id="gvSvgDownload" type='button' title="Download SVG of the schema" className="btn btn-sm btn-info me-1 float-end" onClick={onDownloadSVGClick}>
+                            <button id="gvSvgDownload" type='button' title="Download SVG of the schema" className="btn btn-sm btn-primary me-1 float-end" onClick={onDownloadSVGClick}>
                                 <FontAwesomeIcon icon={faFileImage} />
                             </button>
-                            <button id="gvPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-info me-1 float-end" onClick={onGVPopOutClick}>
+                            <button id="gvPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={onGVPopOutClick}>
                                 <FontAwesomeIcon icon={faWindowMaximize} />
                             </button>
                         </span>
