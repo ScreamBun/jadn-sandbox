@@ -304,7 +304,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <>
-      <div className={`card border border-secondary mb-2`} id={`${dataIndex}`}>
+      <div className={`card mb-2`} id={`${dataIndex}`}>
         <div className="card-header px-2 py-2" >
           <div className='row'>
             <div className='col'>
@@ -354,7 +354,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
           </div>
           <div className="row pt-2">
             <div className="col-12">
-              <legend>
+              <span>
                 {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge rounded-pill text-bg-secondary">{valueObj.fields?.length}</span>
 
                 <span
@@ -377,7 +377,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     title={'Sort Fields by ID'} />
                 </a> : ''}
 
-              </legend>
+              </span>
 
               {!fieldCollapse ? valueObj.fields?.length == 0 ? <p> No fields to show</p> :
                 <div>

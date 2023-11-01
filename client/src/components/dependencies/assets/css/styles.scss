@@ -37,6 +37,11 @@ body {
     right: 1em;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.25rem !important;
+    line-height: normal !important;
+}
+
 input {
     width: 100%;
 }
@@ -137,7 +142,6 @@ a {
 .card-header {
     padding: 8px !important;
     height: 100%;
-    min-height: 50px;
 }
 
 .card-body {

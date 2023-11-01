@@ -277,7 +277,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='list-group-item  d-flex justify-content-between align-items-center p-2' key={k}>
                 {Info[k].key}
 
-                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-info'
+                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
                     disabled={selectedFile?.value == 'file' ? true : false}
                     title='Add to Schema'>
                     <FontAwesomeIcon icon={faPlusSquare} />
@@ -289,7 +289,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='list-group-item d-flex justify-content-between align-items-center p-2' key={k}>
                 {Info[k].key}
 
-                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-info'
+                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
                     disabled={selectedFile?.value == 'file' ? true : false}
                     title='Add to Schema'>
                     <FontAwesomeIcon icon={faPlusSquare} />
@@ -302,7 +302,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         <div className='list-group-item d-flex justify-content-between align-items-center p-2' key={k}>
             {Types[k].key}
 
-            <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-info'
+            <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
                 disabled={selectedFile?.value == 'file' ? true : false}
                 title='Add to Schema'>
                 <FontAwesomeIcon icon={faPlusSquare} />
@@ -678,7 +678,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                             <li className='nav-item me-2'>
                                                 <a
                                                     className={`nav-link 
-                                                    ${activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    ${activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
                                                     ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('info')}
                                                     title="meta data (about a schema package)"
@@ -690,7 +690,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                             <li className='nav-item'>
                                                 <a
                                                     className={`nav-link 
-                                                    ${activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    ${activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
                                                     ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('types')}
                                                     title="schema content (the information model)"
@@ -707,6 +707,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                 </ul>
                                             </div>
                                             <div className={`tab-pane fade ${activeOpt == 'types' ? 'show active' : ''}`} id="types" role="tabpanel" aria-labelledby="types-tab" tabIndex={0}>
+                                                <button type="button" className="btn btn-outline-primary">Primary</button>
                                                 <ul className="list-group">
                                                     {typesKeys}
                                                 </ul>
@@ -734,19 +735,19 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                     <>
                                         <div className='row'>
                                             <div className="col pt-2">
-                                                <div className='card border border-secondary'>
+                                                <div className='card'>
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h6 id="info" className='mb-0 text-light'>Info <small style={{ fontSize: '10px' }}> metadata </small></h6>
+                                                            <h5 id="info" className="card-title">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
                                                             </div>
                                                             <div className='col'>
-                                                                <legend>
+                                                                <span>
                                                                     <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
                                                                         className='float-end btn btn-sm text-light'
                                                                         onClick={() => setInfoCollapse(!infoCollapse)}
                                                                         title={infoCollapse ? ' Show Info' : ' Hide Info'} />
-                                                                </legend>
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -766,7 +767,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         </div>
                                         <div className='row mt-2'>
                                             <div className="col pt-2">
-                                                <div className='card border border-secondary'>
+                                                <div className='card'>
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>

@@ -50,7 +50,7 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
             {items && items.length > 0 ? (
                 <div id={id}>
                     <ul className="nav nav-pills">
-                        <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link">{title}</a></li>
+                        <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link bg-primary">{title}</a></li>
                     </ul>
                     <div className="sb-outline mt-2">
                         <div>

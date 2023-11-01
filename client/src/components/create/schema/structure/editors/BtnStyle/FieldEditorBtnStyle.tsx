@@ -236,7 +236,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
 
     return (
         <>
-            <div className="card border border-secondary mb-2">
+            <div className="card mb-2">
                 <div className="card-body px-2 py-2">
                     <div className="btn-group float-end" role="group" aria-label="first button group">
                         {!isFirst &&
@@ -249,7 +249,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
                             <FontAwesomeIcon icon={faSquareCaretDown} />
                         </button>}
                     </div>
-                    <button type='button' className='btn btn-sm btn-danger float-end me-1 rounded-circle'
+                    <button type='button' className='btn btn-danger btn-sm float-end'
                         onClick={onRemoveItemClick}
                         title={`Delete Field`}>
                         <FontAwesomeIcon icon={faMinusCircle} />

@@ -254,7 +254,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
         return (
             <>
-                <div className="card border border-secondary mb-3">
+                <div className="card mb-3">
                     <div className="card-header px-2 py-2">
                         <div className='row'>
                             <div className='col'>
@@ -317,14 +317,14 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
     return (
         <>
-            <div className="card border border-secondary mb-3" id={`${dataIndex}`}>
+            <div className="card mb-3" id={`${dataIndex}`}>
                 <div className="card-header px-2 py-2">
                     <div className='row'>
                         <div className='col'>
-                            <a role="button" className="btn btn-sm btn-outline-primary me-2 disabled" title='index'>
+                            <span className="badge rounded-pill text-bg-secondary me-2" title='index'>
                                 {dataIndex}
-                            </a>
-                            <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
+                            </span>
+                            <span id={valueObj.name} className="card-title pt-1">{`${valueObj.name} (${valueObj.type})`}</span>
                         </div>
                         <div className='col'>
                             <button type='button' className="btn btn-danger btn-sm float-end" onClick={removeAll}
@@ -358,11 +358,11 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                     </div>
                     <div className="row pt-2">
                         <div className="col-12">
-                            <legend>
+                            <span>
                                 {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge rounded-pill text-bg-secondary">{fields.length}</span>
 
                                 <span
-                                    className="badge rounded-pill text-bg-primary ms-1 cursor-pointer"
+                                    className="badge rounded-pill text-bg-primary ps-1 cursor-pointer"
                                     title='Add Field'
                                     onClick={onAddField}>
                                     <FontAwesomeIcon icon={faPlusSquare} />
@@ -381,7 +381,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                         title={'Sort Fields by ID'} />
                                 </a> : ''}
 
-                            </legend>
+                            </span>
 
                             <div>
                                 {!fieldCollapse && fields}

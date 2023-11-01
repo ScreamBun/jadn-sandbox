@@ -575,7 +575,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 <div className='tab-content mb-2'>
                     <div className={`container-fluid tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
                         <div className='row'>
-                            <div id="schema-options" className='col-sm-3 pl-0 card-body-scroller'>
+                            <div id="schema-options" className='col-sm-3 ps-0 card-body-scroller'>
                                 <div className='row'>
                                     <div className='col'>
                                         <ul className="nav nav-pills pb-2" id="editorKeys" role="tablist">
@@ -634,20 +634,20 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                                     <>
                                         <div className='row'>
-                                            <div className="col pt-2">
-                                                <div className='card border border-secondary'>
-                                                    <div className='card-header bg-primary'>
+                                            <div className="col">
+                                                <div className='card'>
+                                                    <div className='card-header text-light bg-primary' style={{justifyContent: 'center', display: 'flex', flexDirection: 'column'}}>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h6 id="info" className='mb-0 text-light'>Info <small style={{ fontSize: '10px' }}> metadata </small></h6>
+                                                                <h5 id="info" className="card-title">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
                                                             </div>
                                                             <div className='col'>
-                                                                <legend>
+                                                                <span>
                                                                     <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
                                                                         className='float-end btn btn-sm text-light'
                                                                         onClick={() => setInfoCollapse(!infoCollapse)}
                                                                         title={infoCollapse ? ' Show Info' : ' Hide Info'} />
-                                                                </legend>
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -667,11 +667,11 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                         </div>
                                         <div className='row mt-2'>
                                             <div className="col pt-2">
-                                                <div className='card border border-secondary'>
+                                                <div className='card'>
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h6 id="types" className='mb-0 pt-1 text-light'>Types* <small style={{ fontSize: '10px' }}> schema content </small></h6>
+                                                                <h6 id="types" className='pt-1 text-light'>Types* <small style={{ fontSize: '10px' }}> schema content </small></h6>
                                                             </div>
                                                             <div className='col'>
                                                                 {generatedSchema.types &&
@@ -680,13 +680,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                                             <button type="button" className="btn btn-secondary" onClick={() => setTypesCollapse(!typesCollapse)}>
                                                                                 {typesCollapse ? 'Show Types' : ' Hide Types'}
                                                                                 <FontAwesomeIcon icon={typesCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                    className='float-end btn btn-sm'
+                                                                                    className='float-end btn btn-sm text-light'
                                                                                     title={typesCollapse ? 'Show Types' : 'Hide Types'} />
                                                                             </button>
                                                                             <button type="button" className="btn btn-secondary" onClick={() => setAllFieldsCollapse(!allFieldsCollapse)}>
                                                                                 {allFieldsCollapse ? 'Show Fields' : 'Hide Fields'}
                                                                                 <FontAwesomeIcon icon={allFieldsCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                    className='float-end btn btn-sm'
+                                                                                    className='float-end btn btn-sm text-light'
                                                                                     title={allFieldsCollapse ? 'Show Fields' : 'Hide Fields'} />
                                                                             </button>
                                                                         </div>

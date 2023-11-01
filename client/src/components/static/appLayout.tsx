@@ -93,7 +93,7 @@ const AppLayout = () => {
       <br />
       <br />
 
-      <nav className='navbar bg-secondary fixed-bottom py-1'>
+      <nav className='navbar bg-secondary fixed-bottom py-0 px-2' style={{opacity: '.75'}}>
 
         <div className="btn-group dropup">
           <div id="bd-theme" className="dropdown"
@@ -111,8 +111,8 @@ const AppLayout = () => {
           </div>
         </div>
 
-        <div className='ms-auto'>
-          <small className=''>{version_info}</small>
+        <div className='ms-auto text-light'>
+          <small>{version_info}</small>
         </div>
       </nav>
 

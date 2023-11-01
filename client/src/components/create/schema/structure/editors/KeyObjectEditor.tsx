@@ -126,7 +126,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
 
   return (
     <>
-      <div className="card border border-secondary mb-2" id={name.toLowerCase()}>
+      <div className="card mb-2" id={name.toLowerCase()}>
         <div className="card-header px-2 py-2">
           <div className='row no-gutters'>
             <div className='col'>
