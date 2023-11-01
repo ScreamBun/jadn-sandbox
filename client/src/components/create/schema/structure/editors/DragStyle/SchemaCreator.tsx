@@ -582,7 +582,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                             <li className='nav-item me-2'>
                                                 <a
                                                     className={`nav-link 
-                                                    ${activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    ${activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
                                                     ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('info')}
                                                     title="meta data (about a schema package)"
@@ -594,7 +594,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                             <li className='nav-item'>
                                                 <a
                                                     className={`nav-link 
-                                                    ${activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
+                                                    ${activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
                                                     ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('types')}
                                                     title="schema content (the information model)"
