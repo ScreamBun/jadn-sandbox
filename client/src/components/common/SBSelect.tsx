@@ -96,6 +96,12 @@ const smStyle = {
     indicatorsContainer: (provided, state) => ({
         ...provided,
         minHeight: 30,
+        padding: '0',
+    }),
+
+    clearIndicator: (provided, state) => ({
+        ...provided,
+        padding: '0',
     }),
 
     option: (styles, state) => ({
