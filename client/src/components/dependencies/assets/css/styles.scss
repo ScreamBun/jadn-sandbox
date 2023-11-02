@@ -130,7 +130,8 @@ small {
 }
 
 /* Bootstrap Overrides */
-a {
+a,
+.btn-link {
     text-decoration: none !important;
 }
 
@@ -273,7 +274,8 @@ a {
         background-color: #{$primary} !important;
     }
 
-    .btn-outline-primary , .btn-primary{
+    .btn-outline-primary,
+    .btn-primary {
         border: $primary;
     }
 
