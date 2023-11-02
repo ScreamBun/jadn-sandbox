@@ -46,7 +46,7 @@ const SchemaGenerator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header bg-primary p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
+                            <h5 className='m-0 text-light' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
                             <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
                                 <div className="btn-group me-2" role="group" aria-label="First group">
                                     <button type="reset" className="btn btn-sm btn-danger" onClick={onReset}>Reset</button>

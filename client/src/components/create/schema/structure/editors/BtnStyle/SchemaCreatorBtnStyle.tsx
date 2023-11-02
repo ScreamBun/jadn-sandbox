@@ -707,7 +707,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                 </ul>
                                             </div>
                                             <div className={`tab-pane fade ${activeOpt == 'types' ? 'show active' : ''}`} id="types" role="tabpanel" aria-labelledby="types-tab" tabIndex={0}>
-                                                <button type="button" className="btn btn-outline-primary">Primary</button>
                                                 <ul className="list-group">
                                                     {typesKeys}
                                                 </ul>
