@@ -362,7 +362,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge rounded-pill text-bg-secondary">{fields.length}</span>
 
                                 <span
-                                    className="badge rounded-pill text-bg-primary ps-1 cursor-pointer"
+                                    className="badge rounded-pill text-bg-primary cursor-pointer"
                                     title='Add Field'
                                     onClick={onAddField}>
                                     <FontAwesomeIcon icon={faPlusSquare} />
