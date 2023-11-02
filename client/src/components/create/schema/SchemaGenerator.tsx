@@ -11,6 +11,7 @@ import { Option } from 'components/common/SBSelect'
 import SchemaCreator from './structure/editors/DragStyle/SchemaCreator'
 import SchemaCreatorBtnStyle from './structure/editors/BtnStyle/SchemaCreatorBtnStyle'
 import { DragItem } from './structure/editors/DragStyle/SBOutline'
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const SchemaGenerator = () => {
     const [cardsState, setCardsState] = useState<DragItem[]>([]);
     const [isButtonStyle, setIsButtonStyle] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -29,14 +31,22 @@ const SchemaGenerator = () => {
         dismissAllToast();
     }, [dispatch])
 
-    const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onResetItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        setSelectedSchemaFile(null);
-        setGeneratedSchema('');
-        setCardsState([]);
+        setIsConfirmModalOpen(true);
+    };
+    
+    const resetSchema = (response: boolean) => {
+        setIsConfirmModalOpen(false);
+        if (response == true) {
+            setSelectedSchemaFile(null);
+            setGeneratedSchema('');
+            setCardsState([]);
+        }
     }
 
     return (
+        <>
         <div>
             <Helmet>
                 <title>{meta_title}</title>
@@ -49,7 +59,7 @@ const SchemaGenerator = () => {
                             <h5 className='m-0 text-light' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
                             <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
                                 <div className="btn-group me-2" role="group" aria-label="First group">
-                                    <button type="reset" className="btn btn-sm btn-danger" onClick={onReset}>Reset</button>
+                                    <button type="reset" className="btn btn-sm btn-danger" onClick={onResetItemClick}>Reset</button>
                                 </div>
                                 <div className="btn-group" role="group" aria-label="Third group">
                                     <div className='dropdown'>
@@ -112,6 +122,13 @@ const SchemaGenerator = () => {
                 </div>
             </div>
         </div>
+        <SBConfirmModal
+        isOpen={isConfirmModalOpen}
+        title={`Reset Schema`}
+        message={`Are you sure you want to reset Schema?`}
+        onResponse={resetSchema}>
+        </SBConfirmModal>
+        </>
     );
 }
 export default SchemaGenerator 
