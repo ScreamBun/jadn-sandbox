@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
@@ -25,7 +25,7 @@ interface KeyValueEditorProps {
 const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) {
   const {
     name,
-    value,
+    value = '',
     description = '',
     options = [],
     placeholder,
@@ -38,6 +38,20 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     fieldColumns = 10
   } = props;
   const [valueData, setValueData] = useState(value);
+
+  useEffect(() => {
+    if (!value) {
+      if (type == "checkbox") {
+        setValueData(false)
+      }
+      else if (type == "SBSelect" || type == "SBCreatableSelect") {
+        setVal(value ? { value: value, label: value } : '')
+      }
+      else {
+        setValueData(value)
+      }
+    }
+  }, [value])
 
   const [val, setVal] = useState(value ? { value: value, label: value } : ''); //for select
   const onSelectChange = (e: Option) => {
@@ -144,9 +158,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   };
 
   if (['checkbox', 'radio'].includes(type)) {
-    inputArgs.defaultChecked = type && valueData,
+    inputArgs.checked = type && valueData,
       inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => { setValueData(e.target.checked); },
-      inputArgs.onBlur = (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.checked); }
+      inputArgs.onBlur = (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.checked);}
     return (
       <>
         {removable ?
