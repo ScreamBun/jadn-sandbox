@@ -7,6 +7,7 @@ import { InfoConfig } from '../../../interface';
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 // Interface
 interface PrimitiveEditorProps {
@@ -21,6 +22,7 @@ interface PrimitiveEditorProps {
 const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: PrimitiveEditorProps) {
     const { value, dataIndex, config, change } = props;
     const [modal, setModal] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
     if (Number.isInteger(value[0])) {
@@ -29,6 +31,8 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
         valueObjInit = zip(TypeKeys, value) as PrimitiveTypeObject;
     }
     const [valueObj, setValueObj] = useState(valueObjInit);
+    let SBConfirmModalValName = valueObjInit.name;
+
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { placeholder, value } = e.target;
@@ -62,9 +66,17 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
         change(updatevalue, dataIndex);
     }
 
-    const removeAll = () => {
-        const { dataIndex, remove } = props;
-        remove(dataIndex);
+    const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setIsConfirmModalOpen(true);
+    };
+
+    const removeAll = (response: boolean) => {
+        setIsConfirmModalOpen(false);
+        if (response == true) {
+            const { dataIndex, remove } = props;
+            remove(dataIndex);
+        }
     }
 
     const saveModal = (modalData: Array<string>) => {
@@ -93,7 +105,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                         <span id={valueObj.name} className="card-title pt-1">{`${valueObj.name} (${valueObj.type})`}</span>
                     </div>
                     <div className='col'>
-                        <button type='button' className='btn btn-sm btn-danger float-end' onClick={removeAll} title={`Delete ${valueObj.type}`}>
+                        <button type='button' className='btn btn-sm btn-danger float-end' onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
                             <FontAwesomeIcon icon={faMinusCircle} />
                         </button>
                     </div>
@@ -141,7 +153,15 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                     </div>
                 </div>
             </div>
+            <SBConfirmModal
+                isOpen={isConfirmModalOpen}
+                title={`Remove ${SBConfirmModalValName}`}
+                message={`Are you sure you want to remove ${SBConfirmModalValName}?`}
+                confirm_value={dataIndex}
+                onResponse={removeAll}>
+            </SBConfirmModal>
         </div>
+
     );
 });
 

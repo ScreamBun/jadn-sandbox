@@ -12,6 +12,7 @@ import { StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
 import FieldEditorBtnStyle from './FieldEditorBtnStyle';
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { shallowEqual } from 'react-redux';
 
 // Interface
@@ -28,12 +29,15 @@ interface StructureEditorProps {
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
     const { value, dataIndex, config, collapseAllFields, change, remove } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const [fieldCollapse, setFieldCollapse] = useState(false);
     const [modal, setModal] = useState(false);
     const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
     const [valueObj, setValueObj] = useState(valueObjInit);
     const isEditableID = valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
+    let SBConfirmModalValName = valueObj.name;
+
 
     useEffect(() => {
         setFieldCollapse(collapseAllFields)
@@ -101,9 +105,16 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
         change(updatevalue, dataIndex);
     }
 
-    const removeAll = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        remove(dataIndex);
+        setIsConfirmModalOpen(true);
+    };
+
+    const removeAll = (response: boolean, confirm_value: number) => {
+        setIsConfirmModalOpen(false);
+        if (response == true) {
+            remove(confirm_value);
+        }
     }
 
     const onAddField = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -261,7 +272,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                                 <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
                             </div>
                             <div className='col'>
-                                <button type='button' className="float-end btn btn-danger btn-sm" onClick={removeAll} title={`Delete ${valueObj.type}`}>
+                                <button type='button' className="float-end btn btn-danger btn-sm" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
                                     <FontAwesomeIcon icon={faMinusCircle} />
                                 </button>
                             </div>
@@ -327,7 +338,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                             <span id={valueObj.name} className="card-title pt-1">{`${valueObj.name} (${valueObj.type})`}</span>
                         </div>
                         <div className='col'>
-                            <button type='button' className="btn btn-danger btn-sm float-end" onClick={removeAll}
+                            <button type='button' className="btn btn-danger btn-sm float-end" onClick={onRemoveItemClick}
                                 title={`Delete ${valueObj.type}`}>
                                 <FontAwesomeIcon icon={faMinusCircle} />
                             </button>
@@ -399,6 +410,13 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
                     </div>
                 </div>
             </div>
+            <SBConfirmModal
+                isOpen={isConfirmModalOpen}
+                title={`Remove ${SBConfirmModalValName}`}
+                message={`Are you sure you want to remove ${SBConfirmModalValName}?`}
+                confirm_value={dataIndex}
+                onResponse={removeAll}>
+            </SBConfirmModal>
         </>
     );
 });
