@@ -116,11 +116,9 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
         onChange={onChange}
         onBlur={onBlur}
       />
-      <div className="input-group-append">
-        <button type='button' className='btn btn-danger' onClick={removeIndex} data-index={i}>
-          <FontAwesomeIcon icon={faMinusSquare} />
-        </button>
-      </div>
+      <button type='button' className='btn btn-danger' onClick={removeIndex} data-index={i}>
+        <FontAwesomeIcon icon={faMinusSquare} />
+      </button>
     </div>
   ));
 
