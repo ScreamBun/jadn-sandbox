@@ -12,10 +12,6 @@ The JADN Sandbox provides the ability to create, convert, translate, transform, 
 
 1. Install docker [Docker](https://docs.docker.com/get-docker/)
 
-- For ChromeBooks, enable Linux and then install Docker
-  - [Reference #1: Enable Linux and install docker](https://www.techrepublic.com/article/install-docker-chromeos/)
-  - [Reference #2: Install docker](https://docs.docker.com/engine/install/debian/)
-
 2. Pull the latest JADN Sandbox Docker Image (Note: this is needed each time to ensure you are using the very latest version of the JADN Sandbox)
 
 ```bash
