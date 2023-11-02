@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { safeGet } from '../../../../../utils';
 import { useAppSelector } from 'reducers';
 import { getFormatOptions } from 'reducers/format';
@@ -16,19 +16,20 @@ interface TypeOptionsEditorProps {
 
 const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEditorProps) {
   const { change, deserializedState, id, optionType = '' } = props;
-  const schemaTypes = useAppSelector((state) => ({
-    base: state.Util.types.base,
-    schema: Object.keys(state.Util.types.schema) || {}
-  }));
+  const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
+  const types = useAppSelector((state) => ({
+    base: (state.Util.types.base),
+    schema: schemaTypes
+  }), shallowEqual);
 
   const formatTypes = useSelector(getFormatOptions);
 
   const getOptions = (key: string) => {
     switch (key) {
       case 'ktype':
-        return schemaTypes;
+        return types;
       case 'vtype':
-        return schemaTypes;
+        return types;
       case 'format':
         //get only applicable formats based on type 
         let formats_returned = [];

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Button } from "reactstrap";
 import { getValidTranslations } from "reducers/convert";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
@@ -51,16 +50,17 @@ const SchemaTranslated = (props: any) => {
                     </div>
                     <div className='col-md-6'>
                         <div className={`${translatedSchema.length != 0 ? '' : ' d-none'}`}>
-                            <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema[0].schema} customClass='float-right' />
-                            <SBDownloadFile buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`mr-1 float-right${translatedSchema[0].schema ? '' : ' d-none'}`} />
+                            <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema[0].schema} customClass='float-end' />
+                            <SBDownloadFile buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`me-1 float-end${translatedSchema[0].schema ? '' : ' d-none'}`} />
                         </div>
 
-                        {isLoading ? <SBSpinner action={'Translating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
-                            disabled={Object.keys(validSchema).length != 0 && translation.length != 0 ? false : true}
-                            title={"Translate the given JADN schema to the selected format"}
-                        >
-                            Translate
-                        </Button>}
+                        {isLoading ? <SBSpinner action={'Translating'} /> :
+                            <button type="submit" id="translateSchema" className="btn btn-success btn-sm me-1 float-end"
+                                disabled={Object.keys(validSchema).length != 0 && translation.length != 0 ? false : true}
+                                title={"Translate the given JADN schema to the selected format"}
+                            >
+                                Translate
+                            </button>}
                     </div>
                 </div>
             </div>

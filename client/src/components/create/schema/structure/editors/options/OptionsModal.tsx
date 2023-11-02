@@ -1,10 +1,5 @@
 import React, { memo, useState } from 'react';
 import {
-  Button, Modal, ModalHeader, ModalBody
-} from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
-import {
   OptionTypes, Val, opts2arr, opts2obj, RequiredOptions
 } from './consts';
 import { objectFromTuple } from '../../../../../utils';
@@ -15,6 +10,7 @@ import FieldOptionsEditor from './FieldOptionsEditor';
 
 // Interface
 interface OptionsModalProps {
+  id: string;
   toggleModal: () => void;
   saveModal: (_v: Array<string>) => void;
   isOpen: boolean;
@@ -46,7 +42,7 @@ const serializeOptions = (type: Record<string | number, string | number | boolea
 // Component
 const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
 
-  const { optionValues, saveModal, fieldOptions = false, isOpen, optionType = '', toggleModal, modalSize = ModalSize.md } = props;
+  const { id, optionValues, saveModal, fieldOptions = false, isOpen, optionType = '', toggleModal, modalSize = ModalSize.md } = props;
   const [data, setData] = useState(deserializeOptions(optionValues));
   const tmpData = { ...deserializeOptions(optionValues) };
 
@@ -111,35 +107,40 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
   }
 
   return (
-    <Modal className={modalSize} isOpen={isOpen} autoFocus={false} returnFocusAfterClose={false}>
-      <ModalHeader>
-        <div className='float-left'>
-          {fieldOptions ? 'Field' : 'Type'} Options
+    <div id="optionsModal" className={`modal fade ${isOpen ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
+      <div className={`modal-dialog modal-dialog-centered ${modalSize}`} role='document'>
+        <div className='modal-content p-2'>
+          <div className="modal-header">
+            <h5 className='modal-title'>
+              {fieldOptions ? 'Field' : 'Type'} Options
+            </h5>
+            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={toggleModalhere} />
+          </div>
+          <div className="modal-body">
+            <FieldOptionsEditor
+              id={id}
+              deserializedState={data['field']}
+              change={saveOptions}
+              fieldOptions={fieldOptions}
+            />
+            <TypeOptionsEditor
+              id={id}
+              deserializedState={data['type']}
+              change={saveOptions}
+              optionType={optionType}
+            />
+          </div>
+          <div className="modal-footer">
+            <button type="button" color="secondary" className='btn btn-secondary mr-auto' onClick={clearData}>Clear</button>
+            <button type='button' className='btn btn-success' onClick={saveData}>Save</button>
+            <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' onClick={toggleModalhere}>Close</button>
+          </div>
         </div>
-        <div className='float-right'>
-          <Button color="secondary" className='float-right btn-sm' title='Close' onClick={toggleModalhere}>
-            <FontAwesomeIcon icon={faClose} />
-          </Button>
-        </div>
-      </ModalHeader>
-      <ModalBody>
-        <FieldOptionsEditor
-          deserializedState={data['field']}
-          change={saveOptions}
-          fieldOptions={fieldOptions}
-        />
-        <TypeOptionsEditor
-          deserializedState={data['type']}
-          change={saveOptions}
-          optionType={optionType}
-        />
-      </ModalBody>
-      <div className='modal-footer'>
-        <button type="button" color="secondary" className='btn btn-secondary mr-auto' onClick={clearData}>Clear</button>
-        <button type="button" color="secondary" className='btn btn-secondary' onClick={toggleModalhere}>Close</button>
-        <button type="button" color="success" className='btn btn-primary' onClick={saveData}>Save</button>
       </div>
-    </Modal>
+      <div className={`modal-backdrop fade ${isOpen ? 'show' : ''}`} style={{
+        zIndex: -1
+      }}></div>
+    </div>
   );
 });
 

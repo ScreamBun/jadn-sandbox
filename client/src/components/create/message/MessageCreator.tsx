@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { TabContent, TabPane, Button, FormText } from 'reactstrap'
 import { Field, delMultiKey, setMultiKey } from './lib/GenMsgLib'
 import { StandardFieldArray } from '../schema/interface'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
@@ -68,10 +67,10 @@ const MessageCreator = (props: any) => {
 
     if (recordDef.length > 1 && recordDef[recordDef.length - 2].length > 0) {
         commandFields = (
-            <FormText color="muted">
+            <small id="exportHelpBlock" className="form-text text-muted">
                 <b>Comment: </b>
                 {recordDef[recordDef.length - 2]}
-            </FormText>
+            </small>
         );
     }
 
@@ -92,11 +91,11 @@ const MessageCreator = (props: any) => {
         }
     } else {
         fieldDefs = (
-            <FormText color="muted">
+            <small id="msgGenHelpBlock" className="form-text text-muted">
                 Message generator will appear here after selecting a message type
                 &nbsp;
                 {commandType?.value}
-            </FormText>
+            </small>
         );
     }
 
@@ -105,41 +104,41 @@ const MessageCreator = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-md-6'>
-                        <div className="input-group flex-nowrap">
+                        <div className="d-flex">
                             <SBSelect id={"command-list"}
                                 data={exportRecords}
                                 onChange={handleSelection}
                                 placeholder={'Select a message type...'}
                                 value={commandType} isSmStyle
                             />
-                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-right ml-1"} ext={'json'} />
+                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={'json'} />
                         </div>
                     </div>
                     <div className='col'>
-                        <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-right' shouldStringify={true} />
-                        <SBDownloadFile buttonId='msgDownload' customClass='float-right mr-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
+                        <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
+                        <SBDownloadFile buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
 
-                        <Button onClick={() => setActiveView('message')} className={`float-right btn-sm mr-1 ${activeView == 'message' ? ' d-none' : ''}`} color="primary">View Message</Button>
-                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary">View Creator</Button>
+                        <button type='button' onClick={() => setActiveView('message')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'message' ? ' d-none' : ''}`} >View Message</button>
+                        <button type='button' onClick={() => setActiveView('creator')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} >View Creator</button>
                     </div>
                 </div>
             </div>
             <div className='card-body-page' id="message-editor">
-                <TabContent activeTab={activeView}>
-                    <TabPane tabId='creator'>
+                <div className='tab-content mb-2'>
+                    <div className={`container-fluid tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
                         <div id='command-fields' className='p-2'>
                             {commandFields}
                             <div id="fieldDefs">
                                 {fieldDefs}
                             </div>
                         </div>
-                    </TabPane>
+                    </div>
 
-                    <TabPane tabId='message'>
+                    <div className={`tab-pane fade ${activeView == 'message' ? 'show active' : ''}`} id="message" role="tabpanel" aria-labelledby="message-tab" tabIndex={0}>
                         <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
-                    </TabPane>
+                    </div>
                     <SBScrollToTop divID='message-editor' />
-                </TabContent>
+                </div>
             </div>
         </div>
     )

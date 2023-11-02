@@ -1,5 +1,4 @@
 import React, { CSSProperties } from "react";
-import { Button } from "reactstrap";
 
 const spinnerContainer: CSSProperties = {
     width: '100%',
@@ -11,26 +10,24 @@ const spinnerContainer: CSSProperties = {
 
 const SBSpinner = (props: any) => {
 
-    const { action, color, isDiv } = props;
+    const { action, color = 'success', isDiv } = props;
 
     if (isDiv) {
         return (
             <div style={spinnerContainer}>
                 <div className="spinner-border spinner-border-lg" color="inherit" role="status">
-                    <div className="sr-only">Loading...</div>
                 </div>
-                <div className="ml-2">{action ? `${action} ...` : ''}</div>
+                <div className="ms-2">{action ? `${action} ...` : ''}</div>
             </div>
         );
     }
 
     return (
-        <Button color={color || "success"} id="loadingBtn" className="btn-sm mr-1 float-right" disabled>
+        <button id="loadingBtn" type='button' className={`btn btn-sm btn-${color} me-1 float-end`} disabled>
             <span className="spinner-border spinner-border-sm" color="inherit" role="status">
-                <span className="sr-only">Loading...</span>
             </span>
-            <span className="ml-2">{action ? `${action} ...` : ''}</span>
-        </Button>
+            <span className="ms-2">{action ? `${action} ...` : ''}</span>
+        </button>
     );
 }
 

@@ -24,8 +24,9 @@ const ExampleGenerator = lazy(() => import('components/generate/ExampleGenerator
 const SchemaTransformer = lazy(() => import('components/transform/SchemaTransformer'));
 
 export const App = () => {
+
   return (
-    <div className="container-fluid" >
+    <div className="container-fluid">
 
       <Router>
         <Suspense fallback={<SBSpinner action={"Loading"} isDiv />}>
@@ -35,8 +36,8 @@ export const App = () => {
               <Route path="home" element={<Home />} />
               <Route path="validate-message" element={<MessageValidator />} />
               <Route path="convert-schema" element={<SchemaVisualizer />} />
-              <Route path="create-message" element={<MessageGenerator />} />
-              <Route path="create-schema" element={<SchemaGenerator />} />
+              <Route path="create/message" element={<MessageGenerator />} />
+              <Route path="create/schema" element={<SchemaGenerator />} />
               <Route path="transform-schema" element={<SchemaTransformer />} />
               <Route path="generate-message" element={<ExampleGenerator />} />
               <Route path="translate-schema" element={<SchemaTranslator />} />

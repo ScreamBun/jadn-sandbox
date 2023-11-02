@@ -2,10 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
-import { ThemeSwitcher } from 'react-bootswatch-theme-switcher';
-
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import { ThemeProvider } from '../src/components/static/ThemeProvider'
 
 // Styles
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,15 +15,10 @@ import App from './app';
 
 // Config
 import configureStore, { history } from './store';
-
 const store = configureStore(history);
 
-// Theme Options
-const themeRoot = `${window.location.origin}/assets`;
-const validThemes = ['dark', 'light'];
-
 const Root = () => (
-  <ThemeSwitcher storeThemeKey="theme" defaultTheme="dark" themeRoot={themeRoot} themeOptions={validThemes}>
+  <ThemeProvider>
     <Provider store={store} >
       <HelmetProvider>
         <DndProvider debugMode={true} backend={HTML5Backend}>
@@ -32,7 +26,7 @@ const Root = () => (
         </DndProvider>
       </HelmetProvider>
     </Provider>
-  </ThemeSwitcher>
+  </ThemeProvider>
 );
 
 ReactDOM.createRoot(document.getElementById('root')).

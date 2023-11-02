@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { sbToastError, sbToastInfo } from "./SBToast";
 import SBSpinner from "./SBSpinner";
 
@@ -71,27 +70,37 @@ const SBDownloadPDF = (props: any) => {
     return (
         <>
             {isLoading ? <SBSpinner color={'info'} /> :
-                <Button id={buttonId || 'downloadPDF'} title="Download PDF" color="info" className={'btn-sm ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
+                <button id={buttonId || 'downloadPDF'} type='button' title="Download PDF" className={'btn btn-sm btn-primary ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
                     <FontAwesomeIcon icon={faFilePdf} />
-                </Button>}
+                </button>}
 
-            <Modal isOpen={toggleDownloadDialog}>
-                <ModalHeader>
-                    Save PDF As...
-                </ModalHeader>
-                <ModalBody>
-                    <div className="form-row">
-                        <label htmlFor="filename" className="col-sm-4 col-form-label">File name:</label>
-                        <div className="col-sm-8">
-                            <Input id='filename' className="form-control" type="text" onChange={onChange}></Input>
+            <div id="downloadPDFModal" className={`modal fade ${toggleDownloadDialog ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
+                <div className={`modal-dialog modal-dialog-centered`} role='document'>
+                    <div className='modal-content'>
+                        <div className="modal-header">
+                            <h5 className='modal-title'>
+                                Save PDF As...
+                            </h5>
+                            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={() => setToggleDownloadDialog(false)} />
+                        </div>
+                        <div className="modal-body">
+                            <div className="form-row">
+                                <label htmlFor={buttonId + "filenamePDFDownload"} className="col-sm-4 col-label">File name:</label>
+                                <div className="col-sm-8">
+                                    <input id={buttonId + "filenamePDFDownload"} className="form-control" type="text" onChange={onChange} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type='button' className='btn btn-sm btn-success' onClick={onDownloadClick}>Save</button>
+                            <button type='button' className='btn btn-sm btn-secondary' onClick={onCancel}>Cancel</button>
                         </div>
                     </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="success" onClick={onDownloadClick}>Save</Button>
-                    <Button color="secondary" onClick={onCancel}>Cancel</Button>
-                </ModalFooter>
-            </Modal>
+                </div>
+                <div className={`modal-backdrop fade ${toggleDownloadDialog ? 'show' : ''}`} style={{
+                    zIndex: -1
+                }}></div>
+            </div>
         </>
     )
 }

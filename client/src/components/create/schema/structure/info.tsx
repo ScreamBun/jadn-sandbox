@@ -30,7 +30,7 @@ export default {
         id="Package"
         name="Package"
         description="Unique name/version"
-        fieldColumns={8}
+        fieldColumns={10}
         required={true}
         removable={true}
       />
@@ -44,7 +44,7 @@ export default {
         {...props}
         id="Version"
         name="Version"
-        fieldColumns={8}
+        fieldColumns={10}
         required={false}
         removable={true}
       />
@@ -57,7 +57,7 @@ export default {
         {...props}
         id="Title"
         name="Title"
-        fieldColumns={8}
+        fieldColumns={10}
         required={false}
         removable={true}
       />
@@ -95,7 +95,7 @@ export default {
       <KeyValueEditor {...props}
         id="Copyright"
         name="Copyright"
-        fieldColumns={8}
+        fieldColumns={10}
         required={false}
         removable={true}
       />
@@ -107,7 +107,7 @@ export default {
       <KeyValueEditor {...props}
         id="License"
         name="License"
-        fieldColumns={8}
+        fieldColumns={10}
         required={false}
         removable={true}
       />

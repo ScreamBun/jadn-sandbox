@@ -9,7 +9,6 @@ import { TypeArray } from '../../../interface'
 import { DragItem } from './SBOutline'
 
 const style = {
-  padding: '0.5rem 1rem',
   cursor: 'move',
 }
 
@@ -131,17 +130,16 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
 
   return (
     <div className='card'>
-      <div className='card-body list-group-item' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
-        <div className='row'>
-          <div className='col-10'>
-            <span onClick={onToggleStar}>
-              <FontAwesomeIcon className='mr-1' icon={toggleStar ? faStar : farStar} />
-            </span>
-            <a href={`#${index}`}>{text}</a>
-          </div>
-          <div className='col-2'>
-            <FontAwesomeIcon className='float-right pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
-          </div>
+      <div className='card-body list-group-item d-flex justify-content-between align-items-center' ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+        <div>
+          <span onClick={onToggleStar}>
+            <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
+          </span>
+          <a title={'Click to view'} href={`#${index}`}>{text}</a>
+        </div>
+
+        <div>
+          <FontAwesomeIcon className='pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
         </div>
       </div>
     </div>

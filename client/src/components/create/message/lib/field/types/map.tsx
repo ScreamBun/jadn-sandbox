@@ -65,7 +65,7 @@ const MapField = (props: MapFieldProps) => {
 
   return (
     <div className='form-group'>
-      <div className='card border-secondary'>
+      <div className='card border border-secondary'>
         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
           <div>
             <SBToggleBtn toggle={toggle} setToggle={setToggle} >

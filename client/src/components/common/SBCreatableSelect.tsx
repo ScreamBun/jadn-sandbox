@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import CreatableSelect from 'react-select/creatable';
-import { Option, GroupedOption, groupBadgeStyles, groupStyles } from './SBSelect';
+import { Option, GroupedOption, groupBadgeStyles, groupStyles, getSelectTheme } from './SBSelect';
+import { ThemeContext } from 'components/static/ThemeProvider';
 
 const SBCreatableSelect = (props: any) => {
 
     const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value } = props;
+    const theme = useContext(ThemeContext);
+    const themeColors = getSelectTheme(theme[0]);
 
     const customStyles = {
         control: base => ({
@@ -17,12 +20,12 @@ const SBCreatableSelect = (props: any) => {
         option: (styles, state) => ({
             ...styles,
             cursor: 'pointer',
+            color: 'inherit'
         }),
 
         menuPortal: base => ({
             ...base,
             zIndex: 9999,
-            color: '#172B4D'
         })
     };
 
@@ -59,9 +62,9 @@ const SBCreatableSelect = (props: any) => {
         }
 
         customOptList = customOpts.map((opt, index) => (
-            <label className="list-group-item" style={{ textAlign: 'center' }} key={index}>
-                <input className="form-check-input me-1" type="checkbox" name={'custom-file'} value={opt.label} />
-                {opt.label}
+            <label htmlFor={`${opt.label}`} className="list-group-item" style={{ textAlign: 'center' }} key={index}>
+                <input id={`${opt.label}`} className="form-check-input me-1" type="checkbox" name={'custom-file'} value={`${opt.label}`} />
+                {`${opt.label}`}
             </label>
         ));
 
@@ -84,7 +87,15 @@ const SBCreatableSelect = (props: any) => {
                 menuPortalTarget={document.body}
                 styles={customStyles}
                 isMulti={isMultiSelect}
+                closeMenuOnSelect={isMultiSelect ? false : true}
                 value={value}
+                theme={theme => ({
+                    ...theme,
+                    colors: {
+                        ...theme.colors,
+                        ...themeColors
+                    }
+                })}
             />
         </div>
     );

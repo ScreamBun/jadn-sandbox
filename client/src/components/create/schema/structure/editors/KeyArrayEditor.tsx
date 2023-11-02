@@ -1,7 +1,4 @@
 import React, { memo, useState } from 'react';
-import {
-  Button, ButtonGroup, Input
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -64,7 +61,8 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
 
   const indices = dataArr.map((val, i) => (
     <div className="input-group mb-1" key={i}>
-      <Input
+      <input
+        id={`keyArrayEditor-${i}`}
         type="text"
         className="form-control"
         data-index={i}
@@ -73,31 +71,29 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
         onChange={onChange}
         onBlur={onBlur}
       />
-      <div className="input-group-append">
-        <Button color='danger' onClick={removeIndex} data-index={i}>
-          <FontAwesomeIcon icon={faMinusSquare} />
-        </Button>
-      </div>
+      <button type='button' className='btn btn-danger' onClick={removeIndex} data-index={i}>
+        <FontAwesomeIcon icon={faMinusSquare} />
+      </button>
     </div>
   ))
 
   return (
     <>
-      <div className="card border-secondary mb-2" id={name.toLowerCase()}>
+      <div className="card mb-2" id={name.toLowerCase()}>
         <div className="card-header px-2 py-2">
           <div className='row no-gutters'>
             <div className='col'>
               <span>{name} <small style={{ fontSize: '10px' }}> {description} </small></span>
             </div>
             <div className='col'>
-              <ButtonGroup size="sm" className="float-right">
-                <Button color="primary" onClick={addIndex} >
+              <div className="btn-group float-end" role="group" aria-label="button group">
+                <button type='button' className='btn btn-sm btn-primary' onClick={addIndex} >
                   <FontAwesomeIcon icon={faPlusSquare} />
-                </Button>
-                <Button color="danger" onClick={removeAll} >
+                </button>
+                <button type='button' className='btn btn-sm btn-danger' onClick={removeAll} >
                   <FontAwesomeIcon icon={faMinusCircle} />
-                </Button>
-              </ButtonGroup>
+                </button>
+              </div>
             </div>
           </div>
         </div>

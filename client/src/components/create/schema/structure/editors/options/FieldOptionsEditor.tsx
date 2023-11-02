@@ -11,14 +11,14 @@ interface FieldOptionsEditorProps {
 }
 
 const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsEditorProps) {
-  const { change, deserializedState, id, fieldOptions } = props;
+  const { id, change, deserializedState, fieldOptions } = props;
 
   const validOptions = () => {
     return Object.keys(FieldOptionInputArgs).map((key: string) => {
       return (
         <KeyValueEditor
           key={key}
-          id={key}
+          id={id}
           name={key}
           {...FieldOptionInputArgs[key]}
           placeholder={key}
@@ -33,16 +33,7 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
   if (fieldOptions) {
     return (
       <>
-        <div className='row'>
-          <div className='col-md-12'>
-            <strong>{id}</strong>
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-md-12'>
-            {validOptions()}
-          </div>
-        </div>
+        {validOptions()}
       </>
     );
   }

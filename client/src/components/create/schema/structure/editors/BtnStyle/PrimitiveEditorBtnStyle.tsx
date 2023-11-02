@@ -1,8 +1,5 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
-import {
-    Button, ButtonGroup, Input, Label
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { zip } from '../../../../../utils';
@@ -72,8 +69,8 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
     const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setIsConfirmModalOpen(true);
-      };
-    
+    };
+
     const removeAll = (response: boolean) => {
         setIsConfirmModalOpen(false);
         if (response == true) {
@@ -98,29 +95,28 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
     }
 
     return (
-        <div className="card border-secondary mb-3" id={`${dataIndex}`}>
+        <div className="card mb-3" id={`${dataIndex}`}>
             <div className="card-header px-2 py-2">
                 <div className='row'>
                     <div className='col'>
-                        <a role="button" className="btn btn-sm btn-outline-primary mr-2 disabled" title='index'>
+                        <span className="badge rounded-pill text-bg-secondary me-2" title='index'>
                             {dataIndex}
-                        </a>
-                        <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
+                        </span>
+                        <span id={valueObj.name} className="card-title pt-1">{`${valueObj.name} (${valueObj.type})`}</span>
                     </div>
                     <div className='col'>
-                        <ButtonGroup size="sm" className="float-right">
-                            <Button color="danger" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
-                                <FontAwesomeIcon icon={faMinusCircle} />
-                            </Button>
-                        </ButtonGroup>
+                        <button type='button' className='btn btn-sm btn-danger float-end' onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
+                            <FontAwesomeIcon icon={faMinusCircle} />
+                        </button>
                     </div>
                 </div>
             </div>
             <div className="card-body px-2 py-2">
                 <div className="row m-0">
                     <div className="col-md-4">
-                        <Label className='mb-0'>Name</Label>
-                        <Input
+                        <label htmlFor={`name-${dataIndex}`} className='mb-0'>Name</label>
+                        <input
+                            id={`name-${dataIndex}`}
                             name="name"
                             type="text"
                             placeholder="Name"
@@ -132,26 +128,24 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                         />
                     </div>
                     <div className="col-md-2 mt-4 text-center">
-                        <Label className='mb-0'>&nbsp;</Label>
-                        <ButtonGroup>
-                            <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
-                            <OptionsModal
-                                optionValues={valueObj.options}
-                                isOpen={modal}
-                                optionType={valueObj.type}
-                                toggleModal={toggleModal}
-                                saveModal={saveModal}
-                            />
-                        </ButtonGroup>
+                        <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
+                        <OptionsModal
+                            id={`${dataIndex}`}
+                            optionValues={valueObj.options}
+                            isOpen={modal}
+                            optionType={valueObj.type}
+                            toggleModal={toggleModal}
+                            saveModal={saveModal}
+                        />
                     </div>
                     <div className="col-md-6">
-                        <Label className='mb-0'>Comment</Label>
-                        <Input
-                            name="PrimitveEditorCcommentomment"
+                        <label htmlFor={`comment-${dataIndex}`} className='mb-0'>Comment</label>
+                        <input
+                            id={`comment-${dataIndex}`}
+                            name="comment"
                             type="textarea"
                             placeholder="Comment"
                             className='form-control'
-                            rows={1}
                             value={valueObj.comment}
                             onChange={onChange}
                             onBlur={onBlur}
@@ -167,7 +161,7 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
                 onResponse={removeAll}>
             </SBConfirmModal>
         </div>
-        
+
     );
 });
 

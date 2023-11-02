@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
-import { Form, Button } from 'reactstrap'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
@@ -108,12 +107,12 @@ const SchemaVisualizer = () => {
             <div className='row'>
                 <div className='col-md-12'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Visualization</span></h5>
-                            <Button color="danger" className='float-right btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                        <div className='card-header bg-primary p-2'>
+                            <h5 className='m-0 text-light' style={{ display: 'inline' }}><span className='align-middle'>Schema Visualization</span></h5>
+                            <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
-                            <Form onSubmit={submitForm}>
+                            <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
@@ -128,7 +127,7 @@ const SchemaVisualizer = () => {
                                             isLoading={isLoading} />
                                     </div>
                                 </div>
-                            </Form>
+                            </form>
                         </div>
                     </div>
                 </div>

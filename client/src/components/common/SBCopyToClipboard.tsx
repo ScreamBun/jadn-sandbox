@@ -1,7 +1,6 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
-import { Button } from "reactstrap";
 import { sbToastError, sbToastSuccess } from "./SBToast";
 import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
@@ -32,9 +31,10 @@ const SBCopyToClipboard = (props: any) => {
 
     return (
         <>
-            {isLoading ? <SBSpinner color={"primary"} /> : <Button id={buttonId || 'copyToClipboard'} title="Copy to clipboard" color="primary" className={'btn-sm ' + customClass} onClick={onCopyClick}>
-                <FontAwesomeIcon icon={faCopy} />
-            </Button>
+            {isLoading ? <SBSpinner color={"primary"} /> :
+                <button id={buttonId || 'copyToClipboard'} type='button' title="Copy to clipboard" className={'btn btn-sm btn-primary ' + customClass} onClick={onCopyClick}>
+                    <FontAwesomeIcon icon={faCopy} />
+                </button>
             }
         </>
     )

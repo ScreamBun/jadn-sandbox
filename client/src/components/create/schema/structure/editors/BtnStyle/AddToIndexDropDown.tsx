@@ -15,8 +15,8 @@ export const AddToIndexDropDown = memo(function AddToIndexDropDown(props: AddToI
         <div className='col'>
             <ul className="nav nav-pills">
                 <li className="nav-item pb-0 mb-2">
-                    <a className="active nav-link" title='Enter numeric index to specify where to insert Type'>
-                        Insert Type at index
+                    <a className="active nav-link bg-primary" title='Enter numeric index to specify where to insert Type'>
+                        Insert Type at Index
                     </a>
                 </li>
             </ul>
