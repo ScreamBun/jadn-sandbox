@@ -4,7 +4,7 @@ import React from "react"
 const About = () => {
       return (
         <div className='card'>
-          <div className='card-header p-2'>
+          <div className='card-header bg-primary p-2'>
             <h5 className='m-0'>About</h5>
           </div>
           <div className='card-body p-2'>
@@ -21,7 +21,7 @@ const About = () => {
             <div className="row">
               <div className='col-md-8 pr-1'>
                 <ul className="list-group">
-                    <li className="list-group-item active">
+                    <li className="list-group-item bg-primary">
                       <b>FAQ</b>
                     </li>                    
                     <li className="list-group-item">
@@ -56,7 +56,7 @@ const About = () => {
                 </div>
                 <div className='col-md-4 pl-1'>
                   <ul className="list-group">
-                  <li className="list-group-item active">
+                  <li className="list-group-item bg-primary">
                     <b>References</b>
                   </li>                 
                   <li className="list-group-item"><a href={NAV_EXTERNAL_OPENC2_JADN_SPEC} target='_blank' rel='noreferrer'>JADN Specification Doc</a></li>
