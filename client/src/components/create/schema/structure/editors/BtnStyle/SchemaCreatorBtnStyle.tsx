@@ -277,7 +277,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='list-group-item  d-flex justify-content-between align-items-center p-2' key={k}>
                 {Info[k].key}
 
-                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-info'
+                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
                     disabled={selectedFile?.value == 'file' ? true : false}
                     title='Add to Schema'>
                     <FontAwesomeIcon icon={faPlusSquare} />
@@ -289,7 +289,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='list-group-item d-flex justify-content-between align-items-center p-2' key={k}>
                 {Info[k].key}
 
-                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-info'
+                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
                     disabled={selectedFile?.value == 'file' ? true : false}
                     title='Add to Schema'>
                     <FontAwesomeIcon icon={faPlusSquare} />
@@ -302,7 +302,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         <div className='list-group-item d-flex justify-content-between align-items-center p-2' key={k}>
             {Types[k].key}
 
-            <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-info'
+            <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
                 disabled={selectedFile?.value == 'file' ? true : false}
                 title='Add to Schema'>
                 <FontAwesomeIcon icon={faPlusSquare} />

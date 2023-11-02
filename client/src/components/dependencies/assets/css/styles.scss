@@ -269,11 +269,11 @@ a {
 @include color-mode(dark) {
     $primary: #2b5c8a;
 
-    [class*="primary"] {
+    [class*="primary"]:not(.btn-outline-primary) {
         background-color: #{$primary} !important;
     }
 
-    .btn {
+    .btn-outline-primary , .btn-primary{
         border: $primary;
     }
 
