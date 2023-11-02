@@ -39,7 +39,19 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   } = props;
   const [valueData, setValueData] = useState(value);
 
-  useEffect(() => {setValueData(value)}, [value])
+  useEffect(() => {
+    if (!value) {
+      if (type == "checkbox") {
+        setValueData(false)
+      }
+      else if (type == "SBSelect" || type == "SBCreatableSelect") {
+        setVal(value ? { value: value, label: value } : '')
+      }
+      else {
+        setValueData(value)
+      }
+    }
+  }, [value])
 
   const [val, setVal] = useState(value ? { value: value, label: value } : ''); //for select
   const onSelectChange = (e: Option) => {
@@ -146,9 +158,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   };
 
   if (['checkbox', 'radio'].includes(type)) {
-    inputArgs.defaultChecked = type && valueData,
+    inputArgs.checked = type && valueData,
       inputArgs.onChange = (e: React.ChangeEvent<HTMLInputElement>) => { setValueData(e.target.checked); },
-      inputArgs.onBlur = (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.checked); }
+      inputArgs.onBlur = (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.checked);}
     return (
       <>
         {removable ?
