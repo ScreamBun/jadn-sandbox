@@ -11,6 +11,7 @@ The JADN Sandbox provides the ability to create, convert, translate, transform, 
 ## Quick Startup
 
 1. Install docker [Docker](https://docs.docker.com/get-docker/)
+
 2. Pull the latest JADN Sandbox Docker Image (Note: this is needed each time to ensure you are using the very latest version of the JADN Sandbox)
 
 ```bash

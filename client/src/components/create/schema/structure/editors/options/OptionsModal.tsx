@@ -102,6 +102,10 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
     toggleModal();
   }
 
+  const clearData = () => {
+    setData(deserializeOptions([]));
+  }
+
   return (
     <div id="optionsModal" className={`modal fade ${isOpen ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
       <div className={`modal-dialog modal-dialog-centered ${modalSize}`} role='document'>
@@ -127,6 +131,7 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
             />
           </div>
           <div className="modal-footer">
+            <button type="button" color="secondary" className='btn btn-secondary mr-auto' onClick={clearData}>Clear</button>
             <button type='button' className='btn btn-success' onClick={saveData}>Save</button>
             <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' onClick={toggleModalhere}>Close</button>
           </div>
