@@ -639,7 +639,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                     <div className='card-header text-light bg-primary' style={{justifyContent: 'center', display: 'flex', flexDirection: 'column'}}>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h5 id="info" className="card-title">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
+                                                                <h5 id="info" className="card-title text-light">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
                                                             </div>
                                                             <div className='col'>
                                                                 <span>
