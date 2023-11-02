@@ -28,7 +28,7 @@ const Home = () => {
         <link rel="canonical" href={meta_canonical} />
       </Helmet>
       <div className='card'>
-        <div className='card-header'>
+        <div className='card-header bg-primary text-light'>
           <h5 className='m-0'>Home</h5>
         </div>
         <div className='card-body'>
