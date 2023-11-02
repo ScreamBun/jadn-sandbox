@@ -1,5 +1,4 @@
 import React from "react";
-import { ButtonGroup, Button } from "reactstrap";
 import { faSquareCaretDown, faSquareCaretUp, faStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as farStar } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,21 +22,22 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
                 <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
                     <div>
                         <span onClick={() => onStarClick(i)}>
-                            <FontAwesomeIcon icon={card.isStarred == true ? faStar : farStar} />
+                            <FontAwesomeIcon className='me-1' icon={card.isStarred == true ? faStar : farStar} />
                         </span>
                         <a title={'Click to view'} href={`#${i}`}>{card.text}</a>
                     </div>
-                    <div>
-                        <ButtonGroup size="sm">
-                            {i == 0 ? '' : <Button color="primary" onClick={() => changeIndex(card.value, i, i - 1)}
+
+                    <div className="btn-group" role="group" aria-label="button group">
+                        {i == 0 ? '' :
+                            <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i - 1)}
                                 title={`Move ${card.text} Up`}>
                                 <FontAwesomeIcon icon={faSquareCaretUp} />
-                            </Button>}
-                            {i == items.length - 1 ? '' : <Button color="primary" onClick={() => changeIndex(card.value, i, i + 1)}
+                            </button>}
+                        {i == items.length - 1 ? '' :
+                            <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i + 1)}
                                 title={`Move ${card.text} Down`}>
                                 <FontAwesomeIcon icon={faSquareCaretDown} />
-                            </Button>}
-                        </ButtonGroup>
+                            </button>}
                     </div>
                 </div>
             </div>
@@ -50,7 +50,7 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
             {items && items.length > 0 ? (
                 <div id={id}>
                     <ul className="nav nav-pills">
-                        <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link">{title}</a></li>
+                        <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link bg-primary">{title}</a></li>
                     </ul>
                     <div className="sb-outline mt-2">
                         <div>

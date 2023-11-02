@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Button } from 'reactstrap'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
 import SBDownloadFile from 'components/common/SBDownloadFile'
@@ -11,7 +10,7 @@ import { getSelectedSchema } from 'reducers/util'
 //TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
     const { generatedMessages, isLoading, numOfMsg, setNumOfMsg } = props;
-    const [toggle, setToggle] = useState({});
+    const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
     const validSchema = useSelector(getSelectedSchema);
 
     const onToggle = (index: number) => {
@@ -30,9 +29,9 @@ const ExampleCreator = (props: any) => {
                     <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
                         Message Example #{i + 1}
                     </button>
-                    <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-right' />
-                    <SBSaveFile data={message} loc={'messages'} customClass={"float-right mr-1"} filename={`MessageExample${i + 1}`} ext={'json'} />
-                    <SBDownloadFile buttonId={`downloadMsgExample${i}`} customClass='mr-1 float-right' filename={`MessageExample${i + 1}`} data={message} ext={'json'} />
+                    <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-end' />
+                    <SBSaveFile data={message} loc={'messages'} customClass={"float-end me-1"} filename={`MessageExample${i + 1}`} ext={'json'} />
+                    <SBDownloadFile buttonId={`downloadMsgExample${i}`} customClass='me-1 float-end' filename={`MessageExample${i + 1}`} data={message} ext={'json'} />
                 </h5>
             </div>
 
@@ -52,11 +51,12 @@ const ExampleCreator = (props: any) => {
                             placeholder='Select number of desired generated examples...(1-10)' min={1} max={10} />
                     </div>
                     <div className='col-md-3'>
-                        {isLoading ? <SBSpinner action={'Generating'} /> : <Button color="success" type="submit" id="translateSchema" className="btn-sm mr-1 float-right"
-                            disabled={Object.keys(validSchema).length != 0 && numOfMsg != '' ? false : true}
-                            title={"Generate example messages based on selected schema"}>
-                            Generate
-                        </Button>}
+                        {isLoading ? <SBSpinner action={'Generating'} /> :
+                            <button type="submit" id="translateSchema" className="btn btn-success btn-sm me-1 float-end"
+                                disabled={Object.keys(validSchema).length != 0 && numOfMsg != '' ? false : true}
+                                title={"Generate example messages based on selected schema"}>
+                                Generate
+                            </button>}
                     </div>
                 </div>
             </div>

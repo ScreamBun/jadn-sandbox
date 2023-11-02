@@ -26,7 +26,6 @@
   - [HTML Parser](https://www.npmjs.com/package/html-react-parser) - HTML string to React
   - [Lodash](https://www.npmjs.com/package/lodash) - JSON and String parsing and querying utility
   - [React](https://reactjs.org/) - Core Framework
-    - [Theme Switching](https://www.npmjs.com/react-bootswatch-theme-switcher) - Bootstrap Theme Switcher
     - [Redux Binding](https://www.npmjs.com/package/connected-react-router) - Synchronize router state with redux store
     - [DOM](https://www.npmjs.com/package/react-dom) - Entry point to the DOM for React
     - [Drag and Drop](https://www.npmjs.com/package/react-dnd) - UI Drag and drop
@@ -36,7 +35,6 @@
     - [New Window](https://www.npmjs.com/package/react-popout) - Popup Windows
     - [Redux](https://www.npmjs.com/package/react-redux) - React Redux Bindings
     - [Router](https://www.npmjs.com/package/react-router-dom) - App navigation
-    - [Reactstrap](https://www.npmjs.com/package/reactstrap) - Prebuilt Bootstrap components for React
     - [React Toastify](https://www.npmjs.com/package/react-toastify) - Popup Notifications
   - [State Storage](https://redux.js.org/) - State container
     - [redux-api-middleware](https://www.npmjs.com/package/redux-api-middleware) - Provides the ability to call API endpoints

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { githubLight } from '@uiw/codemirror-themes-all';
+import { githubDark, githubLight } from '@uiw/codemirror-themes-all';
 import { langs } from '@uiw/codemirror-extensions-langs';
 import { LANG_HTML, LANG_MARKDOWN, LANG_XML } from 'components/utils/constants';
 import { FormatJADN } from 'components/utils';
+import { ThemeContext } from 'components/static/ThemeProvider';
 
 // References:
 // https://reactjsexample.com/codemirror-component-for-react/
@@ -21,6 +22,8 @@ const SBEditor = (props: any) => {
         convertTo,
         onChange
     } = props;
+
+    const [theme] = useContext(ThemeContext);
 
     let extensions = [langs.json()]
     if (convertTo != null && typeof convertTo != 'object') {
@@ -48,7 +51,7 @@ const SBEditor = (props: any) => {
             height={height}
             maxHeight='100%'
             readOnly={isReadOnly}
-            theme={githubLight}
+            theme={theme == "light" ? githubLight : githubDark}
             extensions={extensions}
             onChange={onChange}
         />

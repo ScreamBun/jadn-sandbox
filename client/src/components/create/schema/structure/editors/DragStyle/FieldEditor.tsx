@@ -1,9 +1,6 @@
 import React, { memo, useMemo, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier, XYCoord } from 'dnd-core'
-import {
-  Button, FormGroup, Input, Label
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGrip, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -24,6 +21,7 @@ import { shallowEqual } from 'react-redux';
 interface FieldEditorProps {
   id: any;
   enumerated?: boolean;
+  parentIndex: number;
   dataIndex: number;
   value: EnumeratedFieldArray | StandardFieldArray;
   change: (_v: EnumeratedFieldArray | StandardFieldArray, _i: number) => void;
@@ -38,7 +36,7 @@ interface FieldEditorProps {
 
 
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
-  const { enumerated = false, value, dataIndex, change, config, acceptableType, moveCard, id, dropCard, remove, editableID } = props;
+  const { enumerated = false, value, dataIndex, parentIndex, change, config, acceptableType, moveCard, id, dropCard, remove, editableID } = props;
   const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
   const types = useAppSelector((state) => ({
     base: (state.Util.types.base),
@@ -238,29 +236,29 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       SBConfirmModalValName = `${val.value}`;
       return (
         <div className="row m-0">
-          <FormGroup className='col-md-2'>
-            <Label>ID</Label>
-            <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
-              onChange={onChange} onBlur={onBlur} />
-          </FormGroup>
-          <div className="col-md-4">
-            <Label>Value</Label>
-            <Input name="value" type="text" placeholder="Value" className='form-control' value={val.value}
+          <div className='col-md-2'>
+            <label htmlFor={`id-${parentIndex}-${dataIndex}`}>ID</label>
+            <input id={`id-${parentIndex}-${dataIndex}`} name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
               onChange={onChange} onBlur={onBlur} />
           </div>
-          <FormGroup className='col-md-6'>
-            <Label>Comment</Label>
-            <Input
+          <div className="col-md-4">
+            <label htmlFor={`value-${parentIndex}-${dataIndex}`} >Value</label>
+            <input id={`value-${parentIndex}-${dataIndex}`} name="value" type="text" placeholder="Value" className='form-control' value={val.value}
+              onChange={onChange} onBlur={onBlur} />
+          </div>
+          <div className='col-md-6'>
+            <label htmlFor={`comment-${parentIndex}-${dataIndex}`}>Comment</label>
+            <input
+              id={`comment-${parentIndex}-${dataIndex}`}
               name="comment"
               type="textarea"
               className='form-control'
               placeholder="Comment"
-              rows={1}
               value={valueObj.comment}
               onChange={onChange}
               onBlur={onBlur}
             />
-          </FormGroup>
+          </div>
         </div>
       );
     }
@@ -269,33 +267,43 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       <>
         <div className="row">
           <div className="col-md-2">
-            <Label className='mb-0'>ID</Label>
-          </div>
-          <div className="col-md-4">
-            <Label className='mb-0'>Name</Label>
-          </div>
-          <div className="col-md-4">
-            <Label className='mb-0'>Type</Label>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-2">
-            <Input name="id" type="number" placeholder="ID" className='form-control' value={valueObj.id}
-              onChange={onChange} onBlur={onBlur} readOnly={!editableID}
+            <label htmlFor={`id-${parentIndex}-${dataIndex}`} className='mb-0'>ID</label>
+            <input id={`id-${parentIndex}-${dataIndex}`}
+              name="id"
+              type="number"
+              placeholder="ID"
+              className='form-control'
+              value={valueObj.id}
+              onChange={onChange}
+              onBlur={onBlur}
+              readOnly={!editableID}
               title={`${editableID ? '' : 'If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.'}`} />
-
           </div>
           <div className="col-md-4">
-            <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={val.name}
-              onChange={onChange} onBlur={onBlur} />
+            <label htmlFor={`name-${parentIndex}-${dataIndex}`} className='mb-0'>Name</label>
+            <input id={`name-${parentIndex}-${dataIndex}`}
+              name="name"
+              type="text"
+              placeholder="Name"
+              className='form-control'
+              maxLength={64}
+              value={val.name}
+              onChange={onChange}
+              onBlur={onBlur} />
           </div>
           <div className="col-md-4">
-            <SBCreatableSelect id="Type" name="type" value={valType} onChange={onSelectChange} data={types}
+            <label htmlFor={`type-${parentIndex}-${dataIndex}`} className='mb-0'>Type</label>
+            <SBCreatableSelect id={`type-${parentIndex}-${dataIndex}`}
+              name="type"
+              value={valType}
+              onChange={onSelectChange}
+              data={types}
               isGrouped />
           </div>
-          <div className="col-md-2">
-            <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Field Options</Button>
+          <div className="col-md-2 d-flex">
+            <button type='button' className='btn btn-primary btn-sm p-2 mt-auto' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Field Options</button>
             <OptionsModal
+              id={`${parentIndex}-${dataIndex}`}
               optionValues={val.options || []}
               isOpen={modal}
               saveModal={saveModal}
@@ -306,20 +314,21 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
             />
           </div>
         </div>
+
         <div className="row">
-          <FormGroup className='col-md-12'>
-            <Label>Comment</Label>
-            <Input
+          <div className='col-md-12'>
+            <label htmlFor={`comment-${parentIndex}-${dataIndex}`} className='mb-0'>Comment</label>
+            <input
+              id={`comment-${parentIndex}-${dataIndex}`}
               name="comment"
               type="textarea"
               placeholder="Comment"
-              rows={1}
               className='form-control'
               value={valueObj.comment}
               onChange={onChange}
               onBlur={onBlur}
             />
-          </FormGroup>
+          </div>
         </div>
       </>
     );
@@ -327,15 +336,14 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
 
   return (
     <>
-      <div className={`card border-secondary mb-2`} ref={previewRef} data-handler-id={handlerId} style={containerStyle}>
+      <div className={`card mb-2`} ref={previewRef} data-handler-id={handlerId} style={containerStyle}>
         <div className="card-body px-2 py-2">
           <div ref={dragRef} style={{ cursor: 'move' }}>
-            <FontAwesomeIcon className='float-right pt-1 pl-2 m-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+            <FontAwesomeIcon className='float-end pt-1 pl-2 m-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
             <a href="#" role="button" onClick={onRemoveItemClick}>
-              <FontAwesomeIcon className='float-right pt-1 m-1' color='red' title={`Delete Field`} icon={faMinusCircle}></FontAwesomeIcon>
+              <FontAwesomeIcon className='float-end pt-1 m-1' color='red' title={`Delete Field`} icon={faMinusCircle}></FontAwesomeIcon>
             </a>
           </div>
-
           {makeOptions()}
         </div>
       </div>

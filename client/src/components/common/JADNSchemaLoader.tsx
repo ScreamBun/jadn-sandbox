@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "reactstrap";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { getAllSchemas } from "../../reducers/util";
 import { info, loadFile, setSchema } from "../../actions/util";
@@ -27,6 +26,12 @@ const JADNSchemaLoader = (props: any) => {
     const schemaOpts = useSelector(getAllSchemas);
     const [fileName, setFileName] = useState('');
     const ref = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        if (!loadedSchema) {
+            setIsValidJADN(false);
+        }
+    }, [loadedSchema])
 
     useEffect(() => {
         dispatch(info());
@@ -251,37 +256,39 @@ const JADNSchemaLoader = (props: any) => {
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-md-6">
-                        <div className="input-group flex-nowrap">
+                        <div className="d-flex">
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
                                 loc={'schemas'}
                                 value={selectedFile}
-                                isGrouped isFileUploader
+                                isGrouped
+                                isFileUploader
                                 isSmStyle />
-                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-right ml-1"} filename={fileName} setDropdown={setSelectedFile} />
+                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-end ms-1"} filename={fileName} setDropdown={setSelectedFile} />
                         </div>
                         <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
                     <div className="col">
-                        <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-right mr-1' />
-                        {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> : <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
-                            <span className="m-1">Validate JADN</span>
-                            {isValidJADN ? (
-                                <span className="badge badge-pill badge-success">
-                                    <FontAwesomeIcon icon={faCheck} />
-                                </span>) : (
-                                <span className="badge badge-pill badge-danger">
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </span>)
-                            }
-                        </Button>
+                        <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
+                        {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
+                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end me-1' title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"} onClick={onValidateJADNClick}>
+                                <span className="m-1">Validate JADN</span>
+                                {isValidJADN ? (
+                                    <span className="badge rounded-pill text-bg-success">
+                                        <FontAwesomeIcon icon={faCheck} />
+                                    </span>) : (
+                                    <span className="badge rounded-pill text-bg-danger">
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </span>)
+                                }
+                            </button>
                         }
-                        <Button id='formatButton' className="float-right btn-sm mr-1" color="primary" onClick={onFormatClick}
+                        <button id='formatButton' type='button' className="btn btn-sm btn-primary float-end me-1" onClick={onFormatClick}
                             title='Attempts to Parse and Format.'>
                             <span className="m-1">Format JADN</span>
-                        </Button>
+                        </button>
                     </div>
                 </div>
             </div>

@@ -37,8 +37,27 @@ body {
     right: 1em;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.25rem !important;
+    line-height: normal !important;
+}
+
+input {
+    width: 100%;
+}
+
+.btn-block {
+    width: 100%;
+}
+
 .input-group {
     flex-wrap: nowrap !important;
+}
+
+.dropdown-menu-end {
+    left: auto;
+    right: 0;
+    text-align: right;
 }
 
 /* Pretty JSON Module theme */
@@ -116,8 +135,14 @@ small {
 }
 
 /* Bootstrap Overrides */
+a,
+.btn-link {
+    text-decoration: none !important;
+}
+
 .card-header {
     padding: 8px !important;
+    height: 100%;
 }
 
 .card-body {
@@ -139,8 +164,6 @@ small {
     overflow-y: auto;
     overflow-x: hidden;
     width: fit-content;
-    position: sticky;
-    top: 0;
 }
 
 .card-title {
@@ -166,21 +189,6 @@ small {
     width: auto;
     -moz-padding: 15px;
     /* firefox bug fix */
-}
-
-.modal-content {
-    .modal-header {
-        padding: .5rem 1rem !important;
-
-        .modal-title {
-            width: 100%;
-        }
-
-    }
-
-    .modal-footer {
-        padding: .5rem 1rem !important;
-    }
 }
 
 .nav-item {
@@ -259,3 +267,21 @@ small {
 
 // Extra large devices (large desktops, 1200px and up)
 @media (min-width: 1200px) {}
+
+@import '~bootstrap/scss/bootstrap.scss';
+
+// Color mode variables in _root.scss
+@include color-mode(dark) {
+    $primary: #2b5c8a;
+
+    [class*="primary"]:not(.btn-outline-primary) {
+        background-color: #{$primary} !important;
+    }
+
+    .btn-outline-primary,
+    .btn-primary {
+        border: $primary;
+    }
+
+
+}

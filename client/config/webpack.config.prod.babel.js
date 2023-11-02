@@ -42,11 +42,6 @@ module.exports = merge(baseConfig, {
           to: path.join(BUILD_DIR, 'assets'),
           toType: 'dir'
         },
-        { // Theme Assets
-          from: path.resolve('node_modules', 'react-bootswatch-theme-switcher', 'assets'),
-          to: path.join(BUILD_DIR, 'assets'),
-          toType: 'dir'
-        }
       ]
     }),
     new CleanWebpackPlugin({

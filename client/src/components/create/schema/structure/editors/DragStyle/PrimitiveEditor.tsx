@@ -1,8 +1,5 @@
 import React, { memo, useState } from 'react';
 //import equal from 'fast-deep-equal';
-import {
-  Button, Input
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { zip } from '../../../../../utils';
@@ -73,13 +70,13 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
     setIsConfirmModalOpen(true);
   };
 
-const removeAll = (response: boolean) => {
+  const removeAll = (response: boolean) => {
     setIsConfirmModalOpen(false);
     if (response == true) {
-        const { dataIndex, remove } = props;
-        remove(dataIndex);
+      const { dataIndex, remove } = props;
+      remove(dataIndex);
     }
-}
+  }
 
   const saveModal = (modalData: Array<string>) => {
     toggleModal();
@@ -98,16 +95,16 @@ const removeAll = (response: boolean) => {
 
   return (
     <>
-      <div className={`card border-secondary mb-3`} id={`${dataIndex}`}>
+      <div className={`card border border-secondary mb-3`} id={`${dataIndex}`}>
         <div className="card-header px-2 py-2">
           <div className='row'>
             <div className='col'>
               <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
             </div>
             <div className='col'>
-              <Button color="danger" className="float-right btn-sm" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
+              <button type='button' className="float-end btn btn-danger btn-sm" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
                 <FontAwesomeIcon icon={faMinusCircle} />
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -116,20 +113,21 @@ const removeAll = (response: boolean) => {
             <div className="col-md-12">
               <div className='row'>
                 <div className='col-md-4'>
-                  <label htmlFor="name" className='mb-0'>Name</label>
+                  <label htmlFor={`name-${dataIndex}`} className='mb-0'>Name</label>
                 </div>
                 <div className='col-md-6 offset-md-2'>
-                  <label htmlFor="name" className='mb-0'>Comment</label>
+                  <label htmlFor={`comment-${dataIndex}`} className='mb-0'>Comment</label>
                 </div>
               </div>
               <div className="row">
                 <div className="col-md-4">
-                  <Input name="name" type="text" placeholder="Name" maxLength={64} value={valueObj.name}
+                  <input id={`name-${dataIndex}`} name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
-                  <Button color="primary" className='p-2 btn-sm' onClick={toggleModal}>Type Options</Button>
+                  <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
                   <OptionsModal
+                    id={`${dataIndex}`}
                     optionValues={valueObj.options}
                     isOpen={modal}
                     optionType={valueObj.type}
@@ -138,8 +136,8 @@ const removeAll = (response: boolean) => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <Input name="comment" type="textarea" placeholder="Comment" className='form-control'
-                    rows={1} value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
+                  <input id={`comment-${dataIndex}`} name="comment" type="textarea" placeholder="Comment" className='form-control'
+                    value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
             </div>
@@ -147,11 +145,11 @@ const removeAll = (response: boolean) => {
         </div>
       </div>
       <SBConfirmModal
-                isOpen={isConfirmModalOpen}
-                title={`Remove ${SBConfirmModalValName}`}
-                message={`Are you sure you want to remove ${SBConfirmModalValName}?`}
-                confirm_value={dataIndex}
-                onResponse={removeAll}>
+        isOpen={isConfirmModalOpen}
+        title={`Remove ${SBConfirmModalValName}`}
+        message={`Are you sure you want to remove ${SBConfirmModalValName}?`}
+        confirm_value={dataIndex}
+        onResponse={removeAll}>
       </SBConfirmModal>
     </>
   );

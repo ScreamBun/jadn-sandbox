@@ -1,7 +1,6 @@
 
 //ArrayOf
 import React, { useState } from 'react';
-import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -195,13 +194,13 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const fields = opts.map((opt, i) => {
     return (
       <Field key={self.crypto.randomUUID()} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} value={opt}>
-        <Button
-          color="danger"
-          className={`p-1${min ? ' disabled' : ''}`}
+        <button
+          type='button'
+          className={`btn btn-danger p-1${min ? ' disabled' : ''}`}
           onClick={() => removeOpt(i)}
         >
           <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-        </Button>
+        </button>
       </Field>
     )
   });
@@ -212,7 +211,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   return (
     <div className='form-group'>
-      <div className='card border-secondary'>
+      <div className='card border border-secondary'>
         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
           <div>
             <SBToggleBtn toggle={toggle} setToggle={setToggle} >
@@ -228,14 +227,14 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
         <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
           {fields}
-          <Button
-            color="primary"
-            className={`btn-block p-1${max ? ' disabled' : ''}`}
+          <button
+            type='button'
+            className={`btn btn-primary btn-sm btn-block p-1${max ? ' disabled' : ''}`}
             title={`Add Field to ${name}`}
             onClick={addOpt}
           >
             <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-          </Button>
+          </button>
         </div>
       </div>
     </div>

@@ -7,7 +7,6 @@ import { delMultiKey, getMultiKey, setMultiKey } from './multiKey';
 import {
   hasProperty, invertObject, objectFromTuple, objectValues, safeGet
 } from './object';
-import ToggleSwitch from './toggle';
 
 export {
   // Array
@@ -36,6 +35,4 @@ export {
   objectFromTuple,
   objectValues,
   safeGet,
-  // ToggleSwitch
-  ToggleSwitch
 };

@@ -1,8 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
-import {
-  Button, ButtonGroup, Input
-} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { useAppSelector } from 'reducers';
@@ -115,7 +112,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const removeAll = (response: boolean, confirm_value: number) => {
     setIsConfirmModalOpen(false);
     if (response == true) {
-        remove(confirm_value);
+      remove(confirm_value);
     }
   }
 
@@ -244,45 +241,43 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
     return (
       <>
-        <div className="card border-secondary mb-3">
+        <div className="card border border-secondary mb-3">
           <div className="card-header px-2 py-2">
             <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name} (${valueObj.type})`}</span>
-            <ButtonGroup size="sm" className="float-right">
-              <Button color="danger" onClick={removeAll} >
-                <FontAwesomeIcon icon={faMinusCircle} />
-              </Button>
-            </ButtonGroup>
+            <button type='button' className='btn btn-sm btn-danger float-end' onClick={onRemoveItemClick} >
+              <FontAwesomeIcon icon={faMinusCircle} />
+            </button>
           </div>
           <div className="card-body px-2 py-2">
             <div className="row">
               <div className="col-md-12">
                 <div className='row'>
                   <div className='col-md-4'>
-                    <label htmlFor="name" className='mb-0'>Name</label>
+                    <label htmlFor={`name-${dataIndex}`} className='mb-0'>Name</label>
                   </div>
                   <div className='col-md-6 offset-md-2'>
-                    <label htmlFor="name" className='mb-0'>Comment</label>
+                    <label htmlFor={`comment-${dataIndex}`} className='mb-0'>Comment</label>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-md-4">
-                    <Input name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
+                    <input id={`name-${dataIndex}`} name="name" type="text" placeholder="Name" className='form-control' maxLength={64} value={valueObj.name}
                       onChange={onChange} onBlur={onBlur} />
                   </div>
                   <div className="col-md-2 text-center px-0">
-                    <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
+                    <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
                     <OptionsModal
+                      id={`${dataIndex}`}
                       optionValues={valueObj.options}
                       isOpen={modal}
                       optionType={valueObj.type}
                       toggleModal={toggleModal}
                       saveModal={saveModal}
                       modalSize={ModalSize.lg}
-                      fieldOptions={false}
                     />
                   </div>
                   <div className="col-md-6">
-                    <Input name="comment" type="textarea" placeholder="Comment" className='form-control text-area-w100' rows={1}
+                    <input id={`comment-${dataIndex}`} name="comment" type="textarea" placeholder="Comment" className='form-control text-area-w100'
                       value={valueObj.comment} onChange={onChange} onBlur={onBlur} />
                   </div>
                 </div>
@@ -319,16 +314,16 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <>
-      <div className={`card border-secondary mb-2`} id={`${dataIndex}`}>
+      <div className={`card mb-2`} id={`${dataIndex}`}>
         <div className="card-header px-2 py-2" >
           <div className='row'>
             <div className='col'>
               <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
             </div>
             <div className='col'>
-              <Button color="danger" className="float-right btn-sm" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
+              <button type='button' className="float-end btn btn-danger btn-sm" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
                 <FontAwesomeIcon icon={faMinusCircle} />
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -337,20 +332,21 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
             <div className="col-md-12">
               <div className='row'>
                 <div className='col-md-4'>
-                  <label htmlFor="name" className='mb-0'>Name</label>
+                  <label htmlFor={`name-${dataIndex}`} className='mb-0'>Name</label>
                 </div>
                 <div className='col-md-6 offset-md-2'>
-                  <label htmlFor="name" className='mb-0'>Comment</label>
+                  <label htmlFor={`comment-${dataIndex}`} className='mb-0'>Comment</label>
                 </div>
               </div>
               <div className="row">
                 <div className="col-md-4">
-                  <Input name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
+                  <input id={`name-${dataIndex}`} name="name" type="text" className='form-control' placeholder="Name" maxLength={64} value={valueObj.name}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
                 <div className="col-md-2 text-center px-0">
-                  <Button color="primary" className='btn-sm p-2' onClick={toggleModal}>Type Options</Button>
+                  <button type='button' className='btn btn-primary btn-sm p-2' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Type Options</button>
                   <OptionsModal
+                    id={`${dataIndex}`}
                     optionValues={valueObj.options}
                     isOpen={modal}
                     optionType={valueObj.type}
@@ -360,7 +356,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                   />
                 </div>
                 <div className="col-md-6">
-                  <Input name="comment" type="textarea" placeholder="Comment" className='form-control' rows={1} value={valueObj.comment}
+                  <input id={`comment-${dataIndex}`} name="comment" type="textarea" placeholder="Comment" className='form-control' value={valueObj.comment}
                     onChange={onChange} onBlur={onBlur} />
                 </div>
               </div>
@@ -368,11 +364,11 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
           </div>
           <div className="row pt-2">
             <div className="col-12">
-              <legend>
-                {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge badge-pill badge-secondary">{valueObj.fields?.length}</span>
+              <span>
+                {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} <span className="badge rounded-pill text-bg-secondary">{valueObj.fields?.length}</span>
 
                 <span
-                  className="badge badge-pill badge-primary ml-1 cursor-pointer"
+                  className="badge rounded-pill text-bg-primary ms-1 cursor-pointer"
                   title='Add Field'
                   onClick={onAddField}>
                   <FontAwesomeIcon icon={faPlusSquare} />
@@ -381,17 +377,17 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                 <a href="#" role="button"
                   onClick={() => setFieldCollapse(!fieldCollapse)}>
                   <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                    className='float-right btn btn-sm'
+                    className='float-end btn btn-sm'
                     title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
                 </a>
 
                 {isEditableID ? <a href="#" role="button" onClick={sortFields}>
                   <FontAwesomeIcon icon={faArrowDown19}
-                    className='float-right btn btn-sm'
+                    className='float-end btn btn-sm'
                     title={'Sort Fields by ID'} />
                 </a> : ''}
 
-              </legend>
+              </span>
 
               {!fieldCollapse ? valueObj.fields?.length == 0 ? <p> No fields to show</p> :
                 <div>
@@ -405,16 +401,17 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
                     editableID={isEditableID}
                     config={config}
                     acceptableType={`${dataIndex}`}
+                    parentIndex={dataIndex}
                   />
                 </div>
                 : ''
               }
 
               {!fieldCollapse ?
-                <Button color="primary" onClick={onAddField} className='btn btn-sm btn-block rounded-pill'
+                <button type='button' onClick={onAddField} className='btn btn-sm btn-primary btn-block rounded-pill'
                   title='Add Field'>
                   <FontAwesomeIcon icon={faPlusSquare} />
-                </Button>
+                </button>
                 : ''
               }
 
@@ -423,11 +420,11 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
         </div>
       </div >
       <SBConfirmModal
-                isOpen={isConfirmModalOpen}
-                title={`Remove ${SBConfirmModalValName}`}
-                message={`Are you sure you want to remove ${SBConfirmModalValName}?`}
-                confirm_value={dataIndex}
-                onResponse={removeAll}>
+        isOpen={isConfirmModalOpen}
+        title={`Remove ${SBConfirmModalValName}`}
+        message={`Are you sure you want to remove ${SBConfirmModalValName}?`}
+        confirm_value={dataIndex}
+        onResponse={removeAll}>
       </SBConfirmModal>
     </>
   );

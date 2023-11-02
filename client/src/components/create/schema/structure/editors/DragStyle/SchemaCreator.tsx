@@ -1,7 +1,6 @@
 import React, { useEffect, memo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
-import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { faCheck, faXmark, faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { v4 as uuid4 } from 'uuid';
@@ -43,6 +42,12 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
     useEffect(() => {
         dispatch(setSchema(generatedSchema));
+    }, [generatedSchema])
+
+    useEffect(() => {
+        if (!generatedSchema) {
+            setIsValidJADN(false);
+        }
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
@@ -129,8 +134,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     let data = ev.target.result;
                     try {
                         setIsLoading(false);
-
-                        validateJADN(data);
                         const dataObj = JSON.parse(data);
                         flushSync(() => {
                             setGeneratedSchema(dataObj);
@@ -141,8 +144,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 value: item,
                                 isStarred: false
                             })));
+                            validateJADN(data);
                         });
-
                     } catch (err) {
                         setIsLoading(false);
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
@@ -525,7 +528,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-sm-3'>
-                        <div className="input-group">
+                        <div className="d-flex">
                             <SBSelect id={"schema-list"}
                                 data={schemaOpts}
                                 onChange={onFileSelect}
@@ -537,7 +540,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                             <SBSaveFile
                                 buttonId={'saveSchema'}
                                 toolTip={'Save Schema'}
-                                customClass={"float-right ml-1"}
+                                customClass={"float-end ms-1"}
                                 data={generatedSchema}
                                 loc={'schemas'}
                                 filename={fileName}
@@ -548,67 +551,71 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         </div>
                     </div>
                     <div className='col-sm-9'>
-                        <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-right'} />
-                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-right mr-1'} />
-                        <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="primary" title="View in JSON">View JSON</Button>
-                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary" title="View via Input Form">View Form</Button>
+                        <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-end'} />
+                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-end me-1'} />
+                        <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
+                        <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
+                            <button type='button' id='validateJADNButton' className="float-end btn btn-primary btn-sm me-1" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
-                                    <span className="badge badge-pill badge-success">
+                                    <span className="badge rounded-pill text-bg-success">
                                         <FontAwesomeIcon icon={faCheck} />
                                     </span>) : (
-                                    <span className="badge badge-pill badge-danger">
+                                    <span className="badge rounded-pill text-bg-danger">
                                         <FontAwesomeIcon icon={faXmark} />
                                     </span>)
                                 }
-                            </Button>
+                            </button>
                         }
                     </div>
                 </div>
             </div>
             <div className='card-body p-2'>
-                <TabContent activeTab={activeView}>
-                    <TabPane tabId='creator' className='container-fluid'>
+                <div className='tab-content mb-2'>
+                    <div className={`container-fluid tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
                         <div className='row'>
-                            <div id="schema-options" className='col-sm-3 pl-0 card-body-scroller'>
+                            <div id="schema-options" className='col-sm-3 ps-0 card-body-scroller'>
                                 <div className='row'>
                                     <div className='col'>
-                                        <Nav pills className='pb-2'>
-                                            <NavItem className='mr-2'>
-                                                <NavLink
-                                                    className={activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                        <ul className="nav nav-pills pb-2" id="editorKeys" role="tablist">
+                                            <li className='nav-item me-2'>
+                                                <a
+                                                    className={`nav-link 
+                                                    ${activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('info')}
                                                     title="meta data (about a schema package)"
+                                                    data-bs-toggle="pill"
                                                 >
                                                     Info
-                                                </NavLink>
-                                            </NavItem>
-                                            <NavItem>
-                                                <NavLink
-                                                    className={activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                                </a>
+                                            </li>
+                                            <li className='nav-item'>
+                                                <a
+                                                    className={`nav-link 
+                                                    ${activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('types')}
                                                     title="schema content (the information model)"
+                                                    data-bs-toggle="pill"
                                                 >
                                                     Types*
-                                                </NavLink>
-                                            </NavItem>
-                                        </Nav>
-                                        <TabContent className='mb-2' activeTab={activeOpt}>
-                                            <TabPane tabId='info'>
-                                                <ListGroup>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div className='tab-content mb-2'>
+                                            <div className={`tab-pane fade ${activeOpt == 'info' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
+                                                <ul className="list-group">
                                                     {infoKeys.length != 0 ? infoKeys : <div className='col'>No Info to add</div>}
-                                                </ListGroup>
-                                            </TabPane>
-                                            <TabPane tabId='types'>
-                                                <ListGroup>
+                                                </ul>
+                                            </div>
+                                            <div className={`tab-pane fade ${activeOpt == 'types' ? 'show active' : ''}`} id="types" role="tabpanel" aria-labelledby="types-tab" tabIndex={0}>
+                                                <ul className="list-group">
                                                     {typesKeys}
-                                                </ListGroup>
-                                            </TabPane>
-                                        </TabContent>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='row'>
@@ -627,20 +634,20 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                                     <>
                                         <div className='row'>
-                                            <div className="col pt-2">
-                                                <div className='card border-secondary'>
-                                                    <div className='card-header bg-primary'>
+                                            <div className="col">
+                                                <div className='card'>
+                                                    <div className='card-header text-light bg-primary' style={{justifyContent: 'center', display: 'flex', flexDirection: 'column'}}>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h6 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }}> metadata </small></h6>
+                                                                <h5 id="info" className="card-title text-light">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
                                                             </div>
                                                             <div className='col'>
-                                                                <legend>
+                                                                <span>
                                                                     <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                        className='float-right btn btn-sm text-light'
+                                                                        className='float-end btn btn-sm text-light'
                                                                         onClick={() => setInfoCollapse(!infoCollapse)}
                                                                         title={infoCollapse ? ' Show Info' : ' Hide Info'} />
-                                                                </legend>
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -660,26 +667,26 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                         </div>
                                         <div className='row mt-2'>
                                             <div className="col pt-2">
-                                                <div className='card border-secondary'>
+                                                <div className='card'>
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h6 id="types" className='mb-0 pt-1'>Types* <small style={{ fontSize: '10px' }}> schema content </small></h6>
+                                                                <h6 id="types" className='pt-1 text-light'>Types* <small style={{ fontSize: '10px' }}> schema content </small></h6>
                                                             </div>
                                                             <div className='col'>
                                                                 {generatedSchema.types &&
                                                                     <>
-                                                                        <div className="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
+                                                                        <div className="btn-group btn-group-sm float-end" role="group" aria-label="Basic example">
                                                                             <button type="button" className="btn btn-secondary" onClick={() => setTypesCollapse(!typesCollapse)}>
                                                                                 {typesCollapse ? 'Show Types' : ' Hide Types'}
                                                                                 <FontAwesomeIcon icon={typesCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                    className='float-right btn btn-sm'
+                                                                                    className='float-end btn btn-sm text-light'
                                                                                     title={typesCollapse ? 'Show Types' : 'Hide Types'} />
                                                                             </button>
                                                                             <button type="button" className="btn btn-secondary" onClick={() => setAllFieldsCollapse(!allFieldsCollapse)}>
                                                                                 {allFieldsCollapse ? 'Show Fields' : 'Hide Fields'}
                                                                                 <FontAwesomeIcon icon={allFieldsCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                    className='float-right btn btn-sm'
+                                                                                    className='float-end btn btn-sm text-light'
                                                                                     title={allFieldsCollapse ? 'Show Fields' : 'Hide Fields'} />
                                                                             </button>
                                                                         </div>
@@ -705,17 +712,17 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 }
                             </div>
                         </div>
-                    </TabPane>
+                    </div>
 
-                    <TabPane tabId='schema'>
+                    <div className={`tab-pane fade ${activeView == 'schema' ? 'show active' : ''}`} id="schema" role="tabpanel" aria-labelledby="schema-tab" tabIndex={0}>
                         <div className='card'>
                             <div className='card-body p-0'>
                                 <SBEditor data={generatedSchema} isReadOnly={true}></SBEditor>
                             </div>
                         </div>
-                    </TabPane>
+                    </div>
                     <SBScrollToTop divID='schema-editor' />
-                </TabContent >
+                </div >
             </div>
         </div>
     )

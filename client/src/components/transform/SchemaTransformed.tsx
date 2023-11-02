@@ -1,5 +1,4 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Button, Form } from "reactstrap";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import SBDownloadFile from "components/common/SBDownloadFile";
@@ -31,11 +30,11 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
 
     const transformationOpts = useSelector(getValidTransformations);
 
-    const [toggle, setToggle] = useState({});
+    const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
     const [isTransformDisabled, setIsTransformDisabled] = useState(true);
     const [baseFile, setBaseFile] = useState<Option | null>();
     const [transformationType, setTransformationType] = useState<Option | null>();
-    const [baseFileOpts, setBaseFileOpts] = useState<Option[]>();
+    const [baseFileOpts, setBaseFileOpts] = useState<String[]>([]);
     const [transformedSchema, setTransformedSchema] = useState([initTransformedSchema]);
 
     const strip_comments: string = 'strip comments';
@@ -57,10 +56,8 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
             }
         }
 
-        let base_opts: Option[] = selectedSchemas.map((ss: SelectedSchema) => {
-            return { 'label': ss.name, 'value': ss.name };
-        });
-        setBaseFileOpts([...base_opts]);
+        let base_opts: String[] = selectedSchemas.map((ss: SelectedSchema) => { return (ss.name) });
+        setBaseFileOpts(base_opts);
 
     }, [selectedSchemas, baseFile, transformationType]);
 
@@ -68,7 +65,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     useImperativeHandle(ref, () => ({
         onReset() {
             console.log("SchemaTransformed onReset");
-            setToggle('');
+            setToggle({});
             setBaseFile(null);
             setTransformedSchema([initTransformedSchema]);
             setTransformationType(null);
@@ -135,32 +132,38 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     return (
         <div className="card">
             <div className="card-header p-2">
-                <Form onSubmit={submitForm}>
+                <form onSubmit={submitForm}>
                     <div className='row no-gutters'>
                         <div className='col-md-9'>
-                            <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectTypeChange}
-                                placeholder={'Select transformation type...'} value={transformationType} isSmStyle
-                            />
-                            {transformationType?.value == 'resolve references' ?
-                                <SBSelect id={"base-file"} data={baseFileOpts} onChange={onBaseFileSelect}
-                                    placeholder={'Select base file...'} value={baseFile} isSmStyle
-                                /> : ""}
+                            <div className="row">
+                                <div className="col">
+                                    <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectTypeChange}
+                                        placeholder={'Select transformation type...'} value={transformationType} isSmStyle
+                                    />
+                                </div>
+                                <div className={`col ${transformationType?.value == 'resolve references' ? '' : ' d-none'}`}>
+                                    <SBSelect id={"base-file"} data={baseFileOpts} onChange={onBaseFileSelect}
+                                        placeholder={'Select base file...'} value={baseFile} isSmStyle
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className='col-md-3'>
                             <div className={`${transformedSchema && (transformedSchema.length == 1) && transformedSchema[0].schema != '' ? '' : ' d-none'}`}>
-                                <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-right`} />
-                                <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`mr-1 float-right`} filename={baseFile} ext={transformedSchema[0].schema_fmt || 'jadn'} />
-                                <SBDownloadFile buttonId='schemaDownload' customClass={`mr-1 float-right`} filename={baseFile} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                                <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-end`} />
+                                <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`me-1 float-end`} filename={baseFile?.value} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                                <SBDownloadFile buttonId='schemaDownload' customClass={`me-1 float-end`} filename={baseFile?.value} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
                             </div>
 
-                            {isLoading ? <SBSpinner action={'Transforming'} /> : <Button color="success" type="submit" id="transformSchema" className="btn-sm mr-1 float-right"
-                                disabled={isTransformDisabled}
-                                title={"Process JADN schema(s) to produce another JADN schema"}>
-                                Transform
-                            </Button>}
+                            {isLoading ? <SBSpinner action={'Transforming'} /> :
+                                <button type="submit" id="transformSchema" className="btn btn-success btn-sm me-1 float-end"
+                                    disabled={isTransformDisabled}
+                                    title={"Process JADN schema(s) to produce another JADN schema"}>
+                                    Transform
+                                </button>}
                         </div>
                     </div>
-                </Form>
+                </form>
             </div>
             <div className="card-body-page">
                 {transformedSchema.length > 1 ? transformedSchema.map((output, i: number) => (
@@ -170,9 +173,9 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                                 <button className="btn btn-link" id={`toggleSchema#${i}`} type="button" onClick={() => onToggle(i)} >
                                     {output.schema_name}
                                 </button>
-                                <SBCopyToClipboard buttonId={`copySchema${i}`} data={output.schema} customClass='float-right' />
-                                <SBSaveFile data={output.schema} loc={'schemas'} customClass={"float-right mr-1"} filename={`${output.schema_name}`} ext={'jadn'} />
-                                <SBDownloadFile buttonId={`downloadSchema${i}`} customClass='mr-1 float-right' filename={`${output.schema_name}`} data={output.schema} ext={'jadn'} />
+                                <SBCopyToClipboard buttonId={`copySchema${i}`} data={output.schema} customClass='float-end' />
+                                <SBSaveFile data={output.schema} loc={'schemas'} customClass={"float-end me-1"} filename={`${output.schema_name}`} ext={'jadn'} />
+                                <SBDownloadFile buttonId={`downloadSchema${i}`} customClass='me-1 float-end' filename={`${output.schema_name}`} data={output.schema} ext={'jadn'} />
                             </h5>
                         </div>
 

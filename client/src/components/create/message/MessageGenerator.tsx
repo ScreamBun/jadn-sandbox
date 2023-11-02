@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { Button } from 'reactstrap'
 import MessageCreator from './MessageCreator'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
@@ -48,9 +47,9 @@ const MessageGenerator = () => {
             <div className='row'>
                 <div className='col-md-12'>
                     <div className='card'>
-                        <div className='card-header p-2'>
+                        <div className='card-header bg-primary p-2'>
                             <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Creation</span></h5>
-                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                            <button type='reset' className='btn btn-sm btn-danger float-end ms-1' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             <div className='row'>

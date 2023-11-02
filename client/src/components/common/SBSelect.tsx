@@ -1,11 +1,11 @@
 import { deleteFile } from 'actions/save';
-import React, { CSSProperties, Fragment, useState } from 'react';
+import React, { CSSProperties, Fragment, useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { sbToastError, sbToastSuccess } from './SBToast';
 import { info } from 'actions/util';
 import SBSpinner from './SBSpinner';
+import { ThemeContext } from 'components/static/ThemeProvider';
 
 
 export const groupStyles: CSSProperties = {
@@ -54,12 +54,12 @@ const defaultStyle = {
     option: (styles, state) => ({
         ...styles,
         cursor: 'pointer',
+        color: 'inherit'
     }),
 
     menuPortal: base => ({
         ...base,
         zIndex: 9999,
-        color: '#172B4D'
     })
 }
 
@@ -70,11 +70,17 @@ const smStyle = {
         cursor: 'pointer',
     }),
 
-    container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
+    container: css => ({
+        ...css,
+        flex: '1 1 auto',
+        alignSelf: 'stretch',
+    }),
 
     valueContainer: (provided, state) => ({
         ...provided,
-        minHeight: 30,
+        maxHeight: state.hasValue && state.isMulti && state.selectProps.menuIsOpen ? '' : 30,
+        textOverflow: "ellipsis",
+        overflowY: state.hasValue && state.isMulti && !state.selectProps.menuIsOpen ? 'auto' : 'hidden'
     }),
 
     input: (provided, state) => ({
@@ -89,33 +95,50 @@ const smStyle = {
 
     indicatorsContainer: (provided, state) => ({
         ...provided,
+        minHeight: 30,
         padding: '0',
     }),
 
     clearIndicator: (provided, state) => ({
         ...provided,
         padding: '0',
-    }),    
+    }),
 
     option: (styles, state) => ({
         ...styles,
         cursor: 'pointer',
+        color: 'inherit'
     }),
 
     menuPortal: base => ({
         ...base,
         zIndex: 9999,
-        color: '#172B4D'
     })
 };
+
+export const getSelectTheme = (theme: 'dark' | 'light') => {
+    if (theme == 'dark') {
+        return ({
+            neutral0: 'var(--bs-body-bg)', //menu background
+            neutral10: 'var(--bs-secondary-color)', //multivalue selected option background
+            neutral80: 'var(--bs-body-color)', //selected option text
+            primary25: 'var(--bs-secondary-color)', //hover options
+            primary75: 'var(--bs-primary-color)' //selected option indicator
+        })
+    }
+    return;
+}
 
 const SBSelect = (props: any) => {
 
     const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle } = props;
+    const dispatch = useDispatch();
+
     const [toggleModal, setToggleModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const dispatch = useDispatch();
+    const theme = useContext(ThemeContext);
+    const themeColors = getSelectTheme(theme[0]);
 
     const formatGroupLabel = (data: GroupedOption) => (
         <div style={groupStyles}>
@@ -242,8 +265,17 @@ const SBSelect = (props: any) => {
                     className={customClass}
                     styles={isSmStyle ? smStyle : defaultStyle}
                     isMulti={isMultiSelect}
+                    closeMenuOnSelect={isMultiSelect ? false : true}
+                    backspaceRemovesValue={false}
                     components={{ Menu }}
                     value={value}
+                    theme={theme => ({
+                        ...theme,
+                        colors: {
+                            ...theme.colors,
+                            ...themeColors
+                        }
+                    })}
                 />
                 :
                 <Select<Option, false, GroupedOption>
@@ -257,24 +289,43 @@ const SBSelect = (props: any) => {
                     className={customClass}
                     styles={isSmStyle ? smStyle : defaultStyle}
                     isMulti={isMultiSelect}
+                    closeMenuOnSelect={isMultiSelect ? false : true}
+                    backspaceRemovesValue={false}
                     value={value}
+                    theme={theme => ({
+                        ...theme,
+                        colors: {
+                            ...theme.colors,
+                            ...themeColors
+                        }
+                    })}
                 />
             }
 
-            <Modal isOpen={toggleModal} autoFocus={false} returnFocusAfterClose={false}>
-                <ModalHeader>
-                    Delete Custom Files
-                </ModalHeader>
-                <ModalBody>
-                    <div className="list-group">
-                        {customOptList && customOptList.length != 0 ? customOptList : 'No custom files exist'}
+            <div id="selectModal" className={`modal fade ${toggleModal ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
+                <div className={`modal-dialog modal-dialog-centered`} role='document'>
+                    <div className='modal-content'>
+                        <div className="modal-header">
+                            <h5 className='modal-title'> Delete Custom Files
+                            </h5>
+                            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={() => setToggleModal(false)} />
+                        </div>
+                        <div className="modal-body">
+                            <div className="list-group">
+                                {customOptList && customOptList.length != 0 ? customOptList : 'No custom files exist'}
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            {isLoading ? <SBSpinner action={"Deleting"} /> :
+                                <button type='button' className='btn btn-danger' onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</button>}
+                            <button type='button' className='btn btn-secondary' onClick={() => { setIsLoading(false); setToggleModal(false); }}>Cancel</button>
+                        </div>
                     </div>
-                </ModalBody>
-                <ModalFooter>
-                    {isLoading ? <SBSpinner action={"Deleting"} /> : <Button color="danger" onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</Button>}
-                    <Button color="secondary" onClick={() => { setIsLoading(false); setToggleModal(false); }}>Cancel</Button>
-                </ModalFooter>
-            </Modal >
+                </div>
+                <div className={`modal-backdrop fade ${toggleModal ? 'show' : ''}`} style={{
+                    zIndex: -1
+                }}></div>
+            </div>
         </>
     );
 }

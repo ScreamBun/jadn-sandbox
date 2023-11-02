@@ -58,14 +58,14 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
 
   return (
     <>
-      <div className="card border-secondary mb-2" id={name.toLowerCase()}>
+      <div className="card mb-2" id={name.toLowerCase()}>
         <div className="card-header px-2 py-2">
           <div className='row no-gutters'>
             <div className='col'>
               <span>{name} <small style={{ fontSize: '10px' }}> {description} </small></span>
             </div>
             <div className='col'>
-              <button type="button" className="btn btn-sm btn-danger float-right" onClick={removeAll} >
+              <button type="button" className="btn btn-sm btn-danger float-end" onClick={removeAll} >
                 <FontAwesomeIcon
                   icon={faMinusCircle}
                 />

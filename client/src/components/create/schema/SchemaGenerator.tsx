@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { Button, ButtonGroup, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getValidFormatOpts } from 'actions/format'
@@ -46,23 +45,56 @@ const SchemaGenerator = () => {
             <div className='row'>
                 <div className='col-md-12'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <h5 style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
+                        <div className='card-header bg-primary p-2'>
+                            <h5 className='m-0 text-light' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
+                            <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
+                                <div className="btn-group me-2" role="group" aria-label="First group">
+                                    <button type="reset" className="btn btn-sm btn-danger" onClick={onReset}>Reset</button>
+                                </div>
+                                <div className="btn-group" role="group" aria-label="Third group">
+                                    <div className='dropdown'>
+                                        <button className="btn btn-sm btn-secondary"
+                                            type="button"
+                                            id="dropdownMenuButton"
+                                            data-bs-toggle="dropdown"
+                                            data-bs-display="static"
+                                            aria-haspopup="true"
+                                            aria-expanded="false"
+                                            title='More Options...'
+                                            onClick={() => setIsDropdownOpen(prevState => !prevState)} >
+                                            <FontAwesomeIcon icon={faEllipsisV} />
+                                        </button>
+                                        <ul className={`dropdown-menu dropdown-menu-end ${isDropdownOpen ? 'show' : ''}`} aria-labelledby="dropdownMenuButton">
+                                            <li><h6 className="dropdown-header">Editor Style</h6></li>
+                                            <li><a href="#" onClick={() => { setIsButtonStyle(false); setIsDropdownOpen(false); }} className={`dropdown-item ${isButtonStyle == false ? 'active' : ''}`}>Drag and Drop</a></li>
+                                            <li><a href="#" onClick={() => { setIsButtonStyle(true); setIsDropdownOpen(false); }} className={`dropdown-item ${isButtonStyle == true ? 'active' : ''}`}>Button</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <Dropdown className='float-right' isOpen={isDropdownOpen} toggle={() => setIsDropdownOpen(prevState => !prevState)}>
-                                <DropdownToggle size='sm' title='More Options...'>
-                                    <FontAwesomeIcon icon={faEllipsisV} />
-                                </DropdownToggle>
-                                <DropdownMenu >
-                                    <DropdownItem header>Editor Style</DropdownItem>
-                                    <ButtonGroup className='float-right'>
-                                        <Button onClick={() => { setIsButtonStyle(false); setIsDropdownOpen(false); }} className='btn btn-sm m-1' color={isButtonStyle == false ? 'success' : ''}>Drag and Drop</Button>
-                                        <Button onClick={() => { setIsButtonStyle(true); setIsDropdownOpen(false); }} className='btn btn-sm m-1' color={isButtonStyle == true ? 'success' : ''}>Button</Button>
-                                    </ButtonGroup>
-                                </DropdownMenu>
-                            </Dropdown>
 
-                            <Button color="danger" className='float-right ml-1 btn-sm' type="reset" onClick={onReset}>Reset</Button>
+                            {/* <div className='btn-group float-end'>
+                                <button type='reset' className='btn btn-sm btn-danger me-1' onClick={onReset}>Reset</button>
+                                <div className='dropdown'>
+                                    <button className="btn btn-sm btn-secondary"
+                                        type="button"
+                                        id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown"
+                                        data-bs-display="static"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
+                                        title='More Options...'
+                                        onClick={() => setIsDropdownOpen(prevState => !prevState)} >
+                                        <FontAwesomeIcon icon={faEllipsisV} />
+                                    </button>
+                                    <ul className={`dropdown-menu dropdown-menu-end ${isDropdownOpen ? 'show' : ''}`} aria-labelledby="dropdownMenuButton">
+                                        <li><h6 className="dropdown-header">Editor Style</h6></li>
+                                        <li><a href="#" onClick={() => { setIsButtonStyle(false); setIsDropdownOpen(false); }} className={`dropdown-item ${isButtonStyle == false ? 'active' : ''}`}>Drag and Drop</a></li>
+                                        <li><a href="#" onClick={() => { setIsButtonStyle(true); setIsDropdownOpen(false); }} className={`dropdown-item ${isButtonStyle == true ? 'active' : ''}`}>Button</a></li>
+                                    </ul>
+                                </div>
+                            </div> */}
 
                         </div>
                         <div className='card-body p-2'>

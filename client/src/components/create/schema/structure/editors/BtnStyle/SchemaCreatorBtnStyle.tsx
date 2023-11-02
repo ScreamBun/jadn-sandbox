@@ -1,7 +1,6 @@
 import React, { useEffect, memo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
-import { TabContent, TabPane, Button, ListGroup, Nav, NavItem, NavLink } from 'reactstrap'
 import { faCheck, faCircleChevronDown, faCircleChevronUp, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Info, Types } from '../../structure';
@@ -47,16 +46,25 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         dispatch(setSchema(generatedSchema));
     }, [generatedSchema])
 
+    useEffect(() => {
+        if (!generatedSchema) {
+            setIsValidJADN(false);
+        }
+    }, [generatedSchema])
+
     const [configOpt, setConfigOpt] = useState(configInitialState);
     const [fileName, setFileName] = useState('');
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
+
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
 
@@ -266,39 +274,39 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
 
         infoKeys = Object.keys(unusedInfo).map(k => (
-            <div className='list-group-item p-2' key={k}>
+            <div className='list-group-item  d-flex justify-content-between align-items-center p-2' key={k}>
                 {Info[k].key}
 
-                <Button color="info" onClick={() => onDrop(k)} outline className='float-right btn btn-sm'
+                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
                     disabled={selectedFile?.value == 'file' ? true : false}
                     title='Add to Schema'>
                     <FontAwesomeIcon icon={faPlusSquare} />
-                </Button>
+                </button>
             </div>
         ));
     } else {
         infoKeys = Object.keys(Info).map(k => (
-            <div className='list-group-item p-2' key={k}>
+            <div className='list-group-item d-flex justify-content-between align-items-center p-2' key={k}>
                 {Info[k].key}
 
-                <Button color="info" onClick={() => onDrop(k)} outline className='float-right btn btn-sm'
+                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
                     disabled={selectedFile?.value == 'file' ? true : false}
                     title='Add to Schema'>
                     <FontAwesomeIcon icon={faPlusSquare} />
-                </Button>
+                </button>
             </div>
         ));
     }
 
     const typesKeys = Object.keys(Types).map(k => (
-        <div className='list-group-item p-2' key={k}>
+        <div className='list-group-item d-flex justify-content-between align-items-center p-2' key={k}>
             {Types[k].key}
 
-            <Button color="info" onClick={() => onDrop(k)} outline className='float-right btn btn-sm'
+            <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
                 disabled={selectedFile?.value == 'file' ? true : false}
                 title='Add to Schema'>
                 <FontAwesomeIcon icon={faPlusSquare} />
-            </Button>
+            </button>
         </div>
     ));
 
@@ -400,7 +408,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                 value: tmpDef,
                 isStarred: false
             }
-            console.log(insertAt)
             if (!insertAt || (insertAt && insertAt.value == "end")) {
                 tmpTypes.push(tmpDef);
                 tmpCards.push(new_card);
@@ -458,8 +465,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
         setCardsState(updatedCards);
     };
-
-
 
     const changeIndex = (arrVal: TypeArray, dataIndex: number, idx: number) => {
         const val = zip(TypeKeys, arrVal) as StandardTypeObject;
@@ -619,7 +624,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-sm-3'>
-                        <div className="input-group">
+                        <div className="d-flex">
                             <SBSelect id={"schema-list"}
                                 data={schemaOpts}
                                 onChange={onFileSelect}
@@ -631,7 +636,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                             <SBSaveFile
                                 buttonId={'saveSchema'}
                                 toolTip={'Save Schema'}
-                                customClass={"float-right ml-1"}
+                                customClass={"float-end ms-1"}
                                 data={generatedSchema}
                                 loc={'schemas'}
                                 filename={fileName}
@@ -642,67 +647,71 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                         </div>
                     </div>
                     <div className='col-sm-9'>
-                        <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-right'} />
-                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-right mr-1'} />
-                        <Button onClick={() => setActiveView('schema')} className={`float-right btn-sm mr-1 ${activeView == 'schema' ? ' d-none' : ''}`} color="primary" title="View in JSON">View JSON</Button>
-                        <Button onClick={() => setActiveView('creator')} className={`float-right btn-sm mr-1 ${activeView == 'creator' ? ' d-none' : ''}`} color="primary" title="View via Input Form">View Form</Button>
+                        <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-end'} />
+                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-end me-1'} />
+                        <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
+                        <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <Button id='validateJADNButton' className="float-right btn-sm mr-1" color="primary" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
+                            <button id='validateJADNButton' type='button' className="float-end btn btn-sm btn-primary me-1" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
                                 <span className="m-1">Validate JADN</span>
                                 {isValidJADN ? (
-                                    <span className="badge badge-pill badge-success">
+                                    <span className="badge rounded-pill text-bg-success">
                                         <FontAwesomeIcon icon={faCheck} />
                                     </span>) : (
-                                    <span className="badge badge-pill badge-danger">
+                                    <span className="badge rounded-pill text-bg-danger">
                                         <FontAwesomeIcon icon={faXmark} />
                                     </span>)
                                 }
-                            </Button>
+                            </button>
                         }
                     </div>
                 </div>
             </div>
             <div className='card-body p-2'>
-                <TabContent activeTab={activeView}>
-                    <TabPane tabId='creator'>
+                <div className='tab-content mb-2'>
+                    <div className={`tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
                         <div className='row'>
                             <div id="schema-options" className='col-sm-3 pr-1 card-body-scroller'>
                                 <div className='row'>
                                     <div className='col'>
-                                        <Nav pills className='pb-2'>
-                                            <NavItem className='mr-2'>
-                                                <NavLink
-                                                    className={activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                        <ul className="nav nav-pills pb-2" id="editorKeys" role="tablist">
+                                            <li className='nav-item me-2'>
+                                                <a
+                                                    className={`nav-link 
+                                                    ${activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('info')}
                                                     title="meta data (about a schema package)"
+                                                    data-bs-toggle="pill"
                                                 >
                                                     Info
-                                                </NavLink>
-                                            </NavItem>
-                                            <NavItem>
-                                                <NavLink
-                                                    className={activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active' : ''}
-                                                    disabled={selectedFile?.value == 'file' && !generatedSchema ? true : false}
+                                                </a>
+                                            </li>
+                                            <li className='nav-item'>
+                                                <a
+                                                    className={`nav-link 
+                                                    ${activeOpt == 'types' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
                                                     onClick={() => setActiveOpt('types')}
                                                     title="schema content (the information model)"
+                                                    data-bs-toggle="pill"
                                                 >
                                                     Types*
-                                                </NavLink>
-                                            </NavItem>
-                                        </Nav>
-                                        <TabContent className='mb-2' activeTab={activeOpt}>
-                                            <TabPane tabId='info'>
-                                                <ListGroup>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div className='tab-content mb-2'>
+                                            <div className={`tab-pane fade ${activeOpt == 'info' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
+                                                <ul className="list-group">
                                                     {infoKeys.length != 0 ? infoKeys : <div className='col'>No Info to add</div>}
-                                                </ListGroup>
-                                            </TabPane>
-                                            <TabPane tabId='types'>
-                                                <ListGroup>
+                                                </ul>
+                                            </div>
+                                            <div className={`tab-pane fade ${activeOpt == 'types' ? 'show active' : ''}`} id="types" role="tabpanel" aria-labelledby="types-tab" tabIndex={0}>
+                                                <ul className="list-group">
                                                     {typesKeys}
-                                                </ListGroup>
-                                            </TabPane>
-                                        </TabContent>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='row mt-2'>
@@ -725,19 +734,19 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                     <>
                                         <div className='row'>
                                             <div className="col pt-2">
-                                                <div className='card border-secondary'>
+                                                <div className='card'>
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h6 id="info" className='mb-0'>Info <small style={{ fontSize: '10px' }}> metadata </small></h6>
+                                                            <h5 id="info" className="card-title text-light">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
                                                             </div>
                                                             <div className='col'>
-                                                                <legend>
+                                                                <span>
                                                                     <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                        className='float-right btn btn-sm text-light'
+                                                                        className='float-end btn btn-sm text-light'
                                                                         onClick={() => setInfoCollapse(!infoCollapse)}
                                                                         title={infoCollapse ? ' Show Info' : ' Hide Info'} />
-                                                                </legend>
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -757,26 +766,26 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         </div>
                                         <div className='row mt-2'>
                                             <div className="col pt-2">
-                                                <div className='card border-secondary'>
+                                                <div className='card'>
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                                <h6 id="types" className='mb-0 pt-1'>Types* <small style={{ fontSize: '10px' }}> schema content </small></h6>
+                                                                <h6 id="types" className='mb-0 pt-1 text-light'>Types* <small style={{ fontSize: '10px' }}> schema content </small></h6>
                                                             </div>
                                                             <div className='col'>
                                                                 {generatedSchema.types &&
                                                                     <>
-                                                                        <div className="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
+                                                                        <div className="btn-group btn-group-sm float-end" role="group" aria-label="Basic example">
                                                                             <button type="button" className="btn btn-secondary" onClick={() => setTypesCollapse(!typesCollapse)}>
                                                                                 {typesCollapse ? 'Show Types' : ' Hide Types'}
                                                                                 <FontAwesomeIcon icon={typesCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                    className='float-right btn btn-sm'
+                                                                                    className='float-end btn btn-sm'
                                                                                     title={typesCollapse ? 'Show Types' : 'Hide Types'} />
                                                                             </button>
                                                                             <button type="button" className="btn btn-secondary" onClick={() => setAllFieldsCollapse(!allFieldsCollapse)}>
                                                                                 {allFieldsCollapse ? 'Show Fields' : 'Hide Fields'}
                                                                                 <FontAwesomeIcon icon={allFieldsCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                    className='float-right btn btn-sm'
+                                                                                    className='float-end btn btn-sm'
                                                                                     title={allFieldsCollapse ? 'Show Fields' : 'Hide Fields'} />
                                                                             </button>
                                                                         </div>
@@ -803,17 +812,17 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                 }
                             </div>
                         </div>
-                    </TabPane>
+                    </div>
 
-                    <TabPane tabId='schema'>
+                    <div className={`tab-pane fade ${activeView == 'schema' ? 'show active' : ''}`} id="schema" role="tabpanel" aria-labelledby="schema-tab" tabIndex={0}>
                         <div className='card'>
                             <div className='card-body p-0'>
                                 <SBEditor data={generatedSchema} isReadOnly={true}></SBEditor>
                             </div>
                         </div>
-                    </TabPane>
+                    </div>
                     <SBScrollToTop divID='schema-editor' />
-                </TabContent >
+                </div >
             </div>
         </div>
     )
