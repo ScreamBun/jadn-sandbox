@@ -22,6 +22,7 @@ export interface SBOutlineProps {
   id: string;
   title: string;
   cards: any[];
+  visibleCard: number | null;
   onDrop: (arg: DragItem[]) => void;
   onStarToggle: (updatedCards: DragItem[]) => void;
 }
@@ -29,6 +30,7 @@ export interface SBOutlineProps {
 const SBOutline = (props: SBOutlineProps) => {
   const { id = 'sb-outline',
     title,
+    visibleCard,
     onDrop,
     onStarToggle,
     cards = [] } = props;
@@ -146,7 +148,6 @@ const SBOutline = (props: SBOutlineProps) => {
       })
     )
   }, []);
-
   const renderCard = useCallback(
     (card: {
       id: number, text: string, value: TypeArray, isStarred: boolean
@@ -158,6 +159,7 @@ const SBOutline = (props: SBOutlineProps) => {
           id={card.id}
           text={card.text}
           value={card.value}
+          isVisible={index == visibleCard}
           isStarred={card.isStarred}
           addCard={addCard}
           moveCard={moveCard}
@@ -166,7 +168,7 @@ const SBOutline = (props: SBOutlineProps) => {
         />
       )
     },
-    []
+    [visibleCard]
   );
 
   return (

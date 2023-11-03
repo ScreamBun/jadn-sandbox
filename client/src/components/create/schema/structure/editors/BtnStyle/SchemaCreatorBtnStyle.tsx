@@ -60,6 +60,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+    const [visibleType, setVisibleType] = useState<number | null>(null);
 
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
@@ -393,7 +394,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setIsValidating(false);
 
             var scrollSpyContentEl = document.getElementById(`${key}`)
-            scrollSpyContentEl?.scrollIntoView();
+            scrollSpyContentEl?.scrollIntoView({ block: 'end' });
 
         } else if (Object.keys(Types).includes(key)) {
             let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
@@ -447,7 +448,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setIsValidating(false);
 
             var scrollSpyContentEl = document.getElementById(`${new_card.index}`)
-            scrollSpyContentEl?.scrollIntoView();
+            scrollSpyContentEl?.scrollIntoView({ block: 'end' });
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -508,7 +509,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         setIsValidating(false);
 
         var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
-        scrollSpyContentEl?.scrollIntoView();
+        scrollSpyContentEl?.scrollIntoView({ block: 'end' });
     }
 
     const infoEditors = Object.keys(Info).map((k, i) => {
@@ -581,6 +582,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             value: def,
             dataIndex: i,
             collapseAllFields: allFieldsCollapse,
+            setIsVisible: setVisibleType,
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
@@ -722,6 +724,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         <SBOutlineBtnStyle id={'schema-outline'}
                                             items={cardsState}
                                             title={'Outline'}
+                                            visibleCard={visibleType}
                                             changeIndex={changeIndex}
                                             onStarClick={onStarClick}
                                         />
@@ -738,7 +741,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                     <div className='card-header bg-primary'>
                                                         <div className='row'>
                                                             <div className='col'>
-                                                            <h5 id="info" className="card-title text-light">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
+                                                                <h5 id="info" className="card-title text-light">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
                                                             </div>
                                                             <div className='col'>
                                                                 <span>

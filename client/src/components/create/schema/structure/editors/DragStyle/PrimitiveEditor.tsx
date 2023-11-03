@@ -1,7 +1,8 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { useInView } from 'react-intersection-observer';
 import { zip } from '../../../../../utils';
 import { InfoConfig } from '../../../interface';
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from '../consts';
@@ -15,12 +16,20 @@ interface PrimitiveEditorProps {
   value: Array<any>;
   change: (v: PrimitiveTypeObject, i: number) => void;
   remove: (i: number) => void;
+  setIsVisible: (i: number) => void;
   config: InfoConfig;
 }
 
 // Primitive Editor
 const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
-  const { value, dataIndex, config, change } = props;
+  const { value, dataIndex, config, change, setIsVisible } = props;
+
+  //TODO: may need to add polyfill -- support for Safari
+  const { ref, inView, entry } = useInView({
+    fallbackInView: true,
+    threshold: .25
+  });
+
   const [modal, setModal] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
@@ -32,6 +41,12 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
   }
   const [valueObj, setValueObj] = useState(valueObjInit);
   let SBConfirmModalValName = valueObjInit.name;
+
+  useEffect(() => {
+    if (inView) {
+      setIsVisible(dataIndex);
+    }
+  }, [entry])
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { placeholder, value } = e.target;
@@ -95,7 +110,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
 
   return (
     <>
-      <div className={`card border border-secondary mb-3`} id={`${dataIndex}`}>
+      <div className={`card border border-secondary mb-3`} id={`${dataIndex}`} ref={ref}>
         <div className="card-header px-2 py-2">
           <div className='row'>
             <div className='col'>
