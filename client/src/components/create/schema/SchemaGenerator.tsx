@@ -125,7 +125,7 @@ const SchemaGenerator = () => {
         <SBConfirmModal
         isOpen={isConfirmModalOpen}
         title={`Reset Schema`}
-        message={`Are you sure you want to reset Schema?`}
+        message={`Are you sure you want to reset the Schema?`}
         onResponse={resetSchema}>
         </SBConfirmModal>
         </>
