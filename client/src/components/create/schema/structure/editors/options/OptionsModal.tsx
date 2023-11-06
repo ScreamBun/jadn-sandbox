@@ -130,10 +130,13 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
               optionType={optionType}
             />
           </div>
-          <div className="modal-footer">
-            <button type="button" color="secondary" className='btn btn-secondary mr-auto' onClick={clearData}>Clear</button>
-            <button type='button' className='btn btn-success' onClick={saveData}>Save</button>
-            <button type='button' className='btn btn-secondary' data-bs-dismiss='modal' onClick={toggleModalhere}>Close</button>
+          <hr />
+          <div className='row'>
+            <div className='col-sm-12 p2'>
+              <button type="button" className='btn btn-secondary float-start' onClick={clearData}>Clear</button>
+              <button type='button' className='btn btn-success float-end' onClick={saveData}>Save</button>
+              <button type='button' className='btn btn-secondary float-end mx-2' data-bs-dismiss='modal' onClick={toggleModalhere}>Close</button>                
+            </div>              
           </div>
         </div>
       </div>
