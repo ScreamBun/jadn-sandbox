@@ -8,17 +8,18 @@ export interface SBOutlineBtnStyleProps {
     id: string;
     title: string;
     items: any[];
+    visibleCard: number | null;
     changeIndex: (v: TypeArray, dataIndex: number, i: number) => void;
     onStarClick: (index: number) => void;
 }
 
 const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
 
-    const { id = 'sb-outline', title, items = [], onStarClick, changeIndex } = props;
+    const { id = 'sb-outline', title, visibleCard, items = [], onStarClick, changeIndex } = props;
 
     const renderCards = items.map((card, i) => {
         return (
-            <div className='card' key={i}>
+            <div className='card' key={i} style={{ backgroundColor: i == visibleCard ? 'var(--bs-highlight-bg)' : '' }}>
                 <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
                     <div>
                         <span onClick={() => onStarClick(i)}>

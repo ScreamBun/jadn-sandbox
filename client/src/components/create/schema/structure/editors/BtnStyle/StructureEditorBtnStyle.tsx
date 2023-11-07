@@ -3,6 +3,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { useInView } from 'react-intersection-observer';
 import { useAppSelector } from 'reducers';
 import { zip } from '../../../../../utils';
 import {
@@ -21,27 +22,40 @@ interface StructureEditorProps {
     value: TypeArray;
     change: (v: StandardTypeObject, i: number) => void;
     remove: (i: number) => void;
+    setIsVisible: (i: number) => void;
     config: InfoConfig;
     collapseAllFields: boolean;
 }
 
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
-    const { value, dataIndex, config, collapseAllFields, change, remove } = props;
+    const { value, dataIndex, config, collapseAllFields, change, remove, setIsVisible } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+    //TODO: may need to add polyfill -- support for Safari
+    const { ref, inView, entry } = useInView({
+        fallbackInView: true,
+        threshold: .25
+    });
 
     const [fieldCollapse, setFieldCollapse] = useState(false);
     const [modal, setModal] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
     const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
     const [valueObj, setValueObj] = useState(valueObjInit);
     const isEditableID = valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
     let SBConfirmModalValName = valueObj.name;
 
-
     useEffect(() => {
         setFieldCollapse(collapseAllFields)
     }, [collapseAllFields]);
+
+    useEffect(() => {
+        if (inView) {
+            setIsVisible(dataIndex);
+        }
+    }, [entry])
 
     const getFieldPropValue = (field: JSX.Element, propPos: number) => {
         let propValue: any = null;
@@ -328,7 +342,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
     return (
         <>
-            <div className="card mb-3" id={`${dataIndex}`}>
+            <div className="card mb-3" id={`${dataIndex}`} ref={ref}>
                 <div className="card-header px-2 py-2">
                     <div className='row'>
                         <div className='col'>

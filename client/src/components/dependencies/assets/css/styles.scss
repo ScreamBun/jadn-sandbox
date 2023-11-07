@@ -26,6 +26,10 @@ $max-scroll: 20em;
 /* Custom Styles */
 /* Use frugally, last resort, bootstrap first */
 
+.title-text {
+    color: var(--bs-link-color-rgb);
+}
+
 body {
     padding-top: 75px;
 }
@@ -272,16 +276,38 @@ a,
 
 // Color mode variables in _root.scss
 @include color-mode(dark) {
-    $primary: #2b5c8a;
+    $primary: #375a7f;
+    $secondary: #383a40;
+
+    .form-control {
+        background-color:  #383a40!important;
+    }    
 
     [class*="primary"]:not(.btn-outline-primary) {
         background-color: #{$primary} !important;
     }
+
+    [class*="secondary"]:not(.btn-outline-secondary) {
+        background-color: #{$secondary} !important;
+    }    
 
     .btn-outline-primary,
     .btn-primary {
         border: $primary;
     }
 
+}
+
+@include color-mode(light) {
+    $secondary: #E0E0E0;
+
+    [class*="secondary"]:not(.btn-outline-secondary) {
+        background-color: #{$secondary} !important;
+    }
+
+    .btn-outline-secondary,
+    .btn-secondary {
+        border: $secondary;
+    }
 
 }

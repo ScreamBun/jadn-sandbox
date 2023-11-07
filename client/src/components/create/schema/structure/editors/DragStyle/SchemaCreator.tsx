@@ -58,6 +58,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
     const [activeView, setActiveView] = useState('creator');
     const [activeOpt, setActiveOpt] = useState('info');
+    const [visibleType, setVisibleType] = useState<number | null>(null);
 
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
@@ -263,7 +264,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsValidating(false);
 
             var scrollSpyContentEl = document.getElementById(`${key}`)
-            scrollSpyContentEl?.scrollIntoView();
+            scrollSpyContentEl?.scrollIntoView({ block: 'end' });
 
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
@@ -289,7 +290,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsValidating(false);
 
             var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
-            scrollSpyContentEl?.scrollIntoView();
+            scrollSpyContentEl?.scrollIntoView({ block: 'end' });
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -341,7 +342,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setIsValidating(false);
 
         var scrollSpyContentEl = document.getElementById(`${insertAt}`)
-        scrollSpyContentEl?.scrollIntoView();
+        scrollSpyContentEl?.scrollIntoView({ block: 'end' });
     }
 
     const get_type_name = (types_to_serach: any[], name: string) => {
@@ -470,7 +471,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     });
 
     const typesEditors = (generatedSchema.types || []).map((def: StandardTypeArray, i: any) => {
-        console.log(def)
         let type = def[1].toLowerCase() as keyof typeof Types;
 
         //CHECK FOR VALID TYPE
@@ -485,6 +485,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             value: def,
             dataIndex: i,
             collapseAllFields: allFieldsCollapse,
+            setIsVisible: setVisibleType,
             change: (val: TypeObject, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
@@ -626,6 +627,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                             title={'Outline'}
                                             onDrop={onOutlineDrop}
                                             onStarToggle={onStarClick}
+                                            visibleCard={visibleType}
                                         ></SBOutline>
                                     </div>
                                 </div>
@@ -636,7 +638,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                         <div className='row'>
                                             <div className="col">
                                                 <div className='card'>
-                                                    <div className='card-header text-light bg-primary' style={{justifyContent: 'center', display: 'flex', flexDirection: 'column'}}>
+                                                    <div className='card-header text-light bg-primary' style={{ justifyContent: 'center', display: 'flex', flexDirection: 'column' }}>
                                                         <div className='row'>
                                                             <div className='col'>
                                                                 <h5 id="info" className="card-title text-light">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>

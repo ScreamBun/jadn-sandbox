@@ -105,13 +105,13 @@ const AppLayout = () => {
               <li><button type="button" className={`dropdown-item d-flex align-items-center ${theme == "dark" ? 'active' : ''}`} data-bs-theme-value="dark"
                 onClick={() => { setTheme('dark'); document.documentElement.setAttribute('data-bs-theme', 'dark') }}>Dark</button></li>
             </ul>
-            <button id="bd-theme-text" className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button id="bd-theme-text" className="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               Theme
             </button>
           </div>
         </div>
 
-        <div className='ms-auto text-light'>
+        <div className='ms-auto bg-secondary'>
           <small>{version_info}</small>
         </div>
       </nav>

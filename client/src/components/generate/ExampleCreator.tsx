@@ -46,11 +46,11 @@ const ExampleCreator = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-9'>
+                    <div className='col-md-5'>
                         <input id="numOfMsg" type='number' className='form-control form-control-sm' value={numOfMsg} onChange={onNumChange}
-                            placeholder='Select number of desired generated examples...(1-10)' min={1} max={10} />
+                            placeholder='Select number of examples...(1-10)' min={1} max={10} />
                     </div>
-                    <div className='col-md-3'>
+                    <div className='col-md-7'>
                         {isLoading ? <SBSpinner action={'Generating'} /> :
                             <button type="submit" id="translateSchema" className="btn btn-success btn-sm me-1 float-end"
                                 disabled={Object.keys(validSchema).length != 0 && numOfMsg != '' ? false : true}
