@@ -296,5 +296,18 @@ a,
         border: $primary;
     }
 
+}
+
+@include color-mode(light) {
+    $secondary: #E0E0E0;
+
+    [class*="secondary"]:not(.btn-outline-secondary) {
+        background-color: #{$secondary} !important;
+    }
+
+    .btn-outline-secondary,
+    .btn-secondary {
+        border: $secondary;
+    }
 
 }
