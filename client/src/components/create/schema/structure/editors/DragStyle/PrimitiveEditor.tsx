@@ -110,7 +110,7 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
 
   return (
     <>
-      <div className={`card border border-secondary mb-3`} id={`${dataIndex}`} ref={ref}>
+      <div className={`card mb-3`} id={`${dataIndex}`} ref={ref}>
         <div className="card-header px-2 py-2">
           <div className='row'>
             <div className='col'>
