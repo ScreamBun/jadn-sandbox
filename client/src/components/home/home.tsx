@@ -28,7 +28,7 @@ const Home = () => {
         <link rel="canonical" href={meta_canonical} />
       </Helmet>
       <div className='card'>
-        <div className='card-header'>
+        <div className='card-header bg-secondary'>
           <h5 className='m-0 title-text'>Home</h5>
         </div>
         <div className='card-body'>
@@ -43,7 +43,7 @@ const Home = () => {
                 </h5>
                 <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-existing examples.</p>
               </div>
-              <div className="card-footer">
+              <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
                 <Link className="card-link" to={NAV_CREATE_MESSAGE}>Messages</Link>
               </div>
@@ -64,7 +64,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <div className="card-footer">
+              <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"gv"}>GraphViz</Link>
                 <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"html"}>HTML</Link>
                 <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"jidl"}>JIDL</Link>
@@ -82,7 +82,7 @@ const Home = () => {
                 </h5>
                 <p className="card-text">Translate a Schema and its data from JADN to another Schema or data format.</p>
               </div>
-              <div className="card-footer">
+              <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_TRANSLATE} state={"json"}>JSON</Link>
                 <Link className="card-link" to={NAV_TRANSLATE} state={"rng"}>Relax (XML)</Link>
                 <Link className="card-link" to={NAV_TRANSLATE} >XSD (Coming Soon)</Link>
@@ -100,7 +100,7 @@ const Home = () => {
                 </h5>
                 <p className="card-text">Validate data (messages) against a JADN Schema and convert them from one data format to another.</p>
               </div>
-              <div className="card-footer">
+              <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"cbor"}>CBOR</Link>
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"json"}>JSON</Link>
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"xml"}>Relax (XML)</Link>
@@ -118,7 +118,7 @@ const Home = () => {
                   simplify by removing extensions, strip comments, etc).</p>
                 <br />
               </div>
-              {/* <div className="card-footer">
+              {/* <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
               </div> */}
             </div>
@@ -132,7 +132,7 @@ const Home = () => {
                 </h5>
                 <p className="card-text">Generate various example messages based off of a Schema.</p>
               </div>
-              {/* <div className="card-footer">
+              {/* <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
               </div> */}
             </div>
