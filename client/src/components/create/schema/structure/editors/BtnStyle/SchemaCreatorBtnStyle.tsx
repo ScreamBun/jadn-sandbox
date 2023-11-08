@@ -394,7 +394,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setIsValidating(false);
 
             var scrollSpyContentEl = document.getElementById(`${key}`)
-            scrollSpyContentEl?.scrollIntoView({ block: 'end' });
+            scrollSpyContentEl?.scrollIntoView();
 
         } else if (Object.keys(Types).includes(key)) {
             let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
@@ -448,7 +448,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setIsValidating(false);
 
             var scrollSpyContentEl = document.getElementById(`${new_card.index}`)
-            scrollSpyContentEl?.scrollIntoView({ block: 'end' });
+            scrollSpyContentEl?.scrollIntoView();
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -509,7 +509,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         setIsValidating(false);
 
         var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
-        scrollSpyContentEl?.scrollIntoView({ block: 'end' });
+        scrollSpyContentEl?.scrollIntoView();
     }
 
     const infoEditors = Object.keys(Info).map((k, i) => {

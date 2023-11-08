@@ -23,6 +23,7 @@ export interface SBOutlineProps {
   title: string;
   cards: any[];
   visibleCard: number | null;
+  onScrollToCard: (idx: number) => void;
   onDrop: (arg: DragItem[]) => void;
   onStarToggle: (updatedCards: DragItem[]) => void;
 }
@@ -33,6 +34,7 @@ const SBOutline = (props: SBOutlineProps) => {
     visibleCard,
     onDrop,
     onStarToggle,
+    onScrollToCard,
     cards = [] } = props;
 
   const [items, setItems] = useState(cards);
@@ -111,6 +113,10 @@ const SBOutline = (props: SBOutlineProps) => {
     };
   }, [monitor]);
 
+  const onCardClick = (idx: number) => {
+    onScrollToCard(idx);
+  }
+
   const onStarClick = useCallback((idx: number) => {
     const updatedItems = cardsStateRef.current.map((item, i) => {
       if (i === idx) {
@@ -161,6 +167,7 @@ const SBOutline = (props: SBOutlineProps) => {
           value={card.value}
           isVisible={index == visibleCard}
           isStarred={card.isStarred}
+          scrollToCard={onCardClick}
           addCard={addCard}
           moveCard={moveCard}
           dropCard={dropCard}

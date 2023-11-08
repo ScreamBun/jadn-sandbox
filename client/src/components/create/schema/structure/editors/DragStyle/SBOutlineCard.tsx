@@ -23,13 +23,14 @@ export interface SBOutlineCardProps {
   value: TypeArray;
   isStarred: boolean;
   isVisible: boolean;
+  scrollToCard: (idx: number) => void;
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;
   dropCard: (item: DragItem) => void;
   handleStarToggle: (idx: number) => void;
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isStarred, isVisible, handleStarToggle, moveCard, addCard, dropCard }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isStarred, isVisible, scrollToCard, handleStarToggle, moveCard, addCard, dropCard }) => {
 
   const originalIndex = index;
   const [toggleStar, setToggleStar] = useState(isStarred);
@@ -111,8 +112,9 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
         moveCard(item, item.index, item.originalIndex)
       } else {
         dropCard(item);
-        var scrollSpyContentEl = document.getElementById(`${item.index}`)
-        scrollSpyContentEl?.scrollIntoView();
+        //var scrollSpyContentEl = document.getElementById(`${item.index}`)
+        //scrollSpyContentEl?.scrollIntoView();
+        scrollToCard(item.index)
       }
     },
     collect: (monitor: any) => ({
@@ -130,6 +132,11 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
     handleStarToggle(index);
   };
 
+  const onCardClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    scrollToCard(index);
+  }
+
   return (
     <div className='card'>
       <div className='card-body list-group-item d-flex justify-content-between align-items-center' ref={ref} style={{ ...style, opacity, backgroundColor }} data-handler-id={handlerId}>
@@ -137,7 +144,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
           <span onClick={onToggleStar}>
             <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
           </span>
-          <a title={'Click to view'} href={`#${index}`}>{text}</a>
+          <a title={'Click to view'} href={`#${index}`} onClick={onCardClick}>{text}</a>
         </div>
 
         <div>
