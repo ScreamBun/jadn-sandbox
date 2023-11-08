@@ -55,15 +55,15 @@ const SchemaGenerator = () => {
             <div className='row'>
                 <div className='col-md-12'>
                     <div className='card'>
-                        <div className='card-header p-2'>
-                            <h5 className='m-0 text-light' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
+                        <div className='card-header bg-secondary p-2'>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
                             <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
                                 <div className="btn-group me-2" role="group" aria-label="First group">
                                     <button type="reset" className="btn btn-sm btn-danger" onClick={onResetItemClick}>Reset</button>
                                 </div>
                                 <div className="btn-group" role="group" aria-label="Third group">
                                     <div className='dropdown'>
-                                        <button className="btn btn-sm btn-secondary"
+                                        <button className="btn btn-sm btn-primary"
                                             type="button"
                                             id="dropdownMenuButton"
                                             data-bs-toggle="dropdown"
@@ -82,30 +82,6 @@ const SchemaGenerator = () => {
                                     </div>
                                 </div>
                             </div>
-
-
-                            {/* <div className='btn-group float-end'>
-                                <button type='reset' className='btn btn-sm btn-danger me-1' onClick={onReset}>Reset</button>
-                                <div className='dropdown'>
-                                    <button className="btn btn-sm btn-secondary"
-                                        type="button"
-                                        id="dropdownMenuButton"
-                                        data-bs-toggle="dropdown"
-                                        data-bs-display="static"
-                                        aria-haspopup="true"
-                                        aria-expanded="false"
-                                        title='More Options...'
-                                        onClick={() => setIsDropdownOpen(prevState => !prevState)} >
-                                        <FontAwesomeIcon icon={faEllipsisV} />
-                                    </button>
-                                    <ul className={`dropdown-menu dropdown-menu-end ${isDropdownOpen ? 'show' : ''}`} aria-labelledby="dropdownMenuButton">
-                                        <li><h6 className="dropdown-header">Editor Style</h6></li>
-                                        <li><a href="#" onClick={() => { setIsButtonStyle(false); setIsDropdownOpen(false); }} className={`dropdown-item ${isButtonStyle == false ? 'active' : ''}`}>Drag and Drop</a></li>
-                                        <li><a href="#" onClick={() => { setIsButtonStyle(true); setIsDropdownOpen(false); }} className={`dropdown-item ${isButtonStyle == true ? 'active' : ''}`}>Button</a></li>
-                                    </ul>
-                                </div>
-                            </div> */}
-
                         </div>
                         <div className='card-body p-2'>
                             {isButtonStyle ?

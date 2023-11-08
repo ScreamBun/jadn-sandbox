@@ -71,7 +71,7 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'boolean') {
       return (
         <div className='form-group m-3'>
-          <div className='card border border-secondary'>
+          <div className='card'>
             <div className='card-header p-4 d-flex justify-content-between'>
               <div>
                 <label htmlFor={`checkbox-${idx}`} className="custom-control-label">
@@ -100,7 +100,7 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'binary') {
       return (
         <div className='form-group'>
-          <div className='card border border-secondary'>
+          <div className='card'>
             <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
               <div>
                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
@@ -135,7 +135,7 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'number') {
       return (
         <div className='form-group'>
-          <div className='card border border-secondary'>
+          <div className='card'>
             <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
               <div>
                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
@@ -168,7 +168,7 @@ const BasicField = (props: BasicFieldProps) => {
     if (dataType == 'integer') {
       return (
         <div className='form-group'>
-          <div className='card border border-secondary'>
+          <div className='card'>
             <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
               <div>
                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
@@ -201,7 +201,7 @@ const BasicField = (props: BasicFieldProps) => {
   //DEFAULT: STRING 
   return (
     <div className='form-group'>
-      <div className='card border border-secondary'>
+      <div className='card'>
         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
           <div>
             <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>

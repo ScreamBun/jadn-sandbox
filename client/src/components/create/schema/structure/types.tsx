@@ -11,6 +11,7 @@ interface EditorProps {
   change: (v: TypeObject, i: number) => void;  // eslint-disable-line react/require-default-props
   remove: (i: number) => void;  // eslint-disable-line react/require-default-props
   changeIndex?: (v: string | Record<string, any>, dataIndex: number, i: number) => void;  // eslint-disable-line react/require-default-props
+  setIsVisible: (i: number) => void;
   config: InfoConfig;
   collapseAllFields: boolean;
 }
