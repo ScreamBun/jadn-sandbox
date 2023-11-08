@@ -279,6 +279,12 @@ a,
     $primary: #375a7f;
     $secondary: #383a40;
 
+    .sb-outline  {
+        .highlight-color {
+            background-color: #{$secondary} !important;    
+        }
+    }
+
     .form-control {
         background-color:  #383a40!important;
     }    
@@ -300,6 +306,12 @@ a,
 
 @include color-mode(light) {
     $secondary: #E0E0E0;
+
+    .sb-outline  {
+        .highlight-color {
+            background-color: #{$secondary} !important;    
+        }
+    }
 
     [class*="secondary"]:not(.btn-outline-secondary) {
         background-color: #{$secondary} !important;
