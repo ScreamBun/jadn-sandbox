@@ -40,7 +40,7 @@ const SBOutline = (props: SBOutlineProps) => {
 
   useEffect(() => {
     setItems(cards);
-  }, [cards])
+  }, [cards, visibleCard])
 
   useEffect(() => {
     cardsStateRef.current = items;
