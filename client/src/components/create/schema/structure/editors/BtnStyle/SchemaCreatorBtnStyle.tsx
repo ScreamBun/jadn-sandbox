@@ -43,13 +43,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
 
     useEffect(() => {
-        dispatch(setSchema(generatedSchema));
-    }, [generatedSchema])
-
-    useEffect(() => {
         if (!generatedSchema) {
             setIsValidJADN(false);
         }
+        dispatch(setSchema(generatedSchema));
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);

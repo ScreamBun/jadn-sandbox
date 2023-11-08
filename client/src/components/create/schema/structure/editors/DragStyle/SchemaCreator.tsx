@@ -41,13 +41,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
 
     useEffect(() => {
-        dispatch(setSchema(generatedSchema));
-    }, [generatedSchema])
-
-    useEffect(() => {
         if (!generatedSchema) {
             setIsValidJADN(false);
         }
+        dispatch(setSchema(generatedSchema));
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
@@ -545,7 +542,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 data={generatedSchema}
                                 loc={'schemas'}
                                 filename={fileName}
-                                setDropdown={onFileSelect} />
+                                setDropdown={setSelectedFile} />
                         </div>
                         <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
