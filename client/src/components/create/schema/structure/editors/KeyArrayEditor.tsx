@@ -1,6 +1,7 @@
 import React, { memo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 // Interface
 interface KeyArrayEditorProps {
@@ -16,6 +17,7 @@ interface KeyArrayEditorProps {
 // Key Array Editor
 const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) {
   const { name, description, placeholder, value, change, remove } = props;
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const [dataArr, setDataArr] = useState(value);
 
@@ -39,8 +41,16 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
     change(tmpValues);
   }
 
-  const removeAll = () => {
-    remove(name.toLowerCase());
+  const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsConfirmModalOpen(true);
+  };
+
+  const removeAll = (response: boolean) => {
+    setIsConfirmModalOpen(false);
+    if (response == true) {
+      remove(name.toLowerCase());
+    }
   }
 
   const removeIndex = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -90,7 +100,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
                 <button type='button' className='btn btn-sm btn-primary' onClick={addIndex} >
                   <FontAwesomeIcon icon={faPlusSquare} />
                 </button>
-                <button type='button' className='btn btn-sm btn-danger' onClick={removeAll} >
+                <button type='button' className='btn btn-sm btn-danger' onClick={onRemoveItemClick} >
                   <FontAwesomeIcon icon={faMinusCircle} />
                 </button>
               </div>
@@ -105,6 +115,12 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
           </div>
         </div>
       </div>
+      <SBConfirmModal
+        isOpen={isConfirmModalOpen}
+        title={`Remove ${name}`}
+        message={`Are you sure you want to remove ${name}?`}
+        onResponse={removeAll}>
+      </SBConfirmModal>
     </>
   );
 })

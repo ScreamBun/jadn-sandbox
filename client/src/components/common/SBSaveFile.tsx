@@ -26,7 +26,8 @@ const SBSaveFile = (props: any) => {
         setFileNameInput(e.target.value);
     }
 
-    const onSaveFile = (dataStr: string, fmt: string = 'jadn', overwrite: boolean = false) => {
+    const onSaveFile = (e: React.MouseEvent<HTMLButtonElement>, dataStr: string, fmt: string = 'jadn', overwrite: boolean = false) => {
+        e.preventDefault();
         if (dataStr == '{}') {
             sbToastError('Error: No data to save.');
             return;
@@ -121,7 +122,7 @@ const SBSaveFile = (props: any) => {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type='button' className='btn btn-success' onClick={() => onSaveFile(data, ext)}>Save</button>
+                            <button type='button' className='btn btn-success' onClick={(e) => onSaveFile(e, data, ext)}>Save</button>
                             <button type='button' className='btn btn-secondary' onClick={() => setToggleSaveDialog(false)}>Cancel</button>
                         </div>
                     </div>
@@ -144,7 +145,7 @@ const SBSaveFile = (props: any) => {
                             File <b>{filename}</b> already exists. Please confirm that you would like to overwrite this file?
                         </div>
                         <div className="modal-footer">
-                            <button type='button' className='btn btn-success' onClick={() => onSaveFile(data, ext, true)}>Confirm</button>
+                            <button type='button' className='btn btn-success' onClick={(e) => onSaveFile(e, data, ext, true)}>Confirm</button>
                             <button type='button' className='btn btn-secondary' onClick={() => { setIsLoading(false); setToggleOverwriteDialog(false); }}>Cancel</button>
                         </div>
                     </div>

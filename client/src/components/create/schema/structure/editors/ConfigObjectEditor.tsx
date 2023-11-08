@@ -1,10 +1,11 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { InfoConfig } from '../../interface';
 import { ConfigOptions } from './consts';
 import { sbToastInfo } from 'components/common/SBToast';
 import KeyValueEditor from './KeyValueEditor';
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 // Interfaces
 interface ConfigObjectEditorProps {
@@ -21,6 +22,7 @@ interface ConfigObjectEditorProps {
 // Config Editor
 const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectEditorProps) {
   const { name, description = '', value, change, remove, config } = props;
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const onChange = (k: string, v: any) => {
     const tmpValues = { ...value };
@@ -36,8 +38,16 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
     }
   }
 
-  const removeAll = () => {
-    remove(name.toLowerCase());
+  const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsConfirmModalOpen(true);
+  };
+
+  const removeAll = (response: boolean) => {
+    setIsConfirmModalOpen(false);
+    if (response == true) {
+      remove(name.toLowerCase());
+    }
   }
 
   const keys = Object.keys(ConfigOptions).map(k => {
@@ -65,7 +75,7 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
               <span>{name} <small style={{ fontSize: '10px' }}> {description} </small></span>
             </div>
             <div className='col'>
-              <button type="button" className="btn btn-sm btn-danger float-end" onClick={removeAll} >
+              <button type="button" className="btn btn-sm btn-danger float-end" onClick={onRemoveItemClick} >
                 <FontAwesomeIcon
                   icon={faMinusCircle}
                 />
@@ -81,6 +91,12 @@ const ConfigObjectEditor = memo(function ConfigObjectEditor(props: ConfigObjectE
           </div>
         </div>
       </div>
+      <SBConfirmModal
+        isOpen={isConfirmModalOpen}
+        title={`Remove Config`}
+        message={`Are you sure you want to remove the configuration values for this module?`}
+        onResponse={removeAll}>
+      </SBConfirmModal>
     </>
   );
 });

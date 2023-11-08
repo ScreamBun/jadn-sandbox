@@ -4,7 +4,7 @@ import React from "react"
 const About = () => {
       return (
         <div className='card'>
-          <div className='card-header bg-primary p-2'>
+          <div className='card-header p-2'>
             <h5 className='m-0'>About</h5>
           </div>
           <div className='card-body p-2'>

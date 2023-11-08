@@ -107,8 +107,8 @@ const SchemaVisualizer = () => {
             <div className='row'>
                 <div className='col-md-12'>
                     <div className='card'>
-                        <div className='card-header bg-primary p-2'>
-                            <h5 className='m-0 text-light' style={{ display: 'inline' }}><span className='align-middle'>Schema Visualization</span></h5>
+                        <div className='card-header bg-secondary p-2'>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Visualization</span></h5>
                             <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>

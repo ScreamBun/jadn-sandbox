@@ -42,6 +42,21 @@ export interface GroupedOption {
     readonly options: readonly Option[];
 }
 
+//.form-control {
+//     display: block;
+//     width: 100%;
+//     padding: 0.375rem 0.75rem;
+//     font-size: 1rem;
+//     font-weight: 400;
+//     line-height: 1.5;
+//     color: var(--bs-body-color);
+//     appearance: none;
+//     background-color: var(--bs-body-bg);
+//     background-clip: padding-box;
+//     border: var(--bs-border-width) solid var(--bs-border-color);
+//     border-radius: var(--bs-border-radius);
+//     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+// }
 
 const defaultStyle = {
     control: base => ({
@@ -68,6 +83,7 @@ const smStyle = {
         ...base,
         minHeight: 30,
         cursor: 'pointer',
+        border: 'var(--bs-border-width) solid var(--bs-border-color)'
     }),
 
     container: css => ({
@@ -122,7 +138,7 @@ export const getSelectTheme = (theme: 'dark' | 'light') => {
             neutral0: 'var(--bs-body-bg)', //menu background
             neutral10: 'var(--bs-secondary-color)', //multivalue selected option background
             neutral80: 'var(--bs-body-color)', //selected option text
-            primary25: 'var(--bs-secondary-color)', //hover options
+            primary25: 'grey', //hover options
             primary75: 'var(--bs-primary-color)' //selected option indicator
         })
     }

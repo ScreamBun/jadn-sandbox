@@ -128,7 +128,8 @@ const MessageValidated = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-3'>
+                    <div className='col-sm-8'>
+                    <div className="d-flex">
                         <SBSelect id={"message-list"}
                             customClass={'me-1'}
                             data={msgOpts}
@@ -140,9 +141,9 @@ const MessageValidated = (props: any) => {
                         <div className='d-none'>
                             <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
-                    </div>
+                    {/* </div> */}
 
-                    <div className={`col-md-3`}>
+                    {/* <div className={`col-md-3`}> */}
                         <SBSelect id={"message-format-list"}
                             customClass={'me-1'}
                             data={validMsgFormat}
@@ -151,26 +152,32 @@ const MessageValidated = (props: any) => {
                             placeholder={'Message format...'}
                             isSmStyle
                         />
-                    </div>
+                    {/* </div> */}
 
-                    <div className='col-md-3'>
-                        <SBSelect id={"message-decode-list"} data={decodeSchemaTypes.exports} onChange={(e: Option) => setDecodeMsg(e)}
+                    {/* <div className='col-md-3'> */}
+                        <SBSelect id={"message-decode-list"} 
+                            customClass={'me-1'}
+                            data={decodeSchemaTypes.exports} 
+                            onChange={(e: Option) => setDecodeMsg(e)}
                             value={decodeMsg}
                             placeholder={'Message type...'}
                             isSmStyle
                         />
+                        </div>
                     </div>
 
-                    <div className='col-md float-end'>
-                        <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-end' />
-                        <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end me-1"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
-                        {isLoading ? <SBSpinner action={'Validating'} /> :
-                            <button className='float-end me-1 btn btn-success btn-sm'
-                                disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
-                                type="submit"
-                                title={'Validate the message against the given schema'}>
-                                Validate Message
-                            </button>}
+                    <div className='col-sm-4'>
+                        <div className='d-flex float-end'>
+                            {isLoading ? <SBSpinner action={'Validating'} /> :
+                                <button className='float-end me-1 btn btn-success btn-sm'
+                                    disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
+                                    type="submit"
+                                    title={'Validate the message against the given schema'}>
+                                    Validate Message
+                                </button>}
+                            <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-end me-1' />
+                            <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />                                
+                        </div>                            
                     </div>
                 </div>
             </div>
