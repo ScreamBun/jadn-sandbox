@@ -7,6 +7,7 @@ import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import ExampleCreator from './ExampleCreator'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { JSONSchemaFaker } from 'json-schema-faker';
+import { faker } from "@faker-js/faker/locale/en";
 import { convertSchema } from 'actions/convert'
 import { Option } from 'components/common/SBSelect'
 
@@ -16,7 +17,7 @@ const ExampleGenerator = () => {
     const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [loadedSchema, setLoadedSchema] = useState<String>('');
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
-    const [numOfMsg, setNumOfMsg] = useState<number | String>('');
+    const [numOfMsg, setNumOfMsg] = useState<number>();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -36,7 +37,7 @@ const ExampleGenerator = () => {
         setIsLoading(false);
         setSelectedFile(null);
         setLoadedSchema('');
-        setNumOfMsg('');
+        setNumOfMsg(undefined);
         setGeneratedMessages([]);
         dispatch(setSchema(''));
     }
@@ -46,6 +47,7 @@ const ExampleGenerator = () => {
         setIsLoading(true);
         let schemaObj = loadedSchema;
         let schemaProps: any[] = [];
+
         if (typeof schemaObj == 'string') {
             try {
                 schemaObj = JSON.parse(loadedSchema);
@@ -58,15 +60,25 @@ const ExampleGenerator = () => {
         }
 
         if (!numOfMsg || numOfMsg < 0) {
+            setIsLoading(false);
             sbToastError("Error: Must select a number more than zero");
             return;
         }
 
         if (numOfMsg && numOfMsg > 10) {
+            setIsLoading(false);
             sbToastError("Error: Must select a number less than ten");
             return;
         }
 
+        //TODO? : allow user to provide reference data to resolve schema 
+        if (schemaObj.info && Object.keys(schemaObj.info).includes('namespaces')) {
+            setIsLoading(false);
+            sbToastError("Error: Schema must be resolved");
+            return;
+        }
+
+        //TODO? : lazy load data to show data is being generated
         dispatch(convertSchema(schemaObj, ['json']))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
@@ -83,8 +95,16 @@ const ExampleGenerator = () => {
                 let i = 0;
 
                 while (i < numOfMsg) {
+                    //TODO: add custom format options
+                    JSONSchemaFaker.extend("faker", () => faker);
+                    JSONSchemaFaker.option({ ignoreMissingRefs: true, omitNulls: true });
+                    //TODO? : does not resolve ref ===> use .resolve = need to specify ref and cwd
                     let ex = JSONSchemaFaker.generate(schema);
-                    if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
+
+                    if (Object.keys(ex).length < 1) {
+                        break;
+
+                    } else if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
                         for (const [k, v] of Object.entries(ex)) {
                             if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
                                 if (schemaProps && schemaProps.includes(k)) {
@@ -122,10 +142,8 @@ const ExampleGenerator = () => {
                     sbToastError('Failed to generate examples');
                 }
 
-
-
-            })
-            .catch((convertSchemaErr) => {
+            }).catch((convertSchemaErr) => {
+                setIsLoading(false);
                 sbToastError('Failed to generate examples: JADN TO JSON conversion failed');
                 console.error(convertSchemaErr);
             });

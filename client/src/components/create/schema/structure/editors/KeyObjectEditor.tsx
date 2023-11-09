@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { InfoConfig } from '../../interface';
 import { sbToastError } from 'components/common/SBToast';
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 // Interface
 interface KeyObjectEditorProps {
@@ -23,6 +24,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
   const { value, description, name, placeholder, change, config } = props;
   let valueObjInit = Object.keys(value).map(k => ({ key: k, value: value[k] }));
   const [valueObj, setValueObj] = useState(valueObjInit);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { dataset, value } = e.target;
@@ -62,9 +64,23 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
     }), {});
   }
 
-  const removeAll = () => {
-    const { name, remove } = props;
-    remove(name.toLowerCase());
+  const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (name == "Namespaces") {
+      setIsConfirmModalOpen(true);
+    } else {
+      const { name, remove } = props;
+      remove(name.toLowerCase());
+    }
+
+  };
+
+  const removeAll = (response: boolean) => {
+    setIsConfirmModalOpen(false);
+    if (response == true) {
+      const { name, remove } = props;
+      remove(name.toLowerCase());
+    }
   }
 
   const removeIndex = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -135,7 +151,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
                 <button type='button' className='btn btn-sm btn-primary' onClick={addIndex} >
                   <FontAwesomeIcon icon={faPlusSquare} />
                 </button>
-                <button type='button' className='btn btn-sm btn-danger' onClick={removeAll} >
+                <button type='button' className='btn btn-sm btn-danger' onClick={onRemoveItemClick} >
                   <FontAwesomeIcon icon={faMinusCircle} />
                 </button>
               </div>
@@ -150,6 +166,12 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
           </div>
         </div>
       </div>
+      <SBConfirmModal
+        isOpen={isConfirmModalOpen}
+        title={`Remove ${name}`}
+        message={`Are you sure you want to remove ${name}?`}
+        onResponse={removeAll}>
+      </SBConfirmModal>
     </>
   );
 });

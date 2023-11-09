@@ -43,13 +43,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
 
     useEffect(() => {
-        dispatch(setSchema(generatedSchema));
-    }, [generatedSchema])
-
-    useEffect(() => {
         if (!generatedSchema) {
             setIsValidJADN(false);
         }
+        dispatch(setSchema(generatedSchema));
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
@@ -368,25 +365,21 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
     const onDrop = (key: string) => {
         if (Object.keys(Info).includes(key)) {
-            let updatedSchema;
-            if (key == 'config') {
-                updatedSchema = {
-                    ...generatedSchema,
+            const edit = key == 'config' ? Info[key].edit(configInitialState) : Info[key].edit();
+            const updatedSchema = generatedSchema.types ? {
+                info: {
+                    ...generatedSchema.info || {},
+                    ...edit
+                },
+                types: [...generatedSchema.types]
+            } :
+                {
                     info: {
                         ...generatedSchema.info || {},
-                        ...Info[key].edit(configInitialState)
+                        ...edit
                     },
                 }
 
-            } else {
-                updatedSchema = {
-                    ...generatedSchema,
-                    info: {
-                        ...generatedSchema.info || {},
-                        ...Info[key].edit()
-                    },
-                }
-            }
             flushSync(() => {
                 setGeneratedSchema(updatedSchema);
             });
@@ -600,10 +593,16 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     }
                 });
 
-                setGeneratedSchema((prev: any) => ({
-                    ...prev,
-                    types: tmpTypes
-                }));
+                if (tmpTypes.length != 0) {
+                    setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                } else {
+                    if (generatedSchema.info) {
+                        setGeneratedSchema((prev: any) => ({ ...prev.info }));
+                    } else {
+                        setGeneratedSchema({});
+                    }
+                }
+
                 setCardsState(updatedCards);
                 setIsValidJADN(false);
                 setIsValidating(false);

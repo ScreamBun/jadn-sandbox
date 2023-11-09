@@ -41,13 +41,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
 
     useEffect(() => {
-        dispatch(setSchema(generatedSchema));
-    }, [generatedSchema])
-
-    useEffect(() => {
         if (!generatedSchema) {
             setIsValidJADN(false);
         }
+        dispatch(setSchema(generatedSchema));
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
@@ -238,25 +235,21 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     const onSchemaDrop = (item: Item) => {
         let key = item.text;
         if (Object.keys(Info).includes(key)) {
-            let updatedSchema: any;
-            if (key == 'config') {
-                updatedSchema = {
-                    ...generatedSchema,
+            const edit = key == 'config' ? Info[key].edit(configInitialState) : Info[key].edit();
+            const updatedSchema = generatedSchema.types ? {
+                info: {
+                    ...generatedSchema.info || {},
+                    ...edit
+                },
+                types: [...generatedSchema.types]
+            } :
+                {
                     info: {
                         ...generatedSchema.info || {},
-                        ...Info[key].edit(configInitialState)
+                        ...edit
                     },
                 }
 
-            } else {
-                updatedSchema = {
-                    ...generatedSchema,
-                    info: {
-                        ...generatedSchema.info || {},
-                        ...Info[key].edit()
-                    },
-                }
-            }
             flushSync(() => {
                 setGeneratedSchema(updatedSchema);
             });
@@ -515,7 +508,15 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             remove: (idx: number) => {
                 const tmpTypes = generatedSchema.types.filter((_type: StandardTypeArray, i: number) => i != idx);
                 const tmpCards = cardsState.filter((_card: DragItem, index: number) => index != idx);
-                setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                if (tmpTypes.length != 0) {
+                    setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                } else {
+                    if (generatedSchema.info) {
+                        setGeneratedSchema((prev: any) => ({ ...prev.info }));
+                    } else {
+                        setGeneratedSchema({});
+                    }
+                }
                 setCardsState(tmpCards);
                 setIsValidJADN(false);
                 setIsValidating(false);
@@ -545,7 +546,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 data={generatedSchema}
                                 loc={'schemas'}
                                 filename={fileName}
-                                setDropdown={onFileSelect} />
+                                setDropdown={setSelectedFile} />
                         </div>
                         <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />

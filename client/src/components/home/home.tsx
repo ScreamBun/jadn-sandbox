@@ -35,13 +35,14 @@ const Home = () => {
           <div className='card-group'>
             <div className="card">
               <div className="card-img-top text-center py-2 bg-primary">
-                <FontAwesomeIcon className='fa-2x text-white' icon={faPencilRuler} />
+                <FontAwesomeIcon title='Schema and Message Creation' className='fa-2x text-white' icon={faPencilRuler} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
                 </h5>
                 <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-existing examples.</p>
+                <br /><br /><br />
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
@@ -50,11 +51,11 @@ const Home = () => {
             </div>
             <div className="card">
               <div className="card-img-top text-center py-2 bg-primary">
-                <FontAwesomeIcon className='fa-2x text-white' icon={faEye} />
+                <FontAwesomeIcon title='Schema Visualization' className='fa-2x text-white' icon={faEye} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_CONVERT_SCHEMA} >Schema Visualization</Link>
+                  <Link className="card-link" to={NAV_CONVERT_SCHEMA}>Schema Visualization</Link>
                 </h5>
                 <p className="card-text">Convert a JADN Schema into different visualization formats. </p>
                 <div className="card-text">
@@ -74,11 +75,11 @@ const Home = () => {
             </div>
             <div className="card">
               <div className="card-img-top text-center py-2 bg-primary">
-                <FontAwesomeIcon className='fa-2x text-white' icon={faCode} />
+                <FontAwesomeIcon title='Schema Translation' className='fa-2x text-white' icon={faCode} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_TRANSLATE} >Schema Translation</Link>
+                  <Link className="card-link" to={NAV_TRANSLATE}>Schema Translation</Link>
                 </h5>
                 <p className="card-text">Translate a Schema and its data from JADN to another Schema or data format.</p>
               </div>
@@ -92,11 +93,11 @@ const Home = () => {
           <div className='card-group'>
             <div className="card mt-3">
               <div className="card-img-top text-center py-2 bg-primary">
-                <FontAwesomeIcon className='fa-2x text-white' icon={faEnvelopeCircleCheck} />
+                <FontAwesomeIcon title='Validation' className='fa-2x text-white' icon={faEnvelopeCircleCheck} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE} >Message Validation</Link>
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>Message Validation</Link>
                 </h5>
                 <p className="card-text">Validate data (messages) against a JADN Schema and convert them from one data format to another.</p>
               </div>
@@ -108,7 +109,7 @@ const Home = () => {
             </div>
             <div className="card mt-3">
               <div className="card-img-top text-center py-2 bg-primary">
-                <FontAwesomeIcon className='fa-2x text-white' icon={faCodeBranch} />
+                <FontAwesomeIcon title='Schema Transformation' className='fa-2x text-white' icon={faCodeBranch} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">
@@ -116,7 +117,7 @@ const Home = () => {
                 </h5>
                 <p className="card-text">Convert one or more JADN Schemas into a different but related Schema (resolve references,
                   simplify by removing extensions, strip comments, etc).</p>
-                <br />
+                <br /><br /><br /><br />
               </div>
               {/* <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
@@ -124,7 +125,7 @@ const Home = () => {
             </div>
             <div className="card mt-3">
               <div className="card-img-top text-center py-2 bg-primary">
-                <FontAwesomeIcon className='fa-2x text-white' icon={faFileCirclePlus} />
+                <FontAwesomeIcon title='Example Message Generation' className='fa-2x text-white' icon={faFileCirclePlus} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">
