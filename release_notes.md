@@ -4,11 +4,11 @@
 
 * Removed react-strap and installed bootstrap 5.3.2
 * Various UI updates across the app to enhance usability
-* Transformation - Fixed schema deletion issue
+* Added various Modal Confirmations for deletions and resets
 * Schema Creation - Introduced a Scroll Highlight on the Outline
 * Schema Creation - Added a Clear Button to the Type and Field Option Modals
 * Schema Creation - Fixed Info section unlocked from top of schema
-* Added various Modal Confirmations for deletions and resets
+* Transformation - Fixed schema deletion issue
 * Generation - Prevent unresolved schemas from generating messages
 
 ## v0.7.1
