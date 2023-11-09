@@ -53,7 +53,7 @@ const ExampleCreator = (props: any) => {
                     <div className='col-md-7'>
                         {isLoading ? <SBSpinner action={'Generating'} /> :
                             <button type="submit" id="translateSchema" className="btn btn-success btn-sm me-1 float-end"
-                                disabled={Object.keys(validSchema).length != 0 && numOfMsg != '' ? false : true}
+                                disabled={Object.keys(validSchema).length != 0 && numOfMsg > 0 && numOfMsg <= 10 ? false : true}
                                 title={"Generate example messages based on selected schema"}>
                                 Generate
                             </button>}
