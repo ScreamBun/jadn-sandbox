@@ -42,6 +42,7 @@ const Home = () => {
                   <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
                 </h5>
                 <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-existing examples.</p>
+                <br /><br /><br />
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
@@ -116,7 +117,7 @@ const Home = () => {
                 </h5>
                 <p className="card-text">Convert one or more JADN Schemas into a different but related Schema (resolve references,
                   simplify by removing extensions, strip comments, etc).</p>
-                <br />
+                <br /><br /><br /><br />
               </div>
               {/* <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
