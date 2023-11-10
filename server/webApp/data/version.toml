@@ -1,6 +1,6 @@
 major = 0
-minor = 7
-bug = 1
+minor = 8
+bug = 0
 build_hash = ""
-build_date_in_millis = 1697745816979
-full_version = "v0.7.1_1697745816979"
+build_date_in_millis = 1699624358316
+full_version = "v0.8.0_1699624358316"
