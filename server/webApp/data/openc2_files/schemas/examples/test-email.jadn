@@ -1,0 +1,13 @@
+{
+  "info": {
+    "package": "http://test-email-uri",
+    "title": "test emial title",
+    "exports": ["ExportA"]
+  },
+  "types": [
+    ["ExportA", "Record", [], "", [
+      [1, "test_email", "String", ["/email"], ""]
+    ]]
+  ]
+}
+
