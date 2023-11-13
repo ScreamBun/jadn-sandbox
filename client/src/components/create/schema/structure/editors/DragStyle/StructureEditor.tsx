@@ -341,7 +341,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <>
-      <div className={`card mb-2`} id={`${dataIndex}`} ref={rowRef} style={customStyle}>
+      <div className={`card mb-2`} id={`${dataIndex}`} ref={rowRef} style={{ ...customStyle, height: 'auto' }}>
         <div className="card-header px-2 py-2" ref={inViewRef}>
           <div className='row'>
             <div className='col'>

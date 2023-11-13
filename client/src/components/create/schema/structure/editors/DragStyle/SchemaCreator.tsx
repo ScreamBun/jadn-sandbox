@@ -495,7 +495,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             key: self.crypto.randomUUID(),
             value: def,
             dataIndex: index,
-            customStyle: { style },
+            customStyle: style,
             collapseAllFields: allFieldsCollapse,
             setRowHeight: setRowHeight,
             setIsVisible: setVisibleType,
@@ -724,14 +724,15 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                             <Droppable onDrop={onSchemaDrop} acceptableType={"TypesKeys"} >
                                                                 {generatedSchema.types ?
                                                                     <div style={{ height: '70vh' }}>
-                                                                        <AutoSizer>
-                                                                            {({ height, width }) => (
+                                                                        <AutoSizer disableWidth>
+                                                                            {({ height }) => (
                                                                                 <List
+                                                                                    className='List'
                                                                                     height={height}
                                                                                     itemCount={generatedSchema.types.length || 0}
                                                                                     itemData={generatedSchema.types}
                                                                                     itemSize={getItemSize}
-                                                                                    width={width}
+                                                                                    width={'100%'}
                                                                                     ref={listRef}
                                                                                 >
                                                                                     {typesEditors}

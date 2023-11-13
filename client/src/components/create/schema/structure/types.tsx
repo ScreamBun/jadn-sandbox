@@ -8,7 +8,7 @@ interface EditorProps {
   key?: number | string | undefined;  // eslint-disable-line react/require-default-props
   dataIndex: number;
   value: StandardTypeArray;
-  customStyle?: any;
+  customStyle: any;
   setRowHeight: (i: number, height: number) => void;
   change: (v: TypeObject, i: number) => void;  // eslint-disable-line react/require-default-props
   remove: (i: number) => void;  // eslint-disable-line react/require-default-props
