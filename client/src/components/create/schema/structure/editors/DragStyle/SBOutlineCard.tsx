@@ -123,7 +123,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
   });
 
   const opacity = isDragging ? 0 : 1
-  const backgroundColor = isVisible ? 'var(--bs-highlight-bg)' : ''
+  const backgroundColor_class = isVisible ? 'highlight-color' : ''
   drag(drop(ref))
 
   const onToggleStar = (e: React.MouseEvent<HTMLElement>) => {
@@ -139,7 +139,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
 
   return (
     <div className='card'>
-      <div className='card-body list-group-item d-flex justify-content-between align-items-center' ref={ref} style={{ ...style, opacity, backgroundColor }} data-handler-id={handlerId}>
+      <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
         <div>
           <span onClick={onToggleStar}>
             <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />

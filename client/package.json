@@ -90,6 +90,7 @@
     "@babel/preset-typescript": "^7.23.2",
     "@babel/register": "^7.22.15",
     "@babel/runtime": "^7.23.2",
+    "@faker-js/faker": "^8.2.0",
     "@types/d3-graphviz": "^2.6.8",
     "@types/file-saver": "^2.0.5",
     "@types/history": "^5.0.0",

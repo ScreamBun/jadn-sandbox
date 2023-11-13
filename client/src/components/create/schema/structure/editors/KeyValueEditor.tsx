@@ -71,7 +71,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
         {removable ?
           <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
             <div className={`col-md-${labelColumns}`}>
-              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>
+                <span title={description}>{name}{required ? '*' : ''}</span>
+              </label>
             </div>
             <div className={`col-md-${fieldColumns}`}>
               <div className="input-group">
@@ -82,14 +84,15 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   value={val}
                   isGrouped={Array.isArray(options) ? false : true}
                 />
-                {description ? <small className="text-muted">{description}</small> : ''}
                 <button type="button" title={`Remove ${placeholder}`} className='btn btn-danger ' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
           </div>
           :
           <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
-            <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+            <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
+              <span title={description}>{name}{required ? '*' : ''}</span>
+            </label>
             <div className={`col-md-${fieldColumns}`}>
               <SBCreatableSelect id={`editor-${placeholder}-${id}`}
                 placeholder={`Please select a ${placeholder}...`}
@@ -98,7 +101,6 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                 value={val}
                 isGrouped={Array.isArray(options) ? false : true}
               />
-              {description ? <small className="text-muted">{description}</small> : ''}
             </div>
           </div>
         }
@@ -113,7 +115,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
 
           <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
             <div className={`col-md-${labelColumns}`}>
-              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>
+                <span title={description}>{name}{required ? '*' : ''}</span>
+              </label>
             </div>
             <div className={`col-md-${fieldColumns}`}>
               <div className="input-group">
@@ -124,14 +128,15 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   value={val}
                   isGrouped={Array.isArray(options) ? false : true}
                 />
-                {description ? <small className="text-muted">{description}</small> : ''}
                 <button type="button" title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
           </div>
           :
           <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
-            <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+            <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
+              <span title={description}>{name}{required ? '*' : ''}</span>
+            </label>
             <div className={`col-md-${fieldColumns}`}>
               <SBSelect id={`editor-${placeholder}-${id}`}
                 placeholder={`Please select a ${placeholder}...`}
@@ -140,7 +145,6 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                 value={val}
                 isGrouped={Array.isArray(options) ? false : true}
               />
-              {description ? <small className="text-muted">{description}</small> : ''}
             </div>
           </div>
         }
@@ -165,10 +169,10 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
             <div className="col-md-12">
               <div className="row">
                 <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
-                  <span>{name} {required ? '*' : ''}</span>
+                  <span title={description}>{name} {required ? '*' : ''}</span>
                 </label>
                 <div className={`col-md-${fieldColumns} col-form-label d-flex align-items-start`}>
-                  <input type={type} id={`editor-${placeholder}-${id}`} className={type} {...inputArgs} />
+                  <input type={type} id={`editor-${placeholder}-${id}`} className={'w-auto'} {...inputArgs} />
                   <button type="button" title={`Remove ${placeholder}`} className="btn btn-danger ms-2" onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
                 </div>
               </div>
@@ -179,10 +183,10 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
             <div className="col-md-12">
               <div className="row">
                 <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
-                  <span>{name} {required ? '*' : ''}</span>
+                  <span title={description}>{name} {required ? '*' : ''}</span>
                 </label>
                 <div className={`col-md-${fieldColumns} col-form-label d-flex align-items-start`}>
-                  <input type={type} id={`editor-${placeholder}-${id}`} className={type} {...inputArgs} />
+                  <input type={type} id={`editor-${placeholder}-${id}`} className={'w-auto'} {...inputArgs} />
                 </div>
               </div>
             </div>
@@ -197,7 +201,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
       {removable ?
         <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
           <div className={`col-md-${labelColumns}`}>
-            <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+            <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>
+              <span title={description}>{name}{required ? '*' : ''}</span>
+            </label>
           </div>
           <div className={`col-md-${fieldColumns}`}>
             <div className="input-group">
@@ -208,7 +214,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
         </div>
         :
         <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
-          <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>{name}{required ? '*' : ''}</label>
+          <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
+            <span title={description}>{name}{required ? '*' : ''}</span>
+          </label>
           <div className={`col-md-${fieldColumns}`}>
             <input type={type} className="form-control" id={`editor-${placeholder}-${id}`} {...inputArgs} />
           </div>
