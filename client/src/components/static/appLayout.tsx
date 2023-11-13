@@ -18,20 +18,6 @@ const AppLayout = () => {
   let toastCount = 0;
 
   toast.onChange((data) => {
-    if (!toast.isActive('dismiss-all-toast') && data.status == "added") {
-      toast(<div onClick={dismissAllToast}>
-        Clear All
-      </div>, {
-        toastId: 'dismiss-all-toast',
-        autoClose: false,
-        draggable: false,
-        closeOnClick: false,
-        closeButton: false,
-        className: 'p-0',
-        style: { minHeight: 'auto' },
-        containerId: 'A'
-      });
-    }
     if (data.id != 'dismiss-all-toast') {
       if (data.status == "added") {
         toastCount++;
@@ -41,6 +27,20 @@ const AppLayout = () => {
     }
     if (toastCount == 0 && toast.isActive('dismiss-all-toast')) {
       toast.dismiss('dismiss-all-toast');
+    }
+    if (toastCount != 0 && !toast.isActive('dismiss-all-toast') && data.status == "added") {
+      toast(<div onClick={dismissAllToast}>
+        Clear All
+      </div>, {
+        toastId: 'dismiss-all-toast',
+        autoClose: false,
+        draggable: false,
+        closeOnClick: false,
+        closeButton: false,
+        className: 'p-1 border border-secondary',
+        style: { minHeight: 'auto', borderRadius: '30px', fontSize: '14px', color: 'var(--bs-body-color)', backgroundColor: 'var(--bs-secondary-bg)' },
+        containerId: 'A'
+      });
     }
   })
 
