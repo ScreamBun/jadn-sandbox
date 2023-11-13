@@ -6,6 +6,7 @@ import favicon from '../dependencies/assets/img/jadn-favicon.png';
 import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE, NAV_ABOUT } from 'components/utils/constants';
 import { useAppSelector } from '../../reducers';
 import { ThemeContext } from './ThemeProvider';
+import { dismissAllToast } from 'components/common/SBToast';
 
 const AppLayout = () => {
 
@@ -13,8 +14,35 @@ const AppLayout = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeChooserOpen, setIsThemeChooserOpen] = useState(false);
   const [theme, setTheme] = useContext(ThemeContext);
-
   const version_info = useAppSelector((state => state.Util.version_info));
+  let toastCount = 0;
+
+  toast.onChange((data) => {
+    if (!toast.isActive('dismiss-all-toast') && data.status == "added") {
+      toast(<div onClick={dismissAllToast}>
+        Clear All
+      </div>, {
+        toastId: 'dismiss-all-toast',
+        autoClose: false,
+        draggable: false,
+        closeOnClick: false,
+        closeButton: false,
+        className: 'p-0',
+        style: { minHeight: 'auto' },
+        containerId: 'A'
+      });
+    }
+    if (data.id != 'dismiss-all-toast') {
+      if (data.status == "added") {
+        toastCount++;
+      } else {
+        toastCount--;
+      }
+    }
+    if (toastCount == 0 && toast.isActive('dismiss-all-toast')) {
+      toast.dismiss('dismiss-all-toast');
+    }
+  })
 
   const onToggleNav = () => {
     setIsNavCollapsed(isNavCollapsed => !isNavCollapsed);
@@ -93,7 +121,7 @@ const AppLayout = () => {
       <br />
       <br />
 
-      <nav className='navbar bg-secondary fixed-bottom py-0 px-2' style={{opacity: '.75'}}>
+      <nav className='navbar bg-secondary fixed-bottom py-0 px-2' style={{ opacity: '.75' }}>
 
         <div className="btn-group dropup">
           <div id="bd-theme" className="dropdown"
@@ -116,7 +144,8 @@ const AppLayout = () => {
         </div>
       </nav>
 
-      <ToastContainer position={toast.POSITION.TOP_RIGHT} autoClose={4000} theme='colored' />
+      <ToastContainer enableMultiContainer position={toast.POSITION.TOP_RIGHT} containerId='A' className='d-flex justify-content-end' theme='colored' />
+      <ToastContainer enableMultiContainer position={toast.POSITION.TOP_RIGHT} containerId='B' className='mt-5' autoClose={4000} theme='colored' />
     </div>
 
   );
