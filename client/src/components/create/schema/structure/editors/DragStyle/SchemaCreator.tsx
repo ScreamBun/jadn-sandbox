@@ -4,6 +4,8 @@ import { flushSync } from 'react-dom';
 import { faCheck, faXmark, faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { v4 as uuid4 } from 'uuid';
+import { VariableSizeList as List } from "react-window";
+import AutoSizer from 'react-virtualized-auto-sizer';
 import { Info, Types } from '../../structure';
 import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
@@ -24,8 +26,7 @@ import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
-import { VariableSizeList as List } from "react-window";
-import AutoSizer from 'react-virtualized-auto-sizer';
+
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,

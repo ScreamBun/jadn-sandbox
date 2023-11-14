@@ -1,4 +1,5 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
+import { shallowEqual } from 'react-redux';
 import { flushSync } from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -11,10 +12,9 @@ import {
 import { StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { sbToastError } from 'components/common/SBToast';
 import SBOutlineFields, { DragItem } from './SBOutlineFields';
-import { shallowEqual } from 'react-redux';
-import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 interface StructureEditorProps {
   dataIndex: number; //index changes based on obj in arr (tracks the parent index)
@@ -47,10 +47,6 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   let SBConfirmModalValName = valueObj.name;
 
   const rowRef = useRef<any>();
-  const setRefs = useCallback((node: any) => {  // Use `useCallback` so we don't recreate the function on each render
-    rowRef.current = node;  // Ref's from useRef needs to have the node assigned to `current`
-    inViewRef(node);  // Callback refs, like the one from `useInView`, is a function that takes the node as an argument
-  }, [inViewRef, rowRef]);
 
   useEffect(() => {
     if (rowRef.current) {
@@ -268,7 +264,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
     return (
       <>
-        <div className="card mb-3" ref={rowRef} style={customStyle}>
+        <div className="card mb-3" ref={rowRef} style={{ ...customStyle, height: 'auto' }}>
           <div className="card-header px-2 py-2" ref={inViewRef}>
             <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name} (${valueObj.type})`}</span>
             <button type='button' className='btn btn-sm btn-danger float-end' onClick={onRemoveItemClick} >

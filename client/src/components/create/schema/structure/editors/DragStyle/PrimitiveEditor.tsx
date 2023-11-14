@@ -1,5 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-//import equal from 'fast-deep-equal';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { useInView } from 'react-intersection-observer';
@@ -44,10 +43,6 @@ const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProp
   let SBConfirmModalValName = valueObjInit.name;
 
   const rowRef = useRef<any>();
-  const setRefs = useCallback((node: any) => {
-    rowRef.current = node;
-    inViewRef(node);
-  }, [inViewRef]);
 
   useEffect(() => {
     if (rowRef.current) {
