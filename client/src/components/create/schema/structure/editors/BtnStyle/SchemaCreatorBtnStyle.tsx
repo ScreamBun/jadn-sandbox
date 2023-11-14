@@ -1,8 +1,10 @@
-import React, { useEffect, memo, useRef, useState } from 'react'
+import React, { useEffect, memo, useRef, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
 import { faCheck, faCircleChevronDown, faCircleChevronUp, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { VariableSizeList as List } from "react-window";
+import AutoSizer from 'react-virtualized-auto-sizer';
 import { Info, Types } from '../../structure';
 import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
@@ -23,8 +25,6 @@ import SBOutlineBtnStyle from './SBOutlineBtnStyle';
 import { AddToIndexDropDown } from './AddToIndexDropDown';
 import { DragItem } from '../DragStyle/SBOutline';
 import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
-
-
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -65,6 +65,17 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
+
+    const listRef = useRef<any>(null);
+    const rowHeight = useRef({});
+    const setRowHeight = useCallback((index: number, size: number) => {
+        console.log(index, size)
+        console.log(rowHeight.current)
+        rowHeight.current = { ...rowHeight.current, [index]: size };
+        listRef.current?.resetAfterIndex(0, false);
+    }, []);
+    const getItemSize = (index: number) => { return rowHeight.current[index] || 0 };
+
 
     const [insertAt, setInsertAt] = useState(defaultInsertIdx);
     let indexOpts = generatedSchema.types ?
@@ -440,8 +451,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
 
-            var scrollSpyContentEl = document.getElementById(`${new_card.index}`)
-            scrollSpyContentEl?.scrollIntoView();
+            onScrollToCard(new_card.index);
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -459,6 +469,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
         setCardsState(updatedCards);
     };
+
+    const onScrollToCard = (idx: number) => {
+        listRef.current.scrollToItem(idx);
+    }
 
     const changeIndex = (arrVal: TypeArray, dataIndex: number, idx: number) => {
         const val = zip(TypeKeys, arrVal) as StandardTypeObject;
@@ -500,9 +514,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
         setIsValidJADN(false);
         setIsValidating(false);
-
-        var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
-        scrollSpyContentEl?.scrollIntoView();
+        onScrollToCard(dataIndex);
     }
 
     const infoEditors = Object.keys(Info).map((k, i) => {
@@ -560,7 +572,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         return null;
     });
 
-    const typesEditors = (generatedSchema.types || []).map((def: StandardTypeArray, i: number) => {
+    const typesEditors = ({ data, index, style }) => {
+        const def = data[index];
         let type = def[1].toLowerCase() as keyof typeof Types;
 
         //CHECK FOR VALID TYPE
@@ -573,7 +586,9 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         return (Types[type].editorBtnStyle({
             key: self.crypto.randomUUID(),
             value: def,
-            dataIndex: i,
+            dataIndex: index,
+            customStyle: { ...style, height: 'auto' },
+            setRowHeight: setRowHeight,
             collapseAllFields: allFieldsCollapse,
             setIsVisible: setVisibleType,
             change: (val, idx: number) => {
@@ -618,7 +633,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             },
             config: configOpt
         }))
-    }).filter(Boolean);
+    };
 
     return (
         <div className='card'>
@@ -720,12 +735,14 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                 </div>
                                 <div className='row mt-2'>
                                     <div className='col'>
-                                        <SBOutlineBtnStyle id={'schema-outline'}
+                                        <SBOutlineBtnStyle
+                                            id={'schema-outline'}
                                             items={cardsState}
                                             title={'Outline'}
                                             visibleCard={visibleType}
                                             changeIndex={changeIndex}
                                             onStarClick={onStarClick}
+                                            onScrollToCard={onScrollToCard}
                                         />
                                     </div>
                                 </div>
@@ -800,7 +817,23 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                         {!typesCollapse &&
                                                             <div>
                                                                 {generatedSchema.types ?
-                                                                    <>{typesEditors}</>
+                                                                    <div style={{ height: '70vh' }}>
+                                                                        <AutoSizer disableWidth>
+                                                                            {({ height }) => (
+                                                                                <List
+                                                                                    className='List'
+                                                                                    height={height}
+                                                                                    itemCount={generatedSchema.types.length || 0}
+                                                                                    itemData={generatedSchema.types}
+                                                                                    itemSize={getItemSize}
+                                                                                    width={'100%'}
+                                                                                    ref={listRef}
+                                                                                >
+                                                                                    {typesEditors}
+                                                                                </List>
+                                                                            )}
+                                                                        </AutoSizer>
+                                                                    </div>
                                                                     :
                                                                     <><p>To add schema content make a selection from Types</p></>
                                                                 }

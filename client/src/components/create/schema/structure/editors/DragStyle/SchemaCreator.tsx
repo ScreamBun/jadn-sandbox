@@ -293,9 +293,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
             setIsValidJADN(false);
             setIsValidating(false);
-
-            //var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
-            //scrollSpyContentEl?.scrollIntoView();
             onScrollToCard(dataIndex);
 
         } else {
@@ -350,9 +347,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         });
 
         setIsValidating(false);
-
-        //var scrollSpyContentEl = document.getElementById(`${insertAt}`)
-        //scrollSpyContentEl?.scrollIntoView();
         onScrollToCard(insertAt);
     }
 
@@ -496,7 +490,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             key: self.crypto.randomUUID(),
             value: def,
             dataIndex: index,
-            customStyle: style,
+            customStyle: { ...style, height: 'auto' },
             collapseAllFields: allFieldsCollapse,
             setRowHeight: setRowHeight,
             setIsVisible: setVisibleType,
