@@ -69,8 +69,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const listRef = useRef<any>(null);
     const rowHeight = useRef({});
     const setRowHeight = useCallback((index: number, size: number) => {
-        console.log(index, size)
-        console.log(rowHeight.current)
         rowHeight.current = { ...rowHeight.current, [index]: size };
         listRef.current?.resetAfterIndex(0, false);
     }, []);
