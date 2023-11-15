@@ -51,8 +51,7 @@ export const SBConfirmModal = (props: any) => {
                         zIndex: -1
                     }}></div>
                 </div>,
-                document.body)
-            }
+                document.body)}
         </>
     )
 };

@@ -1,4 +1,5 @@
 import React, { memo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   OptionTypes, Val, opts2arr, opts2obj, RequiredOptions
 } from './consts';
@@ -107,43 +108,46 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
   }
 
   return (
-    <div id="optionsModal" className={`modal fade ${isOpen ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
-      <div className={`modal-dialog modal-dialog-centered ${modalSize}`} role='document'>
-        <div className='modal-content p-2'>
-          <div className="modal-header">
-            <h5 className='modal-title'>
-              {fieldOptions ? 'Field' : 'Type'} Options
-            </h5>
-            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={toggleModalhere} />
-          </div>
-          <div className="modal-body">
-            <FieldOptionsEditor
-              id={id}
-              deserializedState={data['field']}
-              change={saveOptions}
-              fieldOptions={fieldOptions}
-            />
-            <TypeOptionsEditor
-              id={id}
-              deserializedState={data['type']}
-              change={saveOptions}
-              optionType={optionType}
-            />
-          </div>
-          <hr />
-          <div className='row'>
-            <div className='col-sm-12 p2'>
-              <button type="button" className='btn btn-secondary float-start' onClick={clearData}>Clear</button>
-              <button type='button' className='btn btn-success float-end' onClick={saveData}>Save</button>
-              <button type='button' className='btn btn-secondary float-end mx-2' data-bs-dismiss='modal' onClick={toggleModalhere}>Close</button>                
-            </div>              
+    <>
+      {createPortal(<div id="optionsModal" className={`modal fade ${isOpen ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
+        <div className={`modal-dialog modal-dialog-centered ${modalSize}`} role='document'>
+          <div className='modal-content p-2'>
+            <div className="modal-header">
+              <h5 className='modal-title'>
+                {fieldOptions ? 'Field' : 'Type'} Options
+              </h5>
+              <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={toggleModalhere} />
+            </div>
+            <div className="modal-body">
+              <FieldOptionsEditor
+                id={id}
+                deserializedState={data['field']}
+                change={saveOptions}
+                fieldOptions={fieldOptions}
+              />
+              <TypeOptionsEditor
+                id={id}
+                deserializedState={data['type']}
+                change={saveOptions}
+                optionType={optionType}
+              />
+            </div>
+            <hr />
+            <div className='row'>
+              <div className='col-sm-12 p2'>
+                <button type="button" className='btn btn-secondary float-start' onClick={clearData}>Clear</button>
+                <button type='button' className='btn btn-success float-end' onClick={saveData}>Save</button>
+                <button type='button' className='btn btn-secondary float-end mx-2' data-bs-dismiss='modal' onClick={toggleModalhere}>Close</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div className={`modal-backdrop fade ${isOpen ? 'show' : ''}`} style={{
-        zIndex: -1
-      }}></div>
-    </div>
+        <div className={`modal-backdrop fade ${isOpen ? 'show' : ''}`} style={{
+          zIndex: -1
+        }}></div>
+      </div>,
+        document.body)}
+    </>
   );
 });
 

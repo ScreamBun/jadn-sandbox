@@ -65,8 +65,6 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       }),
       end: (item, monitor) => {
         const didDrop = monitor.didDrop()
-
-        console.log(didDrop, item)
         if (!didDrop) {
           moveCard(item.dataIndex, item.originalIndex)
         } else {

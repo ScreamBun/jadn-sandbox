@@ -86,6 +86,9 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     const [{ canDrop, isOver }, drop] = useDrop(
         () => ({
             accept: acceptableType,
+            drop: (item: DragItem, _monitor) => {
+                return { item };
+            },
             collect: (monitor) => ({
                 canDrop: monitor.canDrop(),
                 isOver: monitor.isOver()
