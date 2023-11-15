@@ -12,7 +12,7 @@ const AppLayout = () => {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeChooserOpen, setIsThemeChooserOpen] = useState(false);
-  const [theme, setTheme] = useContext(ThemeContext);
+  const { theme, setTheme } = useContext(ThemeContext);
 
   const version_info = useAppSelector((state => state.Util.version_info));
 
@@ -93,7 +93,7 @@ const AppLayout = () => {
       <br />
       <br />
 
-      <nav className='navbar bg-secondary fixed-bottom py-0 px-2' style={{opacity: '.75'}}>
+      <nav className='navbar bg-secondary fixed-bottom py-0 px-2' style={{ opacity: '.75' }}>
 
         <div className="btn-group dropup">
           <div id="bd-theme" className="dropdown"
