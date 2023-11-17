@@ -23,7 +23,7 @@ const SBEditor = (props: any) => {
         onChange
     } = props;
 
-    const [theme] = useContext(ThemeContext);
+    const { theme } = useContext(ThemeContext);
 
     let extensions = [langs.json()]
     if (convertTo != null && typeof convertTo != 'object') {

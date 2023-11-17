@@ -1,9 +1,11 @@
-import React, { useEffect, memo, useRef, useState } from 'react'
+import React, { useEffect, memo, useRef, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
 import { faCheck, faXmark, faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { v4 as uuid4 } from 'uuid';
+import { VariableSizeList as List } from "react-window";
+import AutoSizer from 'react-virtualized-auto-sizer';
 import { Info, Types } from '../../structure';
 import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
@@ -63,6 +65,14 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
     const schemaOpts = useSelector(getAllSchemas);
     const ref = useRef<HTMLInputElement | null>(null);
+
+    const listRef = useRef<any>(null);
+    const rowHeight = useRef({});
+    const setRowHeight = useCallback((index: number, size: number) => {
+        rowHeight.current = { ...rowHeight.current, [index]: size };
+        listRef.current?.resetAfterIndex(0, false);
+    }, []);
+    const getItemSize = (index: number) => { return rowHeight.current[index] || 0 };
 
     const onFileSelect = (e: Option) => {
         dismissAllToast();
@@ -264,7 +274,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             setIsValidating(false);
 
             var scrollSpyContentEl = document.getElementById(`${key}`)
-            scrollSpyContentEl?.scrollIntoView({ block: 'end' });
+            scrollSpyContentEl?.scrollIntoView();
 
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
@@ -288,9 +298,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
             setIsValidJADN(false);
             setIsValidating(false);
-
-            var scrollSpyContentEl = document.getElementById(`${dataIndex}`)
-            scrollSpyContentEl?.scrollIntoView({ block: 'end' });
+            onScrollToCard(dataIndex);
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
@@ -305,6 +313,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
     const onStarClick = (updatedCards: DragItem[]) => {
         setCardsState(updatedCards);
+    }
+
+    const onScrollToCard = (idx: number) => {
+        listRef.current.scrollToItem(idx);
     }
 
     const onTypesToOutlineDrop = (item: any) => {
@@ -340,9 +352,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         });
 
         setIsValidating(false);
-
-        var scrollSpyContentEl = document.getElementById(`${insertAt}`)
-        scrollSpyContentEl?.scrollIntoView({ block: 'end' });
+        onScrollToCard(insertAt);
     }
 
     const get_type_name = (types_to_serach: any[], name: string) => {
@@ -470,7 +480,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         return null;
     });
 
-    const typesEditors = (generatedSchema.types || []).map((def: StandardTypeArray, i: any) => {
+    const typesEditors = ({ data, index, style }) => {
+        const def = data[index];
         let type = def[1].toLowerCase() as keyof typeof Types;
 
         //CHECK FOR VALID TYPE
@@ -483,8 +494,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         return (Types[type].editor({
             key: self.crypto.randomUUID(),
             value: def,
-            dataIndex: i,
+            dataIndex: index,
+            customStyle: { ...style, height: 'auto' },
             collapseAllFields: allFieldsCollapse,
+            setRowHeight: setRowHeight,
             setIsVisible: setVisibleType,
             change: (val: TypeObject, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
@@ -530,7 +543,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             },
             config: configOpt
         }))
-    }).filter(Boolean);
+    };
 
     return (
         <div className='card'>
@@ -635,6 +648,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                             title={'Outline'}
                                             onDrop={onOutlineDrop}
                                             onStarToggle={onStarClick}
+                                            onScrollToCard={onScrollToCard}
                                             visibleCard={visibleType}
                                         ></SBOutline>
                                     </div>
@@ -709,7 +723,23 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                                         {!typesCollapse &&
                                                             <Droppable onDrop={onSchemaDrop} acceptableType={"TypesKeys"} >
                                                                 {generatedSchema.types ?
-                                                                    <>{typesEditors}</> :
+                                                                    <div style={{ height: '70vh' }}>
+                                                                        <AutoSizer disableWidth>
+                                                                            {({ height }) => (
+                                                                                <List
+                                                                                    className='List'
+                                                                                    height={height}
+                                                                                    itemCount={generatedSchema.types.length || 0}
+                                                                                    itemData={generatedSchema.types}
+                                                                                    itemSize={getItemSize}
+                                                                                    width={'100%'}
+                                                                                    ref={listRef}
+                                                                                >
+                                                                                    {typesEditors}
+                                                                                </List>
+                                                                            )}
+                                                                        </AutoSizer>
+                                                                    </div> :
                                                                     <><p>To add schema content click and drag items from Types</p></>
                                                                 }
                                                             </Droppable>

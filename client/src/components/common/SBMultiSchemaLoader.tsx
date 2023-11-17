@@ -69,7 +69,6 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     }
 
     const onFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("SBMultiSchemaLoader onFileUpload");
         e.preventDefault();
         onLoading(true);
         if (e.target.files && e.target.files.length != 0) {
@@ -108,7 +107,6 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     }
 
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("SBMultiSchemaLoader onCancelFileUpload");
         e.preventDefault();
         onLoading(false);
         setSelectedFile(null);
@@ -155,7 +153,6 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     }
 
     const listSchemas = selectedSchemas?.map((schema: SelectedSchema, i: number) => {
-        console.log(schema)
         return (
             <div className="card" key={schema.id}>
                 <div className="card-header">

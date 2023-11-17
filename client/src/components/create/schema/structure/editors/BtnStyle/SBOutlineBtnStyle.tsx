@@ -11,21 +11,29 @@ export interface SBOutlineBtnStyleProps {
     visibleCard: number | null;
     changeIndex: (v: TypeArray, dataIndex: number, i: number) => void;
     onStarClick: (index: number) => void;
+    onScrollToCard: (idx: number) => void;
 }
 
 const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
 
-    const { id = 'sb-outline', title, visibleCard, items = [], onStarClick, changeIndex } = props;
+    const { id = 'sb-outline', title, visibleCard, items = [],
+        onStarClick, onScrollToCard, changeIndex } = props;
 
     const renderCards = items.map((card, i) => {
+        const backgroundColor_class = i == visibleCard ? 'highlight-color' : ''
+        const onCardClick = (e: React.MouseEvent<HTMLElement>) => {
+            e.preventDefault();
+            onScrollToCard(i);
+        }
+
         return (
-            <div className='card' key={i} style={{ backgroundColor: i == visibleCard ? 'var(--bs-highlight-bg)' : '' }}>
+            <div className={`card ${backgroundColor_class}`} key={i}>
                 <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
                     <div>
                         <span onClick={() => onStarClick(i)}>
                             <FontAwesomeIcon className='me-1' icon={card.isStarred == true ? faStar : farStar} />
                         </span>
-                        <a title={'Click to view'} href={`#${i}`}>{card.text}</a>
+                        <a title={'Click to view'} href={`#${i}`} onClick={onCardClick}>{card.text}</a>
                     </div>
 
                     <div className="btn-group" role="group" aria-label="button group">

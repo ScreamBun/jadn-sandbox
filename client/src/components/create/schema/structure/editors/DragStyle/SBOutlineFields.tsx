@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Unsubscribe } from 'redux';
-import { useDragDropManager, useDrop } from 'react-dnd';
+import { useDragDropManager, useDragLayer, useDrop } from 'react-dnd';
 import update from 'immutability-helper'
 import { FieldArray, InfoConfig } from 'components/create/schema/interface';
 import FieldEditor from './FieldEditor';
@@ -86,6 +86,9 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     const [{ canDrop, isOver }, drop] = useDrop(
         () => ({
             accept: acceptableType,
+            drop: (item: DragItem, _monitor) => {
+                return { item };
+            },
             collect: (monitor) => ({
                 canDrop: monitor.canDrop(),
                 isOver: monitor.isOver()
@@ -98,17 +101,22 @@ const SBOutlineFields = (props: SBOutlineProps) => {
         onDrop(item)
     }, [cardsState]);
 
-    const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
+    const moveCard = useCallback((dragIndex: number, hoverIndex: number, card: any) => {
         setCardsState((prevCards: DragItem[]) =>
             update(prevCards, {
                 $splice: [
                     [dragIndex, 1],
-                    [hoverIndex, 0, prevCards[dragIndex] as DragItem],
+                    [hoverIndex, 0, card as DragItem],
                 ],
             }),
         )
 
     }, []);
+
+    const { isDragging, item } = useDragLayer((monitor) => ({
+        isDragging: monitor.isDragging(),
+        item: monitor.getItem()
+    }));
 
     const renderCard = useCallback(
         (card: any, index: number) => {
@@ -117,6 +125,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
                     key={card[0]}
                     id={card[0]}
                     dataIndex={index}
+                    isDragging={item && item.dataIndex == index}
                     parentIndex={parentIndex}
                     enumerated={isEnumerated}
                     value={card}
@@ -131,7 +140,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
                 />
             )
         },
-        []
+        [isDragging, item]
     );
 
     return (

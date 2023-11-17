@@ -1,11 +1,11 @@
-import React, { ReactNode, memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDragDropManager, useDrop } from 'react-dnd'
 import { Unsubscribe } from 'redux';
-import { DragItem } from 'components/create/schema/outline/SBOutline';
+import { DragItem } from './SBOutline';
 interface DroppableProps {
     onDrop?: (item: DragItem) => void;
     acceptableType?: string;
-    children: ReactNode;
+    children: any;
 }
 
 export const Droppable = memo(function Droppable(props: DroppableProps) {

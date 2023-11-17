@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 //import equal from 'fast-deep-equal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +14,8 @@ import { SBConfirmModal } from 'components/common/SBConfirmModal';
 interface PrimitiveEditorProps {
     dataIndex: number;
     value: Array<any>;
+    customStyle: any;
+    setRowHeight: (i: number, height: number) => void;
     change: (v: any, i: number) => void;
     remove: (i: number) => void;
     setIsVisible: (i: number) => void;
@@ -22,13 +24,20 @@ interface PrimitiveEditorProps {
 
 // Primitive Editor
 const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: PrimitiveEditorProps) {
-    const { value, dataIndex, config, change, setIsVisible } = props;
+    const { value, dataIndex, config, customStyle, setRowHeight, change, setIsVisible } = props;
 
     //TODO: may need to add polyfill -- support for Safari
-    const { ref, inView, entry } = useInView({
+    const { ref: inViewRef, inView, entry } = useInView({
         fallbackInView: true,
         threshold: .25
     });
+
+    const rowRef = useRef<any>();
+    useEffect(() => {
+        if (rowRef.current) {
+            setRowHeight(dataIndex, rowRef.current.getBoundingClientRect().height + 5)
+        }
+    }, [rowRef]);
 
     const [modal, setModal] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -109,8 +118,8 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
     }
 
     return (
-        <div className="card mb-3" id={`${dataIndex}`} ref={ref}>
-            <div className="card-header px-2 py-2">
+        <div className="card mb-3" id={`${dataIndex}`} ref={rowRef} style={customStyle}>
+            <div className="card-header px-2 py-2" ref={inViewRef} >
                 <div className='row'>
                     <div className='col'>
                         <span className="badge rounded-pill text-bg-secondary me-2" title='index'>

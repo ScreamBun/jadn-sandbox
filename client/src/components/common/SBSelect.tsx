@@ -153,8 +153,8 @@ const SBSelect = (props: any) => {
     const [toggleModal, setToggleModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const theme = useContext(ThemeContext);
-    const themeColors = getSelectTheme(theme[0]);
+    const { theme } = useContext(ThemeContext);
+    const themeColors = getSelectTheme(theme);
 
     const formatGroupLabel = (data: GroupedOption) => (
         <div style={groupStyles}>

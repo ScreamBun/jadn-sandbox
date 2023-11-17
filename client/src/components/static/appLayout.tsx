@@ -13,7 +13,8 @@ const AppLayout = () => {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeChooserOpen, setIsThemeChooserOpen] = useState(false);
-  const [theme, setTheme] = useContext(ThemeContext);
+  const { theme, setTheme } = useContext(ThemeContext);
+
   const version_info = useAppSelector((state => state.Util.version_info));
   let toastCount = 0;
 
