@@ -106,7 +106,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
             update(prevCards, {
                 $splice: [
                     [dragIndex, 1],
-                    [hoverIndex, 0, prevCards[dragIndex] as DragItem],
+                    [hoverIndex, 0, [prevCards[dragIndex]] as DragItem],
                 ],
             }),
         )
