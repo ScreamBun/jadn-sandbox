@@ -28,15 +28,15 @@ interface FieldEditorProps {
   remove: (_i: number) => void;
   config: InfoConfig;
   editableID: boolean;
-
-  moveCard: (originalIndex: number, newIndex: number) => void;
+  isDragging: boolean;
+  moveCard: (originalIndex: number, newIndex: number, dragCardValue: EnumeratedFieldArray | StandardFieldArray) => void;
   dropCard: (arg: DragItem) => void;
   acceptableType: string;
 }
 
 
 const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
-  const { enumerated = false, value, dataIndex, parentIndex, change, config, acceptableType, moveCard, id, dropCard, remove, editableID } = props;
+  const { enumerated = false, value, dataIndex, parentIndex, change, config, acceptableType, moveCard, id, dropCard, remove, editableID, isDragging } = props;
   const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
   const types = useAppSelector((state) => ({
     base: (state.Util.types.base),
@@ -55,18 +55,17 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   const previewRef = useRef<HTMLDivElement>(null)
   const originalIndex = dataIndex;
 
-  const [{ isDragging }, drag, preview] = useDrag(
+  const [{ }, drag, preview] = useDrag(
     () => ({
       type: acceptableType,
       item: () => { return { id, originalIndex, dataIndex, value } },
       collect: (monitor) => ({
         item: monitor.getItem(),
-        isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
         const didDrop = monitor.didDrop()
         if (!didDrop) {
-          moveCard(item.dataIndex, item.originalIndex)
+          moveCard(item.dataIndex, item.originalIndex, item.value)
         } else {
           dropCard(item);
         }
@@ -125,7 +124,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
       }
 
       // Time to actually perform the action
-      moveCard(dragIndex, hoverIndex)
+      moveCard(dragIndex, hoverIndex, draggedItem.value)
 
       // Note: we're mutating the monitor item here!
       // Generally it's better to avoid mutations,
