@@ -1,5 +1,16 @@
 # JADN Sandbox Release Notes
 
+## v0.8.0
+
+* Removed react-strap and installed bootstrap 5.3.2
+* Various UI updates across the app to enhance usability
+* Added various Modal Confirmations for deletions and resets
+* Schema Creation - Introduced a Scroll Highlight on the Outline
+* Schema Creation - Added a Clear Button to the Type and Field Option Modals
+* Schema Creation - Fixed Info section unlocked from top of schema
+* Transformation - Fixed schema deletion issue
+* Generation - Prevent unresolved schemas from generating messages
+
 ## v0.7.1
 
 * Fixed pydantic reserved word validation logic
