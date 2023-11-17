@@ -25,10 +25,10 @@ const AppLayout = () => {
         toastCount--;
       }
     }
-    if (toastCount == 0 && toast.isActive('dismiss-all-toast')) {
+    if (toastCount <= 1 && toast.isActive('dismiss-all-toast')) {
       toast.dismiss('dismiss-all-toast');
     }
-    if (toastCount != 0 && !toast.isActive('dismiss-all-toast') && data.status == "added") {
+    if (toastCount > 1 && !toast.isActive('dismiss-all-toast') && data.status == "added") {
       toast(<div onClick={dismissAllToast}>
         Clear All
       </div>, {
@@ -38,8 +38,8 @@ const AppLayout = () => {
         closeOnClick: false,
         closeButton: false,
         className: 'p-1 border border-secondary',
-        style: { minHeight: 'auto', borderRadius: '30px', fontSize: '14px', color: 'var(--bs-body-color)', backgroundColor: 'var(--bs-secondary-bg)' },
-        containerId: 'A'
+        style: { minHeight: 'auto', borderRadius: '30px', fontSize: '14px', color: 'var(--bs-body-color)', backgroundColor: 'var(--bs-secondary-bg)', cursor: 'pointer' },
+        containerId: 'clear-all-toasts'
       });
     }
   })
@@ -144,8 +144,8 @@ const AppLayout = () => {
         </div>
       </nav>
 
-      <ToastContainer enableMultiContainer position={toast.POSITION.TOP_RIGHT} containerId='A' className='d-flex justify-content-end' theme='colored' />
-      <ToastContainer enableMultiContainer position={toast.POSITION.TOP_RIGHT} containerId='B' className='mt-5' autoClose={4000} theme='colored' />
+      <ToastContainer enableMultiContainer position={toast.POSITION.TOP_RIGHT} containerId='clear-all-toasts' className='d-flex justify-content-end' theme='colored' />
+      <ToastContainer enableMultiContainer position={toast.POSITION.TOP_RIGHT} containerId='notification-toasts' className='mt-5' autoClose={4000} theme='colored' />
     </div>
 
   );
