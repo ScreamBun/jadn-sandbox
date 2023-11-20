@@ -88,6 +88,8 @@ class Convert(Resource):
             return dumps(schema, **kwargs)
         elif lang == "puml":
             return plant_dumps(schema, style={'links': True, 'detail': 'information'})                                      
+        elif lang == "xsd":
+            return "error: call jadnschema" #CALL IN JADNSCHEMA    
         else:
             return dumps(schema, **kwargs)
         
