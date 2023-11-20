@@ -7,6 +7,7 @@ import FieldEditor from './FieldEditor';
 
 export interface DragItem {
     id: any;
+    originalIndex: number;
     dataIndex: number;
     value: FieldArray;
 }
@@ -86,9 +87,6 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     const [{ canDrop, isOver }, drop] = useDrop(
         () => ({
             accept: acceptableType,
-            drop: (item: DragItem, _monitor) => {
-                return { item };
-            },
             collect: (monitor) => ({
                 canDrop: monitor.canDrop(),
                 isOver: monitor.isOver()
@@ -102,28 +100,32 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     }, [cardsState]);
 
     const moveCard = useCallback((dragIndex: number, hoverIndex: number, card: any) => {
+        console.log(dragIndex, hoverIndex)
+        console.log(cardsState)
         setCardsState((prevCards: DragItem[]) =>
             update(prevCards, {
                 $splice: [
                     [dragIndex, 1],
-                    [hoverIndex, 0, card as DragItem],
+                    [hoverIndex, 0, prevCards[dragIndex] as DragItem],
                 ],
             }),
         )
 
-    }, []);
+    }, [cardsState]);
 
     const { isDragging, item } = useDragLayer((monitor) => ({
         isDragging: monitor.isDragging(),
         item: monitor.getItem()
     }));
 
+    console.log(isDragging, item)
+
     const renderCard = useCallback(
         (card: any, index: number) => {
             return (
                 <FieldEditor
-                    key={card[0]}
-                    id={card[0]}
+                    key={index}
+                    id={index}
                     dataIndex={index}
                     isDragging={item && item.dataIndex == index}
                     parentIndex={parentIndex}
@@ -140,7 +142,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
                 />
             )
         },
-        [isDragging, item]
+        [isDragging, item, cardsState]
     );
 
     return (

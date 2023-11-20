@@ -314,9 +314,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const onOutlineDrop = (item: DragItem) => {
     let reordered_types: any[] = [...valueObj.fields];
-
-    const old_index = reordered_types.findIndex(f => f[0] == item.id);
-    reordered_types.splice(old_index, 1);
+    reordered_types.splice(item.originalIndex, 1);
     reordered_types.splice(item.dataIndex, 0, item.value);
 
     //If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.
