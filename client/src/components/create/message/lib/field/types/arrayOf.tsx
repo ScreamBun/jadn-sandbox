@@ -1,6 +1,6 @@
 
 //ArrayOf
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -30,23 +30,27 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const { def, parent, optChange, config, children, value = [''] } = props;
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
 
+  var optData: Record<string, any> = {};
+  const [_idx, name, type, args, comment] = def;
+  const msgName = (parent ? [parent, name] : [name]).join('.');
+  const MAX_COUNT = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
+  const MIN_COUNT = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
+
   const [count, setCount] = useState(1);
-  const [min, setMin] = useState(false);
-  const [max, setMax] = useState(false);
+  const [min, setMin] = useState((count <= MIN_COUNT) || (MIN_COUNT == 0 && count == 1));
+  const [max, setMax] = useState(MAX_COUNT <= count);
   const [opts, setOpts] = useState<any[]>(Array.isArray(value) ? value : [value]); //track elem of vtype
   const [errMsg, setErrMsg] = useState<string[]>([]);
   const [toggle, setToggle] = useState(true);
 
-  var optData: Record<string, any> = {};
-  const [_idx, name, type, args, comment] = def;
-  const msgName = (parent ? [parent, name] : [name]).join('.');
+  useEffect(() => {
+    setMax(MAX_COUNT <= count);
+    setMin((count <= MIN_COUNT) || (MIN_COUNT == 0 && count == 1));
+  }, [count])
 
   const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    //check if max fields has been created
-    const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
-    setMax(maxCount <= count);
-    if (maxCount <= count) {
+    if (MAX_COUNT <= count + 1) {
       return;
     }
     // add placeholder
@@ -57,10 +61,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
   const removeOpt = (removedIndex: number) => {
     //e.preventDefault();
-    //check if min fields exist
-    const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
-    setMin(count <= minCount);
-    if (count <= minCount) {
+    if (count - 1 <= MIN_COUNT) {
       return;
     }
 
@@ -194,13 +195,15 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   const fields = opts.map((opt, i) => {
     return (
       <Field key={self.crypto.randomUUID()} def={fieldDef} parent={msgName} optChange={onChange} idx={i} config={config} value={opt}>
-        <button
-          type='button'
-          className={`btn btn-danger p-1${min ? ' disabled' : ''}`}
-          onClick={() => removeOpt(i)}
-        >
-          <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-        </button>
+        <>
+          {!min && <button
+            type='button'
+            className={`btn btn-danger p-1${min ? ' disabled' : ''}`}
+            onClick={() => removeOpt(i)}
+          >
+            <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+          </button>}
+        </>
       </Field>
     )
   });
@@ -227,14 +230,14 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
         <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
           {fields}
-          <button
+          {!MAX_COUNT && <button
             type='button'
             className={`btn btn-primary btn-sm btn-block p-1${max ? ' disabled' : ''}`}
             title={`Add Field to ${name}`}
             onClick={addOpt}
           >
             <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-          </button>
+          </button>}
         </div>
       </div>
     </div>

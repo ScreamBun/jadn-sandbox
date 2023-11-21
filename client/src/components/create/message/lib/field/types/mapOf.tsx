@@ -1,6 +1,6 @@
 
 //MapOf
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
@@ -28,10 +28,16 @@ interface MapOfFieldProps {
 const MapOfField = (props: MapOfFieldProps) => {
     const { def, parent, optChange, config, children, value = [''] } = props;
     const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
+    var optData: Record<string, any> = {};
+    const [_idx, name, type, args, comment] = def;
+    const msgName = (parent ? [parent, name] : [name]).join('.');
+
+    const MAX_COUNT = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
+    const MIN_COUNT = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
 
     const [count, setCount] = useState(1);
-    const [min, setMin] = useState(false);
-    const [max, setMax] = useState(false);
+    const [min, setMin] = useState((count <= MIN_COUNT) || (MIN_COUNT == 0 && count == 1));
+    const [max, setMax] = useState(MAX_COUNT <= count);
     const [opts, setOpts] = useState<any[]>(value); //opts: let every obj have a key and value [{key: '', value:''}, ...]
     const [kopts, setkOpts] = useState<any[]>([]);
     const [vopts, setvOpts] = useState<any[]>([]);
@@ -39,16 +45,14 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [toggle, setToggle] = useState(true);
     const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
 
-    var optData: Record<string, any> = {};
-    const [_idx, name, type, args, comment] = def;
-    const msgName = (parent ? [parent, name] : [name]).join('.');
+    useEffect(() => {
+        setMax(MAX_COUNT <= count);
+        setMin((count <= MIN_COUNT) || (MIN_COUNT == 0 && count == 1));
+    }, [count])
 
     const addOpt = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        //check if max fields has been created
-        const maxCount = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
-        setMax(maxCount <= count);
-        if (maxCount <= count) {
+        if (MAX_COUNT <= count + 1) {
             return;
         }
         // add placeholder
@@ -59,10 +63,7 @@ const MapOfField = (props: MapOfFieldProps) => {
 
     const removeOpt = (removedIndex: number) => {
         //e.preventDefault();
-        //check if min fields exist
-        const minCount = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
-        setMin(count <= minCount);
-        if (count <= minCount) {
+        if (count - 1 <= MIN_COUNT) {
             return;
         }
 
@@ -86,7 +87,7 @@ const MapOfField = (props: MapOfFieldProps) => {
             data = filteredOpts.reduce((opts, obj) => { return opts.concat([obj.key], [obj.val]) }, []);
         }
 
-        optChange(name, Array.from(new Set(Object.values(data))));
+        optChange(name, data);
         setCount(count - 1);
     }
 
@@ -268,13 +269,13 @@ const MapOfField = (props: MapOfFieldProps) => {
             <div className='form-group' key={self.crypto.randomUUID()}>
                 <div className='card'>
                     <div className='card-header p-2'>
-                        <button
+                        {!min && <button
                             type='button'
                             className={`btn-danger float-end btn p-1${min ? ' disabled' : ''}`}
                             onClick={() => removeOpt(i)}
                         >
                             <FontAwesomeIcon icon={faMinusSquare} size="lg" />
-                        </button>
+                        </button>}
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title m-2'>
                                 {name} {i + 1}
@@ -316,14 +317,14 @@ const MapOfField = (props: MapOfFieldProps) => {
 
                 <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
                     {fields}
-                    <button
+                    {!max && <button
                         type="button"
                         className={`btn btn-sm btn-block btn-primary p-1${max ? ' disabled' : ''}`}
                         title={`Add Field to ${name}`}
                         onClick={addOpt}
                     >
                         <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-                    </button>
+                    </button>}
                 </div>
             </div>
         </div>
