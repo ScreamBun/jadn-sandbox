@@ -5,6 +5,7 @@ import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { SchemaJADN } from 'components/create/schema/interface'
 import SchemaVisualized from './SchemaVisualized'
 import { Option } from 'components/common/SBSelect'
 import { setSchema } from 'actions/util'
@@ -19,7 +20,7 @@ const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState<String>('');
+    const [loadedSchema, setLoadedSchema] = useState<string>('');
     const [conversion, setConversion] = useState<Option[]>([]);
     const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
@@ -44,14 +45,14 @@ const SchemaVisualizer = () => {
         setConversion([]);
         setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
-        dispatch(setSchema(''));
+        dispatch(setSchema(null));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
         if (conversion) {
-            let schemaObj = loadedSchema;
+            let schemaObj: SchemaJADN | string = loadedSchema;
 
             if (typeof schemaObj == 'string') {
                 try {
@@ -84,7 +85,7 @@ const SchemaVisualizer = () => {
                                 sbToastError(`Schema failed to convert to ${convertSchemaVal.payload.schema.convert[i].fmt} : ${convertSchemaVal.payload.schema.convert[i].schema}`);
                             }
                         } else {
-                            sbToastError(`Failed to convert to ${translation[i].label}`);
+                            sbToastError(`Failed to convert to ${conversion[i].label}`);
                         }
                     }
                 })

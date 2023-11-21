@@ -3,18 +3,20 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
+import { setSchema } from 'actions/util'
+import { SchemaJADN } from 'components/create/schema/interface'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SchemaTranslated from './SchemaTranslated'
 import { initConvertedSchemaState } from 'components/visualize/SchemaVisualizer'
 import { Option } from 'components/common/SBSelect'
-import { setSchema } from 'actions/util'
+
 
 const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState<String | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<string>('');
     const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [translation, setTranslation] = useState<Option[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -33,17 +35,17 @@ const SchemaTranslator = () => {
     const onReset = () => {
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema(null);
+        setLoadedSchema('');
         setTranslation([]);
         setTranslatedSchema(initConvertedSchemaState);
-        dispatch(setSchema(''));
+        dispatch(setSchema(null));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
         if (translation) {
-            let schemaObj = loadedSchema;
+            let schemaObj: SchemaJADN | string = loadedSchema;
 
             if (typeof schemaObj == 'string') {
                 try {

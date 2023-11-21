@@ -46,7 +46,7 @@ const MessageValidator = () => {
             all: [],
             exports: []
         });
-        dispatch(setSchema(''));
+        dispatch(setSchema(null));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {

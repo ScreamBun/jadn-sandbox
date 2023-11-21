@@ -230,7 +230,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
 
         <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
           {fields}
-          {!MAX_COUNT && <button
+          {!max && <button
             type='button'
             className={`btn btn-primary btn-sm btn-block p-1${max ? ' disabled' : ''}`}
             title={`Add Field to ${name}`}

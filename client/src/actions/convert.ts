@@ -1,6 +1,7 @@
 // Actions for convert API
 import { createAction } from 'redux-api-middleware';
 import { ActionFailureResult, ActionRequestResult, ActionSuccessResult } from './interfaces';
+import { SchemaJADN } from 'components/create/schema/interface';
 
 // API Base URL
 const baseAPI = '/api/convert';
@@ -34,7 +35,7 @@ export interface InfoSuccessAction extends ActionSuccessResult {
 const CONVERT_REQUEST = '@@convert/CONVERT_REQUEST';
 export const CONVERT_SUCCESS = '@@convert/CONVERT_SUCCESS';
 export const CONVERT_FAILURE = '@@convert/CONVERT_FAILURE';
-export const convertSchema = (schema: Record<string, any>, t: string[]) => createAction({
+export const convertSchema = (schema: SchemaJADN, t: string[]) => createAction({
   endpoint: `${baseAPI}/`,
   method: 'POST',
   headers: {
