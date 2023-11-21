@@ -261,7 +261,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   // If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
   // TODO: Is this used?
-  if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
+  if (valueObj.options && ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>'))))) {
     return (
       <>
         <div className="card mb-3" ref={rowRef} style={customStyle}>

@@ -2,9 +2,13 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Unsubscribe } from 'redux';
 import { useDragDropManager, useDragLayer, useDrop } from 'react-dnd';
 import update from 'immutability-helper'
-import { FieldArray, InfoConfig } from 'components/create/schema/interface';
+import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from 'components/create/schema/interface';
 import FieldEditor from './FieldEditor';
 
+export interface CardStateItem {
+    id: any;
+    value: EnumeratedFieldArray | StandardFieldArray;
+}
 export interface DragItem {
     id: any;
     originalIndex: number;
@@ -31,7 +35,7 @@ export interface SBOutlineProps {
 
 const SBOutlineFields = (props: SBOutlineProps) => {
     const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop, editableID, acceptableType, parentIndex } = props;
-    const [cardsState, setCardsState] = useState<DragItem[]>(items);
+    const [cardsState, setCardsState] = useState<CardStateItem[]>(items.map((item) => ({ id: self.crypto.randomUUID(), value: item })));
 
     const [dragValue, setDragValue] = useState<boolean>(false);
     const dragDropManager = useDragDropManager();
@@ -84,6 +88,28 @@ const SBOutlineFields = (props: SBOutlineProps) => {
         };
     }, [monitor]);
 
+    const dropCard = useCallback((item: DragItem) => {
+        onDrop(item)
+    }, [cardsState]);
+
+    const moveCard = useCallback((card: EnumeratedFieldArray | StandardFieldArray, hoverIndex: number,) => {
+        const drag = cardsState.findIndex((item) => item.value == card)
+        setCardsState((prevCards: CardStateItem[]) =>
+            update(prevCards, {
+                $splice: [
+                    [drag, 1],
+                    [hoverIndex, 0, prevCards[drag] as DragItem],
+                ],
+            }),
+        )
+
+    }, [cardsState, setCardsState]);
+
+    const { isDragging, item } = useDragLayer((monitor) => ({
+        isDragging: monitor.isDragging(),
+        item: monitor.getItem()
+    }));
+
     const [{ canDrop, isOver }, drop] = useDrop(
         () => ({
             accept: acceptableType,
@@ -91,46 +117,19 @@ const SBOutlineFields = (props: SBOutlineProps) => {
                 canDrop: monitor.canDrop(),
                 isOver: monitor.isOver()
             }),
-        }),
-        [],
-    )
-
-    const dropCard = useCallback((item: DragItem) => {
-        onDrop(item)
-    }, [cardsState]);
-
-    const moveCard = useCallback((dragIndex: number, hoverIndex: number, card: any) => {
-        console.log(dragIndex, hoverIndex)
-        console.log(cardsState)
-        setCardsState((prevCards: DragItem[]) =>
-            update(prevCards, {
-                $splice: [
-                    [dragIndex, 1],
-                    [hoverIndex, 0, prevCards[dragIndex] as DragItem],
-                ],
-            }),
-        )
-
-    }, [cardsState]);
-
-    const { isDragging, item } = useDragLayer((monitor) => ({
-        isDragging: monitor.isDragging(),
-        item: monitor.getItem()
-    }));
-
-    console.log(isDragging, item)
+        }), [])
 
     const renderCard = useCallback(
         (card: any, index: number) => {
             return (
                 <FieldEditor
-                    key={index}
-                    id={index}
+                    key={card.id}
+                    id={card.id}
                     dataIndex={index}
                     isDragging={item && item.dataIndex == index}
                     parentIndex={parentIndex}
                     enumerated={isEnumerated}
-                    value={card}
+                    value={card.value}
                     change={fieldChange}
                     remove={fieldRemove}
                     config={config}

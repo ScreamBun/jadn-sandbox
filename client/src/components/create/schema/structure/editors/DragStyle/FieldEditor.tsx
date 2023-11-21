@@ -29,7 +29,7 @@ interface FieldEditorProps {
   config: InfoConfig;
   editableID: boolean;
   isDragging: boolean;
-  moveCard: (originalIndex: number, newIndex: number, dragCardValue: EnumeratedFieldArray | StandardFieldArray) => void;
+  moveCard: (dragCardValue: EnumeratedFieldArray | StandardFieldArray, newIndex: number) => void;
   dropCard: (arg: DragItem) => void;
   acceptableType: string;
 }
@@ -78,6 +78,11 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
     DragItem,
     void>({
       accept: acceptableType,
+      collect(monitor) {
+        return {
+          handlerId: monitor.getHandlerId(),
+        }
+      },
       hover(draggedItem: DragItem, monitor) {
         if (!previewRef.current) {
           return
@@ -118,7 +123,7 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
         }
 
         // Time to actually perform the action
-        moveCard(dragIndex, hoverIndex, draggedItem.value)
+        moveCard(draggedItem.value, hoverIndex)
 
         // Note: we're mutating the monitor item here!
         // Generally it's better to avoid mutations,
