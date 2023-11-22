@@ -1,4 +1,5 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
+import { shallowEqual } from 'react-redux';
 import { flushSync } from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -11,14 +12,15 @@ import {
 import { StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { sbToastError } from 'components/common/SBToast';
 import SBOutlineFields, { DragItem } from './SBOutlineFields';
-import { shallowEqual } from 'react-redux';
-import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 interface StructureEditorProps {
   dataIndex: number; //index changes based on obj in arr (tracks the parent index)
   value: TypeArray;
+  customStyle: any;
+  setRowHeight: (i: number, height: number) => void;
   change: (v: StandardTypeObject, i: number) => void;
   remove: (i: number) => void;
   setIsVisible: (i: number) => void;
@@ -27,13 +29,12 @@ interface StructureEditorProps {
 }
 
 const StructureEditor = memo(function StructureEditor(props: StructureEditorProps) {
-  const { value, dataIndex, config, collapseAllFields, change, remove, setIsVisible } = props;
+  const { value, dataIndex, config, collapseAllFields, customStyle, setRowHeight, change, remove, setIsVisible } = props;
   const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
 
   //TODO: may need to add polyfill -- support for Safari
-  const { ref, inView, entry } = useInView({
+  const { ref: inViewRef, inView, entry } = useInView({
     fallbackInView: true,
-    threshold: .25
   });
 
   const [fieldCollapse, setFieldCollapse] = useState(false);
@@ -44,6 +45,14 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
   const [valueObj, setValueObj] = useState(valueObjInit);
   const isEditableID = valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
   let SBConfirmModalValName = valueObj.name;
+
+  const rowRef = useRef<any>();
+
+  useEffect(() => {
+    if (rowRef.current) {
+      setRowHeight(dataIndex, rowRef.current.getBoundingClientRect().height + 5);
+    }
+  }, [rowRef]);
 
   useEffect(() => {
     setFieldCollapse(collapseAllFields)
@@ -252,11 +261,11 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   // If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
   // TODO: Is this used?
-  if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
+  if (valueObj.options && ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>'))))) {
     return (
       <>
-        <div className="card mb-3">
-          <div className="card-header px-2 py-2">
+        <div className="card mb-3" ref={rowRef} style={customStyle}>
+          <div className="card-header px-2 py-2" ref={inViewRef}>
             <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name} (${valueObj.type})`}</span>
             <button type='button' className='btn btn-sm btn-danger float-end' onClick={onRemoveItemClick} >
               <FontAwesomeIcon icon={faMinusCircle} />
@@ -305,9 +314,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const onOutlineDrop = (item: DragItem) => {
     let reordered_types: any[] = [...valueObj.fields];
-
-    const old_index = reordered_types.findIndex(f => f[0] == item.id);
-    reordered_types.splice(old_index, 1);
+    reordered_types.splice(item.originalIndex, 1);
     reordered_types.splice(item.dataIndex, 0, item.value);
 
     //If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.
@@ -328,8 +335,8 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   return (
     <>
-      <div className={`card mb-2`} id={`${dataIndex}`} ref={ref}>
-        <div className="card-header px-2 py-2" >
+      <div className={`card mb-2`} id={`${dataIndex}`} ref={rowRef} style={customStyle}>
+        <div className="card-header px-2 py-2" ref={inViewRef}>
           <div className='row'>
             <div className='col'>
               <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
@@ -432,7 +439,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
             </div>
           </div>
         </div>
-      </div >
+      </div>
       <SBConfirmModal
         isOpen={isConfirmModalOpen}
         title={`Remove ${SBConfirmModalValName}`}

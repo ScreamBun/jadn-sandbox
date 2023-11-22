@@ -6,15 +6,44 @@ import favicon from '../dependencies/assets/img/jadn-favicon.png';
 import { NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE, NAV_ABOUT } from 'components/utils/constants';
 import { useAppSelector } from '../../reducers';
 import { ThemeContext } from './ThemeProvider';
+import { dismissAllToast } from 'components/common/SBToast';
 
 const AppLayout = () => {
 
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeChooserOpen, setIsThemeChooserOpen] = useState(false);
-  const [theme, setTheme] = useContext(ThemeContext);
+  const { theme, setTheme } = useContext(ThemeContext);
 
   const version_info = useAppSelector((state => state.Util.version_info));
+  let toastCount = 0;
+
+  toast.onChange((data) => {
+    if (data.id != 'dismiss-all-toast') {
+      if (data.status == "added") {
+        toastCount++;
+      } else {
+        toastCount--;
+      }
+    }
+    if (toastCount <= 1 && toast.isActive('dismiss-all-toast')) {
+      toast.dismiss('dismiss-all-toast');
+    }
+    if (toastCount > 1 && !toast.isActive('dismiss-all-toast') && data.status == "added") {
+      toast(<div onClick={dismissAllToast}>
+        Clear All
+      </div>, {
+        toastId: 'dismiss-all-toast',
+        autoClose: false,
+        draggable: false,
+        closeOnClick: false,
+        closeButton: false,
+        className: 'p-1 border border-secondary',
+        style: { minHeight: 'auto', borderRadius: '30px', fontSize: '14px', color: 'var(--bs-body-color)', backgroundColor: 'var(--bs-secondary-bg)', cursor: 'pointer' },
+        containerId: 'clear-all-toasts'
+      });
+    }
+  })
 
   const onToggleNav = () => {
     setIsNavCollapsed(isNavCollapsed => !isNavCollapsed);
@@ -93,7 +122,7 @@ const AppLayout = () => {
       <br />
       <br />
 
-      <nav className='navbar bg-secondary fixed-bottom py-0 px-2' style={{opacity: '.75'}}>
+      <nav className='navbar bg-secondary fixed-bottom py-0 px-2' style={{ opacity: '.75' }}>
 
         <div className="btn-group dropup">
           <div id="bd-theme" className="dropdown"
@@ -116,7 +145,8 @@ const AppLayout = () => {
         </div>
       </nav>
 
-      <ToastContainer position={toast.POSITION.TOP_RIGHT} autoClose={4000} theme='colored' />
+      <ToastContainer enableMultiContainer position={toast.POSITION.TOP_RIGHT} containerId='clear-all-toasts' className='d-flex justify-content-end' theme='colored' />
+      <ToastContainer enableMultiContainer position={toast.POSITION.TOP_RIGHT} containerId='notification-toasts' className='mt-5' autoClose={4000} theme='colored' />
     </div>
 
   );

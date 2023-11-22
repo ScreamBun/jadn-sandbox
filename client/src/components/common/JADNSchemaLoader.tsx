@@ -38,7 +38,7 @@ const JADNSchemaLoader = (props: any) => {
     }, [dispatch])
 
     const loadDecodeTypes = (schemaObj: any) => {
-        let decodeTypes = {
+        let decodeTypes: { all: any[], exports: any[] } = {
             all: [],
             exports: []
         };
@@ -155,7 +155,7 @@ const JADNSchemaLoader = (props: any) => {
     const sbEditorOnChange = (data: string) => {
         setIsValidJADN(false);
         setLoadedSchema(data);
-        dispatch(setSchema(''));
+        dispatch(setSchema(null));
         try {
             if (setDecodeSchemaTypes && setDecodeMsg) {
                 loadDecodeTypes(JSON.parse(data));

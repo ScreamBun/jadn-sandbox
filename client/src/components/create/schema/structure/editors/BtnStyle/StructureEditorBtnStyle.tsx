@@ -1,5 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
-//import equal from 'fast-deep-equal';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
@@ -20,6 +19,8 @@ import { shallowEqual } from 'react-redux';
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
     value: TypeArray;
+    customStyle: any;
+    setRowHeight: (i: number, height: number) => void;
     change: (v: StandardTypeObject, i: number) => void;
     remove: (i: number) => void;
     setIsVisible: (i: number) => void;
@@ -29,11 +30,19 @@ interface StructureEditorProps {
 
 // Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
-    const { value, dataIndex, config, collapseAllFields, change, remove, setIsVisible } = props;
+    const { value, dataIndex, config, collapseAllFields, customStyle, setRowHeight, change, remove, setIsVisible } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
 
+    const rowRef = useRef<any>();
+
+    useEffect(() => {
+        if (rowRef.current) {
+            setRowHeight(dataIndex, rowRef.current.getBoundingClientRect().height + 5);
+        }
+    }, [rowRef]);
+
     //TODO: may need to add polyfill -- support for Safari
-    const { ref, inView, entry } = useInView({
+    const { ref: inViewRef, inView, entry } = useInView({
         fallbackInView: true,
         threshold: .25
     });
@@ -279,7 +288,7 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
         return (
             <>
-                <div className="card mb-3">
+                <div className="card mb-3" ref={rowRef} style={customStyle}>
                     <div className="card-header px-2 py-2">
                         <div className='row'>
                             <div className='col'>
@@ -342,8 +351,8 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
 
     return (
         <>
-            <div className="card mb-3" id={`${dataIndex}`} ref={ref}>
-                <div className="card-header px-2 py-2">
+            <div className="card mb-3" id={`${dataIndex}`} ref={rowRef} style={customStyle}>
+                <div className="card-header px-2 py-2" ref={inViewRef} >
                     <div className='row'>
                         <div className='col'>
                             <span className="badge rounded-pill text-bg-secondary me-2" title='index'>

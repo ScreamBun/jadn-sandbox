@@ -6,8 +6,8 @@ import { ThemeContext } from 'components/static/ThemeProvider';
 const SBCreatableSelect = (props: any) => {
 
     const { id, data, onChange, placeholder, isGrouped, isMultiSelect, value } = props;
-    const theme = useContext(ThemeContext);
-    const themeColors = getSelectTheme(theme[0]);
+    const { theme } = useContext(ThemeContext);
+    const themeColors = getSelectTheme(theme);
 
     const customStyles = {
         control: base => ({

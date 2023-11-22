@@ -48,7 +48,6 @@ const SchemaTransformer = () => {
     }
 
     const onSelectedSchemaAdd = (new_schema: SelectedSchema) => {
-        console.log("SchemaTransformater onSelectedSchemaAdd: " + new_schema.name);
         setSelectedSchemas([
             ...selectedSchemas,
             new_schema
@@ -56,8 +55,6 @@ const SchemaTransformer = () => {
     }
 
     const onSelectedSchemaReplaceAll = (new_schemas: SelectedSchema[]) => {
-        console.log("SchemaTransformation onSelectedSchemaReplaceAll: " + new_schemas.length);
-
         // Check for empty data caused by uploaded schemas not saved on the server
         new_schemas?.map((schema: SelectedSchema) => {
             if (!schema.data) {
@@ -74,7 +71,6 @@ const SchemaTransformer = () => {
 
     // Pass in '' to clear all schemas
     const onSelectedSchemaRemove = (schema_to_remove: string) => {
-        console.log("SchemaTransformation onSelectedSchemaRemove: " + schema_to_remove);
         if (schema_to_remove) {
             setSelectedSchemas(selectedSchemas.filter((schema) => schema.name !== schema_to_remove));
         } else {
@@ -83,7 +79,6 @@ const SchemaTransformer = () => {
     }
 
     const onLoading = (isLoading: boolean) => {
-        console.log("SchemaTransformation onLoading: " + onLoading);
         setIsLoading(isLoading);
     }
 

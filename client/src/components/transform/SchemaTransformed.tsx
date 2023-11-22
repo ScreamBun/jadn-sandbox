@@ -64,7 +64,6 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     // Allows parent to call child function
     useImperativeHandle(ref, () => ({
         onReset() {
-            console.log("SchemaTransformed onReset");
             setToggle({});
             setBaseFile(null);
             setTransformedSchema([initTransformedSchema]);

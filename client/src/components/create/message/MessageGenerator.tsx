@@ -4,15 +4,17 @@ import { Helmet } from 'react-helmet-async'
 import MessageCreator from './MessageCreator'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
+import { SchemaJADN } from '../schema/interface'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
+
 
 const MessageGenerator = () => {
     const dispatch = useDispatch()
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState<Object | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<SchemaJADN | null>(null);
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [commandType, setCommandType] = useState<Option | null>();
 
@@ -35,7 +37,7 @@ const MessageGenerator = () => {
         setLoadedSchema(null);
         setCommandType(null);
         setGeneratedMessage({});
-        dispatch(setSchema({}));
+        dispatch(setSchema(null));
     }
 
     return (

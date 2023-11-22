@@ -47,7 +47,6 @@ const MessageCreator = (props: any) => {
     }
 
     const optChange = (k: string, v: any) => {
-        console.log(k, v)
         const keys = k.split('.');
 
         if (v) {
