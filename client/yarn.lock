@@ -7492,7 +7492,6 @@ __metadata:
     react-toastify: ^9.1.3
     react-virtualized-auto-sizer: ^1.0.20
     react-window: ^1.8.9
-    react-window-infinite-loader: ^1.0.9
     react-zoom-pan-pinch: ^3.2.0
     redux: ^4.2.1
     redux-api-middleware: ^3.2.1
@@ -13862,16 +13861,6 @@ __metadata:
     react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc
     react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc
   checksum: 2c616ec7587de64a46aa8c6c301e75fee87eb7a39013f25d940b0fe95eee5e8a8a3c109923e241b427752d71fba80f44cd2c8557750967df0777d99ebd16ba24
-  languageName: node
-  linkType: hard
-
-"react-window-infinite-loader@npm:^1.0.9":
-  version: 1.0.9
-  resolution: "react-window-infinite-loader@npm:1.0.9"
-  peerDependencies:
-    react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0
-    react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0
-  checksum: 9ba451e827ddf1605ae12d26fe8eab1e70928e528b16c0a3443a98dcf7df93a362b0c2a0f64e6e4465b136fee6ccdfda3b1f7fa6748a441cb76a03f926559336
   languageName: node
   linkType: hard
 

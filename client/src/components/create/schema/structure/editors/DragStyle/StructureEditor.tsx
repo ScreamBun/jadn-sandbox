@@ -261,7 +261,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   // If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
   // TODO: Is this used?
-  if ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>')))) {
+  if (valueObj.options && ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>'))))) {
     return (
       <>
         <div className="card mb-3" ref={rowRef} style={customStyle}>
@@ -314,9 +314,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
 
   const onOutlineDrop = (item: DragItem) => {
     let reordered_types: any[] = [...valueObj.fields];
-
-    const old_index = reordered_types.findIndex(f => f[0] == item.id);
-    reordered_types.splice(old_index, 1);
+    reordered_types.splice(item.originalIndex, 1);
     reordered_types.splice(item.dataIndex, 0, item.value);
 
     //If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.

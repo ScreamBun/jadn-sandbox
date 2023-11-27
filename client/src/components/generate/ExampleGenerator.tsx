@@ -10,12 +10,13 @@ import { JSONSchemaFaker } from 'json-schema-faker';
 import { faker } from "@faker-js/faker/locale/en";
 import { convertSchema } from 'actions/convert'
 import { Option } from 'components/common/SBSelect'
+import { SchemaJADN } from 'components/create/schema/interface'
 
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [loadedSchema, setLoadedSchema] = useState<String>('');
+    const [loadedSchema, setLoadedSchema] = useState<string>('');
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
     const [numOfMsg, setNumOfMsg] = useState<number>();
 
@@ -39,13 +40,13 @@ const ExampleGenerator = () => {
         setLoadedSchema('');
         setNumOfMsg(undefined);
         setGeneratedMessages([]);
-        dispatch(setSchema(''));
+        dispatch(setSchema(null));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        let schemaObj = loadedSchema;
+        let schemaObj: SchemaJADN | string = loadedSchema;
         let schemaProps: any[] = [];
 
         if (typeof schemaObj == 'string') {

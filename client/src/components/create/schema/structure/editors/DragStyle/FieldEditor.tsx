@@ -1,6 +1,6 @@
 import React, { memo, useMemo, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import type { Identifier, XYCoord } from 'dnd-core'
+import type { XYCoord } from 'dnd-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGrip, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -29,7 +29,7 @@ interface FieldEditorProps {
   config: InfoConfig;
   editableID: boolean;
   isDragging: boolean;
-  moveCard: (originalIndex: number, newIndex: number, dragCardValue: EnumeratedFieldArray | StandardFieldArray) => void;
+  moveCard: (dragCardValue: EnumeratedFieldArray | StandardFieldArray, newIndex: number) => void;
   dropCard: (arg: DragItem) => void;
   acceptableType: string;
 }
@@ -55,84 +55,83 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   const previewRef = useRef<HTMLDivElement>(null)
   const originalIndex = dataIndex;
 
-  const [{ }, drag, preview] = useDrag(
+  const [{ handlerId }, drag, preview] = useDrag(
     () => ({
       type: acceptableType,
       item: () => { return { id, originalIndex, dataIndex, value } },
       collect: (monitor) => ({
         item: monitor.getItem(),
+        handlerId: monitor.getHandlerId(),
       }),
       end: (item, monitor) => {
         const didDrop = monitor.didDrop()
         if (!didDrop) {
-          moveCard(item.dataIndex, item.originalIndex, item.value)
+          moveCard(item.value, item.originalIndex)
         } else {
           dropCard(item);
         }
       },
-    }), [acceptableType]
+    }), [acceptableType, id, originalIndex, dataIndex, value]
   )
 
-  const [{ handlerId }, drop] = useDrop<
+  const [, drop] = useDrop<
     DragItem,
-    void,
-    { handlerId: Identifier | null }
-  >({
-    accept: acceptableType,
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      }
-    },
-    hover(draggedItem: DragItem, monitor) {
-      if (!previewRef.current) {
-        return
-      }
-      const dragIndex = draggedItem.dataIndex
-      const hoverIndex = dataIndex
+    void>({
+      accept: acceptableType,
+      collect(monitor) {
+        return {
+          handlerId: monitor.getHandlerId(),
+        }
+      },
+      hover(draggedItem: DragItem, monitor) {
+        if (!previewRef.current) {
+          return
+        }
+        const dragIndex = draggedItem.dataIndex
+        const hoverIndex = dataIndex
 
-      // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
-        return
-      }
+        // Don't replace items with themselves
+        if (dragIndex === hoverIndex) {
+          return
+        }
 
-      // Determine rectangle on screen
-      const hoverBoundingRect = previewRef.current?.getBoundingClientRect()
+        // Determine rectangle on screen
+        const hoverBoundingRect = previewRef.current?.getBoundingClientRect()
 
-      // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+        // Get vertical middle
+        const hoverMiddleY =
+          (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
 
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset()
+        // Determine mouse position
+        const clientOffset = monitor.getClientOffset()
 
-      // Get pixels to the top
-      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
+        // Get pixels to the top
+        const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
 
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
+        // Only perform the move when the mouse has crossed half of the items height
+        // When dragging downwards, only move when the cursor is below 50%
+        // When dragging upwards, only move when the cursor is above 50%
 
-      // Dragging downwards
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return
-      }
+        // Dragging downwards
+        if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+          return
+        }
 
-      // Dragging upwards
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return
-      }
+        // Dragging upwards
+        if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+          return
+        }
 
-      // Time to actually perform the action
-      moveCard(dragIndex, hoverIndex, draggedItem.value)
+        // Time to actually perform the action
+        moveCard(draggedItem.value, hoverIndex)
 
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
-      draggedItem.dataIndex = hoverIndex
-    },
-  })
+        // Note: we're mutating the monitor item here!
+        // Generally it's better to avoid mutations,
+        // but it's good here for the sake of performance
+        // to avoid expensive index searches.
+        draggedItem.dataIndex = hoverIndex
+      },
+    })
 
   drag(dragRef)
   drop(preview(previewRef))
