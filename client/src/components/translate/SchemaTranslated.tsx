@@ -14,13 +14,13 @@ import { getSelectedSchema } from "reducers/util";
 const SchemaTranslated = (props: any) => {
     const location = useLocation();
 
-    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading } = props;
+    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading, ext } = props;
     const validSchema = useSelector(getSelectedSchema);
     const data = useSelector(getValidTranslations);
-    let translateOpts: Option[] = [];
-    for (let i = 0; i < Object.keys(data).length; i++) {
-        translateOpts.push({ ['label']: Object.keys(data)[i], ['value']: Object.values(data)[i] });
-    }
+    let translateOpts: Option[] = data && data[ext] ? Object.entries(data[ext]).map(([key, value]) => ({
+        value: value,
+        label: key
+    })) : [];
 
     useEffect(() => {
         if (location.state) {

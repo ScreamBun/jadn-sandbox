@@ -33,7 +33,7 @@ const customMenuOptionStyle: CSSProperties = {
 }
 
 export interface Option {
-    readonly value: string;
+    readonly value: string | any;
     readonly label: string;
 }
 
