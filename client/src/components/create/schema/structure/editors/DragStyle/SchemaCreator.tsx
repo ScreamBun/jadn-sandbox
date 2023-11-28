@@ -10,7 +10,7 @@ import { Info, Types } from '../../structure';
 import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
-import { getFilenameOnly } from 'components/utils/general';
+import { getFilenameExt, getFilenameOnly } from 'components/utils/general';
 import { StandardTypeArray, TypeArray } from 'components/create/schema/interface';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { TypeObject } from '../consts';
@@ -50,7 +50,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
-    const [fileName, setFileName] = useState('');
+    const [fileName, setFileName] = useState({
+        name: '',
+        ext: 'jadn'
+    });
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -88,7 +91,11 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             ref.current?.click();
         } else {
             setSelectedFile(e);
-            setFileName(e.label.split('.')[0]);
+            const fileName = {
+                name: getFilenameOnly(e.label),
+                ext: getFilenameExt(e.label)
+            }
+            setFileName(fileName);
             setIsLoading(true);
 
             dispatch(loadFile('schemas', e.value))
@@ -133,8 +140,11 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
 
-            const filename_only = getFilenameOnly(file.name);
-            setFileName(filename_only);
+            const fileName = {
+                name: getFilenameOnly(file.name),
+                ext: getFilenameExt(file.name)
+            }
+            setFileName(fileName);
 
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -172,7 +182,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setIsValidJADN(false);
         setIsValidating(false);
         setIsLoading(false);
-        setFileName('');
+        setFileName({
+            name: '',
+            ext: 'jadn'
+        });
         setSelectedFile(null);
         setGeneratedSchema('');
         setCardsState([]);
@@ -565,7 +578,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 customClass={"float-end ms-1"}
                                 data={generatedSchema}
                                 loc={'schemas'}
-                                filename={fileName}
+                                filename={fileName.name}
                                 setDropdown={setSelectedFile} />
                         </div>
                         <div className='d-none'>
@@ -574,7 +587,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     </div>
                     <div className='col-sm-9'>
                         <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-end'} />
-                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-end me-1'} />
+                        <SBDownloadFile buttonId='schemaDownload' filename={fileName.name} data={generatedSchema} customClass={'float-end me-1'} />
                         <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
                         <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :

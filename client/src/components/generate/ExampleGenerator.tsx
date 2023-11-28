@@ -17,8 +17,8 @@ const ExampleGenerator = () => {
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [fileName, setFileName] = useState({
-        file: '',
-        ext: ''
+        name: '',
+        ext: 'jadn'
     });
     const [loadedSchema, setLoadedSchema] = useState<string>('');
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
@@ -84,7 +84,7 @@ const ExampleGenerator = () => {
         }
 
         //TODO? : lazy load data to show data is being generated
-        dispatch(convertSchema(schemaObj, ['json']))
+        dispatch(convertSchema(schemaObj, fileName.ext, ['json']))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
                     console.error(convertSchemaVal.payload.response);

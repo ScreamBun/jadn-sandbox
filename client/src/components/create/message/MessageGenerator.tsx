@@ -15,8 +15,8 @@ const MessageGenerator = () => {
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [fileName, setFileName] = useState({
-        file: '',
-        ext: ''
+        name: '',
+        ext: 'jadn'
     });
     const [loadedSchema, setLoadedSchema] = useState<SchemaJADN | null>(null);
     const [generatedMessage, setGeneratedMessage] = useState({});

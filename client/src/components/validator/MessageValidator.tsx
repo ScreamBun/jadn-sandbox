@@ -16,7 +16,7 @@ const MessageValidator = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
     const [fileName, setFileName] = useState({
-        file: '',
+        name: '',
         ext: ''
     });
     const [loadedSchema, setLoadedSchema] = useState<String>('');

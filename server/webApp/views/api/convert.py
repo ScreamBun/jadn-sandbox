@@ -5,7 +5,7 @@ import traceback
 import jadn
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource, reqparse
-from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps
+from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
@@ -28,6 +28,8 @@ class Convert(Resource):
         conv = "Valid Base Schema"
         request_json = request.json      
         data = request_json["schema"]
+        schema_lang = request_json["schema_format"]
+        schema_fmt = SchemaFormats(schema_lang)
 
         is_valid, schema = current_app.validator.validateSchema(data, False)
         if not is_valid:
@@ -44,7 +46,7 @@ class Convert(Resource):
                 return "Invalid Conversion Type", 500
                 
             try:
-                conv = self.convertTo(schema_checked, conv_fmt)
+                conv = self.convertTo(schema_checked, schema_fmt, conv_fmt)
                 convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv, 'err': False})
             
             except (TypeError, ValueError) as err:
@@ -60,7 +62,7 @@ class Convert(Resource):
                     return "Invalid Conversion Type", 500
                     
                 try:
-                    conv = self.convertTo(schema_checked, conv_fmt)
+                    conv = self.convertTo(schema_checked, schema_fmt, conv_fmt)
                     convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv, 'err': False})
 
                 except (TypeError, ValueError) as err:
@@ -76,7 +78,7 @@ class Convert(Resource):
             }
         })
     
-    def convertTo(self, schema, lang):
+    def convertTo(self, schema, schemalang, lang):
         kwargs = { "fmt": lang,}
 
         if lang == "html":
@@ -85,6 +87,8 @@ class Convert(Resource):
         if lang == "json":
             return json_schema_dumps(schema)
         elif lang == "jadn":
+            if schemalang == "json":
+                return json_to_jadn_dumps(schema, **kwargs)
             return dumps(schema, **kwargs)
         elif lang == "puml":
             return plant_dumps(schema, style={'links': True, 'detail': 'information'})                                      

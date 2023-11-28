@@ -279,7 +279,10 @@ const JADNSchemaLoader = (props: any) => {
         setIsValidJADN(false);
         setLoadedSchema('');
         setSelectedFile(null);
-        setFileName({});
+        setFileName({
+            name: '',
+            ext: 'jadn'
+        });
         if (ref.current) {
             ref.current.value = '';
         }

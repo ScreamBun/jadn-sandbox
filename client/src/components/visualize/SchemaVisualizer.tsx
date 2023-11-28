@@ -21,7 +21,7 @@ const SchemaVisualizer = () => {
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [fileName, setFileName] = useState({
-        file: '',
+        name: '',
         ext: ''
     });
     const [loadedSchema, setLoadedSchema] = useState<string>('');
@@ -70,7 +70,7 @@ const SchemaVisualizer = () => {
             }
             //convertSchema takes in an array of values
             const arr = conversion.map(obj => obj.value);
-            dispatch(convertSchema(schemaObj, arr))
+            dispatch(convertSchema(schemaObj, fileName.ext, arr))
                 .then((convertSchemaVal) => {
                     if (convertSchemaVal.error) {
                         setIsLoading(false);

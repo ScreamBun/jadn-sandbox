@@ -17,8 +17,8 @@ const SchemaTranslator = () => {
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
     const [fileName, setFileName] = useState({
-        file: '',
-        ext: ''
+        name: '',
+        ext: 'jadn'
     });
     const [loadedSchema, setLoadedSchema] = useState<string>('');
     const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
@@ -64,7 +64,7 @@ const SchemaTranslator = () => {
             }
             //convertSchema takes in an array of values
             const arr = translation.map(obj => obj.value);
-            dispatch(convertSchema(schemaObj, arr))
+            dispatch(convertSchema(schemaObj, fileName.ext, arr))
                 .then((convertSchemaVal) => {
                     if (convertSchemaVal.error) {
                         setIsLoading(false);
