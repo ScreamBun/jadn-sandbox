@@ -43,7 +43,7 @@ export const convertSchema = (schema: SchemaJADN, schema_fmt: string, t: string[
   },
   body: JSON.stringify({
     'schema': schema,
-    'schema_lang': schema_fmt,
+    'schema_format': schema_fmt,
     'convert-to': t
   }),
   types: [
