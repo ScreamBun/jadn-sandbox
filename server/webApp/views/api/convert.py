@@ -31,11 +31,15 @@ class Convert(Resource):
         schema_lang = request_json["schema_format"]
         schema_fmt = SchemaFormats(schema_lang)
 
-        is_valid, schema = current_app.validator.validateSchema(data, False)
-        if not is_valid:
-            return "Schema is not valid", 500
-        
-        schema_checked = jadn.check(data) 
+        if schema_fmt == "jadn":
+            is_valid, schema = current_app.validator.validateSchema(data, False)
+            if not is_valid:
+                return "Schema is not valid", 500    
+            schema_checked = jadn.check(data) 
+        else: 
+            # TODO: validate JSON
+            schema_checked = data
+
         convertedData = []
         if len(request_json["convert-to"]) == 1:
             try:
