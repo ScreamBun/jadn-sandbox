@@ -16,10 +16,7 @@ const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [fileName, setFileName] = useState({
-        name: '',
-        ext: 'jadn'
-    });
+    const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const [loadedSchema, setLoadedSchema] = useState<string>('');
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
     const [numOfMsg, setNumOfMsg] = useState<number>();
@@ -84,7 +81,7 @@ const ExampleGenerator = () => {
         }
 
         //TODO? : lazy load data to show data is being generated
-        dispatch(convertSchema(schemaObj, fileName.ext, ['json']))
+        dispatch(convertSchema(schemaObj, schemaFormat?.value, ['json']))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
                     console.error(convertSchemaVal.payload.response);
@@ -173,7 +170,7 @@ const ExampleGenerator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            fileName={fileName} setFileName={setFileName}
+                                            schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>

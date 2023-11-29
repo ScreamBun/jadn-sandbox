@@ -14,10 +14,7 @@ const MessageGenerator = () => {
     const dispatch = useDispatch()
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [fileName, setFileName] = useState({
-        name: '',
-        ext: 'jadn'
-    });
+    const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const [loadedSchema, setLoadedSchema] = useState<SchemaJADN | null>(null);
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [commandType, setCommandType] = useState<Option | null>();
@@ -62,7 +59,7 @@ const MessageGenerator = () => {
                                 <div className='col-md-6 pr-1'>
                                     <JADNSchemaLoader
                                         selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                        fileName={fileName} setFileName={setFileName}
+                                        schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                         loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                 </div>
                                 <div className='col-md-6 pl-1'>

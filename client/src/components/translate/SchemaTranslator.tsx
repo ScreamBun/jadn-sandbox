@@ -16,10 +16,7 @@ const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
-    const [fileName, setFileName] = useState({
-        name: '',
-        ext: 'jadn'
-    });
+    const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const [loadedSchema, setLoadedSchema] = useState<string>('');
     const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [translation, setTranslation] = useState<Option[]>([]);
@@ -35,13 +32,14 @@ const SchemaTranslator = () => {
     useEffect(() => {
         setTranslatedSchema(initConvertedSchemaState);
         setTranslation([]);
-    }, [loadedSchema])
+    }, [loadedSchema, schemaFormat])
 
     const onReset = () => {
         setIsLoading(false);
         setSelectedFile(null);
         setLoadedSchema('');
         setTranslation([]);
+        setSchemaFormat(null);
         setTranslatedSchema(initConvertedSchemaState);
         dispatch(setSchema(null));
     }
@@ -64,7 +62,7 @@ const SchemaTranslator = () => {
             }
             //convertSchema takes in an array of values
             const arr = translation.map(obj => obj.value);
-            dispatch(convertSchema(schemaObj, fileName.ext, arr))
+            dispatch(convertSchema(schemaObj, schemaFormat?.value, arr))
                 .then((convertSchemaVal) => {
                     if (convertSchemaVal.error) {
                         setIsLoading(false);
@@ -118,14 +116,14 @@ const SchemaTranslator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            fileName={fileName} setFileName={setFileName}
+                                            schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} acceptFormat={'.json'} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTranslated
                                             translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
                                             translation={translation} setTranslation={setTranslation}
-                                            isLoading={isLoading} ext={fileName.ext} />
+                                            isLoading={isLoading} ext={schemaFormat?.value} />
                                     </div>
                                 </div>
                             </form>

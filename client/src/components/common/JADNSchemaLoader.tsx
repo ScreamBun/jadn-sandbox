@@ -19,11 +19,14 @@ import { getSchemaConversions } from "reducers/convert";
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
 
-    const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes, acceptFormat, fileName, setFileName } = props;
+    const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes, acceptFormat, schemaFormat, setSchemaFormat } = props;
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
+    const [fileName, setFileName] = useState({
+        name: '',
+        ext: 'jadn'
+    });
     const schemaOpts = useSelector(getAllSchemas);
     const validSchemaFormatOpt = useSelector(getSchemaConversions);
     const ref = useRef<HTMLInputElement | null>(null);
