@@ -308,7 +308,7 @@ const JADNSchemaLoader = (props: any) => {
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
                             <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end me-1' title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"}
                                 onClick={fileName.ext == 'jadn' ? onValidateJADNClick : onValidateJSONClick}>
-                                <span className="m-1">Validate {fileName.ext}</span>
+                                <span className="m-1">Valid</span>
                                 {isValidJADN ? (
                                     <span className="badge rounded-pill text-bg-success">
                                         <FontAwesomeIcon icon={faCheck} />
