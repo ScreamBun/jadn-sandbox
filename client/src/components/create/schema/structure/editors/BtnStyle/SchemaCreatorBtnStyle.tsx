@@ -186,15 +186,19 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     try {
                         setIsLoading(false);
                         const dataObj = JSON.parse(data);
-                        setGeneratedSchema(dataObj);
-                        setCardsState(dataObj.types.map((item, i) => ({
-                            id: self.crypto.randomUUID(),
-                            index: i,
-                            text: item[0],
-                            value: item,
-                            isStarred: false
-                        })));
-                        validateJADN(data);
+                        const validJADN = validateJADN(data);
+                        if (validJADN) {
+                            flushSync(() => {
+                                setGeneratedSchema(dataObj);
+                                setCardsState(dataObj.types.map((item, i) => ({
+                                    id: self.crypto.randomUUID(),
+                                    index: i,
+                                    text: item[0],
+                                    value: item,
+                                    isStarred: false
+                                })));
+                            });
+                        }
                     } catch (err) {
                         setIsLoading(false);
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
@@ -236,7 +240,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         if (!jsonObj) {
             setIsValidating(false);
             sbToastError(`Invalid JSON. Cannot validate JADN`);
-            return;
+            return false;
         }
 
         try {
@@ -246,21 +250,26 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                         setIsValidJADN(true);
                         setIsValidating(false);
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                        return true;
                     } else {
                         setIsValidating(false);
                         sbToastError(validateSchemaVal.payload.valid_msg);
+                        return false;
                     }
                 })
                 .catch((validateSchemaErr) => {
                     setIsValidating(false);
                     sbToastError(validateSchemaErr.payload.valid_msg)
+                    return false;
                 })
         } catch (err) {
             if (err instanceof Error) {
                 setIsValidating(false);
                 sbToastError(err.message)
+                return false;
             }
         }
+        return true;
     }
 
     const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
