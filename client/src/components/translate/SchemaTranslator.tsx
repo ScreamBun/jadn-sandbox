@@ -7,15 +7,19 @@ import { setSchema } from 'actions/util'
 import { SchemaJADN } from 'components/create/schema/interface'
 import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
-import SchemaTranslated from './SchemaTranslated'
 import { initConvertedSchemaState } from 'components/visualize/SchemaVisualizer'
 import { Option } from 'components/common/SBSelect'
+import SchemaTranslated from './SchemaTranslated'
 
 
 const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [fileName, setFileName] = useState({
+        name: '',
+        ext: 'jadn'
+    });
     const [loadedSchema, setLoadedSchema] = useState<string>('');
     const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [translation, setTranslation] = useState<Option[]>([]);
@@ -30,6 +34,7 @@ const SchemaTranslator = () => {
 
     useEffect(() => {
         setTranslatedSchema(initConvertedSchemaState);
+        setTranslation([]);
     }, [loadedSchema])
 
     const onReset = () => {
@@ -59,7 +64,7 @@ const SchemaTranslator = () => {
             }
             //convertSchema takes in an array of values
             const arr = translation.map(obj => obj.value);
-            dispatch(convertSchema(schemaObj, arr))
+            dispatch(convertSchema(schemaObj, fileName.ext, arr))
                 .then((convertSchemaVal) => {
                     if (convertSchemaVal.error) {
                         setIsLoading(false);
@@ -113,13 +118,14 @@ const SchemaTranslator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                            fileName={fileName} setFileName={setFileName}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} acceptFormat={'.json'} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTranslated
                                             translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
                                             translation={translation} setTranslation={setTranslation}
-                                            isLoading={isLoading} />
+                                            isLoading={isLoading} ext={fileName.ext} />
                                     </div>
                                 </div>
                             </form>

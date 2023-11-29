@@ -20,7 +20,10 @@ const MessageValidated = (props: any) => {
 
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, isLoading } = props;
     const validSchema = useSelector(getSelectedSchema);
-    const [fileName, setFileName] = useState('');
+    const [fileName, setFileName] = useState({
+        name: '',
+        ext: 'jadn'
+    });
     const msgOpts = useSelector(getMsgFiles);
     const validMsgFormat = useSelector(getValidMsgTypes)
     const dispatch = useDispatch();
@@ -46,9 +49,11 @@ const MessageValidated = (props: any) => {
             ref.current?.click();
         } else {
             setSelectedFile(e);
-            setFileName(e.label.split('.')[0]);
-
-            const fmt = e.value.split('.')[1];
+            const fileName = {
+                name: getFilenameOnly(e.label),
+                ext: getFilenameExt(e.label)
+            }
+            setFileName(fileName);
             dispatch(loadFile('messages', e.value))
                 .then((loadFileVal) => {
                     if (loadFileVal.error) {
@@ -56,9 +61,9 @@ const MessageValidated = (props: any) => {
                         return;
                     }
 
-                    setMsgFormat({ value: fmt, label: fmt });
+                    setMsgFormat({ value: fileName.ext, label: fileName.ext });
                     const data = loadFileVal.payload.data;
-                    const formattedData = format(data, fmt, 2);
+                    const formattedData = format(data, fileName.ext, 2);
                     if (formattedData.startsWith('Error')) {
                         setLoadedMsg(data);
                     } else {
@@ -82,11 +87,11 @@ const MessageValidated = (props: any) => {
         if (e.target.files && e.target.files.length != 0) {
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
-
-            const filename_only = getFilenameOnly(file.name);
-            setFileName(filename_only);
-
-            const type = getFilenameExt(file.name);
+            const fileName = {
+                name: getFilenameOnly(file.name),
+                ext: getFilenameExt(file.name)
+            }
+            setFileName(fileName);
 
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -94,10 +99,10 @@ const MessageValidated = (props: any) => {
                     let data = ev.target.result;
                     try {
                         //data = JSON.stringify(data, null, 2); // must turn str into obj before str
-                        type == 'jadn' ? setMsgFormat({ value: 'json', label: 'json' }) : setMsgFormat({ value: type, label: type });
+                        fileName.ext == 'jadn' ? setMsgFormat({ value: 'json', label: 'json' }) : setMsgFormat({ value: fileName.ext, label: fileName.ext });
                         setLoadedMsg(data);
                     } catch (err) {
-                        switch (type) {
+                        switch (fileName.ext) {
                             case 'cbor':
                                 data = escaped2cbor(hexify(data));
                                 break;
@@ -115,7 +120,10 @@ const MessageValidated = (props: any) => {
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelectedFile('');
-        setFileName('');
+        setFileName({
+            name: '',
+            ext: 'jadn'
+        });
         setLoadedMsg('');
         if (ref.current) {
             ref.current.value = '';
@@ -129,40 +137,40 @@ const MessageValidated = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-sm-8'>
-                    <div className="d-flex">
-                        <SBSelect id={"message-list"}
-                            customClass={'me-1'}
-                            data={msgOpts}
-                            onChange={onFileSelect}
-                            placeholder={'Select a message...'}
-                            loc={'messages'}
-                            value={selectedFile}
-                            isGrouped isFileUploader isSmStyle />
-                        <div className='d-none'>
-                            <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
-                        </div>
-                    {/* </div> */}
+                        <div className="d-flex">
+                            <SBSelect id={"message-list"}
+                                customClass={'me-1'}
+                                data={msgOpts}
+                                onChange={onFileSelect}
+                                placeholder={'Select a message...'}
+                                loc={'messages'}
+                                value={selectedFile}
+                                isGrouped isFileUploader isSmStyle />
+                            <div className='d-none'>
+                                <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
+                            </div>
+                            {/* </div> */}
 
-                    {/* <div className={`col-md-3`}> */}
-                        <SBSelect id={"message-format-list"}
-                            customClass={'me-1'}
-                            data={validMsgFormat}
-                            onChange={(e: Option) => setMsgFormat(e)}
-                            value={msgFormat}
-                            placeholder={'Message format...'}
-                            isSmStyle
-                        />
-                    {/* </div> */}
+                            {/* <div className={`col-md-3`}> */}
+                            <SBSelect id={"message-format-list"}
+                                customClass={'me-1'}
+                                data={validMsgFormat}
+                                onChange={(e: Option) => setMsgFormat(e)}
+                                value={msgFormat}
+                                placeholder={'Message format...'}
+                                isSmStyle
+                            />
+                            {/* </div> */}
 
-                    {/* <div className='col-md-3'> */}
-                        <SBSelect id={"message-decode-list"} 
-                            customClass={'me-1'}
-                            data={decodeSchemaTypes.exports} 
-                            onChange={(e: Option) => setDecodeMsg(e)}
-                            value={decodeMsg}
-                            placeholder={'Message type...'}
-                            isSmStyle
-                        />
+                            {/* <div className='col-md-3'> */}
+                            <SBSelect id={"message-decode-list"}
+                                customClass={'me-1'}
+                                data={decodeSchemaTypes.exports}
+                                onChange={(e: Option) => setDecodeMsg(e)}
+                                value={decodeMsg}
+                                placeholder={'Message type...'}
+                                isSmStyle
+                            />
                         </div>
                     </div>
 
@@ -176,8 +184,8 @@ const MessageValidated = (props: any) => {
                                     Validate Message
                                 </button>}
                             <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-end me-1' />
-                            <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />                                
-                        </div>                            
+                            <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName.name} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
+                        </div>
                     </div>
                 </div>
             </div>

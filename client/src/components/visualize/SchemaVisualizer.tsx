@@ -20,6 +20,10 @@ const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
     const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [fileName, setFileName] = useState({
+        name: '',
+        ext: ''
+    });
     const [loadedSchema, setLoadedSchema] = useState<string>('');
     const [conversion, setConversion] = useState<Option[]>([]);
     const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
@@ -66,7 +70,7 @@ const SchemaVisualizer = () => {
             }
             //convertSchema takes in an array of values
             const arr = conversion.map(obj => obj.value);
-            dispatch(convertSchema(schemaObj, arr))
+            dispatch(convertSchema(schemaObj, fileName.ext, arr))
                 .then((convertSchemaVal) => {
                     if (convertSchemaVal.error) {
                         setIsLoading(false);
@@ -118,6 +122,7 @@ const SchemaVisualizer = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                            fileName={fileName} setFileName={setFileName}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
