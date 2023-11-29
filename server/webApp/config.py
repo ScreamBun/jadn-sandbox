@@ -1,6 +1,8 @@
 import os
 import toml
 
+from jadnschema.utils import FrozenDict
+from jadnschema.convert import SchemaFormats, SchemaVisualizationFormats, SchemaTranslationFormats
 
 class Config:
 
@@ -54,13 +56,9 @@ class Config:
     PROFILE_TEST_DATA = os.path.join(APP_DATA, "test_messages")
 
     VALID_SCHEMAS = ["jadn", ]
-    # VALID_SCHEMA_CONV = FrozenDict({fmt.name: fmt.value for fmt in SchemaFormats})
-    # VALID_SCHEMA_CONV = FrozenDict({fmt.name: fmt.value for fmt in SchemaFormats})
-    # VALID_SCHEMA_TRANSLATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaTranslationFormats})
-    # VALID_SCHEMA_VISUALIZATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaVisualizationFormats})
-    VALID_SCHEMA_TRANSLATIONS = {"json": "JSON", "rng": "Relax", "xsd": "XSD"}
-    VALID_SCHEMA_VISUALIZATIONS = {"gv": "GraphViz", "html": "HTML", "jidl": "JIDL", "md": "MarkDown", "puml": "PlantUML"}
-    VALID_SCHEMA_CONV = {**VALID_SCHEMA_TRANSLATIONS, ** VALID_SCHEMA_VISUALIZATIONS}
+    VALID_SCHEMA_CONV = FrozenDict({fmt.name: fmt.value for fmt in SchemaFormats})
+    VALID_SCHEMA_TRANSLATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaTranslationFormats})
+    VALID_SCHEMA_VISUALIZATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaVisualizationFormats})
     VALID_MESSAGES = ["json", "cbor", "xml"]
     VALID_TRANSFORMATIONS = ["resolve references", "strip comments"]
 

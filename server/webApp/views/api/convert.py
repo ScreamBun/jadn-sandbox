@@ -41,8 +41,8 @@ class Convert(Resource):
             try:
                 lang = request_json["convert-to"][0]
                 
-                valid_fmt = self.validateConversionType(lang)    
-                if not valid_fmt:
+                valid_fmt_name, valid_fmt_ext = self.validateConversionType(lang) 
+                if not valid_fmt_name:
                     return "Invalid Conversion Type", 500      
                     
             except Exception:  
@@ -50,7 +50,7 @@ class Convert(Resource):
                 
             try:
                 conv = self.convertTo(schema_checked, lang)
-                convertedData.append({'fmt': valid_fmt[1], 'fmt_ext': valid_fmt[0], 'schema': conv, 'err': False})
+                convertedData.append({'fmt': valid_fmt_name, 'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
             
             except (TypeError, ValueError) as err:
                 tb = traceback.format_exc()
@@ -60,20 +60,20 @@ class Convert(Resource):
         else:     
             for conv_type in request_json["convert-to"]:
                 try:
-                    valid_fmt = self.validateConversionType(conv_type)    
-                    if not valid_fmt:
+                    valid_fmt_name, valid_fmt_ext = self.validateConversionType(conv_type)    
+                    if not valid_fmt_name:
                         return "Invalid Conversion Type", 500  
                 except Exception:  
                     return "Invalid Conversion Type", 500              
                     
                 try:
                     conv = self.convertTo(schema_checked, conv_type)
-                    convertedData.append({'fmt': valid_fmt[1],'fmt_ext': valid_fmt[0], 'schema': conv, 'err': False})
+                    convertedData.append({'fmt': valid_fmt_name,'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
 
                 except (TypeError, ValueError) as err:
                     tb = traceback.format_exc()
                     print(tb)
-                    convertedData.append({'fmt': valid_fmt[1],'fmt_ext': valid_fmt[0], 'schema': f"{err}", 'err': True})
+                    convertedData.append({'fmt': valid_fmt_name,'fmt_ext': valid_fmt_ext, 'schema': f"{err}", 'err': True})
 
                         
         return jsonify({
@@ -84,15 +84,12 @@ class Convert(Resource):
         })
         
     def validateConversionType(self, type: str):
-        is_valid = None
         valid_conversions = current_app.config.get("VALID_SCHEMA_CONV")
         
         for item in valid_conversions.items():
-            if type == item[0]:
-                is_valid = item
-                break        
-        
-        return is_valid        
+            if type == item[1]:
+                return item    
+        return False  
     
     def convertTo(self, schema, lang):
         kwargs = { "fmt": lang,}
