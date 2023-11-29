@@ -327,7 +327,7 @@ const JADNSchemaLoader = (props: any) => {
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
                         <SBFormatBtn customClass="float-end me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end ms-1 me-1' title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"}
+                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end ms-1 me-1' title={isValidJADN ? "Schema is valid" : "Click to validate Schema"}
                                 onClick={schemaFormat?.value == 'jadn' ? onValidateJADNClick : onValidateJSONClick}>
                                 <span className="m-1">Valid</span>
                                 {isValidJADN ? (

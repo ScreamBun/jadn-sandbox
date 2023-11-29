@@ -688,8 +688,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                         <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
                         <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className="float-end btn btn-sm btn-primary me-1" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
-                                <span className="m-1">Validate JADN</span>
+                            <button id='validateJADNButton' type='button' className="float-end btn btn-sm btn-primary me-1" title={isValidJADN ? "Schema is valid" : "Click to validate Schema"} onClick={onValidateJADNClick}>
+                                <span className="m-1">Valid</span>
                                 {isValidJADN ? (
                                     <span className="badge rounded-pill text-bg-success">
                                         <FontAwesomeIcon icon={faCheck} />
