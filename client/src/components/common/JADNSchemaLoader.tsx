@@ -14,6 +14,7 @@ import SBSelect, { Option } from "./SBSelect";
 import SBSpinner from "./SBSpinner";
 import SBFormatBtn from "./SBFormatBtn";
 import SBEditor from "./SBEditor";
+import { getSchemaConversions } from "reducers/convert";
 
 const JADNSchemaLoader = (props: any) => {
     const dispatch = useDispatch();
@@ -22,13 +23,22 @@ const JADNSchemaLoader = (props: any) => {
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const schemaOpts = useSelector(getAllSchemas);
+    const validSchemaFormatOpt = useSelector(getSchemaConversions);
     const ref = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        if (fileName.ext) {
+            setSchemaFormat({ value: fileName.ext, label: fileName.ext })
+        }
+    }, [fileName])
 
     useEffect(() => {
         if (!loadedSchema) {
             setIsValidJADN(false);
             setSelectedFile('');
+            setSchemaFormat(null);
         }
     }, [loadedSchema])
 
@@ -296,18 +306,29 @@ const JADNSchemaLoader = (props: any) => {
                                 isGrouped
                                 isFileUploader
                                 isSmStyle />
-                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-end ms-1"} filename={fileName?.name} ext={fileName?.ext} setDropdown={setSelectedFile} />
+                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-end ms-1"} filename={fileName?.name} ext={schemaFormat?.value} setDropdown={setSelectedFile} />
                         </div>
                         <div className='d-none'>
                             <SBFileUploader ref={ref} id={"schema-file"} accept={'.jadn, ' + acceptFormat} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
                     <div className="col">
+                        {acceptFormat &&
+                            <SBSelect id={"schema-format-list"}
+                                data={validSchemaFormatOpt}
+                                onChange={(e: Option) => setSchemaFormat(e)}
+                                value={schemaFormat}
+                                placeholder={'Schema format...'}
+                                isSmStyle
+                            />
+                        }
+                    </div>
+                    <div className="col">
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
-                        <SBFormatBtn customClass="float-end me-1" handleFormatClick={onFormatClick} ext={fileName?.ext} data={loadedSchema} />
+                        <SBFormatBtn customClass="float-end me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end me-1' title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"}
-                                onClick={fileName.ext == 'jadn' ? onValidateJADNClick : onValidateJSONClick}>
+                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end ms-1 me-1' title={isValidJADN ? "JADN schema is valid" : "JADN must be valid. Click to validate JADN"}
+                                onClick={schemaFormat?.value == 'jadn' ? onValidateJADNClick : onValidateJSONClick}>
                                 <span className="m-1">Valid</span>
                                 {isValidJADN ? (
                                     <span className="badge rounded-pill text-bg-success">
