@@ -1,5 +1,15 @@
 # JADN Sandbox Release Notes
 
+## v0.9.0
+
+* Translation - Initial implementation of JADN to XSD Translation
+* Translation - Introduced JSON Schema to JADN Translation
+* Schema Creation - Lazy loading tied to scrolling
+* Schema Creation - Clear All Toast button
+* Schema Creation - Enhanced Fields Drag and Drop capabilities
+* Schema Creation - Updated Enum Field Options to a Drop Down of Types
+* Improved file load error handling
+
 ## v0.8.0
 
 * Removed react-strap and installed bootstrap 5.3.2
