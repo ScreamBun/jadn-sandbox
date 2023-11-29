@@ -4,8 +4,9 @@ from io import BytesIO
 import traceback
 import jadn
 from flask import current_app, jsonify, Response, request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
+from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
@@ -16,7 +17,7 @@ class Convert(Resource):
     """
     Endpoint for api/convert
     """
-
+        
     def get(self):
         return jsonify({
             "schema_conversions": current_app.config.get("VALID_SCHEMAS"),
@@ -24,6 +25,7 @@ class Convert(Resource):
             "translations": current_app.config.get("VALID_SCHEMA_TRANSLATIONS"),
             "visualizations": current_app.config.get("VALID_SCHEMA_VISUALIZATIONS")
         })
+        
 
     def post(self):
         conv = "Valid Base Schema"
@@ -45,14 +47,17 @@ class Convert(Resource):
         if len(request_json["convert-to"]) == 1:
             try:
                 lang = request_json["convert-to"][0]
-                conv_fmt = SchemaFormats(lang)
+                
+                valid_fmt_name, valid_fmt_ext = self.validateConversionType(lang) 
+                if not valid_fmt_name:
+                    return "Invalid Conversion Type", 500      
                     
             except Exception:  
                 return "Invalid Conversion Type", 500
                 
             try:
-                conv = self.convertTo(schema_checked, schema_fmt, conv_fmt)
-                convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv, 'err': False})
+                conv = self.convertTo(schema_checked, schema_fmt, lang)
+                convertedData.append({'fmt': valid_fmt_name, 'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
             
             except (TypeError, ValueError) as err:
                 tb = traceback.format_exc()
@@ -60,20 +65,22 @@ class Convert(Resource):
                 return f"Failed to Convert: {err}", 500
             
         else:     
-            for i in request_json["convert-to"]:
+            for conv_type in request_json["convert-to"]:
                 try:
-                    conv_fmt = SchemaFormats(i)
+                    valid_fmt_name, valid_fmt_ext = self.validateConversionType(conv_type)    
+                    if not valid_fmt_name:
+                        return "Invalid Conversion Type", 500  
                 except Exception:  
-                    return "Invalid Conversion Type", 500
+                    return "Invalid Conversion Type", 500              
                     
                 try:
-                    conv = self.convertTo(schema_checked, schema_fmt, conv_fmt)
-                    convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': conv, 'err': False})
+                    conv = self.convertTo(schema_checked, schema_fmt, conv_type)
+                    convertedData.append({'fmt': valid_fmt_name,'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
 
                 except (TypeError, ValueError) as err:
                     tb = traceback.format_exc()
                     print(tb)
-                    convertedData.append({'fmt': conv_fmt.name,'fmt_ext': conv_fmt, 'schema': f"{err}", 'err': True})
+                    convertedData.append({'fmt': valid_fmt_name,'fmt_ext': valid_fmt_ext, 'schema': f"{err}", 'err': True})
 
                         
         return jsonify({
@@ -82,13 +89,21 @@ class Convert(Resource):
                 "convert": convertedData
             }
         })
+        
+    def validateConversionType(self, type: str):
+        valid_conversions = current_app.config.get("VALID_SCHEMA_CONV")
+        
+        for item in valid_conversions.items():
+            if type == item[1]:
+                return item    
+        return False  
     
     def convertTo(self, schema, schemalang, lang):
         kwargs = { "fmt": lang,}
 
         if lang == "html":
             kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
-
+            
         if lang == "json":
             return json_schema_dumps(schema)
         elif lang == "jadn":
@@ -97,6 +112,8 @@ class Convert(Resource):
             return dumps(schema, **kwargs)
         elif lang == "puml":
             return plant_dumps(schema, style={'links': True, 'detail': 'information'})                                      
+        elif lang == "xsd":
+            return convert_xsd_from_dict(schema)
         else:
             return dumps(schema, **kwargs)
         

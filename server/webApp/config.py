@@ -1,10 +1,8 @@
-import json
 import os
 import toml
 
 from jadnschema.utils import FrozenDict
 from jadnschema.convert import SchemaFormats, SchemaVisualizationFormats, SchemaTranslationFormatsForJADN, SchemaTranslationFormatsForJSON
-
 
 class Config:
 

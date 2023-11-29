@@ -236,7 +236,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
