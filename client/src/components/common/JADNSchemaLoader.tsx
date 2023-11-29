@@ -28,6 +28,7 @@ const JADNSchemaLoader = (props: any) => {
     useEffect(() => {
         if (!loadedSchema) {
             setIsValidJADN(false);
+            setSelectedFile('');
         }
     }, [loadedSchema])
 
@@ -85,14 +86,7 @@ const JADNSchemaLoader = (props: any) => {
         if (typeof loadedSchema != 'string') {
             schemaStr = JSON.stringify(loadedSchema);
         }
-        const jsonObj = validateJSON(schemaStr);
-        setIsValidating(false);
-        if (jsonObj) {
-            sbToastSuccess('Valid JSON')
-            setIsValidJADN(true);
-        } else {
-            setIsValidJADN(false);
-        }
+        validateJSON(schemaStr, undefined, undefined, true);
     }
 
     const validateJADN = (jsonToValidate: any) => {
@@ -166,6 +160,7 @@ const JADNSchemaLoader = (props: any) => {
             if (jsonObj) {
                 sbToastSuccess('Valid JSON')
                 setIsValidJADN(true);
+                dispatch(setSchema(jsonObj));
             }
         }
 
@@ -323,7 +318,6 @@ const JADNSchemaLoader = (props: any) => {
                                     </span>)
                                 }
                             </button>}
-
                     </div>
                 </div>
             </div>

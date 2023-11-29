@@ -25,6 +25,7 @@ export const info = () => createAction({
 export interface InfoSuccessAction extends ActionSuccessResult {
   type: typeof INFO_SUCCESS;
   payload: {
+    schema_conversions: string[];
     conversions: Record<string, any>;
     translations: Record<string, any>;
     visualizations: Record<string, any>;
