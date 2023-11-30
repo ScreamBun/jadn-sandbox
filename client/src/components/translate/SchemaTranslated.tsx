@@ -14,7 +14,7 @@ import { getSelectedSchema } from "reducers/util";
 const SchemaTranslated = (props: any) => {
     const location = useLocation();
 
-    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading, ext } = props;
+    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading, ext, setSchemaFormat } = props;
     const validSchema = useSelector(getSelectedSchema);
     const data = useSelector(getValidTranslations);
     let translateOpts: Option[] = data && data[ext] ? Object.entries(data[ext]).map(([key, value]) => ({
@@ -24,8 +24,15 @@ const SchemaTranslated = (props: any) => {
 
     useEffect(() => {
         if (location.state) {
-            const index = Object.values(data).indexOf(location.state)
-            setTranslation({ value: Object.values(data)[index], label: Object.keys(data)[index] });
+            Object.keys(data).map((key) => {
+                const fmt = key.toLowerCase();
+                Object.entries(data[key]).map(([key, value]) => {
+                    if (value == location.state) {
+                        setSchemaFormat({ value: fmt, label: fmt });
+                        setTranslation({ value: value, label: key });
+                    }
+                })
+            })
         }
     }, [])
 

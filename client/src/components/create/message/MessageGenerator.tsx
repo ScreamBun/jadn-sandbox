@@ -19,7 +19,7 @@ const MessageGenerator = () => {
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [commandType, setCommandType] = useState<Option | null>();
 
-    const meta_title = useSelector(getPageTitle) + ' | Message Creation'
+    const meta_title = useSelector(getPageTitle) + ' | Data Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
@@ -51,7 +51,7 @@ const MessageGenerator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header bg-secondary p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Creation</span></h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Creation</span></h5>
                             <button type='reset' className='btn btn-sm btn-danger float-end ms-1' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>

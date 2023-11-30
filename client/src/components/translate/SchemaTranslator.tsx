@@ -123,6 +123,7 @@ const SchemaTranslator = () => {
                                         <SchemaTranslated
                                             translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
                                             translation={translation} setTranslation={setTranslation}
+                                            setSchemaFormat={setSchemaFormat}
                                             isLoading={isLoading} ext={schemaFormat?.value} />
                                     </div>
                                 </div>
