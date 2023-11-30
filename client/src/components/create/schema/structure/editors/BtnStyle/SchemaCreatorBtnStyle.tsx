@@ -11,7 +11,7 @@ import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { StandardTypeObject, TypeKeys } from '../consts';
-import { getFilenameExt, getFilenameOnly, zip } from 'components/utils/general';
+import { getFilenameExt, getFilenameOnly, getTypeName, zip } from 'components/utils/general';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
@@ -339,53 +339,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         </div>
     ));
 
-    const get_type_name = (types_to_serach: any[], name: string) => {
-        let return_name = name;
-        let match_count = 0;
-        let dups: any[] = [];
-        types_to_serach.map((type) => {
-
-            // orig name matches
-            if (name == type[0]) {
-                match_count = match_count + 1;
-            } else {
-                // dup matches
-                var lastIndex = type[0].lastIndexOf('-');
-
-                if (lastIndex) {
-
-                    let dup_name = type[0].substr(0, lastIndex);
-
-                    if (name == dup_name) {
-
-                        let dup_num = type[0].substr(lastIndex).substring(1);
-
-                        if (dup_num && !isNaN(dup_num)) {
-
-                            dups.push(dup_num);
-                            match_count = match_count + 1;
-
-                        }
-                    }
-                }
-            }
-
-        });
-
-        if (match_count > 0) {
-
-            if (dups.length == 0) {
-                return_name = return_name + "-" + (dups.length + 1);
-            } else {
-                dups.sort(function (a, b) { return b - a });  // TODO: Move to utils
-                let next_num = parseInt(dups[0]) + 1;
-                return_name = return_name + "-" + next_num;
-            }
-
-        }
-
-        return return_name;
-    }
     const onSelectChange = (e: Option) => {
         if (e == null || parseInt(e.value) < 0 || parseInt(e.value) > generatedSchema.types.length) {
             sbToastError("Invalid Index. Setting index to default: end.")
@@ -423,7 +376,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         } else if (Object.keys(Types).includes(key)) {
             let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             let tmpCards = [...cardsState];
-            const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
+            const type_name = getTypeName(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             const dataIndex = generatedSchema.types?.length || 0;
             const new_card = {
