@@ -6,13 +6,17 @@ license="BSD" \
 version="2.0" \
 description="This is the JADN Sandbox container"
 
-ARG jadnschema=jadnschema-0.2.14-py2.py3-none-any.whl
+# ARG jadnschema=./whls/jadnschema-0.2.15-py2.py3-none-any.whl
+# ARG jadnxml=./whls/jadn_xml-1.0-py3-none-any.whl
 
 # Orchestrator Core Working Directory
 WORKDIR /opt/jadn_sandbox/
 
-ADD requirements.txt /opt/jadn_sandbox/
-ADD $jadnschema /opt/jadn_sandbox/
+ADD whls /opt/jadn_sandbox/whls
+
+ADD requirements.txt /opt/jadn_sandbox
+# ADD $jadnschema /opt/jadn_sandbox/whls
+# ADD $jadnxml /opt/jadn_sandbox/whls
 ADD webApp /opt/jadn_sandbox/webApp
 ADD gunicorn /opt/jadn_sandbox/gunicorn
 
@@ -52,7 +56,8 @@ RUN mkdir -p /logs/
 
 # Requirements install
 RUN pip install -r ./requirements.txt
-RUN pip install ./$jadnschema
+# RUN pip install ./$jadnschema
+# RUN pip install ./$jadnxml
 
 # Cleanup
 RUN apk del build-base python3-dev && \
