@@ -7,10 +7,10 @@ import { v4 as uuid4 } from 'uuid';
 import { VariableSizeList as List } from "react-window";
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Info, Types } from '../../structure';
-import { loadFile, setSchema } from 'actions/util';
+import { setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
-import { getFilenameExt, getFilenameOnly, getTypeName } from 'components/utils/general';
+import { getTypeName } from 'components/utils/general';
 import { StandardTypeArray, TypeArray } from 'components/create/schema/interface';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { TypeObject } from '../consts';
@@ -18,14 +18,12 @@ import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBEditor from 'components/common/SBEditor';
 import SBDownloadFile from 'components/common/SBDownloadFile';
-import SBFileUploader from 'components/common/SBFileUploader';
-import SBSaveFile from 'components/common/SBSaveFile';
-import SBSelect, { Option } from 'components/common/SBSelect';
 import SBSpinner from 'components/common/SBSpinner';
 import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
+import SBSchemaLoader from 'components/common/SBSchemaLoader';
 
 
 const configInitialState = {
@@ -77,102 +75,26 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
     }, []);
     const getItemSize = (index: number) => { return rowHeight.current[index] || 0 };
 
-    const onFileSelect = (e: Option) => {
-        dismissAllToast();
-        setIsValidJADN(false);
-        setIsValidating(false);
-        if (e == null) {
-            setSelectedFile(e);
+    const onFileChange = (schemaStr: any) => {
+        setIsLoading(false);
+        if (schemaStr) {
+            const dataObj = JSON.parse(schemaStr);
+            const validJADN = validateJADN(schemaStr);
+            if (validJADN == true) {
+                flushSync(() => {
+                    setGeneratedSchema(dataObj);
+                    setCardsState(dataObj.types.map((item, i) => ({
+                        id: self.crypto.randomUUID(),
+                        index: i,
+                        text: item[0],
+                        value: item,
+                        isStarred: false
+                    })));
+                });
+            }
+        } else {
             setGeneratedSchema('');
             setCardsState([]);
-            return;
-        } else if (e.value == "file") {
-            ref.current.value = '';
-            ref.current?.click();
-        } else {
-            setSelectedFile(e);
-            const fileName = {
-                name: getFilenameOnly(e.label),
-                ext: getFilenameExt(e.label)
-            }
-            setFileName(fileName);
-            setIsLoading(true);
-
-            dispatch(loadFile('schemas', e.value))
-                .then((loadFileVal: { error: any; payload: { response: string; data: any; }; }) => {
-                    if (loadFileVal.error) {
-                        setIsLoading(false);
-                        sbToastError(loadFileVal.payload.response);
-                        return;
-                    }
-                    setIsLoading(false);
-                    let schemaObj = loadFileVal.payload.data;
-                    let schemaStr = JSON.stringify(schemaObj);
-
-                    validateJADN(schemaStr);
-                    flushSync(() => {
-                        setGeneratedSchema(schemaObj);
-                        setCardsState(schemaObj.types.map((item, i) => ({
-                            id: self.crypto.randomUUID(),
-                            index: i,
-                            text: item[0],
-                            value: item,
-                            isStarred: false
-                        })));
-
-                    });
-
-                })
-                .catch((loadFileErr: { payload: { data: string; }; }) => {
-                    setIsLoading(false);
-                    sbToastError(loadFileErr.payload.data);
-                })
-        }
-    };
-
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        dismissAllToast();
-        setIsValidJADN(false);
-        setIsValidating(false);
-        if (e.target.files && e.target.files.length != 0) {
-            setIsLoading(true);
-            const file = e.target.files[0];
-            setSelectedFile({ 'value': file.name, 'label': file.name });
-
-            const fileName = {
-                name: getFilenameOnly(file.name),
-                ext: getFilenameExt(file.name)
-            }
-            setFileName(fileName);
-
-            const fileReader = new FileReader();
-            fileReader.onload = (ev: ProgressEvent<FileReader>) => {
-                if (ev.target) {
-                    let data = ev.target.result;
-                    try {
-                        setIsLoading(false);
-                        const dataObj = JSON.parse(data);
-                        const validJADN = validateJADN(data);
-                        if (validJADN) {
-                            flushSync(() => {
-                                setGeneratedSchema(dataObj);
-                                setCardsState(dataObj.types.map((item, i) => ({
-                                    id: self.crypto.randomUUID(),
-                                    index: i,
-                                    text: item[0],
-                                    value: item,
-                                    isStarred: false
-                                })));
-                            });
-                        }
-                    } catch (err) {
-                        setIsLoading(false);
-                        sbToastError(`Schema cannot be loaded: Invalid JSON`);
-                    }
-                }
-            };
-            fileReader.readAsText(file);
         }
     }
 
@@ -182,16 +104,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setIsValidJADN(false);
         setIsValidating(false);
         setIsLoading(false);
-        setFileName({
-            name: '',
-            ext: 'jadn'
-        });
-        setSelectedFile(null);
         setGeneratedSchema('');
         setCardsState([]);
-        if (ref.current) {
-            ref.current.value = '';
-        }
     }
 
     const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -204,63 +118,50 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setIsValidJADN(false);
         setIsValidating(true);
         let jsonObj = validateJSON(jsonToValidate);
-        if (!jsonObj) {
+        if (jsonObj == false) {
             setIsValidating(false);
             sbToastError(`Invalid JSON. Cannot validate JADN`);
             return false;
         }
 
-        try {
-            dispatch(validateSchema(jsonObj))
-                .then((validateSchemaVal: any) => {
-                    if (validateSchemaVal.payload.valid_bool == true) {
-                        setIsValidJADN(true);
-                        setIsValidating(false);
-                        sbToastSuccess(validateSchemaVal.payload.valid_msg);
-                        return true;
-                    } else {
-                        setIsValidating(false);
-                        sbToastError(validateSchemaVal.payload.valid_msg);
-                        return false;
-                    }
-                })
-                .catch((validateSchemaErr: { payload: { valid_msg: string; }; }) => {
+        dispatch(validateSchema(jsonObj))
+            .then((validateSchemaVal: any) => {
+                if (validateSchemaVal.payload.valid_bool == true) {
+                    setIsValidJADN(true);
                     setIsValidating(false);
-                    sbToastError(validateSchemaErr.payload.valid_msg)
+                    sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                    return true;
+                } else {
+                    setIsValidating(false);
+                    sbToastError(validateSchemaVal.payload.valid_msg);
                     return false;
-                })
-        } catch (err) {
-            if (err instanceof Error) {
+                }
+            })
+            .catch((validateSchemaErr: { payload: { valid_msg: string; }; }) => {
                 setIsValidating(false);
-                sbToastError(err.message)
+                sbToastError(validateSchemaErr.payload.valid_msg)
                 return false;
-            }
-        }
-        return true;
+            })
     }
 
-    const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
-        let jsonObj = null;
+    const validateJSON = (jsonToValidate: any) => {
+        let jsonObj;
 
         if (!jsonToValidate) {
-            sbToastError(`No data found`)
-            return jsonObj;
+            sbToastError(`No data found`);
+            return false;
         }
 
         try {
             jsonObj = JSON.parse(jsonToValidate);
         } catch (err: any) {
-            if (showErrorPopup) {
-                sbToastError(`Invalid Format: ${err.message}`)
-            }
-        }
-
-        if (onErrorReturnOrig && !jsonObj) {
-            jsonObj = jsonToValidate
+            sbToastError(`Invalid Format: ${err.message}`);
+            return false;
         }
 
         return jsonObj;
     }
+
 
     const onSchemaDrop = (item: Item) => {
         let key = item.text;
@@ -515,27 +416,18 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             <div className='card-header p-2'>
                 <div className='row no-gutters'>
                     <div className='col-sm-3'>
-                        <div className="d-flex">
-                            <SBSelect id={"schema-list"}
-                                data={schemaOpts}
-                                onChange={onFileSelect}
-                                placeholder={'Select a schema...'}
-                                loc={'schemas'}
-                                value={selectedFile}
-                                isSmStyle
-                                isGrouped isFileUploader />
-                            <SBSaveFile
-                                buttonId={'saveSchema'}
-                                toolTip={'Save Schema'}
-                                customClass={"float-end ms-1"}
-                                data={generatedSchema}
-                                loc={'schemas'}
-                                filename={fileName.name}
-                                setDropdown={setSelectedFile} />
-                        </div>
-                        <div className='d-none'>
-                            <SBFileUploader ref={ref} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileChange} />
-                        </div>
+                        <SBSchemaLoader
+                            schemaOpts={schemaOpts}
+                            selectedSchemaOpt={selectedFile}
+                            loadedSchema={generatedSchema}
+                            fileName={fileName}
+                            setFileName={setFileName}
+                            schemaFormat={'jadn'}
+                            setSelectedFile={setSelectedFile}
+                            onCancelFileUpload={onCancelFileUpload}
+                            onFileChange={onFileChange}
+                            ref={ref}
+                        />
                     </div>
                     <div className='col-sm-9'>
                         <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-end'} />
