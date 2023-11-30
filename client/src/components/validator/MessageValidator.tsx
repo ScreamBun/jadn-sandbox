@@ -15,6 +15,7 @@ const MessageValidator = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
+    const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const [loadedSchema, setLoadedSchema] = useState<String>('');
     const [selectedMsgFile, setSelectedMsgFile] = useState('');
     const [loadedMsg, setLoadedMsg] = useState('');
@@ -121,6 +122,7 @@ const MessageValidator = () => {
                                     <div className='col-md-6 pr-1'>
                                         <JADNSchemaLoader
                                             selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
+                                            schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes} setDecodeSchemaTypes={setDecodeSchemaTypes} />

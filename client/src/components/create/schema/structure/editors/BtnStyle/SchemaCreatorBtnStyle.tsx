@@ -11,7 +11,7 @@ import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { StandardTypeObject, TypeKeys } from '../consts';
-import { getFilenameOnly, zip } from 'components/utils/general';
+import { getFilenameExt, getFilenameOnly, zip } from 'components/utils/general';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
@@ -50,7 +50,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     }, [generatedSchema])
 
     const [configOpt, setConfigOpt] = useState(configInitialState);
-    const [fileName, setFileName] = useState('');
+    const [fileName, setFileName] = useState({
+        name: '',
+        ext: 'jadn'
+    });
     const [isValidJADN, setIsValidJADN] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -124,7 +127,11 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             ref.current?.click();
         } else {
             setSelectedFile(e);
-            setFileName(e.label.split('.')[0]);
+            const fileName = {
+                name: getFilenameOnly(e.label),
+                ext: getFilenameExt(e.label)
+            }
+            setFileName(fileName);
             setIsLoading(true);
 
             dispatch(loadFile('schemas', e.value))
@@ -166,8 +173,11 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
 
-            const filename_only = getFilenameOnly(file.name);
-            setFileName(filename_only);
+            const fileName = {
+                name: getFilenameOnly(file.name),
+                ext: getFilenameExt(file.name)
+            }
+            setFileName(fileName);
 
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
@@ -176,15 +186,19 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     try {
                         setIsLoading(false);
                         const dataObj = JSON.parse(data);
-                        setGeneratedSchema(dataObj);
-                        setCardsState(dataObj.types.map((item, i) => ({
-                            id: self.crypto.randomUUID(),
-                            index: i,
-                            text: item[0],
-                            value: item,
-                            isStarred: false
-                        })));
-                        validateJADN(data);
+                        const validJADN = validateJADN(data);
+                        if (validJADN) {
+                            flushSync(() => {
+                                setGeneratedSchema(dataObj);
+                                setCardsState(dataObj.types.map((item, i) => ({
+                                    id: self.crypto.randomUUID(),
+                                    index: i,
+                                    text: item[0],
+                                    value: item,
+                                    isStarred: false
+                                })));
+                            });
+                        }
                     } catch (err) {
                         setIsLoading(false);
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
@@ -201,7 +215,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         setIsValidJADN(false);
         setIsValidating(false);
         setIsLoading(false);
-        setFileName('');
+        setFileName({
+            name: '',
+            ext: 'jadn'
+        });
         setSelectedFile(null);
         setGeneratedSchema('');
         setCardsState([]);
@@ -223,7 +240,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         if (!jsonObj) {
             setIsValidating(false);
             sbToastError(`Invalid JSON. Cannot validate JADN`);
-            return;
+            return false;
         }
 
         try {
@@ -233,21 +250,26 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                         setIsValidJADN(true);
                         setIsValidating(false);
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                        return true;
                     } else {
                         setIsValidating(false);
                         sbToastError(validateSchemaVal.payload.valid_msg);
+                        return false;
                     }
                 })
                 .catch((validateSchemaErr) => {
                     setIsValidating(false);
                     sbToastError(validateSchemaErr.payload.valid_msg)
+                    return false;
                 })
         } catch (err) {
             if (err instanceof Error) {
                 setIsValidating(false);
                 sbToastError(err.message)
+                return false;
             }
         }
+        return true;
     }
 
     const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
@@ -653,7 +675,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                 customClass={"float-end ms-1"}
                                 data={generatedSchema}
                                 loc={'schemas'}
-                                filename={fileName}
+                                filename={fileName.name}
                                 setDropdown={onFileSelect} />
                         </div>
                         <div className='d-none'>
@@ -662,12 +684,12 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     </div>
                     <div className='col-sm-9'>
                         <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-end'} />
-                        <SBDownloadFile buttonId='schemaDownload' filename={fileName} data={generatedSchema} customClass={'float-end me-1'} />
+                        <SBDownloadFile buttonId='schemaDownload' filename={fileName.name} data={generatedSchema} customClass={'float-end me-1'} />
                         <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
                         <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className="float-end btn btn-sm btn-primary me-1" title={isValidJADN ? "JADN is valid" : "Validate JADN"} onClick={onValidateJADNClick}>
-                                <span className="m-1">Validate JADN</span>
+                            <button id='validateJADNButton' type='button' className="float-end btn btn-sm btn-primary me-1" title={isValidJADN ? "Schema is valid" : "Click to validate Schema"} onClick={onValidateJADNClick}>
+                                <span className="m-1">Valid</span>
                                 {isValidJADN ? (
                                     <span className="badge rounded-pill text-bg-success">
                                         <FontAwesomeIcon icon={faCheck} />

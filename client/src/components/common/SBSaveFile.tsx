@@ -12,7 +12,7 @@ const SBSaveFile = (props: any) => {
 
     const dispatch = useDispatch();
 
-    const { buttonId, toolTip, data, customClass, filename, ext, loc, setDropdown } = props;
+    const { buttonId, toolTip, data, customClass, filename = '', ext = 'jadn', loc, setDropdown } = props;
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleSaveDialog, setToggleSaveDialog] = useState(false);
     const [toggleOverwriteDialog, setToggleOverwriteDialog] = useState(false); //nestedModal

@@ -159,6 +159,7 @@ export const TypeOptionInputArgs = {
     description: 'Key type for MapOf'
   },
   enum: {
+    type: 'SBCreatableSelect',
     description: 'Extension: Enumerated type derived from the specified Array, Choice, Map or Record type'
   },
   pointer: {
