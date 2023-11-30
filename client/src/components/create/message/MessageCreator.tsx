@@ -91,7 +91,7 @@ const MessageCreator = (props: any) => {
     } else {
         fieldDefs = (
             <small id="msgGenHelpBlock" className="form-text text-muted">
-                Message generator will appear here after selecting a message type
+                Data generator will appear here after selecting a data type
                 &nbsp;
                 {commandType?.value}
             </small>
@@ -107,7 +107,7 @@ const MessageCreator = (props: any) => {
                             <SBSelect id={"command-list"}
                                 data={exportRecords}
                                 onChange={handleSelection}
-                                placeholder={'Select a message type...'}
+                                placeholder={'Select a data type...'}
                                 value={commandType} isSmStyle
                             />
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={'json'} />

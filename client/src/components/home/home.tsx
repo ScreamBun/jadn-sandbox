@@ -97,7 +97,7 @@ const Home = () => {
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>Message Validation</Link>
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>Data Validation</Link>
                 </h5>
                 <p className="card-text">Validate data instances against a JADN Schema and convert them from one data format to another.</p>
               </div>
@@ -122,11 +122,11 @@ const Home = () => {
             </div>
             <div className="card mt-3">
               <div className="card-img-top text-center py-2 bg-primary">
-                <FontAwesomeIcon title='Example Message Generation' className='fa-2x text-white' icon={faFileCirclePlus} />
+                <FontAwesomeIcon title='Example Data Generation' className='fa-2x text-white' icon={faFileCirclePlus} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_GENERATE}>Example Message Generation</Link>
+                  <Link className="card-link" to={NAV_GENERATE}>Example Data Generation</Link>
                 </h5>
                 <p className="card-text">Generate various example data instances based off of a Schema.</p>
               </div>

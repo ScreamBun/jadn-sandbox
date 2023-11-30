@@ -98,7 +98,7 @@ const AppLayout = () => {
                 <NavLink className='nav-link px-0' to={NAV_TRANSLATE} title='Translate between JADN Schemas and other Schema formats'>Translation</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} title='Validate a message against a provided schema'>Validation</NavLink>
+                <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} title='Validate a data instance against a provided schema'>Validation</NavLink>
               </li>
               <li className="nav-item">
                 <NavLink className='nav-link px-0' to={NAV_TRANSFORM} title='Merge two or more schemas into one'>Transformation</NavLink>
