@@ -4,9 +4,12 @@ import logging
 import traceback
 
 import jadn
+from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
 
-from flask import Blueprint, current_app, jsonify, redirect
+from flask import Blueprint, current_app, jsonify, redirect, request
 from flask_restful import Api, Resource, reqparse
+
+from server.webApp.utils.constants import JADN, JSON
 
 logger = logging.getLogger()
 validate = Blueprint("validate", __name__)
@@ -59,10 +62,24 @@ class ValidateSchema(Resource):
 
         response_data = {}
         err_msg = ""
+        
+        request_json = request.json 
+        schema_fmt_test = request_json["schema"]
+        schema_fmt = request_json["schema_format"]
 
         try:
+            schema_test = ast.literal_eval(args["schema"])
             schema = json.dumps(ast.literal_eval(args["schema"]))
-            jadn.check(ast.literal_eval(args["schema"])) 
+            
+            if schema_fmt == JADN:
+                jadn.check(ast.literal_eval(args["schema"])) 
+            elif schema_fmt == JSON:
+                validation_result = validate_schema(schema_fmt_test)
+                if validation_result != True:
+                    raise f"JSON Schema Error: {validation_result}"
+            else:
+                raise "Invalid Schema Format"
+                
         except Exception as ex:
             print(traceback.print_exc())
             print(f"Error: {ex}")
@@ -71,8 +88,14 @@ class ValidateSchema(Resource):
         if err_msg:
             response_data = { "valid_bool": False, "valid_msg": err_msg }
         else:
-            val = current_app.validator.validateSchema(schema)
-            response_data = { "valid_bool": val[0], "valid_msg": val[1] }
+            if schema_fmt == JADN:
+                val = current_app.validator.validateSchema(schema)
+                response_data = { "valid_bool": val[0], "valid_msg": val[1] }
+            elif schema_fmt == JSON:
+                response_data = { "valid_bool": True, "valid_msg": "JSON Schema is valid" }
+            else:
+                response_data = { "valid_bool": False, "valid_msg": "Unknown format" }
+
 
         return jsonify(response_data)
 
