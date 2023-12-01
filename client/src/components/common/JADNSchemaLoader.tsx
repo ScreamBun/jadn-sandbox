@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getAllSchemas } from "../../reducers/util";
 import { getSchemaConversions } from "reducers/convert";
 import { info, setSchema } from "../../actions/util";
@@ -13,6 +11,8 @@ import SBSpinner from "./SBSpinner";
 import SBFormatBtn from "./SBFormatBtn";
 import SBEditor from "./SBEditor";
 import SBSchemaLoader from "./SBSchemaLoader";
+import SBValidateSchemaBtn from "./SBValidateSchemaBtn";
+import { validateJSON } from "components/utils/general";
 
 
 const JADNSchemaLoader = (props: any) => {
@@ -83,63 +83,25 @@ const JADNSchemaLoader = (props: any) => {
         }
     }
 
-    const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        let schemaStr = loadedSchema;
-        if (typeof loadedSchema != 'string') {
-            schemaStr = JSON.stringify(loadedSchema);
-        }
-
-        const result = handleValidation('jadn', schemaStr);
-        if (result != false) {
-            sbToastSuccess(result);
-        }
-    }
-
-    const onValidateJSONClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-
-        let schemaStr = loadedSchema;
-        if (typeof loadedSchema != 'string') {
-            schemaStr = JSON.stringify(loadedSchema);
-        }
-
-        const result = handleValidation('json', schemaStr);
-        if (result != false) {
-            sbToastSuccess('Valid JSON');
-        }
-    }
-
-    const handleValidation = (type: 'jadn' | 'json' = 'jadn', schemaStr: string) => {
-        let result;
-        if (type == 'jadn') {
-            result = validateJADN(schemaStr)
-        } else {
-            result = validateJSON(schemaStr)
-        }
-
-        const resultBool = result != false ? true : false;
-        setIsValidJADN(resultBool);
-        setIsValidating(false);
-        return result;
-    }
-
-
     const validateJADN = (jsonToValidate: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(true);
+
         let jsonObj = validateJSON(jsonToValidate);
         if (jsonObj == false) {
             sbToastError(`Invalid JSON. Cannot validate JADN`);
+            setIsValidating(false);
             return false;
         }
 
-        dispatch(validateSchema(jsonObj))
+        return dispatch(validateSchema(jsonObj))
             .then((validateSchemaVal: any) => {
                 if (validateSchemaVal.payload.valid_bool == true) {
                     dispatch(setSchema(jsonObj));
-                    return (validateSchemaVal.payload.valid_msg);
+                    setIsValidJADN(true);
+                    sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                    return true;
                 } else {
                     sbToastError(validateSchemaVal.payload.valid_msg);
                     return false;
@@ -151,22 +113,11 @@ const JADNSchemaLoader = (props: any) => {
             })
     }
 
-    const validateJSON = (jsonToValidate: any) => {
-        let jsonObj;
-
-        if (!jsonToValidate) {
-            sbToastError(`No data found`);
-            return false;
+    const onValidateJSON = (jsonSchema: any) => {
+        let jsonObj = validateJSON(jsonSchema);
+        if (jsonObj) {
+            dispatch(setSchema(jsonObj));
         }
-
-        try {
-            jsonObj = JSON.parse(jsonToValidate);
-        } catch (err: any) {
-            sbToastError(`Invalid Format: ${err.message}`);
-            return false;
-        }
-
-        dispatch(setSchema(jsonObj));
         return jsonObj;
     }
 
@@ -185,13 +136,27 @@ const JADNSchemaLoader = (props: any) => {
 
     const onFileChange = (schemaStr: any) => {
         setIsLoading(false);
+        let valid;
         if (schemaStr) {
-            handleValidation(fileName.ext, schemaStr);
+            if (fileName.ext == 'jadn') {
+                valid = validateJADN(schemaStr);
+            } else {
+                valid = onValidateJSON(schemaStr);
+            }
         }
-        const schemaObj = JSON.parse(schemaStr);
-        setLoadedSchema(schemaObj);
-        if (setDecodeSchemaTypes && setDecodeMsg) {
-            loadDecodeTypes(schemaObj);
+        setIsValidating(false);
+
+        if (valid) {
+            const schemaObj = JSON.parse(schemaStr);
+            setLoadedSchema(schemaObj);
+            if (setDecodeSchemaTypes && setDecodeMsg) {
+                loadDecodeTypes(schemaObj);
+            }
+        } else {
+            setLoadedSchema(schemaStr);
+            if (setDecodeSchemaTypes && setDecodeMsg) {
+                loadDecodeTypes({});
+            }
         }
     };
 
@@ -238,18 +203,14 @@ const JADNSchemaLoader = (props: any) => {
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
                         <SBFormatBtn customClass="float-end me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end ms-1 me-1' title={isValidJADN ? "Schema is valid" : "Click to validate Schema"}
-                                onClick={schemaFormat?.value == 'jadn' ? onValidateJADNClick : onValidateJSONClick}>
-                                <span className="m-1">Valid</span>
-                                {isValidJADN ? (
-                                    <span className="badge rounded-pill text-bg-success">
-                                        <FontAwesomeIcon icon={faCheck} />
-                                    </span>) : (
-                                    <span className="badge rounded-pill text-bg-danger">
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </span>)
-                                }
-                            </button>}
+                            <SBValidateSchemaBtn
+                                isValid={isValidJADN}
+                                setIsValid={setIsValidJADN}
+                                setIsValidating={setIsValidating}
+                                schemaData={loadedSchema}
+                                schemaFormat={schemaFormat?.value}
+                            />
+                        }
                     </div>
                 </div>
             </div>

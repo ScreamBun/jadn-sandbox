@@ -1,17 +1,17 @@
 import React, { useEffect, memo, useRef, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
-import { faCheck, faCircleChevronDown, faCircleChevronUp, faPlusSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCircleChevronDown, faCircleChevronUp, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { VariableSizeList as List } from "react-window";
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Info, Types } from '../../structure';
-import { loadFile, setSchema } from 'actions/util';
+import { setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { StandardTypeObject, TypeKeys } from '../consts';
-import { getFilenameExt, getFilenameOnly, getTypeName, zip } from 'components/utils/general';
+import { getTypeName, validateJSON, zip } from 'components/utils/general';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import { Option } from 'components/common/SBSelect';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
@@ -24,6 +24,7 @@ import { AddToIndexDropDown } from './AddToIndexDropDown';
 import { DragItem } from '../DragStyle/SBOutline';
 import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
 import SBSchemaLoader from 'components/common/SBSchemaLoader';
+import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -132,74 +133,48 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             setGeneratedSchema('');
             setCardsState([]);
         }
+        setIsValidating(false);
     }
 
-    const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        validateJADN(JSON.stringify(generatedSchema));
+        dismissAllToast();
+        setIsValidJADN(false);
+        setIsValidating(false);
+        setIsLoading(false);
+        setSelectedFile(null);
+        setGeneratedSchema('');
+        setCardsState([]);
     }
 
     const validateJADN = (jsonToValidate: any) => {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(true);
+
         let jsonObj = validateJSON(jsonToValidate);
-        if (!jsonObj) {
-            setIsValidating(false);
+        if (jsonObj == false) {
             sbToastError(`Invalid JSON. Cannot validate JADN`);
+            setIsValidating(false);
             return false;
         }
 
-        try {
-            dispatch(validateSchema(jsonObj))
-                .then((validateSchemaVal: any) => {
-                    if (validateSchemaVal.payload.valid_bool == true) {
-                        setIsValidJADN(true);
-                        setIsValidating(false);
-                        sbToastSuccess(validateSchemaVal.payload.valid_msg);
-                        return true;
-                    } else {
-                        setIsValidating(false);
-                        sbToastError(validateSchemaVal.payload.valid_msg);
-                        return false;
-                    }
-                })
-                .catch((validateSchemaErr) => {
-                    setIsValidating(false);
-                    sbToastError(validateSchemaErr.payload.valid_msg)
+        return dispatch(validateSchema(jsonObj))
+            .then((validateSchemaVal: any) => {
+                if (validateSchemaVal.payload.valid_bool == true) {
+                    dispatch(setSchema(jsonObj));
+                    setIsValidJADN(true);
+                    sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                    return true;
+                } else {
+                    sbToastError(validateSchemaVal.payload.valid_msg);
                     return false;
-                })
-        } catch (err) {
-            if (err instanceof Error) {
-                setIsValidating(false);
-                sbToastError(err.message)
+                }
+            })
+            .catch((validateSchemaErr) => {
+                sbToastError(validateSchemaErr.payload.valid_msg)
                 return false;
-            }
-        }
-        return true;
-    }
-
-    const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
-        let jsonObj = null;
-
-        if (!jsonToValidate) {
-            sbToastError(`No data found`)
-            return jsonObj;
-        }
-
-        try {
-            jsonObj = JSON.parse(jsonToValidate);
-        } catch (err: any) {
-            if (showErrorPopup) {
-                sbToastError(`Invalid Format: ${err.message}`)
-            }
-        }
-
-        if (onErrorReturnOrig && !jsonObj) {
-            jsonObj = jsonToValidate
-        }
-
-        return jsonObj;
+            })
     }
 
     let infoKeys;
@@ -522,7 +497,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     <div className='col-sm-3'>
                         <SBSchemaLoader
                             schemaOpts={schemaOpts}
-                            onFileSelect={onFileSelect}
                             selectedSchemaOpt={selectedFile}
                             loadedSchema={generatedSchema}
                             fileName={fileName}
@@ -540,17 +514,13 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                         <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
                         <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-sm btn-primary me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className="float-end btn btn-sm btn-primary me-1" title={isValidJADN ? "Schema is valid" : "Click to validate Schema"} onClick={onValidateJADNClick}>
-                                <span className="m-1">Valid</span>
-                                {isValidJADN ? (
-                                    <span className="badge rounded-pill text-bg-success">
-                                        <FontAwesomeIcon icon={faCheck} />
-                                    </span>) : (
-                                    <span className="badge rounded-pill text-bg-danger">
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </span>)
-                                }
-                            </button>
+                            <SBValidateSchemaBtn
+                                isValid={isValidJADN}
+                                setIsValid={setIsValidJADN}
+                                setIsValidating={setIsValidating}
+                                schemaData={generatedSchema}
+                                schemaFormat={'jadn'}
+                            />
                         }
                     </div>
                 </div>

@@ -50,6 +50,7 @@ const SBSchemaLoader = forwardRef(function SBSchemaLoader(props: any, ref) {
                 .catch((loadFileErr) => {
                     console.log(loadFileErr)
                     sbToastError(loadFileErr.payload.data);
+                    onFileChange();
                 })
         }
     };
@@ -74,6 +75,7 @@ const SBSchemaLoader = forwardRef(function SBSchemaLoader(props: any, ref) {
                         onFileChange(dataStr);
                     } catch (err) {
                         sbToastError(`File cannot be loaded: Invalid JSON`);
+                        onFileChange();
                     }
                 }
             };

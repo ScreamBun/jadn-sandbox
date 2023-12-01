@@ -1,6 +1,7 @@
 // General Utility Functions
 import _ from 'lodash';
 import { objectFromTuple } from './object';
+import { sbToastError } from 'components/common/SBToast';
 
 /**
  * Split and space a camelcased string
@@ -106,4 +107,23 @@ export const getTypeName = (types_to_serach: any[], name: string) => {
   }
 
   return return_name;
+}
+
+export const validateJSON = (jsonToValidate: any) => {
+  let jsonObj;
+
+  if (!jsonToValidate) {
+    sbToastError(`No data found`);
+    return false;
+  }
+
+  try {
+    jsonObj = JSON.parse(jsonToValidate);
+
+  } catch (err: any) {
+    sbToastError(`Invalid Format: ${err.message}`);
+    return false;
+  }
+
+  return jsonObj;
 }
