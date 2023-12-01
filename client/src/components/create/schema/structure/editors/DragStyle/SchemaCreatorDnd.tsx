@@ -1,31 +1,27 @@
-import React, { useEffect, memo, useState } from 'react'
+import React, { memo, useState } from 'react'
 import { flushSync } from 'react-dom';
-import { faCircleChevronDown, faCircleChevronUp, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { v4 as uuid4 } from 'uuid';
 import { VariableSizeList as List } from "react-window";
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Info, Types } from '../../structure';
-import { StandardTypeObject, TypeKeys } from '../consts';
 import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
+import { TypeObject } from '../consts';
 import { configInitialState } from '../../../SchemaCreator';
-import { getTypeName, zip } from 'components/utils/general';
+import { getTypeName } from 'components/utils/general';
 import { sbToastError } from 'components/common/SBToast';
-import { Option } from 'components/common/SBSelect';
 import SBEditor from 'components/common/SBEditor';
 import SBSpinner from 'components/common/SBSpinner';
 import SBScrollToTop from 'components/common/SBScrollToTop';
-import { DragItem } from '../DragStyle/SBOutline';
-import SBOutlineBtnStyle from './SBOutlineBtnStyle';
-import { AddToIndexDropDown } from './AddToIndexDropDown';
+import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
+import { Droppable } from './Droppable'
+import { DraggableKey } from './DraggableKey';
 
 
-
-const defaultInsertIdx = { label: "end", value: "end" };
-
-const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
-    const { selectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState,
-        getItemSize, listRef, setRowHeight,
-        setIsValidJADN, setIsValidating, isLoading,
+const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
+    const { selectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState, getItemSize, listRef,
+        setIsValidJADN, setIsValidating, isLoading, setRowHeight,
         activeOpt, setActiveOpt, activeView, configOpt, setConfigOpt } = props;
 
     const [visibleType, setVisibleType] = useState<number | null>(null);
@@ -34,93 +30,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
 
-    const [insertAt, setInsertAt] = useState(defaultInsertIdx);
-    let indexOpts = generatedSchema.types ?
-        (generatedSchema.types.length == 1) ?
-            [{ value: "0", label: `${generatedSchema.types[0][0]} (beginning)` }, { value: "end", label: "end" }] :
-            generatedSchema.types.map((item: any, i: number) => {
-                if (i == 0) {
-                    return { value: "0", label: `${item[0]} (beginning)` };
-                } else if (i == (generatedSchema.types.length - 1)) {
-                    return { value: "end", label: `${item[0]} (end)` }
-                } else {
-                    return { value: `${i}`, label: `${item[0]} (index: ${i})` };
-                }
-            }) :
-        [defaultInsertIdx];
-
-    useEffect(() => {
-        indexOpts = generatedSchema.types ?
-            (generatedSchema.types.length == 1) ?
-                [{ value: "0", label: `${generatedSchema.types[0][0]} (beginning)` }, { value: "end", label: "end" }] :
-                generatedSchema.types.map((item: any, i: number) => {
-                    if (i == 0) {
-                        return { value: "0", label: `${item[0]} (beginning)` };
-                    } else if (i == (generatedSchema.types.length - 1)) {
-                        return { value: "end", label: `${item[0]} (end)` }
-                    } else {
-                        return { value: `${i}`, label: `${item[0]} (index: ${i})` };
-                    }
-                }) :
-            [defaultInsertIdx];
-        const optionValue = generatedSchema.types && insertAt ? insertAt.value : defaultInsertIdx.value;
-        const selectedOption = indexOpts.filter((option: Option) => option.value == optionValue);
-        setInsertAt(selectedOption ? selectedOption[0] : defaultInsertIdx);
-    }, [generatedSchema])
-
-    let infoKeys;
-    if (generatedSchema.info) {
-        const unusedInfoKeys = Object.keys(Info).filter(k =>
-            !(Object.keys(generatedSchema.info).includes(k)));
-
-        const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
-
-        infoKeys = Object.keys(unusedInfo).map(k => (
-            <div className='list-group-item  d-flex justify-content-between align-items-center p-2' key={k}>
-                {Info[k].key}
-
-                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
-                    disabled={selectedFile?.value == 'file' ? true : false}
-                    title='Add to Schema'>
-                    <FontAwesomeIcon icon={faPlusSquare} />
-                </button>
-            </div>
-        ));
-    } else {
-        infoKeys = Object.keys(Info).map(k => (
-            <div className='list-group-item d-flex justify-content-between align-items-center p-2' key={k}>
-                {Info[k].key}
-
-                <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
-                    disabled={selectedFile?.value == 'file' ? true : false}
-                    title='Add to Schema'>
-                    <FontAwesomeIcon icon={faPlusSquare} />
-                </button>
-            </div>
-        ));
-    }
-
-    const typesKeys = Object.keys(Types).map(k => (
-        <div className='list-group-item d-flex justify-content-between align-items-center p-2' key={k}>
-            {Types[k].key}
-
-            <button type='button' onClick={() => onDrop(k)} className='btn btn-sm btn-outline-primary'
-                disabled={selectedFile?.value == 'file' ? true : false}
-                title='Add to Schema'>
-                <FontAwesomeIcon icon={faPlusSquare} />
-            </button>
-        </div>
-    ));
-
-    const onSelectChange = (e: Option) => {
-        if (e == null || parseInt(e.value) < 0 || parseInt(e.value) > generatedSchema.types.length) {
-            sbToastError("Invalid Index. Setting index to default: end.")
-            e = defaultInsertIdx;
-        }
-        setInsertAt(e);
-    }
-
-    const onDrop = (key: string) => {
+    const onSchemaDrop = (item: Item) => {
+        let key = item.text;
         if (Object.keys(Info).includes(key)) {
             const edit = key == 'config' ? Info[key].edit(configInitialState) : Info[key].edit();
             const updatedSchema = generatedSchema.types ? {
@@ -147,11 +58,12 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             scrollSpyContentEl?.scrollIntoView();
 
         } else if (Object.keys(Types).includes(key)) {
-            let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-            let tmpCards = [...cardsState];
+            const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             const type_name = getTypeName(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
+            tmpTypes.push(tmpDef);
             const dataIndex = generatedSchema.types?.length || 0;
+
             const new_card = {
                 id: self.crypto.randomUUID(),
                 index: dataIndex,
@@ -159,109 +71,92 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                 value: tmpDef,
                 isStarred: false
             }
-            if (!insertAt || (insertAt && insertAt.value == "end")) {
-                tmpTypes.push(tmpDef);
-                tmpCards.push(new_card);
-            } else {
-                if (insertAt.value == "0") {
-                    new_card.index = 0;
-                    tmpTypes.unshift(tmpDef);
-                    tmpCards.unshift(new_card);
-
-                } else {
-                    const idx = parseInt(insertAt.value);
-                    new_card.index = idx;
-
-                    tmpTypes = [
-                        ...tmpTypes.slice(0, idx),
-                        tmpDef,
-                        ...tmpTypes.slice(idx)
-                    ];
-                    tmpCards = [
-                        ...tmpCards.slice(0, idx),
-                        new_card,
-                        ...tmpCards.slice(idx)
-                    ];
-                }
-            }
-
-            let updatedSchema = {
-                ...generatedSchema,
-                types: tmpTypes
-            };
 
             flushSync(() => {
-                setGeneratedSchema(updatedSchema);
-                setCardsState(tmpCards);
+                setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                setCardsState((prev: any) => ([...prev, new_card]));
             });
+
             setIsValidJADN(false);
             setIsValidating(false);
-
-            onScrollToCard(new_card.index);
+            onScrollToCard(dataIndex);
 
         } else {
             console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
         }
     }
 
-    const onStarClick = (idx: number) => {
-        const updatedCards = cardsState.map((item: DragItem, i: number) => {
-            if (i === idx) {
-                return ({ ...item, isStarred: !item.isStarred });
-            } else {
-                return item;
-            }
-        });
-
+    const onOutlineDrop = (updatedCards: DragItem[]) => {
+        const updatedTypes = updatedCards.map(item => item.value);
+        setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
         setCardsState(updatedCards);
     };
+
+    const onStarClick = (updatedCards: DragItem[]) => {
+        setCardsState(updatedCards);
+    }
 
     const onScrollToCard = (idx: number) => {
         listRef.current.scrollToItem(idx);
     }
 
-    const changeIndex = (arrVal: TypeArray, dataIndex: number, idx: number) => {
-        const val = zip(TypeKeys, arrVal) as StandardTypeObject;
-        const type = val.type.toLowerCase() as keyof typeof Types;
-        if (idx < 0) {
-            sbToastError('Error: Cannot move Type up anymore');
-            return;
-        } else if (idx >= generatedSchema.types.length) {
-            sbToastError('Error: Cannot move Type down anymore');
-            return;
+    const onTypesToOutlineDrop = (item: any) => {
+        let key = item.text;
+        let insertAt = item.index;
+        const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
+        const type_name = getTypeName(tmpTypes, `${Types[key].key}-Name`);
+        const tmpDef = Types[key].edit({ name: type_name });
+
+        let updatedTypes = [
+            ...tmpTypes.slice(0, insertAt),
+            tmpDef,
+            ...tmpTypes.slice(insertAt)
+        ];
+
+        const new_card = {
+            id: self.crypto.randomUUID(),
+            index: insertAt,
+            text: type_name,
+            value: tmpDef,
+            isStarred: false
         }
 
-        let tmpTypes = [...generatedSchema.types];
-        tmpTypes = tmpTypes.filter((_t, i) => i !== dataIndex);
-
-        tmpTypes = [
-            ...tmpTypes.slice(0, idx),
-            Types[type].edit(val),
-            ...tmpTypes.slice(idx)
+        let updatedCards = [
+            ...cardsState.slice(0, insertAt),
+            new_card,
+            ...cardsState.slice(insertAt)
         ];
 
-        let updatedSchema = {
-            ...generatedSchema,
-            types: tmpTypes
-        };
+        flushSync(() => {
+            setGeneratedSchema((prev: any) => ({ ...prev, ['types']: updatedTypes }));
+            setCardsState(updatedCards);
+        });
 
-        let tmpCards = [...cardsState];
-        const moved_card = tmpCards[dataIndex];
-        tmpCards = tmpCards.filter((_t, i) => i !== dataIndex);
-
-        tmpCards = [
-            ...tmpCards.slice(0, idx),
-            moved_card,
-            ...tmpCards.slice(idx)
-        ];
-
-        setGeneratedSchema(updatedSchema);
-        setCardsState(tmpCards);
-
-        setIsValidJADN(false);
         setIsValidating(false);
-        onScrollToCard(dataIndex);
+        onScrollToCard(insertAt);
     }
+
+    let infoKeys;
+    if (generatedSchema.info) {
+        const unusedInfoKeys = Object.keys(Info).filter(k =>
+            !(Object.keys(generatedSchema.info).includes(k)));
+
+        const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
+
+        infoKeys = Object.keys(unusedInfo).map(k => (
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+        ));
+    } else {
+        infoKeys = Object.keys(Info).map(k => (
+            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()} id={uuid4()} index={-1} text={k} isDraggable={selectedFile?.value == 'file' ? false : true} />
+        ));
+    }
+
+    const typesKeys = Object.keys(Types).map(k => (
+        <DraggableKey item={Types[k].key} acceptableType={'TypesKeys'} key={uuid4()} id={uuid4()} index={-1} text={k}
+            isDraggable={selectedFile?.value == 'file' ? false : true} onTypesDrop={onTypesToOutlineDrop}
+        />
+    ));
 
     const infoEditors = Object.keys(Info).map((k, i) => {
         const key = k as keyof typeof Info;
@@ -275,15 +170,15 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     if (key == 'config') {
                         setConfigOpt(val);
                     }
-                    let updatedSchema = {
-                        ...generatedSchema,
+
+                    setGeneratedSchema((prev: any) => ({
+                        ...prev,
                         info: {
-                            ...generatedSchema.info,
+                            ...prev.info,
                             ...Info[key].edit(val)
                         }
-                    };
+                    }));
 
-                    setGeneratedSchema(updatedSchema);
                     setIsValidJADN(false);
                     setIsValidating(false);
 
@@ -329,20 +224,20 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             type = "string";
         }
 
-        return (Types[type].editorBtnStyle({
+        return (Types[type].editor({
             key: self.crypto.randomUUID(),
             value: def,
             dataIndex: index,
             customStyle: { ...style, height: 'auto' },
-            setRowHeight: setRowHeight,
             collapseAllFields: allFieldsCollapse,
+            setRowHeight: setRowHeight,
             setIsVisible: setVisibleType,
-            change: (val, idx: number) => {
+            change: (val: TypeObject, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
                 tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
 
                 const valArray: TypeArray = Object.values(val);
-                const updatedCards = cardsState.map((card: DragItem, i: number) => {
+                const updatedCards = cardsState.map((card, i) => {
                     if (i === idx) {
                         return ({
                             ...card,
@@ -354,6 +249,18 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     }
                 });
 
+                setGeneratedSchema((prev: any) => ({
+                    ...prev,
+                    types: tmpTypes
+                }));
+                setCardsState(updatedCards);
+                setIsValidJADN(false);
+                setIsValidating(false);
+            }
+            ,
+            remove: (idx: number) => {
+                const tmpTypes = generatedSchema.types.filter((_type: StandardTypeArray, i: number) => i != idx);
+                const tmpCards = cardsState.filter((_card: DragItem, index: number) => index != idx);
                 if (tmpTypes.length != 0) {
                     setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                 } else {
@@ -363,16 +270,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                         setGeneratedSchema({});
                     }
                 }
-
-                setCardsState(updatedCards);
-                setIsValidJADN(false);
-                setIsValidating(false);
-            }
-            ,
-            remove: (idx: number) => {
-                const tmpTypes = generatedSchema.types.filter((_type: StandardTypeArray, i: number) => i != idx);
-                const tmpCards = cardsState.filter((_card: DragItem, index: number) => index != idx);
-                setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                 setCardsState(tmpCards);
                 setIsValidJADN(false);
                 setIsValidating(false);
@@ -381,12 +278,13 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         }))
     };
 
+
     return (
         <>
             <div className='tab-content mb-2'>
-                <div className={`tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
+                <div className={`container-fluid tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
                     <div className='row'>
-                        <div id="schema-options" className='col-sm-3 pr-1 card-body-scroller'>
+                        <div id="schema-options" className='col-sm-3 ps-0 card-body-scroller'>
                             <div className='row'>
                                 <div className='col'>
                                     <ul className="nav nav-pills pb-2" id="editorKeys" role="tablist">
@@ -429,31 +327,27 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                     </div>
                                 </div>
                             </div>
-                            <div className='row mt-2'>
-                                <AddToIndexDropDown insertAt={insertAt} indexOpts={indexOpts} onSelectChange={onSelectChange} />
-                            </div>
-                            <div className='row mt-2'>
+                            <div className='row'>
                                 <div className='col'>
-                                    <SBOutlineBtnStyle
+                                    <SBOutline
                                         id={'schema-outline'}
-                                        items={cardsState}
+                                        cards={cardsState}
                                         title={'Outline'}
-                                        visibleCard={visibleType}
-                                        changeIndex={changeIndex}
-                                        onStarClick={onStarClick}
+                                        onDrop={onOutlineDrop}
+                                        onStarToggle={onStarClick}
                                         onScrollToCard={onScrollToCard}
-                                    />
+                                        visibleCard={visibleType}
+                                    ></SBOutline>
                                 </div>
                             </div>
                         </div>
-
-                        <div id="schema-editor" className='col-md-9 px-2 card-body-scroller'>
+                        <div id="schema-editor" className='col-md-9 px-1 card-body-scroller' >
                             {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
                                 <>
                                     <div className='row'>
-                                        <div className="col pt-2">
+                                        <div className="col">
                                             <div className='card'>
-                                                <div className='card-header bg-primary'>
+                                                <div className='card-header text-light bg-primary' style={{ justifyContent: 'center', display: 'flex', flexDirection: 'column' }}>
                                                     <div className='row'>
                                                         <div className='col'>
                                                             <h5 id="info" className="card-title text-light">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
@@ -470,13 +364,13 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                 </div>
                                                 <div className='card-body'>
                                                     {!infoCollapse &&
-                                                        <div>
+                                                        <Droppable onDrop={onSchemaDrop} acceptableType={'InfoKeys'} >
                                                             {generatedSchema.info ?
                                                                 <>{infoEditors}</>
                                                                 :
-                                                                <><p>To add metadata info make a selection from Info</p></>
+                                                                <><p>To add metadata info click and drag items from Info</p></>
                                                             }
-                                                        </div>
+                                                        </Droppable>
                                                     }
                                                 </div>
                                             </div>
@@ -488,7 +382,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                 <div className='card-header bg-primary'>
                                                     <div className='row'>
                                                         <div className='col'>
-                                                            <h6 id="types" className='mb-0 pt-1 text-light'>Types* <small style={{ fontSize: '10px' }}> schema content </small></h6>
+                                                            <h6 id="types" className='pt-1 text-light'>Types* <small style={{ fontSize: '10px' }}> schema content </small></h6>
                                                         </div>
                                                         <div className='col'>
                                                             {generatedSchema.types &&
@@ -497,13 +391,13 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                                         <button type="button" className="btn btn-secondary" onClick={() => setTypesCollapse(!typesCollapse)}>
                                                                             {typesCollapse ? 'Show Types' : ' Hide Types'}
                                                                             <FontAwesomeIcon icon={typesCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                className='float-end btn btn-sm'
+                                                                                className='float-end btn btn-sm text-light'
                                                                                 title={typesCollapse ? 'Show Types' : 'Hide Types'} />
                                                                         </button>
                                                                         <button type="button" className="btn btn-secondary" onClick={() => setAllFieldsCollapse(!allFieldsCollapse)}>
                                                                             {allFieldsCollapse ? 'Show Fields' : 'Hide Fields'}
                                                                             <FontAwesomeIcon icon={allFieldsCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                                                                className='float-end btn btn-sm'
+                                                                                className='float-end btn btn-sm text-light'
                                                                                 title={allFieldsCollapse ? 'Show Fields' : 'Hide Fields'} />
                                                                         </button>
                                                                     </div>
@@ -514,7 +408,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                 </div>
                                                 <div className='card-body'>
                                                     {!typesCollapse &&
-                                                        <div>
+                                                        <Droppable onDrop={onSchemaDrop} acceptableType={"TypesKeys"} >
                                                             {generatedSchema.types ?
                                                                 <div style={{ height: '70vh' }}>
                                                                     <AutoSizer disableWidth>
@@ -532,11 +426,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                                                             </List>
                                                                         )}
                                                                     </AutoSizer>
-                                                                </div>
-                                                                :
-                                                                <><p>To add schema content make a selection from Types</p></>
+                                                                </div> :
+                                                                <><p>To add schema content click and drag items from Types</p></>
                                                             }
-                                                        </div>
+                                                        </Droppable>
                                                     }
                                                 </div>
                                             </div>
@@ -560,4 +453,4 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         </>
     )
 });
-export default SchemaCreatorBtnStyle 
+export default SchemaCreatorDnd 
