@@ -68,7 +68,6 @@ class ValidateSchema(Resource):
         schema_fmt = request_json["schema_format"]
 
         try:
-            schema_test = ast.literal_eval(args["schema"])
             schema = json.dumps(ast.literal_eval(args["schema"]))
             
             if schema_fmt == JADN:
@@ -76,11 +75,11 @@ class ValidateSchema(Resource):
             elif schema_fmt == JSON:
                 validation_result = validate_schema(schema_fmt_test)
                 if validation_result != True:
-                    raise f"JSON Schema Error: {validation_result}"
+                    raise ValueError(f"JSON Schema Error: {validation_result}")
             else:
-                raise "Invalid Schema Format"
+                raise ValueError("Invalid Schema Format")
                 
-        except Exception as ex:
+        except BaseException as ex:
             print(traceback.print_exc())
             print(f"Error: {ex}")
             err_msg = str(ex)
