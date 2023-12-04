@@ -9,7 +9,7 @@ from jadnschema.convert.schema.writers.json_schema.schema_validator import valid
 from flask import Blueprint, current_app, jsonify, redirect, request
 from flask_restful import Api, Resource, reqparse
 
-from server.webApp.utils.constants import JADN, JSON
+from webApp.utils.constants import JADN, JSON
 
 logger = logging.getLogger()
 validate = Blueprint("validate", __name__)
@@ -73,11 +73,7 @@ class ValidateSchema(Resource):
             if schema_fmt == JADN:
                 jadn.check(ast.literal_eval(args["schema"])) 
             elif schema_fmt == JSON:
-                validation_result = validate_schema(schema_fmt_test)
-                if validation_result != True:
-                    raise ValueError(f"JSON Schema Error: {validation_result}")
-            else:
-                raise ValueError("Invalid Schema Format")
+                validate_schema(schema_fmt_test)
                 
         except Exception as ex:
             print(traceback.print_exc())

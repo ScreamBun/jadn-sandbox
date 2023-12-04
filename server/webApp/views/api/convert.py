@@ -11,7 +11,7 @@ from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
-from server.webApp.utils.constants import JADN, JSON
+from webApp.utils.constants import JADN, JSON
 
 
 logger = logging.getLogger(__name__)
