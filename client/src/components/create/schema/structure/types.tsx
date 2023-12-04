@@ -1,5 +1,5 @@
 import React from 'react';
-import { PrimitiveEditor, StructureEditor, StructureEditorBtnStyle, PrimitiveEditorBtnStyle } from './editors/editors';
+import { PrimitiveEditor, StructureEditor } from './editors/editors';
 import { PrimitiveDef, StructureDef } from './interfaces';
 import { InfoConfig, StandardTypeArray } from '../interface';
 import { TypeObject } from './editors/consts';
