@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
@@ -12,15 +12,17 @@ import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 import SchemaCreator from './SchemaCreator'
 
+export const isButtonStyleContext = createContext(false);
+
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
 
     const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
     const [generatedSchema, setGeneratedSchema] = useState('');
     const [cardsState, setCardsState] = useState<DragItem[]>([]);
-    const [isButtonStyle, setIsButtonStyle] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [isButtonStyle, setIsButtonStyle] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -45,7 +47,7 @@ const SchemaGenerator = () => {
     }
 
     return (
-        <>
+        <isButtonStyleContext.Provider value={isButtonStyle}>
             <div>
                 <Helmet>
                     <title>{meta_title}</title>
@@ -86,7 +88,7 @@ const SchemaGenerator = () => {
                                 <SchemaCreator
                                     selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                     generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema}
-                                    cardsState={cardsState} setCardsState={setCardsState} isButtonStyle={isButtonStyle} />
+                                    cardsState={cardsState} setCardsState={setCardsState} />
                             </div>
                         </div>
                     </div>
@@ -98,7 +100,7 @@ const SchemaGenerator = () => {
                 message={`Are you sure you want to reset the Schema?`}
                 onResponse={resetSchema}>
             </SBConfirmModal>
-        </>
+        </isButtonStyleContext.Provider>
     );
 }
 export default SchemaGenerator 

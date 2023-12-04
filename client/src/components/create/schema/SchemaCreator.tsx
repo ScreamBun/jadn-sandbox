@@ -1,4 +1,4 @@
-import React, { useEffect, memo, useRef, useState, useCallback } from 'react'
+import React, { useEffect, memo, useRef, useState, useCallback, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
 import { setSchema } from 'actions/util';
@@ -14,6 +14,7 @@ import SBSchemaLoader from 'components/common/SBSchemaLoader';
 import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
 import SchemaCreatorBtnStyle from './structure/editors/BtnStyle/SchemaCreatorBtnStyle';
 import SchemaCreatorDnd from './structure/editors/DragStyle/SchemaCreatorDnd';
+import { isButtonStyleContext } from './SchemaGenerator';
 
 
 export const configInitialState = {
@@ -28,7 +29,8 @@ export const configInitialState = {
 
 const SchemaCreator = memo(function SchemaCreator(props: any) {
     const dispatch = useDispatch();
-    const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState, isButtonStyle } = props;
+    const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
+    const isButtonStyle = useContext(isButtonStyleContext);
 
     useEffect(() => {
         if (!generatedSchema) {
