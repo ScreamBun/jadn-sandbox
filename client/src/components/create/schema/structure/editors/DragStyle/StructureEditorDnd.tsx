@@ -1,36 +1,37 @@
 import React, { memo } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import {
+    FieldArray,
     InfoConfig
 } from '../../../interface';
 import { StandardTypeObject } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import SBOutlineFields, { DragItem } from './SBOutlineFields';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
     customStyle: any;
     change: (v: StandardTypeObject, i: number) => void;
     config: InfoConfig;
-    onAddField: any;
-    isEditableID: any;
-    fieldCollapse: any;
+    isEditableID: boolean;
+    fieldCollapse: boolean;
     rowRef: any;
     inViewRef: any;
-    valueObj: any;
-    setValueObj: any;
-    onRemoveItemClick: any;
-    onChange: any;
-    onBlur: any;
-    modal: any;
-    toggleModal: any;
-    saveModal: any;
-    setFieldCollapse: any;
-    sortFields: any;
-    fieldChange: any;
-    onFieldRemoval: any;
+    valueObj: StandardTypeObject;
+    setValueObj: (value: StandardTypeObject) => void;
+    onRemoveItemClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+    modal: boolean;
+    toggleModal: () => void;
+    saveModal: (modalData: Array<string>) => void;
+    setFieldCollapse: (fieldCollapse: boolean) => void;
+    sortFields: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+    fieldChange: (val: FieldArray, idx: number) => void;
+    onAddField: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    onFieldRemoval: (idx: number) => void;
 }
 
 const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEditorProps) {

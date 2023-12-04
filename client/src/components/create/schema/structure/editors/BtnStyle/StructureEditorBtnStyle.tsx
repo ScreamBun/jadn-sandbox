@@ -9,32 +9,30 @@ import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
 import FieldEditorBtnStyle from './FieldEditorBtnStyle';
 
-// Interface
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
     customStyle: any;
     change: (v: StandardTypeObject, i: number) => void;
     config: InfoConfig;
-    onAddField: any;
-    isEditableID: any;
-    fieldCollapse: any;
+    isEditableID: boolean;
+    fieldCollapse: boolean;
     rowRef: any;
     inViewRef: any;
-    valueObj: any;
-    setValueObj: any;
-    onRemoveItemClick: any;
-    onChange: any;
-    onBlur: any;
-    modal: any;
-    toggleModal: any;
-    saveModal: any;
-    setFieldCollapse: any;
-    sortFields: any;
-    fieldChange: any;
-    onFieldRemoval: any;
+    valueObj: StandardTypeObject;
+    setValueObj: (value: StandardTypeObject) => void;
+    onRemoveItemClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+    modal: boolean;
+    toggleModal: () => void;
+    saveModal: (modalData: Array<string>) => void;
+    setFieldCollapse: (fieldCollapse: boolean) => void;
+    sortFields: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+    fieldChange: (val: FieldArray, idx: number) => void;
+    onAddField: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    onFieldRemoval: (idx: number) => void;
 }
 
-// Structure Editor
 const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
     const { dataIndex, config, customStyle, change, valueObj, setValueObj, isEditableID, fieldChange, onFieldRemoval, onAddField, rowRef, inViewRef, saveModal, toggleModal, modal, onRemoveItemClick, onChange, onBlur, fieldCollapse, setFieldCollapse, sortFields } = props;
     const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {

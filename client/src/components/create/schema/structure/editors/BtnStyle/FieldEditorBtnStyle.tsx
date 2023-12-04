@@ -15,7 +15,6 @@ import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import { shallowEqual } from 'react-redux';
 
-// Interface
 interface FieldEditorProps {
     enumerated?: boolean;
     parentIndex: number;
@@ -42,6 +41,7 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
 
     const [modal, setModal] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+   
     const fieldKeys = enumerated ? EnumeratedFieldKeys : StandardFieldKeys;
     const valueObjInit = zip(fieldKeys, value) as FieldObject;
     const [valueObj, setValueObj] = useState(valueObjInit);

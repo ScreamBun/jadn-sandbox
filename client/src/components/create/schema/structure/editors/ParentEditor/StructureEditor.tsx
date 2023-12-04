@@ -14,9 +14,8 @@ import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import { sbToastError } from 'components/common/SBToast';
 import { isButtonStyleContext } from 'components/create/schema/SchemaGenerator';
-import { StructureEditorBtnStyle } from '../editors';
-import StructureEditorDnd from '../DragStyle/StructureEditorDnd';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
+import { StructureEditorBtnStyle, StructureEditorDnd } from '../editors';
 
 interface StructureEditorProps {
   dataIndex: number; //index changes based on obj in arr (tracks the parent index)

@@ -6,6 +6,7 @@ import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { validateJSON } from 'components/utils/general';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
+import { isButtonStyleContext } from '../../../SchemaGenerator';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBDownloadFile from 'components/common/SBDownloadFile';
@@ -14,7 +15,6 @@ import SBSchemaLoader from 'components/common/SBSchemaLoader';
 import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
 import SchemaCreatorBtnStyle from '../BtnStyle/SchemaCreatorBtnStyle';
 import SchemaCreatorDnd from '../DragStyle/SchemaCreatorDnd';
-import { isButtonStyleContext } from '../../../SchemaGenerator';
 
 
 export const configInitialState = {

@@ -3,7 +3,7 @@ import { Unsubscribe } from 'redux';
 import { useDragDropManager, useDragLayer, useDrop } from 'react-dnd';
 import update from 'immutability-helper'
 import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from 'components/create/schema/interface';
-import FieldEditor from './FieldEditor';
+import FieldEditorDnd from "./FieldEditor";
 
 export interface CardStateItem {
     id: any;
@@ -122,7 +122,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     const renderCard = useCallback(
         (card: any, index: number) => {
             return (
-                <FieldEditor
+                <FieldEditorDnd
                     key={card.id}
                     id={card.id}
                     dataIndex={index}

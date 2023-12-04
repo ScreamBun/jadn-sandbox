@@ -1,4 +1,5 @@
 import React, { memo, useMemo, useRef, useState } from 'react';
+import { shallowEqual } from 'react-redux';
 import { useDrag, useDrop } from 'react-dnd';
 import type { XYCoord } from 'dnd-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,7 +17,6 @@ import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import { Option } from 'components/common/SBSelect';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { DragItem } from './SBOutlineFields';
-import { shallowEqual } from 'react-redux';
 
 interface FieldEditorProps {
   id: any;
@@ -35,15 +35,18 @@ interface FieldEditorProps {
 }
 
 
-const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
+const FieldEditorDnd = memo(function FieldEditorDnd(props: FieldEditorProps) {
   const { enumerated = false, value, dataIndex, parentIndex, change, config, acceptableType, moveCard, id, dropCard, remove, editableID, isDragging } = props;
+  
   const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
   const types = useAppSelector((state) => ({
     base: (state.Util.types.base),
     schema: schemaTypes
   }), shallowEqual);
+ 
   const [modal, setModal] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+ 
   const fieldKeys = enumerated ? EnumeratedFieldKeys : StandardFieldKeys;
   const valueObjInit = zip(fieldKeys, value) as FieldObject;
   const [valueObj, setValueObj] = useState(valueObjInit);
@@ -353,4 +356,4 @@ const FieldEditor = memo(function FieldEditor(props: FieldEditorProps) {
   );
 });
 
-export default FieldEditor;
+export default FieldEditorDnd;
