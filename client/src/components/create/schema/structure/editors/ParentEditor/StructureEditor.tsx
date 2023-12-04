@@ -15,7 +15,7 @@ import { ModalSize } from '../options/ModalSize';
 import { sbToastError } from 'components/common/SBToast';
 import { isButtonStyleContext } from 'components/create/schema/SchemaGenerator';
 import { StructureEditorBtnStyle } from '../editors';
-import StructureEditorDnD from './StructureEditorDnd';
+import StructureEditorDnD from '../DragStyle/StructureEditorDnd';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 interface StructureEditorProps {

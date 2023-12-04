@@ -10,7 +10,7 @@ import { DragItem } from './structure/editors/DragStyle/SBOutline'
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
-import SchemaCreator from './SchemaCreator'
+import SchemaCreator from './structure/editors/ParentEditor/SchemaCreator'
 
 export const isButtonStyleContext = createContext(false);
 

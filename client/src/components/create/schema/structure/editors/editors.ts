@@ -3,8 +3,9 @@ import KeyArrayEditor from './KeyArrayEditor';
 import KeyObjectEditor from './KeyObjectEditor';
 import KeyValueEditor from './KeyValueEditor';
 import PrimitiveEditor from './DragStyle/PrimitiveEditor';
-import StructureEditor from './DragStyle/StructureEditor';
+import StructureEditor from './ParentEditor/StructureEditor';
 import StructureEditorBtnStyle from './BtnStyle/StructureEditorBtnStyle';
+import StructureEditorDnD from './DragStyle/StructureEditorDnd';
 import PrimitiveEditorBtnStyle from './BtnStyle/PrimitiveEditorBtnStyle';
 
 export {
@@ -14,6 +15,7 @@ export {
   KeyValueEditor,
   PrimitiveEditor,
   StructureEditor,
+  StructureEditorDnD,
   StructureEditorBtnStyle,
   PrimitiveEditorBtnStyle
 };

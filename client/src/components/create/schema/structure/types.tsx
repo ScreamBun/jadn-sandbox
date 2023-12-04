@@ -46,49 +46,42 @@ export default {
     key: 'Record',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Record' }),
     editor: (props: EditorProps) => <StructureEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
     type: 'structure'
   },
   enumerated: {
     key: 'Enumerated',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Enumerated' }),
     editor: (props: EditorProps) => <StructureEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
     type: 'structure'
   },
   choice: {
     key: 'Choice',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Choice' }),
     editor: (props: EditorProps) => <StructureEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
     type: 'structure'
   },
   map: {
     key: 'Map',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Map' }),
     editor: (props: EditorProps) => <StructureEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
     type: 'structure'
   },
   array: {
     key: 'Array',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Array' }),
     editor: (props: EditorProps) => <StructureEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
     type: 'structure'
   },
   mapof: {
     key: 'MapOf',
     edit: (props: StructureDef) => primDef({ ...props, type: 'MapOf' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'structure'
   },
   arrayof: {
     key: 'ArrayOf',
     edit: (props: StructureDef) => primDef({ ...props, type: 'ArrayOf' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'structure'
   },
   // Primitive Types

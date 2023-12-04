@@ -8,7 +8,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { Info, Types } from '../../structure';
 import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
 import { TypeObject } from '../consts';
-import { configInitialState } from '../../../SchemaCreator';
+import { configInitialState } from '../ParentEditor/SchemaCreator';
 import { getTypeName } from 'components/utils/general';
 import { sbToastError } from 'components/common/SBToast';
 import SBEditor from 'components/common/SBEditor';
