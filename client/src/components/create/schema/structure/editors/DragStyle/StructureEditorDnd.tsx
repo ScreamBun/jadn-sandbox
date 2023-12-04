@@ -33,7 +33,7 @@ interface StructureEditorProps {
     onFieldRemoval: any;
 }
 
-const StructureEditorDnD = memo(function StructureEditorDnD(props: StructureEditorProps) {
+const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEditorProps) {
     const { dataIndex, config, customStyle, change, valueObj, setValueObj, isEditableID, fieldChange, onFieldRemoval, onAddField, rowRef, inViewRef, saveModal, toggleModal, modal, onRemoveItemClick, onChange, onBlur, fieldCollapse, setFieldCollapse, sortFields } = props;
 
     const onOutlineDrop = (item: DragItem) => {
@@ -170,4 +170,4 @@ const StructureEditorDnD = memo(function StructureEditorDnD(props: StructureEdit
     );
 });
 
-export default StructureEditorDnD;
+export default StructureEditorDnd;

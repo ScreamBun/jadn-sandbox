@@ -89,35 +89,30 @@ export default {
     key: 'Binary',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Binary' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   },
   boolean: {
     key: 'Boolean',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Boolean' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   },
   integer: {
     key: 'Integer',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Integer' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   },
   number: {
     key: 'Number',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Number' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   },
   string: {
     key: 'String',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'String' }),
     editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
-    editorBtnStyle: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     type: 'primitive'
   }
 };

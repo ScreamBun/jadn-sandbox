@@ -15,7 +15,7 @@ import { ModalSize } from '../options/ModalSize';
 import { sbToastError } from 'components/common/SBToast';
 import { isButtonStyleContext } from 'components/create/schema/SchemaGenerator';
 import { StructureEditorBtnStyle } from '../editors';
-import StructureEditorDnD from '../DragStyle/StructureEditorDnd';
+import StructureEditorDnd from '../DragStyle/StructureEditorDnd';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 interface StructureEditorProps {
@@ -341,7 +341,7 @@ const StructureEditor = memo(function StructureEditor(props: StructureEditorProp
           onFieldRemoval={onFieldRemoval}
           onAddField={onAddField}
         /> :
-        <StructureEditorDnD
+        <StructureEditorDnd
           dataIndex={dataIndex}
           customStyle={customStyle}
           change={change}

@@ -1,0 +1,156 @@
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { zip } from '../../../../../utils';
+import { InfoConfig } from '../../../interface';
+import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from '../consts';
+import { sbToastError } from 'components/common/SBToast';
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
+import { isButtonStyleContext } from 'components/create/schema/SchemaGenerator';
+import { PrimitiveEditorBtnStyle, PrimitiveEditorDnd } from '../editors';
+
+interface PrimitiveEditorProps {
+    dataIndex: number;
+    value: Array<any>;
+    customStyle: any;
+    setRowHeight: (i: number, height: number) => void;
+    change: (v: PrimitiveTypeObject, i: number) => void;
+    remove: (i: number) => void;
+    setIsVisible: (i: number) => void;
+    config: InfoConfig;
+}
+
+const PrimitiveEditor = memo(function PrimitiveEditor(props: PrimitiveEditorProps) {
+    const { value, dataIndex, config, setRowHeight, change, setIsVisible } = props;
+    const isButtonStyle = useContext(isButtonStyleContext);
+
+    //TODO: may need to add polyfill -- support for Safari
+    const { ref: inViewRef, inView, entry } = useInView({
+        fallbackInView: true,
+    });
+
+    const [modal, setModal] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+    let valueObjInit: StandardFieldObject | PrimitiveTypeObject;
+    if (Number.isInteger(value[0])) {
+        valueObjInit = zip(StandardFieldKeys, value) as StandardFieldObject;
+    } else {
+        valueObjInit = zip(TypeKeys, value) as PrimitiveTypeObject;
+    }
+    const [valueObj, setValueObj] = useState(valueObjInit);
+    let SBConfirmModalValName = valueObjInit.name;
+
+    const rowRef = useRef<any>();
+
+    useEffect(() => {
+        if (rowRef.current) {
+            setRowHeight(dataIndex, rowRef.current.getBoundingClientRect().height + 5)
+        }
+    }, [rowRef]);
+
+    useEffect(() => {
+        if (inView) {
+            setIsVisible(dataIndex);
+        }
+    }, [entry])
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { placeholder, value } = e.target;
+        const key = placeholder.toLowerCase();
+        setValueObj({ ...valueObj, [key]: value });
+    }
+
+    const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        const { placeholder, value } = e.target;
+
+        if (placeholder == "Name") {
+            if (value.length >= 64) {
+                sbToastError('Error: Max length reached');
+                return;
+            }
+            if (value.includes(config.$Sys)) {
+                sbToastError('Error: TypeNames SHOULD NOT contain the System character');
+            }
+            const regex = new RegExp(config.$TypeName, "g");
+            if (!regex.test(value)) {
+                sbToastError('Error: TypeName format is not permitted');
+            }
+        }
+
+        const key = placeholder.toLowerCase();
+        const updatevalue = { ...valueObj, [key]: value };
+        if (JSON.stringify(valueObjInit) == JSON.stringify(updatevalue)) {
+            return;
+        }
+        setValueObj(updatevalue);
+        change(updatevalue, dataIndex);
+    }
+
+    const onRemoveItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setIsConfirmModalOpen(true);
+    };
+
+    const removeAll = (response: boolean) => {
+        setIsConfirmModalOpen(false);
+        if (response == true) {
+            const { dataIndex, remove } = props;
+            remove(dataIndex);
+        }
+    }
+
+    const saveModal = (modalData: Array<string>) => {
+        toggleModal();
+        const prevState = [...valueObj.options];
+        if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
+            return;
+        }
+        const updatevalue = { ...valueObj, options: modalData }
+        setValueObj(updatevalue);
+        change(updatevalue, dataIndex);
+    }
+
+    const toggleModal = () => {
+        setModal(modal => !modal);
+    }
+
+    return (
+        <>
+            {isButtonStyle ?
+                <PrimitiveEditorBtnStyle
+                    valueObj={valueObj}
+                    rowRef={rowRef}
+                    inViewRef={inViewRef}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    modal={modal}
+                    saveModal={saveModal}
+                    toggleModal={toggleModal}
+                    onRemoveItemClick={onRemoveItemClick}
+                    {...props}
+                /> :
+                <PrimitiveEditorDnd
+                    valueObj={valueObj}
+                    rowRef={rowRef}
+                    inViewRef={inViewRef}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    modal={modal}
+                    saveModal={saveModal}
+                    toggleModal={toggleModal}
+                    onRemoveItemClick={onRemoveItemClick}
+                    {...props}
+                />
+            }
+            <SBConfirmModal
+                isOpen={isConfirmModalOpen}
+                title={`Remove ${SBConfirmModalValName}`}
+                message={`Are you sure you want to remove ${SBConfirmModalValName}?`}
+                confirm_value={dataIndex}
+                onResponse={removeAll}>
+            </SBConfirmModal>
+        </>
+    );
+});
+
+export default PrimitiveEditor;
