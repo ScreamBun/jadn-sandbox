@@ -79,7 +79,7 @@ class ValidateSchema(Resource):
             else:
                 raise ValueError("Invalid Schema Format")
                 
-        except BaseException as ex:
+        except Exception as ex:
             print(traceback.print_exc())
             print(f"Error: {ex}")
             err_msg = str(ex)
