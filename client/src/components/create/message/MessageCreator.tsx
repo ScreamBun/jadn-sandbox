@@ -117,7 +117,7 @@ const MessageCreator = (props: any) => {
                         <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
                         <SBDownloadFile buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
 
-                        <button type='button' onClick={() => setActiveView('message')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'message' ? ' d-none' : ''}`} >View Message</button>
+                        <button type='button' onClick={() => setActiveView('message')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'message' ? ' d-none' : ''}`} >View JSON</button>
                         <button type='button' onClick={() => setActiveView('creator')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} >View Creator</button>
                     </div>
                 </div>

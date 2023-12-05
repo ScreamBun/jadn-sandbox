@@ -22,9 +22,11 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[], formatCheck: boolean = false) => {
 	let isFormatted: boolean = false;
 	let m = [];
-
+	if (!data) {
+		return m;
+	}
 	//ARRAY
-	if (formatCheck && data) {
+	if (formatCheck) {
 		isFormatted = validateArrayFormat(data, optData.format);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + optData.format + ' value');
@@ -53,7 +55,9 @@ export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[
 // optData validation for String
 export const validateOptDataStr = (config: InfoConfig, optData: any, data: string) => {
 	let m = [];
-
+	if (!data) {
+		return m;
+	}
 	var minv = optData.minv || $MINV;
 	var maxv = optData.maxv || config.$MaxString;
 	if (data.length < minv) {
@@ -70,7 +74,7 @@ export const validateOptDataStr = (config: InfoConfig, optData: any, data: strin
 		}
 	}
 
-	if (hasProperty(optData, 'format') && data) {
+	if (hasProperty(optData, 'format')) {
 		const isFormatted = validateStringFormat(data, optData.format);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + optData.format + ' value');
@@ -82,8 +86,11 @@ export const validateOptDataStr = (config: InfoConfig, optData: any, data: strin
 // optData validation for Number, Integer
 export const validateOptDataNum = (optData: any, data: number) => {
 	let m = [];
+	if (!data) {
+		return m;
+	}
 
-	if (hasProperty(optData, 'format') && data) {
+	if (hasProperty(optData, 'format')) {
 		const isFormatted = validateNumericFormat(data, optData.format);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + optData.format + ' value');
@@ -120,7 +127,11 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 
 	let m: string[] = [];
 	let length: number = 0;
-	if (data && optData.format) {
+	if (!data) {
+		return m;
+	}
+
+	if (optData.format) {
 		const isFormatted = validateBinaryFormat(data, binaryType);
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + binaryType + ' value');

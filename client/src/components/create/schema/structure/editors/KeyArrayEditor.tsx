@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faMinusSquare, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 // Interface
@@ -81,7 +81,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
         onChange={onChange}
         onBlur={onBlur}
       />
-      <button type='button' className='btn btn-danger' onClick={removeIndex} data-index={i}>
+      <button type='button' className='btn btn-sm btn-danger' onClick={removeIndex} data-index={i}>
         <FontAwesomeIcon icon={faMinusSquare} />
       </button>
     </div>
@@ -98,7 +98,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
             <div className='col'>
               <div className="btn-group float-end" role="group" aria-label="button group">
                 <button type='button' className='btn btn-sm btn-primary' onClick={addIndex} >
-                  <FontAwesomeIcon icon={faPlusSquare} />
+                  <FontAwesomeIcon icon={faPlusCircle} />
                 </button>
                 <button type='button' className='btn btn-sm btn-danger' onClick={onRemoveItemClick} >
                   <FontAwesomeIcon icon={faMinusCircle} />
