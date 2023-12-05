@@ -22,7 +22,7 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[], formatCheck: boolean = false) => {
 	let isFormatted: boolean = false;
 	let m = [];
-	if (!data) {
+	if (!data || data.length == 0) {
 		return m;
 	}
 	//ARRAY
@@ -55,7 +55,7 @@ export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[
 // optData validation for String
 export const validateOptDataStr = (config: InfoConfig, optData: any, data: string) => {
 	let m = [];
-	if (!data) {
+	if (!data || data.length == 0) {
 		return m;
 	}
 	var minv = optData.minv || $MINV;
