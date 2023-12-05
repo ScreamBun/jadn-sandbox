@@ -7,7 +7,7 @@ import {
 import { StandardTypeObject } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
-import FieldEditorBtnStyle from './FieldEditorBtnStyle';
+import FieldEditor from '../ParentEditor/FieldEditor';
 
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
@@ -69,17 +69,18 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     const fields: any[] = [];
     if (valueObj.fields) {
         for (let i = 0; i < valueObj.fields.length; ++i) {
-            fields.push(<FieldEditorBtnStyle
+            fields.push(<FieldEditor
                 key={valueObj.fields[i][0]}
+                enumerated={valueObj.type.toLowerCase() === 'enumerated'}
                 parentIndex={dataIndex}
                 dataIndex={i}
-                enumerated={valueObj.type.toLowerCase() === 'enumerated'}
                 value={valueObj.fields[i]}
                 change={fieldChange}
                 remove={onFieldRemoval}
-                changeIndex={moveField}
                 config={config}
                 editableID={isEditableID}
+
+                changeIndex={moveField}
                 isFirst={i == 0}
                 isLast={i == valueObj.fields.length - 1}
             />);
