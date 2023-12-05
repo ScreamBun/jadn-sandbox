@@ -8,7 +8,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { Info, Types } from '../../structure';
 import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
 import { TypeObject } from '../consts';
-import { configInitialState } from '../ParentEditor/SchemaCreator';
+import SchemaCreator, { configInitialState } from '../ParentEditor/SchemaCreator';
 import { getTypeName } from 'components/utils/general';
 import { sbToastError } from 'components/common/SBToast';
 import SBEditor from 'components/common/SBEditor';
@@ -224,7 +224,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
             type = "string";
         }
 
-        return (Types[type].editor({
+        return (Types[type].dndeditor({
             key: self.crypto.randomUUID(),
             value: def,
             dataIndex: index,
@@ -453,4 +453,4 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         </>
     )
 });
-export default SchemaCreatorDnd 
+export const SchemaCreatorDndStyle = SchemaCreator(SchemaCreatorDnd);

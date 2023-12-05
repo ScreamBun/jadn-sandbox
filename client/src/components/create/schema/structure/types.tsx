@@ -1,8 +1,10 @@
 import React from 'react';
-import { PrimitiveEditor, StructureEditor } from './editors/editors';
+import { PrimitiveEditorBtnStyle, StructureEditorBtnStyle } from './editors/editors';
 import { PrimitiveDef, StructureDef } from './interfaces';
 import { InfoConfig, StandardTypeArray } from '../interface';
 import { TypeObject } from './editors/consts';
+import { StructureEditorDndStyle } from './editors/DragStyle/StructureEditorDnd';
+import { PrimitiveEditorDndStyle } from './editors/DragStyle/PrimitiveEditorDnd';
 
 interface EditorProps {
   key?: number | string | undefined;  // eslint-disable-line react/require-default-props
@@ -45,74 +47,86 @@ export default {
   record: {
     key: 'Record',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Record' }),
-    editor: (props: EditorProps) => <StructureEditor {...props} />,
+    btneditor: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <StructureEditorDndStyle {...props} />,
     type: 'structure'
   },
   enumerated: {
     key: 'Enumerated',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Enumerated' }),
-    editor: (props: EditorProps) => <StructureEditor {...props} />,
+    btneditor: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <StructureEditorDndStyle {...props} />,
     type: 'structure'
   },
   choice: {
     key: 'Choice',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Choice' }),
-    editor: (props: EditorProps) => <StructureEditor {...props} />,
+    btneditor: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <StructureEditorDndStyle {...props} />,
     type: 'structure'
   },
   map: {
     key: 'Map',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Map' }),
-    editor: (props: EditorProps) => <StructureEditor {...props} />,
+    btneditor: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <StructureEditorDndStyle {...props} />,
     type: 'structure'
   },
   array: {
     key: 'Array',
     edit: (props: StructureDef) => typeDef({ ...props, type: 'Array' }),
-    editor: (props: EditorProps) => <StructureEditor {...props} />,
+    btneditor: (props: EditorProps) => <StructureEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <StructureEditorDndStyle {...props} />,
     type: 'structure'
   },
   mapof: {
     key: 'MapOf',
     edit: (props: StructureDef) => primDef({ ...props, type: 'MapOf' }),
-    editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    btneditor: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <PrimitiveEditorDndStyle {...props} />,
     type: 'structure'
   },
   arrayof: {
     key: 'ArrayOf',
     edit: (props: StructureDef) => primDef({ ...props, type: 'ArrayOf' }),
-    editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    btneditor: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <PrimitiveEditorDndStyle {...props} />,
     type: 'structure'
   },
   // Primitive Types
   binary: {
     key: 'Binary',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Binary' }),
-    editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    btneditor: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <PrimitiveEditorDndStyle {...props} />,
     type: 'primitive'
   },
   boolean: {
     key: 'Boolean',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Boolean' }),
-    editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    btneditor: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <PrimitiveEditorDndStyle {...props} />,
     type: 'primitive'
   },
   integer: {
     key: 'Integer',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Integer' }),
-    editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    btneditor: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <PrimitiveEditorDndStyle {...props} />,
     type: 'primitive'
   },
   number: {
     key: 'Number',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'Number' }),
-    editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    btneditor: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <PrimitiveEditorDndStyle {...props} />,
     type: 'primitive'
   },
   string: {
     key: 'String',
     edit: (props: PrimitiveDef) => primDef({ ...props, type: 'String' }),
-    editor: (props: EditorProps) => <PrimitiveEditor {...props} />,
+    btneditor: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
+    dndeditor: (props: EditorProps) => <PrimitiveEditorDndStyle {...props} />,
     type: 'primitive'
   }
 };

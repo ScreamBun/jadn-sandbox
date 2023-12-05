@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
@@ -10,9 +10,8 @@ import { DragItem } from './structure/editors/DragStyle/SBOutline'
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
-import SchemaCreator from './structure/editors/ParentEditor/SchemaCreator'
-
-export const isButtonStyleContext = createContext(false);
+import { SchemaCreatorBtnStyle } from './structure/editors/BtnStyle/SchemaCreatorBtn'
+import { SchemaCreatorDndStyle } from './structure/editors/DragStyle/SchemaCreatorDnd'
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
@@ -47,7 +46,7 @@ const SchemaGenerator = () => {
     }
 
     return (
-        <isButtonStyleContext.Provider value={isButtonStyle}>
+        <>
             <div>
                 <Helmet>
                     <title>{meta_title}</title>
@@ -85,10 +84,16 @@ const SchemaGenerator = () => {
                                 </div>
                             </div>
                             <div className='card-body p-2'>
-                                <SchemaCreator
+                                {isButtonStyle ? <SchemaCreatorBtnStyle
                                     selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                     generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema}
-                                    cardsState={cardsState} setCardsState={setCardsState} />
+                                    cardsState={cardsState} setCardsState={setCardsState} /> :
+                                    <SchemaCreatorDndStyle
+                                        selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
+                                        generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema}
+                                        cardsState={cardsState} setCardsState={setCardsState} />
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -100,7 +105,7 @@ const SchemaGenerator = () => {
                 message={`Are you sure you want to reset the Schema?`}
                 onResponse={resetSchema}>
             </SBConfirmModal>
-        </isButtonStyleContext.Provider>
+        </>
     );
 }
 export default SchemaGenerator 

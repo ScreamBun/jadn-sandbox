@@ -4,6 +4,7 @@ import { useDragDropManager, useDragLayer, useDrop } from 'react-dnd';
 import update from 'immutability-helper'
 import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from 'components/create/schema/interface';
 import FieldEditor from "../ParentEditor/FieldEditor";
+import { FieldEditorDndStyle } from "./FieldEditorDnd";
 
 export interface CardStateItem {
     id: any;
@@ -122,7 +123,7 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     const renderCard = useCallback(
         (card: any, index: number) => {
             return (
-                <FieldEditor
+                <FieldEditorDndStyle
                     key={card.id}
                     id={card.id}
                     enumerated={isEnumerated}

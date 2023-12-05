@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import OptionsModal from '../options/OptionsModal';
 import { PrimitiveTypeObject, StandardTypeObject } from '../consts';
+import PrimitiveEditor from '../ParentEditor/PrimitiveEditor';
 
 interface PrimitiveEditorProps {
     dataIndex: number;
@@ -18,7 +19,7 @@ interface PrimitiveEditorProps {
     onRemoveItemClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: PrimitiveEditorProps) {
+const PrimitiveEditorBtn = memo(function PrimitiveEditorBtn(props: PrimitiveEditorProps) {
     const { valueObj, dataIndex, customStyle, rowRef, inViewRef, onChange, onBlur, modal, toggleModal, saveModal, onRemoveItemClick } = props;
 
     return (
@@ -84,4 +85,4 @@ const PrimitiveEditorBtnStyle = memo(function PrimitiveEditorBtnStyle(props: Pri
     );
 });
 
-export default PrimitiveEditorBtnStyle;
+export const PrimitiveEditorBtnStyle = PrimitiveEditor(PrimitiveEditorBtn);

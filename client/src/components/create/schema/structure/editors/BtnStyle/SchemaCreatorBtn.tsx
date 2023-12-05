@@ -7,7 +7,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { Info, Types } from '../../structure';
 import { StandardTypeObject, TypeKeys } from '../consts';
 import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
-import { configInitialState } from '../ParentEditor/SchemaCreator';
+import SchemaCreator, { configInitialState } from '../ParentEditor/SchemaCreator';
 import { getTypeName, zip } from 'components/utils/general';
 import { sbToastError } from 'components/common/SBToast';
 import { Option } from 'components/common/SBSelect';
@@ -15,14 +15,14 @@ import SBEditor from 'components/common/SBEditor';
 import SBSpinner from 'components/common/SBSpinner';
 import SBScrollToTop from 'components/common/SBScrollToTop';
 import { DragItem } from '../DragStyle/SBOutline';
-import SBOutlineBtnStyle from './SBOutlineBtnStyle';
+import SBOutlineBtnStyle from './SBOutlineBtn';
 import { AddToIndexDropDown } from './AddToIndexDropDown';
 
 
 
 const defaultInsertIdx = { label: "end", value: "end" };
 
-const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
+const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
     const { selectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState,
         getItemSize, listRef, setRowHeight,
         setIsValidJADN, setIsValidating, isLoading,
@@ -329,7 +329,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             type = "string";
         }
 
-        return (Types[type].editor({
+        return (Types[type].btneditor({
             key: self.crypto.randomUUID(),
             value: def,
             dataIndex: index,
@@ -560,4 +560,4 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         </>
     )
 });
-export default SchemaCreatorBtnStyle 
+export const SchemaCreatorBtnStyle = SchemaCreator(SchemaCreatorBtn); 

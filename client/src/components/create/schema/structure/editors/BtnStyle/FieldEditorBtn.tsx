@@ -7,6 +7,7 @@ import { EnumeratedFieldObject, StandardFieldObject } from '../consts';
 import { ModalSize } from '../options/ModalSize';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import OptionsModal from '../options/OptionsModal';
+import FieldEditor from '../ParentEditor/FieldEditor';
 
 interface FieldEditorProps {
     id: any;
@@ -34,7 +35,7 @@ interface FieldEditorProps {
 }
 
 
-const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditorProps) {
+const FieldEditorBtn = memo(function FieldEditorBtn(props: FieldEditorProps) {
     const { enumerated, valueObj, valType, value, parentIndex, dataIndex, isFirst, isLast,
         changeIndex, onChange, onBlur, onSelectChange, editableID, types,
         modal, saveModal, toggleModal, onRemoveItemClick } = props;
@@ -169,4 +170,4 @@ const FieldEditorBtnStyle = memo(function FieldEditorBtnStyle(props: FieldEditor
     );
 });
 
-export default FieldEditorBtnStyle;
+export const FieldEditorBtnStyle = FieldEditor(FieldEditorBtn);

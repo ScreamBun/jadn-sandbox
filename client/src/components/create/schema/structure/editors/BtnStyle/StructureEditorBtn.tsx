@@ -8,6 +8,7 @@ import { StandardTypeObject } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
 import FieldEditor from '../ParentEditor/FieldEditor';
+import StructureEditor from '../ParentEditor/StructureEditor';
 
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
@@ -33,7 +34,7 @@ interface StructureEditorProps {
     onFieldRemoval: (idx: number) => void;
 }
 
-const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: StructureEditorProps) {
+const StructureEditorBtn = memo(function StructureEditorBtn(props: StructureEditorProps) {
     const { dataIndex, config, customStyle, change, valueObj, setValueObj, isEditableID, fieldChange, onFieldRemoval, onAddField, rowRef, inViewRef, saveModal, toggleModal, modal, onRemoveItemClick, onChange, onBlur, fieldCollapse, setFieldCollapse, sortFields } = props;
     const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
         let tmpFieldValues = [...valueObj.fields];
@@ -173,4 +174,4 @@ const StructureEditorBtnStyle = memo(function StructureEditorBtnStyle(props: Str
     );
 });
 
-export default StructureEditorBtnStyle;
+export const StructureEditorBtnStyle = StructureEditor(StructureEditorBtn);
