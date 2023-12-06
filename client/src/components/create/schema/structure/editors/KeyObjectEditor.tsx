@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faMinusSquare, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { InfoConfig } from '../../interface';
 import { sbToastError } from 'components/common/SBToast';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
