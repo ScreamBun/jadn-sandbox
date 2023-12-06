@@ -3,7 +3,6 @@ import { Unsubscribe } from 'redux';
 import { useDragDropManager, useDragLayer, useDrop } from 'react-dnd';
 import update from 'immutability-helper'
 import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from 'components/create/schema/interface';
-import FieldEditor from "../ParentEditor/FieldEditor";
 import { FieldEditorDndStyle } from "./FieldEditorDnd";
 
 export interface CardStateItem {

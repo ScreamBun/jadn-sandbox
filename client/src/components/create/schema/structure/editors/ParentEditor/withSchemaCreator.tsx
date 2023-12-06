@@ -24,7 +24,7 @@ export const configInitialState = {
     $NSID: $NSID
 }
 
-const SchemaCreator = (SchemaWrapper: React.JSX.IntrinsicAttributes) => {
+export const withSchemaCreator = (SchemaWrapper: React.ComponentType<any>) => {
     return (props: any) => {
         const dispatch = useDispatch();
         const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
@@ -183,4 +183,3 @@ const SchemaCreator = (SchemaWrapper: React.JSX.IntrinsicAttributes) => {
         )
     };
 };
-export default SchemaCreator; 

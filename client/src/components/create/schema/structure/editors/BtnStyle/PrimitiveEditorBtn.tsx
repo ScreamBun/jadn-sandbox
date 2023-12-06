@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import OptionsModal from '../options/OptionsModal';
 import { PrimitiveTypeObject, StandardTypeObject } from '../consts';
-import PrimitiveEditor from '../ParentEditor/PrimitiveEditor';
+import { withPrimitiveEditor } from '../ParentEditor/withPrimitiveEditor';
 
 interface PrimitiveEditorProps {
     dataIndex: number;
@@ -85,4 +85,4 @@ const PrimitiveEditorBtn = memo(function PrimitiveEditorBtn(props: PrimitiveEdit
     );
 });
 
-export const PrimitiveEditorBtnStyle = PrimitiveEditor(PrimitiveEditorBtn);
+export const PrimitiveEditorBtnStyle = withPrimitiveEditor(PrimitiveEditorBtn);

@@ -15,7 +15,7 @@ import { ModalSize } from '../options/ModalSize';
 import { sbToastError } from 'components/common/SBToast';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
-interface StructureEditorProps {
+export interface StructureEditorProps {
   dataIndex: number; //index changes based on obj in arr (tracks the parent index)
   value: TypeArray;
   customStyle: any;
@@ -27,7 +27,7 @@ interface StructureEditorProps {
   collapseAllFields: boolean;
 }
 
-const StructureEditor = (StructureWrapper: React.JSX.IntrinsicAttributes) => {
+export const withStructureEditor = (StructureWrapper: React.ComponentType<any>) => {
   return (props: StructureEditorProps) => {
 
     const { value, dataIndex, config, collapseAllFields, customStyle, setRowHeight, change, remove, setIsVisible } = props;
@@ -316,10 +316,6 @@ const StructureEditor = (StructureWrapper: React.JSX.IntrinsicAttributes) => {
     return (
       <>
         <StructureWrapper
-          dataIndex={dataIndex}
-          customStyle={customStyle}
-          change={change}
-          config={config}
           isEditableID={isEditableID}
           fieldCollapse={fieldCollapse}
           rowRef={rowRef}
@@ -337,6 +333,7 @@ const StructureEditor = (StructureWrapper: React.JSX.IntrinsicAttributes) => {
           fieldChange={fieldChange}
           onFieldRemoval={onFieldRemoval}
           onAddField={onAddField}
+          {...props}
         />
         < SBConfirmModal
           isOpen={isConfirmModalOpen}
@@ -349,5 +346,3 @@ const StructureEditor = (StructureWrapper: React.JSX.IntrinsicAttributes) => {
     );
   };
 };
-
-export default StructureEditor;

@@ -1,10 +1,8 @@
 import React from 'react';
-import { PrimitiveEditorBtnStyle, StructureEditorBtnStyle } from './editors/editors';
+import { PrimitiveEditorBtnStyle, PrimitiveEditorDndStyle, StructureEditorBtnStyle, StructureEditorDndStyle } from './editors/editors';
 import { PrimitiveDef, StructureDef } from './interfaces';
 import { InfoConfig, StandardTypeArray } from '../interface';
 import { TypeObject } from './editors/consts';
-import { StructureEditorDndStyle } from './editors/DragStyle/StructureEditorDnd';
-import { PrimitiveEditorDndStyle } from './editors/DragStyle/PrimitiveEditorDnd';
 
 interface EditorProps {
   key?: number | string | undefined;  // eslint-disable-line react/require-default-props

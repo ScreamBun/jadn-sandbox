@@ -33,7 +33,7 @@ interface FieldEditorProps {
 }
 
 
-const FieldEditor = (FieldWrapper: React.JSX.IntrinsicAttributes) => {
+export const withFieldEditor = (FieldWrapper: React.ComponentType<any>) => {
     return (props: FieldEditorProps) => {
         const { enumerated = false, value, dataIndex, change, config, remove } = props;
 
@@ -160,5 +160,3 @@ const FieldEditor = (FieldWrapper: React.JSX.IntrinsicAttributes) => {
         );
     };
 };
-
-export default FieldEditor;

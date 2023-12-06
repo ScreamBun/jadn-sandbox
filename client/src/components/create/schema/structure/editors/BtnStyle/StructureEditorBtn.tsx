@@ -7,8 +7,8 @@ import {
 import { StandardTypeObject } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
-import FieldEditor from '../ParentEditor/FieldEditor';
-import StructureEditor from '../ParentEditor/StructureEditor';
+import { withStructureEditor } from '../ParentEditor/withStructureEditor';
+import { FieldEditorBtnStyle } from './FieldEditorBtn';
 
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
@@ -70,7 +70,7 @@ const StructureEditorBtn = memo(function StructureEditorBtn(props: StructureEdit
     const fields: any[] = [];
     if (valueObj.fields) {
         for (let i = 0; i < valueObj.fields.length; ++i) {
-            fields.push(<FieldEditor
+            fields.push(<FieldEditorBtnStyle
                 key={valueObj.fields[i][0]}
                 enumerated={valueObj.type.toLowerCase() === 'enumerated'}
                 parentIndex={dataIndex}
@@ -174,4 +174,4 @@ const StructureEditorBtn = memo(function StructureEditorBtn(props: StructureEdit
     );
 });
 
-export const StructureEditorBtnStyle = StructureEditor(StructureEditorBtn);
+export const StructureEditorBtnStyle = withStructureEditor(StructureEditorBtn);

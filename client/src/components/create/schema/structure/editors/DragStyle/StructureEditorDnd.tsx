@@ -9,7 +9,7 @@ import { StandardTypeObject } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import SBOutlineFields, { DragItem } from './SBOutlineFields';
-import StructureEditor from '../ParentEditor/StructureEditor';
+import { withStructureEditor } from '../ParentEditor/withStructureEditor';
 
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
@@ -172,4 +172,4 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
     );
 });
 
-export const StructureEditorDndStyle = StructureEditor(StructureEditorDnd);
+export const StructureEditorDndStyle = withStructureEditor(StructureEditorDnd);

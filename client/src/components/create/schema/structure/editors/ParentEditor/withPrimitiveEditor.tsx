@@ -17,7 +17,7 @@ interface PrimitiveEditorProps {
     config: InfoConfig;
 }
 
-const PrimitiveEditor = (PrimitiveWrapper: React.JSX.IntrinsicAttributes) => {
+export const withPrimitiveEditor = (PrimitiveWrapper: React.ComponentType<any>) => {
     return (props: PrimitiveEditorProps) => {
 
         const { value, dataIndex, config, setRowHeight, change, setIsVisible } = props;
@@ -138,5 +138,3 @@ const PrimitiveEditor = (PrimitiveWrapper: React.JSX.IntrinsicAttributes) => {
         );
     };
 };
-
-export default PrimitiveEditor;
