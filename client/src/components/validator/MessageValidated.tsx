@@ -113,7 +113,7 @@ const MessageValidated = (props: any) => {
                 }
             };
             fileReader.readAsText(file);
-            // sbToastError(`Schema cannot be loaded. Please upload a message file.`);
+            // sbToastError(`Schema cannot be loaded. Please upload a data file.`);
         }
     }
 
@@ -138,37 +138,37 @@ const MessageValidated = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-sm-8'>
                         <div className="d-flex">
-                            <SBSelect id={"message-list"}
+                            <SBSelect id={"data-list"}
                                 customClass={'me-1'}
                                 data={msgOpts}
                                 onChange={onFileSelect}
-                                placeholder={'Select a message...'}
+                                placeholder={'Select a data file...'}
                                 loc={'messages'}
                                 value={selectedFile}
                                 isGrouped isFileUploader isSmStyle />
                             <div className='d-none'>
-                                <SBFileUploader ref={ref} id={"message-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
+                                <SBFileUploader ref={ref} id={"data-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
                             </div>
                             {/* </div> */}
 
                             {/* <div className={`col-md-3`}> */}
-                            <SBSelect id={"message-format-list"}
+                            <SBSelect id={"data-format-list"}
                                 customClass={'me-1'}
                                 data={validMsgFormat}
                                 onChange={(e: Option) => setMsgFormat(e)}
                                 value={msgFormat}
-                                placeholder={'Message format...'}
+                                placeholder={'Data format...'}
                                 isSmStyle
                             />
                             {/* </div> */}
 
                             {/* <div className='col-md-3'> */}
-                            <SBSelect id={"message-decode-list"}
+                            <SBSelect id={"data-decode-list"}
                                 customClass={'me-1'}
                                 data={decodeSchemaTypes.exports}
                                 onChange={(e: Option) => setDecodeMsg(e)}
                                 value={decodeMsg}
-                                placeholder={'Message type...'}
+                                placeholder={'Data type...'}
                                 isSmStyle
                             />
                         </div>
@@ -180,10 +180,10 @@ const MessageValidated = (props: any) => {
                                 <button className='float-end me-1 btn btn-success btn-sm'
                                     disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
                                     type="submit"
-                                    title={'Validate the message against the given schema'}>
-                                    Validate Message
+                                    title={'Validate the data against the given schema'}>
+                                    Validate
                                 </button>}
-                            <SBCopyToClipboard buttonId='copyMessage' data={loadedMsg} customClass='float-end me-1' />
+                            <SBCopyToClipboard buttonId='copyData' data={loadedMsg} customClass='float-end me-1' />
                             <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName.name} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
                         </div>
                     </div>

@@ -91,7 +91,7 @@ const MessageCreator = (props: any) => {
     } else {
         fieldDefs = (
             <small id="msgGenHelpBlock" className="form-text text-muted">
-                Message generator will appear here after selecting a message type
+                Data generator will appear here after selecting a data type
                 &nbsp;
                 {commandType?.value}
             </small>
@@ -107,7 +107,7 @@ const MessageCreator = (props: any) => {
                             <SBSelect id={"command-list"}
                                 data={exportRecords}
                                 onChange={handleSelection}
-                                placeholder={'Select a message type...'}
+                                placeholder={'Select a data type...'}
                                 value={commandType} isSmStyle
                             />
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={'json'} />
@@ -117,7 +117,7 @@ const MessageCreator = (props: any) => {
                         <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
                         <SBDownloadFile buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
 
-                        <button type='button' onClick={() => setActiveView('message')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'message' ? ' d-none' : ''}`} >View Message</button>
+                        <button type='button' onClick={() => setActiveView('message')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'message' ? ' d-none' : ''}`} >View JSON</button>
                         <button type='button' onClick={() => setActiveView('creator')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} >View Creator</button>
                     </div>
                 </div>

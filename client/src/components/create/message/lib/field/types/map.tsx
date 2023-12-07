@@ -35,7 +35,7 @@ const MapField = (props: MapFieldProps) => {
     //k should be already be id 
 
     let updatedData = { ...data };
-    if ((!v || (typeof v == "object" && Object.keys(v).length == 0)) && k in data) {
+    if (data && ((!v || (typeof v == "object" && Object.keys(v).length == 0)) && k in data)) {
       delete updatedData[k]
     } else {
       updatedData = { ...data, [k]: v };
