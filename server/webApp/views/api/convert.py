@@ -6,9 +6,12 @@ import jadn
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
+from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
+
+from webApp.utils.constants import JADN, JSON
 
 
 logger = logging.getLogger(__name__)
@@ -30,21 +33,21 @@ class Convert(Resource):
     def post(self):
         conv = "Valid Base Schema"
         request_json = request.json      
-        data = request_json["schema"]
+        schema_data = request_json["schema"]
         schema_lang = request_json["schema_format"]
         schema_fmt = SchemaFormats(schema_lang)
 
-        is_valid_jadn, schema = current_app.validator.validateSchema(data, False)
-        if schema_fmt == "jadn":
-            if not is_valid_jadn:
+        if schema_fmt == JADN:
+            is_valid, schema = current_app.validator.validateSchema(schema_data, False)
+            if not is_valid:
                 return "Schema is not valid", 500    
-            schema_checked = jadn.check(data) 
-        else: 
-            if is_valid_jadn:
-                return "Incorrect schema format: Schema is a valid JADN Schema.", 500    
-
-            # TODO: validate JSON schema
-            schema_checked = data
+            jadn.check(schema_data) 
+        elif schema_fmt == JSON:
+            validation_result = validate_schema(schema_data)
+            if validation_result != True:
+                return f"JSON Schema Error: {validation_result}", 500
+        else:
+            return "Invalid Schema Format", 500    
 
         convertedData = []
         if len(request_json["convert-to"]) == 1:
@@ -59,7 +62,7 @@ class Convert(Resource):
                 return "Invalid Conversion Type", 500
                 
             try:
-                conv = self.convertTo(schema_checked, schema_fmt, lang)
+                conv = self.convertTo(schema_data, schema_fmt, lang)
                 convertedData.append({'fmt': valid_fmt_name, 'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
             
             except (TypeError, ValueError) as err:
@@ -77,7 +80,7 @@ class Convert(Resource):
                     return "Invalid Conversion Type", 500              
                     
                 try:
-                    conv = self.convertTo(schema_checked, schema_fmt, conv_type)
+                    conv = self.convertTo(schema_data, schema_fmt, conv_type)
                     convertedData.append({'fmt': valid_fmt_name,'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
 
                 except (TypeError, ValueError) as err:

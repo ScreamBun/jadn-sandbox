@@ -26,6 +26,7 @@ import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
+import { LANG_JADN } from 'components/utils/constants';
 
 
 const configInitialState = {
@@ -211,7 +212,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         }
 
         try {
-            dispatch(validateSchema(jsonObj))
+            dispatch(validateSchema(jsonObj, LANG_JADN))
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
@@ -236,6 +237,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -543,7 +545,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
                         <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button type='button' id='validateJADNButton' className="float-end btn btn-primary btn-sm me-1" title={isValidJADN ? "Schema is valid" : "Click to validate Schema"} onClick={onValidateJADNClick}>
+                            <button 
+                                type='button' 
+                                id='validateJADNButton' 
+                                className="float-end btn btn-primary btn-sm me-1" 
+                                title={isValidJADN ? "Schema is valid" : "Click to validate Schema"} 
+                                onClick={onValidateJADNClick}
+                            >
                                 <span className="m-1">Valid</span>
                                 {isValidJADN ? (
                                     <span className="badge rounded-pill text-bg-success">
