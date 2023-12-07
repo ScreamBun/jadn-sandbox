@@ -33,7 +33,7 @@ interface SchemaLoaderProps {
     setSchemaFormat: (fmtOpt: Option | null) => void;
 }
 
-const JADNSchemaLoader = (props: SchemaLoaderProps) => {
+const SchemaLoader = (props: SchemaLoaderProps) => {
     const dispatch = useDispatch();
 
     const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes, acceptFormat, schemaFormat, setSchemaFormat } = props;
@@ -355,4 +355,4 @@ const JADNSchemaLoader = (props: SchemaLoaderProps) => {
         </div>
     )
 }
-export default JADNSchemaLoader;
+export default SchemaLoader;

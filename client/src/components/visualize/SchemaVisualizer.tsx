@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
-import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { SchemaJADN } from 'components/create/schema/interface'
 import SchemaVisualized from './SchemaVisualized'
@@ -117,7 +117,7 @@ const SchemaVisualizer = () => {
                             <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <JADNSchemaLoader
+                                        <SchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />

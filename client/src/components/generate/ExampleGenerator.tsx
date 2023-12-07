@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
-import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import SchemaLoader from 'components/common/SchemaLoader'
 import ExampleCreator from './ExampleCreator'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { JSONSchemaFaker } from 'json-schema-faker';
@@ -168,7 +168,7 @@ const ExampleGenerator = () => {
                             <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <JADNSchemaLoader
+                                        <SchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />

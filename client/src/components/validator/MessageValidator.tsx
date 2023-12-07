@@ -5,7 +5,7 @@ import MessageValidated from './MessageValidated'
 import { validateMessage } from 'actions/validate'
 import { info, setSchema } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
-import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 
@@ -123,7 +123,7 @@ const MessageValidator = () => {
                             <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <JADNSchemaLoader
+                                        <SchemaLoader
                                             selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
