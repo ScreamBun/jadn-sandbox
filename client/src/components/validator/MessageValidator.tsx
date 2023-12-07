@@ -14,14 +14,17 @@ const MessageValidator = () => {
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
+    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<String>('');
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [selectedMsgFile, setSelectedMsgFile] = useState('');
     const [loadedMsg, setLoadedMsg] = useState('');
-    const [msgFormat, setMsgFormat] = useState('');
-    const [decodeMsg, setDecodeMsg] = useState('');
-    const [decodeSchemaTypes, setDecodeSchemaTypes] = useState({
+    const [msgFormat, setMsgFormat] = useState<Option | null>(null);
+    const [decodeMsg, setDecodeMsg] = useState<Option | null>(null);
+    const [decodeSchemaTypes, setDecodeSchemaTypes] = useState<{
+        all: string[],
+        exports: string[]
+    }>({
         all: [],
         exports: []
     });
@@ -38,11 +41,11 @@ const MessageValidator = () => {
         e.preventDefault();
         setIsLoading(false);
         setSelectedSchemaFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setSelectedMsgFile('');
         setLoadedMsg('');
-        setMsgFormat('');
-        setDecodeMsg('');
+        setMsgFormat(null);
+        setDecodeMsg(null);
         setDecodeSchemaTypes({
             all: [],
             exports: []
@@ -125,7 +128,7 @@ const MessageValidator = () => {
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
-                                            decodeSchemaTypes={decodeSchemaTypes} setDecodeSchemaTypes={setDecodeSchemaTypes} />
+                                            setDecodeSchemaTypes={setDecodeSchemaTypes} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <MessageValidated

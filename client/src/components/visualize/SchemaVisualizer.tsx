@@ -19,9 +19,9 @@ export const initConvertedSchemaState = [{
 const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<string>('');
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [conversion, setConversion] = useState<Option[]>([]);
     const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
@@ -42,7 +42,7 @@ const SchemaVisualizer = () => {
     const onReset = () => {
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setConversion([]);
         setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);

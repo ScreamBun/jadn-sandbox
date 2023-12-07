@@ -15,9 +15,9 @@ import { SchemaJADN } from 'components/create/schema/interface'
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<string>('');
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
     const [numOfMsg, setNumOfMsg] = useState<number>();
 
@@ -38,7 +38,7 @@ const ExampleGenerator = () => {
         e.preventDefault();
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setNumOfMsg(undefined);
         setGeneratedMessages([]);
         dispatch(setSchema(null));

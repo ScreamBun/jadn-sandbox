@@ -57,7 +57,7 @@ export const minify = (msg: string, fmt: string) => {
  * @return {string} Formatted JADN schema
  */
 export const FormatJADN = (schema: number | string | Array<any> | Record<string, any>, indent = 2, _level = 0): string => {
-  if (['number', 'string'].includes(typeof (schema))) {
+  if (['number', 'string', 'boolean'].includes(typeof (schema))) {
     return JSON.stringify(schema);
   }
   const spaceCount = (indent % 2 === 1 ? indent - 1 : indent) + (_level * 2);

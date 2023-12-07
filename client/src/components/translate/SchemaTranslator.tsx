@@ -15,9 +15,9 @@ import SchemaTranslated from './SchemaTranslated'
 const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<string>('');
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [translation, setTranslation] = useState<Option[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +37,7 @@ const SchemaTranslator = () => {
     const onReset = () => {
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setTranslation([]);
         setSchemaFormat(null);
         setTranslatedSchema(initConvertedSchemaState);
@@ -117,7 +117,7 @@ const SchemaTranslator = () => {
                                         <JADNSchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} acceptFormat={'.json'} />
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} acceptFormat={['.json']} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTranslated
