@@ -115,7 +115,7 @@ const JADNSchemaLoader = (props: any) => {
             sbToastError(`Invalid JSON. Cannot validate JADN`);
             return false;
         }
-        
+
         try {
             dispatch(validateSchema(jsonObj, LANG_JSON))
                 .then((validateSchemaVal: any) => {
@@ -137,7 +137,7 @@ const JADNSchemaLoader = (props: any) => {
                     setIsValidating(false);
                     sbToastError(validateSchemaErr.payload.valid_msg)
                     return false;
-                    
+
                 }).finally(() => {
                     setIsValidating(false);
                 })
@@ -147,7 +147,7 @@ const JADNSchemaLoader = (props: any) => {
                 sbToastError(err.message)
                 return false;
             }
-        }        
+        }
 
         return false;
     }
@@ -189,7 +189,8 @@ const JADNSchemaLoader = (props: any) => {
                 setIsValidating(false);
                 sbToastError(err.message)
                 return false;
-                return false;    }
+                return false;
+            }
         }
 
         return false;
@@ -383,9 +384,10 @@ const JADNSchemaLoader = (props: any) => {
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
                         <SBFormatBtn customClass="float-end me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end ms-1 me-1' title={isValid ? "Schema is valid" : "Click to validate Schema"}
+                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end ms-1 me-1'
+                                title={isValid ? "Schema is valid" : "Click to validate Schema"}
                                 onClick={schemaFormat?.value == 'jadn' ? onValidateJADNClick : onValidateJSONClick}
-                                disabled={Object.keys(loadedSchema).length != 0 && schemaFormat != null ? false : true}>
+                            >
                                 <span className="m-1">Valid</span>
                                 {isValid ? (
                                     <span className="badge rounded-pill text-bg-success">
