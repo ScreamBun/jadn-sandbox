@@ -183,6 +183,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     }
 
     const sbEditorOnChange = (data: string) => {
+        dismissAllToast();
         setIsValid(false);
         setLoadedSchema(data);
         dispatch(setSchema(null));
@@ -196,6 +197,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     }
 
     const onFileSelect = (e: Option) => {
+        dismissAllToast();
         setIsValid(false);
         if (e == null) {
             setSelectedFile(e);
@@ -244,8 +246,9 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         e.preventDefault();
         dismissAllToast();
         setIsValid(false);
+        setIsLoading(true);
+
         if (e.target.files && e.target.files.length != 0) {
-            setIsLoading(true);
             const file = e.target.files[0];
             setSelectedFile({ 'value': file.name, 'label': file.name });
             const fileName = {
@@ -260,19 +263,16 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                     let dataStr = ev.target.result;
                     setLoadedSchema(dataStr);
                     setIsLoading(false);
-                    try {
+
+                    if (fileName.ext == LANG_JADN) {
+                        validateJADNSchema(dataStr);
+                    } else if (fileName.ext == LANG_JSON) {
+                        validateJSONSchema(dataStr);
+                    }
+
+                    if (setDecodeSchemaTypes && setDecodeMsg) {
                         const dataObj: object = JSON.parse(dataStr);
-                        if (fileName.ext == LANG_JADN) {
-                            validateJADNSchema(dataObj);
-                        } else if (fileName.ext == LANG_JSON) {
-                            validateJSONSchema(dataObj);
-                        }
-                        if (setDecodeSchemaTypes && setDecodeMsg) {
-                            loadDecodeTypes(dataObj);
-                        }
-                    } catch (err) {
-                        setIsLoading(false);
-                        sbToastError(`File cannot be loaded: Invalid JSON`);
+                        loadDecodeTypes(dataObj);
                     }
                 }
             };

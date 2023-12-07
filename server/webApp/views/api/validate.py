@@ -69,28 +69,19 @@ class ValidateSchema(Resource):
 
         try:
             schema = json.dumps(ast.literal_eval(args["schema"]))
-            
+         
+            validate_schema(schema_fmt_test) #validate json
             if schema_fmt == JADN:
                 jadn.check(ast.literal_eval(args["schema"])) 
-            elif schema_fmt == JSON:
-                validate_schema(schema_fmt_test)
+                current_app.validator.validateSchema(schema)
+            
+            response_data = { "valid_bool": True, "valid_msg": "Schema is valid" }
                 
         except Exception as ex:
             print(traceback.print_exc())
             print(f"Error: {ex}")
-            err_msg = str(ex)
-
-        if err_msg:
+            err_msg = f"Invalid Schema : {str(ex)}"
             response_data = { "valid_bool": False, "valid_msg": err_msg }
-        else:
-            if schema_fmt == JADN:
-                val = current_app.validator.validateSchema(schema)
-                response_data = { "valid_bool": val[0], "valid_msg": val[1] }
-            elif schema_fmt == JSON:
-                response_data = { "valid_bool": True, "valid_msg": "JSON Schema is valid" }
-            else:
-                response_data = { "valid_bool": False, "valid_msg": "Unknown format" }
-
 
         return jsonify(response_data)
 
