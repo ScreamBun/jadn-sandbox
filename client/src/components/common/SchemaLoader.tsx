@@ -102,6 +102,10 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
 
     const onValidateSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        if (!loadedSchema) {
+            sbToastError('Validation Error: No Schema to validate');
+            return;
+        }
         setIsValid(false);
         setIsValidating(true);
 
@@ -116,19 +120,18 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             }
         }
 
-        if (schemaObj) {
-            if (schemaFormat?.value == LANG_JSON) {
-                validateJSONSchema(schemaObj);
-            } else {
-                validateJADNSchema(schemaObj);
-            }
+        if (schemaFormat?.value == LANG_JSON) {
+            validateJSONSchema(schemaObj);
         } else {
-            setIsValidating(false);
-            sbToastError('Validation Error: No Schema to validate');
+            validateJADNSchema(schemaObj);
         }
     }
 
     const validateJSONSchema = (jsonObj: object) => {
+        if (!jsonObj) {
+            sbToastError('Validation Error: No Schema to validate');
+            return;
+        }
         try {
             dispatch(validateSchema(jsonObj, LANG_JSON))
                 .then((validateSchemaVal: any) => {
@@ -156,6 +159,10 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     }
 
     const validateJADNSchema = (jsonObj: object) => {
+        if (!jsonObj) {
+            sbToastError('Validation Error: No Schema to validate');
+            return;
+        }
         try {
             dispatch(validateSchema(jsonObj, LANG_JADN))
                 .then((validateSchemaVal: any) => {

@@ -8,6 +8,11 @@ const SBFormatBtn = (props: any) => {
 
     const onFormatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        if (!data) {
+            sbToastError('Format Error: No Schema to format');
+            return;
+        }
+
         try {
             let dataObj = data;
             if (typeof data == 'string') {
