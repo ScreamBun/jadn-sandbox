@@ -27,7 +27,7 @@ const ExampleCreator = (props: any) => {
             <div className="card-header">
                 <h5 className="mb-0">
                     <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
-                        Message Example #{i + 1}
+                        Data Example #{i + 1}
                     </button>
                     <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-end' />
                     <SBSaveFile data={message} loc={'messages'} customClass={"float-end me-1"} filename={`MessageExample${i + 1}`} ext={'json'} />

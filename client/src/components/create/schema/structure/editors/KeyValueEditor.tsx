@@ -84,7 +84,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   value={val}
                   isGrouped={Array.isArray(options) ? false : true}
                 />
-                <button type="button" title={`Remove ${placeholder}`} className='btn btn-danger ' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger ' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
           </div>
@@ -128,7 +128,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   value={val}
                   isGrouped={Array.isArray(options) ? false : true}
                 />
-                <button type="button" title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
           </div>
@@ -173,7 +173,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                 </label>
                 <div className={`col-md-${fieldColumns} col-form-label d-flex align-items-start`}>
                   <input type={type} id={`editor-${placeholder}-${id}`} className={'w-auto'} {...inputArgs} />
-                  <button type="button" title={`Remove ${placeholder}`} className="btn btn-danger ms-2" onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                  <button type="button" title={`Remove ${placeholder}`} className="btn btn-sm btn-danger ms-2" onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
                 </div>
               </div>
             </div>
@@ -208,7 +208,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
           <div className={`col-md-${fieldColumns}`}>
             <div className="input-group">
               <input type={type} className="form-control" id={`editor-${placeholder}-${id}`} {...inputArgs} />
-              <button type="button" title={`Remove ${placeholder}`} className='btn btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+              <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
             </div>
           </div>
         </div>

@@ -15,6 +15,14 @@ const SBCreatableSelect = (props: any) => {
             cursor: 'pointer'
         }),
 
+        menu: (provided, state) => ({
+            ...provided,
+            borderLeft: 'var(--bs-border-width) solid var(--bs-border-color)',
+            borderRight: 'var(--bs-border-width) solid var(--bs-border-color)',
+            borderBottom: 'var(--bs-border-width) solid var(--bs-border-color)',
+            marginTop: '0px'
+        }),
+
         container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
 
         option: (styles, state) => ({

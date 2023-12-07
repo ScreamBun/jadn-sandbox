@@ -26,7 +26,7 @@ const MessageValidator = () => {
         exports: []
     });
 
-    const meta_title = useSelector(getPageTitle) + ' | Message Validation';
+    const meta_title = useSelector(getPageTitle) + ' | Data Validation';
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
 
     useEffect(() => {
@@ -90,13 +90,13 @@ const MessageValidator = () => {
                 err += ' schema';
             }
             if (!loadedMsg) {
-                err += ', message';
+                err += ', data';
             }
             if (!msgFormat) {
-                err += ', message format';
+                err += ', data format';
             }
             if (!decodeMsg) {
-                err += ', message type';
+                err += ', data type';
             }
             sbToastError('ERROR: Validation failed - Please select ' + err)
             setIsLoading(false);
@@ -113,7 +113,7 @@ const MessageValidator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header bg-secondary p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Validation</span></h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Validation</span></h5>
                             <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
