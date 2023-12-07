@@ -231,6 +231,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                     }
                     setIsLoading(false);
                     let schemaObj = loadFileVal.payload.data;
+                    
+                    setIsValidating(true);
                     if (fileName.ext == LANG_JADN) {
                         validateJADNSchema(schemaObj);
                     } else if (fileName.ext == LANG_JSON) {
@@ -271,6 +273,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                     setLoadedSchema(dataStr);
                     setIsLoading(false);
 
+                    setIsValidating(true);
                     if (fileName.ext == LANG_JADN) {
                         validateJADNSchema(dataStr);
                     } else if (fileName.ext == LANG_JSON) {
