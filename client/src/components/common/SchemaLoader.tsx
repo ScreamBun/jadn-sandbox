@@ -104,6 +104,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         e.preventDefault();
         if (!loadedSchema) {
             sbToastError('Validation Error: No Schema to validate');
+            setIsValidating(false);
             return;
         }
         setIsValid(false);
@@ -130,6 +131,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const validateJSONSchema = (jsonObj: object) => {
         if (!jsonObj) {
             sbToastError('Validation Error: No Schema to validate');
+            setIsValidating(false);
             return;
         }
         try {
@@ -161,6 +163,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const validateJADNSchema = (jsonObj: object) => {
         if (!jsonObj) {
             sbToastError('Validation Error: No Schema to validate');
+            setIsValidating(false);
             return;
         }
         try {

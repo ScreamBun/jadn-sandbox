@@ -17,7 +17,18 @@ const SBDownloadFile = (props: any) => {
         setFileNameInput(e.target.value);
     }
 
-    const onDownloadClick = (fmt: string = 'jadn') => {
+    const onDownloadIconClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (!data) {
+            sbToastError('No data to download');
+            return;
+        }
+        setToggleDownloadDialog(true);
+        setFileNameInput(filename);
+    }
+
+    const onDownloadClick = (e: React.MouseEvent<HTMLButtonElement>, fmt: string = 'jadn') => {
+        e.preventDefault();
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
             return;
@@ -47,11 +58,13 @@ const SBDownloadFile = (props: any) => {
             }, 0);
             setIsLoading(false);
             sbToastSuccess('File downloaded')
+
         } catch (err) {
             console.log(err);
             setIsLoading(false);
             sbToastError(`File cannot be downloaded`);
         }
+
         setIsLoading(false);
         setToggleDownloadDialog(false);
     }
@@ -59,7 +72,7 @@ const SBDownloadFile = (props: any) => {
     return (
         <>
             {isLoading ? <SBSpinner color={"primary"} /> :
-                <button id={buttonId || 'downloadFile'} type='button' title="Download File" className={'btn btn-sm btn-primary ' + customClass} onClick={() => { setToggleDownloadDialog(true); setFileNameInput(filename); }}>
+                <button id={buttonId || 'downloadFile'} type='button' title="Download File" className={'btn btn-sm btn-primary ' + customClass} onClick={onDownloadIconClick}>
                     <FontAwesomeIcon icon={faFileDownload} />
                 </button>}
 
@@ -94,7 +107,7 @@ const SBDownloadFile = (props: any) => {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type='button' className='btn btn-sm btn-success' onClick={() => onDownloadClick(ext)}>Download</button>
+                            <button type='button' className='btn btn-sm btn-success' onClick={(e) => onDownloadClick(e, ext)}>Download</button>
                             <button type='button' className='btn btn-sm btn-secondary' onClick={() => { setIsLoading(false); setToggleDownloadDialog(false); }}>Cancel</button>
                         </div>
                     </div>

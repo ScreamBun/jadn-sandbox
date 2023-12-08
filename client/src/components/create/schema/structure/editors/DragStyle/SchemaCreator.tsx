@@ -168,6 +168,10 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         }
                     } catch (err) {
                         setIsLoading(false);
+                        if (!data) {
+                            sbToastError(`Schema cannot be loaded: Empty File`);
+                            return;
+                        }
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
                     }
                 }
