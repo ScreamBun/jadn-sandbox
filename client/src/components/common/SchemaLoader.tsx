@@ -229,16 +229,16 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                         sbToastError(loadFileVal.payload.response);
                         return;
                     }
-                    setIsLoading(false);
                     let schemaObj = loadFileVal.payload.data;
-                    
+                    setLoadedSchema(schemaObj);
+                    setIsLoading(false);
+
                     setIsValidating(true);
                     if (fileName.ext == LANG_JADN) {
                         validateJADNSchema(schemaObj);
                     } else if (fileName.ext == LANG_JSON) {
                         validateJSONSchema(schemaObj)
                     }
-                    setLoadedSchema(schemaObj);
 
                     if (setDecodeSchemaTypes && setDecodeMsg) {
                         loadDecodeTypes(schemaObj);
