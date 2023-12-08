@@ -77,7 +77,7 @@ const Home = () => {
                   <Link className="card-link" to={NAV_TRANSLATE}>Schema Translation</Link>
                 </h5>
                 <p className="card-text">Translate a JADN Schema to another Schema format.</p>
-                <p className="card-text">Translate a JSON Schema to JADN Schema.</p>
+                <p className="card-text">Translate a JSON Schema to a JADN Schema.</p>
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_TRANSLATE} state={"json"}>JSON</Link>
