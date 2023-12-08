@@ -209,6 +209,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const onFileSelect = (e: Option) => {
         dismissAllToast();
         setIsValid(false);
+        dispatch(setSchema(null));
+
         if (e == null) {
             setSelectedFile(e);
             setLoadedSchema(null);
