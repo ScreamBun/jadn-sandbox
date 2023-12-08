@@ -19,7 +19,7 @@ const ExampleGenerator = () => {
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
-    const [numOfMsg, setNumOfMsg] = useState<number>();
+    const [numOfMsg, setNumOfMsg] = useState<number>(1);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -39,7 +39,7 @@ const ExampleGenerator = () => {
         setIsLoading(false);
         setSelectedFile(null);
         setLoadedSchema(null);
-        setNumOfMsg(undefined);
+        setNumOfMsg(1);
         setGeneratedMessages([]);
         dispatch(setSchema(null));
     }
@@ -105,10 +105,7 @@ const ExampleGenerator = () => {
                     //Note: external ref can't be resolved by JSONSchemaFaker; must have a fully resolved schema
                     let ex = JSONSchemaFaker.generate(schema);
 
-                    if (Object.keys(ex).length < 1) {
-                        break;
-
-                    } else if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
+                    if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
                         for (const [k, v] of Object.entries(ex)) {
                             if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
                                 if (schemaProps && schemaProps.includes(k)) {
