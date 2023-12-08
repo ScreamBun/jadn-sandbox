@@ -41,7 +41,8 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
                 </h5>
-                <p className="card-text">Create and edit JADN schemas using forms, view JADN schemas in JSON format, and create schema compliant data instances (documents, messages).</p>
+                <p className="card-text">Create and edit JADN schemas using forms, view JADN schemas in JSON format.</p>
+                <p className="card-text"> Create schema compliant data instances (documents, messages).</p>
                 <br /><br /><br />
               </div>
               <div className="card-footer bg-secondary">
@@ -57,13 +58,7 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA}>Schema Visualization</Link>
                 </h5>
-                <p className="card-text">Convert a JADN Schema into different visualization formats. </p>
-                <div className="card-text">
-                  <div className="card-text">
-                    Input: JADN Schema
-                    <p>Output: The same JADN Schema in a different visual representation</p>
-                  </div>
-                </div>
+                <p className="card-text">Convert a JADN Schema into different visual representations. </p>
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"gv"}>GraphViz</Link>
@@ -81,7 +76,8 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_TRANSLATE}>Schema Translation</Link>
                 </h5>
-                <p className="card-text">Translate a JADN Schema to another Schema format. Translate a JSON Schema to JADN Schema</p>
+                <p className="card-text">Translate a JADN Schema to another Schema format.</p>
+                <p className="card-text">Translate a JSON Schema to JADN Schema.</p>
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_TRANSLATE} state={"json"}>JSON</Link>
@@ -99,7 +95,7 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>Data Validation</Link>
                 </h5>
-                <p className="card-text">Validate data instances against a JADN Schema and convert them from one data format to another.</p>
+                <p className="card-text">Validate data instances in various data language formats against a JADN Schema.</p>
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"cbor"}>CBOR</Link>
