@@ -39,6 +39,7 @@ const SBOutline = (props: SBOutlineProps) => {
 
   const [items, setItems] = useState(cards);
   const cardsStateRef = useRef(items);
+  const [query, setQuery] = useState("")
 
   useEffect(() => {
     setItems(cards);
@@ -185,6 +186,7 @@ const SBOutline = (props: SBOutlineProps) => {
           <ul className="nav nav-pills">
             <li className="nav-item pt-2"><a title="An outline view of all the schema types" className="bg-primary nav-link text-light">{title}</a></li>
           </ul>
+          <input type="text" placeholder="search" className="search" onChange={(e) => setQuery(e.target.value)}/>
           <div className="sb-outline"
             ref={drop}
             data-handler-id={handlerId}
@@ -193,7 +195,7 @@ const SBOutline = (props: SBOutlineProps) => {
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
               paddingTop: '5px',
             }}>
-            <div>{items.map((card, i) => renderCard(card, i))}</div>
+            <div>{items.filter(card=>card.text.includes(query)).map((card, i) => renderCard(card, i))}</div>
           </div>
         </div>
       ) : (
