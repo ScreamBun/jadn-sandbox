@@ -118,6 +118,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
+
         if (e == null) {
             setSelectedFile(e);
             setGeneratedSchema('');
@@ -127,25 +128,25 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             ref.current.value = '';
             ref.current?.click();
         } else {
-            setSelectedFile(e);
-            const fileName = {
-                name: getFilenameOnly(e.label),
-                ext: getFilenameExt(e.label)
-            }
-            setFileName(fileName);
-            setIsLoading(true);
-
             dispatch(loadFile('schemas', e.value))
-                .then((loadFileVal: any) => {
-                    setIsLoading(false);
+                .then(async (loadFileVal: any) => {
                     if (loadFileVal.error) {
                         sbToastError(loadFileVal.payload.response);
                         return;
                     }
                     let schemaObj = loadFileVal.payload.data;
 
-                    const validJADN = validateJADN(schemaObj);
+                    //TODO: just validate for valid JADN syntax
+                    const validJADN = await validateJADN(schemaObj);
                     if (validJADN) {
+                        setIsLoading(true);
+                        setSelectedFile(e);
+                        const fileName = {
+                            name: getFilenameOnly(e.label),
+                            ext: getFilenameExt(e.label)
+                        }
+                        setFileName(fileName);
+
                         flushSync(() => {
                             setGeneratedSchema(schemaObj);
                             setCardsState(schemaObj.types.map((item, i) => ({
@@ -156,6 +157,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                 isStarred: false
                             })));
                         });
+                        setIsLoading(false);
+
+                    } else {
+                        throw Error;
                     }
                 })
                 .catch((loadFileErr: { payload: { data: string; }; }) => {
@@ -172,17 +177,18 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         setIsValidating(false);
 
         if (e.target.files && e.target.files.length != 0) {
-            setIsLoading(true);
             const file = e.target.files[0];
             const fileReader = new FileReader();
-            fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+            fileReader.onload = async (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        setIsLoading(false);
                         const dataObj = JSON.parse(data);
-                        const validJADN = validateJADN(data);
+
+                        //TODO: just validate for valid JADN syntax
+                        const validJADN = await validateJADN(data);
                         if (validJADN) {
+                            setIsLoading(true);
                             setSelectedFile({ 'value': file.name, 'label': file.name });
 
                             const fileName = {
@@ -201,9 +207,15 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                     isStarred: false
                                 })));
                             });
+                            setIsLoading(false);
+                        } else {
+                            throw Error;
                         }
                     } catch (err) {
-                        setIsLoading(false);
+                        if (!data) {
+                            sbToastError(`Schema cannot be loaded: Empty File`);
+                            return;
+                        }
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
                     }
                 }
@@ -246,7 +258,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         setIsValidating(true);
 
         try {
-            dispatch(validateSchema(jsonObj, LANG_JADN))
+            return dispatch(validateSchema(jsonObj, LANG_JADN))
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);

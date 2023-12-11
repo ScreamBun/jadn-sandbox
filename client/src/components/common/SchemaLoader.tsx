@@ -17,6 +17,9 @@ import SBEditor from "./SBEditor";
 import { getSchemaConversions } from "reducers/convert";
 import { LANG_JADN, LANG_JSON } from "components/utils/constants";
 
+//File Loader Note: User should be able to upload any JSON/JADN schema; 
+//It does not need to be syntactically correct since the user can edit the schema in the code editor.
+
 interface SchemaLoaderProps {
     selectedFile: Option | null;
     setSelectedFile: (selectedOpt: Option | null) => void;
