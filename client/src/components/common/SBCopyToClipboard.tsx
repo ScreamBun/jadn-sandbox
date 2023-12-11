@@ -12,6 +12,10 @@ const SBCopyToClipboard = (props: any) => {
 
     const onCopyClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        if (!data) {
+            sbToastError('No data to copy');
+            return;
+        }
         let copied_data = data;
         setIsLoading(true);
         try {

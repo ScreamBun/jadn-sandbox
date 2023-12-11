@@ -23,6 +23,15 @@ const SBDownloadPDF = (props: any) => {
         setToggleDownloadDialog(false);
     }
 
+    const onDownloadIconClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (!data) {
+            sbToastError('No data to download');
+            return;
+        }
+        setToggleDownloadDialog(true);
+    }
+
     const onDownloadClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (fileNameInput == '') {
@@ -70,7 +79,7 @@ const SBDownloadPDF = (props: any) => {
     return (
         <>
             {isLoading ? <SBSpinner color={'info'} /> :
-                <button id={buttonId || 'downloadPDF'} type='button' title="Download PDF" className={'btn btn-sm btn-primary ' + customClass} onClick={() => setToggleDownloadDialog(true)}>
+                <button id={buttonId || 'downloadPDF'} type='button' title="Download PDF" className={'btn btn-sm btn-primary ' + customClass} onClick={onDownloadIconClick}>
                     <FontAwesomeIcon icon={faFilePdf} />
                 </button>}
 

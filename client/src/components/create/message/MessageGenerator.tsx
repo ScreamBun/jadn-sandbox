@@ -4,8 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import MessageCreator from './MessageCreator'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
-import { SchemaJADN } from '../schema/interface'
-import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 
@@ -13,9 +12,9 @@ import { Option } from 'components/common/SBSelect'
 const MessageGenerator = () => {
     const dispatch = useDispatch()
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<SchemaJADN | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [commandType, setCommandType] = useState<Option | null>();
 
@@ -57,7 +56,7 @@ const MessageGenerator = () => {
                         <div className='card-body p-2'>
                             <div className='row'>
                                 <div className='col-md-6 pr-1'>
-                                    <JADNSchemaLoader
+                                    <SchemaLoader
                                         selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                         schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                         loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
