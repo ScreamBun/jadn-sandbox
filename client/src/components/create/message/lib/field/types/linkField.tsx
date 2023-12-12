@@ -31,7 +31,7 @@ const LinkField = (props: LinkFieldProps) => {
 
     //find key
     let linkField = undefined;
-    if (Array.isArray(typeDef[typeDef.length - 1])) {
+    if (Array.isArray(typeDef[typeDef.length - 1]) && typeDef[typeDef.length - 1].length != 0) {
         for (let field of (typeDef[typeDef.length - 1])) {
             const [_fidx, _fname, _ftype, fopts, _fcomment] = field;
             const newField = [_fidx, name, _ftype, fopts, _fcomment];

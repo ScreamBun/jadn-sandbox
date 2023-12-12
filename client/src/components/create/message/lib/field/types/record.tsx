@@ -52,7 +52,7 @@ const RecordField = (props: RecordFieldProps) => {
 
   const fieldDef = (!Array.isArray(typeDef[typeDef.length - 1]) || typeDef[typeDef.length - 1].length == 0) ?
     <div className='p-2'> No fields </div> :
-    typeDef[typeDef.length - 1].map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} value={data[d[1]]} />);
+    typeDef[typeDef.length - 1]?.map((d: any) => <Field key={d[0]} def={d} parent={msgName} optChange={onChange} config={config} value={data[d[1]]} />);
 
   const err = errMsg.map((msg, index) =>
     <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>
