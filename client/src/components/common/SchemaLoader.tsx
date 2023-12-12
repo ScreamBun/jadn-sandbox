@@ -113,30 +113,31 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         setIsValid(false);
         setIsValidating(true);
 
-        let schemaObj = loadedSchema;
-        if (typeof loadedSchema == 'string') {
-            try {
-                schemaObj = JSON.parse(loadedSchema);
-            } catch (err: any) {
-                sbToastError(`Invalid Schema: ${err.message}`)
-                setIsValidating(false);
-                return;
-            }
-        }
-
         if (schemaFormat?.value == LANG_JSON) {
-            validateJSONSchema(schemaObj);
+            validateJSONSchema(loadedSchema);
         } else {
-            validateJADNSchema(schemaObj);
+            validateJADNSchema(loadedSchema);
         }
     }
 
-    const validateJSONSchema = (jsonObj: object) => {
+    const validateJSONSchema = (jsonObj: object | string) => {
         if (!jsonObj) {
             sbToastError('Validation Error: No Schema to validate');
             setIsValidating(false);
             return;
         }
+
+        if (typeof jsonObj == 'string') {
+            try {
+                jsonObj = JSON.parse(jsonObj);
+            } catch (err: any) {
+                console.log(err)
+                sbToastError(`Invalid JSON: ${err.message}`)
+                setIsValidating(false);
+                return;
+            }
+        }
+
         try {
             dispatch(validateSchema(jsonObj, LANG_JSON))
                 .then((validateSchemaVal: any) => {
@@ -163,12 +164,24 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         }
     }
 
-    const validateJADNSchema = (jsonObj: object) => {
+    const validateJADNSchema = (jsonObj: object | string) => {
         if (!jsonObj) {
             sbToastError('Validation Error: No Schema to validate');
             setIsValidating(false);
             return;
         }
+
+        if (typeof jsonObj == 'string') {
+            try {
+                jsonObj = JSON.parse(jsonObj);
+            } catch (err: any) {
+                console.log(err)
+                sbToastError(`Invalid JSON: ${err.message}`)
+                setIsValidating(false);
+                return;
+            }
+        }
+
         try {
             dispatch(validateSchema(jsonObj, LANG_JADN))
                 .then((validateSchemaVal: any) => {

@@ -87,7 +87,7 @@ class Validator:
                 message = Message.oc2_loads(msg, serial)
             except Exception as e: 
                 err_msg = e
-                return False, f"OpenC2 Message Invalid - {err_msg}", "", msg
+                return False, f"Invalid Data: {err_msg}", "", msg
             
         records = list(s.types.keys())
         if decode in records:
@@ -112,7 +112,7 @@ class Validator:
                     return False, err, "", msg
 
         else:
-            return False, "Decode Invalid - The decode message type was not found in the schema", "", msg
+            return False, "Invalid Export: The decode message type was not found in the schema", "", msg
 
     # Profile test validation
     def getProfileTests(self, profile: str = None) -> dict:
