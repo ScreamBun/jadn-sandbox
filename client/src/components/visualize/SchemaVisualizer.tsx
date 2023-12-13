@@ -24,8 +24,8 @@ const SchemaVisualizer = () => {
     const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [conversion, setConversion] = useState<Option[]>([]);
     const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
-    const [spiltViewFlag, setSplitViewFlag] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [spiltViewFlag, setSplitViewFlag] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Visualization'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -83,7 +83,7 @@ const SchemaVisualizer = () => {
                             if (convertSchemaVal.payload.schema.convert[i].err == false) {
                                 sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                             } else {
-                                sbToastError(`Schema failed to convert to ${convertSchemaVal.payload.schema.convert[i].fmt} : ${convertSchemaVal.payload.schema.convert[i].schema}`);
+                                sbToastError(`Schema failed to convert to ${convertSchemaVal.payload.schema.convert[i].fmt} ${convertSchemaVal.payload.schema.convert[i].schema ? `: ${convertSchemaVal.payload.schema.convert[i].schema}` : ''}`);
                             }
                         } else {
                             sbToastError(`Failed to convert to ${conversion[i].label}`);

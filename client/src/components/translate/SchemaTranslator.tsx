@@ -18,8 +18,8 @@ const SchemaTranslator = () => {
     const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
-    const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [translation, setTranslation] = useState<Option[]>([]);
+    const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [isLoading, setIsLoading] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Translation'
@@ -78,7 +78,7 @@ const SchemaTranslator = () => {
                             if (convertSchemaVal.payload.schema.convert[i].err == false) {
                                 sbToastSuccess(`Schema translated to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                             } else {
-                                sbToastError(`Schema failed to translate to ${convertSchemaVal.payload.schema.convert[i].fmt} : ${convertSchemaVal.payload.schema.convert[i].schema}`);
+                                sbToastError(`Schema failed to translate to ${convertSchemaVal.payload.schema.convert[i].fmt} ${convertSchemaVal.payload.schema.convert[i].schema ? `: ${convertSchemaVal.payload.schema.convert[i].schema}` : ''}`);
                             }
                         } else {
                             sbToastError(`Failed to translate to ${translation[i].label}`);
