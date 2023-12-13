@@ -12,6 +12,7 @@ export interface DragItem {
   text: string;
   value: TypeArray;
   isStarred: boolean;
+  isVisible: boolean;
 }
 
 export interface OutlineContainerState {
@@ -39,7 +40,6 @@ const SBOutline = (props: SBOutlineProps) => {
 
   const [items, setItems] = useState(cards);
   const cardsStateRef = useRef(items);
-  const [query, setQuery] = useState("")
 
   useEffect(() => {
     setItems(cards);
@@ -155,18 +155,19 @@ const SBOutline = (props: SBOutlineProps) => {
       })
     )
   }, []);
+
   const renderCard = useCallback(
     (card: {
-      id: number, text: string, value: TypeArray, isStarred: boolean
-    }, index: number) => {
+      id: number, index: number, text: string, value: TypeArray, isStarred: boolean, isVisible: boolean
+    } ) => {
       return (
         <SBOutlineCard
           key={card.id}
-          index={index}
+          index={card.index}
           id={card.id}
           text={card.text}
           value={card.value}
-          isVisible={index == visibleCard}
+          isVisible={card.isVisible}
           isStarred={card.isStarred}
           scrollToCard={onCardClick}
           addCard={addCard}
@@ -179,6 +180,17 @@ const SBOutline = (props: SBOutlineProps) => {
     [visibleCard]
   );
 
+  const search = (query: string) => {
+    console.log(query)
+    console.log(items)
+    const updatedItems = items.map(card =>
+        card.text.toLowerCase().includes(query.toLowerCase()) ? {...card, isVisible:true} : {...card, isVisible:false}
+    )
+    console.log(updatedItems)
+
+    setItems(updatedItems)
+  }
+
   return (
     <div id='outlineScrollContainer'>
       {items && items.length > 0 ? (
@@ -186,8 +198,8 @@ const SBOutline = (props: SBOutlineProps) => {
           <ul className="nav nav-pills">
             <li className="nav-item pt-2"><a title="An outline view of all the schema types" className="bg-primary nav-link text-light">{title}</a></li>
           </ul>
-          <div className="form-outline" data-mdb-input-init style={{paddingTop: '5px',}}>
-            <input type="search" id="form1" className="form-control" placeholder="Type query" aria-label="Search" onChange={(e) => setQuery(e.target.value)} />
+          <div className="form-outline" style={{paddingTop: '5px',}}>
+            <input type="search" id="form1" className="form-control" placeholder="Type query" aria-label="Search" onChange={(e) => search(e.target.value)} />
           </div>
           <div className="sb-outline"
             ref={drop}
@@ -197,7 +209,7 @@ const SBOutline = (props: SBOutlineProps) => {
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
               paddingTop: '5px',
             }}>
-            <div>{items.filter(card=>card.text.includes(query)).map((card, i) => renderCard(card, i))}</div>
+            <div>{items.filter(card => card.isVisible == true).map(card => renderCard(card))}</div>
           </div>
         </div>
       ) : (

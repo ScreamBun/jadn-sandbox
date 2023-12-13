@@ -117,7 +117,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                             index: i,
                             text: item[0],
                             value: item,
-                            isStarred: false
+                            isStarred: false,
+                            isVisible: true
                         })));
 
                     });
@@ -162,7 +163,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     index: i,
                                     text: item[0],
                                     value: item,
-                                    isStarred: false
+                                    isStarred: false,
+                                    isVisible: true
                                 })));
                             });
                         }
@@ -301,7 +303,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 index: dataIndex,
                 text: type_name,
                 value: tmpDef,
-                isStarred: false
+                isStarred: false,
+                isVisible: true
             }
 
             flushSync(() => {
@@ -350,7 +353,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             index: insertAt,
             text: type_name,
             value: tmpDef,
-            isStarred: false
+            isStarred: false,
+            isVisible: true
         }
 
         let updatedCards = [
