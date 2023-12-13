@@ -66,42 +66,44 @@ class ValidateSchema(Resource):
     def post(self):
         args = parser.parse_args()        
         request_json = request.json 
-        schema_fmt_test = request_json["schema"]
+        schema = request_json["schema"]
         schema_fmt = request_json["schema_format"]
-        syntax = request_json["syntax_check"]
 
-        try: 
-            schema = json.dumps(schema_fmt_test)
-        except Exception as ex:
-            print(f"JSON Error: {ex}")
-            err_msg = f"Invalid JSON : {str(ex)}"
-            return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": err_msg })
+        if(isinstance(schema, str)):
+            try: 
+                schema = json.loads(schema)
+            except Exception as ex:
+                print(f"JSON Error: {ex}")
+                err_msg = f"Invalid JSON : {str(ex)}"
+                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": err_msg })
         
-        try: 
-            validate_schema(schema_fmt_test)
-        except Exception as ex:
-            print(f"JSON Schema Error: {ex}")
-            err_msg = f"Invalid JSON Schema : {str(ex)}"
-            return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": err_msg })
+        if schema_fmt == JSON:
+            try: 
+                validate_schema(schema)
+            except Exception as ex:
+                print(f"JSON Schema Error")
+                err_msg = f"Invalid JSON Schema : {str(ex)}"
+                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": err_msg })
 
 
         if schema_fmt == JADN:
             try: 
-                validate_schema_jadn_syntax(schema_fmt_test)
+               validate_schema_jadn_syntax(schema)
             except Exception as ex:
-                print(f"JADN Error: {ex}")
+                print(f"JADN Syntax Error")
                 err_msg = f"Invalid JADN Syntax : {str(ex)}"
                 return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": err_msg })
             
             try: 
                 current_app.validator.validateSchema(schema) #TODO: verify pydantic validation
             except Exception as ex:
-                print(f"JADN Error : {ex}")
+                print(f"JADN Error")
                 err_msg = f"Invalid JADN : {str(ex)}"
                 return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": err_msg })
 
             try: 
-                jadn.check(schema_fmt_test) # uses jsonschema to check jadn - jadn_v1.0_schema.json
+                #TODO: remove config check for info ?
+                jadn.check(schema) # uses jsonschema to check jadn - jadn_v1.0_schema.json
             except Exception as ex:
                 print(f"JADN Schema Error : {ex}")
                 err_msg = f"Invalid JADN Schema: {str(ex)}"

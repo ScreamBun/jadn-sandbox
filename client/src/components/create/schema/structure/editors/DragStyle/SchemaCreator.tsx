@@ -157,27 +157,29 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 ext: getFilenameExt(file.name)
                             }
                             setFileName(fileName);
+                            setIsLoading(false);
 
                             flushSync(() => {
                                 setGeneratedSchema(dataObj);
-                                setCardsState(dataObj.types.map((item, i) => ({
-                                    id: self.crypto.randomUUID(),
-                                    index: i,
-                                    text: item[0],
-                                    value: item,
-                                    isStarred: false
-                                })));
+                                if (dataObj.types) {
+                                    setCardsState(dataObj.types.map((item, i) => ({
+                                        id: self.crypto.randomUUID(),
+                                        index: i,
+                                        text: item[0],
+                                        value: item,
+                                        isStarred: false
+                                    })));
+                                }
                             });
-                            setIsLoading(false);
                         } else {
-                            throw Error;
+                            throw Error(`Schema cannot be loaded: Invalid JADN`);
                         }
                     } catch (err) {
                         if (!data) {
                             sbToastError(`Schema cannot be loaded: Empty File`);
                             return;
                         }
-                        sbToastError(`Schema cannot be loaded: Invalid JSON`);
+                        sbToastError(`${err ? err.message : 'Schema cannot be loaded: Invalid JSON'}`);
                     }
                 }
             };
@@ -218,7 +220,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         setIsValidJADN(false);
         setIsValidating(true);
 
-        return dispatch(validateSchema(jsonObj, LANG_JADN, syntax_check))
+        return dispatch(validateSchema(jsonObj, LANG_JADN))
             .then((validateSchemaVal: any) => {
                 setIsValidating(false);
                 if (validateSchemaVal.payload.valid_bool == true) {
@@ -226,19 +228,19 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     return true;
                 } else {
-                    sbToastError(validateSchemaVal.payload.valid_msg);
                     if (syntax_check) {
                         return validateSchemaVal.payload.valid_syntax;
                     }
+                    sbToastError(validateSchemaVal.payload.valid_msg);
                     return false;
                 }
             })
             .catch((validateSchemaErr: { payload: { valid_msg: string, valid_syntax: boolean }; }) => {
                 setIsValidating(false);
-                sbToastError(validateSchemaErr.payload.valid_msg);
                 if (syntax_check) {
                     return validateSchemaErr.payload.valid_syntax;
                 }
+                sbToastError(validateSchemaErr.payload.valid_msg);
                 return false;
             })
     }
