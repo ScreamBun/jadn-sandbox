@@ -480,7 +480,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                     setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                 } else {
                     if (generatedSchema.info) {
-                        setGeneratedSchema((prev: any) => ({ ...prev.info }));
+                        setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
                     } else {
                         setGeneratedSchema({});
                     }

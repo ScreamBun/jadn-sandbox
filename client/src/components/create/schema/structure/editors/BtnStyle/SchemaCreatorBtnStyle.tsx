@@ -566,15 +566,10 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                     }
                 });
 
-                if (tmpTypes.length != 0) {
-                    setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
-                } else {
-                    if (generatedSchema.info) {
-                        setGeneratedSchema((prev: any) => ({ ...prev.info }));
-                    } else {
-                        setGeneratedSchema({});
-                    }
-                }
+                setGeneratedSchema((prev: any) => ({
+                    ...prev,
+                    types: tmpTypes
+                }));
 
                 setCardsState(updatedCards);
                 setIsValidJADN(false);
@@ -584,7 +579,15 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             remove: (idx: number) => {
                 const tmpTypes = generatedSchema.types.filter((_type: StandardTypeArray, i: number) => i != idx);
                 const tmpCards = cardsState.filter((_card: DragItem, index: number) => index != idx);
-                setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                if (tmpTypes.length != 0) {
+                    setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                } else {
+                    if (generatedSchema.info) {
+                        setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
+                    } else {
+                        setGeneratedSchema({});
+                    }
+                }
                 setCardsState(tmpCards);
                 setIsValidJADN(false);
                 setIsValidating(false);
