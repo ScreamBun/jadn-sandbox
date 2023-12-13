@@ -119,7 +119,7 @@ class Convert(Resource):
         elif lang == "puml":
             return plant_dumps(schema, style={'links': True, 'detail': 'information'})                                      
         elif lang == "xsd":
-            return convert_xsd_from_dict(schema)
+            return convert_xsd_from_dict(schema)[0]
         else:
             return dumps(schema, **kwargs)
         
