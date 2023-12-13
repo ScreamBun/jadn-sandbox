@@ -4,8 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import MessageCreator from './MessageCreator'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
-import { SchemaJADN } from '../schema/interface'
-import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 
@@ -13,13 +12,13 @@ import { Option } from 'components/common/SBSelect'
 const MessageGenerator = () => {
     const dispatch = useDispatch()
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<SchemaJADN | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [commandType, setCommandType] = useState<Option | null>();
 
-    const meta_title = useSelector(getPageTitle) + ' | Message Creation'
+    const meta_title = useSelector(getPageTitle) + ' | Data Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
@@ -51,13 +50,13 @@ const MessageGenerator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header bg-secondary p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Creation</span></h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Creation</span></h5>
                             <button type='reset' className='btn btn-sm btn-danger float-end ms-1' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             <div className='row'>
                                 <div className='col-md-6 pr-1'>
-                                    <JADNSchemaLoader
+                                    <SchemaLoader
                                         selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                         schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                         loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />

@@ -10,7 +10,7 @@ import { Info, Types } from '../../structure';
 import { loadFile, setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
-import { getFilenameExt, getFilenameOnly } from 'components/utils/general';
+import { getFilenameExt, getFilenameOnly, getTypeName } from 'components/utils/general';
 import { StandardTypeArray, TypeArray } from 'components/create/schema/interface';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { TypeObject } from '../consts';
@@ -26,7 +26,9 @@ import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
+import { LANG_JADN } from 'components/utils/constants';
 
+//File Loader Note: User should only be able to upload JADN compliant schemas; It must be syntactically correct to fill form data.
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -81,6 +83,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
+
         if (e == null) {
             setSelectedFile(e);
             setGeneratedSchema('');
@@ -90,39 +93,41 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             ref.current.value = '';
             ref.current?.click();
         } else {
-            setSelectedFile(e);
-            const fileName = {
-                name: getFilenameOnly(e.label),
-                ext: getFilenameExt(e.label)
-            }
-            setFileName(fileName);
-            setIsLoading(true);
-
             dispatch(loadFile('schemas', e.value))
-                .then((loadFileVal: { error: any; payload: { response: string; data: any; }; }) => {
+                .then(async (loadFileVal: any) => {
                     if (loadFileVal.error) {
-                        setIsLoading(false);
                         sbToastError(loadFileVal.payload.response);
                         return;
                     }
-                    setIsLoading(false);
                     let schemaObj = loadFileVal.payload.data;
-                    let schemaStr = JSON.stringify(schemaObj);
 
-                    validateJADN(schemaStr);
-                    flushSync(() => {
-                        setGeneratedSchema(schemaObj);
-                        setCardsState(schemaObj.types.map((item, i) => ({
-                            id: self.crypto.randomUUID(),
-                            index: i,
-                            text: item[0],
-                            value: item,
-                            isStarred: false,
-                            isVisible: true
-                        })));
+                    //TODO: just validate for valid JADN syntax
+                    const validJADN = await validateJADN(schemaObj);
+                    if (validJADN) {
+                        setIsLoading(true);
+                        setSelectedFile(e);
+                        const fileName = {
+                            name: getFilenameOnly(e.label),
+                            ext: getFilenameExt(e.label)
+                        }
+                        setFileName(fileName);
 
-                    });
+                        flushSync(() => {
+                            setGeneratedSchema(schemaObj);
+                            setCardsState(schemaObj.types.map((item, i) => ({
+                                id: self.crypto.randomUUID(),
+                                index: i,
+                                text: item[0],
+                                value: item,
+                                isStarred: false,
+                                isVisible: true
+                            })));
+                        });
+                        setIsLoading(false);
 
+                    } else {
+                        throw Error;
+                    }
                 })
                 .catch((loadFileErr: { payload: { data: string; }; }) => {
                     setIsLoading(false);
@@ -136,26 +141,27 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
+
         if (e.target.files && e.target.files.length != 0) {
-            setIsLoading(true);
             const file = e.target.files[0];
-            setSelectedFile({ 'value': file.name, 'label': file.name });
-
-            const fileName = {
-                name: getFilenameOnly(file.name),
-                ext: getFilenameExt(file.name)
-            }
-            setFileName(fileName);
-
             const fileReader = new FileReader();
-            fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+            fileReader.onload = async (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        setIsLoading(false);
                         const dataObj = JSON.parse(data);
-                        const validJADN = validateJADN(data);
+                        //TODO: just validate for valid JADN syntax
+                        const validJADN = await validateJADN(data);
                         if (validJADN) {
+                            setIsLoading(true);
+                            setSelectedFile({ 'value': file.name, 'label': file.name });
+
+                            const fileName = {
+                                name: getFilenameOnly(file.name),
+                                ext: getFilenameExt(file.name)
+                            }
+                            setFileName(fileName);
+
                             flushSync(() => {
                                 setGeneratedSchema(dataObj);
                                 setCardsState(dataObj.types.map((item, i) => ({
@@ -167,9 +173,15 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                     isVisible: true
                                 })));
                             });
+                            setIsLoading(false);
+                        } else {
+                            throw Error;
                         }
                     } catch (err) {
-                        setIsLoading(false);
+                        if (!data) {
+                            sbToastError(`Schema cannot be loaded: Empty File`);
+                            return;
+                        }
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
                     }
                 }
@@ -198,22 +210,21 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
     const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        validateJADN(JSON.stringify(generatedSchema));
+        validateJADN(generatedSchema);
     }
 
-    const validateJADN = (jsonToValidate: any) => {
+    const validateJADN = (jsonObj: any) => {
         dismissAllToast();
-        setIsValidJADN(false);
-        setIsValidating(true);
-        let jsonObj = validateJSON(jsonToValidate);
         if (!jsonObj) {
-            setIsValidating(false);
-            sbToastError(`Invalid JSON. Cannot validate JADN`);
-            return false;
+            sbToastError('Validation Error: No Schema to validate');
+            return;
         }
 
+        setIsValidJADN(false);
+        setIsValidating(true);
+
         try {
-            dispatch(validateSchema(jsonObj))
+            return dispatch(validateSchema(jsonObj, LANG_JADN))
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
@@ -238,30 +249,8 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 return false;
             }
         }
+
         return true;
-    }
-
-    const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
-        let jsonObj = null;
-
-        if (!jsonToValidate) {
-            sbToastError(`No data found`)
-            return jsonObj;
-        }
-
-        try {
-            jsonObj = JSON.parse(jsonToValidate);
-        } catch (err: any) {
-            if (showErrorPopup) {
-                sbToastError(`Invalid Format: ${err.message}`)
-            }
-        }
-
-        if (onErrorReturnOrig && !jsonObj) {
-            jsonObj = jsonToValidate
-        }
-
-        return jsonObj;
     }
 
     const onSchemaDrop = (item: Item) => {
@@ -293,7 +282,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
         } else if (Object.keys(Types).includes(key)) {
             const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-            const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
+            const type_name = getTypeName(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             tmpTypes.push(tmpDef);
             const dataIndex = generatedSchema.types?.length || 0;
@@ -339,7 +328,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
         let key = item.text;
         let insertAt = item.index;
         const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
-        const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
+        const type_name = getTypeName(tmpTypes, `${Types[key].key}-Name`);
         const tmpDef = Types[key].edit({ name: type_name });
 
         let updatedTypes = [
@@ -370,54 +359,6 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
 
         setIsValidating(false);
         onScrollToCard(insertAt);
-    }
-
-    const get_type_name = (types_to_serach: any[], name: string) => {
-        let return_name = name;
-        let match_count = 0;
-        let dups: any[] = [];
-        types_to_serach.map((type) => {
-
-            // orig name matches
-            if (name == type[0]) {
-                match_count = match_count + 1;
-            } else {
-                // dup matches
-                var lastIndex = type[0].lastIndexOf('-');
-
-                if (lastIndex) {
-
-                    let dup_name = type[0].substr(0, lastIndex);
-
-                    if (name == dup_name) {
-
-                        let dup_num = type[0].substr(lastIndex).substring(1);
-
-                        if (dup_num && !isNaN(dup_num)) {
-
-                            dups.push(dup_num);
-                            match_count = match_count + 1;
-
-                        }
-                    }
-                }
-            }
-
-        });
-
-        if (match_count > 0) {
-
-            if (dups.length == 0) {
-                return_name = return_name + "-" + (dups.length + 1);
-            } else {
-                dups.sort(function (a, b) { return b - a });  // TODO: Move to utils
-                let next_num = parseInt(dups[0]) + 1;
-                return_name = return_name + "-" + next_num;
-            }
-
-        }
-
-        return return_name;
     }
 
     let infoKeys;
@@ -595,7 +536,13 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                         <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
                         <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button type='button' id='validateJADNButton' className="float-end btn btn-primary btn-sm me-1" title={isValidJADN ? "Schema is valid" : "Click to validate Schema"} onClick={onValidateJADNClick}>
+                            <button
+                                type='button'
+                                id='validateJADNButton'
+                                className="float-end btn btn-primary btn-sm me-1"
+                                title={isValidJADN ? "Schema is valid" : "Click to validate Schema"}
+                                onClick={onValidateJADNClick}
+                            >
                                 <span className="m-1">Valid</span>
                                 {isValidJADN ? (
                                     <span className="badge rounded-pill text-bg-success">

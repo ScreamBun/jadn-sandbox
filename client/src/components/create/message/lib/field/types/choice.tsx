@@ -23,21 +23,22 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
   const [initSelectedOpt, InitSelectedValues] = (typeof value == "object" && Object.keys(value).length != 0) ? Object.entries(value)[0] :
     (typeof value == "string" && value.length != 0) ? [value, ""] : ["", ""];
-  const initSelectedOptValue = initSelectedOpt != '' ? { 'label': initSelectedOpt, 'value': initSelectedOpt } : '';
+  const initSelectedOptValue = initSelectedOpt != '' ? { 'label': initSelectedOpt, 'value': initSelectedOpt } : null;
 
-  const [selectedValue, setSelectedValue] = useState<Option | string>(initSelectedOptValue);
+  const [selectedValue, setSelectedValue] = useState<Option | null>(initSelectedOptValue);
   const [selectedValueData, setSelectedValueData] = useState<any>(InitSelectedValues);
 
   const handleChange = (e: Option) => {
     //get selected choice
     if (e == null) {
-      setSelectedValue('');
+      setSelectedValue(null);
       setSelectedValueData('');
+      optChange(name, null);
     } else {
       setSelectedValue(e);
       setSelectedValueData(InitSelectedValues);
+      optChange(name, e.value);
     }
-    optChange(name, e.value);
     //target is undefined 
     //this resets selected choice
     //e.target.selectedOptions[0].text
@@ -66,7 +67,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   }
 
   let selectedOpts;
-  if (selectedValue != '') {
+  if (selectedValue != null) {
     let selectedDefs; //get opt where the key = selected
     if (hasProperty(optData, 'id') && optData.id) {
       selectedDefs = typeDef[typeDef.length - 1].filter((opt: any) => opt[0] === selectedValue.value);

@@ -17,7 +17,7 @@ export interface UtilState {
       custom?: Record<string, any>;
     };
   },
-  selectedSchema: SchemaJADN;
+  selectedSchema: SchemaJADN | object;
   types: {
     base: Array<string>;
     schema: Array<string>;
@@ -40,9 +40,7 @@ const initialState: UtilState = {
       custom: []
     }
   },
-  selectedSchema: {
-    types: []
-  },
+  selectedSchema: {},
   types: {
     base: ['Array', 'ArrayOf', 'Binary', 'Boolean', 'Choice', 'Enumerated', 'Integer', 'Map', 'MapOf', 'Number', 'Record', 'String'],
     schema: []

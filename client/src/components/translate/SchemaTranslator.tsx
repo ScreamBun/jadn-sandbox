@@ -5,7 +5,7 @@ import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import { setSchema } from 'actions/util'
 import { SchemaJADN } from 'components/create/schema/interface'
-import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { initConvertedSchemaState } from 'components/visualize/SchemaVisualizer'
 import { Option } from 'components/common/SBSelect'
@@ -15,9 +15,9 @@ import SchemaTranslated from './SchemaTranslated'
 const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<string>('');
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [translation, setTranslation] = useState<Option[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +37,7 @@ const SchemaTranslator = () => {
     const onReset = () => {
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setTranslation([]);
         setSchemaFormat(null);
         setTranslatedSchema(initConvertedSchemaState);
@@ -114,15 +114,16 @@ const SchemaTranslator = () => {
                             <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <JADNSchemaLoader
+                                        <SchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} acceptFormat={'.json'} />
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} acceptFormat={['.json']} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTranslated
                                             translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
                                             translation={translation} setTranslation={setTranslation}
+                                            setSchemaFormat={setSchemaFormat}
                                             isLoading={isLoading} ext={schemaFormat?.value} />
                                     </div>
                                 </div>

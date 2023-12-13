@@ -5,7 +5,7 @@ import MessageValidated from './MessageValidated'
 import { validateMessage } from 'actions/validate'
 import { info, setSchema } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
-import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 
@@ -14,19 +14,22 @@ const MessageValidator = () => {
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
+    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<String>('');
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [selectedMsgFile, setSelectedMsgFile] = useState('');
     const [loadedMsg, setLoadedMsg] = useState('');
-    const [msgFormat, setMsgFormat] = useState('');
-    const [decodeMsg, setDecodeMsg] = useState('');
-    const [decodeSchemaTypes, setDecodeSchemaTypes] = useState({
+    const [msgFormat, setMsgFormat] = useState<Option | null>(null);
+    const [decodeMsg, setDecodeMsg] = useState<Option | null>(null);
+    const [decodeSchemaTypes, setDecodeSchemaTypes] = useState<{
+        all: string[],
+        exports: string[]
+    }>({
         all: [],
         exports: []
     });
 
-    const meta_title = useSelector(getPageTitle) + ' | Message Validation';
+    const meta_title = useSelector(getPageTitle) + ' | Data Validation';
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
 
     useEffect(() => {
@@ -38,11 +41,11 @@ const MessageValidator = () => {
         e.preventDefault();
         setIsLoading(false);
         setSelectedSchemaFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setSelectedMsgFile('');
         setLoadedMsg('');
-        setMsgFormat('');
-        setDecodeMsg('');
+        setMsgFormat(null);
+        setDecodeMsg(null);
         setDecodeSchemaTypes({
             all: [],
             exports: []
@@ -90,13 +93,13 @@ const MessageValidator = () => {
                 err += ' schema';
             }
             if (!loadedMsg) {
-                err += ', message';
+                err += ', data';
             }
             if (!msgFormat) {
-                err += ', message format';
+                err += ', data format';
             }
             if (!decodeMsg) {
-                err += ', message type';
+                err += ', data type';
             }
             sbToastError('ERROR: Validation failed - Please select ' + err)
             setIsLoading(false);
@@ -113,19 +116,19 @@ const MessageValidator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header bg-secondary p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Validation</span></h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Validation</span></h5>
                             <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <JADNSchemaLoader
+                                        <SchemaLoader
                                             selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
-                                            decodeSchemaTypes={decodeSchemaTypes} setDecodeSchemaTypes={setDecodeSchemaTypes} />
+                                            setDecodeSchemaTypes={setDecodeSchemaTypes} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <MessageValidated

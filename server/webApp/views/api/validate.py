@@ -4,9 +4,12 @@ import logging
 import traceback
 
 import jadn
+from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
 
-from flask import Blueprint, current_app, jsonify, redirect
+from flask import Blueprint, current_app, jsonify, redirect, request
 from flask_restful import Api, Resource, reqparse
+
+from webApp.utils.constants import JADN, JSON
 
 logger = logging.getLogger()
 validate = Blueprint("validate", __name__)
@@ -59,20 +62,26 @@ class ValidateSchema(Resource):
 
         response_data = {}
         err_msg = ""
+        
+        request_json = request.json 
+        schema_fmt_test = request_json["schema"]
+        schema_fmt = request_json["schema_format"]
 
         try:
             schema = json.dumps(ast.literal_eval(args["schema"]))
-            jadn.check(ast.literal_eval(args["schema"])) 
+         
+            validate_schema(schema_fmt_test) #validate json
+            if schema_fmt == JADN:
+                jadn.check(ast.literal_eval(args["schema"])) 
+                current_app.validator.validateSchema(schema)
+            
+            response_data = { "valid_bool": True, "valid_msg": "Schema is valid" }
+                
         except Exception as ex:
             print(traceback.print_exc())
             print(f"Error: {ex}")
-            err_msg = str(ex)
-
-        if err_msg:
+            err_msg = f"Invalid Schema : {str(ex)}"
             response_data = { "valid_bool": False, "valid_msg": err_msg }
-        else:
-            val = current_app.validator.validateSchema(schema)
-            response_data = { "valid_bool": val[0], "valid_msg": val[1] }
 
         return jsonify(response_data)
 

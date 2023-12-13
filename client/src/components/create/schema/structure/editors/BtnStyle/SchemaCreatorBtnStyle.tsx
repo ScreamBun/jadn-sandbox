@@ -11,7 +11,7 @@ import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { StandardTypeObject, TypeKeys } from '../consts';
-import { getFilenameExt, getFilenameOnly, zip } from 'components/utils/general';
+import { getFilenameExt, getFilenameOnly, getTypeName, zip } from 'components/utils/general';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
@@ -25,6 +25,7 @@ import SBOutlineBtnStyle from './SBOutlineBtnStyle';
 import { AddToIndexDropDown } from './AddToIndexDropDown';
 import { DragItem } from '../DragStyle/SBOutline';
 import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
+import { LANG_JADN } from 'components/utils/constants';
 
 const configInitialState = {
     $MaxBinary: $MAX_BINARY,
@@ -117,6 +118,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
+
         if (e == null) {
             setSelectedFile(e);
             setGeneratedSchema('');
@@ -126,35 +128,42 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             ref.current.value = '';
             ref.current?.click();
         } else {
-            setSelectedFile(e);
-            const fileName = {
-                name: getFilenameOnly(e.label),
-                ext: getFilenameExt(e.label)
-            }
-            setFileName(fileName);
-            setIsLoading(true);
-
             dispatch(loadFile('schemas', e.value))
-                .then((loadFileVal) => {
+                .then(async (loadFileVal: any) => {
                     if (loadFileVal.error) {
-                        setIsLoading(false);
                         sbToastError(loadFileVal.payload.response);
                         return;
                     }
-                    setIsLoading(false);
                     let schemaObj = loadFileVal.payload.data;
-                    let schemaStr = JSON.stringify(schemaObj);
-                    validateJADN(schemaStr);
-                    setGeneratedSchema(schemaObj);
-                    setCardsState(schemaObj.types.map((item, i) => ({
-                        id: self.crypto.randomUUID(),
-                        index: i,
-                        text: item[0],
-                        value: item,
-                        isStarred: false
-                    })));
+
+                    //TODO: just validate for valid JADN syntax
+                    const validJADN = await validateJADN(schemaObj);
+                    if (validJADN) {
+                        setIsLoading(true);
+                        setSelectedFile(e);
+                        const fileName = {
+                            name: getFilenameOnly(e.label),
+                            ext: getFilenameExt(e.label)
+                        }
+                        setFileName(fileName);
+
+                        flushSync(() => {
+                            setGeneratedSchema(schemaObj);
+                            setCardsState(schemaObj.types.map((item, i) => ({
+                                id: self.crypto.randomUUID(),
+                                index: i,
+                                text: item[0],
+                                value: item,
+                                isStarred: false
+                            })));
+                        });
+                        setIsLoading(false);
+
+                    } else {
+                        throw Error;
+                    }
                 })
-                .catch((loadFileErr) => {
+                .catch((loadFileErr: { payload: { data: string; }; }) => {
                     setIsLoading(false);
                     sbToastError(loadFileErr.payload.data);
                 })
@@ -166,28 +175,28 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         dismissAllToast();
         setIsValidJADN(false);
         setIsValidating(false);
-        setGeneratedSchema('');
-        setCardsState([]);
+
         if (e.target.files && e.target.files.length != 0) {
-            setIsLoading(true);
             const file = e.target.files[0];
-            setSelectedFile({ 'value': file.name, 'label': file.name });
-
-            const fileName = {
-                name: getFilenameOnly(file.name),
-                ext: getFilenameExt(file.name)
-            }
-            setFileName(fileName);
-
             const fileReader = new FileReader();
-            fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+            fileReader.onload = async (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
                     let data = ev.target.result;
                     try {
-                        setIsLoading(false);
                         const dataObj = JSON.parse(data);
-                        const validJADN = validateJADN(data);
+
+                        //TODO: just validate for valid JADN syntax
+                        const validJADN = await validateJADN(data);
                         if (validJADN) {
+                            setIsLoading(true);
+                            setSelectedFile({ 'value': file.name, 'label': file.name });
+
+                            const fileName = {
+                                name: getFilenameOnly(file.name),
+                                ext: getFilenameExt(file.name)
+                            }
+                            setFileName(fileName);
+
                             flushSync(() => {
                                 setGeneratedSchema(dataObj);
                                 setCardsState(dataObj.types.map((item, i) => ({
@@ -198,9 +207,15 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                     isStarred: false
                                 })));
                             });
+                            setIsLoading(false);
+                        } else {
+                            throw Error;
                         }
                     } catch (err) {
-                        setIsLoading(false);
+                        if (!data) {
+                            sbToastError(`Schema cannot be loaded: Empty File`);
+                            return;
+                        }
                         sbToastError(`Schema cannot be loaded: Invalid JSON`);
                     }
                 }
@@ -229,22 +244,21 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
 
     const onValidateJADNClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        validateJADN(JSON.stringify(generatedSchema));
+        validateJADN(generatedSchema);
     }
 
-    const validateJADN = (jsonToValidate: any) => {
+    const validateJADN = (jsonObj: any) => {
         dismissAllToast();
-        setIsValidJADN(false);
-        setIsValidating(true);
-        let jsonObj = validateJSON(jsonToValidate);
         if (!jsonObj) {
-            setIsValidating(false);
-            sbToastError(`Invalid JSON. Cannot validate JADN`);
-            return false;
+            sbToastError('Validation Error: No Schema to validate');
+            return;
         }
 
+        setIsValidJADN(false);
+        setIsValidating(true);
+
         try {
-            dispatch(validateSchema(jsonObj))
+            return dispatch(validateSchema(jsonObj, LANG_JADN))
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValidJADN(true);
@@ -270,29 +284,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
             }
         }
         return true;
-    }
-
-    const validateJSON = (jsonToValidate: any, onErrorReturnOrig?: boolean, showErrorPopup?: boolean) => {
-        let jsonObj = null;
-
-        if (!jsonToValidate) {
-            sbToastError(`No data found`)
-            return jsonObj;
-        }
-
-        try {
-            jsonObj = JSON.parse(jsonToValidate);
-        } catch (err: any) {
-            if (showErrorPopup) {
-                sbToastError(`Invalid Format: ${err.message}`)
-            }
-        }
-
-        if (onErrorReturnOrig && !jsonObj) {
-            jsonObj = jsonToValidate
-        }
-
-        return jsonObj;
     }
 
     let infoKeys;
@@ -339,53 +330,6 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         </div>
     ));
 
-    const get_type_name = (types_to_serach: any[], name: string) => {
-        let return_name = name;
-        let match_count = 0;
-        let dups: any[] = [];
-        types_to_serach.map((type) => {
-
-            // orig name matches
-            if (name == type[0]) {
-                match_count = match_count + 1;
-            } else {
-                // dup matches
-                var lastIndex = type[0].lastIndexOf('-');
-
-                if (lastIndex) {
-
-                    let dup_name = type[0].substr(0, lastIndex);
-
-                    if (name == dup_name) {
-
-                        let dup_num = type[0].substr(lastIndex).substring(1);
-
-                        if (dup_num && !isNaN(dup_num)) {
-
-                            dups.push(dup_num);
-                            match_count = match_count + 1;
-
-                        }
-                    }
-                }
-            }
-
-        });
-
-        if (match_count > 0) {
-
-            if (dups.length == 0) {
-                return_name = return_name + "-" + (dups.length + 1);
-            } else {
-                dups.sort(function (a, b) { return b - a });  // TODO: Move to utils
-                let next_num = parseInt(dups[0]) + 1;
-                return_name = return_name + "-" + next_num;
-            }
-
-        }
-
-        return return_name;
-    }
     const onSelectChange = (e: Option) => {
         if (e == null || parseInt(e.value) < 0 || parseInt(e.value) > generatedSchema.types.length) {
             sbToastError("Invalid Index. Setting index to default: end.")
@@ -423,7 +367,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
         } else if (Object.keys(Types).includes(key)) {
             let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             let tmpCards = [...cardsState];
-            const type_name = get_type_name(tmpTypes, `${Types[key].key}-Name`);
+            const type_name = getTypeName(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             const dataIndex = generatedSchema.types?.length || 0;
             const new_card = {

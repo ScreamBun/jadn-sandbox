@@ -1,7 +1,7 @@
 import { faCode, faCodeBranch, faEnvelopeCircleCheck, faEye, faFileCirclePlus, faPencilRuler } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_CREATE_SCHEMA, NAV_HOME, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE
+  NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_CREATE_SCHEMA, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE
 } from 'components/utils/constants';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -35,18 +35,19 @@ const Home = () => {
           <div className='card-group'>
             <div className="card">
               <div className="card-img-top text-center py-2 bg-primary">
-                <FontAwesomeIcon title='Schema and Message Creation' className='fa-2x text-white' icon={faPencilRuler} />
+                <FontAwesomeIcon title='Schema and Data Creation' className='fa-2x text-white' icon={faPencilRuler} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
                 </h5>
-                <p className="card-text">Create an OpenC2 compliant Schema or Message using the Editor or based on pre-existing examples.</p>
+                <p className="card-text">Create and edit JADN schemas using forms, view JADN schemas in JSON format.</p>
+                <p className="card-text"> Create schema compliant data instances (documents, messages).</p>
                 <br /><br /><br />
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
-                <Link className="card-link" to={NAV_CREATE_MESSAGE}>Messages</Link>
+                <Link className="card-link" to={NAV_CREATE_MESSAGE}>Data Instances</Link>
               </div>
             </div>
             <div className="card">
@@ -57,13 +58,7 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA}>Schema Visualization</Link>
                 </h5>
-                <p className="card-text">Convert a JADN Schema into different visualization formats. </p>
-                <div className="card-text">
-                  <div className="card-text">
-                    Input: JADN Schema
-                    <p>Output: The same JADN Schema in a different visual representation</p>
-                  </div>
-                </div>
+                <p className="card-text">Convert a JADN Schema into different visual representations. </p>
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"gv"}>GraphViz</Link>
@@ -81,12 +76,13 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_TRANSLATE}>Schema Translation</Link>
                 </h5>
-                <p className="card-text">Translate a Schema and its data from JADN to another Schema or data format.</p>
+                <p className="card-text">Translate a JADN Schema to another Schema format.</p>
+                <p className="card-text">Translate a JSON Schema to a JADN Schema.</p>
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_TRANSLATE} state={"json"}>JSON</Link>
                 <Link className="card-link" to={NAV_TRANSLATE} state={"rng"}>Relax (XML)</Link>
-                <Link className="card-link" to={NAV_TRANSLATE} >XSD (Coming Soon)</Link>
+                <Link className="card-link" to={NAV_TRANSLATE} state={"xsd"}>XSD</Link>
               </div>
             </div>
           </div>
@@ -97,9 +93,9 @@ const Home = () => {
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>Message Validation</Link>
+                  <Link className="card-link" to={NAV_VALIDATE_MESSAGE}>Data Validation</Link>
                 </h5>
-                <p className="card-text">Validate data (messages) against a JADN Schema and convert them from one data format to another.</p>
+                <p className="card-text">Validate data instances in various data language formats against a JADN Schema.</p>
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"cbor"}>CBOR</Link>
@@ -119,23 +115,17 @@ const Home = () => {
                   simplify by removing extensions, strip comments, etc).</p>
                 <br /><br /><br /><br />
               </div>
-              {/* <div className="card-footer bg-secondary">
-                <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
-              </div> */}
             </div>
             <div className="card mt-3">
               <div className="card-img-top text-center py-2 bg-primary">
-                <FontAwesomeIcon title='Example Message Generation' className='fa-2x text-white' icon={faFileCirclePlus} />
+                <FontAwesomeIcon title='Example Data Generation' className='fa-2x text-white' icon={faFileCirclePlus} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_GENERATE}>Example Message Generation</Link>
+                  <Link className="card-link" to={NAV_GENERATE}>Example Data Generation</Link>
                 </h5>
-                <p className="card-text">Generate various example messages based off of a Schema.</p>
+                <p className="card-text">Generate various example data instances based off of a Schema.</p>
               </div>
-              {/* <div className="card-footer bg-secondary">
-                <Link className="card-link" to={NAV_HOME}>Coming Soon</Link>
-              </div> */}
             </div>
           </div>
         </div>

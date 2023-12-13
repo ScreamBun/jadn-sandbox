@@ -33,13 +33,16 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
   var optData: Record<string, any> = {};
   const [_idx, name, type, args, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
+
+  const [opts, setOpts] = useState<any[]>(Array.isArray(value) ? value : [value]); //track elem of vtype
+
   const MAX_COUNT = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
   const MIN_COUNT = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
 
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(opts ? opts.length : 1);
   const [min, setMin] = useState((count <= MIN_COUNT) || (MIN_COUNT == 0 && count == 1));
   const [max, setMax] = useState(MAX_COUNT <= count);
-  const [opts, setOpts] = useState<any[]>(Array.isArray(value) ? value : [value]); //track elem of vtype
+
   const [errMsg, setErrMsg] = useState<string[]>([]);
   const [toggle, setToggle] = useState(true);
 
@@ -56,11 +59,11 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     // add placeholder
     const updatedOpts = [...opts, ''];
     setOpts(updatedOpts);
-    setCount(count + 1);
+    setCount((count) => count + 1);
   }
 
-  const removeOpt = (removedIndex: number) => {
-    //e.preventDefault();
+  const removeOpt = (e: React.MouseEvent<HTMLButtonElement>, removedIndex: number) => {
+    e.preventDefault();
     if (count - 1 <= MIN_COUNT) {
       return;
     }
@@ -72,19 +75,15 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     //remove empty placeholders
     let filteredOpts = updatedOpts.filter((opt) => opt != '');
 
-    //validate data
+    //validate filtered data
     const errCheck = validateOptDataElem(config, optData, filteredOpts);
     setErrMsg(errCheck);
 
     //update data
-    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-      filteredOpts = Array.from(new Set(Object.values(filteredOpts)));
-    } else {
-      filteredOpts = Array.from(Object.values(filteredOpts));
-    }
+    const updatedOptArr = Array.from(Object.values(updatedOpts));
 
-    optChange(name, filteredOpts);
-    setCount(count - 1);
+    optChange(name, updatedOptArr);
+    setCount((count) => count - 1);
   }
 
   const onChange = (k: string, v: any, i: number) => {
@@ -151,14 +150,9 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     const errCheck = validateOptDataElem(config, optData, filteredOpts);
     setErrMsg(errCheck);
 
-    if (hasProperty(optData, 'unique') && optData.unique || hasProperty(optData, 'set') && optData.set) {
-      filteredOpts = Array.from(new Set(Object.values(filteredOpts)));
-    } else {
-      filteredOpts = Array.from(Object.values(filteredOpts));
-    }
+    const updatedOptArr = Array.from(Object.values(updatedOpts));
 
-    //remove empty placeholders
-    optChange(name, filteredOpts);
+    optChange(name, updatedOptArr);
   }
 
   const typeDefs: TypeArray[] = schema.types.filter(t => t[0] === type);
@@ -198,8 +192,8 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
         <>
           {!min && <button
             type='button'
-            className={`btn btn-danger p-1${min ? ' disabled' : ''}`}
-            onClick={() => removeOpt(i)}
+            className={`btn btn-danger btn-sm p-1${min ? ' disabled' : ''}`}
+            onClick={(e) => removeOpt(e, i)}
           >
             <FontAwesomeIcon icon={faMinusSquare} size="lg" />
           </button>}

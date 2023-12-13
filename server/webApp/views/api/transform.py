@@ -1,11 +1,9 @@
 import logging
 
-from io import BytesIO
 import os
 import traceback
-import jadn
-from flask import current_app, jsonify, Response, request
-from flask_restful import Resource, reqparse
+from flask import current_app, jsonify, request
+from flask_restful import Resource
 from jadnschema import transform
 from jadnschema.jadn import dumps
 

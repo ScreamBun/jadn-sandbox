@@ -16,14 +16,15 @@ const baseAPI = '/api/validate';
 // POST - /api/validate/schema - validate the given schema
 const VALIDATE_SCHEMA_REQUEST = '@@validate/VALIDATE_SCHEMA_REQUEST';
 export const VALIDATE_SCHEMA_SUCCESS = '@@validate/VALIDATE_SCHEMA_SUCCESS';
-export const validateSchema = (schema: Record<string, any>) => createAction({
+export const validateSchema = (schema: Record<string, any>, schema_fmt: string) => createAction({
   endpoint: `${baseAPI}/schema`,
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    schema
+    'schema': schema,
+    'schema_format': schema_fmt,
   }),
   types: [
     VALIDATE_SCHEMA_REQUEST, VALIDATE_SCHEMA_SUCCESS, VALIDATE_FAILURE

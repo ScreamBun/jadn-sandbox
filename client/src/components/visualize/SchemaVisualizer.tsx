@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
-import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { SchemaJADN } from 'components/create/schema/interface'
 import SchemaVisualized from './SchemaVisualized'
@@ -19,9 +19,9 @@ export const initConvertedSchemaState = [{
 const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<string>('');
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [conversion, setConversion] = useState<Option[]>([]);
     const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
@@ -42,7 +42,7 @@ const SchemaVisualizer = () => {
     const onReset = () => {
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema('');
+        setLoadedSchema(null);
         setConversion([]);
         setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
@@ -117,7 +117,7 @@ const SchemaVisualizer = () => {
                             <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <JADNSchemaLoader
+                                        <SchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
