@@ -79,7 +79,7 @@ class ValidateSchema(Resource):
         
         if schema_fmt == JSON:
             try: 
-                validate_schema(schema)
+                validate_schema(schema) #TODO: check for JSON SCHEMA ?
             except Exception as ex:
                 print(f"JSON Schema Error")
                 err_msg = f"Invalid JSON Schema : {str(ex)}"
