@@ -1,0 +1,19 @@
+{
+  "info": {
+    "package": "https://github.com/oasis-tcs/openc2-ap-hunt",
+    "version": "0-wd01",
+    "title": "Unresolved ls schema",
+    "description": "Data definitions for Threat Hunting (TH) functions",
+    "namespaces": {
+      "ls": "http://oasis-open.org/openc2/oc2ls/v1.1"
+    },
+    "exports": ["Language-Spec-Types"]
+  },
+  "types": [
+    ["Language-Spec-Types", "Record", [], "for each track there's a file with the audio and a metadata record", [
+        [1, "artifact", "ls:Artifact", ["[0"], "An array of bytes representing a file-like object or a link to that object."],
+        [2, "command", "ls:Command-ID", ["[0"], "A reference to a previously issued Command."],
+        [3, "device", "ls:Device", ["[0"], "The properties of a hardware device."]
+    ]]
+  ]
+}
