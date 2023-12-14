@@ -33,8 +33,8 @@ interface FieldEditorProps {
 }
 
 
-export const withFieldEditor = (FieldWrapper: React.ComponentType<any>) => {
-    return (props: FieldEditorProps) => {
+export default function withFieldEditor(FieldWrapper: React.ComponentType<any>) {
+    function WithFieldEditor(props: FieldEditorProps) {
         const { enumerated = false, value, dataIndex, change, config, remove } = props;
 
         const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
@@ -159,4 +159,10 @@ export const withFieldEditor = (FieldWrapper: React.ComponentType<any>) => {
             </>
         );
     };
+    const wrappedComponentName = FieldWrapper.displayName
+        || FieldWrapper.name
+        || 'Component';
+
+    WithFieldEditor.displayName = `withFieldEditor(${wrappedComponentName})`;
+    return WithFieldEditor;
 };

@@ -17,8 +17,8 @@ interface PrimitiveEditorProps {
     config: InfoConfig;
 }
 
-export const withPrimitiveEditor = (PrimitiveWrapper: React.ComponentType<any>) => {
-    return (props: PrimitiveEditorProps) => {
+export default function withPrimitiveEditor(PrimitiveWrapper: React.ComponentType<any>) {
+    function WithPrimitiveEditor(props: PrimitiveEditorProps) {
 
         const { value, dataIndex, config, setRowHeight, change, setIsVisible } = props;
 
@@ -126,6 +126,7 @@ export const withPrimitiveEditor = (PrimitiveWrapper: React.ComponentType<any>) 
                     toggleModal={toggleModal}
                     onRemoveItemClick={onRemoveItemClick}
                     {...props}
+                    primitiveEditor
                 />
                 <SBConfirmModal
                     isOpen={isConfirmModalOpen}
@@ -137,4 +138,10 @@ export const withPrimitiveEditor = (PrimitiveWrapper: React.ComponentType<any>) 
             </>
         );
     };
+    const wrappedComponentName = PrimitiveWrapper.displayName
+        || PrimitiveWrapper.name
+        || 'Component';
+
+    WithPrimitiveEditor.displayName = `withPrimitiveEditor(${wrappedComponentName})`;
+    return WithPrimitiveEditor;
 };

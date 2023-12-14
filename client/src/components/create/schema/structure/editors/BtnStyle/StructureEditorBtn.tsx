@@ -7,7 +7,7 @@ import {
 import { StandardTypeObject } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
-import { withStructureEditor } from '../ParentEditor/withStructureEditor';
+import withStructureEditor from '../ParentEditor/withStructureEditor';
 import { FieldEditorBtnStyle } from './FieldEditorBtn';
 
 interface StructureEditorProps {

@@ -8,8 +8,8 @@ import {
 import { StandardTypeObject } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
+import withStructureEditor from '../ParentEditor/withStructureEditor';
 import SBOutlineFields, { DragItem } from './SBOutlineFields';
-import { withStructureEditor } from '../ParentEditor/withStructureEditor';
 
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)

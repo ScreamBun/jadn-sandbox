@@ -24,8 +24,8 @@ export const configInitialState = {
     $NSID: $NSID
 }
 
-export const withSchemaCreator = (SchemaWrapper: React.ComponentType<any>) => {
-    return (props: any) => {
+export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any>) {
+    function WithSchemaCreator(props: any) {
         const dispatch = useDispatch();
         const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
 
@@ -57,7 +57,10 @@ export const withSchemaCreator = (SchemaWrapper: React.ComponentType<any>) => {
             rowHeight.current = { ...rowHeight.current, [index]: size };
             listRef.current?.resetAfterIndex(0, false);
         }, []);
-        const getItemSize = (index: number) => { return rowHeight.current[index] || 0 };
+
+        const getItemSize = (index: number) => {
+            return rowHeight.current[index] || 0
+        };
 
         const onFileChange = (schemaStr: any) => {
             setIsLoading(false);
@@ -163,6 +166,7 @@ export const withSchemaCreator = (SchemaWrapper: React.ComponentType<any>) => {
                 <div className='card-body p-2'>
                     <SchemaWrapper
                         {...props}
+                        schemaCreator
                         setIsValidating={setIsValidating}
                         setIsValidJADN={setIsValidJADN}
                         isLoading={isLoading}
@@ -180,6 +184,12 @@ export const withSchemaCreator = (SchemaWrapper: React.ComponentType<any>) => {
                     />
                 </div>
             </div>
-        )
+        );
     };
+    const wrappedComponentName = SchemaWrapper.displayName
+        || SchemaWrapper.name
+        || 'Component';
+
+    WithSchemaCreator.displayName = `withSchemaCreator(${wrappedComponentName})`;
+    return WithSchemaCreator;
 };

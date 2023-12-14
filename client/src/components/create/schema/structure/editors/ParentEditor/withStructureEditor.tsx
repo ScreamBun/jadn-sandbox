@@ -27,8 +27,8 @@ export interface StructureEditorProps {
   collapseAllFields: boolean;
 }
 
-export const withStructureEditor = (StructureWrapper: React.ComponentType<any>) => {
-  return (props: StructureEditorProps) => {
+export default function withStructureEditor(StructureWrapper: React.ComponentType<any>) {
+  function WithStructureEditor(props: StructureEditorProps) {
 
     const { value, dataIndex, config, collapseAllFields, customStyle, setRowHeight, change, remove, setIsVisible } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
@@ -334,6 +334,7 @@ export const withStructureEditor = (StructureWrapper: React.ComponentType<any>) 
           onFieldRemoval={onFieldRemoval}
           onAddField={onAddField}
           {...props}
+          structureEditor
         />
         < SBConfirmModal
           isOpen={isConfirmModalOpen}
@@ -345,4 +346,10 @@ export const withStructureEditor = (StructureWrapper: React.ComponentType<any>) 
       </>
     );
   };
+  const wrappedComponentName = StructureWrapper.displayName
+    || StructureWrapper.name
+    || 'Component';
+
+  WithStructureEditor.displayName = `withStructureEditor(${wrappedComponentName})`;
+  return WithStructureEditor;
 };

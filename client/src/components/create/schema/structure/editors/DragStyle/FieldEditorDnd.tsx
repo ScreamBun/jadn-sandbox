@@ -10,7 +10,7 @@ import { EnumeratedFieldObject, StandardFieldObject } from '../consts';
 import { ModalSize } from '../options/ModalSize';
 import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import OptionsModal from '../options/OptionsModal';
-import { withFieldEditor } from '../ParentEditor/withFieldEditor';
+import withFieldEditor from '../ParentEditor/withFieldEditor';
 
 interface FieldEditorProps {
   id: any;
