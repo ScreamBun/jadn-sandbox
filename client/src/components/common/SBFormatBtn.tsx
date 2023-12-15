@@ -1,4 +1,6 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faIndent } from "@fortawesome/free-solid-svg-icons";
 import { FormatJADN } from "components/utils";
 import { sbToastError } from "./SBToast";
 
@@ -8,6 +10,11 @@ const SBFormatBtn = (props: any) => {
 
     const onFormatClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        if (!data) {
+            sbToastError('Format Error: No Schema to format');
+            return;
+        }
+
         try {
             let dataObj = data;
             if (typeof data == 'string') {
@@ -28,9 +35,13 @@ const SBFormatBtn = (props: any) => {
 
     return (
         <>
-            <button id='formatButton' type='button' className={'btn btn-sm btn-primary ' + customClass} onClick={onFormatClick}
-                title='Attempts to Parse and Format.'>
-                <span className="m-1">Format</span>
+            <button
+                id='formatButton'
+                type='button'
+                className={'btn btn-sm btn-primary ' + customClass}
+                onClick={onFormatClick}
+                title='Format'>
+                <FontAwesomeIcon icon={faIndent} />
             </button>
         </>
     );

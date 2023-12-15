@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
-import JADNSchemaLoader from 'components/common/JADNSchemaLoader'
+import SchemaLoader from 'components/common/SchemaLoader'
 import ExampleCreator from './ExampleCreator'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { JSONSchemaFaker } from 'json-schema-faker';
@@ -15,15 +15,15 @@ import { SchemaJADN } from 'components/create/schema/interface'
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>();
+    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<string>('');
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
-    const [numOfMsg, setNumOfMsg] = useState<number>();
+    const [numOfMsg, setNumOfMsg] = useState<number>(1);
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const meta_title = useSelector(getPageTitle) + ' | Message Generation'
+    const meta_title = useSelector(getPageTitle) + ' | Data Generation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
@@ -38,8 +38,8 @@ const ExampleGenerator = () => {
         e.preventDefault();
         setIsLoading(false);
         setSelectedFile(null);
-        setLoadedSchema('');
-        setNumOfMsg(undefined);
+        setLoadedSchema(null);
+        setNumOfMsg(1);
         setGeneratedMessages([]);
         dispatch(setSchema(null));
     }
@@ -100,13 +100,12 @@ const ExampleGenerator = () => {
                     //TODO: add custom format options
                     JSONSchemaFaker.extend("faker", () => faker);
                     JSONSchemaFaker.option({ ignoreMissingRefs: true, omitNulls: true });
+
                     //TODO? : does not resolve ref ===> use .resolve = need to specify ref and cwd
+                    //Note: external ref can't be resolved by JSONSchemaFaker; must have a fully resolved schema
                     let ex = JSONSchemaFaker.generate(schema);
 
-                    if (Object.keys(ex).length < 1) {
-                        break;
-
-                    } else if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
+                    if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
                         for (const [k, v] of Object.entries(ex)) {
                             if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
                                 if (schemaProps && schemaProps.includes(k)) {
@@ -161,14 +160,14 @@ const ExampleGenerator = () => {
                 <div className='col-md-12'>
                     <div className='card'>
                         <div className='card-header bg-secondary p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Message Generation</span></h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Generation</span></h5>
                             <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
                             <form onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
-                                        <JADNSchemaLoader
+                                        <SchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />

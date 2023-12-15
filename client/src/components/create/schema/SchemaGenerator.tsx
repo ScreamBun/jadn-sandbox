@@ -6,10 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getValidFormatOpts } from 'actions/format'
 import { info } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
-import { DragItem } from './structure/editors/DragStyle/SBOutline'
-import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
+import { SBConfirmModal } from 'components/common/SBConfirmModal';
+import { DragItem } from './structure/editors/DragStyle/SBOutline'
 import { SchemaCreatorBtnStyle } from './structure/editors/BtnStyle/SchemaCreatorBtn'
 import { SchemaCreatorDndStyle } from './structure/editors/DragStyle/SchemaCreatorDnd'
 
@@ -21,6 +21,7 @@ const SchemaGenerator = () => {
     const [cardsState, setCardsState] = useState<DragItem[]>([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
     const [isButtonStyle, setIsButtonStyle] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Creation'

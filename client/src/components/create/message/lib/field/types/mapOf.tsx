@@ -32,16 +32,19 @@ const MapOfField = (props: MapOfFieldProps) => {
     const [_idx, name, type, args, comment] = def;
     const msgName = (parent ? [parent, name] : [name]).join('.');
 
+    const [opts, setOpts] = useState<any[]>(Array.isArray(value) ? value : [value]); //opts: let every obj have a key and value [{key: '', value:''}, ...]
+    const [kopts, setkOpts] = useState<any[]>([]);
+    const [vopts, setvOpts] = useState<any[]>([]);
+
     const MAX_COUNT = hasProperty(optData, 'maxv') && optData.maxv != 0 ? optData.maxv : config.$MaxElements;
     const MIN_COUNT = hasProperty(optData, 'minv') && optData.minv != 0 ? optData.minv : $MINV;
 
-    const [count, setCount] = useState(1);
+    const [count, setCount] = useState(opts ? opts.length : 1);
     const [min, setMin] = useState((count <= MIN_COUNT) || (MIN_COUNT == 0 && count == 1));
     const [max, setMax] = useState(MAX_COUNT <= count);
-    const [opts, setOpts] = useState<any[]>(value); //opts: let every obj have a key and value [{key: '', value:''}, ...]
-    const [kopts, setkOpts] = useState<any[]>([]);
-    const [vopts, setvOpts] = useState<any[]>([]);
+
     const [errMsg, setErrMsg] = useState<string[]>([]);
+
     const [toggle, setToggle] = useState(true);
     const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
 
@@ -56,13 +59,14 @@ const MapOfField = (props: MapOfFieldProps) => {
             return;
         }
         // add placeholder
-        const updatedOpts = [...opts, ''];
-        setOpts(updatedOpts);
-        setCount(count + 1);
+        setOpts((prev) => [...prev, '']);
+        setkOpts((prev) => [...prev, ''])
+        setvOpts((prev) => [...prev, ''])
+        setCount((count) => count + 1);
     }
 
-    const removeOpt = (removedIndex: number) => {
-        //e.preventDefault();
+    const removeOpt = (e: React.MouseEvent<HTMLButtonElement>, removedIndex: number) => {
+        e.preventDefault();
         if (count - 1 <= MIN_COUNT) {
             return;
         }
@@ -82,13 +86,13 @@ const MapOfField = (props: MapOfFieldProps) => {
         const ktypeDefs = schema.types.filter(t => t[0] === keyField[2]);
         var ktypeDef = ktypeDefs.length === 1 ? ktypeDefs[0][1] : keyField[2];
         if (ktypeDef == 'Enumerated' || ktypeDef == 'String') {
-            data = filteredOpts.reduce((opts, obj) => { return Object.assign(opts, { [obj.key]: obj.val }) }, {});
+            data = updatedOpts.reduce((opts, obj) => { return Object.assign(opts, { [obj.key]: obj.val }) }, {});
         } else {
-            data = filteredOpts.reduce((opts, obj) => { return opts.concat([obj.key], [obj.val]) }, []);
+            data = updatedOpts.reduce((opts, obj) => { return opts.concat([obj.key], [obj.val]) }, []);
         }
 
         optChange(name, data);
-        setCount(count - 1);
+        setCount((count) => count - 1);
     }
 
     const onChangeKey = (k: string, v: any, i: number) => {
@@ -186,7 +190,9 @@ const MapOfField = (props: MapOfFieldProps) => {
             setOpts(updatedOpts);
         }
 
-        const errCheck = validateOptDataElem(config, optData, updatedOpts);
+        const filteredOpts = updatedOpts.filter((obj) => obj && (obj.key || obj.value))
+
+        const errCheck = validateOptDataElem(config, optData, filteredOpts);
         setErrMsg(errCheck);
 
         // TODO: FINISH REDUCE ARR OF OBJ ...
@@ -271,8 +277,8 @@ const MapOfField = (props: MapOfFieldProps) => {
                     <div className='card-header p-2'>
                         {!min && <button
                             type='button'
-                            className={`btn-danger float-end btn p-1${min ? ' disabled' : ''}`}
-                            onClick={() => removeOpt(i)}
+                            className={`btn btn-sm btn-danger float-end p-1${min ? ' disabled' : ''}`}
+                            onClick={(e) => removeOpt(e, i)}
                         >
                             <FontAwesomeIcon icon={faMinusSquare} size="lg" />
                         </button>}
@@ -290,8 +296,6 @@ const MapOfField = (props: MapOfFieldProps) => {
             </div >
         )
     });
-
-
 
     const err = errMsg.map((msg, index) =>
         <div key={index}><small className='form-text' style={{ color: 'red' }}>{msg}</small></div>

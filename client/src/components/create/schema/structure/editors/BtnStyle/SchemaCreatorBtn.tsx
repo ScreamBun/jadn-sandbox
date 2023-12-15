@@ -312,7 +312,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                         setIsValidating(false);
                     }
                 },
-                config: configInitialState
+                config: generatedSchema.info[key] ? generatedSchema.info[key] : configInitialState
             });
         }
         return null;
@@ -358,7 +358,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                     setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                 } else {
                     if (generatedSchema.info) {
-                        setGeneratedSchema((prev: any) => ({ ...prev.info }));
+                        setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
                     } else {
                         setGeneratedSchema({});
                     }

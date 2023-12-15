@@ -138,7 +138,7 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
 
                         {
                             !fieldCollapse ? valueObj.fields?.length == 0 ? <p>No fields to show </p> :
-                                < div >
+                                <div>
                                     <SBOutlineFields
                                         id={'fields-outline'}
                                         items={valueObj.fields}
@@ -148,8 +148,7 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
                                         fieldRemove={onFieldRemoval}
                                         editableID={isEditableID}
                                         config={config}
-                                        acceptableType={`${dataIndex}`
-                                        }
+                                        acceptableType={`${dataIndex}`}
                                         parentIndex={dataIndex}
                                     />
                                 </div>

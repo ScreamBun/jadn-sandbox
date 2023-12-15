@@ -4,14 +4,15 @@ import { flushSync } from 'react-dom';
 import { setSchema } from 'actions/util';
 import { validateSchema } from 'actions/validate';
 import { getAllSchemas } from 'reducers/util';
-import { validateJSON } from 'components/utils/general';
+import { getFilenameExt, getFilenameOnly } from 'components/utils/general';
+import { LANG_JADN } from 'components/utils/constants';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBSpinner from 'components/common/SBSpinner';
-import SBSchemaLoader from 'components/common/SBSchemaLoader';
 import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
+import SBLoadSchema from 'components/common/SBLoadSchema';
 
 
 export const configInitialState = {
@@ -62,28 +63,45 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             return rowHeight.current[index] || 0
         };
 
-        const onFileChange = (schemaStr: any) => {
-            setIsLoading(false);
-            if (schemaStr) {
-                const dataObj = JSON.parse(schemaStr);
-                const validJADN = validateJADN(schemaStr);
-                if (validJADN) {
-                    flushSync(() => {
-                        setGeneratedSchema(dataObj);
-                        setCardsState(dataObj.types.map((item: any[], i: any) => ({
-                            id: self.crypto.randomUUID(),
-                            index: i,
-                            text: item[0],
-                            value: item,
-                            isStarred: false
-                        })));
-                    });
+        const onFileLoad = async (schemaObj: any, fileStr: any) => {
+            if (schemaObj) {
+                if (typeof schemaObj == "string") {
+                    try {
+                        schemaObj = JSON.parse(schemaObj);
+                    } catch (err) {
+                        sbToastError(`Schema cannot be loaded: Invalid JSON`);
+                        return;
+                    }
                 }
-            } else {
-                setGeneratedSchema('');
-                setCardsState([]);
+                const validJADNSyntax = await validateJADNSyntax(schemaObj);
+                if (validJADNSyntax == true) {
+                    setIsLoading(true);
+                    setSelectedFile({ 'value': fileStr, 'label': fileStr });
+                    const fileName = {
+                        name: getFilenameOnly(fileStr),
+                        ext: getFilenameExt(fileStr)
+                    }
+                    setFileName(fileName);
+
+                    flushSync(() => {
+                        setGeneratedSchema(schemaObj);
+                        if (schemaObj.types) {
+                            setCardsState(schemaObj.types.map((item: any[], i: any) => ({
+                                id: self.crypto.randomUUID(),
+                                index: i,
+                                text: item[0],
+                                value: item,
+                                isStarred: false
+                            })));
+                        } else {
+                            setCardsState([]);
+                        }
+                    });
+                } else {
+                    sbToastError(`Schema cannot be loaded: Invalid JADN`);
+                }
             }
-            setIsValidating(false);
+            setIsLoading(false);
         }
 
         const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -92,25 +110,31 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             setIsValidJADN(false);
             setIsValidating(false);
             setIsLoading(false);
+            setFileName({
+                name: '',
+                ext: 'jadn'
+            });
             setSelectedFile(null);
             setGeneratedSchema('');
             setCardsState([]);
+            if (ref.current) {
+                ref.current.value = '';
+            }
         }
 
-        const validateJADN = (jsonToValidate: any) => {
+        const validateJADNSyntax = (jsonObj: any) => {
             dismissAllToast();
             setIsValidJADN(false);
-            setIsValidating(true);
-
-            let jsonObj = validateJSON(jsonToValidate);
-            if (jsonObj == false) {
-                sbToastError(`Invalid JSON. Cannot validate JADN`);
-                setIsValidating(false);
+            if (!jsonObj) {
+                sbToastError('Validation Error: No Schema to validate');
                 return false;
             }
 
-            return dispatch(validateSchema(jsonObj))
+            setIsValidating(true);
+
+            return dispatch(validateSchema(jsonObj, LANG_JADN))
                 .then((validateSchemaVal: any) => {
+                    setIsValidating(false);
                     if (validateSchemaVal.payload.valid_bool == true) {
                         dispatch(setSchema(jsonObj));
                         setIsValidJADN(true);
@@ -118,12 +142,13 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                         return true;
                     } else {
                         sbToastError(validateSchemaVal.payload.valid_msg);
-                        return false;
+                        return validateSchemaVal.payload.valid_syntax;
                     }
                 })
                 .catch((validateSchemaErr) => {
-                    sbToastError(validateSchemaErr.payload.valid_msg)
-                    return false;
+                    setIsValidating(false);
+                    sbToastError(validateSchemaErr.payload.valid_msg);
+                    return validateSchemaErr.payload.valid_syntax;
                 })
         }
 
@@ -133,7 +158,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                 <div className='card-header p-2'>
                     <div className='row no-gutters'>
                         <div className='col-sm-3'>
-                            <SBSchemaLoader
+                            <SBLoadSchema
                                 schemaOpts={schemaOpts}
                                 selectedSchemaOpt={selectedFile}
                                 loadedSchema={generatedSchema}
@@ -142,7 +167,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                 schemaFormat={'jadn'}
                                 setSelectedFile={setSelectedFile}
                                 onCancelFileUpload={onCancelFileUpload}
-                                onFileChange={onFileChange}
+                                onFileChange={onFileLoad}
                                 ref={ref}
                             />
                         </div>

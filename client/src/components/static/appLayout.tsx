@@ -60,7 +60,7 @@ const AppLayout = () => {
           <button className='navbar-toggler collapsed' type='button' onClick={onToggleNav} data-toggle='collapse' data-target='#navToggle' aria-controls='navToggle' aria-expanded='false' aria-label='Toggle navigation'>
             <span className='navbar-toggler-icon' />
           </button>
-          <a className='navbar-brand' href={NAV_HOME} target='_blank' title='JSON Abstract Data Notation Sandbox' rel="noreferrer">
+          <a className='navbar-brand' href={NAV_HOME} title='JSON Abstract Data Notation Sandbox' rel="noreferrer">
             <img src={favicon} alt='Logo' />
             <span className='font-weight-bold font-italic mx-2'>JADN Sandbox</span>
           </a>
@@ -98,7 +98,7 @@ const AppLayout = () => {
                 <NavLink className='nav-link px-0' to={NAV_TRANSLATE} title='Translate between JADN Schemas and other Schema formats'>Translation</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} title='Validate a message against a provided schema'>Validation</NavLink>
+                <NavLink className='nav-link px-0' to={NAV_VALIDATE_MESSAGE} title='Validate a data instance against a provided schema'>Validation</NavLink>
               </li>
               <li className="nav-item">
                 <NavLink className='nav-link px-0' to={NAV_TRANSFORM} title='Merge two or more schemas into one'>Transformation</NavLink>

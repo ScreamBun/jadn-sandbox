@@ -80,9 +80,6 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
             setIsValidJADN(false);
             setIsValidating(false);
             onScrollToCard(dataIndex);
-
-        } else {
-            console.log('Error: OnDrop() in client/src/components/generate/schema/SchemaCreator.tsx');
         }
     }
 
@@ -207,7 +204,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                         setIsValidating(false);
                     }
                 },
-                config: configInitialState
+                config: generatedSchema.info[key] ? generatedSchema.info[key] : configInitialState
             });
         }
         return null;
@@ -265,7 +262,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                 } else {
                     if (generatedSchema.info) {
-                        setGeneratedSchema((prev: any) => ({ ...prev.info }));
+                        setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
                     } else {
                         setGeneratedSchema({});
                     }

@@ -64,6 +64,14 @@ const defaultStyle = {
         cursor: 'pointer'
     }),
 
+    menu: (provided, state) => ({
+        ...provided,
+        borderLeft: 'var(--bs-border-width) solid var(--bs-border-color)',
+        borderRight: 'var(--bs-border-width) solid var(--bs-border-color)',
+        borderBottom: 'var(--bs-border-width) solid var(--bs-border-color)',
+        marginTop: '0px'
+    }),
+
     container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
 
     option: (styles, state) => ({
@@ -79,14 +87,22 @@ const defaultStyle = {
 }
 
 const smStyle = {
-    control: base => ({
+    control: (base) => ({
         ...base,
         minHeight: 30,
         cursor: 'pointer',
-        border: 'var(--bs-border-width) solid var(--bs-border-color)'
+        border: 'var(--bs-border-width) solid var(--bs-border-color)',
     }),
 
-    container: css => ({
+    menu: (provided, state) => ({
+        ...provided,
+        borderLeft: 'var(--bs-border-width) solid var(--bs-border-color)',
+        borderRight: 'var(--bs-border-width) solid var(--bs-border-color)',
+        borderBottom: 'var(--bs-border-width) solid var(--bs-border-color)',
+        marginTop: '0px'
+    }),
+
+    container: (css) => ({
         ...css,
         flex: '1 1 auto',
         alignSelf: 'stretch',
@@ -126,7 +142,7 @@ const smStyle = {
         color: 'inherit'
     }),
 
-    menuPortal: base => ({
+    menuPortal: (base) => ({
         ...base,
         zIndex: 9999,
     })
@@ -139,7 +155,7 @@ export const getSelectTheme = (theme: 'dark' | 'light') => {
             neutral10: 'var(--bs-secondary-color)', //multivalue selected option background
             neutral80: 'var(--bs-body-color)', //selected option text
             primary25: 'grey', //hover options
-            primary75: 'var(--bs-primary-color)' //selected option indicator
+            primary75: 'var(--bs-primary-color)', //selected option indicator
         })
     }
     return;

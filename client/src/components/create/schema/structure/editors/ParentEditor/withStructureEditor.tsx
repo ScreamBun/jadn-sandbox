@@ -231,10 +231,12 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
       }
 
       //If BaseType is Array or Record, FieldID MUST be the ordinal position of the field within the type, numbered consecutively starting at 1.
-      tmpFieldValues = tmpFieldValues.map((item, index) => {
-        item[0] = index + 1;
-        return item;
-      });
+      if (!isEditableID) {
+        tmpFieldValues = tmpFieldValues.map((item, index) => {
+          item[0] = index + 1;
+          return item;
+        });
+      }
 
       const updatevalue = { ...valueObj, fields: tmpFieldValues };
       setValueObj(updatevalue);
