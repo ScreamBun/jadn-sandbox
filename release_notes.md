@@ -1,5 +1,12 @@
 # JADN Sandbox Release Notes
 
+## v0.9.1
+
+* Changed Message labeling and text to Data
+* Improved json vs jadn schema loader
+* Removes redundant json validation
+* Updated JADN to XSD logic
+
 ## v0.9.0
 
 * Translation - Initial implementation of JADN to XSD Translation
