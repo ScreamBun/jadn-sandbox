@@ -100,12 +100,16 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                 } else {
                     sbToastError(`Schema cannot be loaded: Invalid JADN`);
                 }
+            } else {
+                sbToastError(`Schema cannot be loaded: Empty File`);
             }
             setIsLoading(false);
         }
 
-        const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
+        const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | null) => {
+            if (e) {
+                e.preventDefault();
+            }
             dismissAllToast();
             setIsValidJADN(false);
             setIsValidating(false);
@@ -163,7 +167,6 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                 selectedSchemaOpt={selectedFile}
                                 loadedSchema={generatedSchema}
                                 fileName={fileName}
-                                setFileName={setFileName}
                                 schemaFormat={'jadn'}
                                 setSelectedFile={setSelectedFile}
                                 onCancelFileUpload={onCancelFileUpload}

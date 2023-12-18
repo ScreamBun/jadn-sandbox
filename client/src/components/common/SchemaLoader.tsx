@@ -155,8 +155,10 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         setIsLoading(false);
     }
 
-    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => {
+        if (e) {
+            e.preventDefault();
+        }
         dismissAllToast();
         setIsLoading(false);
         setIsValidating(false);
@@ -182,7 +184,6 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             selectedSchemaOpt={selectedFile}
                             loadedSchema={loadedSchema}
                             fileName={fileName}
-                            setFileName={setFileName}
                             schemaFormat={schemaFormat?.value}
                             setSelectedFile={setSelectedFile}
                             onCancelFileUpload={onCancelFileUpload}

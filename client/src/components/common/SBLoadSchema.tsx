@@ -6,22 +6,15 @@ import { useDispatch } from "react-redux";
 import { loadFile } from "actions/util";
 import { sbToastError } from "./SBToast";
 
-const SBLoadSchema = forwardRef(function SBSchemaLoader(props: any, ref) {
+const SBLoadSchema = forwardRef(function SBLoadSchema(props: any, ref) {
     const dispatch = useDispatch();
     const { schemaOpts, selectedSchemaOpt,
         loadedSchema, fileName, schemaFormat, setSelectedFile,
-        acceptFormat, onCancelFileUpload, onFileChange,
-        setFileName } = props;
+        acceptFormat, onCancelFileUpload, onFileChange } = props;
 
     const handleFileSelect = (e: Option) => {
         if (e == null) {
-            setSelectedFile(e);
-            const fileName = {
-                name: '',
-                ext: 'jadn'
-            }
-            setFileName(fileName);
-            onFileChange(null);
+            onCancelFileUpload();
             return;
 
         } else if (e.value == "file") {
@@ -60,14 +53,6 @@ const SBLoadSchema = forwardRef(function SBSchemaLoader(props: any, ref) {
         }
     }
 
-    const handleCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        setSelectedFile(null);
-        ref.current.value = '';
-        onCancelFileUpload();
-    }
-
-
     return (
         <>
             <div className="d-flex">
@@ -82,7 +67,7 @@ const SBLoadSchema = forwardRef(function SBSchemaLoader(props: any, ref) {
                     filename={fileName?.name} ext={schemaFormat} setDropdown={setSelectedFile} />
             </div>
             <div className='d-none'>
-                <SBFileUploader ref={ref} id={"schema-file"} accept={'.jadn, ' + acceptFormat} onCancel={handleCancelFileUpload} onChange={handleFileChange} />
+                <SBFileUploader ref={ref} id={"schema-file"} accept={'.jadn, ' + acceptFormat} onCancel={() => onCancelFileUpload} onChange={handleFileChange} />
             </div>
         </>
     );
