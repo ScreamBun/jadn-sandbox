@@ -40,9 +40,10 @@ const SBOutline = (props: SBOutlineProps) => {
 
   const [items, setItems] = useState(cards);
   const cardsStateRef = useRef(items);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
-    setItems(cards);
+    setItems(setIsVisible(cards));
   }, [cards, visibleCard])
 
   useEffect(() => {
@@ -180,15 +181,19 @@ const SBOutline = (props: SBOutlineProps) => {
     [visibleCard]
   );
 
-  const search = (query: string) => {
-    console.log(query)
-    console.log(items)
-    const updatedItems = items.map(card =>
+  useEffect(() => {
+    filterItems()
+  }, [query])
+
+  const filterItems = () => {
+    setItems(setIsVisible(items))
+  }
+
+  const setIsVisible = (itemsToFilter: any[]) => {
+    const updatedItems = itemsToFilter.map(card =>
         card.text.toLowerCase().includes(query.toLowerCase()) ? {...card, isVisible:true} : {...card, isVisible:false}
     )
-    console.log(updatedItems)
-
-    setItems(updatedItems)
+    return(updatedItems)
   }
 
   return (
@@ -199,7 +204,7 @@ const SBOutline = (props: SBOutlineProps) => {
             <li className="nav-item pt-2"><a title="An outline view of all the schema types" className="bg-primary nav-link text-light">{title}</a></li>
           </ul>
           <div className="form-outline" style={{paddingTop: '5px',}}>
-            <input type="search" id="form1" className="form-control" placeholder="Type query" aria-label="Search" onChange={(e) => search(e.target.value)} />
+            <input type="search" id="form1" className="form-control" placeholder="Type query" aria-label="Search" onChange={(e) => setQuery(e.target.value)} />
           </div>
           <div className="sb-outline"
             ref={drop}
