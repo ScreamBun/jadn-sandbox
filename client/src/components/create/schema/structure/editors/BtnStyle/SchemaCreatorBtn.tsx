@@ -372,7 +372,15 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
             remove: (idx: number) => {
                 const tmpTypes = generatedSchema.types.filter((_type: StandardTypeArray, i: number) => i != idx);
                 const tmpCards = cardsState.filter((_card: DragItem, index: number) => index != idx);
-                setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                if (tmpTypes.length != 0) {
+                    setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                } else {
+                    if (generatedSchema.info) {
+                        setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
+                    } else {
+                        setGeneratedSchema({});
+                    }
+                }
                 setCardsState(tmpCards);
                 setIsValidJADN(false);
                 setIsValidating(false);
@@ -516,7 +524,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                                                     {!typesCollapse &&
                                                         <div>
                                                             {generatedSchema.types ?
-                                                                <div style={{ height: '70vh' }}>
+                                                                <div style={{ height: '65vh' }}>
                                                                     <AutoSizer disableWidth>
                                                                         {({ height }) => (
                                                                             <List

@@ -87,6 +87,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         const updatedTypes = updatedCards.map(item => item.value);
         setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
         setCardsState(updatedCards);
+        listRef.current?.resetAfterIndex(0, false);
     };
 
     const onStarClick = (updatedCards: DragItem[]) => {
@@ -94,7 +95,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
     }
 
     const onScrollToCard = (idx: number) => {
-        listRef.current.scrollToItem(idx);
+        listRef.current?.scrollToItem(idx);
     }
 
     const onTypesToOutlineDrop = (item: any) => {
@@ -125,7 +126,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         ];
 
         flushSync(() => {
-            setGeneratedSchema((prev: any) => ({ ...prev, ['types']: updatedTypes }));
+            setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
             setCardsState(updatedCards);
         });
 
@@ -246,10 +247,16 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     }
                 });
 
-                setGeneratedSchema((prev: any) => ({
-                    ...prev,
-                    types: tmpTypes
-                }));
+                if (tmpTypes.length != 0) {
+                    setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                } else {
+                    if (generatedSchema.info) {
+                        setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
+                    } else {
+                        setGeneratedSchema({});
+                    }
+                }
+
                 setCardsState(updatedCards);
                 setIsValidJADN(false);
                 setIsValidating(false);
@@ -274,7 +281,6 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
             config: configOpt
         }))
     };
-
 
     return (
         <>
@@ -407,7 +413,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                                                     {!typesCollapse &&
                                                         <Droppable onDrop={onSchemaDrop} acceptableType={"TypesKeys"} >
                                                             {generatedSchema.types ?
-                                                                <div style={{ height: '70vh' }}>
+                                                                <div style={{ height: '65vh' }}>
                                                                     <AutoSizer disableWidth>
                                                                         {({ height }) => (
                                                                             <List
