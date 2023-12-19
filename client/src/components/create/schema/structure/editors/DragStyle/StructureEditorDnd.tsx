@@ -132,7 +132,7 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
                                     <FontAwesomeIcon icon={faArrowDown19}
                                         className='float-end btn btn-sm'
                                         title={'Sort Fields by ID'} />
-                                </a> : ''}
+                                </a> : <></>}
 
                         </span>
 
@@ -152,7 +152,7 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
                                         parentIndex={dataIndex}
                                     />
                                 </div>
-                                : ''
+                                : <></>
                         }
 
                         {
@@ -161,7 +161,7 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
                                     title='Add Field' >
                                     <FontAwesomeIcon icon={faPlusSquare} />
                                 </button>
-                                : ''
+                                : <></>
                         }
 
                     </div>

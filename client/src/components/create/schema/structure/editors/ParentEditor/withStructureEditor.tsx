@@ -36,9 +36,10 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
     //TODO: may need to add polyfill -- support for Safari
     const { ref: inViewRef, inView, entry } = useInView({
       fallbackInView: true,
+      threshold: 1
     });
 
-    const [fieldCollapse, setFieldCollapse] = useState(false);
+    const [fieldCollapse, setFieldCollapse] = useState(collapseAllFields ? collapseAllFields : false);
     const [modal, setModal] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
@@ -53,7 +54,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
       if (rowRef.current) {
         setRowHeight(dataIndex, rowRef.current.getBoundingClientRect().height + 5);
       }
-    }, [rowRef]);
+    }, []);
 
     useEffect(() => {
       setFieldCollapse(collapseAllFields)

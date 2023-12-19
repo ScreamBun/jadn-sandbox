@@ -25,6 +25,7 @@ export default function withPrimitiveEditor(PrimitiveWrapper: React.ComponentTyp
         //TODO: may need to add polyfill -- support for Safari
         const { ref: inViewRef, inView, entry } = useInView({
             fallbackInView: true,
+            threshold: 1
         });
 
         const [modal, setModal] = useState(false);
@@ -45,7 +46,7 @@ export default function withPrimitiveEditor(PrimitiveWrapper: React.ComponentTyp
             if (rowRef.current) {
                 setRowHeight(dataIndex, rowRef.current.getBoundingClientRect().height + 5)
             }
-        }, [rowRef]);
+        }, []);
 
         useEffect(() => {
             if (inView) {
