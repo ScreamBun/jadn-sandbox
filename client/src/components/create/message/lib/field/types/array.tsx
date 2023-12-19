@@ -74,9 +74,15 @@ const ArrayField = (props: ArrayFieldProps) => {
   }
 
   //Expected: fields (typeDef.length  == 5)
-  const fieldDef = typeDef[typeDef.length - 1].map((d: any, i: number) =>
-    <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config} value={data[i]} />
-  )
+  let fieldDef;
+  if (Array.isArray(typeDef[typeDef.length - 1]) && typeDef[typeDef.length - 1].length != 0) {
+    fieldDef = typeDef[typeDef.length - 1].map((d: any, i: number) =>
+      <Field key={d[0]} def={d} parent={msgName} optChange={onChange} idx={i} config={config} value={data[i]} />
+    )
+  } else {
+    <div className='p-2'> No Fields </div>
+  }
+
 
   return (
     <div className='form-group'>

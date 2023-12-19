@@ -62,8 +62,8 @@ const ChoiceField = (props: ChoiceFieldProps) => {
   }
 
   let defOpts; //select dropdown options
-  if (Array.isArray(typeDef[typeDef.length - 1])) {
-    defOpts = typeDef[typeDef.length - 1].map((opt: any) => ({ value: `${hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}`, label: opt[1] }));
+  if (Array.isArray(typeDef[typeDef.length - 1]) && typeDef[typeDef.length - 1].length != 0) {
+    defOpts = typeDef[typeDef.length - 1]?.map((opt: any) => ({ value: `${hasProperty(optData, 'id') && optData.id ? opt[0] : opt[1]}`, label: opt[1] }));
   }
 
   let selectedOpts;
