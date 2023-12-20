@@ -43,6 +43,7 @@ const SBOutline = (props: SBOutlineProps) => {
   const [items, setItems] = useState(cards);
   const cardsStateRef = useRef(items);
   const [query, setQuery] = useState("");
+  const [isQueried, setIsQueried] = useState(false)
 
   useEffect(() => {
     setItems(setIsVisible(cards));
@@ -162,7 +163,7 @@ const SBOutline = (props: SBOutlineProps) => {
   const renderCard = useCallback(
     (card: {
       id: number, index: number, text: string, value: TypeArray, isStarred: boolean, isVisible: boolean
-    } ) => {
+    }, isQueried: boolean ) => {
       return (
         <SBOutlineCard
           key={card.id}
@@ -172,6 +173,7 @@ const SBOutline = (props: SBOutlineProps) => {
           value={card.value}
           isVisible={card.isVisible}
           isStarred={card.isStarred}
+          isQueried={isQueried}
           scrollToCard={onCardClick}
           addCard={addCard}
           moveCard={moveCard}
@@ -184,6 +186,11 @@ const SBOutline = (props: SBOutlineProps) => {
   );
 
   useEffect(() => {
+    if (query == "") {
+      setIsQueried(false)
+    } else {
+      setIsQueried(true)
+    }
     filterItems()
   }, [query])
 
@@ -217,7 +224,7 @@ const SBOutline = (props: SBOutlineProps) => {
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
               paddingTop: '5px',
             }}>
-            <div>{items.filter(card => card.isVisible == true).map(card => renderCard(card))}</div>
+            <div>{items.filter(card => card.isVisible == true).map(card => renderCard(card, isQueried))}</div>
           </div>
         </div>
       ) : (
