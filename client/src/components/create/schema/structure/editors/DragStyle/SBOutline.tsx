@@ -5,6 +5,8 @@ import update from 'immutability-helper'
 import { useDragDropManager, useDrop } from 'react-dnd';
 import { TypeArray } from '../../../interface';
 import { ItemTypes, SBOutlineCard } from "./SBOutlineCard";
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export interface DragItem {
   id: any;
@@ -203,8 +205,9 @@ const SBOutline = (props: SBOutlineProps) => {
           <ul className="nav nav-pills">
             <li className="nav-item pt-2"><a title="An outline view of all the schema types" className="bg-primary nav-link text-light">{title}</a></li>
           </ul>
-          <div className="form-outline" style={{paddingTop: '5px',}}>
-            <input type="search" id="form1" className="form-control" placeholder="Type query" aria-label="Search" onChange={(e) => setQuery(e.target.value)} />
+          <div className="input-group search" style={{paddingTop: '5px'}}>
+            <span className="input-group-text icon" id="basic-addon1"><FontAwesomeIcon icon={faMagnifyingGlass} /></span>
+            <input type="search" id="typesSearchBar" className="form-control" placeholder="Search..." aria-label="Search" onChange={(e) => setQuery(e.target.value)}/>
           </div>
           <div className="sb-outline"
             ref={drop}
