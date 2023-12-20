@@ -424,6 +424,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                                                                                 itemSize={getItemSize}
                                                                                 width={'100%'}
                                                                                 ref={listRef}
+                                                                                itemKey={() => self.crypto.randomUUID()}
                                                                             >
                                                                                 {typesEditors}
                                                                             </List>
