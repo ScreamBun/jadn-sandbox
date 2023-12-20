@@ -43,9 +43,9 @@ class Convert(Resource):
                 return "Schema is not valid", 500    
             jadn.check(schema_data) 
         elif schema_fmt == JSON:
-            validation_result = validate_schema(schema_data)
-            if validation_result != True:
-                return f"JSON Schema Error: {validation_result}", 500
+            is_valid, msg = validate_schema(schema_data)
+            if is_valid != True:
+                return f"JSON Schema Error: {msg}", 500
         else:
             return "Invalid Schema Format", 500    
 
@@ -68,8 +68,8 @@ class Convert(Resource):
             except (TypeError, ValueError) as err:
                 tb = traceback.format_exc()
                 print(tb)
-                return f"Failed to Convert: {err}", 500
-            
+                convertedData.append({'fmt': valid_fmt_name,'fmt_ext': valid_fmt_ext, 'schema': f"{err}", 'err': True})
+           
         else:     
             for conv_type in request_json["convert-to"]:
                 try:
@@ -107,21 +107,25 @@ class Convert(Resource):
     def convertTo(self, schema, schemalang, lang):
         kwargs = { "fmt": lang,}
 
-        if lang == "html":
-            kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
+        try:
+            if lang == "html":
+                kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
+                
+            if lang == "json":
+                return json_schema_dumps(schema)
+            elif lang == "jadn":
+                if schemalang == "json":
+                    return json_to_jadn_dumps(schema, **kwargs)
+                return dumps(schema, **kwargs)
+            elif lang == "puml":
+                return plant_dumps(schema, style={'links': True, 'detail': 'information'})                                      
+            elif lang == "xsd":
+                return convert_xsd_from_dict(schema)[0]
+            else:
+                return dumps(schema, **kwargs)
             
-        if lang == "json":
-            return json_schema_dumps(schema)
-        elif lang == "jadn":
-            if schemalang == "json":
-                return json_to_jadn_dumps(schema, **kwargs)
-            return dumps(schema, **kwargs)
-        elif lang == "puml":
-            return plant_dumps(schema, style={'links': True, 'detail': 'information'})                                      
-        elif lang == "xsd":
-            return convert_xsd_from_dict(schema)[0]
-        else:
-            return dumps(schema, **kwargs)
+        except:
+            raise ValueError
         
 
 

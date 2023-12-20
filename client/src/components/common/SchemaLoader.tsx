@@ -113,30 +113,31 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         setIsValid(false);
         setIsValidating(true);
 
-        let schemaObj = loadedSchema;
-        if (typeof loadedSchema == 'string') {
-            try {
-                schemaObj = JSON.parse(loadedSchema);
-            } catch (err: any) {
-                sbToastError(`Invalid Schema: ${err.message}`)
-                setIsValidating(false);
-                return;
-            }
-        }
-
         if (schemaFormat?.value == LANG_JSON) {
-            validateJSONSchema(schemaObj);
+            validateJSONSchema(loadedSchema);
         } else {
-            validateJADNSchema(schemaObj);
+            validateJADNSchema(loadedSchema);
         }
     }
 
-    const validateJSONSchema = (jsonObj: object) => {
+    const validateJSONSchema = (jsonObj: object | string) => {
         if (!jsonObj) {
             sbToastError('Validation Error: No Schema to validate');
             setIsValidating(false);
             return;
         }
+
+        if (typeof jsonObj == 'string') {
+            try {
+                jsonObj = JSON.parse(jsonObj);
+            } catch (err: any) {
+                console.log(err)
+                sbToastError(`Invalid JSON: ${err.message}`)
+                setIsValidating(false);
+                return;
+            }
+        }
+
         try {
             dispatch(validateSchema(jsonObj, LANG_JSON))
                 .then((validateSchemaVal: any) => {
@@ -163,12 +164,24 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         }
     }
 
-    const validateJADNSchema = (jsonObj: object) => {
+    const validateJADNSchema = (jsonObj: object | string) => {
         if (!jsonObj) {
             sbToastError('Validation Error: No Schema to validate');
             setIsValidating(false);
             return;
         }
+
+        if (typeof jsonObj == 'string') {
+            try {
+                jsonObj = JSON.parse(jsonObj);
+            } catch (err: any) {
+                console.log(err)
+                sbToastError(`Invalid JSON: ${err.message}`)
+                setIsValidating(false);
+                return;
+            }
+        }
+
         try {
             dispatch(validateSchema(jsonObj, LANG_JADN))
                 .then((validateSchemaVal: any) => {
@@ -319,7 +332,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className="row no-gutters">
-                    <div className="col-md-6">
+                    <div className="col-lg-6">
                         <div className="d-flex">
                             <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
                                 placeholder={'Select a schema...'}
@@ -334,22 +347,20 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             <SBFileUploader ref={ref} id={"schema-file"} accept={'.jadn, ' + acceptFormat} onCancel={onCancelFileUpload} onChange={onFileChange} />
                         </div>
                     </div>
-                    <div className="col">
-                        {acceptFormat &&
-                            <SBSelect id={"schema-format-list"}
-                                data={validSchemaFormatOpt}
-                                onChange={(e: Option) => setSchemaFormat(e)}
-                                value={schemaFormat}
-                                placeholder={'Schema format...'}
-                                isSmStyle
-                            />
-                        }
-                    </div>
+                    {acceptFormat && <div className="col-lg-3">
+                        <SBSelect id={"schema-format-list"}
+                            data={validSchemaFormatOpt}
+                            onChange={(e: Option) => setSchemaFormat(e)}
+                            value={schemaFormat}
+                            placeholder={'Schema format...'}
+                            isSmStyle
+                        />
+                    </div>}
                     <div className="col">
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
                         <SBFormatBtn customClass="float-end me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end ms-1 me-1'
+                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end me-1'
                                 title={isValid ? "Schema is valid" : "Click to validate Schema"}
                                 onClick={onValidateSchemaClick}
                             >

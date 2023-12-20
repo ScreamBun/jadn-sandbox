@@ -1,6 +1,8 @@
 import React from "react";
 import { FormatJADN } from "components/utils";
 import { sbToastError } from "./SBToast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faIndent } from "@fortawesome/free-solid-svg-icons";
 
 const SBFormatBtn = (props: any) => {
 
@@ -33,9 +35,13 @@ const SBFormatBtn = (props: any) => {
 
     return (
         <>
-            <button id='formatButton' type='button' className={'btn btn-sm btn-primary ' + customClass} onClick={onFormatClick}
-                title='Attempts to Parse and Format.'>
-                <span className="m-1">Format</span>
+            <button
+                id='formatButton'
+                type='button'
+                className={'btn btn-sm btn-primary ' + customClass}
+                onClick={onFormatClick}
+                title='Format'>
+                <FontAwesomeIcon icon={faIndent} />
             </button>
         </>
     );
