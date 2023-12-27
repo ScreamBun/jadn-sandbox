@@ -43,7 +43,7 @@ export default function withPrimitiveEditor(PrimitiveWrapper: React.ComponentTyp
         const rowRef = useRef<any>();
 
         useEffect(() => {
-            if (rowRef.current) {
+            if (rowRef.current && rowRef.current.getBoundingClientRect().height != 0) {
                 setRowHeight(dataIndex, rowRef.current.getBoundingClientRect().height + 5)
             }
         }, []);
