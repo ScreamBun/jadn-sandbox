@@ -35,6 +35,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                 setIsValidJADN(false);
             }
             dispatch(setSchema(generatedSchema));
+            listRef.current?.resetAfterIndex(0, true);
         }, [generatedSchema])
 
         const [configOpt, setConfigOpt] = useState(configInitialState);
