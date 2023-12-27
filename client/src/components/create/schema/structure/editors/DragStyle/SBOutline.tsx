@@ -14,7 +14,7 @@ export interface DragItem {
   text: string;
   value: TypeArray;
   isStarred: boolean;
-  isVisible: boolean;
+  isFiltered: boolean;
 }
 
 export interface OutlineContainerState {
@@ -45,7 +45,7 @@ const SBOutline = (props: SBOutlineProps) => {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    setItems(setIsVisible(cards));
+    setItems(setIsFiltered(cards));
   }, [cards, visibleCard])
 
   useEffect(() => {
@@ -161,18 +161,18 @@ const SBOutline = (props: SBOutlineProps) => {
 
   const renderCard = useCallback(
     (card: {
-      id: number, index: number, text: string, value: TypeArray, isStarred: boolean, isVisible: boolean
-    }, isQueried: boolean ) => {
+      id: number, index: number, text: string, value: TypeArray, isStarred: boolean, isFiltered: boolean
+    }, index: number, isDraggable: boolean ) => {
       return (
         <SBOutlineCard
           key={card.id}
-          index={card.index}
+          index={index}
           id={card.id}
           text={card.text}
           value={card.value}
-          isVisible={card.isVisible}
+          isVisible={index == visibleCard}
           isStarred={card.isStarred}
-          isDraggable={!isQueried}
+          isDraggable={!isDraggable}
           scrollToCard={onCardClick}
           addCard={addCard}
           moveCard={moveCard}
@@ -189,17 +189,17 @@ const SBOutline = (props: SBOutlineProps) => {
   }, [query])
 
   const filterItems = () => {
-    setItems(setIsVisible(items))
+    setItems(setIsFiltered(items))
   }
 
-  const setIsVisible = (itemsToFilter: any[]) => {
+  const setIsFiltered = (itemsToFilter: any[]) => {
     const updatedItems = itemsToFilter.map(card =>
-        card.text.toLowerCase().includes(query.toLowerCase()) ? {...card, isVisible:true} : {...card, isVisible:false}
+        card.text.toLowerCase().includes(query.toLowerCase()) ? {...card, isFiltered:false} : {...card, isFiltered:true}
     )
     return(updatedItems)
   }
 
-  const isSearching = () => {
+  const isDraggable = () => {
     return query != "" ? true : false
   }
 
@@ -222,7 +222,7 @@ const SBOutline = (props: SBOutlineProps) => {
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
               paddingTop: '5px',
             }}>
-            <div>{items.filter(card => card.isVisible == true).map(card => renderCard(card, isSearching()))}</div>
+              <div>{items.map((card, index) => !card.isFiltered ? renderCard(card, index, isDraggable()) : null)}</div>
           </div>
         </div>
       ) : (

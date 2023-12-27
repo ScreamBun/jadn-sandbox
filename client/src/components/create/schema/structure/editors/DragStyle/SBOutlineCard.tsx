@@ -138,39 +138,41 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
     scrollToCard(index);
   }
 
-  function renderCard(isDraggable: boolean) {
-    if (isDraggable) {
-      return(
+  const draggableCard = () => {
+    return (
+      <div className='card'>
         <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
-        <div>
-          <span onClick={onToggleStar}>
-            <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
-          </span>
-          <a title={'Click to view'} href={`#${index}`} onClick={onCardClick}>{text}</a>
-        </div>
-          
-        <div>
-        <FontAwesomeIcon className='pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
-        </div>
-      </div>
-      )
-    } else {
-      return (
-        <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} style={{ ...style, opacity }} data-handler-id={handlerId}>
-        <div>
-          <span onClick={onToggleStar}>
-            <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
-          </span>
-          <a title={'Click to view'} href={`#${index}`} onClick={onCardClick}>{text}</a>
+          <div>
+            <span onClick={onToggleStar}>
+              <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
+            </span>
+            <a title={'Click to view'} href={`#${index}`} onClick={onCardClick}>{text}</a>
+          </div>
+
+          <div>
+            <FontAwesomeIcon className='pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
+          </div>
         </div>
       </div>
-      )
-    }
+    )
   }
 
-  return (
-    <div className='card'>
-      {renderCard(isDraggable)}
-    </div>
-  )
+  if (isDraggable) { return draggableCard() }
+
+  const notDraggableCard = () => {
+    return (
+      <div className='card'>
+        <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} style={{ ...style, opacity }} data-handler-id={handlerId}>
+          <div>
+            <span onClick={onToggleStar}>
+              <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
+            </span>
+            <a title={'Click to view'} href={`#${index}`} onClick={onCardClick}>{text}</a>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return(notDraggableCard())
 }
