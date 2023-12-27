@@ -23,7 +23,7 @@ export interface SBOutlineCardProps {
   value: TypeArray;
   isStarred: boolean;
   isVisible: boolean;
-  isQueried: boolean;
+  isDraggable: boolean;
   scrollToCard: (idx: number) => void;
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;
@@ -31,7 +31,7 @@ export interface SBOutlineCardProps {
   handleStarToggle: (idx: number) => void;
 }
 
-export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isStarred, isVisible, isQueried, scrollToCard, handleStarToggle, moveCard, addCard, dropCard }) => {
+export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, isStarred, isVisible, isDraggable, scrollToCard, handleStarToggle, moveCard, addCard, dropCard }) => {
 
   const originalIndex = index;
   const [toggleStar, setToggleStar] = useState(isStarred);
@@ -138,17 +138,10 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
     scrollToCard(index);
   }
 
-  function renderGrip(isQueried: boolean) {
-    if (!isQueried) {
-      return <FontAwesomeIcon className='pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
-    } else {
-      return null
-    }
-  }
-
-  return (
-    <div className='card'>
-      <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+  function renderCard(isDraggable: boolean) {
+    if (isDraggable) {
+      return(
+        <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
         <div>
           <span onClick={onToggleStar}>
             <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
@@ -157,9 +150,27 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
         </div>
           
         <div>
-          {renderGrip(isQueried)}
+        <FontAwesomeIcon className='pt-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
         </div>
       </div>
+      )
+    } else {
+      return (
+        <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} style={{ ...style, opacity }} data-handler-id={handlerId}>
+        <div>
+          <span onClick={onToggleStar}>
+            <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
+          </span>
+          <a title={'Click to view'} href={`#${index}`} onClick={onCardClick}>{text}</a>
+        </div>
+      </div>
+      )
+    }
+  }
+
+  return (
+    <div className='card'>
+      {renderCard(isDraggable)}
     </div>
   )
 }

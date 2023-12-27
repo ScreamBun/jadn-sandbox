@@ -43,7 +43,6 @@ const SBOutline = (props: SBOutlineProps) => {
   const [items, setItems] = useState(cards);
   const cardsStateRef = useRef(items);
   const [query, setQuery] = useState("");
-  const [isQueried, setIsQueried] = useState(false)
 
   useEffect(() => {
     setItems(setIsVisible(cards));
@@ -173,7 +172,7 @@ const SBOutline = (props: SBOutlineProps) => {
           value={card.value}
           isVisible={card.isVisible}
           isStarred={card.isStarred}
-          isQueried={isQueried}
+          isDraggable={!isQueried}
           scrollToCard={onCardClick}
           addCard={addCard}
           moveCard={moveCard}
@@ -186,11 +185,6 @@ const SBOutline = (props: SBOutlineProps) => {
   );
 
   useEffect(() => {
-    if (query == "") {
-      setIsQueried(false)
-    } else {
-      setIsQueried(true)
-    }
     filterItems()
   }, [query])
 
@@ -205,6 +199,10 @@ const SBOutline = (props: SBOutlineProps) => {
     return(updatedItems)
   }
 
+  const isSearching = () => {
+    return query != "" ? true : false
+  }
+
   return (
     <div id='outlineScrollContainer'>
       {items && items.length > 0 ? (
@@ -214,7 +212,7 @@ const SBOutline = (props: SBOutlineProps) => {
           </ul>
           <div className="input-group search" style={{paddingTop: '5px'}}>
             <span className="input-group-text icon" id="basic-addon1"><FontAwesomeIcon icon={faMagnifyingGlass} /></span>
-            <input type="search" id="typesSearchBar" className="form-control" placeholder="Search..." aria-label="Search" onChange={(e) => setQuery(e.target.value)}/>
+            <input type="search" id="typesSearchBar" className="form-control" placeholder="Search..." aria-label="Search" onChange={(e) => setQuery(e.target.value.trim())}/>
           </div>
           <div className="sb-outline"
             ref={drop}
@@ -224,7 +222,7 @@ const SBOutline = (props: SBOutlineProps) => {
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
               paddingTop: '5px',
             }}>
-            <div>{items.filter(card => card.isVisible == true).map(card => renderCard(card, isQueried))}</div>
+            <div>{items.filter(card => card.isVisible == true).map(card => renderCard(card, isSearching()))}</div>
           </div>
         </div>
       ) : (
