@@ -24,16 +24,8 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
     const [items, setItems] = useState(cards);
 
     useEffect(() => {
-        filterItems()
-    }, [query])
-
-    useEffect(() => {
         setItems(setIsVisibleInOutline(cards));
-      }, [cards, visibleCard])
-
-    const filterItems = () => {
-        setItems(setIsVisibleInOutline(items))
-    }
+      }, [cards, visibleCard, query])
 
     const setIsVisibleInOutline = (itemsToFilter: any[]) => {
         const updatedItems = itemsToFilter.map(card =>

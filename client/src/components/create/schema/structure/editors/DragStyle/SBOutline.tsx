@@ -46,7 +46,7 @@ const SBOutline = (props: SBOutlineProps) => {
 
   useEffect(() => {
     setItems(setIsVisibleInOutline(cards));
-  }, [cards, visibleCard])
+  }, [cards, visibleCard, query])
 
   useEffect(() => {
     cardsStateRef.current = items;
@@ -183,14 +183,6 @@ const SBOutline = (props: SBOutlineProps) => {
     },
     [visibleCard]
   );
-
-  useEffect(() => {
-    filterItems()
-  }, [query])
-
-  const filterItems = () => {
-    setItems(setIsVisibleInOutline(items))
-  }
 
   const setIsVisibleInOutline = (itemsToFilter: any[]) => {
     const updatedItems = itemsToFilter.map(card =>
