@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { faSquareCaretDown, faSquareCaretUp, faStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as farStar } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TypeArray } from "components/create/schema/interface";
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
 export interface SBOutlineBtnStyleProps {
     id: string;
     title: string;
-    items: any[];
+    cards: any[];
     visibleCard: number | null;
     changeIndex: (v: TypeArray, dataIndex: number, i: number) => void;
     onStarClick: (index: number) => void;
@@ -16,16 +17,36 @@ export interface SBOutlineBtnStyleProps {
 
 const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
 
-    const { id = 'sb-outline', title, visibleCard, items = [],
+    const { id = 'sb-outline', title, visibleCard, cards = [],
         onStarClick, onScrollToCard, changeIndex } = props;
 
-    const renderCards = items.map((card, i) => {
-        const backgroundColor_class = i == visibleCard ? 'highlight-color' : ''
-        const onCardClick = (e: React.MouseEvent<HTMLElement>) => {
-            e.preventDefault();
-            onScrollToCard(i);
-        }
+    const [query, setQuery] = useState("");
+    const [items, setItems] = useState(cards);
 
+    useEffect(() => {
+        filterItems()
+    }, [query])
+
+    useEffect(() => {
+        setItems(setIsVisibleInOutline(cards));
+      }, [cards, visibleCard])
+
+    const filterItems = () => {
+        setItems(setIsVisibleInOutline(items))
+    }
+
+    const setIsVisibleInOutline = (itemsToFilter: any[]) => {
+        const updatedItems = itemsToFilter.map(card =>
+            card.text.toLowerCase().includes(query.toLowerCase()) ? { ...card, isVisibleInOutline: true } : { ...card, isVisibleInOutline: false }
+        )
+        return (updatedItems)
+    }
+
+    const isMoveable = () => {
+        return query == "" ? true : false
+    }
+
+    const moveableCard =(card: any, i: number, backgroundColor_class: string, onCardClick: React.MouseEventHandler<HTMLAnchorElement>) => {
         return (
             <div className={`card ${backgroundColor_class}`} key={i}>
                 <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
@@ -50,7 +71,36 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
                     </div>
                 </div>
             </div>
-        );
+        )
+    }
+
+    const notMoveableCard =(card: any, i: number, backgroundColor_class: string, onCardClick: React.MouseEventHandler<HTMLAnchorElement>) => {
+        return (
+            <div className={`card ${backgroundColor_class}`} key={i}>
+                <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
+                    <div>
+                        <span onClick={() => onStarClick(i)}>
+                            <FontAwesomeIcon className='me-1' icon={card.isStarred == true ? faStar : farStar} />
+                        </span>
+                        <a title={'Click to view'} href={`#${i}`} onClick={onCardClick}>{card.text}</a>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    const renderCards = items.map((card, i) => {
+        console.log(card.isVisibleInOutline)
+        if (card.isVisibleInOutline) {
+            const backgroundColor_class = i == visibleCard ? 'highlight-color' : ''
+            const onCardClick = (e: React.MouseEvent<HTMLElement>) => {
+                e.preventDefault();
+                onScrollToCard(i);
+            }
+            if (isMoveable()) { return (moveableCard(card, i, backgroundColor_class, onCardClick)); }
+            return (notMoveableCard(card, i, backgroundColor_class, onCardClick));
+        }
+        return null;
     })
 
 
@@ -61,6 +111,10 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
                     <ul className="nav nav-pills">
                         <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link bg-primary">{title}</a></li>
                     </ul>
+                    <div className="input-group search" style={{ paddingTop: '5px' }}>
+                        <span className="input-group-text icon" id="basic-addon1"><FontAwesomeIcon icon={faMagnifyingGlass} /></span>
+                        <input type="search" id="typesSearchBar" className="form-control" placeholder="Search..." aria-label="Search" onChange={(e) => setQuery(e.target.value.trim())} />
+                    </div>
                     <div className="sb-outline mt-2">
                         <div>
                             {renderCards}

@@ -152,7 +152,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                 index: i,
                                 text: item[0],
                                 value: item,
-                                isStarred: false
+                                isStarred: false,
+                                isVisibleInOutline: true
                             })));
                         });
                         setIsLoading(false);
@@ -202,7 +203,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                         index: i,
                                         text: item[0],
                                         value: item,
-                                        isStarred: false
+                                        isStarred: false,
+                                        isVisibleInOutline: true
                                     })));
                                 }
                             });
@@ -369,7 +371,8 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                 index: dataIndex,
                 text: type_name,
                 value: tmpDef,
-                isStarred: false
+                isStarred: false,
+                isVisibleInOutline: true
             }
             if (!insertAt || (insertAt && insertAt.value == "end")) {
                 tmpTypes.push(tmpDef);
@@ -698,7 +701,7 @@ const SchemaCreatorBtnStyle = memo(function SchemaCreator(props: any) {
                                     <div className='col'>
                                         <SBOutlineBtnStyle
                                             id={'schema-outline'}
-                                            items={cardsState}
+                                            cards={cardsState}
                                             title={'Outline'}
                                             visibleCard={visibleType}
                                             changeIndex={changeIndex}

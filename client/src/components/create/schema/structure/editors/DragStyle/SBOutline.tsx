@@ -42,10 +42,10 @@ const SBOutline = (props: SBOutlineProps) => {
 
   const [items, setItems] = useState(cards);
   const cardsStateRef = useRef(items);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("")
 
   useEffect(() => {
-    setItems(setIsFiltered(cards));
+    setItems(setIsVisibleInOutline(cards));
   }, [cards, visibleCard])
 
   useEffect(() => {
@@ -189,12 +189,12 @@ const SBOutline = (props: SBOutlineProps) => {
   }, [query])
 
   const filterItems = () => {
-    setItems(setIsFiltered(items))
+    setItems(setIsVisibleInOutline(items))
   }
 
-  const setIsFiltered = (itemsToFilter: any[]) => {
+  const setIsVisibleInOutline = (itemsToFilter: any[]) => {
     const updatedItems = itemsToFilter.map(card =>
-        card.text.toLowerCase().includes(query.toLowerCase()) ? {...card, isFiltered:false} : {...card, isFiltered:true}
+        card.text.toLowerCase().includes(query.toLowerCase()) ? {...card, isVisibleInOutline: true} : {...card, isVisibleInOutline: false}
     )
     return(updatedItems)
   }
@@ -222,7 +222,7 @@ const SBOutline = (props: SBOutlineProps) => {
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
               paddingTop: '5px',
             }}>
-              <div>{items.map((card, index) => !card.isFiltered ? renderCard(card, index, isDraggable()) : null)}</div>
+              <div>{items.map((card, index) => card.isVisibleInOutline ? renderCard(card, index, isDraggable()) : null)}</div>
           </div>
         </div>
       ) : (

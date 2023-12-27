@@ -118,7 +118,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                 text: item[0],
                                 value: item,
                                 isStarred: false,
-                                isFiltered: false
+                                isVisibleInOutline: true
                             })));
                         });
                         setIsLoading(false);
@@ -169,7 +169,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                                         text: item[0],
                                         value: item,
                                         isStarred: false,
-                                        isFiltered: false
+                                        isVisibleInOutline: true
                                     })));
                                 }
                             });
@@ -287,7 +287,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
                 text: type_name,
                 value: tmpDef,
                 isStarred: false,
-                isFiltered: false
+                isVisibleInOutline: true
             }
 
             flushSync(() => {
@@ -337,7 +337,7 @@ const SchemaCreator = memo(function SchemaCreator(props: any) {
             text: type_name,
             value: tmpDef,
             isStarred: false,
-            isFiltered: false
+            isVisibleInOutline: true
         }
 
         let updatedCards = [
