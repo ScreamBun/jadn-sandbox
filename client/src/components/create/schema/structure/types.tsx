@@ -15,7 +15,8 @@ interface EditorProps {
   changeIndex?: (v: string | Record<string, any>, dataIndex: number, i: number) => void;  // eslint-disable-line react/require-default-props
   setIsVisible: (i: number) => void;
   config: InfoConfig;
-  collapseAllFields: boolean;
+  fieldCollapse: boolean;
+  setFieldCollapse: (bool: boolean, idx: number) => void;
 }
 
 const typeDef = (props: StructureDef) => {

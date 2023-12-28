@@ -28,7 +28,7 @@ interface StructureEditorProps {
     modal: boolean;
     toggleModal: () => void;
     saveModal: (modalData: Array<string>) => void;
-    setFieldCollapse: (fieldCollapse: boolean) => void;
+    setFieldCollapse: (fieldCollapse: boolean, idx: number) => void;
     sortFields: (e: React.MouseEvent<HTMLAnchorElement>) => void;
     fieldChange: (val: FieldArray, idx: number) => void;
     onAddField: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -121,7 +121,7 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
                             </span>
 
                             < a href="#" role="button"
-                                onClick={() => setFieldCollapse(!fieldCollapse)}>
+                                onClick={() => setFieldCollapse(!fieldCollapse, dataIndex)}>
                                 <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
                                     className='float-end btn btn-sm'
                                     title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />

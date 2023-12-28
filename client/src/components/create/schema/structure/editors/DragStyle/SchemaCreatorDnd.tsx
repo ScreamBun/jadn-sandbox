@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { flushSync } from 'react-dom';
 import { faCircleChevronDown, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,17 +18,48 @@ import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
 
-
 const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
     const { selectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState, getItemSize, listRef,
         setIsValidJADN, setIsValidating, isLoading, setRowHeight,
-        activeOpt, setActiveOpt, activeView, configOpt, setConfigOpt } = props;
+        activeOpt, setActiveOpt, activeView, configOpt, setConfigOpt, fieldCollapseState, setFieldCollapseState } = props;
 
     const [visibleType, setVisibleType] = useState<number | null>(null);
 
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
+
+    useEffect(() => {
+        if (Object.keys(fieldCollapseState).length > 0) {
+            const count = Object.keys(fieldCollapseState).length;
+            let tracker = 0;
+
+            for (let i in Object.values(fieldCollapseState)) {
+                if (fieldCollapseState[i] == true) {
+                    tracker++;
+                }
+            }
+
+            if (tracker == count && allFieldsCollapse != true) {
+                setAllFieldsCollapse(true);
+            } else if (tracker == 0 && allFieldsCollapse != false) {
+                setAllFieldsCollapse(false)
+            }
+        }
+    }, [fieldCollapseState])
+
+    useEffect(() => {
+        if (allFieldsCollapse == true) {
+            const updatedFieldCollapseState = { ...fieldCollapseState };
+            Object.keys(updatedFieldCollapseState).forEach((item) => updatedFieldCollapseState[item] = true);
+            setFieldCollapseState(updatedFieldCollapseState);
+
+        } else if (allFieldsCollapse == false) {
+            const updatedFieldCollapseState = { ...fieldCollapseState };
+            Object.keys(updatedFieldCollapseState).forEach((item) => updatedFieldCollapseState[item] = false);
+            setFieldCollapseState(updatedFieldCollapseState);
+        }
+    }, [allFieldsCollapse])
 
     const onSchemaDrop = (item: Item) => {
         let key = item.text;
@@ -75,6 +106,9 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
             flushSync(() => {
                 setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                 setCardsState((prev: any) => ([...prev, new_card]));
+                if (Types[key].type == 'structure') {
+                    setFieldCollapseState((prev: any) => ({ ...prev, [dataIndex]: false }));
+                }
             });
 
             setIsValidJADN(false);
@@ -87,6 +121,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         const updatedTypes = updatedCards.map(item => item.value);
         setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
         setCardsState(updatedCards);
+        //TODO updated field collapse
         listRef.current?.resetAfterIndex(0, false);
     };
 
@@ -128,6 +163,21 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         flushSync(() => {
             setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
             setCardsState(updatedCards);
+            /*         todo:   update at index 
+            if (Types[key].type == 'structure') {
+                          //update field collapse
+                          //add field in insertAt
+          
+                          const updatedFieldCollapseState = { ...fieldCollapseState };
+                          const out = Object.keys(updatedFieldCollapseState).reduce((ac, a, i) => {
+                              if (i === insertAt) {
+                                  ac[insertAt] = false
+                              };
+                              ac[a] = updatedFieldCollapseState[a];
+                              return ac;
+                          }, {})
+                          console.log(out)
+                      } */
         });
 
         setIsValidating(false);
@@ -227,7 +277,10 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
             value: def,
             dataIndex: index,
             customStyle: { ...style, height: 'auto' },
-            collapseAllFields: allFieldsCollapse,
+            fieldCollapse: fieldCollapseState && Types[type].type == 'structure' ? fieldCollapseState[index] : false,
+            setFieldCollapse: (bool: boolean, idx: number) => {
+                setFieldCollapseState((prev) => ({ ...prev, [idx]: bool }))
+            },
             setRowHeight: setRowHeight,
             setIsVisible: setVisibleType,
             change: (val: TypeObject, idx: number) => {
@@ -275,6 +328,10 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     }
                 }
                 setCardsState(tmpCards);
+                setFieldCollapseState((prev) => {
+                    const { idx, ...data } = prev;
+                    return data;
+                });
                 setIsValidJADN(false);
                 setIsValidating(false);
             },

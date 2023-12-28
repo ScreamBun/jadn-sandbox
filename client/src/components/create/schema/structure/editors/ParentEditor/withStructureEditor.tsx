@@ -24,13 +24,14 @@ export interface StructureEditorProps {
   remove: (i: number) => void;
   setIsVisible: (i: number) => void;
   config: InfoConfig;
-  collapseAllFields: boolean;
+  fieldCollapse: boolean;
+  setFieldCollapse: (bool: boolean, idx: number) => void;
 }
 
 export default function withStructureEditor(StructureWrapper: React.ComponentType<any>) {
   function WithStructureEditor(props: StructureEditorProps) {
 
-    const { value, dataIndex, config, collapseAllFields, customStyle, setRowHeight, change, remove, setIsVisible } = props;
+    const { value, dataIndex, config, setFieldCollapse, customStyle, setRowHeight, change, remove, setIsVisible } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
 
     //TODO: may need to add polyfill -- support for Safari
@@ -39,7 +40,6 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
       threshold: 1
     });
 
-    const [fieldCollapse, setFieldCollapse] = useState(collapseAllFields ? collapseAllFields : false);
     const [modal, setModal] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
@@ -55,10 +55,6 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
         setRowHeight(dataIndex, rowRef.current.getBoundingClientRect().height + 5);
       }
     }, []);
-
-    useEffect(() => {
-      setFieldCollapse(collapseAllFields)
-    }, [collapseAllFields]);
 
     useEffect(() => {
       if (inView) {
@@ -177,7 +173,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
       });
 
       change(updatevalue, dataIndex);
-      setFieldCollapse(false);
+      setFieldCollapse(false, dataIndex);
     }
 
     const fieldChange = (val: FieldArray, idx: number) => {
@@ -320,7 +316,6 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
       <>
         <StructureWrapper
           isEditableID={isEditableID}
-          fieldCollapse={fieldCollapse}
           rowRef={rowRef}
           inViewRef={inViewRef}
           valueObj={valueObj}
@@ -331,7 +326,6 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
           modal={modal}
           toggleModal={toggleModal}
           saveModal={saveModal}
-          setFieldCollapse={setFieldCollapse}
           sortFields={sortFields}
           fieldChange={fieldChange}
           onFieldRemoval={onFieldRemoval}

@@ -13,6 +13,7 @@ import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBSpinner from 'components/common/SBSpinner';
 import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
 import SBLoadSchema from 'components/common/SBLoadSchema';
+import { Types } from '../../structure';
 
 
 export const configInitialState = {
@@ -64,6 +65,13 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             return rowHeight.current[index] || 0
         };
 
+        const [fieldCollapseState, setFieldCollapseState] = useState({});
+        console.log(fieldCollapseState)
+
+        useEffect(() => {
+            listRef.current?.resetAfterIndex(0, true);
+        }, [fieldCollapseState])
+
         const onFileLoad = async (schemaObj: any, fileStr: any) => {
             if (schemaObj) {
                 if (typeof schemaObj == "string") {
@@ -87,15 +95,23 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                     flushSync(() => {
                         setGeneratedSchema(schemaObj);
                         if (schemaObj.types) {
-                            setCardsState(schemaObj.types.map((item: any[], i: any) => ({
+                            setCardsState(schemaObj.types.map((item: any[], i: number) => ({
                                 id: self.crypto.randomUUID(),
                                 index: i,
                                 text: item[0],
                                 value: item,
                                 isStarred: false
                             })));
+                            setFieldCollapseState(schemaObj.types.map((def: any[], i: number) => {
+                                let type = def[1].toLowerCase() as keyof typeof Types;
+                                if (Types[type].type == 'structure') {
+                                    return ({ [i]: false });
+                                }
+                                return;
+                            }))
                         } else {
                             setCardsState([]);
+                            setFieldCollapseState({});
                         }
                     });
                 } else {
@@ -122,6 +138,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             setSelectedFile(null);
             setGeneratedSchema('');
             setCardsState([]);
+            setFieldCollapseState({});
             if (ref.current) {
                 ref.current.value = '';
             }
@@ -210,6 +227,8 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                         setConfigOpt={setConfigOpt}
                         cardsState={cardsState}
                         setCardsState={setCardsState}
+                        fieldCollapseState={fieldCollapseState}
+                        setFieldCollapseState={setFieldCollapseState}
                     />
                 </div>
             </div>
