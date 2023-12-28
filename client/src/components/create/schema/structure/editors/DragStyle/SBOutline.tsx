@@ -5,6 +5,8 @@ import update from 'immutability-helper'
 import { useDragDropManager, useDrop } from 'react-dnd';
 import { TypeArray } from '../../../interface';
 import { ItemTypes, SBOutlineCard } from "./SBOutlineCard";
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export interface DragItem {
   id: any;
@@ -12,6 +14,7 @@ export interface DragItem {
   text: string;
   value: TypeArray;
   isStarred: boolean;
+  isFiltered: boolean;
 }
 
 export interface OutlineContainerState {
@@ -39,10 +42,11 @@ const SBOutline = (props: SBOutlineProps) => {
 
   const [items, setItems] = useState(cards);
   const cardsStateRef = useRef(items);
+  const [query, setQuery] = useState("")
 
   useEffect(() => {
-    setItems(cards);
-  }, [cards, visibleCard])
+    setItems(setIsVisibleInOutline(cards));
+  }, [cards, visibleCard, query])
 
   useEffect(() => {
     cardsStateRef.current = items;
@@ -154,10 +158,11 @@ const SBOutline = (props: SBOutlineProps) => {
       })
     )
   }, []);
+
   const renderCard = useCallback(
     (card: {
-      id: number, text: string, value: TypeArray, isStarred: boolean
-    }, index: number) => {
+      id: number, index: number, text: string, value: TypeArray, isStarred: boolean, isFiltered: boolean
+    }, index: number, isDraggable: boolean ) => {
       return (
         <SBOutlineCard
           key={card.id}
@@ -167,6 +172,7 @@ const SBOutline = (props: SBOutlineProps) => {
           value={card.value}
           isVisible={index == visibleCard}
           isStarred={card.isStarred}
+          isDraggable={!isDraggable}
           scrollToCard={onCardClick}
           addCard={addCard}
           moveCard={moveCard}
@@ -178,6 +184,17 @@ const SBOutline = (props: SBOutlineProps) => {
     [visibleCard]
   );
 
+  const setIsVisibleInOutline = (itemsToFilter: any[]) => {
+    const updatedItems = itemsToFilter.map(card =>
+        card.text.toLowerCase().includes(query.toLowerCase()) ? {...card, isVisibleInOutline: true} : {...card, isVisibleInOutline: false}
+    )
+    return(updatedItems)
+  }
+
+  const isDraggable = () => {
+    return query != "" ? true : false
+  }
+
   return (
     <div id='outlineScrollContainer'>
       {items && items.length > 0 ? (
@@ -185,6 +202,10 @@ const SBOutline = (props: SBOutlineProps) => {
           <ul className="nav nav-pills">
             <li className="nav-item pt-2"><a title="An outline view of all the schema types" className="bg-primary nav-link text-light">{title}</a></li>
           </ul>
+          <div className="input-group search" style={{paddingTop: '5px'}}>
+            <span className="input-group-text icon" id="basic-addon1"><FontAwesomeIcon icon={faMagnifyingGlass} /></span>
+            <input type="search" id="typesSearchBar" className="form-control" placeholder="Search..." aria-label="Search" onChange={(e) => setQuery(e.target.value.trim())}/>
+          </div>
           <div className="sb-outline"
             ref={drop}
             data-handler-id={handlerId}
@@ -193,7 +214,7 @@ const SBOutline = (props: SBOutlineProps) => {
               backgroundColor: canDrop ? (isOver ? 'lightgreen' : 'rgba(0,0,0,.5)') : 'inherit',
               paddingTop: '5px',
             }}>
-            <div>{items.map((card, i) => renderCard(card, i))}</div>
+              <div>{items.map((card, index) => card.isVisibleInOutline ? renderCard(card, index, isDraggable()) : null)}</div>
           </div>
         </div>
       ) : (
