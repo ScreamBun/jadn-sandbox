@@ -137,8 +137,8 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
     e.preventDefault();
     scrollToCard(index);
   }
-
-  const draggableCard = () => {
+  
+  if (isDraggable) {
     return (
       <div className='card'>
         <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
@@ -157,22 +157,17 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
     )
   }
 
-  if (isDraggable) { return draggableCard() }
-
-  const notDraggableCard = () => {
-    return (
-      <div className='card'>
-        <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} style={{ ...style, opacity }} data-handler-id={handlerId}>
-          <div>
-            <span onClick={onToggleStar}>
-              <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
-            </span>
-            <a title={'Click to view'} href={`#${index}`} onClick={onCardClick}>{text}</a>
-          </div>
+  return (
+    <div className='card'>
+      <div className={`card-body list-group-item d-flex justify-content-between align-items-center ${backgroundColor_class}`} style={{ ...style, opacity }} data-handler-id={handlerId}>
+        <div>
+          <span onClick={onToggleStar}>
+            <FontAwesomeIcon className='me-1' icon={toggleStar ? faStar : farStar} />
+          </span>
+          <a title={'Click to view'} href={`#${index}`} onClick={onCardClick}>{text}</a>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 
-  return(notDraggableCard())
 }
