@@ -38,49 +38,6 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
         return query == "" ? true : false
     }
 
-    const moveableCard =(card: any, i: number, backgroundColor_class: string, onCardClick: React.MouseEventHandler<HTMLAnchorElement>) => {
-        return (
-            <div className={`card ${backgroundColor_class}`} key={i}>
-                <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
-                    <div>
-                        <span onClick={() => onStarClick(i)}>
-                            <FontAwesomeIcon className='me-1' icon={card.isStarred == true ? faStar : farStar} />
-                        </span>
-                        <a title={'Click to view'} href={`#${i}`} onClick={onCardClick}>{card.text}</a>
-                    </div>
-
-                    <div className="btn-group" role="group" aria-label="button group">
-                        {i == 0 ? '' :
-                            <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i - 1)}
-                                title={`Move ${card.text} Up`}>
-                                <FontAwesomeIcon icon={faSquareCaretUp} />
-                            </button>}
-                        {i == items.length - 1 ? '' :
-                            <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i + 1)}
-                                title={`Move ${card.text} Down`}>
-                                <FontAwesomeIcon icon={faSquareCaretDown} />
-                            </button>}
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-    const notMoveableCard =(card: any, i: number, backgroundColor_class: string, onCardClick: React.MouseEventHandler<HTMLAnchorElement>) => {
-        return (
-            <div className={`card ${backgroundColor_class}`} key={i}>
-                <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
-                    <div>
-                        <span onClick={() => onStarClick(i)}>
-                            <FontAwesomeIcon className='me-1' icon={card.isStarred == true ? faStar : farStar} />
-                        </span>
-                        <a title={'Click to view'} href={`#${i}`} onClick={onCardClick}>{card.text}</a>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
     const renderCards = items.map((card, i) => {
         console.log(card.isVisibleInOutline)
         if (card.isVisibleInOutline) {
@@ -89,8 +46,45 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
                 e.preventDefault();
                 onScrollToCard(i);
             }
-            if (isMoveable()) { return (moveableCard(card, i, backgroundColor_class, onCardClick)); }
-            return (notMoveableCard(card, i, backgroundColor_class, onCardClick));
+            if (isMoveable()) {
+                return (
+                    <div className={`card ${backgroundColor_class}`} key={i}>
+                        <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
+                            <div>
+                                <span onClick={() => onStarClick(i)}>
+                                    <FontAwesomeIcon className='me-1' icon={card.isStarred == true ? faStar : farStar} />
+                                </span>
+                                <a title={'Click to view'} href={`#${i}`} onClick={onCardClick}>{card.text}</a>
+                            </div>
+
+                            <div className="btn-group" role="group" aria-label="button group">
+                                {i == 0 ? '' :
+                                    <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i - 1)}
+                                        title={`Move ${card.text} Up`}>
+                                        <FontAwesomeIcon icon={faSquareCaretUp} />
+                                    </button>}
+                                {i == items.length - 1 ? '' :
+                                    <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(card.value, i, i + 1)}
+                                        title={`Move ${card.text} Down`}>
+                                        <FontAwesomeIcon icon={faSquareCaretDown} />
+                                    </button>}
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+            return (
+                <div className={`card ${backgroundColor_class}`} key={i}>
+                    <div className='card-body list-group-item d-flex justify-content-between align-items-center'>
+                        <div>
+                            <span onClick={() => onStarClick(i)}>
+                                <FontAwesomeIcon className='me-1' icon={card.isStarred == true ? faStar : farStar} />
+                            </span>
+                            <a title={'Click to view'} href={`#${i}`} onClick={onCardClick}>{card.text}</a>
+                        </div>
+                    </div>
+                </div>
+            )
         }
         return null;
     })
