@@ -39,7 +39,6 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
     }
 
     const renderCards = items.map((card, i) => {
-        console.log(card.isVisibleInOutline)
         if (card.isVisibleInOutline) {
             const backgroundColor_class = i == visibleCard ? 'highlight-color' : ''
             const onCardClick = (e: React.MouseEvent<HTMLElement>) => {
