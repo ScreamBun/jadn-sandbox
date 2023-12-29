@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { githubDark, githubLight } from '@uiw/codemirror-themes-all';
 import { langs } from '@uiw/codemirror-extensions-langs';
-import { LANG_HTML, LANG_MARKDOWN, LANG_XML } from 'components/utils/constants';
+import { LANG_HTML, LANG_MARKDOWN, LANG_XML, LANG_XSD } from 'components/utils/constants';
 import { FormatJADN } from 'components/utils';
 import { ThemeContext } from 'components/static/ThemeProvider';
 
@@ -37,6 +37,9 @@ const SBEditor = (props: any) => {
             case LANG_XML:
                 extensions = [langs.xml()];
                 break;
+            case LANG_XSD:
+                extensions = [langs.xml()];
+                break;                
             default:
                 extensions = [langs.json()];
                 break;
