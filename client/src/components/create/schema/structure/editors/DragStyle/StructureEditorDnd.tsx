@@ -17,7 +17,6 @@ interface StructureEditorProps {
     change: (v: StandardTypeObject, i: number) => void;
     config: InfoConfig;
     isEditableID: boolean;
-    fieldCollapse: boolean;
     rowRef: any;
     inViewRef: any;
     valueObj: StandardTypeObject;
@@ -28,6 +27,7 @@ interface StructureEditorProps {
     modal: boolean;
     toggleModal: () => void;
     saveModal: (modalData: Array<string>) => void;
+    fieldCollapse: boolean;
     setFieldCollapse: (fieldCollapse: boolean, idx: number) => void;
     sortFields: (e: React.MouseEvent<HTMLAnchorElement>) => void;
     fieldChange: (val: FieldArray, idx: number) => void;
@@ -36,7 +36,10 @@ interface StructureEditorProps {
 }
 
 const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEditorProps) {
-    const { dataIndex, config, customStyle, change, valueObj, setValueObj, isEditableID, fieldChange, onFieldRemoval, onAddField, rowRef, inViewRef, saveModal, toggleModal, modal, onRemoveItemClick, onChange, onBlur, fieldCollapse, setFieldCollapse, sortFields } = props;
+    const { dataIndex, config, customStyle, change, valueObj, setValueObj, isEditableID,
+        fieldChange, onFieldRemoval, onAddField, rowRef, inViewRef,
+        saveModal, toggleModal, modal, onRemoveItemClick, onChange, onBlur,
+        fieldCollapse, setFieldCollapse, sortFields } = props;
 
     const onOutlineDrop = (item: DragItem) => {
         let reordered_types: any[] = [...valueObj.fields];

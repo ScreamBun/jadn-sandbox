@@ -34,6 +34,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
         useEffect(() => {
             if (!generatedSchema) {
                 setIsValidJADN(false);
+                setFieldCollapseState([]);
             }
             dispatch(setSchema(generatedSchema));
             listRef.current?.resetAfterIndex(0, true);
@@ -44,15 +45,15 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             name: '',
             ext: 'jadn'
         });
+        const schemaOpts = useSelector(getAllSchemas);
+        const ref = useRef<HTMLInputElement | null>(null);
+
         const [isValidJADN, setIsValidJADN] = useState(false);
         const [isValidating, setIsValidating] = useState(false);
         const [isLoading, setIsLoading] = useState(false);
 
         const [activeView, setActiveView] = useState('creator');
         const [activeOpt, setActiveOpt] = useState('info');
-
-        const schemaOpts = useSelector(getAllSchemas);
-        const ref = useRef<HTMLInputElement | null>(null);
 
         const listRef = useRef<any>(null);
         const rowHeight = useRef({});
@@ -65,12 +66,60 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             return rowHeight.current[index] || 0
         };
 
-        const [fieldCollapseState, setFieldCollapseState] = useState({});
+        const [infoCollapse, setInfoCollapse] = useState(false);
+        const [typesCollapse, setTypesCollapse] = useState(false);
+        const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
+        const [fieldCollapseState, setFieldCollapseState] = useState<Boolean[]>([]);
+
         console.log(fieldCollapseState)
 
         useEffect(() => {
+            //if all Fields Collapsed, set collapseAllFields = true
             listRef.current?.resetAfterIndex(0, true);
+
+            if (fieldCollapseState.length > 0) {
+                let count = 0;
+                let tracker = 0;
+                for (let i in fieldCollapseState) {
+                    if (fieldCollapseState[i] == true || fieldCollapseState[i] == false) {
+                        count++;
+                        if (fieldCollapseState[i] == true) {
+                            tracker++;
+                        }
+                    }
+                }
+
+                if (tracker == 0 && allFieldsCollapse != false) {
+                    setAllFieldsCollapse(false)
+                } else if (tracker != 0 && tracker == count && allFieldsCollapse != true) {
+                    setAllFieldsCollapse(true);
+                }
+            }
         }, [fieldCollapseState])
+
+        useEffect(() => {
+            //if allFieldsCollapse = true, collapse all fields
+            if (allFieldsCollapse == true && fieldCollapseState.length > 0) {
+                const updatedFieldCollapseState = fieldCollapseState.map((bool) => {
+                    if (bool === false) {
+                        return true;
+                    } else {
+                        return bool;
+                    }
+                });
+                setFieldCollapseState(updatedFieldCollapseState);
+
+            } else if (allFieldsCollapse == false && fieldCollapseState.length > 0) {
+                const updatedFieldCollapseState = fieldCollapseState.map((bool) => {
+                    if (bool === true) {
+                        return false;
+                    } else {
+                        return bool;
+                    }
+                });
+                setFieldCollapseState(updatedFieldCollapseState);
+            }
+        }, [allFieldsCollapse])
 
         const onFileLoad = async (schemaObj: any, fileStr: any) => {
             if (schemaObj) {
@@ -102,16 +151,17 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                 value: item,
                                 isStarred: false
                             })));
-                            setFieldCollapseState(schemaObj.types.map((def: any[], i: number) => {
+                            setFieldCollapseState(schemaObj.types.map((def: any[]) => {
                                 let type = def[1].toLowerCase() as keyof typeof Types;
                                 if (Types[type].type == 'structure') {
-                                    return ({ [i]: false });
+                                    return false;
+                                } else {
+                                    return undefined;
                                 }
-                                return;
                             }))
                         } else {
                             setCardsState([]);
-                            setFieldCollapseState({});
+                            setFieldCollapseState([]);
                         }
                     });
                 } else {
@@ -138,7 +188,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             setSelectedFile(null);
             setGeneratedSchema('');
             setCardsState([]);
-            setFieldCollapseState({});
+            setFieldCollapseState([]);
             if (ref.current) {
                 ref.current.value = '';
             }
@@ -229,6 +279,12 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                         setCardsState={setCardsState}
                         fieldCollapseState={fieldCollapseState}
                         setFieldCollapseState={setFieldCollapseState}
+                        allFieldsCollapse={allFieldsCollapse}
+                        setAllFieldsCollapse={setAllFieldsCollapse}
+                        infoCollapse={infoCollapse}
+                        setInfoCollapse={setInfoCollapse}
+                        typesCollapse={typesCollapse}
+                        setTypesCollapse={setTypesCollapse}
                     />
                 </div>
             </div>

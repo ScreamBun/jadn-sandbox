@@ -26,7 +26,7 @@ export interface SBOutlineCardProps {
   scrollToCard: (idx: number) => void;
   moveCard: (item: DragItem, dragIndex: number, hoverIndex: number) => void;
   addCard: (item: DragItem, hoverIndex: number) => void;
-  dropCard: (item: DragItem) => void;
+  dropCard: (item: DragItem, index: number, originalIndex: number) => void;
   handleStarToggle: (idx: number) => void;
 }
 
@@ -111,9 +111,7 @@ export const SBOutlineCard: FC<SBOutlineCardProps> = ({ id, text, index, value, 
       if (!didDrop) {
         moveCard(item, item.index, item.originalIndex)
       } else {
-        dropCard(item);
-        //var scrollSpyContentEl = document.getElementById(`${item.index}`)
-        //scrollSpyContentEl?.scrollIntoView();
+        dropCard(item, item.index, item.originalIndex);
         scrollToCard(item.index)
       }
     },
