@@ -16,7 +16,6 @@ interface StructureEditorProps {
     change: (v: StandardTypeObject, i: number) => void;
     config: InfoConfig;
     isEditableID: boolean;
-    fieldCollapse: boolean;
     rowRef: any;
     inViewRef: any;
     valueObj: StandardTypeObject;
@@ -27,7 +26,8 @@ interface StructureEditorProps {
     modal: boolean;
     toggleModal: () => void;
     saveModal: (modalData: Array<string>) => void;
-    setFieldCollapse: (fieldCollapse: boolean) => void;
+    fieldCollapse: boolean;
+    setFieldCollapse: (fieldCollapse: boolean, idx: number) => void;
     sortFields: (e: React.MouseEvent<HTMLAnchorElement>) => void;
     fieldChange: (val: FieldArray, idx: number) => void;
     onAddField: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -35,7 +35,8 @@ interface StructureEditorProps {
 }
 
 const StructureEditorBtn = memo(function StructureEditorBtn(props: StructureEditorProps) {
-    const { dataIndex, config, customStyle, change, valueObj, setValueObj, isEditableID, fieldChange, onFieldRemoval, onAddField, rowRef, inViewRef, saveModal, toggleModal, modal, onRemoveItemClick, onChange, onBlur, fieldCollapse, setFieldCollapse, sortFields } = props;
+    const { dataIndex, config, customStyle, change, valueObj, setValueObj, isEditableID, fieldChange, onFieldRemoval, onAddField,
+        rowRef, inViewRef, saveModal, toggleModal, modal, onRemoveItemClick, onChange, onBlur, fieldCollapse, setFieldCollapse, sortFields } = props;
     const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
         let tmpFieldValues = [...valueObj.fields];
 
@@ -141,7 +142,7 @@ const StructureEditorBtn = memo(function StructureEditorBtn(props: StructureEdit
                             </span>
 
                             <a href="#" role="button"
-                                onClick={() => setFieldCollapse(!fieldCollapse)}>
+                                onClick={() => setFieldCollapse(!fieldCollapse, dataIndex)}>
                                 <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
                                     className='float-end btn btn-sm'
                                     title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />

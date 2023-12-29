@@ -91,7 +91,6 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         const updatedTypes = updatedCards.map(item => item.value);
         setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
         setCardsState(updatedCards);
-        //TODO updated field collapse
         let updatedFieldCollapseState: Boolean[] = fieldCollapseStateRef.current;
         const originalIndexBool = updatedFieldCollapseState[originalIndex];
         updatedFieldCollapseState = updatedFieldCollapseState.filter((_bool: Boolean, i: number) =>

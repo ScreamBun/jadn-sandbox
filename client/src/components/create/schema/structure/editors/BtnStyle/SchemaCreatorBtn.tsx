@@ -18,21 +18,18 @@ import { DragItem } from '../DragStyle/SBOutline';
 import SBOutlineBtnStyle from './SBOutlineBtn';
 import { AddToIndexDropDown } from './AddToIndexDropDown';
 
-
-
 const defaultInsertIdx = { label: "end", value: "end" };
 
 const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
     const { selectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState,
         getItemSize, listRef, setRowHeight,
         setIsValidJADN, setIsValidating, isLoading,
-        activeOpt, setActiveOpt, activeView, configOpt, setConfigOpt } = props;
+        activeOpt, setActiveOpt, activeView, configOpt, setConfigOpt,
+        fieldCollapseState, setFieldCollapseState, infoCollapse, setInfoCollapse,
+        typesCollapse, setTypesCollapse,
+        allFieldsCollapse, setAllFieldsCollapse, fieldCollapseStateRef } = props;
 
     const [visibleType, setVisibleType] = useState<number | null>(null);
-
-    const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
-    const [infoCollapse, setInfoCollapse] = useState(false);
-    const [typesCollapse, setTypesCollapse] = useState(false);
 
     const [insertAt, setInsertAt] = useState(defaultInsertIdx);
     let indexOpts = generatedSchema.types ?
@@ -149,6 +146,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
         } else if (Object.keys(Types).includes(key)) {
             let tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
             let tmpCards = [...cardsState];
+            let updatedFieldCollapseState = [...fieldCollapseState]
             const type_name = getTypeName(tmpTypes, `${Types[key].key}-Name`);
             const tmpDef = Types[key].edit({ name: type_name });
             const dataIndex = generatedSchema.types?.length || 0;
@@ -162,11 +160,22 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
             if (!insertAt || (insertAt && insertAt.value == "end")) {
                 tmpTypes.push(tmpDef);
                 tmpCards.push(new_card);
+                if (Types[key].type == 'structure') {
+                    updatedFieldCollapseState = [...fieldCollapseState, false]
+                } else {
+                    updatedFieldCollapseState = [...fieldCollapseState, undefined]
+                }
             } else {
                 if (insertAt.value == "0") {
                     new_card.index = 0;
                     tmpTypes.unshift(tmpDef);
                     tmpCards.unshift(new_card);
+
+                    if (Types[key].type == 'structure') {
+                        updatedFieldCollapseState = [false, ...fieldCollapseState]
+                    } else {
+                        updatedFieldCollapseState = [undefined, ...fieldCollapseState]
+                    }
 
                 } else {
                     const idx = parseInt(insertAt.value);
@@ -182,6 +191,19 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                         new_card,
                         ...tmpCards.slice(idx)
                     ];
+                    if (Types[key].type == 'structure') {
+                        updatedFieldCollapseState = [
+                            ...fieldCollapseState.slice(0, idx),
+                            false,
+                            ...fieldCollapseState.slice(idx)
+                        ];
+                    } else {
+                        updatedFieldCollapseState = [
+                            ...fieldCollapseState.slice(0, idx),
+                            undefined,
+                            ...fieldCollapseState.slice(idx)
+                        ];
+                    }
                 }
             }
 
@@ -193,6 +215,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
             flushSync(() => {
                 setGeneratedSchema(updatedSchema);
                 setCardsState(tmpCards);
+                setFieldCollapseState(updatedFieldCollapseState);
             });
             setIsValidJADN(false);
             setIsValidating(false);
@@ -254,6 +277,18 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
             moved_card,
             ...tmpCards.slice(idx)
         ];
+
+        let updatedFieldCollapseState: Boolean[] = fieldCollapseStateRef.current;
+        const originalIndexBool = updatedFieldCollapseState[dataIndex];
+        updatedFieldCollapseState = updatedFieldCollapseState.filter((_bool: Boolean, i: number) =>
+            i !== dataIndex
+        );
+        updatedFieldCollapseState = [
+            ...updatedFieldCollapseState.slice(0, idx),
+            originalIndexBool,
+            ...updatedFieldCollapseState.slice(idx)
+        ];
+        setFieldCollapseState(updatedFieldCollapseState)
 
         setGeneratedSchema(updatedSchema);
         setCardsState(tmpCards);
@@ -335,7 +370,18 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
             dataIndex: index,
             customStyle: { ...style, height: 'auto' },
             setRowHeight: setRowHeight,
-            collapseAllFields: allFieldsCollapse,
+            fieldCollapse: fieldCollapseState[index],
+            setFieldCollapse: (bool: boolean, idx: number) => {
+                const updatedFieldCollapseState = fieldCollapseState.map((fieldBool: boolean, i: number) => {
+                    if (i === idx) {
+                        return bool;
+                    } else {
+                        return fieldBool;
+                    }
+                });
+
+                setFieldCollapseState(updatedFieldCollapseState);
+            },
             setIsVisible: setVisibleType,
             change: (val, idx: number) => {
                 const tmpTypes = [...generatedSchema.types];
@@ -382,6 +428,10 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                     }
                 }
                 setCardsState(tmpCards);
+                setFieldCollapseState(
+                    fieldCollapseState.filter((_bool: Boolean, i: number) =>
+                        i !== idx
+                    ));
                 setIsValidJADN(false);
                 setIsValidating(false);
             },
