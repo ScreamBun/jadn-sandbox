@@ -25,7 +25,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         activeOpt, setActiveOpt, activeView, configOpt, setConfigOpt,
         fieldCollapseState, setFieldCollapseState, infoCollapse, setInfoCollapse,
         typesCollapse, setTypesCollapse,
-        allFieldsCollapse, setAllFieldsCollapse } = props;
+        allFieldsCollapse, setAllFieldsCollapse, fieldCollapseStateRef } = props;
 
     const [visibleType, setVisibleType] = useState<number | null>(null);
 
@@ -86,34 +86,24 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
             onScrollToCard(dataIndex);
         }
     }
-    console.log(fieldCollapseState)
 
     const onOutlineDrop = (updatedCards: DragItem[], index: number, originalIndex: number) => {
-        console.log(("ONDROP"))
         const updatedTypes = updatedCards.map(item => item.value);
         setGeneratedSchema((prev: any) => ({ ...prev, types: updatedTypes }));
         setCardsState(updatedCards);
         //TODO updated field collapse
-        let updatedFieldCollapseState: Boolean[] = [...fieldCollapseState];
+        let updatedFieldCollapseState: Boolean[] = fieldCollapseStateRef.current;
         const originalIndexBool = updatedFieldCollapseState[originalIndex];
-        console.log(fieldCollapseState)
-        console.log(updatedFieldCollapseState)
-        console.log(originalIndexBool)
-
         updatedFieldCollapseState = updatedFieldCollapseState.filter((_bool: Boolean, i: number) =>
             i !== originalIndex
         );
-        console.log(updatedFieldCollapseState)
         updatedFieldCollapseState = [
             ...updatedFieldCollapseState.slice(0, index),
             originalIndexBool,
             ...updatedFieldCollapseState.slice(index)
         ];
 
-        console.log(updatedFieldCollapseState)
-
         setFieldCollapseState(updatedFieldCollapseState)
-
         listRef.current?.resetAfterIndex(0, false);
     };
 

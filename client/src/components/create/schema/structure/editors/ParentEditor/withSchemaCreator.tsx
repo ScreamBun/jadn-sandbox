@@ -70,11 +70,11 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
         const [typesCollapse, setTypesCollapse] = useState(false);
         const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
         const [fieldCollapseState, setFieldCollapseState] = useState<Boolean[]>([]);
-
-        console.log(fieldCollapseState)
+        const fieldCollapseStateRef = useRef<Boolean[]>(fieldCollapseState);
 
         useEffect(() => {
             //if all Fields Collapsed, set collapseAllFields = true
+            fieldCollapseStateRef.current = fieldCollapseState;
             listRef.current?.resetAfterIndex(0, true);
 
             if (fieldCollapseState.length > 0) {
@@ -285,6 +285,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                         setInfoCollapse={setInfoCollapse}
                         typesCollapse={typesCollapse}
                         setTypesCollapse={setTypesCollapse}
+                        fieldCollapseStateRef={fieldCollapseStateRef}
                     />
                 </div>
             </div>
