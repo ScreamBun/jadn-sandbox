@@ -4,6 +4,7 @@ export const LANG_JSON = 'json';
 export const LANG_HTML = 'html';
 export const LANG_MARKDOWN = 'md';
 export const LANG_XML = 'xml';
+export const LANG_XSD = 'xsd';
 
 export const NAV_HOME = '/home';
 
