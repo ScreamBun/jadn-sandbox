@@ -97,7 +97,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             }
         }, [fieldCollapseState])
 
-        const collapseAllFields = (e: React.MouseEvent<HTMLElement>) => {
+        const onCollapseAllFields = (e: React.MouseEvent<HTMLElement>) => {
             e.preventDefault();
             if (!allFieldsCollapse == true && fieldCollapseState.length > 0) {
                 const updatedFieldCollapseState = fieldCollapseState.map((bool) => {
@@ -150,7 +150,8 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                 index: i,
                                 text: item[0],
                                 value: item,
-                                isStarred: false
+                                isStarred: false,
+                                isVisibleInOutline: true
                             })));
                             setFieldCollapseState(schemaObj.types.map((def: any[]) => {
                                 let type = def[1].toLowerCase() as keyof typeof Types;
@@ -276,7 +277,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                         listRef={listRef}
                         configOpt={configOpt}
                         setConfigOpt={setConfigOpt}
-                        collapseAllFields={collapseAllFields}
+                        collapseAllFields={onCollapseAllFields}
                     />
                 </div>
             </div>

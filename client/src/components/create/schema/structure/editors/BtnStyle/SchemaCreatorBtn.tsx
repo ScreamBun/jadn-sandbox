@@ -494,7 +494,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                                 <div className='col'>
                                     <SBOutlineBtnStyle
                                         id={'schema-outline'}
-                                        items={cardsState}
+                                        cards={cardsState}
                                         title={'Outline'}
                                         visibleCard={visibleType}
                                         changeIndex={changeIndex}

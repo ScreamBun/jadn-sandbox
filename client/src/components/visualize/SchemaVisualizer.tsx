@@ -81,12 +81,12 @@ const SchemaVisualizer = () => {
                     for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
                         if (convertedArr.includes(arr[i])) {
                             if (convertSchemaVal.payload.schema.convert[i].err == false) {
-                                sbToastSuccess(`Schema converted to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                                sbToastSuccess(`Schema visualized to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                             } else {
-                                sbToastError(`Schema failed to convert to ${convertSchemaVal.payload.schema.convert[i].fmt} ${convertSchemaVal.payload.schema.convert[i].schema ? `: ${convertSchemaVal.payload.schema.convert[i].schema}` : ''}`);
+                                sbToastError(`Schema failed to visualize ${convertSchemaVal.payload.schema.convert[i].fmt} ${convertSchemaVal.payload.schema.convert[i].schema ? `: ${convertSchemaVal.payload.schema.convert[i].schema}` : ''}`);
                             }
                         } else {
-                            sbToastError(`Failed to convert to ${conversion[i].label}`);
+                            sbToastError(`Failed to visualize to ${conversion[i].label}`);
                         }
                     }
                 })

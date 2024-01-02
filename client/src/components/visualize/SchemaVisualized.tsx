@@ -80,7 +80,7 @@ const SchemaVisualized = (props: any) => {
                     <div className='col-md-6'>
                         <SBSelect id={"conversion-list"} data={convertOpts} onChange={handleConversion}
                             value={conversion}
-                            placeholder={'Convert to...(select at least one)'} isMultiSelect
+                            placeholder={'Visualize to...(select at least one)'} isMultiSelect
                             isSmStyle
                         />
                     </div>
@@ -135,13 +135,13 @@ const SchemaVisualized = (props: any) => {
                         </div>
 
                         <div>
-                            {isLoading ? <SBSpinner action={'Converting'} /> :
+                            {isLoading ? <SBSpinner action={'Visualizing'} /> :
                                 <button type="submit"
                                     id="convertSchema"
                                     className="btn btn-success btn-sm me-1 float-end"
                                     disabled={Object.keys(validSchema).length != 0 && conversion.length != 0 ? false : true}
-                                    title={"Convert the given JADN schema to the selected format"}>
-                                    Convert
+                                    title={"Visualize the given JADN schema to the selected format"}>
+                                    Visualize
                                 </button>}
                         </div>
                     </div>
