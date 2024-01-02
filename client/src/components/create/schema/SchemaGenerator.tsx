@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
@@ -23,6 +23,12 @@ const SchemaGenerator = () => {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const [isButtonStyle, setIsButtonStyle] = useState(false);
+
+    const [infoCollapse, setInfoCollapse] = useState(false);
+    const [typesCollapse, setTypesCollapse] = useState(false);
+    const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
+    const [fieldCollapseState, setFieldCollapseState] = useState<Boolean[]>([]);
+    const fieldCollapseStateRef = useRef<Boolean[]>(fieldCollapseState);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -88,11 +94,29 @@ const SchemaGenerator = () => {
                                 {isButtonStyle ? <SchemaCreatorBtnStyle
                                     selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                     generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema}
-                                    cardsState={cardsState} setCardsState={setCardsState} /> :
+                                    cardsState={cardsState} setCardsState={setCardsState}
+                                    fieldCollapseState={fieldCollapseState}
+                                    setFieldCollapseState={setFieldCollapseState}
+                                    allFieldsCollapse={allFieldsCollapse}
+                                    setAllFieldsCollapse={setAllFieldsCollapse}
+                                    infoCollapse={infoCollapse}
+                                    setInfoCollapse={setInfoCollapse}
+                                    typesCollapse={typesCollapse}
+                                    setTypesCollapse={setTypesCollapse}
+                                    fieldCollapseStateRef={fieldCollapseStateRef} /> :
                                     <SchemaCreatorDndStyle
                                         selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                         generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema}
-                                        cardsState={cardsState} setCardsState={setCardsState} />
+                                        cardsState={cardsState} setCardsState={setCardsState}
+                                        fieldCollapseState={fieldCollapseState}
+                                        setFieldCollapseState={setFieldCollapseState}
+                                        allFieldsCollapse={allFieldsCollapse}
+                                        setAllFieldsCollapse={setAllFieldsCollapse}
+                                        infoCollapse={infoCollapse}
+                                        setInfoCollapse={setInfoCollapse}
+                                        typesCollapse={typesCollapse}
+                                        setTypesCollapse={setTypesCollapse}
+                                        fieldCollapseStateRef={fieldCollapseStateRef} />
                                 }
 
                             </div>

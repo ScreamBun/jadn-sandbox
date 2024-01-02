@@ -27,7 +27,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
         activeOpt, setActiveOpt, activeView, configOpt, setConfigOpt,
         fieldCollapseState, setFieldCollapseState, infoCollapse, setInfoCollapse,
         typesCollapse, setTypesCollapse,
-        allFieldsCollapse, setAllFieldsCollapse, fieldCollapseStateRef } = props;
+        allFieldsCollapse, collapseAllFields, fieldCollapseStateRef } = props;
 
     const [visibleType, setVisibleType] = useState<number | null>(null);
 
@@ -558,7 +558,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                                                                                 className='float-end btn btn-sm'
                                                                                 title={typesCollapse ? 'Show Types' : 'Hide Types'} />
                                                                         </button>
-                                                                        <button type="button" className="btn btn-secondary" onClick={() => setAllFieldsCollapse(!allFieldsCollapse)}>
+                                                                        <button type="button" className="btn btn-secondary" onClick={collapseAllFields}>
                                                                             {allFieldsCollapse ? 'Show Fields' : 'Hide Fields'}
                                                                             <FontAwesomeIcon icon={allFieldsCollapse ? faCircleChevronDown : faCircleChevronUp}
                                                                                 className='float-end btn btn-sm'

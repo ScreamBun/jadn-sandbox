@@ -29,7 +29,9 @@ export const configInitialState = {
 export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any>) {
     function WithSchemaCreator(props: any) {
         const dispatch = useDispatch();
-        const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState } = props;
+        const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, setCardsState,
+            fieldCollapseState, setFieldCollapseState,
+            allFieldsCollapse, setAllFieldsCollapse, fieldCollapseStateRef } = props;
 
         useEffect(() => {
             if (!generatedSchema) {
@@ -66,11 +68,10 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             return rowHeight.current[index] || 0
         };
 
-        const [infoCollapse, setInfoCollapse] = useState(false);
-        const [typesCollapse, setTypesCollapse] = useState(false);
-        const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
-        const [fieldCollapseState, setFieldCollapseState] = useState<Boolean[]>([]);
-        const fieldCollapseStateRef = useRef<Boolean[]>(fieldCollapseState);
+        useEffect(() => {
+            fieldCollapseStateRef.current = fieldCollapseState;
+            console.log(fieldCollapseState)
+        }, [fieldCollapseState]);
 
         useEffect(() => {
             //if all Fields Collapsed, set collapseAllFields = true
@@ -97,9 +98,9 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             }
         }, [fieldCollapseState])
 
-        useEffect(() => {
-            //if allFieldsCollapse = true, collapse all fields
-            if (allFieldsCollapse == true && fieldCollapseState.length > 0) {
+        const collapseAllFields = (e: React.MouseEvent<HTMLElement>) => {
+            e.preventDefault();
+            if (!allFieldsCollapse == true && fieldCollapseState.length > 0) {
                 const updatedFieldCollapseState = fieldCollapseState.map((bool) => {
                     if (bool === false) {
                         return true;
@@ -109,7 +110,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                 });
                 setFieldCollapseState(updatedFieldCollapseState);
 
-            } else if (allFieldsCollapse == false && fieldCollapseState.length > 0) {
+            } else if (!allFieldsCollapse == false && fieldCollapseState.length > 0) {
                 const updatedFieldCollapseState = fieldCollapseState.map((bool) => {
                     if (bool === true) {
                         return false;
@@ -119,7 +120,8 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                 });
                 setFieldCollapseState(updatedFieldCollapseState);
             }
-        }, [allFieldsCollapse])
+            setAllFieldsCollapse(!allFieldsCollapse)
+        }
 
         const onFileLoad = async (schemaObj: any, fileStr: any) => {
             if (schemaObj) {
@@ -275,17 +277,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                         listRef={listRef}
                         configOpt={configOpt}
                         setConfigOpt={setConfigOpt}
-                        cardsState={cardsState}
-                        setCardsState={setCardsState}
-                        fieldCollapseState={fieldCollapseState}
-                        setFieldCollapseState={setFieldCollapseState}
-                        allFieldsCollapse={allFieldsCollapse}
-                        setAllFieldsCollapse={setAllFieldsCollapse}
-                        infoCollapse={infoCollapse}
-                        setInfoCollapse={setInfoCollapse}
-                        typesCollapse={typesCollapse}
-                        setTypesCollapse={setTypesCollapse}
-                        fieldCollapseStateRef={fieldCollapseStateRef}
+                        collapseAllFields={collapseAllFields}
                     />
                 </div>
             </div>
