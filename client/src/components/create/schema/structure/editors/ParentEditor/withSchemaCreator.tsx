@@ -70,7 +70,6 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
 
         useEffect(() => {
             fieldCollapseStateRef.current = fieldCollapseState;
-            console.log(fieldCollapseState)
         }, [fieldCollapseState]);
 
         useEffect(() => {
