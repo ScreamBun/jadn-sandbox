@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import SBCopyToClipboard from "./SBCopyToClipboard";
 import SBEditor from "./SBEditor";
-import SBDownloadFile from "./SBDownloadFile";
-import { faWindowMaximize, faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { convertToGvFullView, onDownloadSVGClick, onGVPopOutClick } from "../visualize/SBGvPreviewer";
+import { FILE_TYPE_PDF, FILE_TYPE_PNG, FILE_TYPE_SVG, LANG_GRAPHVIZ, LANG_HTML, LANG_JIDL, LANG_MARKDOWN, LANG_PLANTUML } from "components/utils/constants";
+import { convertToGvFullView, onGVPopOutClick } from "../visualize/SBGvPreviewer";
 import { onHTMLPopOutClick } from "../visualize/SBHtmlPreviewer";
 import { onMDPopOutClick } from "../visualize/SBMarkdownPreviewer";
-import { convertToPuml, onDownloadPNGClick } from "../visualize/SBPumlPreviewer";
+import { convertToPuml } from "../visualize/SBPumlPreviewer";
+import SBDownloadBtn from "./SBDownloadBtn";
 import { sbToastError } from "./SBToast";
-import SBDownloadPDF from "./SBDownloadPDF";
 
 //given a list of data
 //toggle each view
@@ -53,45 +53,52 @@ const SBCollapseViewer = (props: any) => {
                             {obj.fmt}
                         </button>
                         <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-end' />
-                        <SBDownloadFile buttonId={`download${i}`} customClass='me-1 float-end' data={obj.schema} ext={obj.fmt_ext} />
+                        <SBDownloadBtn buttonId={`download${i}`} customClass='me-1 float-end' data={obj.schema} ext={obj.fmt_ext} />
 
-                        <span className={`${obj.fmt == 'HTML' ? '' : ' d-none'}`}>
-                            <SBDownloadPDF buttonId="htmlPdfDownload" customClass='me-1 float-end' data={loadedSchema} />
-                            <button id="htmlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onHTMLPopOutClick(obj.schema)}>
-                                <FontAwesomeIcon icon={faWindowMaximize} />
-                            </button>
-                        </span>
+                        {obj.fmt_ext == LANG_HTML &&
+                            <>
+                                <SBDownloadBtn buttonId={`download${i}AsHTML`} customClass='me-1 float-end' data={loadedSchema} ext={FILE_TYPE_PDF} />
+                                <button id="htmlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onHTMLPopOutClick(obj.schema)}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </button>
+                            </>
+                        }
 
-                        <span className={`${obj.fmt == 'MarkDown' ? '' : ' d-none'}`}>
-                            <SBDownloadPDF buttonId="mdPdfDownload" customClass='me-1 float-end' data={loadedSchema} />
-                            <button id="mdPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onMDPopOutClick(obj.schema)}>
-                                <FontAwesomeIcon icon={faWindowMaximize} />
-                            </button>
-                        </span>
+                        {obj.fmt_ext == LANG_MARKDOWN &&
+                            <>
+                                <SBDownloadBtn buttonId={`download${i}AsMD`} customClass='me-1 float-end' data={loadedSchema} ext={FILE_TYPE_PDF} />
+                                <button id="mdPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onMDPopOutClick(obj.schema)}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </button>
+                            </>
+                        }
 
-                        <span className={`${obj.fmt == 'JIDL' ? '' : ' d-none'}`}>
-                            <button id="jidlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onPopOutClick(obj.schema)}>
-                                <FontAwesomeIcon icon={faWindowMaximize} />
-                            </button>
-                        </span>
+                        {obj.fmt_ext == LANG_JIDL &&
+                            <>
+                                <button id="jidlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onPopOutClick(obj.schema)}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </button>
+                            </>
+                        }
 
-                        <span className={`${obj.fmt == 'PlantUML' ? '' : ' d-none'}`}>
-                            <button id="pumlPngDownload" type='button' title="Download PNG of the schema" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onDownloadPNGClick(pumlURL)}>
-                                <FontAwesomeIcon icon={faFileImage} />
-                            </button>
-                            <button id="pumlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onPopOutClick('', pumlURL)}>
-                                <FontAwesomeIcon icon={faWindowMaximize} />
-                            </button>
-                        </span>
+                        {obj.fmt_ext == LANG_PLANTUML &&
+                            <>
+                                <SBDownloadBtn buttonId={`pumlPngDownload`} customClass='me-1 float-end' data={pumlURL} ext={FILE_TYPE_PNG} />
+                                <button id="pumlPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={() => onPopOutClick('', pumlURL)}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </button>
+                            </>
+                        }
 
-                        <span className={`${obj.fmt == 'GraphViz' ? '' : ' d-none'}`}>
-                            <button id="gvSvgDownload" type='button' title="Download SVG of the schema" className="btn btn-sm btn-primary me-1 float-end" onClick={onDownloadSVGClick}>
-                                <FontAwesomeIcon icon={faFileImage} />
-                            </button>
-                            <button id="gvPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={onGVPopOutClick}>
-                                <FontAwesomeIcon icon={faWindowMaximize} />
-                            </button>
-                        </span>
+                        {obj.fmt_ext == LANG_GRAPHVIZ &&
+                            <>
+                                <SBDownloadBtn buttonId={`gvSvgDownload`} customClass='me-1 float-end' ext={FILE_TYPE_SVG} />
+                                <button id="gvPopOut" type='button' title="View Schema in new window" className="btn btn-sm btn-primary me-1 float-end" onClick={onGVPopOutClick}>
+                                    <FontAwesomeIcon icon={faWindowMaximize} />
+                                </button>
+                            </>
+                        }
+
                     </h5>
                 </div>
 

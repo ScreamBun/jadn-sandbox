@@ -7,13 +7,13 @@ import { getAllSchemas } from 'reducers/util';
 import { getFilenameExt, getFilenameOnly } from 'components/utils/general';
 import { LANG_JADN } from 'components/utils/constants';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
+import { Types } from '../../structure';
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
-import SBDownloadFile from 'components/common/SBDownloadFile';
 import SBSpinner from 'components/common/SBSpinner';
 import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
 import SBLoadSchema from 'components/common/SBLoadSchema';
-import { Types } from '../../structure';
+import SBDownloadBtn from 'components/common/SBDownloadBtn';
 
 
 export const configInitialState = {
@@ -45,7 +45,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
         const [configOpt, setConfigOpt] = useState(configInitialState);
         const [fileName, setFileName] = useState({
             name: '',
-            ext: 'jadn'
+            ext: LANG_JADN
         });
         const schemaOpts = useSelector(getAllSchemas);
         const ref = useRef<HTMLInputElement | null>(null);
@@ -185,7 +185,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             setIsLoading(false);
             setFileName({
                 name: '',
-                ext: 'jadn'
+                ext: LANG_JADN
             });
             setSelectedFile(null);
             setGeneratedSchema('');
@@ -237,7 +237,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                 selectedSchemaOpt={selectedFile}
                                 loadedSchema={generatedSchema}
                                 fileName={fileName}
-                                schemaFormat={'jadn'}
+                                schemaFormat={LANG_JADN}
                                 setSelectedFile={setSelectedFile}
                                 onCancelFileUpload={onCancelFileUpload}
                                 onFileChange={onFileLoad}
@@ -246,7 +246,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                         </div>
                         <div className='col-sm-9'>
                             <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-end'} />
-                            <SBDownloadFile buttonId='schemaDownload' filename={fileName.name} data={generatedSchema} customClass={'float-end me-1'} />
+                            <SBDownloadBtn buttonId='schemaDownload' filename={fileName.name} data={generatedSchema} customClass={'float-end me-1'} />
                             <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
                             <button type='button' onClick={() => setActiveView('creator')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} title="View via Input Form">View Form</button>
                             {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
@@ -255,7 +255,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                     setIsValid={setIsValidJADN}
                                     setIsValidating={setIsValidating}
                                     schemaData={generatedSchema}
-                                    schemaFormat={'jadn'}
+                                    schemaFormat={LANG_JADN}
                                 />
                             }
                         </div>

@@ -1,13 +1,14 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import SBCopyToClipboard from "components/common/SBCopyToClipboard";
-import SBEditor from "components/common/SBEditor";
-import SBDownloadFile from "components/common/SBDownloadFile";
-import SBSpinner from "components/common/SBSpinner";
-import SBSelect, { Option } from "components/common/SBSelect";
-import SBSaveFile from "components/common/SBSaveFile";
 import { useDispatch, useSelector } from "react-redux";
 import { getValidTransformations } from "reducers/transform";
 import { transformSchema } from "actions/transform";
+import SBCopyToClipboard from "components/common/SBCopyToClipboard";
+import SBEditor from "components/common/SBEditor";
+import SBSpinner from "components/common/SBSpinner";
+import SBSelect, { Option } from "components/common/SBSelect";
+import SBSaveFile from "components/common/SBSaveFile";
+import SBDownloadBtn from "components/common/SBDownloadBtn";
+import { LANG_JADN } from "components/utils/constants";
 import { sbToastError, sbToastSuccess } from "components/common/SBToast";
 import { SelectedSchema } from "components/transform/SchemaTransformer";
 
@@ -21,7 +22,8 @@ interface SchemaTransformedProps {
 
 export const initTransformedSchema = {
     schema: '',
-    schema_name: ''
+    schema_name: '',
+    schema_fmt: ''
 }
 
 const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
@@ -150,8 +152,8 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                         <div className='col-md-3'>
                             <div className={`${transformedSchema && (transformedSchema.length == 1) && transformedSchema[0].schema != '' ? '' : ' d-none'}`}>
                                 <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-end`} />
-                                <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`me-1 float-end`} filename={baseFile?.value} ext={transformedSchema[0].schema_fmt || 'jadn'} />
-                                <SBDownloadFile buttonId='schemaDownload' customClass={`me-1 float-end`} filename={baseFile?.value} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || 'jadn'} />
+                                <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`me-1 float-end`} filename={baseFile?.value} ext={transformedSchema[0].schema_fmt || LANG_JADN} />
+                                <SBDownloadBtn buttonId='schemaDownload' customClass={`me-1 float-end`} filename={baseFile?.value} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || LANG_JADN} />
                             </div>
 
                             {isLoading ? <SBSpinner action={'Transforming'} /> :
@@ -173,8 +175,8 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                                     {output.schema_name}
                                 </button>
                                 <SBCopyToClipboard buttonId={`copySchema${i}`} data={output.schema} customClass='float-end' />
-                                <SBSaveFile data={output.schema} loc={'schemas'} customClass={"float-end me-1"} filename={`${output.schema_name}`} ext={'jadn'} />
-                                <SBDownloadFile buttonId={`downloadSchema${i}`} customClass='me-1 float-end' filename={`${output.schema_name}`} data={output.schema} ext={'jadn'} />
+                                <SBSaveFile data={output.schema} loc={'schemas'} customClass={"float-end me-1"} filename={`${output.schema_name}`} ext={LANG_JADN} />
+                                <SBDownloadBtn buttonId={`downloadSchema${i}`} customClass='me-1 float-end' filename={`${output.schema_name}`} data={output.schema} ext={LANG_JADN} />
                             </h5>
                         </div>
 

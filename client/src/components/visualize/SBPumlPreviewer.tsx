@@ -2,7 +2,6 @@ import React from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import encoder from "plantuml-encoder";
 import SBEditor from "../common/SBEditor";
-import saveAs from "file-saver";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUndo } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,10 +9,6 @@ export const convertToPuml = (data: any) => {
     const encoded = encoder.encode(data);
     const url = 'http://www.plantuml.com/plantuml/img/' + encoded;
     return url;
-}
-
-export const onDownloadPNGClick = (pumlURL: any) => {
-    saveAs(pumlURL, 'puml.png');
 }
 
 const SBPumlPreviewer = (props: any) => {

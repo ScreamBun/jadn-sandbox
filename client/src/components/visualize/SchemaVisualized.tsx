@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWindowMaximize, faTableColumns, faFileImage } from "@fortawesome/free-solid-svg-icons";
+import { faWindowMaximize, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { getValidVisualizations } from "reducers/convert";
+import { getSelectedSchema } from "reducers/util";
+import { FILE_TYPE_PDF, FILE_TYPE_PNG, FILE_TYPE_SVG, LANG_GRAPHVIZ, LANG_HTML, LANG_JIDL, LANG_MARKDOWN, LANG_PLANTUML } from "components/utils/constants";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
-import SBHtmlPreviewer, { onHTMLPopOutClick } from "components/visualize/SBHtmlPreviewer";
-import SBMarkdownPreviewer, { onMDPopOutClick } from "components/visualize/SBMarkdownPreviewer";
-import SBPumlPreviewer, { convertToPuml, onDownloadPNGClick } from "components/visualize/SBPumlPreviewer";
-import { useLocation } from "react-router-dom";
-import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onDownloadSVGClick, onGVPopOutClick } from "components/visualize/SBGvPreviewer";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
-import SBDownloadFile from "components/common/SBDownloadFile";
-import SBDownloadPDF from "components/common/SBDownloadPDF";
 import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
+import SBDownloadBtn from "components/common/SBDownloadBtn";
+import SBHtmlPreviewer, { onHTMLPopOutClick } from "components/visualize/SBHtmlPreviewer";
+import SBMarkdownPreviewer, { onMDPopOutClick } from "components/visualize/SBMarkdownPreviewer";
+import SBPumlPreviewer, { convertToPuml } from "components/visualize/SBPumlPreviewer";
+import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onGVPopOutClick } from "components/visualize/SBGvPreviewer";
 import { initConvertedSchemaState } from "./SchemaVisualizer";
-import { getSelectedSchema } from "reducers/util";
 
 const SchemaVisualized = (props: any) => {
     const location = useLocation();
@@ -39,10 +39,10 @@ const SchemaVisualized = (props: any) => {
     }, []);
 
     useEffect(() => {
-        if ((conversion.length == 1 ? conversion[0].value : conversion) == 'puml' && convertedSchema.length != 0) {
+        if ((conversion.length == 1 ? conversion[0].value : conversion) == LANG_PLANTUML && convertedSchema.length != 0) {
             setPumlURL(convertToPuml(convertedSchema[0].schema));
         }
-        if ((conversion.length == 1 ? conversion[0].value : conversion) == 'gv' && convertedSchema.length != 0) {
+        if ((conversion.length == 1 ? conversion[0].value : conversion) == LANG_GRAPHVIZ && convertedSchema.length != 0) {
             convertToGvSplitView(convertedSchema[0].schema);
             convertToGvFullView(convertedSchema[0].schema);
         }
@@ -87,47 +87,43 @@ const SchemaVisualized = (props: any) => {
                     <div className='col-md-6'>
                         <div className={`${conversion.length == 1 && convertedSchema[0].schema ? '' : ' d-none'}`}>
                             <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema[0].schema} customClass='float-end' />
-                            <SBDownloadFile buttonId='schemaDownload' customClass={`me-1 float-end${convertedSchema[0].schema && conversion.length <= 1 ? '' : ' d-none'}`} data={convertedSchema[0].schema} ext={conversion.length == 1 ? conversion[0].value : conversion} />
+                            <SBDownloadBtn buttonId='schemaDownload' customClass={`me-1 float-end${convertedSchema[0].schema && conversion.length <= 1 ? '' : ' d-none'}`} data={convertedSchema[0].schema} ext={conversion.length == 1 ? conversion[0].value : conversion} />
 
-                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'html' ? '' : ' d-none'}`}>
-                                <SBDownloadPDF buttonId="htmlPdfDownload" customClass='me-1 float-end' data={validSchema} />
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == LANG_HTML ? '' : ' d-none'}`}>
+                                <SBDownloadBtn buttonId={`htmlPdfDownload`} customClass='me-1 float-end' data={validSchema} ext={FILE_TYPE_PDF} />
                                 <button type='button' id="htmlPopOut" title="View Schema in new window" className="btn btn-primary btn-sm me-1 float-end" onClick={() => onHTMLPopOutClick(convertedSchema[0].schema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </button>
                             </div>
 
-                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'md' ? '' : ' d-none'}`}>
-                                <SBDownloadPDF buttonId="mdPdfDownload" customClass='me-1 float-end' data={validSchema} />
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == LANG_MARKDOWN ? '' : ' d-none'}`}>
+                                <SBDownloadBtn buttonId={`mdPdfDownload`} customClass='me-1 float-end' data={validSchema} ext={FILE_TYPE_PDF} />
                                 <button type='button' id="mdPopOut" title="View Schema in new window" className="btn btn-primary btn-sm me-1 float-end" onClick={() => onMDPopOutClick(convertedSchema[0].schema)}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </button>
                             </div>
 
-                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'jidl' ? '' : ' d-none'}`}>
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == LANG_JIDL ? '' : ' d-none'}`}>
                                 <button type='button' id="jidlPopOut" title="View Schema in new window" className="btn btn-primary btn-sm me-1 float-end" onClick={onPopOutClick}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </button>
                             </div>
 
-                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'puml' ? '' : ' d-none'}`}>
-                                <button type='button' id="pumlPngDownload" title="Download PNG of the schema" className="btn btn-primary btn-sm me-1 float-end" onClick={() => onDownloadPNGClick(pumlURL)}>
-                                    <FontAwesomeIcon icon={faFileImage} />
-                                </button>
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == LANG_PLANTUML ? '' : ' d-none'}`}>
+                                <SBDownloadBtn buttonId={`pumlPngDownload`} customClass='me-1 float-end' data={pumlURL} ext={FILE_TYPE_PNG} />
                                 <a role='button' id="pumlPopOut" title="View Schema in new window" className="btn btn-primary btn-sm me-1 float-end" target="_blank" href={pumlURL}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </a>
                             </div>
 
-                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'gv' ? '' : ' d-none'}`}>
-                                <button type='button' id="gvSvgDownload" title="Download SVG of the schema" className="btn btn-primary btn-sm me-1 float-end" onClick={onDownloadSVGClick}>
-                                    <FontAwesomeIcon icon={faFileImage} />
-                                </button>
+                            <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == LANG_GRAPHVIZ ? '' : ' d-none'}`}>
+                                <SBDownloadBtn buttonId={`gvSvgDownload`} customClass='me-1 float-end' ext={FILE_TYPE_SVG} />
                                 <button type='button' id="gvPopOut" title="View Schema in new window" className="btn btn-primary btn-sm me-1 float-end" onClick={onGVPopOutClick}>
                                     <FontAwesomeIcon icon={faWindowMaximize} />
                                 </button>
                             </div>
 
-                            <div className={`${((conversion.length == 1 ? conversion[0].value : conversion) != 'jidl') ? '' : ' d-none'}`}>
+                            <div className={`${((conversion.length == 1 ? conversion[0].value : conversion) != LANG_JIDL) ? '' : ' d-none'}`}>
                                 <button type='button' id="SplitView" title="View Schema and Preview together" className="btn btn-primary btn-sm me-1 float-end" onClick={toggleSplitView}>
                                     <FontAwesomeIcon icon={faTableColumns} className='fa-rotate-90' />
                                 </button>
@@ -154,16 +150,16 @@ const SchemaVisualized = (props: any) => {
                 }
             </div>
             <div className={`card-body-page ${spiltViewFlag ? '' : ' d-none'}`}>
-                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'html' && convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == LANG_HTML && convertedSchema.length != 0 ? '' : ' d-none'}`}>
                     <SBHtmlPreviewer htmlText={convertedSchema[0].schema} showPreviewer={true} conversion={(conversion.length == 1 ? conversion[0].value : conversion)}></SBHtmlPreviewer>
                 </div>
-                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'md' && convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == LANG_MARKDOWN && convertedSchema.length != 0 ? '' : ' d-none'}`}>
                     <SBMarkdownPreviewer markdownText={convertedSchema[0].schema} showPreviewer={true}></SBMarkdownPreviewer>
                 </div>
-                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'puml' && convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == LANG_PLANTUML && convertedSchema.length != 0 ? '' : ' d-none'}`}>
                     <SBPumlPreviewer data={pumlURL} convertedSchema={convertedSchema[0].schema} conversion={(conversion.length == 1 ? conversion[0].value : conversion)}></SBPumlPreviewer>
                 </div>
-                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == 'gv' && convertedSchema.length != 0 ? '' : ' d-none'}`}>
+                <div className={`${(conversion.length == 1 ? conversion[0].value : conversion) == LANG_GRAPHVIZ && convertedSchema.length != 0 ? '' : ' d-none'}`}>
                     <SBGvPreviewer convertedSchema={convertedSchema[0].schema} conversion={(conversion.length == 1 ? conversion[0].value : conversion)}></SBGvPreviewer>
                 </div>
             </div>

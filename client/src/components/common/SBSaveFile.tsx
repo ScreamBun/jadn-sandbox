@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { saveFile } from "actions/save";
-import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import { useDispatch } from "react-redux";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { saveFile } from "actions/save";
 import { info } from "actions/util";
-import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
+import { LANG_JADN } from "components/utils/constants";
+import SBSpinner from "./SBSpinner";
+import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 
 const SBSaveFile = (props: any) => {
 
     const dispatch = useDispatch();
 
-    const { buttonId, toolTip, data, customClass, filename = '', ext = 'jadn', loc, setDropdown } = props;
+    const { buttonId, toolTip, data, customClass, filename = '', ext = LANG_JADN, loc, setDropdown } = props;
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleSaveDialog, setToggleSaveDialog] = useState(false);
     const [toggleOverwriteDialog, setToggleOverwriteDialog] = useState(false); //nestedModal
@@ -36,7 +37,7 @@ const SBSaveFile = (props: any) => {
         setFileNameInput(filename);
     }
 
-    const onSaveFile = (e: React.MouseEvent<HTMLButtonElement>, fmt: string = 'jadn', overwrite: boolean = false) => {
+    const onSaveFile = (e: React.MouseEvent<HTMLButtonElement>, fmt: string, overwrite: boolean = false) => {
         e.preventDefault();
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
@@ -122,7 +123,7 @@ const SBSaveFile = (props: any) => {
                             <div className="row">
                                 <label htmlFor={buttonId + "saveFileAsType"} className="col-sm-4 col-label">Save as type:</label>
                                 <div className="col-sm-8">
-                                    <input type="text" readOnly className="form-control-plaintext" id={buttonId + "saveFileAsType"} value={ext ? ext : 'jadn'} />
+                                    <input type="text" readOnly className="form-control-plaintext" id={buttonId + "saveFileAsType"} value={ext} />
                                 </div>
                             </div>
                         </div>

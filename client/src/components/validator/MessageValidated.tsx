@@ -14,6 +14,7 @@ import SBSpinner from "components/common/SBSpinner";
 import SBSaveFile from "components/common/SBSaveFile";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
+import { LANG_JADN, LANG_JSON } from "components/utils/constants";
 
 const MessageValidated = (props: any) => {
     const location = useLocation();
@@ -22,7 +23,7 @@ const MessageValidated = (props: any) => {
     const validSchema = useSelector(getSelectedSchema);
     const [fileName, setFileName] = useState({
         name: '',
-        ext: 'jadn'
+        ext: LANG_JADN
     });
     const msgOpts = useSelector(getMsgFiles);
     const validMsgFormat = useSelector(getValidMsgTypes)
@@ -99,7 +100,7 @@ const MessageValidated = (props: any) => {
                     let data = ev.target.result;
                     try {
                         //data = JSON.stringify(data, null, 2); // must turn str into obj before str
-                        fileName.ext == 'jadn' ? setMsgFormat({ value: 'json', label: 'json' }) : setMsgFormat({ value: fileName.ext, label: fileName.ext });
+                        fileName.ext == LANG_JADN ? setMsgFormat({ value: LANG_JSON, label: LANG_JSON }) : setMsgFormat({ value: fileName.ext, label: fileName.ext });
                         setLoadedMsg(data);
                     } catch (err) {
                         switch (fileName.ext) {
@@ -122,7 +123,7 @@ const MessageValidated = (props: any) => {
         setSelectedFile('');
         setFileName({
             name: '',
-            ext: 'jadn'
+            ext: LANG_JADN
         });
         setLoadedMsg('');
         if (ref.current) {
@@ -184,7 +185,7 @@ const MessageValidated = (props: any) => {
                                     Validate
                                 </button>}
                             <SBCopyToClipboard buttonId='copyData' data={loadedMsg} customClass='float-end me-1' />
-                            <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName.name} ext={msgFormat ? msgFormat.value : 'json'} setDropdown={setSelectedFile} />
+                            <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName.name} ext={msgFormat ? msgFormat.value : LANG_JSON} setDropdown={setSelectedFile} />
                         </div>
                     </div>
                 </div>

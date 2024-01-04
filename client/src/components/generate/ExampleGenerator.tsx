@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { getPageTitle } from 'reducers/util'
-import { info, setSchema } from 'actions/util'
-import SchemaLoader from 'components/common/SchemaLoader'
-import ExampleCreator from './ExampleCreator'
-import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { JSONSchemaFaker } from 'json-schema-faker';
 import { faker } from "@faker-js/faker/locale/en";
+import { getPageTitle } from 'reducers/util'
+import { info, setSchema } from 'actions/util'
 import { convertSchema } from 'actions/convert'
+import { LANG_JSON } from 'components/utils/constants'
+import SchemaLoader from 'components/common/SchemaLoader'
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 import { SchemaJADN } from 'components/create/schema/interface'
+import ExampleCreator from './ExampleCreator'
 
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
@@ -81,7 +82,7 @@ const ExampleGenerator = () => {
         }
 
         //TODO? : lazy load data to show data is being generated
-        dispatch(convertSchema(schemaObj, schemaFormat?.value, ['json']))
+        dispatch(convertSchema(schemaObj, schemaFormat?.value, [LANG_JSON]))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
                     console.error(convertSchemaVal.payload.response);

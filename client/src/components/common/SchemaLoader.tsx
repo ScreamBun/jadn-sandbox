@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSchemas } from "../../reducers/util";
 import { info, setSchema } from "../../actions/util";
+import { getSchemaConversions } from "reducers/convert";
+import { validateSchema } from "actions/validate";
+import { LANG_JADN } from "components/utils/constants";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
 import { dismissAllToast, sbToastError, sbToastSuccess } from "./SBToast";
 import SBCopyToClipboard from "./SBCopyToClipboard";
@@ -9,10 +12,8 @@ import SBSelect, { Option } from "./SBSelect";
 import SBSpinner from "./SBSpinner";
 import SBFormatBtn from "./SBFormatBtn";
 import SBEditor from "./SBEditor";
-import { getSchemaConversions } from "reducers/convert";
 import SBLoadSchema from "./SBLoadSchema";
 import SBValidateSchemaBtn from "./SBValidateSchemaBtn";
-import { validateSchema } from "actions/validate";
 
 //File Loader Note: User should be able to upload any JSON/JADN schema; 
 //It does not need to be syntactically correct since the user can edit the schema in the code editor.
@@ -42,7 +43,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [fileName, setFileName] = useState({
         name: '',
-        ext: 'jadn'
+        ext: LANG_JADN
     });
     const schemaOpts = useSelector(getAllSchemas);
     const validSchemaFormatOpt = useSelector(getSchemaConversions);
@@ -167,7 +168,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         setSelectedFile(null);
         setFileName({
             name: '',
-            ext: 'jadn'
+            ext: LANG_JADN
         });
         if (ref.current) {
             ref.current.value = '';

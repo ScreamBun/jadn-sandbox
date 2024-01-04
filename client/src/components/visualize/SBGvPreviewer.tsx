@@ -1,8 +1,6 @@
 import React from "react";
 import * as d3 from "d3-graphviz";
 import SBEditor from "../common/SBEditor";
-import saveAs from "file-saver";
-import { sbToastError } from "../common/SBToast";
 import { faUndo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -33,17 +31,6 @@ export const onGVPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     var newWindowContent = document.getElementById('fullGV')?.innerHTML;
     var newWindow = window.open("");
     newWindow?.document.write(newWindowContent || 'Error: Cannot display Graphviz');
-}
-
-export const onDownloadSVGClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const svg = document.getElementById("fullGV")?.innerHTML;
-    if (svg) {
-        var blob = new Blob([svg], { type: "image/svg+xml" });
-        saveAs(blob, "graphViz.svg");
-    } else {
-        sbToastError('Error: Unable to download GraphViz file.')
-    }
 }
 
 const SBGvPreviewer = (props: any) => {

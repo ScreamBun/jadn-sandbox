@@ -3,8 +3,15 @@ export const LANG_JADN = 'jadn';
 export const LANG_JSON = 'json';
 export const LANG_HTML = 'html';
 export const LANG_MARKDOWN = 'md';
+export const LANG_GRAPHVIZ = 'gv';
+export const LANG_PLANTUML = 'puml';
 export const LANG_XML = 'xml';
 export const LANG_XSD = 'xsd';
+
+export const LANG_JIDL = 'jidl';
+export const FILE_TYPE_PDF = 'pdf';
+export const FILE_TYPE_PNG = 'png';
+export const FILE_TYPE_SVG = 'svg';
 
 export const NAV_HOME = '/home';
 

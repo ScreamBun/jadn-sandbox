@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIndent } from "@fortawesome/free-solid-svg-icons";
+import { LANG_JADN } from "components/utils/constants";
 import { FormatJADN } from "components/utils";
 import { sbToastError } from "./SBToast";
 
@@ -21,7 +22,7 @@ const SBFormatBtn = (props: any) => {
                 dataObj = JSON.parse(dataObj);
             }
 
-            if (ext == 'jadn') {
+            if (ext == LANG_JADN) {
                 dataObj = FormatJADN(dataObj);
             }
 

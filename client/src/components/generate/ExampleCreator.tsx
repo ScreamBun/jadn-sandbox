@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
-import SBEditor from 'components/common/SBEditor'
-import SBDownloadFile from 'components/common/SBDownloadFile'
-import SBSpinner from 'components/common/SBSpinner'
-import SBSaveFile from 'components/common/SBSaveFile'
 import { useSelector } from 'react-redux'
 import { getSelectedSchema } from 'reducers/util'
+import { LANG_JSON } from 'components/utils/constants'
+import SBDownloadBtn from 'components/common/SBDownloadBtn'
+import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
+import SBEditor from 'components/common/SBEditor'
+import SBSpinner from 'components/common/SBSpinner'
+import SBSaveFile from 'components/common/SBSaveFile'
+
 //TODO: create messages in other languages ?
 //TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
@@ -30,8 +32,8 @@ const ExampleCreator = (props: any) => {
                         Data Example #{i + 1}
                     </button>
                     <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-end' />
-                    <SBSaveFile data={message} loc={'messages'} customClass={"float-end me-1"} filename={`MessageExample${i + 1}`} ext={'json'} />
-                    <SBDownloadFile buttonId={`downloadMsgExample${i}`} customClass='me-1 float-end' filename={`MessageExample${i + 1}`} data={message} ext={'json'} />
+                    <SBSaveFile data={message} loc={'messages'} customClass={"float-end me-1"} filename={`MessageExample${i + 1}`} ext={LANG_JSON} />
+                    <SBDownloadBtn buttonId={`downloadMsgExample${i}`} customClass='me-1 float-end' filename={`MessageExample${i + 1}`} data={message} ext={LANG_JSON} />
                 </h5>
             </div>
 
