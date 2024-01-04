@@ -135,10 +135,12 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             sbToastSuccess(validateSchemaVal.payload.valid_msg);
                         } else {
                             sbToastError(validateSchemaVal.payload.valid_msg);
+                            dispatch(setSchema(null));
                         }
                     })
                     .catch((validateSchemaErr) => {
                         sbToastError(validateSchemaErr.payload.valid_msg)
+                        dispatch(setSchema(null));
                     }).finally(() => {
                         setIsValidating(false);
                     })
