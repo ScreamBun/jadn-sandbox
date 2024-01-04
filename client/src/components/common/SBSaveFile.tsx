@@ -39,7 +39,7 @@ const SBSaveFile = (props: any) => {
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
             return;
-        } else if (fileNameInput.match(FILENAME_RULE)) {
+        } else if (!FILENAME_RULE.test(fileNameInput)) {
             sbToastWarning("Please do not use special characters in file name.");
             return;
         }
@@ -50,13 +50,12 @@ const SBSaveFile = (props: any) => {
         try {
             dispatch(saveFile(filename, formattedData, loc, overwrite))
                 .then((val) => {
+                    setIsLoading(false);
                     if (val.error) {
                         if (val.payload.status == 409) {
-                            setIsLoading(false);
                             setToggleOverwriteDialog(true);
                             return;
                         }
-                        setIsLoading(false);
                         sbToastError(`Error: ${val.payload.response}`);
                         setToggleSaveDialog(false);
                         setToggleOverwriteDialog(false);

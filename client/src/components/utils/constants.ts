@@ -14,7 +14,7 @@ export const FILE_TYPE_PDF = 'pdf';
 export const FILE_TYPE_PNG = 'png';
 export const FILE_TYPE_SVG = 'svg';
 
-export const FILENAME_RULE = "/^\w+$/";
+export const FILENAME_RULE = new RegExp("^[a-zA-Z0-9-_]+$");
 
 export const NAV_HOME = '/home';
 
