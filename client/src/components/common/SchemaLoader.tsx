@@ -24,10 +24,10 @@ interface SchemaLoaderProps {
     loadedSchema: object | null;
     setLoadedSchema: (schema: object | null) => void;
     decodeMsg?: Option | null;
-    setDecodeMsg?: (msgType: Option) => void;
+    setDecodeMsg?: (msgType: Option | null) => void;
     setDecodeSchemaTypes?: (obj: {
-        all: string[],
-        exports: string[]
+        all: string[] | [],
+        exports: string[] | []
     }) => void;
     acceptFormat?: string[];
     schemaFormat: Option | null;
@@ -172,6 +172,10 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         });
         if (ref.current) {
             ref.current.value = '';
+        }
+        if (setDecodeSchemaTypes && setDecodeMsg) {
+            setDecodeMsg(null);
+            setDecodeSchemaTypes([]);
         }
     }
 
