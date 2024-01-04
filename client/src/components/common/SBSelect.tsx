@@ -2,10 +2,11 @@ import { deleteFile } from 'actions/save';
 import React, { CSSProperties, Fragment, useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Select, { components } from 'react-select';
-import { sbToastError, sbToastSuccess } from './SBToast';
+import CreatableSelect from 'react-select/creatable';
 import { info } from 'actions/util';
-import SBSpinner from './SBSpinner';
 import { ThemeContext } from 'components/static/ThemeProvider';
+import SBSpinner from './SBSpinner';
+import { sbToastError, sbToastSuccess } from './SBToast';
 
 
 export const groupStyles: CSSProperties = {
@@ -163,7 +164,7 @@ export const getSelectTheme = (theme: 'dark' | 'light') => {
 
 const SBSelect = (props: any) => {
 
-    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle } = props;
+    const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle, isCreatable } = props;
     const dispatch = useDispatch();
 
     const [toggleModal, setToggleModal] = useState(false);
@@ -230,9 +231,9 @@ const SBSelect = (props: any) => {
         }
 
         customOptList = customOpts.map((opt, index) => (
-            <label className="list-group-item" style={{ textAlign: 'center' }} key={index}>
-                <input className="form-check-input me-1" type="checkbox" name={'custom-file'} value={opt.label} />
-                {opt.label}
+            <label htmlFor={`${opt.label}`} className="list-group-item" style={{ textAlign: 'center' }} key={index}>
+                <input id={`${opt.label}`} className="form-check-input me-1" type="checkbox" name={'custom-file'} value={`${opt.label}`} />
+                {`${opt.label}`}
             </label>
         ));
 
@@ -283,9 +284,36 @@ const SBSelect = (props: any) => {
         }
     }
 
-    return (
-        <>
-            {isFileUploader ?
+    if (isCreatable) {
+        return (
+            <div style={{ width: '100%' }}>
+                <CreatableSelect<Option, false, GroupedOption>
+                    id={id}
+                    placeholder={placeholder}
+                    options={opts}
+                    formatGroupLabel={formatGroupLabel}
+                    isClearable
+                    onChange={onChange}
+                    menuPortalTarget={document.body}
+                    styles={isSmStyle ? smStyle : defaultStyle}
+                    isMulti={isMultiSelect}
+                    closeMenuOnSelect={isMultiSelect ? false : true}
+                    value={value}
+                    theme={theme => ({
+                        ...theme,
+                        colors: {
+                            ...theme.colors,
+                            ...themeColors
+                        }
+                    })}
+                />
+            </div>
+        );
+    }
+
+    if (isFileUploader) {
+        return (
+            <>
                 <Select<Option, false, GroupedOption>
                     id={id}
                     placeholder={placeholder}
@@ -309,56 +337,57 @@ const SBSelect = (props: any) => {
                         }
                     })}
                 />
-                :
-                <Select<Option, false, GroupedOption>
-                    id={id}
-                    placeholder={placeholder}
-                    options={opts}
-                    formatGroupLabel={formatGroupLabel}
-                    isClearable
-                    onChange={onChange}
-                    menuPortalTarget={document.body}
-                    className={customClass}
-                    styles={isSmStyle ? smStyle : defaultStyle}
-                    isMulti={isMultiSelect}
-                    closeMenuOnSelect={isMultiSelect ? false : true}
-                    backspaceRemovesValue={false}
-                    value={value}
-                    theme={theme => ({
-                        ...theme,
-                        colors: {
-                            ...theme.colors,
-                            ...themeColors
-                        }
-                    })}
-                />
-            }
-
-            <div id="selectModal" className={`modal fade ${toggleModal ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
-                <div className={`modal-dialog modal-dialog-centered`} role='document'>
-                    <div className='modal-content'>
-                        <div className="modal-header">
-                            <h5 className='modal-title'> Delete Custom Files
-                            </h5>
-                            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={() => setToggleModal(false)} />
-                        </div>
-                        <div className="modal-body">
-                            <div className="list-group">
-                                {customOptList && customOptList.length != 0 ? customOptList : 'No custom files exist'}
+                <div id="selectModal" className={`modal fade ${toggleModal ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
+                    <div className={`modal-dialog modal-dialog-centered`} role='document'>
+                        <div className='modal-content'>
+                            <div className="modal-header">
+                                <h5 className='modal-title'> Delete Custom Files
+                                </h5>
+                                <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={() => setToggleModal(false)} />
+                            </div>
+                            <div className="modal-body">
+                                <div className="list-group">
+                                    {customOptList && customOptList.length != 0 ? customOptList : 'No custom files exist'}
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                {isLoading ? <SBSpinner action={"Deleting"} /> :
+                                    <button type='button' className='btn btn-danger' onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</button>}
+                                <button type='button' className='btn btn-secondary' onClick={() => { setIsLoading(false); setToggleModal(false); }}>Cancel</button>
                             </div>
                         </div>
-                        <div className="modal-footer">
-                            {isLoading ? <SBSpinner action={"Deleting"} /> :
-                                <button type='button' className='btn btn-danger' onClick={deleteFiles} disabled={customOptList && customOptList.length != 0 ? false : true} >Delete</button>}
-                            <button type='button' className='btn btn-secondary' onClick={() => { setIsLoading(false); setToggleModal(false); }}>Cancel</button>
-                        </div>
                     </div>
+                    <div className={`modal-backdrop fade ${toggleModal ? 'show' : ''}`} style={{
+                        zIndex: -1
+                    }}></div>
                 </div>
-                <div className={`modal-backdrop fade ${toggleModal ? 'show' : ''}`} style={{
-                    zIndex: -1
-                }}></div>
-            </div>
-        </>
+            </>
+        )
+    }
+
+    return (
+        <Select<Option, false, GroupedOption>
+            id={id}
+            placeholder={placeholder}
+            options={opts}
+            formatGroupLabel={formatGroupLabel}
+            isClearable
+            onChange={onChange}
+            menuPortalTarget={document.body}
+            className={customClass}
+            styles={isSmStyle ? smStyle : defaultStyle}
+            isMulti={isMultiSelect}
+            closeMenuOnSelect={isMultiSelect ? false : true}
+            backspaceRemovesValue={false}
+            value={value}
+            theme={theme => ({
+                ...theme,
+                colors: {
+                    ...theme.colors,
+                    ...themeColors
+                }
+            })}
+        />
     );
 }
 

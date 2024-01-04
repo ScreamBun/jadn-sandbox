@@ -2,10 +2,9 @@ import React, { memo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faSquareCaretDown, faSquareCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../../interface';
-import { Option } from 'components/common/SBSelect';
+import SBSelect, { Option } from 'components/common/SBSelect';
 import { EnumeratedFieldObject, StandardFieldObject } from '../consts';
 import { ModalSize } from '../options/ModalSize';
-import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import OptionsModal from '../options/OptionsModal';
 import withFieldEditor from '../ParentEditor/withFieldEditor';
 
@@ -101,12 +100,13 @@ const FieldEditorBtn = memo(function FieldEditorBtn(props: FieldEditorProps) {
                     </div>
                     <div className="col-md-4">
                         <label htmlFor={`type-${parentIndex}-${dataIndex}`} className='mb-0'>Type</label>
-                        <SBCreatableSelect id={`type-${parentIndex}-${dataIndex}`}
+                        <SBSelect id={`type-${parentIndex}-${dataIndex}`}
                             name="type"
                             value={valType}
                             onChange={onSelectChange}
                             data={types}
-                            isGrouped />
+                            isGrouped
+                            isCreatable />
                     </div>
                     <div className="col-md-2 d-flex">
                         <button type='button' className='btn btn-primary btn-sm p-2 mt-auto' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Field Options</button>
