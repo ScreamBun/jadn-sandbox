@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { saveFile } from "actions/save";
 import { info } from "actions/util";
 import { FormatJADN } from "components/utils";
-import { LANG_JADN } from "components/utils/constants";
+import { FILENAME_RULE, LANG_JADN } from "components/utils/constants";
 import SBSpinner from "./SBSpinner";
 import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 
@@ -18,9 +18,6 @@ const SBSaveFile = (props: any) => {
     const [toggleSaveDialog, setToggleSaveDialog] = useState(false);
     const [toggleOverwriteDialog, setToggleOverwriteDialog] = useState(false); //nestedModal
     const [isLoading, setIsLoading] = useState(false);
-
-    const fileNameRule = "/^\w+$/";
-
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -42,7 +39,7 @@ const SBSaveFile = (props: any) => {
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
             return;
-        } else if (fileNameInput.match(fileNameRule)) {
+        } else if (fileNameInput.match(FILENAME_RULE)) {
             sbToastWarning("Please do not use special characters in file name.");
             return;
         }

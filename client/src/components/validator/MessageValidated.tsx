@@ -1,20 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
     escaped2cbor, format, hexify
 } from '../utils';
-import { loadFile } from "actions/util";
 import { getMsgFiles, getSelectedSchema, getValidMsgTypes } from "reducers/util";
 import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
-import SBFileUploader from "components/common/SBFileUploader";
 import SBSpinner from "components/common/SBSpinner";
 import SBSaveFile from "components/common/SBSaveFile";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
-import { LANG_JADN, LANG_JSON } from "components/utils/constants";
+import { LANG_CBOR, LANG_JADN, LANG_JSON, LANG_XML } from "components/utils/constants";
+import SBFileLoader from "components/common/SBFileLoader";
 
 const MessageValidated = (props: any) => {
     const location = useLocation();
@@ -27,7 +26,6 @@ const MessageValidated = (props: any) => {
     });
     const msgOpts = useSelector(getMsgFiles);
     const validMsgFormat = useSelector(getValidMsgTypes)
-    const dispatch = useDispatch();
     const ref = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
@@ -37,44 +35,32 @@ const MessageValidated = (props: any) => {
         }
     }, [])
 
-    const onFileSelect = (e: Option) => {
-        //setLoadedMsg('');
-        //setDecodeMsg('');
-        //setMsgFormat('');
-        if (e == null) {
-            setSelectedFile(e);
-            setLoadedMsg('');
-            return;
-        } else if (e.value == "file") {
-            ref.current.value = '';
-            ref.current?.click();
-        } else {
-            setSelectedFile(e);
-            const fileName = {
-                name: getFilenameOnly(e.label),
-                ext: getFilenameExt(e.label)
-            }
-            setFileName(fileName);
-            dispatch(loadFile('messages', e.value))
-                .then((loadFileVal) => {
-                    if (loadFileVal.error) {
-                        sbToastError(loadFileVal.payload.response);
-                        return;
-                    }
-
-                    setMsgFormat({ value: fileName.ext, label: fileName.ext });
-                    const data = loadFileVal.payload.data;
-                    const formattedData = format(data, fileName.ext, 2);
-                    if (formattedData.startsWith('Error')) {
-                        setLoadedMsg(data);
-                    } else {
-                        setLoadedMsg(formattedData);
-                    }
-                })
-                .catch((loadFileErr) => {
-                    sbToastError(loadFileErr.payload.data);
-                })
+    const onFileLoad = async (dataFile: any, fileStr: any) => {
+        setSelectedFile({ 'value': fileStr, 'label': fileStr });
+        const fileName = {
+            name: getFilenameOnly(fileStr),
+            ext: getFilenameExt(fileStr)
         }
+        setFileName(fileName);
+
+        if (dataFile) {
+            fileName.ext == LANG_JADN ? setMsgFormat({ value: LANG_JSON, label: LANG_JSON }) : setMsgFormat({ value: fileName.ext, label: fileName.ext });
+            const formattedData = format(dataFile, fileName.ext, 2);
+            if (formattedData.startsWith('Error')) {
+                setLoadedMsg(dataFile);
+            } else {
+                setLoadedMsg(formattedData);
+            }
+        } else {
+            switch (fileName.ext) {
+                case 'cbor':
+                    dataFile = escaped2cbor(hexify(dataFile));
+                    break;
+                default:
+                    sbToastError(`File cannot be loaded: Invalid JSON`);
+            }
+        }
+
     };
 
     const onMsgChange = (data: any) => {
@@ -84,42 +70,10 @@ const MessageValidated = (props: any) => {
         setLoadedMsg(data);
     }
 
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length != 0) {
-            const file = e.target.files[0];
-            setSelectedFile({ 'value': file.name, 'label': file.name });
-            const fileName = {
-                name: getFilenameOnly(file.name),
-                ext: getFilenameExt(file.name)
-            }
-            setFileName(fileName);
-
-            const fileReader = new FileReader();
-            fileReader.onload = (ev: ProgressEvent<FileReader>) => {
-                if (ev.target) {
-                    let data = ev.target.result;
-                    try {
-                        //data = JSON.stringify(data, null, 2); // must turn str into obj before str
-                        fileName.ext == LANG_JADN ? setMsgFormat({ value: LANG_JSON, label: LANG_JSON }) : setMsgFormat({ value: fileName.ext, label: fileName.ext });
-                        setLoadedMsg(data);
-                    } catch (err) {
-                        switch (fileName.ext) {
-                            case 'cbor':
-                                data = escaped2cbor(hexify(data));
-                                break;
-                            default:
-                                sbToastError(`File cannot be loaded: Invalid JSON`);
-                        }
-                    }
-                }
-            };
-            fileReader.readAsText(file);
-            // sbToastError(`Schema cannot be loaded. Please upload a data file.`);
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => {
+        if (e) {
+            e.preventDefault();
         }
-    }
-
-    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
         setSelectedFile('');
         setFileName({
             name: '',
@@ -139,17 +93,19 @@ const MessageValidated = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-sm-8'>
                         <div className="d-flex">
-                            <SBSelect id={"data-list"}
+                            <SBFileLoader
                                 customClass={'me-1'}
-                                data={msgOpts}
-                                onChange={onFileSelect}
+                                opts={msgOpts}
+                                selectedOpt={selectedFile}
+                                fileName={fileName}
+                                setSelectedFile={setSelectedFile}
+                                onCancelFileUpload={onCancelFileUpload}
+                                onFileChange={onFileLoad}
+                                acceptableExt={[LANG_JSON, LANG_XML, LANG_CBOR]}
+                                ref={ref}
                                 placeholder={'Select a data file...'}
                                 loc={'messages'}
-                                value={selectedFile}
-                                isGrouped isFileUploader isSmStyle />
-                            <div className='d-none'>
-                                <SBFileUploader ref={ref} id={"data-file"} accept={".json,.jadn,.xml,.cbor"} onCancel={onCancelFileUpload} onChange={onFileChange} />
-                            </div>
+                            />
                             {/* </div> */}
 
                             {/* <div className={`col-md-3`}> */}

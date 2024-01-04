@@ -12,8 +12,8 @@ import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBSpinner from 'components/common/SBSpinner';
 import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
-import SBLoadSchema from 'components/common/SBLoadSchema';
 import SBDownloadBtn from 'components/common/SBDownloadBtn';
+import SBFileLoader from 'components/common/SBFileLoader';
 
 
 export const configInitialState = {
@@ -175,7 +175,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             setIsLoading(false);
         }
 
-        const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | null) => {
+        const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => {
             if (e) {
                 e.preventDefault();
             }
@@ -232,16 +232,18 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                 <div className='card-header p-2'>
                     <div className='row no-gutters'>
                         <div className='col-sm-3'>
-                            <SBLoadSchema
-                                schemaOpts={schemaOpts}
-                                selectedSchemaOpt={selectedFile}
-                                loadedSchema={generatedSchema}
+                            <SBFileLoader
+                                opts={schemaOpts}
+                                selectedOpt={selectedFile}
+                                loadedFileData={generatedSchema}
                                 fileName={fileName}
-                                schemaFormat={LANG_JADN}
                                 setSelectedFile={setSelectedFile}
                                 onCancelFileUpload={onCancelFileUpload}
                                 onFileChange={onFileLoad}
                                 ref={ref}
+                                placeholder={'Select a schema...'}
+                                loc={'schemas'}
+                                isSaveable
                             />
                         </div>
                         <div className='col-sm-9'>

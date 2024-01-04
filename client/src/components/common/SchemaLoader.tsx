@@ -12,8 +12,8 @@ import SBSelect, { Option } from "./SBSelect";
 import SBSpinner from "./SBSpinner";
 import SBFormatBtn from "./SBFormatBtn";
 import SBEditor from "./SBEditor";
-import SBLoadSchema from "./SBLoadSchema";
 import SBValidateSchemaBtn from "./SBValidateSchemaBtn";
+import SBFileLoader from "./SBFileLoader";
 
 //File Loader Note: User should be able to upload any JSON/JADN schema; 
 //It does not need to be syntactically correct since the user can edit the schema in the code editor.
@@ -180,17 +180,20 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-lg-6">
-                        <SBLoadSchema
-                            schemaOpts={schemaOpts}
-                            selectedSchemaOpt={selectedFile}
-                            loadedSchema={loadedSchema}
+                        <SBFileLoader
+                            opts={schemaOpts}
+                            selectedOpt={selectedFile}
+                            loadedFileData={loadedSchema}
                             fileName={fileName}
-                            schemaFormat={schemaFormat?.value}
+                            fileExt={schemaFormat?.value}
                             setSelectedFile={setSelectedFile}
                             onCancelFileUpload={onCancelFileUpload}
                             onFileChange={onFileLoad}
-                            acceptFormat={acceptFormat}
+                            acceptableExt={acceptFormat}
                             ref={ref}
+                            placeholder={'Select a schema...'}
+                            loc={'schemas'}
+                            isSaveable
                         />
                     </div>
                     {acceptFormat && <div className="col-lg-3">

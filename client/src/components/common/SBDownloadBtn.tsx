@@ -5,7 +5,7 @@ import { sbToastError, sbToastInfo, sbToastSuccess, sbToastWarning } from "./SBT
 import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
 import saveAs from "file-saver";
-import { FILE_TYPE_PDF, FILE_TYPE_PNG, FILE_TYPE_SVG, LANG_JADN } from "components/utils/constants";
+import { FILENAME_RULE, FILE_TYPE_PDF, FILE_TYPE_PNG, FILE_TYPE_SVG, LANG_JADN } from "components/utils/constants";
 
 export const onDownloadPNGClick = (pumlURL: any, filename: string = "plantuml") => {
     saveAs(pumlURL, `${filename}.png`);
@@ -127,7 +127,7 @@ const SBDownloadBtn = (props: any) => {
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
             return;
-        } else if (fileNameInput.match(/[$&+,:;=?@#|'<>.^*()%!\\//]/)) {
+        } else if (fileNameInput.match(FILENAME_RULE)) {
             sbToastWarning("Please do not use special characters in file name.");
             return;
         }
