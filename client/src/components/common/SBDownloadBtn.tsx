@@ -8,7 +8,7 @@ import saveAs from "file-saver";
 import { FILE_TYPE_PDF, FILE_TYPE_PNG, FILE_TYPE_SVG, LANG_JADN } from "components/utils/constants";
 
 export const onDownloadPNGClick = (pumlURL: any, filename: string = "plantuml") => {
-    saveAs(pumlURL, `${filename}.svg`);
+    saveAs(pumlURL, `${filename}.png`);
 }
 
 export const onDownloadSVGClick = (e: React.MouseEvent<HTMLButtonElement>, filename: string = "graphviz") => {

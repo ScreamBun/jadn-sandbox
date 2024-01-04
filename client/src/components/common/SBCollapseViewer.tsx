@@ -20,10 +20,10 @@ const SBCollapseViewer = (props: any) => {
 
     useEffect(() => {
         for (const obj of data) {
-            if (obj.fmt == "PlantUML") {
+            if (obj.fmt_ext == LANG_PLANTUML) {
                 setPumlURL(convertToPuml(obj.schema));
             }
-            if (obj.fmt == "GraphViz") {
+            if (obj.fmt_ext == LANG_GRAPHVIZ) {
                 convertToGvFullView(obj.schema);
             }
         }
