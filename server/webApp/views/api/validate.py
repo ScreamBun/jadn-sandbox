@@ -81,7 +81,7 @@ class ValidateSchema(Resource):
             try: 
                 validate_schema(schema) #TODO: check for JSON SCHEMA ?
             except Exception as ex:
-                print(f"JSON Schema Error")
+                print(f"JSON Schema Error: {str(ex)}")
                 err_msg = f"Invalid JSON Schema : {str(ex)}"
                 return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": err_msg })
 
@@ -90,15 +90,14 @@ class ValidateSchema(Resource):
             try: 
                validate_schema_jadn_syntax(schema) #TODO: add check for unknown keys (type opts) + bad info (bad fields)
             except Exception as ex:
-                print(f"JADN Syntax Error")
+                print(f"JADN Syntax Error: {str(ex)}")
                 err_msg = f"Invalid JADN Syntax : {str(ex)}"
                 return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": err_msg })
             
-            try: 
-                current_app.validator.validateSchema(schema) #TODO: verify pydantic validation
-            except Exception as ex:
-                print(f"JADN Error")
-                err_msg = f"Invalid JADN : {str(ex)}"
+            valid_bool, err = current_app.validator.validateSchema(schema) #TODO: finish pydantic validation - formats
+            if not valid_bool:
+                print(f"JADN Error: {str(err)} ")
+                err_msg = f"Invalid JADN : {str(err)}"
                 return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": err_msg })
 
             try: 
