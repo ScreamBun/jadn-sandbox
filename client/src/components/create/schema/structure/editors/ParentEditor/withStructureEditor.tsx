@@ -12,7 +12,7 @@ import {
 import { StandardTypeObject, TypeKeys } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
-import { sbToastError } from 'components/common/SBToast';
+import { dismissAllToast, sbToastError } from 'components/common/SBToast';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 export interface StructureEditorProps {
@@ -242,6 +242,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
 
     const saveModal = (modalData: Array<string>) => {
       toggleModal();
+      dismissAllToast();
       const prevState = [...valueObj.options];
       if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
         return;

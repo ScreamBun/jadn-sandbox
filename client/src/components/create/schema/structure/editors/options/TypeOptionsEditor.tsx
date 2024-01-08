@@ -47,7 +47,7 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
         //get only applicable formats based on type 
         let formats_returned = [];
         for (const format of formatTypes) {
-          if (format.type.toLowerCase() == optionType?.toLowerCase()) {
+          if (format.type.toLowerCase() == optionType?.toLowerCase()) {           
             formats_returned.push(format.name)
           }
         }

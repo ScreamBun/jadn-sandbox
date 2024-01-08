@@ -6,10 +6,11 @@ import {
 import { useAppSelector } from '../../../../../../reducers';
 import { objectValues, zip } from '../../../../../utils';
 import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from '../../../interface';
-import { sbToastError } from 'components/common/SBToast';
+import { dismissAllToast, sbToastError } from 'components/common/SBToast';
 import { Option } from 'components/common/SBSelect';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { DragItem } from '../DragStyle/SBOutlineFields';
+import { toast } from 'react-toastify';
 
 interface FieldEditorProps {
     id: any;
@@ -121,6 +122,7 @@ export default function withFieldEditor(FieldWrapper: React.ComponentType<any>) 
 
         const saveModal = (modalData: Array<string>) => {
             toggleModal();
+            dismissAllToast();
             const prevState = [...valueObj.options];
             if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
                 return;

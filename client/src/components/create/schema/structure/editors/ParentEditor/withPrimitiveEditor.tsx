@@ -3,7 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import { zip } from '../../../../../utils';
 import { InfoConfig } from '../../../interface';
 import { StandardFieldKeys, StandardFieldObject, PrimitiveTypeObject, TypeKeys } from '../consts';
-import { sbToastError } from 'components/common/SBToast';
+import { dismissAllToast, sbToastError } from 'components/common/SBToast';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 
 interface PrimitiveEditorProps {
@@ -101,6 +101,7 @@ export default function withPrimitiveEditor(PrimitiveWrapper: React.ComponentTyp
 
         const saveModal = (modalData: Array<string>) => {
             toggleModal();
+            dismissAllToast();
             const prevState = [...valueObj.options];
             if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
                 return;

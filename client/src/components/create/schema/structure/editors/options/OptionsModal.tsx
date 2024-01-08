@@ -95,6 +95,12 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
       }
     }
 
+    //do not allow user to select regex format if pattern exists
+    if (Object.keys(data['type']).includes('format') && Object.keys(data['type']).includes('pattern') && (data['type']['pattern'] != undefined) && (data['type']['format'] == 'regex')) {
+      sbToastError('May only allow one of the following type options: pattern or format of regex.');
+      return;
+    }
+
     saveModal(serializeOptions(data['type'], data['field']))
   }
 
