@@ -83,7 +83,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   value={val}
                   isGrouped={Array.isArray(options) ? false : true}
                   isCreatable
-                />
+                  isClearable />
                 <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger ' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
@@ -101,7 +101,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                 value={val}
                 isGrouped={Array.isArray(options) ? false : true}
                 isCreatable
-              />
+                isClearable />
             </div>
           </div>
         }
@@ -128,7 +128,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   onChange={onSelectChange}
                   value={val}
                   isGrouped={Array.isArray(options) ? false : true}
-                />
+                  isClearable />
                 <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
@@ -145,7 +145,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                 onChange={onSelectChange}
                 value={val}
                 isGrouped={Array.isArray(options) ? false : true}
-              />
+                isClearable />
             </div>
           </div>
         }

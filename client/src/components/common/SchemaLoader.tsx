@@ -167,6 +167,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         setIsValidating(false);
         setIsValid(false);
         setLoadedSchema(null);
+        dispatch(setSchema(null));
         setSelectedFile(null);
         setFileName({
             name: '',
@@ -209,7 +210,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             value={schemaFormat}
                             placeholder={'Schema format...'}
                             isSmStyle
-                        />
+                            isClearable />
                     </div>}
                     <div className="col">
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />

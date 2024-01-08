@@ -82,7 +82,7 @@ const SchemaVisualized = (props: any) => {
                             value={conversion}
                             placeholder={'Visualize to...(select at least one)'} isMultiSelect
                             isSmStyle
-                        />
+                            isClearable />
                     </div>
                     <div className='col-md-6'>
                         <div className={`${conversion.length == 1 && convertedSchema[0].schema ? '' : ' d-none'}`}>

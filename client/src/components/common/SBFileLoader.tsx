@@ -87,6 +87,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
                     isGrouped
                     isFileUploader
                     isSmStyle
+                    isClearable
                 />
                 {isSaveable && <SBSaveFile buttonId="saveFile" toolTip={'Save as..'} data={loadedFileData} loc={loc} customClass={"float-end ms-1"}
                     filename={fileName?.name} ext={fileExt} setDropdown={setSelectedFile} />}

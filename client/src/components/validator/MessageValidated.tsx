@@ -116,7 +116,7 @@ const MessageValidated = (props: any) => {
                                 value={msgFormat}
                                 placeholder={'Data format...'}
                                 isSmStyle
-                            />
+                                isClearable />
                             {/* </div> */}
 
                             {/* <div className='col-md-3'> */}
@@ -127,7 +127,8 @@ const MessageValidated = (props: any) => {
                                 value={decodeMsg}
                                 placeholder={'Data type...'}
                                 isSmStyle
-                            />
+                                isClearable
+                                customNoOptionMsg={'Select a schema to begin'} />
                         </div>
                     </div>
 

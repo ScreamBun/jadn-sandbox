@@ -109,7 +109,10 @@ const MessageCreator = (props: any) => {
                                 data={exportRecords}
                                 onChange={handleSelection}
                                 placeholder={'Select a data type...'}
-                                value={commandType} isSmStyle
+                                value={commandType}
+                                isSmStyle
+                                isClearable
+                                customNoOptionMsg={Object.keys(schemaObj).length != 0 ? 'Schema is missing Exports' : 'Select a schema to begin'}
                             />
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                         </div>

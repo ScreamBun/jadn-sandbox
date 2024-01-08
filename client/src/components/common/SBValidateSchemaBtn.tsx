@@ -55,10 +55,12 @@ const SBValidateSchemaBtn = (props: any) => {
                         dispatch(setSchema(jsonObj));
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
+                        dispatch(setSchema(null));
                         sbToastError(validateSchemaVal.payload.valid_msg);
                     }
                 })
                 .catch((validateSchemaErr) => {
+                    dispatch(setSchema(null));
                     sbToastError(validateSchemaErr.payload.valid_msg)
                 }).finally(() => {
                     setIsValidating(false);
@@ -66,6 +68,7 @@ const SBValidateSchemaBtn = (props: any) => {
 
         } catch (err) {
             if (err instanceof Error) {
+                dispatch(setSchema(null));
                 setIsValidating(false);
                 sbToastError(err.message)
             }
@@ -81,10 +84,12 @@ const SBValidateSchemaBtn = (props: any) => {
                         dispatch(setSchema(jsonObj));
                         sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
+                        dispatch(setSchema(null));
                         sbToastError(validateSchemaVal.payload.valid_msg);
                     }
                 })
                 .catch((validateSchemaErr) => {
+                    dispatch(setSchema(null));
                     sbToastError(validateSchemaErr.payload.valid_msg)
 
                 }).finally(() => {
@@ -92,6 +97,7 @@ const SBValidateSchemaBtn = (props: any) => {
                 })
         } catch (err) {
             if (err instanceof Error) {
+                sbToastError(err.message)
                 setIsValidating(false);
                 sbToastError(err.message)
             }

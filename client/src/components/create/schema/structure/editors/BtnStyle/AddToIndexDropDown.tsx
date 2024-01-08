@@ -22,7 +22,6 @@ export const AddToIndexDropDown = memo(function AddToIndexDropDown(props: AddToI
             </ul>
             <SBSelect id="addAtIndex" name="addAtIndex" value={insertAt}
                 placeholder="Select index to insert Types"
-                isClearable={false}
                 onChange={onSelectChange} data={indexOpts}
             />
             <small className='text-muted'>

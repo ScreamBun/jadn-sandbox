@@ -2,6 +2,9 @@ import React, { memo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle, faMinusSquare, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
+import SBSelect, { Option } from 'components/common/SBSelect';
+import { shallowEqual } from 'react-redux';
+import { useAppSelector } from 'reducers';
 
 // Interface
 interface KeyArrayEditorProps {
@@ -14,28 +17,20 @@ interface KeyArrayEditorProps {
   remove: (_id: string) => void;
 }
 
-// Key Array Editor
+// Key Array Editor: Exports
 const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) {
   const { name, description, placeholder, value, change, remove } = props;
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-
   const [dataArr, setDataArr] = useState(value);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual)
+  const validExports = dataArr.length != 0 ? schemaTypes.filter(type => !dataArr.includes(type)) : schemaTypes;
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { dataset } = e.target;
-    const idx = parseInt(dataset.index || '', 10);
+  const onChange = (e: Option, idx: number) => {
     const tmpValues = [...dataArr];
-    tmpValues[idx] = e.target.value;
-    setDataArr(tmpValues);
-  }
-
-  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const { dataset } = e.target;
-    const idx = parseInt(dataset.index || '', 10);
-    const tmpValues = [...dataArr];
-    tmpValues[idx] = e.target.value;
-    if (JSON.stringify(tmpValues) == JSON.stringify(value)) {
-      return;
+    if (e == null) {
+      tmpValues[idx] = "";
+    } else {
+      tmpValues[idx] = e.value;
     }
     setDataArr(tmpValues);
     change(tmpValues);
@@ -61,25 +56,27 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
       tmpValues.splice(index, 1);
       setDataArr(tmpValues);
       change(tmpValues);
+    } else {
+      setDataArr([]);
+      change([]);
     }
   }
 
   const addIndex = () => {
     setDataArr([...dataArr, '']);
-    change([...dataArr, '']);
   }
 
   const indices = dataArr.map((val, i) => (
     <div className="input-group mb-1" key={i}>
-      <input
+      <SBSelect
         id={`keyArrayEditor-${i}`}
-        type="text"
-        className="form-control"
-        data-index={i}
         placeholder={placeholder}
-        value={val}
-        onChange={onChange}
-        onBlur={onBlur}
+        value={val ? { value: val, label: val } : null}
+        onChange={(e: Option) => onChange(e, i)}
+        data={validExports}
+        isSmStyle
+        isCreatable
+        customNoOptionMsg={'Begin typing to add an Export...'}
       />
       <button type='button' className='btn btn-sm btn-danger' onClick={removeIndex} data-index={i}>
         <FontAwesomeIcon icon={faMinusSquare} />

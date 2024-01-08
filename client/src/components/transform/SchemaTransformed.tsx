@@ -139,12 +139,13 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                             <div className="row">
                                 <div className="col-sm-6">
                                     <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectTypeChange}
-                                        placeholder={'Select transformation type...'} value={transformationType} isSmStyle
+                                        placeholder={'Select transformation type...'} value={transformationType} isSmStyle isClearable
                                     />
                                 </div>
                                 <div className={`col-sm-6 ${transformationType?.value == 'resolve references' ? '' : ' d-none'}`}>
                                     <SBSelect id={"base-file"} data={baseFileOpts} onChange={onBaseFileSelect}
-                                        placeholder={'Select base file...'} value={baseFile} isSmStyle
+                                        placeholder={'Select base file...'} value={baseFile} isSmStyle isClearable
+                                        customNoOptionMsg={'Select a schema to begin'}
                                     />
                                 </div>
                             </div>

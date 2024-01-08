@@ -202,7 +202,8 @@ const FieldEditorDnd = memo(function FieldEditorDnd(props: FieldEditorProps) {
               onChange={onSelectChange}
               data={types}
               isGrouped
-              isCreatable />
+              isCreatable
+              isClearable />
           </div>
           <div className="col-md-2 d-flex">
             <button type='button' className='btn btn-primary btn-sm p-2 mt-auto' data-bs-toggle="modal" data-bs-target="#optionsModal" onClick={toggleModal}>Field Options</button>

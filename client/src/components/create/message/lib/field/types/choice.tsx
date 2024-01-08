@@ -95,7 +95,7 @@ const ChoiceField = (props: ChoiceFieldProps) => {
                 onChange={handleChange}
                 placeholder={`${name} options`}
                 value={selectedValue}
-              />
+                isClearable />
             </div>
           </div>
           <div className='row'>
