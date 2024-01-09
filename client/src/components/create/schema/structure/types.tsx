@@ -19,7 +19,7 @@ interface EditorProps {
   setFieldCollapse: (bool: boolean, idx: number) => void;
 }
 
-const typeDef = (props: StructureDef) => {
+export const typeDef = (props: StructureDef) => {
   const {
     name = '',
     type = '',
@@ -30,7 +30,7 @@ const typeDef = (props: StructureDef) => {
   return [name, type, options, comment, fields];
 };
 
-const primDef = (props: PrimitiveDef) => {
+export const primDef = (props: PrimitiveDef) => {
   const {
     name = '',
     type = '',

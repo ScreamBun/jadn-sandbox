@@ -219,6 +219,36 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     setIsValidating(false);
 
                 },
+                addTypeChange: (val: any) => {
+                    const idx = generatedSchema.types?.length || 0;
+                    const tmpTypes = generatedSchema.types ? [...generatedSchema.types] : [];
+                    tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
+
+                    const valArray: TypeArray = Object.values(val);
+                    const updatedCards = cardsState.map((card, i) => {
+                        if (i === idx) {
+                            return ({
+                                ...card,
+                                text: val.name,
+                                value: valArray
+                            });
+                        } else {
+                            return card;
+                        }
+                    });
+
+                    if (tmpTypes.length != 0) {
+                        setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
+                    } else {
+                        if (generatedSchema.info) {
+                            setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
+                        } else {
+                            setGeneratedSchema({});
+                        }
+                    }
+
+                    setCardsState(updatedCards);
+                },
                 remove: (id: string) => {
                     if (generatedSchema.info && id in generatedSchema.info) {
                         if (id == 'config') {
@@ -243,7 +273,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                         setIsValidating(false);
                     }
                 },
-                config: generatedSchema.info[key] ? generatedSchema.info[key] : configInitialState
+                config: configOpt
             });
         }
         return null;

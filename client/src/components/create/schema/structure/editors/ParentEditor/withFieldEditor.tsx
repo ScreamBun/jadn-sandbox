@@ -10,7 +10,6 @@ import { dismissAllToast, sbToastError } from 'components/common/SBToast';
 import { Option } from 'components/common/SBSelect';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { DragItem } from '../DragStyle/SBOutlineFields';
-import { toast } from 'react-toastify';
 
 interface FieldEditorProps {
     id: any;
