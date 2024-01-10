@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { faFileDownload, faFileImage, faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { sbToastError, sbToastInfo, sbToastSuccess, sbToastWarning } from "./SBToast";
+import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
 import saveAs from "file-saver";
@@ -26,7 +26,7 @@ const SBDownloadBtn = (props: any) => {
 
     const { buttonId, data, customClass, filename, ext = LANG_JADN } = props;
 
-    const [fileNameInput, setFileNameInput] = useState('');
+    const [fileNameInput, setFileNameInput] = useState(filename);
     const [toggleDownloadDialog, setToggleDownloadDialog] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -37,7 +37,6 @@ const SBDownloadBtn = (props: any) => {
     const onDownloadIconClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setToggleDownloadDialog(true);
-        setFileNameInput(filename);
     }
 
     const onDownloadFileClick = (e: React.MouseEvent<HTMLButtonElement>, fmt: string) => {
@@ -109,7 +108,7 @@ const SBDownloadBtn = (props: any) => {
             sbToastError(`PDF cannot be downloaded`);
         }
 
-        sbToastInfo('Downloading PDF...');
+        sbToastSuccess('PDF downloaded successfully');
     }
 
 
@@ -124,7 +123,8 @@ const SBDownloadBtn = (props: any) => {
 
 
     const onDownloadClick = (e: React.MouseEvent<HTMLButtonElement>, fmt: string) => {
-        if (fileNameInput == '') {
+        e.preventDefault();
+        if (fileNameInput == '' || fileNameInput == undefined) {
             sbToastWarning('Please enter a file name.');
             return;
         } else if (!FILENAME_RULE.test(fileNameInput)) {

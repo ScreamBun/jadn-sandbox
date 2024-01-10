@@ -56,9 +56,9 @@ const SchemaTranslated = (props: any) => {
                         />
                     </div>
                     <div className='col-md-6'>
-                        <div className={`${translatedSchema.length != 0 ? '' : ' d-none'}`}>
+                        <div className={`${translatedSchema.length == 1 ? '' : ' d-none'}`}>
                             <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema[0].schema} customClass='float-end' />
-                            <SBDownloadBtn buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`me-1 float-end${translatedSchema[0].schema ? '' : ' d-none'}`} />
+                            <SBDownloadBtn buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`me-1 float-end`} />
                         </div>
 
                         {isLoading ? <SBSpinner action={'Translating'} /> :
