@@ -10,7 +10,7 @@ import { TypeArray, StandardTypeArray } from 'components/create/schema/interface
 import { TypeObject } from '../consts';
 import withSchemaCreator, { configInitialState } from '../ParentEditor/withSchemaCreator';
 import { getTypeName } from 'components/utils/general';
-import { sbToastError } from 'components/common/SBToast';
+import { sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBEditor from 'components/common/SBEditor';
 import SBSpinner from 'components/common/SBSpinner';
 import SBScrollToTop from 'components/common/SBScrollToTop';
@@ -246,6 +246,8 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     }
 
                     setCardsState(updatedCards);
+                    sbToastSuccess(`Successfully added Export ${val.name} to Types`);
+                    onScrollToCard(idx);
                 },
                 remove: (id: string) => {
                     if (generatedSchema.info && id in generatedSchema.info) {

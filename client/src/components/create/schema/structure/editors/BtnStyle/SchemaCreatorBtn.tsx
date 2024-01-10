@@ -9,7 +9,7 @@ import { StandardTypeObject, TypeKeys } from '../consts';
 import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
 import withSchemaCreator, { configInitialState } from '../ParentEditor/withSchemaCreator';
 import { getTypeName, zip } from 'components/utils/general';
-import { sbToastError } from 'components/common/SBToast';
+import { sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import { Option } from 'components/common/SBSelect';
 import SBEditor from 'components/common/SBEditor';
 import SBSpinner from 'components/common/SBSpinner';
@@ -350,6 +350,8 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                     }
 
                     setCardsState(updatedCards);
+                    sbToastSuccess(`Successfully added Export ${val.name} to Types`);
+                    onScrollToCard(idx);
                 },
                 remove: (id: string) => {
                     if (generatedSchema.info && id in generatedSchema.info) {
