@@ -1,5 +1,16 @@
 # JADN Sandbox Release Notes
 
+## v0.10.0
+
+* Schema Creation - Ability to search through Outline based on type name
+* Schema Creation - Ability to add Exports to schema Types
+* Schema Creation - Restrict user from including regex and pattern Type Options together
+* Schema Creation - Improved drag and drop feature
+* JADN Schema Validation - Updated validation to check for valid Exports
+* Code Reduction - use of const and common components
+* Changed Conversion labeling and text to Visualization
+* Added informative text to guide user when drop downs have no options
+
 ## v0.9.1
 
 * Changed Message labeling and text to Data
