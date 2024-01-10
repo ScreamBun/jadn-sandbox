@@ -35,8 +35,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
 
   const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual)
   const types = useAppSelector((state) => ({
-    base: (state.Util.types.base),
-    schema: schemaTypes
+    base: (state.Util.types.base)
   }), shallowEqual);
   const validExports = dataArr.length != 0 ? schemaTypes.filter(type => !dataArr.includes(type)) : schemaTypes;
 
