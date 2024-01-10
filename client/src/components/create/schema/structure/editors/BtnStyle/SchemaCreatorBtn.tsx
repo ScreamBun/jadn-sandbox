@@ -329,17 +329,15 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                     tmpTypes[idx] = Types[val.type.toLowerCase()].edit(val);
 
                     const valArray: TypeArray = Object.values(val);
-                    const updatedCards = cardsState.map((card, i) => {
-                        if (i === idx) {
-                            return ({
-                                ...card,
-                                text: val.name,
-                                value: valArray
-                            });
-                        } else {
-                            return card;
-                        }
-                    });
+                    const updatedCards = [...cardsState,
+                    {
+                        id: self.crypto.randomUUID(),
+                        index: idx,
+                        isStarred: false,
+                        text: val.name,
+                        value: valArray
+                    }
+                    ]
 
                     if (tmpTypes.length != 0) {
                         setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
@@ -446,6 +444,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
             }
             ,
             remove: (idx: number) => {
+                const removedType = generatedSchema.types[idx];
                 const tmpTypes = generatedSchema.types.filter((_type: StandardTypeArray, i: number) => i != idx);
                 const tmpCards = cardsState.filter((_card: DragItem, index: number) => index != idx);
                 if (tmpTypes.length != 0) {
@@ -457,6 +456,12 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                         setGeneratedSchema({});
                     }
                 }
+
+                if (generatedSchema.info.exports.includes(removedType[0])) {
+                    const tmpInfo = generatedSchema.info.exports.filter((typeName: string) => typeName != removedType[0]);
+                    setGeneratedSchema((prev: any) => ({ ...prev, info: { ...prev.info, exports: tmpInfo } }));
+                }
+
                 setCardsState(tmpCards);
                 setFieldCollapseState(
                     fieldCollapseState.filter((_bool: Boolean, i: number) =>
