@@ -79,11 +79,11 @@ const BasicField = (props: BasicFieldProps) => {
                     id={`checkbox-${idx}`}
                     type='checkbox'
                     name={name}
-                    defaultValue={hasProperty(optData, 'default') ? optData.default : value}
                     onChange={e => {
-                      optChange(name, `${e.target.checked}`, arr);
+                      optChange(name, e.target.checked ? e.target.checked : false, arr);
                     }}
                     style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+                    checked={data}
                   />
                   <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
                   {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
