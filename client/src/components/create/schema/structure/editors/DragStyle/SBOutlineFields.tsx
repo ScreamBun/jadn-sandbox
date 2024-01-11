@@ -34,7 +34,7 @@ export interface SBOutlineProps {
 }
 
 const SBOutlineFields = (props: SBOutlineProps) => {
-    const { id, items = [], fieldChange, fieldRemove, onDrop, acceptableType } = props;
+    const { id, items = [], fieldChange, fieldRemove, onDrop, acceptableType, isEnumerated } = props;
     const [cardsState, setCardsState] = useState<CardStateItem[]>(items.map((item) => ({ id: self.crypto.randomUUID(), value: item })));
 
     const [dragValue, setDragValue] = useState<boolean>(false);
@@ -128,10 +128,10 @@ const SBOutlineFields = (props: SBOutlineProps) => {
                     value={card.value}
                     change={fieldChange}
                     remove={fieldRemove}
-
                     isDragging={item && item.dataIndex == index}
                     moveCard={moveCard}
                     dropCard={dropCard}
+                    enumerated={isEnumerated}
                     {...props}
                 />
             )

@@ -35,7 +35,7 @@ interface FieldEditorProps {
 
 export default function withFieldEditor(FieldWrapper: React.ComponentType<any>) {
     function WithFieldEditor(props: FieldEditorProps) {
-        const { enumerated = false, value, dataIndex, change, config, remove } = props;
+        const { enumerated, value, dataIndex, change, config, remove } = props;
 
         const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
         const types = useAppSelector((state) => ({
@@ -149,6 +149,7 @@ export default function withFieldEditor(FieldWrapper: React.ComponentType<any>) 
                     valueObj={valueObj}
                     valType={valType}
                     types={types}
+                    enumerated={enumerated}
                     {...props}
                 />
                 <SBConfirmModal
