@@ -33,7 +33,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
   const [newExportType, setNewExportType] = useState<Option | null>(null);
   const [addTypeName, setAddTypeName] = useState<string>('');
 
-  const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual)
+  const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual) //TODO: keep state after validation 
   const types = useAppSelector((state) => ({
     base: (state.Util.types.base)
   }), shallowEqual);

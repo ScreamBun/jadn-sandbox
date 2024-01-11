@@ -16,7 +16,7 @@ interface SBFileLoaderProps {
     placeholder: string;
     loc: 'schemas' | 'messages';
     onCancelFileUpload: (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => void;
-    onFileChange: (fileData?: string | ArrayBuffer | null, fileName?: string) => void;
+    onFileChange: (fileData?: string | ArrayBuffer | null, fileName?: Option | undefined) => void;
     acceptableExt?: string[] | undefined;
     isSaveable?: boolean;
     loadedFileData?: any;
@@ -51,7 +51,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
                         return;
                     }
                     let dataObj = loadFileVal.payload.data;
-                    onFileChange(dataObj, e.label);
+                    onFileChange(dataObj, e);
                 })
                 .catch((loadFileErr) => {
                     sbToastError(loadFileErr.payload.data);
@@ -68,7 +68,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
                 if (ev.target) {
                     let dataStr = ev.target.result;
-                    onFileChange(dataStr, file.name);
+                    onFileChange(dataStr, { value: file.name, label: file.name });
                 }
             };
             fileReader.readAsText(file);

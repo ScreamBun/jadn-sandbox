@@ -35,32 +35,32 @@ const MessageValidated = (props: any) => {
         }
     }, [])
 
-    const onFileLoad = async (dataFile: any, fileStr: any) => {
-        setSelectedFile({ 'value': fileStr, 'label': fileStr });
-        const fileName = {
-            name: getFilenameOnly(fileStr),
-            ext: getFilenameExt(fileStr)
-        }
-        setFileName(fileName);
-
-        if (dataFile) {
-            fileName.ext == LANG_JADN ? setMsgFormat({ value: LANG_JSON, label: LANG_JSON }) : setMsgFormat({ value: fileName.ext, label: fileName.ext });
-            const formattedData = format(dataFile, fileName.ext, 2);
-            if (formattedData.startsWith('Error')) {
-                setLoadedMsg(dataFile);
+    const onFileLoad = async (dataFile?: any, fileStr?: Option) => {
+        if (fileStr) {
+            setSelectedFile(fileStr);
+            const fileName = {
+                name: getFilenameOnly(fileStr.label),
+                ext: getFilenameExt(fileStr.label) || LANG_JSON
+            }
+            setFileName(fileName);
+            if (dataFile) {
+                fileName.ext == LANG_JADN ? setMsgFormat({ value: LANG_JSON, label: LANG_JSON }) : setMsgFormat({ value: fileName.ext, label: fileName.ext });
+                const formattedData = format(dataFile, fileName.ext, 2);
+                if (formattedData.startsWith('Error')) {
+                    setLoadedMsg(dataFile);
+                } else {
+                    setLoadedMsg(formattedData);
+                }
             } else {
-                setLoadedMsg(formattedData);
-            }
-        } else {
-            switch (fileName.ext) {
-                case 'cbor':
-                    dataFile = escaped2cbor(hexify(dataFile));
-                    break;
-                default:
-                    sbToastError(`File cannot be loaded: Invalid JSON`);
+                switch (fileName.ext) {
+                    case 'cbor':
+                        dataFile = escaped2cbor(hexify(dataFile));
+                        break;
+                    default:
+                        sbToastError(`File cannot be loaded: Invalid JSON`);
+                }
             }
         }
-
     };
 
     const onMsgChange = (data: any) => {

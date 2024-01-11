@@ -115,14 +115,14 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         }
     }
 
-    const onFileLoad = async (schemaObj: any, fileStr: any) => {
+    const onFileLoad = async (schemaObj?: any, fileStr?: Option) => {
         setIsValid(false);
         setIsLoading(true);
-        if (schemaObj) {
-            setSelectedFile({ 'value': fileStr, 'label': fileStr });
+        if (schemaObj && fileStr) {
+            setSelectedFile(fileStr);
             const fileName = {
-                name: getFilenameOnly(fileStr),
-                ext: getFilenameExt(fileStr)
+                name: getFilenameOnly(fileStr.label),
+                ext: getFilenameExt(fileStr.label)
             }
             setFileName(fileName);
             setLoadedSchema(schemaObj);

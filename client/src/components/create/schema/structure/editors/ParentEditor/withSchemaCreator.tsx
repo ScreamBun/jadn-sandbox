@@ -14,6 +14,7 @@ import SBSpinner from 'components/common/SBSpinner';
 import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
 import SBDownloadBtn from 'components/common/SBDownloadBtn';
 import SBFileLoader from 'components/common/SBFileLoader';
+import { Option } from 'components/common/SBSelect';
 
 
 export const configInitialState = {
@@ -122,8 +123,8 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             setAllFieldsCollapse(!allFieldsCollapse)
         }
 
-        const onFileLoad = async (schemaObj: any, fileStr: any) => {
-            if (schemaObj) {
+        const onFileLoad = async (schemaObj?: any, fileStr?: Option) => {
+            if (schemaObj && fileStr) {
                 if (typeof schemaObj == "string") {
                     try {
                         schemaObj = JSON.parse(schemaObj);
@@ -135,10 +136,10 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                 const validJADNSyntax = await validateJADNSyntax(schemaObj);
                 if (validJADNSyntax == true) {
                     setIsLoading(true);
-                    setSelectedFile({ 'value': fileStr, 'label': fileStr });
+                    setSelectedFile(fileStr);
                     const fileName = {
-                        name: getFilenameOnly(fileStr),
-                        ext: getFilenameExt(fileStr)
+                        name: getFilenameOnly(fileStr.label),
+                        ext: getFilenameExt(fileStr.label)
                     }
                     setFileName(fileName);
 
