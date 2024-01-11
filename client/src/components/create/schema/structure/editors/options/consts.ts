@@ -152,11 +152,11 @@ export const TypeOptionInputArgs = {
   },
   vtype: {
     type: 'SBCreatableSelect',
-    description: 'Value type for ArrayOf and MapOf'
+    description: 'Value type for ArrayOf and MapOf. It may be any JADN type or Defined type.'
   },
   ktype: {
     type: 'SBCreatableSelect',
-    description: 'Key type for MapOf'
+    description: 'Key type for MapOf. ktype SHOULD be a Defined type, either an enumeration or a type with constraints such as a pattern or semantic valuation keyword that specify a fixed subset of values that belong to a category'
   },
   enum: {
     type: 'SBCreatableSelect',

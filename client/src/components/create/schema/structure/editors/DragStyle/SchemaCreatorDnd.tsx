@@ -355,7 +355,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     }
                 }
 
-                if (generatedSchema.info.exports.includes(removedType[0])) {
+                if (generatedSchema?.info?.exports?.includes(removedType[0])) {
                     const tmpInfo = generatedSchema.info.exports.filter((typeName: string) => typeName != removedType[0]);
                     setGeneratedSchema((prev: any) => ({ ...prev, info: { ...prev.info, exports: tmpInfo } }));
                 }
