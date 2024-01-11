@@ -51,7 +51,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
                         return;
                     }
                     let dataObj = loadFileVal.payload.data;
-                    onFileChange(dataObj, e.value);
+                    onFileChange(dataObj, e.label);
                 })
                 .catch((loadFileErr) => {
                     sbToastError(loadFileErr.payload.data);
