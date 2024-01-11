@@ -74,6 +74,14 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         };
         let msgDecode = '';
 
+        if (typeof schemaObj == "string") {
+            try {
+                schemaObj = JSON.parse(schemaObj);
+            } catch {
+                schemaObj = schemaObj
+            }
+        }
+
         if (schemaObj.info !== undefined) {
             if (schemaObj.info.exports !== undefined) {
                 decodeTypes.exports = schemaObj.info.exports;
