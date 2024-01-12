@@ -154,10 +154,13 @@ const BasicField = (props: BasicFieldProps) => {
                 value={data}
                 onChange={e => {
                   setData(e.target.value);
+                }}
+                onBlur={e => {
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
                   optChange(name, parseInt(e.target.value), arr);
                 }}
+                onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
             </div>
@@ -186,10 +189,13 @@ const BasicField = (props: BasicFieldProps) => {
                 value={data}
                 onChange={e => {
                   setData(e.target.value);
+                }}
+                onBlur={e => {
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
                   optChange(name, parseInt(e.target.value), arr);
                 }}
+                onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
             </div>
