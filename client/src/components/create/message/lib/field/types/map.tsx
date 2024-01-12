@@ -70,7 +70,7 @@ const MapField = (props: MapFieldProps) => {
           <div>
             <SBToggleBtn toggle={toggle} setToggle={setToggle} >
               <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-              {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+              {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
               {err}
             </SBToggleBtn>
           </div>
