@@ -79,8 +79,10 @@ const BasicField = (props: BasicFieldProps) => {
                     id={`checkbox-${idx}`}
                     type='checkbox'
                     name={name}
-                    defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                    value={data}
+                    checked={data}
                     onChange={e => {
+                      setData(e.target.checked);
                       optChange(name, e.target.checked, arr);
                     }}
                     style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
