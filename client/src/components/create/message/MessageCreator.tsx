@@ -26,13 +26,6 @@ const MessageCreator = (props: any) => {
     })
 
     let schemaObj = useSelector(getSelectedSchema);
-    if (typeof schemaObj == "string") {
-        try {
-            schemaObj = JSON.parse(schemaObj);
-        } catch {
-            schemaObj = schemaObj
-        }
-    }
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
 

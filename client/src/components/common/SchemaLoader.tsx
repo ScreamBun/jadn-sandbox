@@ -139,6 +139,9 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                     .then((validateSchemaVal: any) => {
                         if (validateSchemaVal.payload.valid_bool == true) {
                             setIsValid(true);
+                            if (typeof schemaObj == "string") {
+                                schemaObj = JSON.parse(schemaObj);
+                            }
                             dispatch(setSchema(schemaObj));
                             sbToastSuccess(validateSchemaVal.payload.valid_msg);
                         } else {
