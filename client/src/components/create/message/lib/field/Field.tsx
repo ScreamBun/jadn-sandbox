@@ -10,6 +10,7 @@ import { useAppSelector } from '../../../../../reducers';
 import { opts2obj } from 'components/create/schema/structure/editors/options/consts';
 import { hasProperty } from 'components/utils';
 import LinkField from './types/linkField';
+import DerivedEnum from './types/derivedEnum';
 
 // Interfaces
 interface FieldProps {
@@ -20,12 +21,13 @@ interface FieldProps {
   config: InfoConfig;
   children?: JSX.Element;
   value: any;
+  isDir?: Boolean;
 }
 
 // Component
 const Field = (props: FieldProps) => {
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN
-  const { def, idx, optChange, parent, config, children, value } = props;
+  const { def, idx, optChange, parent, config, children, value, isDir } = props;
   const [_idx, name, type, opts, _comment] = def;
 
   const parentName = parent || '';
@@ -37,6 +39,7 @@ const Field = (props: FieldProps) => {
     config,
     children,
     value,
+    isDir,
     optChange: (k: string, v: any) => optChange(k, v, idx)
   };
 
@@ -50,6 +53,9 @@ const Field = (props: FieldProps) => {
     const foptData = (opts2obj(opts));
     if (hasProperty(foptData, 'link')) {
       return <LinkField {...args} />;
+    }
+    if (hasProperty(foptData, 'dir')) {
+      return <DerivedEnum {...args} />
     }
   }
 
