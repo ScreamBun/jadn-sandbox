@@ -10,6 +10,7 @@ import { dismissAllToast, sbToastError } from 'components/common/SBToast';
 import { Option } from 'components/common/SBSelect';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { DragItem } from '../DragStyle/SBOutlineFields';
+import { Types } from '../../structure';
 
 interface FieldEditorProps {
     id: any;
@@ -38,10 +39,18 @@ export default function withFieldEditor(FieldWrapper: React.ComponentType<any>) 
         const { enumerated, value, dataIndex, change, config, remove } = props;
 
         const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual);
-        const types = useAppSelector((state) => ({
-            base: (state.Util.types.base),
+        //FieldType MUST be a Primitive type, ArrayOf, MapOf, or a model-defined type.
+        const baseTypes = useAppSelector((state) => state.Util.types.base).filter((type) => {
+            if (Types[type.toLowerCase()].type == "primitive" || Types[type.toLowerCase()].key == "ArrayOf" || Types[type.toLowerCase()].key == "MapOf") {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        const types = {
+            base: baseTypes,
             schema: schemaTypes
-        }), shallowEqual);
+        };
 
         const [modal, setModal] = useState(false);
         const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
