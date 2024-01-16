@@ -92,7 +92,7 @@ const EnumeratedField = (props: EnumeratedFieldProps) => {
                 onChange={handleChange}
                 placeholder={`${name} options`}
                 value={selectedValue}
-              />
+                isClearable />
             </div>
           </div>
         </div>

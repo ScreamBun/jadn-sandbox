@@ -19,9 +19,9 @@ interface KeyObjectEditorProps {
 
 type Pair = { key: string, value: any };
 
-// Key Object Editor
+// Key Object Editor : NSID/Namespace
 const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProps) {
-  const { value, description, name, placeholder, change, config } = props;
+  const { value, description, name, change, config } = props;
   let valueObjInit = Object.keys(value).map(k => ({ key: k, value: value[k] }));
   const [valueObj, setValueObj] = useState(valueObjInit);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -127,7 +127,7 @@ const KeyObjectEditor = memo(function KeyObjectEditor(props: KeyObjectEditorProp
         className="form-control"
         data-index={i}
         data-type="value"
-        placeholder={placeholder}
+        placeholder={'Namespace'}
         value={obj.value}
         onChange={onChange}
         onBlur={onBlur}

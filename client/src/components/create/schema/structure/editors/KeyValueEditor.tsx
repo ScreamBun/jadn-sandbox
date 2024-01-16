@@ -1,7 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
-import SBCreatableSelect from 'components/common/SBCreatableSelect';
 import SBSelect, { Option } from 'components/common/SBSelect';
 
 // Interface
@@ -77,13 +76,14 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
             </div>
             <div className={`col-md-${fieldColumns}`}>
               <div className="input-group">
-                <SBCreatableSelect id={`editor-${placeholder}-${id}`}
+                <SBSelect id={`editor-${placeholder}-${id}`}
                   placeholder={`Please select a ${placeholder}...`}
                   data={options}
                   onChange={onSelectChange}
                   value={val}
                   isGrouped={Array.isArray(options) ? false : true}
-                />
+                  isCreatable
+                  isClearable />
                 <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger ' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
@@ -94,13 +94,14 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
               <span title={description}>{name}{required ? '*' : ''}</span>
             </label>
             <div className={`col-md-${fieldColumns}`}>
-              <SBCreatableSelect id={`editor-${placeholder}-${id}`}
+              <SBSelect id={`editor-${placeholder}-${id}`}
                 placeholder={`Please select a ${placeholder}...`}
                 data={options}
                 onChange={onSelectChange}
                 value={val}
                 isGrouped={Array.isArray(options) ? false : true}
-              />
+                isCreatable
+                isClearable />
             </div>
           </div>
         }
@@ -127,7 +128,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   onChange={onSelectChange}
                   value={val}
                   isGrouped={Array.isArray(options) ? false : true}
-                />
+                  isClearable />
                 <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
@@ -144,7 +145,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                 onChange={onSelectChange}
                 value={val}
                 isGrouped={Array.isArray(options) ? false : true}
-              />
+                isClearable />
             </div>
           </div>
         }

@@ -79,14 +79,16 @@ const BasicField = (props: BasicFieldProps) => {
                     id={`checkbox-${idx}`}
                     type='checkbox'
                     name={name}
-                    defaultValue={hasProperty(optData, 'default') ? optData.default : value}
+                    value={data}
+                    checked={data}
                     onChange={e => {
-                      optChange(name, `${e.target.checked}`, arr);
+                      setData(e.target.checked);
+                      optChange(name, e.target.checked, arr);
                     }}
                     style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                   />
                   <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                  {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                  {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                 </label>
                 {err}
               </div>
@@ -104,7 +106,7 @@ const BasicField = (props: BasicFieldProps) => {
             <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
               <div>
                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
               </div>
               {children}
             </div>
@@ -139,7 +141,7 @@ const BasicField = (props: BasicFieldProps) => {
             <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
               <div>
                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
               </div>
               {children}
             </div>
@@ -152,10 +154,13 @@ const BasicField = (props: BasicFieldProps) => {
                 value={data}
                 onChange={e => {
                   setData(e.target.value);
+                }}
+                onBlur={e => {
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
                   optChange(name, parseInt(e.target.value), arr);
                 }}
+                onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
             </div>
@@ -172,7 +177,7 @@ const BasicField = (props: BasicFieldProps) => {
             <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
               <div>
                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
               </div>
               {children}
             </div>
@@ -184,10 +189,13 @@ const BasicField = (props: BasicFieldProps) => {
                 value={data}
                 onChange={e => {
                   setData(e.target.value);
+                }}
+                onBlur={e => {
                   const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
                   setErrMsg(errCheck);
                   optChange(name, parseInt(e.target.value), arr);
                 }}
+                onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
               />
             </div>
@@ -205,7 +213,7 @@ const BasicField = (props: BasicFieldProps) => {
         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
           <div>
             <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-            {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+            {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
           </div>
           {children}
         </div>

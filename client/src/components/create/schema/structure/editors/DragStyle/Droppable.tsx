@@ -90,9 +90,7 @@ export const Droppable = memo(function Droppable(props: DroppableProps) {
             }}
             id="DroppableScrollContainer"
         >
-            <div>
-                {children}
-            </div>
+            {children}
         </div>
     );
 });

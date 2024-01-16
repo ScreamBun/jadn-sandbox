@@ -311,7 +311,7 @@ const MapOfField = (props: MapOfFieldProps) => {
                                 <p className='card-title m-0'>
                                     {`${name}${isOptional(def) ? '' : '*'}`}
                                 </p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                                 {err}
                             </div>
                         </SBToggleBtn>

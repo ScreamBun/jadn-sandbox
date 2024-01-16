@@ -2,18 +2,18 @@ import ConfigObjectEditor from './ConfigObjectEditor';
 import KeyArrayEditor from './KeyArrayEditor';
 import KeyObjectEditor from './KeyObjectEditor';
 import KeyValueEditor from './KeyValueEditor';
-import PrimitiveEditor from './DragStyle/PrimitiveEditor';
-import StructureEditor from './DragStyle/StructureEditor';
-import StructureEditorBtnStyle from './BtnStyle/StructureEditorBtnStyle';
-import PrimitiveEditorBtnStyle from './BtnStyle/PrimitiveEditorBtnStyle';
+import { StructureEditorBtnStyle } from './BtnStyle/StructureEditorBtn';
+import { StructureEditorDndStyle } from './DragStyle/StructureEditorDnd';
+import { PrimitiveEditorBtnStyle } from './BtnStyle/PrimitiveEditorBtn';
+import { PrimitiveEditorDndStyle } from './DragStyle/PrimitiveEditorDnd';
 
 export {
   ConfigObjectEditor,
   KeyArrayEditor,
   KeyObjectEditor,
   KeyValueEditor,
-  PrimitiveEditor,
-  StructureEditor,
+  StructureEditorDndStyle,
+  PrimitiveEditorDndStyle,
   StructureEditorBtnStyle,
-  PrimitiveEditorBtnStyle
+  PrimitiveEditorBtnStyle,
 };

@@ -58,7 +58,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -91,7 +91,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -125,7 +125,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -159,7 +159,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -192,7 +192,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -225,7 +225,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -272,7 +272,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -305,7 +305,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -351,7 +351,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -384,7 +384,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -419,7 +419,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -454,7 +454,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -489,7 +489,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -526,7 +526,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -561,7 +561,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>
@@ -607,7 +607,7 @@ const FormattedField = (props: any) => {
                         <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
                             <div>
                                 <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
-                                {comment ? <small className='card-subtitle form-text text-muted'>{comment}</small> : ''}
+                                {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
                             </div>
                             {children}
                         </div>

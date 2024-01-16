@@ -1,15 +1,32 @@
 import React, { useState } from "react";
-import { faFileDownload } from "@fortawesome/free-solid-svg-icons";
+import { faFileDownload, faFileImage, faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
+import saveAs from "file-saver";
+import { FILENAME_RULE, FILE_TYPE_PDF, FILE_TYPE_PNG, FILE_TYPE_SVG, LANG_JADN } from "components/utils/constants";
+
+export const onDownloadPNGClick = (pumlURL: any, filename: string = "plantuml") => {
+    saveAs(pumlURL, `${filename}.png`);
+}
+
+export const onDownloadSVGClick = (e: React.MouseEvent<HTMLButtonElement>, filename: string = "graphviz") => {
+    e.preventDefault();
+    const svg = document.getElementById("fullGV")?.innerHTML;
+    if (svg) {
+        var blob = new Blob([svg], { type: "image/svg+xml" });
+        saveAs(blob, `${filename}.svg`);
+    } else {
+        sbToastError('Error: Unable to download GraphViz file.')
+    }
+}
 //TODO: Add ability to save in other extensions ? 
-const SBDownloadFile = (props: any) => {
+const SBDownloadBtn = (props: any) => {
 
-    const { buttonId, data, customClass, filename, ext } = props;
+    const { buttonId, data, customClass, filename, ext = LANG_JADN } = props;
 
-    const [fileNameInput, setFileNameInput] = useState('');
+    const [fileNameInput, setFileNameInput] = useState(filename);
     const [toggleDownloadDialog, setToggleDownloadDialog] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -19,21 +36,13 @@ const SBDownloadFile = (props: any) => {
 
     const onDownloadIconClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if (!data) {
-            sbToastError('No data to download');
-            return;
-        }
         setToggleDownloadDialog(true);
-        setFileNameInput(filename);
     }
 
-    const onDownloadClick = (e: React.MouseEvent<HTMLButtonElement>, fmt: string = 'jadn') => {
+    const onDownloadFileClick = (e: React.MouseEvent<HTMLButtonElement>, fmt: string) => {
         e.preventDefault();
-        if (fileNameInput == '') {
-            sbToastWarning('Please enter a file name.');
-            return;
-        } else if (fileNameInput.match(/[$&+,:;=?@#|'<>.^*()%!\\//]/)) {
-            sbToastWarning("Please do not use special characters in file name.");
+        if (!data) {
+            sbToastError('No data to download');
             return;
         }
 
@@ -56,13 +65,86 @@ const SBDownloadFile = (props: any) => {
                 elem.remove();
                 URL.revokeObjectURL(elem.href);
             }, 0);
-            setIsLoading(false);
             sbToastSuccess('File downloaded')
 
         } catch (err) {
             console.log(err);
-            setIsLoading(false);
             sbToastError(`File cannot be downloaded`);
+        }
+    }
+
+    const onDownloadPDFClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        const filename = `${fileNameInput}.pdf`;
+        setIsLoading(true);
+        try {
+            fetch('/api/convert/pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    schema: data
+                })
+            }).then(
+                rsp => rsp.blob()
+            ).then(blob => {
+                const elem = document.createElement('a');
+                elem.href = URL.createObjectURL(blob);
+                elem.download = filename;
+                document.body.appendChild(elem);
+                elem.click();
+
+                elem.remove();
+                URL.revokeObjectURL(elem.href);
+            }).catch(err => {
+                console.log(err);
+                sbToastError(`PDF cannot be downloaded`);
+            });
+
+        } catch (err) {
+            console.log(err);
+            sbToastError(`PDF cannot be downloaded`);
+        }
+
+        sbToastSuccess('PDF downloaded successfully');
+    }
+
+
+    let icon;
+    if (ext == FILE_TYPE_PDF) {
+        icon = <FontAwesomeIcon icon={faFilePdf} />;
+    } else if (ext == FILE_TYPE_SVG || ext == FILE_TYPE_PNG) {
+        icon = <FontAwesomeIcon icon={faFileImage} />;
+    } else {
+        icon = <FontAwesomeIcon icon={faFileDownload} />;
+    }
+
+
+    const onDownloadClick = (e: React.MouseEvent<HTMLButtonElement>, fmt: string) => {
+        e.preventDefault();
+        if (fileNameInput == '' || fileNameInput == undefined) {
+            sbToastWarning('Please enter a file name.');
+            return;
+        } else if (!FILENAME_RULE.test(fileNameInput)) {
+            sbToastWarning("Please do not use special characters in file name.");
+            return;
+        }
+
+        switch (fmt) {
+            case FILE_TYPE_PDF:
+                onDownloadPDFClick(e);
+                break;
+            case FILE_TYPE_SVG:
+                onDownloadSVGClick(e, fileNameInput);
+                break;
+            case FILE_TYPE_PNG:
+                onDownloadPNGClick(data, fileNameInput);
+                break;
+            default:
+                //jadn, json, html, md, gv, puml, jidl
+                onDownloadFileClick(e, ext);
         }
 
         setIsLoading(false);
@@ -72,8 +154,8 @@ const SBDownloadFile = (props: any) => {
     return (
         <>
             {isLoading ? <SBSpinner color={"primary"} /> :
-                <button id={buttonId || 'downloadFile'} type='button' title="Download File" className={'btn btn-sm btn-primary ' + customClass} onClick={onDownloadIconClick}>
-                    <FontAwesomeIcon icon={faFileDownload} />
+                <button id={buttonId || 'downloadBtn'} type='button' title={`Download ${ext} File`} className={'btn btn-sm btn-primary ' + customClass} onClick={onDownloadIconClick}>
+                    {icon}
                 </button>}
 
             <div id="downloadFileModal" className={`modal fade ${toggleDownloadDialog ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
@@ -83,7 +165,7 @@ const SBDownloadFile = (props: any) => {
                             <div className="form col">
                                 <div className="form row">
                                     <h5 className='modal-title'>
-                                        Download File As...
+                                        Download As...
                                     </h5>
                                 </div>
                                 <div className="form row">
@@ -102,7 +184,7 @@ const SBDownloadFile = (props: any) => {
                             <div className="row">
                                 <label htmlFor="downloadFileAsType" className="col-sm-4 col-label">Save as type:</label>
                                 <div className="col-sm-8">
-                                    <input type="text" readOnly className="form-control-plaintext" id="downloadFileAsType" value={ext ? ext : 'jadn'} />
+                                    <input type="text" readOnly className="form-control-plaintext" id="downloadFileAsType" value={ext} />
                                 </div>
                             </div>
                         </div>
@@ -120,4 +202,4 @@ const SBDownloadFile = (props: any) => {
         </>
     )
 }
-export default SBDownloadFile;
+export default SBDownloadBtn;

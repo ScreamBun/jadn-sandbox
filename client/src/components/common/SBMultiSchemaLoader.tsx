@@ -1,16 +1,17 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from 'uuid';
-import { faExclamationCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationCircle, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { info, loadFile } from "actions/util";
 import { getAllSchemas } from "reducers/util";
+import { LANG_JADN } from "components/utils/constants";
 import { isString } from "components/utils/general";
 import { SelectedSchema } from "components/transform/SchemaTransformer";
 import { sbToastError } from "./SBToast";
 import SBEditor from "./SBEditor";
-import SBFileUploader from "./SBFileUploader";
 import SBSelect, { Option } from "./SBSelect";
+
 interface SBMultiSchemaLoaderProps {
     isLoading: boolean;
     onLoading: (isLoading: boolean) => void;
@@ -190,11 +191,18 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
                                     placeholder={'Select schema...(at least one)'}
                                     loc={'schemas'}
                                     value={selectedOptions}
-                                    isGrouped isFileUploader isMultiSelect isSmStyle />
+                                    isGrouped
+                                    isFileUploader
+                                    isMultiSelect
+                                    isSmStyle 
+                                    isClearable/>
                             </div>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <SBFileUploader ref={sbFileUploaderRef} id={"schema-file"} accept={".jadn"} onCancel={onCancelFileUpload} onChange={onFileUpload} isMultiple />
+                            <input type="file" id="file-input" name="file-input" accept={LANG_JADN} onChange={onFileUpload} ref={sbFileUploaderRef} multiple={true} />
+                            <button id="cancelFileUpload" type='button' className="btn btn-sm btn-secondary ms-0" onClick={() => onCancelFileUpload} style={{ display: 'inline' }}>
+                                <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -27,7 +27,7 @@ export interface SBOutlineProps {
   cards: any[];
   visibleCard: number | null;
   onScrollToCard: (idx: number) => void;
-  onDrop: (arg: DragItem[]) => void;
+  onDrop: (arg: DragItem[], index: number, originalIndex: number) => void;
   onStarToggle: (updatedCards: DragItem[]) => void;
 }
 
@@ -134,9 +134,9 @@ const SBOutline = (props: SBOutlineProps) => {
     onStarToggle(updatedItems);
   }, []);
 
-  const dropCard = useCallback(() => {
-    onDrop(cardsStateRef.current);
-  }, []);
+  const dropCard = (_item: DragItem, index: number, originalIndex: number) => {
+    onDrop(cardsStateRef.current, index, originalIndex);
+  };
 
   const moveCard = useCallback((_newItem: DragItem, dragIndex: number, hoverIndex: number) => {
     setItems((prevCards: DragItem[]) =>

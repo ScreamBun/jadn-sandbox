@@ -14,6 +14,7 @@ interface EditorProps {
   placeholder: string;
   change: (val: any) => void;  // eslint-disable-line react/require-default-props
   remove: (idx: string) => void;  // eslint-disable-line react/require-default-props
+  addTypeChange: (val: any) => void;
   config: InfoConfig; //defaults for Config Object Editor
 }
 

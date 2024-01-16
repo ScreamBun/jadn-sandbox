@@ -3,7 +3,7 @@ import { Unsubscribe } from 'redux';
 import { useDragDropManager, useDragLayer, useDrop } from 'react-dnd';
 import update from 'immutability-helper'
 import { EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray } from 'components/create/schema/interface';
-import FieldEditor from './FieldEditor';
+import { FieldEditorDndStyle } from "./FieldEditorDnd";
 
 export interface CardStateItem {
     id: any;
@@ -34,7 +34,7 @@ export interface SBOutlineProps {
 }
 
 const SBOutlineFields = (props: SBOutlineProps) => {
-    const { id, items = [], isEnumerated, fieldChange, fieldRemove, config, onDrop, editableID, acceptableType, parentIndex } = props;
+    const { id, items = [], fieldChange, fieldRemove, onDrop, acceptableType, isEnumerated } = props;
     const [cardsState, setCardsState] = useState<CardStateItem[]>(items.map((item) => ({ id: self.crypto.randomUUID(), value: item })));
 
     const [dragValue, setDragValue] = useState<boolean>(false);
@@ -122,22 +122,17 @@ const SBOutlineFields = (props: SBOutlineProps) => {
     const renderCard = useCallback(
         (card: any, index: number) => {
             return (
-                <FieldEditor
+                <FieldEditorDndStyle
                     key={card.id}
-                    id={card.id}
                     dataIndex={index}
-                    isDragging={item && item.dataIndex == index}
-                    parentIndex={parentIndex}
-                    enumerated={isEnumerated}
                     value={card.value}
                     change={fieldChange}
                     remove={fieldRemove}
-                    config={config}
-                    editableID={editableID}
-
+                    isDragging={item && item.dataIndex == index}
                     moveCard={moveCard}
                     dropCard={dropCard}
-                    acceptableType={acceptableType}
+                    enumerated={isEnumerated}
+                    {...props}
                 />
             )
         },

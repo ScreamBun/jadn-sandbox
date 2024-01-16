@@ -5,11 +5,11 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
-import SBDownloadFile from "components/common/SBDownloadFile";
 import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { initConvertedSchemaState } from "components/visualize/SchemaVisualizer";
 import { getSelectedSchema } from "reducers/util";
+import SBDownloadBtn from "components/common/SBDownloadBtn";
 
 const SchemaTranslated = (props: any) => {
     const location = useLocation();
@@ -52,13 +52,13 @@ const SchemaTranslated = (props: any) => {
                     <div className='col-md-6'>
                         <SBSelect id={"translation-list"} data={translateOpts} onChange={handleTranslation}
                             placeholder={'Translate to...(select at least one)'}
-                            value={translation} isMultiSelect isSmStyle
+                            value={translation} isMultiSelect isSmStyle isClearable
                         />
                     </div>
                     <div className='col-md-6'>
-                        <div className={`${translatedSchema.length != 0 ? '' : ' d-none'}`}>
+                        <div className={`${translatedSchema.length == 1 && translatedSchema[0].schema ? '' : ' d-none'}`}>
                             <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema[0].schema} customClass='float-end' />
-                            <SBDownloadFile buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`me-1 float-end${translatedSchema[0].schema ? '' : ' d-none'}`} />
+                            <SBDownloadBtn buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`me-1 float-end`} />
                         </div>
 
                         {isLoading ? <SBSpinner action={'Translating'} /> :

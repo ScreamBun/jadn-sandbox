@@ -1,25 +1,23 @@
 import React, { useState } from "react";
-import { saveFile } from "actions/save";
-import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 import { useDispatch } from "react-redux";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { saveFile } from "actions/save";
 import { info } from "actions/util";
-import SBSpinner from "./SBSpinner";
 import { FormatJADN } from "components/utils";
+import { FILENAME_RULE, LANG_JADN } from "components/utils/constants";
+import SBSpinner from "./SBSpinner";
+import { sbToastError, sbToastSuccess, sbToastWarning } from "./SBToast";
 
 const SBSaveFile = (props: any) => {
 
     const dispatch = useDispatch();
 
-    const { buttonId, toolTip, data, customClass, filename = '', ext = 'jadn', loc, setDropdown } = props;
+    const { buttonId, toolTip, data, customClass, filename = '', ext = LANG_JADN, loc, setDropdown } = props;
     const [fileNameInput, setFileNameInput] = useState('');
     const [toggleSaveDialog, setToggleSaveDialog] = useState(false);
     const [toggleOverwriteDialog, setToggleOverwriteDialog] = useState(false); //nestedModal
     const [isLoading, setIsLoading] = useState(false);
-
-    const fileNameRule = "/^\w+$/";
-
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -36,12 +34,12 @@ const SBSaveFile = (props: any) => {
         setFileNameInput(filename);
     }
 
-    const onSaveFile = (e: React.MouseEvent<HTMLButtonElement>, fmt: string = 'jadn', overwrite: boolean = false) => {
+    const onSaveFile = (e: React.MouseEvent<HTMLButtonElement>, fmt: string, overwrite: boolean = false) => {
         e.preventDefault();
         if (fileNameInput == '') {
             sbToastWarning('Please enter a file name.');
             return;
-        } else if (fileNameInput.match(fileNameRule)) {
+        } else if (!FILENAME_RULE.test(fileNameInput)) {
             sbToastWarning("Please do not use special characters in file name.");
             return;
         }
@@ -52,13 +50,12 @@ const SBSaveFile = (props: any) => {
         try {
             dispatch(saveFile(filename, formattedData, loc, overwrite))
                 .then((val) => {
+                    setIsLoading(false);
                     if (val.error) {
                         if (val.payload.status == 409) {
-                            setIsLoading(false);
                             setToggleOverwriteDialog(true);
                             return;
                         }
-                        setIsLoading(false);
                         sbToastError(`Error: ${val.payload.response}`);
                         setToggleSaveDialog(false);
                         setToggleOverwriteDialog(false);
@@ -122,7 +119,7 @@ const SBSaveFile = (props: any) => {
                             <div className="row">
                                 <label htmlFor={buttonId + "saveFileAsType"} className="col-sm-4 col-label">Save as type:</label>
                                 <div className="col-sm-8">
-                                    <input type="text" readOnly className="form-control-plaintext" id={buttonId + "saveFileAsType"} value={ext ? ext : 'jadn'} />
+                                    <input type="text" readOnly className="form-control-plaintext" id={buttonId + "saveFileAsType"} value={ext} />
                                 </div>
                             </div>
                         </div>

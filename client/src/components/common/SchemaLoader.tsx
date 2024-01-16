@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getAllSchemas } from "../../reducers/util";
-import { info, loadFile, setSchema } from "../../actions/util";
-import { validateSchema } from "../../actions/validate";
+import { info, setSchema } from "../../actions/util";
+import { getSchemaConversions } from "reducers/convert";
+import { validateSchema } from "actions/validate";
+import { LANG_JADN } from "components/utils/constants";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
 import { dismissAllToast, sbToastError, sbToastSuccess } from "./SBToast";
 import SBCopyToClipboard from "./SBCopyToClipboard";
-import SBFileUploader from "./SBFileUploader";
-import SBSaveFile from "./SBSaveFile";
 import SBSelect, { Option } from "./SBSelect";
 import SBSpinner from "./SBSpinner";
 import SBFormatBtn from "./SBFormatBtn";
 import SBEditor from "./SBEditor";
-import { getSchemaConversions } from "reducers/convert";
-import { LANG_JADN, LANG_JSON } from "components/utils/constants";
+import SBValidateSchemaBtn from "./SBValidateSchemaBtn";
+import SBFileLoader from "./SBFileLoader";
 
 //File Loader Note: User should be able to upload any JSON/JADN schema; 
 //It does not need to be syntactically correct since the user can edit the schema in the code editor.
@@ -26,10 +24,10 @@ interface SchemaLoaderProps {
     loadedSchema: object | null;
     setLoadedSchema: (schema: object | null) => void;
     decodeMsg?: Option | null;
-    setDecodeMsg?: (msgType: Option) => void;
+    setDecodeMsg?: (msgType: Option | null) => void;
     setDecodeSchemaTypes?: (obj: {
-        all: string[],
-        exports: string[]
+        all: string[] | [],
+        exports: string[] | []
     }) => void;
     acceptFormat?: string[];
     schemaFormat: Option | null;
@@ -45,7 +43,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [fileName, setFileName] = useState({
         name: '',
-        ext: 'jadn'
+        ext: LANG_JADN
     });
     const schemaOpts = useSelector(getAllSchemas);
     const validSchemaFormatOpt = useSelector(getSchemaConversions);
@@ -76,6 +74,14 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         };
         let msgDecode = '';
 
+        if (typeof schemaObj == "string") {
+            try {
+                schemaObj = JSON.parse(schemaObj);
+            } catch {
+                schemaObj = schemaObj
+            }
+        }
+
         if (schemaObj.info !== undefined) {
             if (schemaObj.info.exports !== undefined) {
                 decodeTypes.exports = schemaObj.info.exports;
@@ -103,111 +109,6 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         }
     }
 
-    const onValidateSchemaClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (!loadedSchema) {
-            sbToastError('Validation Error: No Schema to validate');
-            setIsValidating(false);
-            return;
-        }
-        setIsValid(false);
-        setIsValidating(true);
-
-        if (schemaFormat?.value == LANG_JSON) {
-            validateJSONSchema(loadedSchema);
-        } else {
-            validateJADNSchema(loadedSchema);
-        }
-    }
-
-    const validateJSONSchema = (jsonObj: object | string) => {
-        if (!jsonObj) {
-            sbToastError('Validation Error: No Schema to validate');
-            setIsValidating(false);
-            return;
-        }
-
-        if (typeof jsonObj == 'string') {
-            try {
-                jsonObj = JSON.parse(jsonObj);
-            } catch (err: any) {
-                console.log(err)
-                sbToastError(`Invalid JSON: ${err.message}`)
-                setIsValidating(false);
-                return;
-            }
-        }
-
-        try {
-            dispatch(validateSchema(jsonObj, LANG_JSON))
-                .then((validateSchemaVal: any) => {
-                    if (validateSchemaVal.payload.valid_bool == true) {
-                        setIsValid(true);
-                        setLoadedSchema(jsonObj);
-                        dispatch(setSchema(jsonObj));
-                        sbToastSuccess(validateSchemaVal.payload.valid_msg);
-                    } else {
-                        sbToastError(validateSchemaVal.payload.valid_msg);
-                    }
-                })
-                .catch((validateSchemaErr) => {
-                    sbToastError(validateSchemaErr.payload.valid_msg)
-
-                }).finally(() => {
-                    setIsValidating(false);
-                })
-        } catch (err) {
-            if (err instanceof Error) {
-                setIsValidating(false);
-                sbToastError(err.message)
-            }
-        }
-    }
-
-    const validateJADNSchema = (jsonObj: object | string) => {
-        if (!jsonObj) {
-            sbToastError('Validation Error: No Schema to validate');
-            setIsValidating(false);
-            return;
-        }
-
-        if (typeof jsonObj == 'string') {
-            try {
-                jsonObj = JSON.parse(jsonObj);
-            } catch (err: any) {
-                console.log(err)
-                sbToastError(`Invalid JSON: ${err.message}`)
-                setIsValidating(false);
-                return;
-            }
-        }
-
-        try {
-            dispatch(validateSchema(jsonObj, LANG_JADN))
-                .then((validateSchemaVal: any) => {
-                    if (validateSchemaVal.payload.valid_bool == true) {
-                        setIsValid(true);
-                        setLoadedSchema(jsonObj);
-                        dispatch(setSchema(jsonObj));
-                        sbToastSuccess(validateSchemaVal.payload.valid_msg);
-                    } else {
-                        sbToastError(validateSchemaVal.payload.valid_msg);
-                    }
-                })
-                .catch((validateSchemaErr) => {
-                    sbToastError(validateSchemaErr.payload.valid_msg)
-                }).finally(() => {
-                    setIsValidating(false);
-                })
-
-        } catch (err) {
-            if (err instanceof Error) {
-                setIsValidating(false);
-                sbToastError(err.message)
-            }
-        }
-    }
-
     const sbEditorOnChange = (data: string) => {
         dismissAllToast();
         setIsValid(false);
@@ -222,109 +123,73 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         }
     }
 
-    const onFileSelect = (e: Option) => {
-        dismissAllToast();
-        setIsValid(false);
-        dispatch(setSchema(null));
-
-        if (e == null) {
-            setSelectedFile(e);
-            setLoadedSchema(null);
-            return;
-        } else if (e.value == "file") {
-            ref.current.value = '';
-            ref.current?.click();
-        } else {
-            setSelectedFile(e);
-            const fileName = {
-                name: getFilenameOnly(e.label),
-                ext: getFilenameExt(e.label)
-            }
-            setFileName(fileName);
-            setIsLoading(true);
-
-            dispatch(loadFile('schemas', e.value))
-                .then((loadFileVal) => {
-                    if (loadFileVal.error) {
-                        setIsLoading(false);
-                        sbToastError(loadFileVal.payload.response);
-                        return;
-                    }
-                    let schemaObj = loadFileVal.payload.data;
-                    setLoadedSchema(schemaObj);
-                    setIsLoading(false);
-
-                    setIsValidating(true);
-                    if (fileName.ext == LANG_JADN) {
-                        validateJADNSchema(schemaObj);
-                    } else if (fileName.ext == LANG_JSON) {
-                        validateJSONSchema(schemaObj)
-                    }
-
-                    if (setDecodeSchemaTypes && setDecodeMsg) {
-                        loadDecodeTypes(schemaObj);
-                    }
-                })
-                .catch((loadFileErr) => {
-                    setIsLoading(false);
-                    sbToastError(loadFileErr.payload.data);
-                })
-        }
-    };
-
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        dismissAllToast();
+    const onFileLoad = async (schemaObj?: any, fileStr?: Option) => {
         setIsValid(false);
         setIsLoading(true);
-
-        if (e.target.files && e.target.files.length != 0) {
-            const file = e.target.files[0];
-            setSelectedFile({ 'value': file.name, 'label': file.name });
+        if (schemaObj && fileStr) {
+            setSelectedFile(fileStr);
             const fileName = {
-                name: getFilenameOnly(file.name),
-                ext: getFilenameExt(file.name)
+                name: getFilenameOnly(fileStr.label),
+                ext: getFilenameExt(fileStr.label)
             }
             setFileName(fileName);
-
-            const fileReader = new FileReader();
-            fileReader.onload = (ev: ProgressEvent<FileReader>) => {
-                if (ev.target) {
-                    let dataStr = ev.target.result;
-                    setLoadedSchema(dataStr);
-                    setIsLoading(false);
-
-                    setIsValidating(true);
-                    if (fileName.ext == LANG_JADN) {
-                        validateJADNSchema(dataStr);
-                    } else if (fileName.ext == LANG_JSON) {
-                        validateJSONSchema(dataStr);
-                    }
-
-                    if (setDecodeSchemaTypes && setDecodeMsg) {
-                        const dataObj: object = JSON.parse(dataStr);
-                        loadDecodeTypes(dataObj);
-                    }
+            setLoadedSchema(schemaObj);
+            try {
+                dispatch(validateSchema(schemaObj, fileName.ext))
+                    .then((validateSchemaVal: any) => {
+                        if (validateSchemaVal.payload.valid_bool == true) {
+                            setIsValid(true);
+                            if (typeof schemaObj == "string") {
+                                schemaObj = JSON.parse(schemaObj);
+                            }
+                            dispatch(setSchema(schemaObj));
+                            sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                        } else {
+                            sbToastError(validateSchemaVal.payload.valid_msg);
+                            dispatch(setSchema(null));
+                        }
+                    })
+                    .catch((validateSchemaErr) => {
+                        sbToastError(validateSchemaErr.payload.valid_msg)
+                        dispatch(setSchema(null));
+                    }).finally(() => {
+                        setIsValidating(false);
+                    })
+            } catch (err) {
+                if (err instanceof Error) {
+                    setIsValidating(false);
+                    sbToastError(err.message)
                 }
-            };
-            fileReader.readAsText(file);
+            }
+
+            if (setDecodeSchemaTypes && setDecodeMsg) {
+                loadDecodeTypes(schemaObj);
+            }
         }
+        setIsLoading(false);
     }
 
-    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
+    const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => {
+        if (e) {
+            e.preventDefault();
+        }
         dismissAllToast();
         setIsLoading(false);
         setIsValidating(false);
         setIsValid(false);
         setLoadedSchema(null);
+        dispatch(setSchema(null));
         setSelectedFile(null);
         setFileName({
             name: '',
-            ext: 'jadn'
+            ext: LANG_JADN
         });
         if (ref.current) {
             ref.current.value = '';
+        }
+        if (setDecodeSchemaTypes && setDecodeMsg) {
+            setDecodeMsg(null);
+            setDecodeSchemaTypes([]);
         }
     }
 
@@ -333,19 +198,21 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             <div className="card-header p-2">
                 <div className="row no-gutters">
                     <div className="col-lg-6">
-                        <div className="d-flex">
-                            <SBSelect id={"schema-list"} data={schemaOpts} onChange={onFileSelect}
-                                placeholder={'Select a schema...'}
-                                loc={'schemas'}
-                                value={selectedFile}
-                                isGrouped
-                                isFileUploader
-                                isSmStyle />
-                            <SBSaveFile buttonId="saveSchema" toolTip={'Save Schema'} data={loadedSchema} loc={'schemas'} customClass={"float-end ms-1"} filename={fileName?.name} ext={schemaFormat?.value} setDropdown={setSelectedFile} />
-                        </div>
-                        <div className='d-none'>
-                            <SBFileUploader ref={ref} id={"schema-file"} accept={'.jadn, ' + acceptFormat} onCancel={onCancelFileUpload} onChange={onFileChange} />
-                        </div>
+                        <SBFileLoader
+                            opts={schemaOpts}
+                            selectedOpt={selectedFile}
+                            loadedFileData={loadedSchema}
+                            fileName={fileName}
+                            fileExt={schemaFormat?.value}
+                            setSelectedFile={setSelectedFile}
+                            onCancelFileUpload={onCancelFileUpload}
+                            onFileChange={onFileLoad}
+                            acceptableExt={acceptFormat}
+                            ref={ref}
+                            placeholder={'Select a schema...'}
+                            loc={'schemas'}
+                            isSaveable
+                        />
                     </div>
                     {acceptFormat && <div className="col-lg-3">
                         <SBSelect id={"schema-format-list"}
@@ -354,26 +221,20 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             value={schemaFormat}
                             placeholder={'Schema format...'}
                             isSmStyle
-                        />
+                            isClearable />
                     </div>}
                     <div className="col">
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
                         <SBFormatBtn customClass="float-end me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
-                            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end me-1'
-                                title={isValid ? "Schema is valid" : "Click to validate Schema"}
-                                onClick={onValidateSchemaClick}
-                            >
-                                <span className="m-1">Valid</span>
-                                {isValid ? (
-                                    <span className="badge rounded-pill text-bg-success">
-                                        <FontAwesomeIcon icon={faCheck} />
-                                    </span>) : (
-                                    <span className="badge rounded-pill text-bg-danger">
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </span>)
-                                }
-                            </button>}
+                            <SBValidateSchemaBtn
+                                isValid={isValid}
+                                setIsValid={setIsValid}
+                                setIsValidating={setIsValidating}
+                                schemaData={loadedSchema}
+                                schemaFormat={schemaFormat?.value}
+                            />
+                        }
                     </div>
                 </div>
             </div>

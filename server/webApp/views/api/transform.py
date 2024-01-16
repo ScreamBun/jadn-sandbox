@@ -48,6 +48,7 @@ class Transform(Resource):
             transformed = request_json["transformation_type"]
             output = []
             if transformed == 'strip comments':
+                #CONSIDERATION: ALLOW STRIP COMMENTS EVEN IF INVALID JADN?
                 for schema in request_json["schema_list"]:
                     schema_output = dumps(transform.strip_comments(schema['data']))
                     schema_name, ext = os.path.splitext(schema['name'])

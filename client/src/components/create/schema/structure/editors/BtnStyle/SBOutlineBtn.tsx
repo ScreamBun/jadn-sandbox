@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TypeArray } from "components/create/schema/interface";
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
-export interface SBOutlineBtnStyleProps {
+export interface SBOutlineBtnProps {
     id: string;
     title: string;
     cards: any[];
@@ -15,7 +15,7 @@ export interface SBOutlineBtnStyleProps {
     onScrollToCard: (idx: number) => void;
 }
 
-const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
+const SBOutlineBtn = (props: SBOutlineBtnProps) => {
 
     const { id = 'sb-outline', title, visibleCard, cards = [],
         onStarClick, onScrollToCard, changeIndex } = props;
@@ -114,4 +114,4 @@ const SBOutlineBtnStyle = (props: SBOutlineBtnStyleProps) => {
     );
 }
 
-export default SBOutlineBtnStyle;
+export default SBOutlineBtn;

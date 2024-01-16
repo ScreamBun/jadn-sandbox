@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
+import { getSelectedSchema } from 'reducers/util'
+import { useSelector } from 'react-redux'
 import { Field, delMultiKey, setMultiKey } from './lib/GenMsgLib'
 import { StandardFieldArray } from '../schema/interface'
+import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPENAME } from '../consts'
+import { LANG_JSON } from 'components/utils/constants'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
-import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPENAME } from '../consts'
-import SBDownloadFile from 'components/common/SBDownloadFile'
 import SBSaveFile from 'components/common/SBSaveFile'
 import SBSelect, { Option } from 'components/common/SBSelect'
 import SBScrollToTop from 'components/common/SBScrollToTop'
-import { getSelectedSchema } from 'reducers/util'
-import { useSelector } from 'react-redux'
+import SBDownloadBtn from 'components/common/SBDownloadBtn'
 
 const MessageCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
@@ -24,7 +25,7 @@ const MessageCreator = (props: any) => {
         $NSID: $NSID
     })
 
-    const schemaObj = useSelector(getSelectedSchema);
+    let schemaObj = useSelector(getSelectedSchema);
     const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
 
@@ -108,14 +109,17 @@ const MessageCreator = (props: any) => {
                                 data={exportRecords}
                                 onChange={handleSelection}
                                 placeholder={'Select a data type...'}
-                                value={commandType} isSmStyle
+                                value={commandType}
+                                isSmStyle
+                                isClearable
+                                customNoOptionMsg={Object.keys(schemaObj).length != 0 ? 'Schema is missing Exports' : 'Select a schema to begin'}
                             />
-                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={'json'} />
+                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                         </div>
                     </div>
                     <div className='col'>
                         <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
-                        <SBDownloadFile buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={'json'} />
+                        <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
 
                         <button type='button' onClick={() => setActiveView('message')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'message' ? ' d-none' : ''}`} >View JSON</button>
                         <button type='button' onClick={() => setActiveView('creator')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} >View Creator</button>

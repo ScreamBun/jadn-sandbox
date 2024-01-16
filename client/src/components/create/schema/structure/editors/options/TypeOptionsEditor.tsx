@@ -28,10 +28,13 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
   const getOptions = (key: string) => {
     switch (key) {
       case 'ktype':
-      //SHOULD be a Defined type, 
-      //either an enumeration or a type with constraints such as a pattern 
-      //or semantic valuation keyword that specify a fixed subset of values that belong to a category.
-      // return schemaTypes;
+        //SHOULD be a Defined type, 
+        //either an enumeration or a type with constraints such as a pattern 
+        //or semantic valuation keyword that specify a fixed subset of values that belong to a category.
+        const schemaTypesArr = Object.values(schemaTypesObject);
+        const keyTypesArr = schemaTypesArr.filter((arr) => arr[1].toLowerCase() == "enumerated" || arr[1].toLowerCase() == "string");
+        const keyTypes = keyTypesArr.map(arr => arr[0]);
+        return keyTypes;
       case 'vtype':
         return types;
       case 'enum':
@@ -64,7 +67,6 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
           key={key}
           id={id}
           name={key}
-          {...TypeOptionInputArgs[key]}
           labelColumns={2}
           fieldColumns={10}
           placeholder={key}
@@ -73,6 +75,7 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
           change={val => change([key, val], 'type')}
           value={deserializedState[key]}
           required={RequiredOptions[optionType].includes(key) ? true : false}
+          {...TypeOptionInputArgs[key]}
         />
       );
     });
