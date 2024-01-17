@@ -74,14 +74,14 @@ class ValidateSchema(Resource):
                 schema = json.loads(schema)
             except Exception as ex:
                 print(f"JSON Error: {ex}")
-                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": ex })
+                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
         
         if schema_fmt == JSON:
             try: 
                 validate_schema(schema) #TODO: check for JSON SCHEMA ?
             except Exception as ex:
                 print(f"JSON Schema Error: {str(ex)}")
-                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": ex })
+                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
 
 
         if schema_fmt == JADN:
@@ -89,19 +89,19 @@ class ValidateSchema(Resource):
                validate_schema_jadn_syntax(schema) #TODO: add check for unknown keys (type opts) + bad info (bad fields)
             except Exception as ex:
                 print(f"JADN Syntax Error: {str(ex)}")
-                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": ex })
+                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
             
             valid_bool, err = current_app.validator.validateSchema(schema) #TODO: finish pydantic validation - formats
             if not valid_bool:
                 print(f"JADN Error: {str(err)} ")
-                return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": err})
+                return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": f"{str(err)}"})
 
             try: 
                 #TODO: remove config check for info ?
                 jadn.check(schema) # uses jsonschema to check jadn - jadn_v1.0_schema.json
             except Exception as ex:
                 print(f"JADN Schema Error : {ex}")
-                return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": ex })
+                return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": f"{str(ex)}" })
 
 
         return jsonify( { "valid_bool": True, "valid_syntax": True, "valid_msg": "Schema is valid" })
