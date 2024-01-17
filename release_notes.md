@@ -6,8 +6,9 @@
 * Schema Creation - Ability to add Exports to schema Types
 * Schema Creation - Restrict user from including regex and pattern Type Options together
 * Schema Creation - Improved drag and drop feature
-* Data Creation - Added data handling for dir field option 
-* Data Creation - Integer fields do not allow characters: "e", "E", "+", "-" 
+* Translation - Improved XSD Array and Map translations
+* Data Creation - Added data handling for dir field option
+* Data Creation - Integer fields do not allow characters: "e", "E", "+", "-"
 * Data Creation Bug Fix - Boolean type check
 * JADN Schema Validation - Updated validation to check for valid Exports
 * Code Reduction - use of const and common components
