@@ -1,5 +1,5 @@
 ./whls/jadnschema-0.2.19-py2.py3-none-any.whl
-./whls/jadn_xml-1.2-py2.py3-none-any.whl
+./whls/jadn_xml-1.4.0-py2.py3-none-any.whl
 # -e /home/matt/screamingbunny/Schema/jadnschema
 # -e /home/matt/workspace/oscal/sb-jadn-xml-util
 # -e /home/kaitlyn_hsu/ScreamingBunnyRepo/Schema/jadnschema
