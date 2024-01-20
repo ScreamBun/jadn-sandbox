@@ -11,6 +11,7 @@ import { getSelectedSchema } from "reducers/util";
 import SBDownloadBtn from "components/common/SBDownloadBtn";
 import SBSubmitBtn from "components/common/SBSubmitBtn";
 import SBDownloadFileBtn from "components/common/SBDownloadFileBtn";
+import { LANG_XSD } from "components/utils/constants";
 
 const SchemaTranslated = (props: any) => {
     const location = useLocation();
@@ -22,6 +23,11 @@ const SchemaTranslated = (props: any) => {
         value: value,
         label: key
     })) : [];
+
+    useEffect(() => {
+        let test = translatedSchema
+        let test2 = ""
+    }, [translatedSchema])
 
     useEffect(() => {
         if (location.state) {
@@ -60,7 +66,9 @@ const SchemaTranslated = (props: any) => {
                         <div className={`${translatedSchema.length == 1 && translatedSchema[0].schema ? '' : ' d-none'}`}>
                             <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema[0].schema} customClass='float-end' />
                             <SBDownloadBtn buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`me-1 float-end`} />
-                            <SBDownloadFileBtn buttonId='jadnBaseTypesDownload' buttonTitle='Download JADN Base Types Schema' fileName='jadn_base_types.xsd' customClass={`me-1 float-end`}></SBDownloadFileBtn>
+                            <div className={`${translatedSchema[0].fmt == LANG_XSD.toUpperCase() ? '' : ' d-none'}`}>
+                                <SBDownloadFileBtn buttonId='jadnBaseTypesDownload' buttonTitle='Download JADN Base Types Schema' fileName='jadn_base_types.xsd' customClass={`me-1 float-end`}></SBDownloadFileBtn>
+                            </div>
                         </div>
                         <SBSubmitBtn buttonId="translateSchema" 
                             buttonTitle="Translate the given JADN schema to the selected format"
