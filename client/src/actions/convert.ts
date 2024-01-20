@@ -62,6 +62,31 @@ export interface ConvertSchemaSuccessAction extends ActionSuccessResult {
   };
 }
 
+// POST - /api/convert/download_xml - download xml file
+// const DOWNLOAD_XML_REQUEST = '@@convert/DOWNLOAD_XML_REQUEST';
+// export const DOWNLOAD_XML_SUCCESS = '@@convert/DOWNLOAD_XML_SUCCESS';
+// export const DOWNLOAD_XML_FAILURE = '@@convert/DOWNLOAD_XML_FAILURE';
+// export const downloadXmlFile = (filename: string) => createAction({
+//   endpoint: `${baseAPI}/download_xml`,
+//   method: 'POST',
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   body: JSON.stringify({
+//     'filename': filename
+//   }),
+//   types: [
+//     DOWNLOAD_XML_REQUEST, DOWNLOAD_XML_SUCCESS, DOWNLOAD_XML_FAILURE
+//   ]
+// });
+
+// export interface DownloadXmlSuccessAction extends ActionSuccessResult {
+//   type: typeof DOWNLOAD_XML_SUCCESS;
+//   payload: {
+//     data: {}
+//   };
+// }
+
 // Request Actions
 export interface ConvertRequestActions extends ActionRequestResult {
   type: typeof INFO_REQUEST | typeof CONVERT_REQUEST;
@@ -77,3 +102,5 @@ export type ConvertActions = (
   // Success Actions
   InfoSuccessAction | ConvertSchemaSuccessAction
 );
+
+
