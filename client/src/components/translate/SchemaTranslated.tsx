@@ -25,11 +25,6 @@ const SchemaTranslated = (props: any) => {
     })) : [];
 
     useEffect(() => {
-        let test = translatedSchema
-        let test2 = ""
-    }, [translatedSchema])
-
-    useEffect(() => {
         if (location.state) {
             Object.keys(data).map((key) => {
                 const fmt = key.toLowerCase();
