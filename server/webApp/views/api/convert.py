@@ -166,6 +166,7 @@ class DownloadXML(Resource):
     def post(self):
         request_json = request.json
         filename = request_json["filename"]
+        # jadn_base_types is a whl data_file from jadnxml
         jadn_base_types_path = os.path.join(sys.prefix, 'jadn_base_types')
         xsd_file_path = os.path.join(jadn_base_types_path, filename)
         xsd_file_path = os.path.abspath(os.path.realpath(xsd_file_path))   
