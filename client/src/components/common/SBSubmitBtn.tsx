@@ -1,7 +1,7 @@
 import React from "react";
 import SBSpinner from "./SBSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 const SBSubmitBtn = (props: any) => {
 
