@@ -197,7 +197,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className="row no-gutters">
-                    <div className="col-lg-6">
+                    <div className="col-lg-6 align-self-center">
                         <SBFileLoader
                             opts={schemaOpts}
                             selectedOpt={selectedFile}
@@ -214,7 +214,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             isSaveable
                         />
                     </div>
-                    {acceptFormat && <div className="col-lg-3">
+                    {acceptFormat && <div className="col-lg-3 align-self-center">
                         <SBSelect id={"schema-format-list"}
                             data={validSchemaFormatOpt}
                             onChange={(e: Option) => setSchemaFormat(e)}
@@ -223,7 +223,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             isSmStyle
                             isClearable />
                     </div>}
-                    <div className="col">
+                    <div className="col align-self-center">
                         <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
                         <SBFormatBtn customClass="float-end me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :

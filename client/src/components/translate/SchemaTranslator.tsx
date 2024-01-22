@@ -24,7 +24,7 @@ const SchemaTranslator = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Translation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-    const formId = "transmit_form"
+    const formId = "translation_form";
 
     useEffect(() => {
         dispatch(info());
@@ -36,7 +36,9 @@ const SchemaTranslator = () => {
         setTranslation([]);
     }, [loadedSchema, schemaFormat])
 
-    const onReset = () => {
+    const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        dismissAllToast();
         setIsLoading(false);
         setSelectedFile(null);
         setLoadedSchema(null);

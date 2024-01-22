@@ -22,6 +22,7 @@ const SchemaTransformer = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Transformation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+    const formId = "transformation_form";
 
     useEffect(() => {
         dispatch(info());
@@ -41,7 +42,9 @@ const SchemaTransformer = () => {
 
     }, [selectedSchemas]);
 
-    const onReset = () => {
+    const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        dismissAllToast();
         setSelectedSchemas([]);
         schemaTransformedRef.current?.onReset();
         sbMultiSchemaLoaderRef.current?.onReset();
@@ -115,6 +118,7 @@ const SchemaTransformer = () => {
                                         selectedSchemas={selectedSchemas}
                                         onSelectedSchemaReplaceAll={onSelectedSchemaReplaceAll}
                                         onLoading={onLoading}
+                                        formId={formId}
                                     />
                                 </div>
                             </div>

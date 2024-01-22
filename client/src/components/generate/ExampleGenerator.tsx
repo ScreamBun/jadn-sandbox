@@ -26,6 +26,8 @@ const ExampleGenerator = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Data Generation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+    const formId = "generation_form";
+
     useEffect(() => {
         dispatch(info());
         dismissAllToast();
@@ -37,6 +39,7 @@ const ExampleGenerator = () => {
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        dismissAllToast();
         setIsLoading(false);
         setSelectedFile(null);
         setLoadedSchema(null);
@@ -165,7 +168,7 @@ const ExampleGenerator = () => {
                             <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
-                            <form onSubmit={submitForm}>
+                            <form id={formId} onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
                                         <SchemaLoader
@@ -176,7 +179,7 @@ const ExampleGenerator = () => {
                                     <div className='col-md-6 pl-1'>
                                         <ExampleCreator
                                             generatedMessages={generatedMessages} isLoading={isLoading}
-                                            numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg}
+                                            numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg} formId={formId}
                                         />
                                     </div>
                                 </div>

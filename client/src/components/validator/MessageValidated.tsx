@@ -8,17 +8,17 @@ import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
-import SBSpinner from "components/common/SBSpinner";
 import SBSaveFile from "components/common/SBSaveFile";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
 import { LANG_CBOR, LANG_JADN, LANG_JSON, LANG_XML } from "components/utils/constants";
 import SBFileLoader from "components/common/SBFileLoader";
+import SBSubmitBtn from "components/common/SBSubmitBtn";
 
 const MessageValidated = (props: any) => {
     const location = useLocation();
 
-    const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, isLoading } = props;
+    const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, isLoading, formId } = props;
     const validSchema = useSelector(getSelectedSchema);
     const [fileName, setFileName] = useState({
         name: '',
@@ -126,15 +126,16 @@ const MessageValidated = (props: any) => {
                         </div>
                     </div>
 
-                    <div className='col-sm-4'>
+                    <div className='col-sm-4 align-self-center'>
                         <div className='d-flex float-end'>
-                            {isLoading ? <SBSpinner action={'Validating'} /> :
-                                <button className='float-end me-1 btn btn-success btn-sm'
-                                    disabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
-                                    type="submit"
-                                    title={'Validate the data against the given schema'}>
-                                    Validate
-                                </button>}
+                            <SBSubmitBtn buttonId="validateSchema"
+                                buttonTitle="Validate the data against the given schema"
+                                buttonTxt="Validate"
+                                customClass="me-1 float-end"
+                                isLoading={isLoading}
+                                formId={formId}
+                                isDisabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}>
+                            </SBSubmitBtn>
                             <SBCopyToClipboard buttonId='copyData' data={loadedMsg} customClass='float-end me-1' />
                             <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName.name} ext={msgFormat ? msgFormat.value : LANG_JSON} setDropdown={setSelectedFile} />
                         </div>
