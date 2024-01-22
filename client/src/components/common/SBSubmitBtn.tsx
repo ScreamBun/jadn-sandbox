@@ -15,9 +15,9 @@ const SBSubmitBtn = (props: any) => {
                     type={'submit'} 
                     form={formId}
                     title={buttonTitle || "Submit"} 
-                    className={'btn btn-sm btn-success border-0 ' + customClass} 
+                    className={'btn btn-sm btn-success border-0 hoverSubmit ' + customClass} 
                     disabled={isDisabled}>
-                        <span className="me-1">{buttonTxt || "Submit"}</span>
+                        <span>{buttonTxt || "Submit"}</span>
                         <FontAwesomeIcon icon={faPaperPlane} />
                 </button>
             }

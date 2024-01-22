@@ -31,6 +31,7 @@ const MessageValidator = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Data Validation';
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+    const formId = "validation_form";
 
     useEffect(() => {
         dispatch(info());
@@ -120,7 +121,7 @@ const MessageValidator = () => {
                             <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
-                            <form onSubmit={submitForm}>
+                            <form id={formId} onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
                                         <SchemaLoader
@@ -137,7 +138,7 @@ const MessageValidator = () => {
                                             msgFormat={msgFormat} setMsgFormat={setMsgFormat}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
                                             decodeSchemaTypes={decodeSchemaTypes}
-                                            isLoading={isLoading}
+                                            isLoading={isLoading} formId={formId}
                                         />
                                     </div>
                                 </div>

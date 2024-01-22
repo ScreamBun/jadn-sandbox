@@ -103,7 +103,7 @@ const MessageCreator = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-6'>
+                    <div className='col-md-6 align-self-center'>
                         <div className="d-flex">
                             <SBSelect id={"command-list"}
                                 data={exportRecords}
@@ -117,7 +117,7 @@ const MessageCreator = (props: any) => {
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                         </div>
                     </div>
-                    <div className='col'>
+                    <div className='col align-self-center'>
                         <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
                         <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
 

@@ -49,16 +49,16 @@ const SBCollapseViewer = (props: any) => {
         return (
             obj.err == false && <div className="card" key={i}>
                 <div className="card-header">
-                    <h5 className="mb-0">
+                    <h5 className="mb-0 align-self-center">
                         <button id={`toggleMsg#${i}`} type="button" className="btn btn-link" onClick={() => onToggle(i)} >
                             {obj.fmt}
                         </button>
                         <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-end' />
                         <SBDownloadBtn buttonId={`download${i}`} customClass='me-1 float-end' data={obj.schema} ext={obj.fmt_ext} />
 
-                        { obj.fmt_ext == LANG_XSD &&
+                        {obj.fmt_ext == LANG_XSD &&
                             <>
-                                <SBDownloadFileBtn buttonId='jadnBaseTypesDownload' buttonTitle='Download JADN Base Types Schema' fileName='jadn_base_types.xsd' customClass={`me-1 float-end`}></SBDownloadFileBtn>                            
+                                <SBDownloadFileBtn buttonId='jadnBaseTypesDownload' buttonTitle='Download JADN Base Types Schema' fileName='jadn_base_types.xsd' customClass={`me-1 float-end`}></SBDownloadFileBtn>
                             </>
                         }
 

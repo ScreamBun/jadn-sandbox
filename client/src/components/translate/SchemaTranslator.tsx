@@ -24,7 +24,7 @@ const SchemaTranslator = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Translation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-    const formId = "transmit_form"
+    const formId = "translation_form";
 
     useEffect(() => {
         dispatch(info());
