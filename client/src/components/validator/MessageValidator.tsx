@@ -40,6 +40,7 @@ const MessageValidator = () => {
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        dismissAllToast();
         setIsLoading(false);
         setSelectedSchemaFile(null);
         setLoadedSchema(null);

@@ -8,7 +8,7 @@ import { getAllSchemas } from "reducers/util";
 import { LANG_JADN } from "components/utils/constants";
 import { isString } from "components/utils/general";
 import { SelectedSchema } from "components/transform/SchemaTransformer";
-import { sbToastError } from "./SBToast";
+import { dismissAllToast, sbToastError } from "./SBToast";
 import SBEditor from "./SBEditor";
 import SBSelect, { Option } from "./SBSelect";
 
@@ -48,6 +48,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     // Allows parent to call child function
     useImperativeHandle(ref, () => ({
         onReset() {
+            dismissAllToast();
             setToggle({});
             setSelectedFile(null);
             setSelectedOptions([]);

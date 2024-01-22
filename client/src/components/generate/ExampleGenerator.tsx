@@ -39,6 +39,7 @@ const ExampleGenerator = () => {
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        dismissAllToast();
         setIsLoading(false);
         setSelectedFile(null);
         setLoadedSchema(null);

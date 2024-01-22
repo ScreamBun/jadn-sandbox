@@ -42,7 +42,9 @@ const SchemaTransformer = () => {
 
     }, [selectedSchemas]);
 
-    const onReset = () => {
+    const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        dismissAllToast();
         setSelectedSchemas([]);
         schemaTransformedRef.current?.onReset();
         sbMultiSchemaLoaderRef.current?.onReset();

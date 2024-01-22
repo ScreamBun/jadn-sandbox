@@ -41,7 +41,9 @@ const SchemaVisualizer = () => {
         setSplitViewFlag(false);
     }, [loadedSchema]);
 
-    const onReset = () => {
+    const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        dismissAllToast();
         setIsLoading(false);
         setSelectedFile(null);
         setLoadedSchema(null);

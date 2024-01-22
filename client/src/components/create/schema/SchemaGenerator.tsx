@@ -46,6 +46,7 @@ const SchemaGenerator = () => {
     const resetSchema = (response: boolean) => {
         setIsConfirmModalOpen(false);
         if (response == true) {
+            dismissAllToast();
             setSelectedSchemaFile(null);
             setGeneratedSchema('');
             setCardsState([]);

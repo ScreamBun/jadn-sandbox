@@ -8,7 +8,7 @@ import SBSelect, { Option } from "components/common/SBSelect";
 import SBSaveFile from "components/common/SBSaveFile";
 import SBDownloadBtn from "components/common/SBDownloadBtn";
 import { LANG_JADN } from "components/utils/constants";
-import { sbToastError, sbToastSuccess } from "components/common/SBToast";
+import { dismissAllToast, sbToastError, sbToastSuccess } from "components/common/SBToast";
 import { SelectedSchema } from "components/transform/SchemaTransformer";
 import SBSubmitBtn from "components/common/SBSubmitBtn";
 
@@ -67,6 +67,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     // Allows parent to call child function
     useImperativeHandle(ref, () => ({
         onReset() {
+            dismissAllToast();
             setToggle({});
             setBaseFile(null);
             setTransformedSchema([initTransformedSchema]);
