@@ -1,11 +1,11 @@
 import React from "react";
 import SBSpinner from "./SBSpinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faPlay } from "@fortawesome/free-solid-svg-icons";
 
 const SBSubmitBtn = (props: any) => {
 
-    const { buttonId, customClass, isLoading, isDisabled, buttonTitle, formId } = props;
+    const { buttonId, buttonTxt, customClass, isLoading, isDisabled, buttonTitle, formId } = props;
 
     return (
         <>
@@ -17,7 +17,8 @@ const SBSubmitBtn = (props: any) => {
                     title={buttonTitle || "Submit"} 
                     className={'btn btn-sm btn-success border-0 ' + customClass} 
                     disabled={isDisabled}>
-                    <FontAwesomeIcon icon={faPlay} />
+                        <span className="me-1">{buttonTxt || "Submit"}</span>
+                        <FontAwesomeIcon icon={faPaperPlane} />
                 </button>
             }
         </>

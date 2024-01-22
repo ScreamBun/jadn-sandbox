@@ -67,6 +67,7 @@ const SchemaTranslated = (props: any) => {
                         </div>
                         <SBSubmitBtn buttonId="translateSchema" 
                             buttonTitle="Translate the given JADN schema to the selected format"
+                            buttonTxt="Translate"
                             customClass="me-1 float-end" 
                             isLoading={isLoading}
                             formId={formId}
