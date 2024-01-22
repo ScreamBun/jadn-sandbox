@@ -26,7 +26,7 @@ function markdownToHTML(markdownText: string) {
 
 export const onMDPopOutClick = (convertedSchema: string) => {
     const htmlContent = markdownToHTML(convertedSchema);
-    const sanitizedData = DOMPurify.sanitize(htmlContent);
+    const sanitizedData = DOMPurify.sanitize(htmlContent, { FORCE_BODY: true });
     const blob = new Blob([sanitizedData], { type: "text/html" });
     const data = URL.createObjectURL(blob);
     window.open(data);
@@ -37,7 +37,7 @@ const SBMarkdownPreviewer = (props: any) => {
     const { markdownText, showPreviewer, conversion } = props;
     const htmlContent = markdownToHTML(markdownText);
     const previewerClassName = "previewer " + (showPreviewer ? "hide" : "");
-    const sanitizedData = DOMPurify.sanitize(htmlContent);
+    const sanitizedData = DOMPurify.sanitize(htmlContent, { FORCE_BODY: true });
 
     return (
         <>
