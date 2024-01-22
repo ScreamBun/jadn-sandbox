@@ -1,9 +1,11 @@
 import logging
 
 from io import BytesIO
+import os
+import sys
 import traceback
 import jadn
-from flask import current_app, jsonify, Response, request
+from flask import current_app, jsonify, Response, request, send_file
 from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
@@ -154,6 +156,33 @@ resources = {
     Convert: {"urls": ("/", )},
     ConvertPDF: {"urls": ("/pdf",)}
 }
+
+
+class DownloadXML(Resource):
+    """
+    Endpoint for api/convert/download_xml
+    """
+
+    def post(self):
+        request_json = request.json
+        filename = request_json["filename"]
+        # jadn_base_types is whl data_file from jadnxml
+        jadn_base_types_path = os.path.join(sys.prefix, 'jadn_base_types')
+        xsd_file_path = os.path.join(jadn_base_types_path, filename)
+        xsd_file_path = os.path.abspath(os.path.realpath(xsd_file_path))   
+
+        file = None
+        with open(xsd_file_path, 'r') as f:
+            file = f.read()           
+        
+        return Response(file, mimetype="text/xml")     
+
+
+resources = {
+    Convert: {"urls": ("/", )},
+    DownloadXML: {"urls": ("/download_xml",)}
+}
+
 
 
 def add_resources(bp, url_prefix=""):

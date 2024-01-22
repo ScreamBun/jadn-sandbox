@@ -24,6 +24,8 @@ const SchemaTranslator = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Translation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+    const formId = "transmit_form"
+
     useEffect(() => {
         dispatch(info());
         dismissAllToast();
@@ -111,7 +113,7 @@ const SchemaTranslator = () => {
                             <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
                         </div>
                         <div className='card-body p-2'>
-                            <form onSubmit={submitForm}>
+                            <form id={formId} onSubmit={submitForm}>
                                 <div className='row'>
                                     <div className='col-md-6 pr-1'>
                                         <SchemaLoader
@@ -121,6 +123,7 @@ const SchemaTranslator = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTranslated
+                                            formId={formId}
                                             translatedSchema={translatedSchema} setTranslatedSchema={setTranslatedSchema}
                                             translation={translation} setTranslation={setTranslation}
                                             setSchemaFormat={setSchemaFormat}
