@@ -22,7 +22,7 @@ export const groupBadgeStyles: CSSProperties = {
     fontWeight: 'normal',
     lineHeight: '1',
     minWidth: 1,
-    padding: '0.2em 0.5em',
+    padding: '0',
     textAlign: 'center',
 };
 
@@ -43,29 +43,13 @@ export interface GroupedOption {
     readonly options: readonly Option[];
 }
 
-//.form-control {
-//     display: block;
-//     width: 100%;
-//     padding: 0.375rem 0.75rem;
-//     font-size: 1rem;
-//     font-weight: 400;
-//     line-height: 1.5;
-//     color: var(--bs-body-color);
-//     appearance: none;
-//     background-color: var(--bs-body-bg);
-//     background-clip: padding-box;
-//     border: var(--bs-border-width) solid var(--bs-border-color);
-//     border-radius: var(--bs-border-radius);
-//     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-// }
-
 const defaultStyle = {
-    control: base => ({
+    control: (base: any) => ({
         ...base,
         cursor: 'pointer'
     }),
 
-    menu: (provided, state) => ({
+    menu: (provided: any) => ({
         ...provided,
         borderLeft: 'var(--bs-border-width) solid var(--bs-border-color)',
         borderRight: 'var(--bs-border-width) solid var(--bs-border-color)',
@@ -73,29 +57,29 @@ const defaultStyle = {
         marginTop: '0px'
     }),
 
-    container: css => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
+    container: (css: any) => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
 
-    option: (styles, state) => ({
+    option: (styles: any) => ({
         ...styles,
         cursor: 'pointer',
         color: 'inherit'
     }),
 
-    menuPortal: base => ({
+    menuPortal: (base: any) => ({
         ...base,
         zIndex: 9999,
     })
 }
 
 const smStyle = {
-    control: (base) => ({
+    control: (base: any) => ({
         ...base,
         minHeight: 30,
         cursor: 'pointer',
         border: 'var(--bs-border-width) solid var(--bs-border-color)',
     }),
 
-    menu: (provided, state) => ({
+    menu: (provided: any) => ({
         ...provided,
         borderLeft: 'var(--bs-border-width) solid var(--bs-border-color)',
         borderRight: 'var(--bs-border-width) solid var(--bs-border-color)',
@@ -103,47 +87,46 @@ const smStyle = {
         marginTop: '0px'
     }),
 
-    container: (css) => ({
+    container: (css: any) => ({
         ...css,
         flex: '1 1 auto',
         alignSelf: 'stretch',
     }),
 
-    valueContainer: (provided, state) => ({
+    valueContainer: (provided: any, state: any) => ({
         ...provided,
-        maxHeight: state.hasValue && state.isMulti && state.selectProps.menuIsOpen ? '' : 30,
         textOverflow: "ellipsis",
         overflowY: state.hasValue && state.isMulti && !state.selectProps.menuIsOpen ? 'auto' : 'hidden'
     }),
 
-    input: (provided, state) => ({
+    input: (provided: any) => ({
         ...provided,
         margin: '0px',
     }),
 
-    dropdownIndicator: (provided, state) => ({
+    dropdownIndicator: (provided: any) => ({
         ...provided,
         padding: '0',
     }),
 
-    indicatorsContainer: (provided, state) => ({
+    indicatorsContainer: (provided: any) => ({
         ...provided,
         minHeight: 30,
         padding: '0',
     }),
 
-    clearIndicator: (provided, state) => ({
+    clearIndicator: (provided: any) => ({
         ...provided,
         padding: '0',
     }),
 
-    option: (styles, state) => ({
+    option: (styles: any) => ({
         ...styles,
         cursor: 'pointer',
         color: 'inherit'
     }),
 
-    menuPortal: (base) => ({
+    menuPortal: (base: any) => ({
         ...base,
         zIndex: 9999,
     })
@@ -153,7 +136,7 @@ export const getSelectTheme = (theme: 'dark' | 'light') => {
     if (theme == 'dark') {
         return ({
             neutral0: 'var(--bs-body-bg)', //menu background
-            neutral10: 'var(--bs-secondary-color)', //multivalue selected option background
+            neutral10: 'var(--bs-secondary-bg)', //multivalue selected option background
             neutral80: 'var(--bs-body-color)', //selected option text
             primary25: 'grey', //hover options
             primary75: 'var(--bs-primary-color)', //selected option indicator

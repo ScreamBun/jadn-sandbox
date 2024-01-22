@@ -5,16 +5,18 @@ import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
-import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { initConvertedSchemaState } from "components/visualize/SchemaVisualizer";
 import { getSelectedSchema } from "reducers/util";
 import SBDownloadBtn from "components/common/SBDownloadBtn";
+import SBSubmitBtn from "components/common/SBSubmitBtn";
+import SBDownloadFileBtn from "components/common/SBDownloadFileBtn";
+import { LANG_XSD } from "components/utils/constants";
 
 const SchemaTranslated = (props: any) => {
     const location = useLocation();
 
-    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading, ext, setSchemaFormat } = props;
+    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading, ext, setSchemaFormat, formId } = props;
     const validSchema = useSelector(getSelectedSchema);
     const data = useSelector(getValidTranslations);
     let translateOpts: Option[] = data && data[ext] ? Object.entries(data[ext]).map(([key, value]) => ({
@@ -55,19 +57,22 @@ const SchemaTranslated = (props: any) => {
                             value={translation} isMultiSelect isSmStyle isClearable
                         />
                     </div>
-                    <div className='col-md-6'>
+                    <div className='col-md-6 pt-1'>
                         <div className={`${translatedSchema.length == 1 && translatedSchema[0].schema ? '' : ' d-none'}`}>
                             <SBCopyToClipboard buttonId='copyTranslatededSchema' data={translatedSchema[0].schema} customClass='float-end' />
                             <SBDownloadBtn buttonId='schemaDownload' data={translatedSchema[0].schema} ext={(translation.length == 1 ? translation[0].value : translation)} customClass={`me-1 float-end`} />
+                            <div className={`${translatedSchema[0].fmt == LANG_XSD.toUpperCase() ? '' : ' d-none'}`}>
+                                <SBDownloadFileBtn buttonId='jadnBaseTypesDownload' buttonTitle='Download JADN Base Types Schema' fileName='jadn_base_types.xsd' customClass={`me-1 float-end`}></SBDownloadFileBtn>
+                            </div>
                         </div>
-
-                        {isLoading ? <SBSpinner action={'Translating'} /> :
-                            <button type="submit" id="translateSchema" className="btn btn-success btn-sm me-1 float-end"
-                                disabled={Object.keys(validSchema).length != 0 && translation.length != 0 ? false : true}
-                                title={"Translate the given JADN schema to the selected format"}
-                            >
-                                Translate
-                            </button>}
+                        <SBSubmitBtn buttonId="translateSchema" 
+                            buttonTitle="Translate the given JADN schema to the selected format"
+                            buttonTxt="Translate"
+                            customClass="me-1 float-end" 
+                            isLoading={isLoading}
+                            formId={formId}
+                            isDisabled={Object.keys(validSchema).length != 0 && translation.length != 0 ? false : true}>
+                        </SBSubmitBtn>
                     </div>
                 </div>
             </div>
