@@ -9,7 +9,7 @@ import { LANG_JADN, LANG_JSON } from "components/utils/constants";
 
 const SBValidateSchemaBtn = (props: any) => {
 
-    const { isValid, setIsValid, setIsValidating, schemaData, schemaFormat } = props;
+    const { isValid, setIsValid, setIsValidating, schemaData, schemaFormat, customClass } = props;
     const dispatch = useDispatch();
 
     const onValidateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -106,7 +106,7 @@ const SBValidateSchemaBtn = (props: any) => {
 
     return (
         <>
-            <button id='validateJADNButton' type='button' className='btn btn-sm btn-primary float-end ms-1 me-1' title={isValid ? "Schema is valid" : "Click to validate Schema"}
+            <button id='validateJADNButton' type='button' className={`btn btn-sm btn-primary ms-1 me-1 + ${customClass}`} title={isValid ? "Schema is valid" : "Click to validate Schema"}
                 onClick={onValidateClick}>
                 <span className="m-1">Valid</span>
                 {isValid ? (

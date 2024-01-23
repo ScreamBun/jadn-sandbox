@@ -74,7 +74,7 @@ const defaultStyle = {
 const smStyle = {
     control: (base: any) => ({
         ...base,
-        minHeight: 30,
+        maxHeight: 30,
         cursor: 'pointer',
         border: 'var(--bs-border-width) solid var(--bs-border-color)',
     }),
@@ -84,7 +84,9 @@ const smStyle = {
         borderLeft: 'var(--bs-border-width) solid var(--bs-border-color)',
         borderRight: 'var(--bs-border-width) solid var(--bs-border-color)',
         borderBottom: 'var(--bs-border-width) solid var(--bs-border-color)',
-        marginTop: '0px'
+        marginTop: '0px',
+        width: 'auto'
+
     }),
 
     container: (css: any) => ({
@@ -96,7 +98,8 @@ const smStyle = {
     valueContainer: (provided: any, state: any) => ({
         ...provided,
         textOverflow: "ellipsis",
-        overflowY: state.hasValue && state.isMulti && !state.selectProps.menuIsOpen ? 'auto' : 'hidden'
+        overflowY: state.hasValue && state.isMulti && !state.selectProps.menuIsOpen ? 'auto' : 'hidden',
+        maxHeight: 30
     }),
 
     input: (provided: any) => ({

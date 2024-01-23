@@ -50,6 +50,7 @@ const ExampleCreator = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-5'>
                         <input id="numOfMsg" type='number' className='form-control form-control-sm' value={numOfMsg} onChange={onNumChange}
+                            style={{ height: '38px' }}
                             placeholder='Select number of examples...(1-10)' min={1} max={10} />
                     </div>
                     <div className='col-md-7 align-self-center'>

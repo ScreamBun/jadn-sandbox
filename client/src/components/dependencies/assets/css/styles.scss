@@ -42,6 +42,10 @@ $max-scroll: 20em;
     margin-right: 10px;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
 .title-text {
     color: var(--bs-link-color-rgb);
 }

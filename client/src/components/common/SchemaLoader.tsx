@@ -223,9 +223,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             isSmStyle
                             isClearable />
                     </div>}
-                    <div className="col align-self-center">
-                        <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='float-end me-1' />
-                        <SBFormatBtn customClass="float-end me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
+                    <div className="col text-end align-self-center nowrap">
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
                             <SBValidateSchemaBtn
                                 isValid={isValid}
@@ -235,6 +233,9 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                                 schemaFormat={schemaFormat?.value}
                             />
                         }
+                        <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='me-1' />
+                        <SBFormatBtn customClass="me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
+
                     </div>
                 </div>
             </div>

@@ -259,6 +259,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                     setIsValidating={setIsValidating}
                                     schemaData={generatedSchema}
                                     schemaFormat={LANG_JADN}
+                                    customClass={'float-end'}
                                 />
                             }
                         </div>
