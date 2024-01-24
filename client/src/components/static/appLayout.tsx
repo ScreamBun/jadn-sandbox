@@ -146,7 +146,7 @@ const AppLayout = () => {
       </nav>
 
       <ToastContainer enableMultiContainer position={toast.POSITION.BOTTOM_RIGHT} containerId='clear-all-toasts' className='d-flex justify-content-end' theme='colored' />
-      <ToastContainer enableMultiContainer position={toast.POSITION.BOTTOM_RIGHT} containerId='notification-toasts' className='mt-5' autoClose={4000} theme='colored' />
+      <ToastContainer enableMultiContainer position={toast.POSITION.BOTTOM_RIGHT} containerId='notification-toasts' className='mb-5' autoClose={4000} theme='colored' />
     </div>
 
   );

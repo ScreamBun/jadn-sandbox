@@ -108,6 +108,10 @@ class Validator:
                         
                         errorMsgs.append(err_msg + " at " +  new_path)
                     return False, errorMsgs, "", msg
+                elif isinstance(err, AttributeError):
+                    for error in err.args:
+                        errorMsgs.append(error)
+                    return False, errorMsgs, "", msg
                 else:
                     return False, err, "", msg
 
