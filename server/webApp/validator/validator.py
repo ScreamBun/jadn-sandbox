@@ -81,7 +81,7 @@ class Validator:
                 serial = SerialFormats('json')
                 message = Message.oc2_loads(msg_native_json, serial)
             except Exception as e:
-                return "Error: " + e
+                return False, f"Invalid Data: {e}", "", msg
         else:
             try:
                 message = Message.oc2_loads(msg, serial)
@@ -106,7 +106,10 @@ class Validator:
                         path = [i for i in err_path.split('/') if i != '__root__'] 
                         new_path = '/'.join(path)
                         
-                        errorMsgs.append(err_msg + " at " +  new_path)
+                        if err_path:
+                            errorMsgs.append(err_msg + " at " +  new_path)
+                        else:
+                            errorMsgs.append(err_msg)
                     return False, errorMsgs, "", msg
                 elif isinstance(err, AttributeError):
                     for error in err.args:
