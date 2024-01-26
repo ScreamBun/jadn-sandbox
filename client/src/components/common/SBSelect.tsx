@@ -85,6 +85,7 @@ const smStyle = {
         borderRight: 'var(--bs-border-width) solid var(--bs-border-color)',
         borderBottom: 'var(--bs-border-width) solid var(--bs-border-color)',
         marginTop: '0px',
+        minWidth: '100%',
         width: 'auto'
 
     }),
