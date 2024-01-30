@@ -32,13 +32,15 @@ class Validate(Resource):
         schema = request_json["schema"]
         fmt = args["message-format"] or "json"
 
-        try:
-            schema = json.dumps(schema)
-        except (TypeError, ValueError) as ex:
-            print(traceback.print_exc())
-            print(f"JSON Error: {ex}")
-            err_msg = f"Invalid JSON : {str(ex)}"
-            return jsonify({ "valid_bool": False, "valid_msg": err_msg })
+        if isinstance(schema, str):
+            try:
+                # schema = json.dumps(schema)
+                schema = json.loads(schema)
+            except (TypeError, ValueError) as ex:
+                print(traceback.print_exc())
+                print(f"JSON Error: {ex}")
+                err_msg = f"Invalid JSON : {str(ex)}"
+                return jsonify({ "valid_bool": False, "valid_msg": err_msg })
         
         
         val, valMsg, msgJson, msgOrig = current_app.validator.validateMessage(schema, args["message"], fmt, args["message-decode"])

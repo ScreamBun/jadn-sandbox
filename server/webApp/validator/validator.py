@@ -8,9 +8,15 @@ import binascii
 
 from io import StringIO
 from typing import Tuple, Union
+
+from jsonschema import validate
 from jadnschema import jadn
 from jadnschema.schema import Schema
-from jadnschema.convert.message import Message, SerialFormats
+from jadnschema.convert.message import Message, SerialFormats, decode_msg
+from jadn.translate import json_schema_dumps
+
+from jadnxml.builder.xsd_builder import convert_xsd_from_dict
+
 from unittest import TextTestRunner
 
 from pydantic import ValidationError
@@ -72,6 +78,8 @@ class Validator:
         
         
         serial = SerialFormats(fmt)
+        schema_serialized = None
+        data_serialized = None
         if fmt == "cbor":
             try:
                 msg_hex_string = msg
@@ -79,21 +87,64 @@ class Validator:
                 msg_native_json = cbor_json.native_from_cbor(msg_binary_string)
 
                 serial = SerialFormats('json')
-                message = Message.oc2_loads(msg_native_json, serial)
+                # TODO: Toggle OC2 Message
+                # message = Message.oc2_loads(msg_native_json, serial)
+                data_serialized = decode_msg(msg_native_json, serial, root=decode)
             except Exception as e:
                 return "Error: " + e
+        # elif fmt == "xml":
+        #     xsd_schema = convert_xsd_from_dict(schema)[0]
         else:
+            # Assuming fmt = JSON
             try:
-                message = Message.oc2_loads(msg, serial)
+                # Convert JADN to JSON Schema
+                schema_serialized = json_schema_dumps(schema)
             except Exception as e: 
                 err_msg = e
-                return False, f"Invalid Data: {err_msg}", "", msg
+                return False, f"Unable to convert JADN to JSON Schema: {err_msg}", "", msg
             
+            # Left off here: Add logic for XSD validation separate from JSON validation
+            # Need to generate XSD first.... 
+            
+            try:
+                # TODO: Toggle OC2 Message
+                # message = Message.oc2_loads(msg, serial)
+                data_serialized = decode_msg(msg, serial, root=decode)
+            except Exception as e: 
+                err_msg = e
+                return False, f"Unable to serialize data: {err_msg}", "", msg
+            
+        try:
+            if isinstance(schema_serialized, str):
+                schema_serialized = json.loads(schema_serialized)
+                
+            if isinstance(data_serialized, str):
+                data_serialized = json.loads(data_serialized)
+            
+            schema_view = json.dumps(schema_serialized, indent=4)
+            data_view = json.dumps(data_serialized, indent=4)
+            
+            print('Schema: ' + schema_view)                
+            print('Data: ' + data_view)                
+                
+            validate(
+                instance=data_serialized,
+                schema=schema_serialized,
+            )
+            
+        except Exception as err: 
+            errorMsgs=[]
+            errorMsgs.append("Error: " + err.args[0])
+            return False, errorMsgs, "", msg
+        
+        return True, ["Data is Valid"], "", msg
+        
+        '''
         records = list(s.types.keys())
-        if decode in records:
+        if decode in records and data_serialized != None:
 
             try:
-                s.validate_as(decode, message.content)
+                s.validate_as(decode, data_serialized)
                 return True, random.choice(self.validMsgs), json.dumps(msg), msg
 
             except Exception as err: 
@@ -113,6 +164,7 @@ class Validator:
 
         else:
             return False, "Invalid Export: The decode message type was not found in the schema", "", msg
+        '''
 
     # Profile test validation
     def getProfileTests(self, profile: str = None) -> dict:
