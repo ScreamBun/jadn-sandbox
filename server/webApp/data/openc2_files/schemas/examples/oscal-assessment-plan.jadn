@@ -1,0 +1,999 @@
+{
+  "info": {
+    "package": "http://csrc.nist.gov/ns/oscal/1.1.1/oscal-ap-schema.json",
+    "comment": "OSCAL Assessment Plan Model: JSON Schema",
+    "exports": ["Root"],
+    "config": {
+      "$MaxBinary": 255,
+      "$MaxString": 5555,
+      "$MaxElements": 250,
+      "$Sys": "$",
+      "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
+      "$FieldName": "^[A-Za-z][-_A-Za-z0-9]{0,63}$",
+      "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
+    }
+  },
+  "types": [
+    ["Root", "Record", [], "", [
+        [1, "schema", "URIReferenceDatatype", ["[0"], "A JSON Schema directive to bind a specific schema to its document instance."],
+        [2, "assessment-plan", "Assessment-plan", [], "An assessment plan, such as those provided by a FedRAMP assessor."]
+      ]],
+    ["Assessment-plan", "Record", [], "An assessment plan, such as those provided by a FedRAMP assessor.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment plan in this or other OSCAL instances. The locally defined UUID of the assessment plan can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "metadata", "Metadata", [], "Provides information about the containing document, and defines concepts that are shared across the document."],
+        [3, "import-ssp", "Import-ssp", [], "Used by the assessment plan and POA&M to import information about the system."],
+        [4, "local-definitions", "Local-Definitions", ["[0"], "Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP."],
+        [5, "terms-and-conditions", "ArrayOf", ["*Assessment-Part", "[0"], "Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition."],
+        [6, "reviewed-controls", "Reviewed-controls", [], "Identifies the controls being assessed and their control objectives."],
+        [7, "assessment-subjects", "Assessment-subjects", ["[0"], "Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope."],
+        [8, "assessment-assets", "Assessment-assets", ["[0"], "Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions."],
+        [9, "tasks", "Tasks", ["[0"], "Represents a scheduled event or milestone, which may be associated with a series of assessment actions."],
+        [10, "back-matter", "Back-matter", ["[0"], "A collection of resources that may be referenced from within the OSCAL document instance."]
+      ]],
+    ["Local-Definitions", "ArrayOf", ["*Local-Definition", "{1"], ""],
+    ["Assessment-subjects", "ArrayOf", ["{1", "*Assessment-subject"], "", []],
+    ["Tasks", "ArrayOf", ["{1", "*Task"], "", []],
+    ["Metadata", "Record", [], "Provides information about the containing document, and defines concepts that are shared across the document.", [
+        [1, "title", "String", [], "A name given to the document, which may be used by a tool for display and navigation."],
+        [2, "published", "DateTimeWithTimezoneDatatype", ["[0"], "The date and time the document was last made available."],
+        [3, "last-modified", "DateTimeWithTimezoneDatatype", [], "The date and time the document was last stored for later retrieval."],
+        [4, "version", "StringDatatype", [], "Used to distinguish a specific revision of an OSCAL document from other previous and future versions."],
+        [5, "oscal-version", "StringDatatype", [], "The OSCAL model version the document was authored against and will conform to as valid."],
+        [6, "revisions", "Revisions", ["[0"], "An entry in a sequential list of revisions to the containing document, expected to be in reverse chronological order (i.e. latest first)."],
+        [7, "document-ids", "Document-ids", ["[0"], "A document identifier qualified by an identifier scheme."],
+        [8, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [9, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [10, "roles", "Roles", ["[0"], "Defines a function, which might be assigned to a party in a specific situation."],
+        [11, "locations", "Locations", ["[0"], "A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document."],
+        [12, "parties", "Parties", ["[0"], "An organization or person, which may be associated with roles or other concepts within the current or linked OSCAL document."],
+        [13, "responsible-parties", "Responsible-parties", ["[0"], "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object."],
+        [14, "actions", "Actions", ["[0"], "An action applied by a role within a given party to the content."],
+        [15, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Revisions", "ArrayOf", ["{1", "*Revision"], "", []],
+    ["Revision", "Record", [], "An entry in a sequential list of revisions to the containing document, expected to be in reverse chronological order (i.e. latest first).", [
+        [1, "title", "String", ["[0"], "A name given to the document revision, which may be used by a tool for display and navigation."],
+        [2, "published", "DateTimeWithTimezoneDatatype", ["[0"], "The date and time the document was last made available."],
+        [3, "last-modified", "DateTimeWithTimezoneDatatype", ["[0"], "The date and time the document was last stored for later retrieval."],
+        [4, "version", "StringDatatype", [], "Used to distinguish a specific revision of an OSCAL document from other previous and future versions."],
+        [5, "oscal-version", "StringDatatype", ["[0"], "The OSCAL model version the document was authored against and will conform to as valid."],
+        [6, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [7, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [8, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Props", "ArrayOf", ["{1", "*Property"], "", []],
+    ["Links", "ArrayOf", ["{1", "*Link"], "", []],
+    ["Document-ids", "ArrayOf", ["{1", "*Document-id"], "", []],
+    ["Roles", "ArrayOf", ["{1", "*Role"], "", []],
+    ["Role", "Record", [], "Defines a function, which might be assigned to a party in a specific situation.", [
+        [1, "id", "TokenDatatype", [], "A unique identifier for the role."],
+        [2, "title", "String", [], "A name given to the role, which may be used by a tool for display and navigation."],
+        [3, "short-name", "StringDatatype", ["[0"], "A short common name, abbreviation, or acronym for the role."],
+        [4, "description", "String", ["[0"], "A summary of the role's purpose and associated responsibilities."],
+        [5, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [6, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [7, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Locations", "ArrayOf", ["{1", "*Location"], "", []],
+    ["Location", "Record", [], "A physical point of presence, which may be associated with people, organizations, or other concepts within the current or linked OSCAL document.", [
+        [1, "uuid", "UUIDDatatype", [], "A unique ID for the location, for reference."],
+        [2, "title", "String", ["[0"], "A name given to the location, which may be used by a tool for display and navigation."],
+        [3, "address", "Address", ["[0"], "A postal address for the location."],
+        [4, "email-addresses", "Email-addresses", ["[0"], "An email address as defined by RFC 5322 Section 3.4.1."],
+        [5, "telephone-numbers", "Telephone-numbers", ["[0"], "A telephone service number as defined by ITU-T E.164."],
+        [6, "urls", "Urls", ["[0"], "The uniform resource locator (URL) for a web site or other resource associated with the location."],
+        [7, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [8, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [9, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Email-addresses", "ArrayOf", ["{1", "*EmailAddressDatatype"], "", []],
+    ["Telephone-numbers", "ArrayOf", ["{1", "*Telephone-number"], "", []],
+    ["Urls", "ArrayOf", ["{1", "*URIDatatype"], "", []],
+    ["Parties", "ArrayOf", ["{1", "*Party"], "", []],
+    ["Party", "Record", [], "An organization or person, which may be associated with roles or other concepts within the current or linked OSCAL document.", [
+        [1, "uuid", "UUIDDatatype", [], "A unique identifier for the party."],
+        [2, "type", "Party$type", [], "A category describing the kind of party the object describes."],
+        [3, "name", "StringDatatype", ["[0"], "The full name of the party. This is typically the legal name associated with the party."],
+        [4, "short-name", "StringDatatype", ["[0"], "A short common name, abbreviation, or acronym for the party."],
+        [5, "external-ids", "External-ids", ["[0"], "An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID)."],
+        [6, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [7, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [8, "email-addresses", "Email-addresses", ["[0"], "An email address as defined by RFC 5322 Section 3.4.1."],
+        [9, "telephone-numbers", "Telephone-numbers", ["[0"], "A telephone service number as defined by ITU-T E.164."],
+        [10, "addresses", "Addresses", ["[0"], "A postal address for the location."],
+        [11, "location-uuids", "Location-uuids", ["[0"], "Reference to a location by UUID."],
+        [12, "member-of-organizations", "Member-of-organizations", ["[0"], "A reference to another party by UUID, typically an organization, that this subject is associated with."],
+        [13, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Party$type", "Choice", [], "A category describing the kind of party the object describes.", [
+        [1, "c1", "StringDatatype", [], ""],
+        [2, "c2", "Party$type$2", [], ""]
+      ]],
+    ["Party$type$2", "Enumerated", [], "", [
+        [1, "person", ""],
+        [2, "organization", ""]
+      ]],
+    ["External-ids", "ArrayOf", ["{1", "*External-id"], "", []],
+    ["External-id", "Record", [], "An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID).", [
+        [1, "scheme", "External-id$scheme", [], "Indicates the type of external identifier."],
+        [2, "id", "StringDatatype", [], ""]
+      ]],
+    ["External-id$scheme", "Choice", [], "Indicates the type of external identifier.", [
+        [1, "c1", "URIDatatype", [], ""],
+        [2, "c2", "External-id$scheme$2", [], ""]
+      ]],
+    ["External-id$scheme$2", "Enumerated", [], "", [
+        [1, "http://orcid.org/", ""]
+      ]],
+    ["Addresses", "ArrayOf", ["{1", "*Address"], "", []],
+    ["Location-uuids", "ArrayOf", ["{1", "*UUIDDatatype"], "", []],
+    ["Member-of-organizations", "ArrayOf", ["{1", "*UUIDDatatype"], "", []],
+    ["Responsible-parties", "ArrayOf", ["{1", "*Responsible-party"], "", []],
+    ["Actions", "ArrayOf", ["{1", "*Action"], "", []],
+    ["Back-matter", "Record", [], "A collection of resources that may be referenced from within the OSCAL document instance.", [
+        [1, "resources", "Resources", ["[0"], "A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources."]
+      ]],
+    ["Resources", "ArrayOf", ["{1", "*Resource"], "", []],
+    ["Resource", "Record", [], "A resource associated with content in the containing document instance. A resource may be directly included in the document using base64 encoding or may point to one or more equivalent internet resources.", [
+        [1, "uuid", "UUIDDatatype", [], "A unique identifier for a resource."],
+        [2, "title", "String", ["[0"], "An optional name given to the resource, which may be used by a tool for display and navigation."],
+        [3, "description", "String", ["[0"], "An optional short summary of the resource used to indicate the purpose of the resource."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "document-ids", "Document-ids", ["[0"], "A document identifier qualified by an identifier scheme."],
+        [6, "citation", "Resource", ["[0"], "An optional citation consisting of end note text using structured markup."],
+        [7, "rlinks", "Rlinks", ["[0"], "A URL-based pointer to an external resource with an optional hash for verification and change detection."],
+        [8, "base64", "Resource", ["[0"], "A resource encoded using the Base64 alphabet defined by RFC 2045."],
+        [9, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Rlinks", "ArrayOf", ["{1", "*Rlink"], "", []],
+    ["Rlink", "Record", [], "A URL-based pointer to an external resource with an optional hash for verification and change detection.", [
+        [1, "href", "URIReferenceDatatype", [], "A resolvable URL pointing to the referenced resource."],
+        [2, "media-type", "StringDatatype", ["[0"], "A label that indicates the nature of a resource, as a data serialization or format."],
+        [3, "hashes", "Hashes", ["[0"], "A representation of a cryptographic digest generated over a resource using a specified hash algorithm."]
+      ]],
+    ["Hashes", "ArrayOf", ["{1", "*Hash"], "", []],
+    ["Property", "Record", [], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair.", [
+        [1, "name", "TokenDatatype", [], "A textual label, within a namespace, that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object."],
+        [2, "uuid", "UUIDDatatype", ["[0"], "A unique identifier for a property."],
+        [3, "ns", "URIDatatype", ["[0"], "A namespace qualifying the property's name. This allows different organizations to associate distinct semantics with the same name."],
+        [4, "value", "StringDatatype", [], "Indicates the value of the attribute, characteristic, or quality."],
+        [5, "class", "TokenDatatype", ["[0"], "A textual label that provides a sub-type or characterization of the property's name."],
+        [6, "group", "TokenDatatype", ["[0"], "An identifier for relating distinct sets of properties."],
+        [7, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Link", "Record", [], "A reference to a local or remote resource, that has a specific relation to the containing object.", [
+        [1, "href", "URIReferenceDatatype", [], "A resolvable URL reference to a resource."],
+        [2, "rel", "Link$rel", ["[0"], "Describes the type of relationship provided by the link's hypertext reference. This can be an indicator of the link's purpose."],
+        [3, "media-type", "StringDatatype", ["[0"], "A label that indicates the nature of a resource, as a data serialization or format."],
+        [4, "resource-fragment", "StringDatatype", ["[0"], "In case where the href points to a back-matter/resource, this value will indicate the URI fragment to append to any rlink associated with the resource. This value MUST be URI encoded."],
+        [5, "text", "String", ["[0"], "A textual label to associate with the link, which may be used for presentation in a tool."]
+      ]],
+    ["Link$rel", "Choice", [], "Describes the type of relationship provided by the link's hypertext reference. This can be an indicator of the link's purpose.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Link$rel$2", [], ""]
+      ]],
+    ["Link$rel$2", "Enumerated", [], "", [
+        [1, "reference", ""]
+      ]],
+    ["Responsible-party", "Record", [], "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object.", [
+        [1, "role-id", "TokenDatatype", [], "A reference to a role performed by a party."],
+        [2, "party-uuids", "Party-uuids", [], "Reference to a party by UUID."],
+        [3, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [4, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [5, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Party-uuids", "ArrayOf", ["{1", "*UUIDDatatype"], "", []],
+    ["Action", "Record", [], "An action applied by a role within a given party to the content.", [
+        [1, "uuid", "UUIDDatatype", [], "A unique identifier that can be used to reference this defined action elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document."],
+        [2, "date", "DateTimeWithTimezoneDatatype", ["[0"], "The date and time when the action occurred."],
+        [3, "type", "TokenDatatype", [], "The type of action documented by the assembly, such as an approval."],
+        [4, "system", "URIDatatype", [], "Specifies the action type system used."],
+        [5, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [6, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [7, "responsible-parties", "Responsible-parties", ["[0"], "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object."],
+        [8, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Responsible-role", "Record", [], "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role.", [
+        [1, "role-id", "TokenDatatype", [], "A human-oriented identifier reference to a role performed."],
+        [2, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [3, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [4, "party-uuids", "Party-uuids", ["[0"], "Reference to a party by UUID."],
+        [5, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Hash", "Record", [], "A representation of a cryptographic digest generated over a resource using a specified hash algorithm.", [
+        [1, "algorithm", "Hash$algorithm", [], "The digest method by which a hash is derived."],
+        [2, "value", "StringDatatype", [], ""]
+      ]],
+    ["Hash$algorithm", "Choice", [], "The digest method by which a hash is derived.", [
+        [1, "c1", "StringDatatype", [], ""],
+        [2, "c2", "Hash$algorithm$2", [], ""]
+      ]],
+    ["Hash$algorithm$2", "Enumerated", [], "", [
+        [1, "SHA-224", ""],
+        [2, "SHA-256", ""],
+        [3, "SHA-384", ""],
+        [4, "SHA-512", ""],
+        [5, "SHA3-224", ""],
+        [6, "SHA3-256", ""],
+        [7, "SHA3-384", ""],
+        [8, "SHA3-512", ""]
+      ]],
+    ["Remarks", "String", [], "Additional commentary about the containing object.", []],
+    ["Telephone-number", "Record", [], "A telephone service number as defined by ITU-T E.164.", [
+        [1, "type", "Telephone-number$type", ["[0"], "Indicates the type of phone number."],
+        [2, "number", "StringDatatype", [], ""]
+      ]],
+    ["Telephone-number$type", "Choice", [], "Indicates the type of phone number.", [
+        [1, "c1", "StringDatatype", [], ""],
+        [2, "c2", "Telephone-number$type$2", [], ""]
+      ]],
+    ["Telephone-number$type$2", "Enumerated", [], "", [
+        [1, "home", ""],
+        [2, "office", ""],
+        [3, "mobile", ""]
+      ]],
+    ["Address", "Record", [], "A postal address for the location.", [
+        [1, "type", "Address$type", ["[0"], "Indicates the type of address."],
+        [2, "addr-lines", "Addr-lines", ["[0"], "A single line of an address."],
+        [3, "city", "StringDatatype", ["[0"], "City, town or geographical region for the mailing address."],
+        [4, "state", "StringDatatype", ["[0"], "State, province or analogous geographical region for a mailing address."],
+        [5, "postal-code", "StringDatatype", ["[0"], "Postal or ZIP code for mailing address."],
+        [6, "country", "StringDatatype", ["[0"], "The ISO 3166-1 alpha-2 country code for the mailing address."]
+      ]],
+    ["Address$type", "Choice", [], "Indicates the type of address.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Address$type$2", [], ""]
+      ]],
+    ["Address$type$2", "Enumerated", [], "", [
+        [1, "home", ""],
+        [2, "work", ""]
+      ]],
+    ["Addr-lines", "ArrayOf", ["{1", "*StringDatatype"], "", []],
+    ["Document-id", "Record", [], "A document identifier qualified by an identifier scheme.", [
+        [1, "scheme", "Document-id$scheme", ["[0"], "Qualifies the kind of document identifier using a URI. If the scheme is not provided the value of the element will be interpreted as a string of characters."],
+        [2, "identifier", "StringDatatype", [], ""]
+      ]],
+    ["Document-id$scheme", "Choice", [], "Qualifies the kind of document identifier using a URI. If the scheme is not provided the value of the element will be interpreted as a string of characters.", [
+        [1, "c1", "URIDatatype", [], ""],
+        [2, "c2", "Document-id$scheme$2", [], ""]
+      ]],
+    ["Document-id$scheme$2", "Enumerated", [], "", [
+        [1, "http://www.doi.org/", ""]
+      ]],
+    ["Import-ssp", "Record", [], "Used by the assessment plan and POA&M to import information about the system.", [
+        [1, "href", "URIReferenceDatatype", [], "A resolvable URL reference to the system security plan for the system being assessed."],
+        [2, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Local-objective", "Record", [], "A local definition of a control objective for this assessment. Uses catalog syntax for control objective and assessment actions.", [
+        [1, "control-id", "TokenDatatype", [], "A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference)."],
+        [2, "description", "String", ["[0"], "A human-readable description of this control objective."],
+        [3, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [4, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [5, "parts", "Control-Parts", [], "An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part."],
+        [6, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Control-Parts", "ArrayOf", ["{1", "*Control-Part"], "", []],
+    ["Assessment-method", "Record", [], "A local definition of a control objective. Uses catalog syntax for control objective and assessment activities.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment method elsewhere in this or other OSCAL instances. The locally defined UUID of the assessment method can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "description", "String", ["[0"], "A human-readable description of this assessment method."],
+        [3, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [4, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [5, "part", "Assessment-Part", [], "A partition of an assessment plan or results or a child of another part."],
+        [6, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Activity", "Record", [], "Identifies an assessment or related process that can be performed. In the assessment plan, this is an intended activity which may be associated with an assessment task. In the assessment results, this an activity that was actually performed as part of an assessment.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment activity elsewhere in this or other OSCAL instances. The locally defined UUID of the activity can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "title", "String", ["[0"], "The title for this included activity."],
+        [3, "description", "String", [], "A human-readable description of this included activity."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [6, "steps", "Steps", ["[0"], "Identifies an individual step in a series of steps related to an activity, such as an assessment test or examination procedure."],
+        [7, "related-controls", "Reviewed-controls", ["[0"], "Identifies the controls being assessed and their control objectives."],
+        [8, "responsible-roles", "Responsible-roles", ["[0"], "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role."],
+        [9, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Steps", "ArrayOf", ["{1", "*Step"], "", []],
+    ["Step", "Record", [], "Identifies an individual step in a series of steps related to an activity, such as an assessment test or examination procedure.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this step elsewhere in this or other OSCAL instances. The locally defined UUID of the step (in a series of steps) can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "title", "String", ["[0"], "The title for this step."],
+        [3, "description", "String", [], "A human-readable description of this step."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [6, "reviewed-controls", "Reviewed-controls", ["[0"], "Identifies the controls being assessed and their control objectives."],
+        [7, "responsible-roles", "Responsible-roles", ["[0"], "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role."],
+        [8, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Responsible-roles", "ArrayOf", ["{1", "*Responsible-role"], "", []],
+    ["Task", "Record", [], "Represents a scheduled event or milestone, which may be associated with a series of assessment actions.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this task elsewhere in this or other OSCAL instances. The locally defined UUID of the task can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "type", "Task$type", [], "The type of task."],
+        [3, "title", "String", [], "The title for this task."],
+        [4, "description", "String", ["[0"], "A human-readable description of this task."],
+        [5, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [6, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [7, "timing", "Task-Timing", [], "The timing under which the task is intended to occur."],
+        [8, "dependencies", "Dependencies", ["[0"], "Used to indicate that a task is dependent on another task."],
+        [9, "tasks", "Tasks", ["[0"], "Represents a scheduled event or milestone, which may be associated with a series of assessment actions."],
+        [10, "associated-activities", "Associated-activities", ["[0"], "Identifies an individual activity to be performed as part of a task."],
+        [11, "subjects", "Assessment-Subjects", ["[0"], "Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope."],
+        [12, "responsible-roles", "Responsible-roles", ["[0"], "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role."],
+        [13, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Task$type", "Choice", [], "The type of task.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Task$type$2", [], ""]
+      ]],
+    ["Task$type$2", "Enumerated", [], "", [
+        [1, "milestone", ""],
+        [2, "action", ""]
+      ]],
+    ["Dependencies", "ArrayOf", ["{1", "*Dependency"], "", []],
+    ["Dependency", "Record", [], "Used to indicate that a task is dependent on another task.", [
+        [1, "task-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to a unique task."],
+        [2, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Associated-activities", "ArrayOf", ["{1", "*Associated-activity"], "", []],
+    ["Associated-activity", "Record", [], "Identifies an individual activity to be performed as part of a task.", [
+        [1, "activity-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to an activity defined in the list of activities."],
+        [2, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [3, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [4, "responsible-roles", "Responsible-roles", ["[0"], "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role."],
+        [5, "subjects", "Assessment-Subjects", [], "Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope."],
+        [6, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Assessment-Subjects", "ArrayOf", ["{1", "*Assessment-subject"], "", []],
+    ["Reviewed-controls", "Record", [], "Identifies the controls being assessed and their control objectives.", [
+        [1, "description", "String", ["[0"], "A human-readable description of control objectives."],
+        [2, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [3, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [4, "control-selections", "Control-selections", [], "Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan."],
+        [5, "control-objective-selections", "Control-objective-selections", ["[0"], "Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan."],
+        [6, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Control-selections", "ArrayOf", ["{1", "*Control-selection"], "", []],
+    ["Control-selection", "Record", [], "Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.", [
+        [1, "description", "String", ["[0"], "A human-readable description of in-scope controls specified for assessment."],
+        [2, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [3, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [4, "include-all", "Include-all", ["[0"], "Include all controls from the imported catalog or profile resources."],
+        [5, "include-controls", "Include-controls", ["[0"], "Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope."],
+        [6, "exclude-controls", "Exclude-controls", ["[0"], "Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope."],
+        [7, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Include-controls", "ArrayOf", ["{1", "*Select-control-by-id"], "", []],
+    ["Exclude-controls", "ArrayOf", ["{1", "*Select-control-by-id"], "", []],
+    ["Control-objective-selections", "ArrayOf", ["{1", "*Control-objective-selection"], "", []],
+    ["Control-objective-selection", "Record", [], "Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.", [
+        [1, "description", "String", ["[0"], "A human-readable description of this collection of control objectives."],
+        [2, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [3, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [4, "include-all", "Include-all", ["[0"], "Include all controls from the imported catalog or profile resources."],
+        [5, "include-objectives", "Include-objectives", ["[0"], "Used to select a control objective for inclusion/exclusion based on the control objective's identifier."],
+        [6, "exclude-objectives", "Exclude-objectives", ["[0"], "Used to select a control objective for inclusion/exclusion based on the control objective's identifier."],
+        [7, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Include-objectives", "ArrayOf", ["{1", "*Select-objective-by-id"], "", []],
+    ["Exclude-objectives", "ArrayOf", ["{1", "*Select-objective-by-id"], "", []],
+    ["Select-control-by-id", "Record", [], "Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.", [
+        [1, "control-id", "TokenDatatype", [], "A reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference)."],
+        [2, "statement-ids", "Statement-ids", ["[0"], "Used to constrain the selection to only specificity identified statements."]
+      ]],
+    ["Statement-ids", "ArrayOf", ["{1", "*TokenDatatype"], "", []],
+    ["Select-objective-by-id", "Record", [], "Used to select a control objective for inclusion/exclusion based on the control objective's identifier.", [
+        [1, "objective-id", "TokenDatatype", [], "Points to an assessment objective."]
+      ]],
+    ["Assessment-subject-placeholder", "Record", [], "Used when the assessment subjects will be determined as part of one or more other assessment activities. These assessment subjects will be recorded in the assessment results in the assessment log.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier for a set of assessment subjects that will be identified by a task or an activity that is part of a task. The locally defined UUID of the assessment subject placeholder can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "description", "String", ["[0"], "A human-readable description of intent of this assessment subject placeholder."],
+        [3, "sources", "Sources", [], "Assessment subjects will be identified while conducting the referenced activity-instance."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [6, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Sources", "ArrayOf", ["{1", "*Source"], "", []],
+    ["Source", "Record", [], "Assessment subjects will be identified while conducting the referenced activity-instance.", [
+        [1, "task-uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference (in this or other OSCAL instances) an assessment activity to be performed as part of the event. The locally defined UUID of the task can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."]
+      ]],
+    ["Assessment-subject", "Record", [], "Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.", [
+        [1, "type", "Assessment-subject$type", [], "Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement."],
+        [2, "description", "String", ["[0"], "A human-readable description of the collection of subjects being included in this assessment."],
+        [3, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [4, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [5, "include-all", "Include-all", ["[0"], "Include all controls from the imported catalog or profile resources."],
+        [6, "include-subjects", "Include-subjects", ["[0"], "Identifies a set of assessment subjects to include/exclude by UUID."],
+        [7, "exclude-subjects", "Exclude-subjects", ["[0"], "Identifies a set of assessment subjects to include/exclude by UUID."],
+        [8, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Assessment-subject$type", "Choice", [], "Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Assessment-subject$type$2", [], ""]
+      ]],
+    ["Assessment-subject$type$2", "Enumerated", [], "", [
+        [1, "component", ""],
+        [2, "inventory-item", ""],
+        [3, "location", ""],
+        [4, "party", ""],
+        [5, "user", ""]
+      ]],
+    ["Include-subjects", "ArrayOf", ["{1", "*Select-subject-by-id"], "", []],
+    ["Exclude-subjects", "ArrayOf", ["{1", "*Select-subject-by-id"], "", []],
+    ["Select-subject-by-id", "Record", [], "Identifies a set of assessment subjects to include/exclude by UUID.", [
+        [1, "subject-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to a component, inventory-item, location, party, user, or resource using it's UUID."],
+        [2, "type", "Select-subject-by-id$type", [], "Used to indicate the type of object pointed to by the uuid-ref within a subject."],
+        [3, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [4, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [5, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Select-subject-by-id$type", "Choice", [], "Used to indicate the type of object pointed to by the uuid-ref within a subject.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Select-subject-by-id$type$2", [], ""]
+      ]],
+    ["Select-subject-by-id$type$2", "Enumerated", [], "", [
+        [1, "component", ""],
+        [2, "inventory-item", ""],
+        [3, "location", ""],
+        [4, "party", ""],
+        [5, "user", ""],
+        [6, "resource", ""]
+      ]],
+    ["Subject-reference", "Record", [], "A human-oriented identifier reference to a resource. Use type to indicate whether the identified resource is a component, inventory item, location, user, or something else.", [
+        [1, "subject-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to a component, inventory-item, location, party, user, or resource using it's UUID."],
+        [2, "type", "Subject-reference$type", [], "Used to indicate the type of object pointed to by the uuid-ref within a subject."],
+        [3, "title", "String", ["[0"], "The title or name for the referenced subject."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [6, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Subject-reference$type", "Choice", [], "Used to indicate the type of object pointed to by the uuid-ref within a subject.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Subject-reference$type$2", [], ""]
+      ]],
+    ["Subject-reference$type$2", "Enumerated", [], "", [
+        [1, "component", ""],
+        [2, "inventory-item", ""],
+        [3, "location", ""],
+        [4, "party", ""],
+        [5, "user", ""],
+        [6, "resource", ""]
+      ]],
+    ["Assessment-assets", "Record", [], "Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.", [
+        [1, "components", "Components", ["[0"], "A defined component that can be part of an implemented system."],
+        [2, "assessment-platforms", "Assessment-platforms", [], "Used to represent the toolset used to perform aspects of the assessment."]
+      ]],
+    ["Components", "ArrayOf", ["{1", "*System-component"], "", []],
+    ["Assessment-platforms", "ArrayOf", ["{1", "*Assessment-platform"], "", []],
+    ["Assessment-platform", "Record", [], "Used to represent the toolset used to perform aspects of the assessment.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment platform elsewhere in this or other OSCAL instances. The locally defined UUID of the assessment platform can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "title", "String", ["[0"], "The title or name for the assessment platform."],
+        [3, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [4, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [5, "uses-components", "Uses-components", ["[0"], "The set of components that are used by the assessment platform."],
+        [6, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Uses-components", "ArrayOf", ["{1", "*Uses-component"], "", []],
+    ["Uses-component", "Record", [], "The set of components that are used by the assessment platform.", [
+        [1, "component-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to a component that is implemented as part of an inventory item."],
+        [2, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [3, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [4, "responsible-parties", "Responsible-parties", ["[0"], "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object."],
+        [5, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Finding-target", "Record", [], "Captures an assessor's conclusions regarding the degree to which an objective is satisfied.", [
+        [1, "type", "Finding-target$type", [], "Identifies the type of the target."],
+        [2, "target-id", "TokenDatatype", [], "A machine-oriented identifier reference for a specific target qualified by the type."],
+        [3, "title", "String", ["[0"], "The title for this objective status."],
+        [4, "description", "String", ["[0"], "A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied."],
+        [5, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [6, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [7, "status", "Finding-Target-Status", [], "A determination of if the objective is satisfied or not within a given system."],
+        [8, "implementation-status", "Implementation-status", ["[0"], "Indicates the degree to which the a given control is implemented."],
+        [9, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Finding-target$type", "Choice", [], "Identifies the type of the target.", [
+        [1, "c1", "StringDatatype", [], ""],
+        [2, "c2", "Finding-target$type$2", [], ""]
+      ]],
+    ["Finding-target$type$2", "Enumerated", [], "", [
+        [1, "statement-id", ""],
+        [2, "objective-id", ""]
+      ]],
+    ["Finding", "Record", [], "Describes an individual finding.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this finding in this or other OSCAL instances. The locally defined UUID of the finding can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "title", "String", [], "The title for this finding."],
+        [3, "description", "String", [], "A human-readable description of this finding."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [6, "origins", "Origins", ["[0"], "Identifies the source of the finding, such as a tool, interviewed person, or activity."],
+        [7, "target", "Finding-target", [], "Captures an assessor's conclusions regarding the degree to which an objective is satisfied."],
+        [8, "implementation-statement-uuid", "UUIDDatatype", ["[0"], "A machine-oriented identifier reference to the implementation statement in the SSP to which this finding is related."],
+        [9, "related-observations", "Related-observations", ["[0"], "Relates the finding to a set of referenced observations that were used to determine the finding."],
+        [10, "related-risks", "Related-risks", ["[0"], "Relates the finding to a set of referenced risks that were used to determine the finding."],
+        [11, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Origins", "ArrayOf", ["{1", "*Origin"], "", []],
+    ["Related-observations", "ArrayOf", ["{1", "*Related-observation"], "", []],
+    ["Related-observation", "Record", [], "Relates the finding to a set of referenced observations that were used to determine the finding.", [
+        [1, "observation-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to an observation defined in the list of observations."]
+      ]],
+    ["Related-risks", "ArrayOf", ["{1", "*Related-risk"], "", []],
+    ["Related-risk", "Record", [], "Relates the finding to a set of referenced risks that were used to determine the finding.", [
+        [1, "risk-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to a risk defined in the list of risks."]
+      ]],
+    ["Observation", "Record", [], "Describes an individual observation.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imorted OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "title", "String", ["[0"], "The title for this observation."],
+        [3, "description", "String", [], "A human-readable description of this assessment observation."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [6, "methods", "Methods", [], "Identifies how the observation was made."],
+        [7, "types", "Types", ["[0"], "Identifies the nature of the observation. More than one may be used to further qualify and enable filtering."],
+        [8, "origins", "Origins", ["[0"], "Identifies the source of the finding, such as a tool, interviewed person, or activity."],
+        [9, "subjects", "Subject-refs", ["[0"], "A human-oriented identifier reference to a resource. Use type to indicate whether the identified resource is a component, inventory item, location, user, or something else."],
+        [10, "relevant-evidence", "Relevant-evidence", ["[0"], "Links this observation to relevant evidence."],
+        [11, "collected", "DateTimeWithTimezoneDatatype", [], "Date/time stamp identifying when the finding information was collected."],
+        [12, "expires", "DateTimeWithTimezoneDatatype", ["[0"], "Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios."],
+        [13, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Methods", "ArrayOf", ["{1", "*Method"], "", []],
+    ["Method", "Choice", [], "Identifies how the observation was made.", [
+        [1, "c1", "StringDatatype", [], ""],
+        [2, "c2", "Method$2", [], ""]
+      ]],
+    ["Method$2", "Enumerated", [], "", [
+        [1, "EXAMINE", ""],
+        [2, "INTERVIEW", ""],
+        [3, "TEST", ""],
+        [4, "UNKNOWN", ""]
+      ]],
+    ["Types", "ArrayOf", ["{1", "*Type"], "", []],
+    ["Type", "Choice", [], "Identifies the nature of the observation. More than one may be used to further qualify and enable filtering.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Type$2", [], ""]
+      ]],
+    ["Type$2", "Enumerated", [], "", [
+        [1, "ssp-statement-issue", ""],
+        [2, "control-objective", ""],
+        [3, "mitigation", ""],
+        [4, "finding", ""],
+        [5, "historic", ""]
+      ]],
+    ["Subject-refs", "ArrayOf", ["{1", "*Subject-reference"], "", []],
+    ["Relevant-evidence", "ArrayOf", ["{1", "*Relevant-evidence-item"], "", []],
+    ["Relevant-evidence-item", "Record", [], "Links this observation to relevant evidence.", [
+        [1, "href", "URIReferenceDatatype", ["[0"], "A resolvable URL reference to relevant evidence."],
+        [2, "description", "String", [], "A human-readable description of this evidence."],
+        [3, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [4, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [5, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Origin", "Record", [], "Identifies the source of the finding, such as a tool, interviewed person, or activity.", [
+        [1, "actors", "Actors", [], "The actor that produces an observation, a finding, or a risk. One or more actor type can be used to specify a person that is using a tool."],
+        [2, "related-tasks", "Related-tasks", ["[0"], "Identifies an individual task for which the containing object is a consequence of."]
+      ]],
+    ["Actors", "ArrayOf", ["{1", "*Origin-actor"], "", []],
+    ["Related-tasks", "ArrayOf", ["{1", "*Related-task"], "", []],
+    ["Origin-actor", "Record", [], "The actor that produces an observation, a finding, or a risk. One or more actor type can be used to specify a person that is using a tool.", [
+        [1, "type", "Origin-actor$type", [], "The kind of actor."],
+        [2, "actor-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to the tool or person based on the associated type."],
+        [3, "role-id", "TokenDatatype", ["[0"], "For a party, this can optionally be used to specify the role the actor was performing."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."]
+      ]],
+    ["Origin-actor$type", "Choice", [], "The kind of actor.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Origin-actor$type$2", [], ""]
+      ]],
+    ["Origin-actor$type$2", "Enumerated", [], "", [
+        [1, "tool", ""],
+        [2, "assessment-platform", ""],
+        [3, "party", ""]
+      ]],
+    ["Related-task", "Record", [], "Identifies an individual task for which the containing object is a consequence of.", [
+        [1, "task-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to a unique task."],
+        [2, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [3, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [4, "responsible-parties", "Responsible-parties", ["[0"], "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object."],
+        [5, "subjects", "Assessment-Subjects", ["[0"], "Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope."],
+        [6, "identified-subject", "Identified-Subject", ["[0"], "Used to detail assessment subjects that were identfied by this task."],
+        [7, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Threat-id", "Record", [], "A pointer, by ID, to an externally-defined threat.", [
+        [1, "system", "Threat-id$system", [], "Specifies the source of the threat information."],
+        [2, "href", "URIReferenceDatatype", ["[0"], "An optional location for the threat data, from which this ID originates."],
+        [3, "id", "URIDatatype", [], ""]
+      ]],
+    ["Threat-id$system", "Choice", [], "Specifies the source of the threat information.", [
+        [1, "c1", "URIDatatype", [], ""],
+        [2, "c2", "Threat-id$system$2", [], ""]
+      ]],
+    ["Threat-id$system$2", "Enumerated", [], "", [
+        [1, "http://fedramp.gov", ""],
+        [2, "http://fedramp.gov/ns/oscal", ""]
+      ]],
+    ["Risk", "Record", [], "An identified risk.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this risk elsewhere in this or other OSCAL instances. The locally defined UUID of the risk can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "title", "String", [], "The title for this risk."],
+        [3, "description", "String", [], "A human-readable summary of the identified risk, to include a statement of how the risk impacts the system."],
+        [4, "statement", "String", [], "An summary of impact for how the risk affects the system."],
+        [5, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [6, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [7, "status", "Risk-status", [], "Describes the status of the associated risk."],
+        [8, "origins", "Origins", ["[0"], "Identifies the source of the finding, such as a tool, interviewed person, or activity."],
+        [9, "threat-ids", "Threat-ids", ["[0"], "A pointer, by ID, to an externally-defined threat."],
+        [10, "characterizations", "Characterizations", ["[0"], "A collection of descriptive data about the containing object from a specific origin."],
+        [11, "mitigating-factors", "Mitigating-factors", ["[0"], "Describes an existing mitigating factor that may affect the overall determination of the risk, with an optional link to an implementation statement in the SSP."],
+        [12, "deadline", "DateTimeWithTimezoneDatatype", ["[0"], "The date/time by which the risk must be resolved."],
+        [13, "remediations", "Remediations", ["[0"], "Describes either recommended or an actual plan for addressing the risk."],
+        [14, "risk-log", "ArrayOf", ["*Risk-Log-Entry", "[0", "]1"], "A log of all risk-related tasks taken."],
+        [15, "related-observations", "Related-observations", ["[0"], "Relates the finding to a set of referenced observations that were used to determine the finding."]
+      ]],
+    ["Threat-ids", "ArrayOf", ["{1", "*Threat-id"], "", []],
+    ["Characterizations", "ArrayOf", ["{1", "*Characterization"], "", []],
+    ["Mitigating-factors", "ArrayOf", ["{1", "*Mitigating-factor"], "", []],
+    ["Mitigating-factor", "Record", [], "Describes an existing mitigating factor that may affect the overall determination of the risk, with an optional link to an implementation statement in the SSP.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this mitigating factor elsewhere in this or other OSCAL instances. The locally defined UUID of the mitigating factor can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "implementation-uuid", "UUIDDatatype", ["[0"], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this implementation statement elsewhere in this or other OSCAL instancess. The locally defined UUID of the implementation statement can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [3, "description", "String", [], "A human-readable description of this mitigating factor."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [6, "subjects", "Subject-refs", ["[0"], "A human-oriented identifier reference to a resource. Use type to indicate whether the identified resource is a component, inventory item, location, user, or something else."]
+      ]],
+    ["Remediations", "ArrayOf", ["{1", "*Response"], "", []],
+    ["Logged-by", "Record", [], "Used to indicate who created a log entry in what role.", [
+        [1, "party-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to the party who is making the log entry."],
+        [2, "role-id", "TokenDatatype", ["[0"], "A point to the role-id of the role in which the party is making the log entry."]
+      ]],
+    ["Risk-status", "Choice", [], "Describes the status of the associated risk.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Risk-status$2", [], ""]
+      ]],
+    ["Risk-status$2", "Enumerated", [], "", [
+        [1, "open", ""],
+        [2, "investigating", ""],
+        [3, "remediating", ""],
+        [4, "deviation-requested", ""],
+        [5, "deviation-approved", ""],
+        [6, "closed", ""]
+      ]],
+    ["Characterization", "Record", [], "A collection of descriptive data about the containing object from a specific origin.", [
+        [1, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [2, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [3, "origin", "Origin", [], "Identifies the source of the finding, such as a tool, interviewed person, or activity."],
+        [4, "facets", "Facets", [], "An individual characteristic that is part of a larger set produced by the same actor."]
+      ]],
+    ["Facets", "ArrayOf", ["{1", "*Facet"], "", []],
+    ["Facet", "Record", [], "An individual characteristic that is part of a larger set produced by the same actor.", [
+        [1, "name", "TokenDatatype", [], "The name of the risk metric within the specified system."],
+        [2, "system", "Facet$system", [], "Specifies the naming system under which this risk metric is organized, which allows for the same names to be used in different systems controlled by different parties. This avoids the potential of a name clash."],
+        [3, "value", "StringDatatype", [], "Indicates the value of the facet."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [6, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Facet$system", "Choice", [], "Specifies the naming system under which this risk metric is organized, which allows for the same names to be used in different systems controlled by different parties. This avoids the potential of a name clash.", [
+        [1, "c1", "URIDatatype", [], ""],
+        [2, "c2", "Facet$system$2", [], ""]
+      ]],
+    ["Facet$system$2", "Enumerated", [], "", [
+        [1, "http://fedramp.gov", ""],
+        [2, "http://fedramp.gov/ns/oscal", ""],
+        [3, "http://csrc.nist.gov/ns/oscal", ""],
+        [4, "http://csrc.nist.gov/ns/oscal/unknown", ""],
+        [5, "http://cve.mitre.org", ""],
+        [6, "http://www.first.org/cvss/v2.0", ""],
+        [7, "http://www.first.org/cvss/v3.0", ""],
+        [8, "http://www.first.org/cvss/v3.1", ""]
+      ]],
+    ["Response", "Record", [], "Describes either recommended or an actual plan for addressing the risk.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this remediation elsewhere in this or other OSCAL instances. The locally defined UUID of the risk response can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "lifecycle", "Response$lifecycle", [], "Identifies whether this is a recommendation, such as from an assessor or tool, or an actual plan accepted by the system owner."],
+        [3, "title", "String", [], "The title for this response activity."],
+        [4, "description", "String", [], "A human-readable description of this response plan."],
+        [5, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [6, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [7, "origins", "Origins", ["[0"], "Identifies the source of the finding, such as a tool, interviewed person, or activity."],
+        [8, "required-assets", "Required-assets", ["[0"], "Identifies an asset required to achieve remediation."],
+        [9, "tasks", "Tasks", ["[0"], "Represents a scheduled event or milestone, which may be associated with a series of assessment actions."],
+        [10, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Response$lifecycle", "Choice", [], "Identifies whether this is a recommendation, such as from an assessor or tool, or an actual plan accepted by the system owner.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Response$lifecycle$2", [], ""]
+      ]],
+    ["Response$lifecycle$2", "Enumerated", [], "", [
+        [1, "recommendation", ""],
+        [2, "planned", ""],
+        [3, "completed", ""]
+      ]],
+    ["Required-assets", "ArrayOf", ["{1", "*Required-asset"], "", []],
+    ["Required-asset", "Record", [], "Identifies an asset required to achieve remediation.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this required asset elsewhere in this or other OSCAL instances. The locally defined UUID of the asset can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "subjects", "Subject-refs", ["[0"], "A human-oriented identifier reference to a resource. Use type to indicate whether the identified resource is a component, inventory item, location, user, or something else."],
+        [3, "title", "String", ["[0"], "The title for this required asset."],
+        [4, "description", "String", [], "A human-readable description of this required asset."],
+        [5, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [6, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [7, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Assessment-Part", "Record", [], "A partition of an assessment plan or results or a child of another part.", [
+        [1, "uuid", "UUIDDatatype", ["[0"], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this part elsewhere in this or other OSCAL instances. The locally defined UUID of the part can be used to reference the data item locally or globally (e.g., in an ported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "name", "Assessment-part$name", [], "A textual label that uniquely identifies the part's semantic type."],
+        [3, "ns", "URIDatatype", ["[0"], "A namespace qualifying the part's name. This allows different organizations to associate distinct semantics with the same name."],
+        [4, "class", "TokenDatatype", ["[0"], "A textual label that provides a sub-type or characterization of the part's name. This can be used to further distinguish or discriminate between the semantics of multiple parts of the same control with the same name and ns."],
+        [5, "title", "String", ["[0"], "A name given to the part, which may be used by a tool for display and navigation."],
+        [6, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [7, "prose", "String", ["[0"], "Permits multiple paragraphs, lists, tables etc."],
+        [8, "parts", "Control-Parts", ["[0"], "A partition of an assessment plan or results or a child of another part."],
+        [9, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."]
+      ]],
+    ["Assessment-part$name", "Choice", [], "A textual label that uniquely identifies the part's semantic type.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Assessment-part$name$2", [], ""]
+      ]],
+    ["Assessment-part$name$2", "Enumerated", [], "", [
+        [1, "asset", ""],
+        [2, "method", ""],
+        [3, "objective", ""]
+      ]],
+    ["Assessment-Parts", "ArrayOf", ["{1", "*Assessment-Part"], "", []],
+    ["Control-Part", "Record", [], "An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part.", [
+        [1, "id", "TokenDatatype", ["[0"], "A unique identifier for the part."],
+        [2, "name", "TokenDatatype", [], "A textual label that uniquely identifies the part's semantic type, which exists in a value space qualified by the ns."],
+        [3, "ns", "URIDatatype", ["[0"], "An optional namespace qualifying the part's name. This allows different organizations to associate distinct semantics with the same name."],
+        [4, "class", "TokenDatatype", ["[0"], "An optional textual providing a sub-type or characterization of the part's name, or a category to which the part belongs."],
+        [5, "title", "String", ["[0"], "An optional name given to the part, which may be used by a tool for display and navigation."],
+        [6, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [7, "prose", "String", ["[0"], "Permits multiple paragraphs, lists, tables etc."],
+        [8, "parts", "Control-Parts", ["[0"], "An annotated, markup-based textual element of a control's or catalog group's definition, or a child of another part."],
+        [9, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."]
+      ]],
+    ["Parameter", "Record", [], "Parameters provide a mechanism for the dynamic assignment of value(s) in a control.", [
+        [1, "id", "TokenDatatype", [], "A unique identifier for the parameter."],
+        [2, "class", "TokenDatatype", ["[0"], "A textual label that provides a characterization of the type, purpose, use or scope of the parameter."],
+        [3, "depends-on", "TokenDatatype", ["[0"], "(deprecated) Another parameter invoking this one. This construct has been deprecated and should not be used."],
+        [4, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [5, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [6, "label", "String", ["[0"], "A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned."],
+        [7, "usage", "String", ["[0"], "Describes the purpose and use of a parameter."],
+        [8, "constraints", "Constraints", ["[0"], "A formal or informal expression of a constraint or test."],
+        [9, "guidelines", "Guidelines", ["[0"], "A prose statement that provides a recommendation for the use of a parameter."],
+        [10, "values", "Values", ["[0"], "A parameter value or set of values."],
+        [11, "select", "Parameter-selection", ["[0"], "Presenting a choice among alternatives."],
+        [12, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Constraints", "ArrayOf", ["{1", "*Parameter-constraint"], "", []],
+    ["Guidelines", "ArrayOf", ["{1", "*Parameter-guideline"], "", []],
+    ["Values", "ArrayOf", ["{1", "*StringDatatype"], "", []],
+    ["Parameter-constraint", "Record", [], "A formal or informal expression of a constraint or test.", [
+        [1, "description", "String", ["[0"], "A textual summary of the constraint to be applied."],
+        [2, "tests", "Tests", ["[0"], "A test expression which is expected to be evaluated by a tool."]
+      ]],
+    ["Tests", "ArrayOf", ["{1", "*Test"], "", []],
+    ["Test", "Record", [], "A test expression which is expected to be evaluated by a tool.", [
+        [1, "expression", "StringDatatype", [], "A formal (executable) expression of a constraint."],
+        [2, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Parameter-guideline", "Record", [], "A prose statement that provides a recommendation for the use of a parameter.", [
+        [1, "prose", "String", [], "Prose permits multiple paragraphs, lists, tables etc."]
+      ]],
+    ["Parameter-selection", "Record", [], "Presenting a choice among alternatives.", [
+        [1, "how-many", "Parameter-selection$how-many", ["[0"], "Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted."],
+        [2, "choice", "Choice1", ["[0"], "A value selection among several such options."]
+      ]],
+    ["Parameter-selection$how-many", "Choice", [], "Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Parameter-selection$how-many$2", [], ""]
+      ]],
+    ["Parameter-selection$how-many$2", "Enumerated", [], "", [
+        [1, "one", ""],
+        [2, "one-or-more", ""]
+      ]],
+    ["Choice1", "ArrayOf", ["{1", "*String"], "", []],
+    ["Choice1-item", "String", [], "A value selection among several such options.", []],
+    ["Include-all", "Record", [], "Include all controls from the imported catalog or profile resources.", []],
+    ["System-component", "Record", [], "A defined component that can be part of an implemented system.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "type", "System-component$type", [], "A category describing the purpose of the component."],
+        [3, "title", "String", [], "A human readable name for the system component."],
+        [4, "description", "String", [], "A description of the component, including information about its function."],
+        [5, "purpose", "String", ["[0"], "A summary of the technological or business purpose of the component."],
+        [6, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [7, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [8, "status", "System-Component-Status", ["[1", "]1"], "Describes the operational status of the system component."],
+        [9, "responsible-roles", "Responsible-roles", ["[0"], "A reference to a role with responsibility for performing a function relative to the containing object, optionally associated with a set of persons and/or organizations that perform that role."],
+        [10, "protocols", "Protocols", ["[0"], "Information about the protocol used to provide a service."],
+        [11, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["System-component$type", "Choice", [], "A category describing the purpose of the component.", [
+        [1, "c1", "StringDatatype", [], ""],
+        [2, "c2", "System-component$type$2", [], ""]
+      ]],
+    ["System-component$type$2", "Enumerated", [], "", [
+        [1, "this-system", ""],
+        [2, "system", ""],
+        [3, "interconnection", ""],
+        [4, "software", ""],
+        [5, "hardware", ""],
+        [6, "service", ""],
+        [7, "policy", ""],
+        [8, "physical", ""],
+        [9, "process-procedure", ""],
+        [10, "plan", ""],
+        [11, "guidance", ""],
+        [12, "standard", ""],
+        [13, "validation", ""],
+        [14, "network", ""]
+      ]],
+    ["Protocols", "ArrayOf", ["{1", "*Protocol"], "", []],
+    ["Protocol", "Record", [], "Information about the protocol used to provide a service.", [
+        [1, "uuid", "UUIDDatatype", ["[0"], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this service protocol information elsewhere in this or other OSCAL instances. The locally defined UUID of the service protocol can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "name", "StringDatatype", [], "The common name of the protocol, which should be the appropriate \"service name\" from the IANA Service Name and Transport Protocol Port Number Registry."],
+        [3, "title", "String", ["[0"], "A human readable name for the protocol (e.g., Transport Layer Security)."],
+        [4, "port-ranges", "Port-ranges", ["[0"], "Where applicable this is the IPv4 port range on which the service operates."]
+      ]],
+    ["Port-ranges", "ArrayOf", ["{1", "*Port-range"], "", []],
+    ["Port-range", "Record", [], "Where applicable this is the IPv4 port range on which the service operates.", [
+        [1, "start", "NonNegativeIntegerDatatype", ["[0"], "Indicates the starting port number in a port range"],
+        [2, "end", "NonNegativeIntegerDatatype", ["[0"], "Indicates the ending port number in a port range"],
+        [3, "transport", "Port-range$transport", ["[0"], "Indicates the transport type."]
+      ]],
+    ["Port-range$transport", "Choice", [], "Indicates the transport type.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Port-range$transport$2", [], ""]
+      ]],
+    ["Port-range$transport$2", "Enumerated", [], "", [
+        [1, "TCP", ""],
+        [2, "UDP", ""]
+      ]],
+    ["Implementation-status", "Record", [], "Indicates the degree to which the a given control is implemented.", [
+        [1, "state", "Implementation-status$state", [], "Identifies the implementation status of the control or control objective."],
+        [2, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Implementation-status$state", "Choice", [], "Identifies the implementation status of the control or control objective.", [
+        [1, "c1", "TokenDatatype", [], ""],
+        [2, "c2", "Implementation-status$state$2", [], ""]
+      ]],
+    ["Implementation-status$state$2", "Enumerated", [], "", [
+        [1, "implemented", ""],
+        [2, "partial", ""],
+        [3, "planned", ""],
+        [4, "alternative", ""],
+        [5, "not-applicable", ""]
+      ]],
+    ["System-user", "Record", [], "A type of user that interacts with the system based on an associated role.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this user class elsewhere in this or other OSCAL instances. The locally defined UUID of the system user can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "title", "String", ["[0"], "A name given to the user, which may be used by a tool for display and navigation."],
+        [3, "short-name", "StringDatatype", ["[0"], "A short common name, abbreviation, or acronym for the user."],
+        [4, "description", "String", ["[0"], "A summary of the user's purpose within the system."],
+        [5, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [6, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [7, "role-ids", "Role-ids", ["[0"], "Reference to a role by UUID."],
+        [8, "authorized-privileges", "Authorized-privileges", ["[0"], "Identifies a specific system privilege held by the user, along with an associated description and/or rationale for the privilege."],
+        [9, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Role-ids", "ArrayOf", ["{1", "*TokenDatatype"], "", []],
+    ["Authorized-privileges", "ArrayOf", ["{1", "*Authorized-privilege"], "", []],
+    ["Authorized-privilege", "Record", [], "Identifies a specific system privilege held by the user, along with an associated description and/or rationale for the privilege.", [
+        [1, "title", "String", [], "A human readable name for the privilege."],
+        [2, "description", "String", ["[0"], "A summary of the privilege's purpose within the system."],
+        [3, "functions-performed", "Functions-performed", [], "Describes a function performed for a given authorized privilege by this user class."]
+      ]],
+    ["Functions-performed", "ArrayOf", ["{1", "*StringDatatype"], "", []],
+    ["Inventory-item", "Record", [], "A single managed inventory item within the system.", [
+        [1, "uuid", "UUIDDatatype", [], "A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this inventory item elsewhere in this or other OSCAL instances. The locally defined UUID of the inventory item can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document."],
+        [2, "description", "String", [], "A summary of the inventory item stating its purpose within the system."],
+        [3, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [4, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [5, "responsible-parties", "Responsible-parties", ["[0"], "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object."],
+        [6, "implemented-components", "Implemented-components", ["[0"], "The set of components that are implemented in a given system inventory item."],
+        [7, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Implemented-components", "ArrayOf", ["{1", "*Implemented-component"], "", []],
+    ["Implemented-component", "Record", [], "The set of components that are implemented in a given system inventory item.", [
+        [1, "component-uuid", "UUIDDatatype", [], "A machine-oriented identifier reference to a component that is implemented as part of an inventory item."],
+        [2, "props", "Props", ["[0"], "An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair."],
+        [3, "links", "Links", ["[0"], "A reference to a local or remote resource, that has a specific relation to the containing object."],
+        [4, "responsible-parties", "Responsible-parties", ["[0"], "A reference to a set of persons and/or organizations that have responsibility for performing the referenced role in the context of the containing object."],
+        [5, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["Set-parameter", "Record", [], "Identifies the parameter that will be set by the enclosed value.", [
+        [1, "param-id", "TokenDatatype", [], "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context."],
+        [2, "values", "Values", [], "A parameter value or set of values."],
+        [3, "remarks", "Remarks", ["[0"], "Additional commentary about the containing object."]
+      ]],
+    ["System-id", "Record", [], "A human-oriented, globally unique identifier with cross-instance scope that can be used to reference this system identification property elsewhere in this or other OSCAL instances. When referencing an externally defined system identification, the system identification must be used in the context of the external / imported OSCAL instance (e.g., uri-reference). This string should be assigned per-subject, which means it should be consistently used to identify the same system across revisions of the document.", [
+        [1, "identifier-type", "System-id$identifier-type", ["[0"], "Identifies the identification system from which the provided identifier was assigned."],
+        [2, "id", "StringDatatype", [], ""]
+      ]],
+    ["System-id$identifier-type", "Choice", [], "Identifies the identification system from which the provided identifier was assigned.", [
+        [1, "c1", "URIDatatype", [], ""],
+        [2, "c2", "System-id$identifier-type$2", [], ""]
+      ]],
+    ["System-id$identifier-type$2", "Enumerated", [], "", [
+        [1, "https://fedramp.gov", ""],
+        [2, "http://fedramp.gov/ns/oscal", ""],
+        [3, "https://ietf.org/rfc/rfc4122", ""],
+        [4, "http://ietf.org/rfc/rfc4122", ""]
+      ]],
+    ["Base64Datatype", "String", ["%^[0-9A-Za-z+/]+={0,2}$"], "Binary data encoded using the Base 64 encoding algorithm as defined by RFC4648.", []],
+    ["DateTimeWithTimezoneDatatype", "String", ["%^(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?(Z|(-((0[0-9]|1[0-2]):00|0[39]:30)|\\+((0[0-9]|1[0-4]):00|(0[34569]|10):30|(0[58]|12):45)))$"], "A string representing a point in time with a required timezone.", []],
+    ["EmailAddressDatatype", "Choice", [], "An email address string formatted according to RFC 6531.", [
+        [1, "c1", "StringDatatype", [], ""],
+        [2, "c2", "String", [], ""]
+      ]],
+    ["EmailAddressDatatype$2", "String", ["%^.+@.+$"], "", []],
+    ["IntegerDatatype", "Integer", [], "A whole number value.", []],
+    ["NonNegativeIntegerDatatype", "Choice", [], "An integer value that is equal to or greater than 0.", [
+        [1, "c1", "IntegerDatatype", [], ""],
+        [2, "c2", "Number", [], ""]
+      ]],
+    ["NonNegativeIntegerDatatype$2", "Number", [], "", []],
+    ["PositiveIntegerDatatype", "Choice", [], "An integer value that is greater than 0.", [
+        [1, "c1", "IntegerDatatype", [], ""],
+        [2, "c2", "Number", [], ""]
+      ]],
+    ["PositiveIntegerDatatype$2", "Number", [], "", []],
+    ["StringDatatype", "String", ["%^\\S(.*\\S)?$"], "A non-empty string with leading and trailing whitespace disallowed. Whitespace is: U+9, U+10, U+32 or [ \n\t]+", []],
+    ["TokenDatatype", "String", ["%^(\\p{L}|_)(\\p{L}|\\p{N}|[.\\-_])*$"], "A non-colonized name as defined by XML Schema Part 2: Datatypes Second Edition. https://www.w3.org/TR/xmlschema11-2/#NCName.", []],
+    ["URIDatatype", "String", ["%^[a-zA-Z][a-zA-Z0-9+\\-.]+:.+$"], "A universal resource identifier (URI) formatted according to RFC3986.", []],
+    ["URIReferenceDatatype", "String", [], "A URI Reference, either a URI or a relative-reference, formatted according to section 4.1 of RFC3986.", []],
+    ["UUIDDatatype", "String", ["%^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$"], "A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.", []],
+    ["Finding-Target-Status", "Record", [], "A determination of if the objective is satisfied or not within a given system.", [
+        [1, "state", "TokenDatatype", ["[1"], "An indication as to whether the objective is satisfied or not."],
+        [2, "reason", "TokenDatatype", ["[0"], "The reason the objective was given it's status."],
+        [3, "remarks", "String", ["[0", "]1"], "Additional commentary about the containing object."]
+      ]],
+    ["Identified-Subject", "Record", [], "Used to detail assessment subjects that were identfied by this task.", [
+        [1, "subject", "Assessment-Subjects", [], "Used to detail assessment subjects that were identfied by this task."],
+        [2, "subject-placeholder-uuid", "UUIDDatatype", ["[1"], "Assessment Subject Placeholder Universally Unique Identifier Reference. A machine-oriented identifier reference to a unique assessment subject placeholder defined by this task."]
+      ]],
+    ["Risk-Log-Entry", "Record", [], "A log of all risk-related tasks taken.", [
+        [1, "title", "String", ["[0", "]1"], "The title for this risk log entry."],
+        [2, "description", "String", [], "A human-readable description of what was done regarding the risk."],
+        [3, "start", "DateTimeWithTimezoneDatatype", ["[1", "]1"], "Identifies the start date and time of the event."],
+        [4, "end", "DateTimeWithTimezoneDatatype", [], "Identifies the end date and time of the event. If the event is a point in time, the start and end will be the same date and time."],
+        [5, "props", "Props", ["[0", "]1"], ""],
+        [6, "links", "Links", [], ""],
+        [7, "logged-by", "Logged-by", ["[0"], ""],
+        [8, "status-change", "Risk-status", [], ""],
+        [9, "related-responses", "ArrayOf", ["*related-response", "[0", "]0"], ""],
+        [10, "remarks", "String", [], ""]
+      ]],
+    ["System-Component-Status", "Record", [], "Describes the operational status of the system component.", [
+        [1, "state", "TokenDatatype", ["[1", "]1"], "The operational status."],
+        [2, "remarks", "String", ["[0", "]1"], "Additional commentary about the containing object."]
+      ]],
+    ["Task-Timing", "Choice", [], "", [
+        [1, "on-date", "DateTimeWithTimezoneDatatype", [], ""],
+        [2, "within-date-range", "Date-Range", [], ""],
+        [3, "at-frequency", "Frequency-Condition", [], ""]
+      ]],
+    ["Date-Range", "Record", [], "The task is intended to occur within the specified date range.", [
+        [1, "start", "DateTimeWithTimezoneDatatype", ["[1"], "The task must occur on or after the specified date."],
+        [2, "end", "DateTimeWithTimezoneDatatype", ["[1"], "The task must occur on or before the specified date."]
+      ]],
+    ["Frequency-Condition", "Record", [], "", [
+        [1, "period", "PositiveIntegerDatatype", ["[1"], ""],
+        [2, "unit", "String", ["[1"], ""]
+      ]],
+    ["related-response", "Record", [], "Identifies an individual risk response that this log entry is for.", [
+        [1, "props", "Props", ["[0"], ""],
+        [2, "links", "Links", ["[0"], ""],
+        [3, "related-tasks", "Related-tasks", [], ""],
+        [4, "remarks", "String", [], ""],
+        [5, "field_value_5", "String", [], ""]
+      ]],
+    ["Risk-Response-Reference", "Record", [], "", [
+        [1, "response-uuid", "String", [], ""],
+        [2, "related-responses", "ArrayOf", ["*related-response", "[0", "]0"], ""]
+      ]],
+    ["Local-Definition", "Record", [], "", [
+        [1, "components", "Implemented-components", ["[0", "]1"], ""],
+        [2, "inventory_items", "ArrayOf", ["*Inventory-item", "[0", "]0"], ""],
+        [3, "users", "ArrayOf", ["*System-user", "[0", "]0"], ""],
+        [4, "objectives_and_methods", "ArrayOf", ["*Local-objective", "[0", "]0"], ""],
+        [5, "activities", "ArrayOf", ["*Activity", "[0", "]0"], ""],
+        [6, "remarks", "String", [], ""]
+      ]]
+  ]
+}
