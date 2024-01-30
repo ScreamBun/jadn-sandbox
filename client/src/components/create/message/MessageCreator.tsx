@@ -76,7 +76,7 @@ const MessageCreator = (props: any) => {
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (commandType?.value) {
-        //TODO: add value={}
+        //TODO: add value={} --> This is for uploading preloaded messages.
         if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
             if (recordDef[1] && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { //check not choice or enum type
                 const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;

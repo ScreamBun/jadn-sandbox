@@ -107,6 +107,7 @@ const ExampleGenerator = () => {
 
                     //TODO? : does not resolve ref ===> use .resolve = need to specify ref and cwd
                     //Note: external ref can't be resolved by JSONSchemaFaker; must have a fully resolved schema
+                    //TODO: generation dies here !! 
                     let ex = JSONSchemaFaker.generate(schema);
 
                     if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
