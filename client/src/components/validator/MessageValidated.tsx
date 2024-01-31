@@ -106,9 +106,6 @@ const MessageValidated = (props: any) => {
                                 placeholder={'Select a data file...'}
                                 loc={'messages'}
                             />
-                            {/* </div> */}
-
-                            {/* <div className={`col-md-3`}> */}
                             <SBSelect id={"data-format-list"}
                                 customClass={'me-1'}
                                 data={validMsgFormat}
@@ -117,9 +114,6 @@ const MessageValidated = (props: any) => {
                                 placeholder={'Data format...'}
                                 isSmStyle
                                 isClearable />
-                            {/* </div> */}
-
-                            {/* <div className='col-md-3'> */}
                             <SBSelect id={"data-decode-list"}
                                 customClass={'me-1'}
                                 data={decodeSchemaTypes.exports}
