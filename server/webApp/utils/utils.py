@@ -81,13 +81,10 @@ def remove_files(path: str, filenames: []):
 
 
 def write_file(path: str, filename: str, data):
-
-    if isinstance(data, str):
-        data = json.loads(data)
-
+    
     fp = os.path.join(path, filename)
     with open(fp, 'w') as outfile:
-        outfile.write(json.dumps(data))        
+        outfile.write(data)        
 
     if is_file_in_dir(path, filename):
         return True
