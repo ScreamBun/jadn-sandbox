@@ -1,8 +1,5 @@
-import base64
 import json
 import random
-import re
-import cbor2
 import cbor_json
 import binascii
 
@@ -12,11 +9,10 @@ from jadnschema import jadn
 from jadnschema.schema import Schema
 from jadnschema.convert.message import Message, SerialFormats, decode_msg
 from unittest import TextTestRunner
-
 from pydantic import ValidationError
 
+from webApp.utils import constants
 from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
-from webApp.utils.constants import Constants
 from .profiles import get_profile_suite, load_test_suite, tests_in_suite, TestResults
 
 
@@ -74,21 +70,21 @@ class Validator:
         
         serial = SerialFormats(fmt)
         match serial:
-            case Constants.JSON:
+            case constants.JSON:
                 try:
                     data_serialized = Message.oc2_loads(msg, serial)
                 except Exception as e: 
                     err_msg = e
                     return False, f"Invalid Data: {err_msg}", "", msg     
 
-            case Constants.XML:
+            case constants.XML:
                 try:
                     data_serialized = decode_msg(msg, serial, root=decode)
                 except Exception as e: 
                     err_msg = e
                     return False, f"Invalid Data: {err_msg}", "", msg
 
-            case Constants.CBOR:
+            case constants.CBOR:
                 try:
                     msg_hex_string = msg
                     msg_binary_string = binascii.unhexlify(msg_hex_string)
@@ -107,7 +103,7 @@ class Validator:
         if decode in records:
 
             try:
-                if fmt == Constants.XML:
+                if fmt == constants.XML:
                     s.validate_as(decode, data_serialized)
                 else:
                     s.validate_as(decode, data_serialized.content)
