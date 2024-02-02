@@ -43,6 +43,7 @@ class API(Resource):
 
         example_schema_path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_EXAMPLE_DATA"))
         schema_files['examples'] = utils.find_file_names_by_extension(jadn_ext, example_schema_path, isReturnNamesOnly)  
+        schema_files['examples'].sort()
 
         version_info = current_app.config.get("VERSION_INFO")
 
