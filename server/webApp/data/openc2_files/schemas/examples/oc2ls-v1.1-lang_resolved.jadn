@@ -75,7 +75,7 @@
       [5, "args", "Enumerated", ["#Args", "[0", "]0"], "List of supported Command Arguments"]
     ]],
     ["Action-Targets", "MapOf", ["*Targets", "+Action", "{1"], "Map of all actions to all targets"],
-    ["Targets", "ArrayOf", ["*>Target", "{1", "}1", "q"], "List of all Target types"],
+    ["Targets", "ArrayOf", ["*Target", "{1", "}1", "q"], "List of all Target types"],
     ["Status-Code", "Enumerated", ["="], "", [
       [102, "Processing", "an interim Response used to inform the Producer that the Consumer has accepted the Command but has not yet completed it"],
       [200, "OK", "the Command has succeeded"],
