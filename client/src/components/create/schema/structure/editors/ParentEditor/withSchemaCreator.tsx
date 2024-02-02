@@ -232,7 +232,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             <div className='card'>
                 <div className='card-header p-2'>
                     <div className='row no-gutters'>
-                        <div className='col-sm-3'>
+                        <div className='col-sm-3 align-self-center'>
                             <SBFileLoader
                                 opts={schemaOpts}
                                 selectedOpt={selectedFile}
@@ -247,7 +247,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                 isSaveable
                             />
                         </div>
-                        <div className='col-sm-9'>
+                        <div className='col-sm-9 align-self-center'>
                             <SBCopyToClipboard buttonId='copyMessage' data={generatedSchema} customClass={'float-end'} />
                             <SBDownloadBtn buttonId='schemaDownload' filename={fileName.name} data={generatedSchema} customClass={'float-end me-1'} />
                             <button type='button' onClick={() => setActiveView('schema')} className={`float-end btn btn-primary btn-sm me-1 ${activeView == 'schema' ? ' d-none' : ''}`} title="View in JSON">View JSON</button>
@@ -259,6 +259,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                     setIsValidating={setIsValidating}
                                     schemaData={generatedSchema}
                                     schemaFormat={LANG_JADN}
+                                    customClass={'float-end'}
                                 />
                             }
                         </div>

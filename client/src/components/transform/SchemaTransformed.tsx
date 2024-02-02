@@ -4,13 +4,13 @@ import { getValidTransformations } from "reducers/transform";
 import { transformSchema } from "actions/transform";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
-import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import SBSaveFile from "components/common/SBSaveFile";
 import SBDownloadBtn from "components/common/SBDownloadBtn";
 import { LANG_JADN } from "components/utils/constants";
-import { sbToastError, sbToastSuccess } from "components/common/SBToast";
+import { dismissAllToast, sbToastError, sbToastSuccess } from "components/common/SBToast";
 import { SelectedSchema } from "components/transform/SchemaTransformer";
+import SBSubmitBtn from "components/common/SBSubmitBtn";
 
 
 interface SchemaTransformedProps {
@@ -18,6 +18,7 @@ interface SchemaTransformedProps {
     onLoading: (isLoading: boolean) => void;
     onSelectedSchemaReplaceAll: (schemas: SelectedSchema[]) => void;
     selectedSchemas: SelectedSchema[];
+    formId: string;
 }
 
 export const initTransformedSchema = {
@@ -27,7 +28,7 @@ export const initTransformedSchema = {
 }
 
 const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
-    const { isLoading, onLoading, onSelectedSchemaReplaceAll, selectedSchemas } = props;
+    const { isLoading, onLoading, onSelectedSchemaReplaceAll, selectedSchemas, formId } = props;
     const dispatch = useDispatch();
 
     const transformationOpts = useSelector(getValidTransformations);
@@ -66,6 +67,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     // Allows parent to call child function
     useImperativeHandle(ref, () => ({
         onReset() {
+            dismissAllToast();
             setToggle({});
             setBaseFile(null);
             setTransformedSchema([initTransformedSchema]);
@@ -133,7 +135,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     return (
         <div className="card">
             <div className="card-header p-2">
-                <form onSubmit={submitForm}>
+                <form id={formId} onSubmit={submitForm}>
                     <div className='row no-gutters'>
                         <div className='col-md-9'>
                             <div className="row">
@@ -150,19 +152,20 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                                 </div>
                             </div>
                         </div>
-                        <div className='col-md-3'>
+                        <div className='col-md-3 align-self-center'>
                             <div className={`${transformedSchema && (transformedSchema.length == 1) && transformedSchema[0].schema != '' ? '' : ' d-none'}`}>
                                 <SBCopyToClipboard buttonId='copyConvertedSchema' data={transformedSchema[0].schema} customClass={`float-end`} />
                                 <SBSaveFile data={transformedSchema[0].schema} loc={'schemas'} customClass={`me-1 float-end`} filename={baseFile?.value} ext={transformedSchema[0].schema_fmt || LANG_JADN} />
                                 <SBDownloadBtn buttonId='schemaDownload' customClass={`me-1 float-end`} filename={baseFile?.value} data={transformedSchema[0].schema} ext={transformedSchema[0].schema_fmt || LANG_JADN} />
                             </div>
-
-                            {isLoading ? <SBSpinner action={'Transforming'} /> :
-                                <button type="submit" id="transformSchema" className="btn btn-success btn-sm me-1 float-end"
-                                    disabled={isTransformDisabled}
-                                    title={"Process JADN schema(s) to produce another JADN schema"}>
-                                    Transform
-                                </button>}
+                            <SBSubmitBtn buttonId="transformSchema"
+                                buttonTitle="Process JADN schema(s) to produce another JADN schema"
+                                buttonTxt="Transform"
+                                customClass="me-1 float-end"
+                                isLoading={isLoading}
+                                formId={formId}
+                                isDisabled={isTransformDisabled}>
+                            </SBSubmitBtn>
                         </div>
                     </div>
                 </form>

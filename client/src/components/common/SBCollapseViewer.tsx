@@ -3,13 +3,14 @@ import SBCopyToClipboard from "./SBCopyToClipboard";
 import SBEditor from "./SBEditor";
 import { faWindowMaximize } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FILE_TYPE_PDF, FILE_TYPE_PNG, FILE_TYPE_SVG, LANG_GRAPHVIZ, LANG_HTML, LANG_JIDL, LANG_MARKDOWN, LANG_PLANTUML } from "components/utils/constants";
+import { FILE_TYPE_PDF, FILE_TYPE_PNG, FILE_TYPE_SVG, LANG_GRAPHVIZ, LANG_HTML, LANG_JIDL, LANG_MARKDOWN, LANG_PLANTUML, LANG_XSD } from "components/utils/constants";
 import { convertToGvFullView, onGVPopOutClick } from "../visualize/SBGvPreviewer";
 import { onHTMLPopOutClick } from "../visualize/SBHtmlPreviewer";
 import { onMDPopOutClick } from "../visualize/SBMarkdownPreviewer";
 import { convertToPuml } from "../visualize/SBPumlPreviewer";
 import SBDownloadBtn from "./SBDownloadBtn";
 import { sbToastError } from "./SBToast";
+import SBDownloadFileBtn from "./SBDownloadFileBtn";
 
 //given a list of data
 //toggle each view
@@ -48,12 +49,18 @@ const SBCollapseViewer = (props: any) => {
         return (
             obj.err == false && <div className="card" key={i}>
                 <div className="card-header">
-                    <h5 className="mb-0">
+                    <h5 className="mb-0 align-self-center">
                         <button id={`toggleMsg#${i}`} type="button" className="btn btn-link" onClick={() => onToggle(i)} >
                             {obj.fmt}
                         </button>
                         <SBCopyToClipboard buttonId={`copy${i}`} data={obj.schema} customClass='float-end' />
                         <SBDownloadBtn buttonId={`download${i}`} customClass='me-1 float-end' data={obj.schema} ext={obj.fmt_ext} />
+
+                        {obj.fmt_ext == LANG_XSD &&
+                            <>
+                                <SBDownloadFileBtn buttonId='jadnBaseTypesDownload' buttonTitle='Download JADN Base Types Schema' fileName='jadn_base_types.xsd' customClass={`me-1 float-end`}></SBDownloadFileBtn>
+                            </>
+                        }
 
                         {obj.fmt_ext == LANG_HTML &&
                             <>

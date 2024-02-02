@@ -26,7 +26,7 @@ const SBSpinner = (props: any) => {
         <button id="loadingBtn" type='button' className={`btn btn-sm btn-${color} me-1 float-end`} disabled>
             <span className="spinner-border spinner-border-sm" color="inherit" role="status">
             </span>
-            <span className="ms-2">{action ? `${action} ...` : ''}</span>
+            <span className={`${action} ? 'ms-2' : ''`}>{action ? `${action} ...` : ''}</span>
         </button>
     );
 }

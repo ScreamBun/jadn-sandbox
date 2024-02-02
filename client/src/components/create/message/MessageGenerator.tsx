@@ -33,6 +33,7 @@ const MessageGenerator = () => {
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        dismissAllToast();
         setSelectedFile(null);
         setLoadedSchema(null);
         setCommandType(null);

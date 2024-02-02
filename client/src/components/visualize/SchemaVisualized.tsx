@@ -10,7 +10,6 @@ import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import SBCollapseViewer from "components/common/SBCollapseViewer";
-import SBSpinner from "components/common/SBSpinner";
 import SBSelect, { Option } from "components/common/SBSelect";
 import SBDownloadBtn from "components/common/SBDownloadBtn";
 import SBHtmlPreviewer, { onHTMLPopOutClick } from "components/visualize/SBHtmlPreviewer";
@@ -18,11 +17,12 @@ import SBMarkdownPreviewer, { onMDPopOutClick } from "components/visualize/SBMar
 import SBPumlPreviewer, { convertToPuml } from "components/visualize/SBPumlPreviewer";
 import SBGvPreviewer, { convertToGvFullView, convertToGvSplitView, onGVPopOutClick } from "components/visualize/SBGvPreviewer";
 import { initConvertedSchemaState } from "./SchemaVisualizer";
+import SBSubmitBtn from "components/common/SBSubmitBtn";
 
 const SchemaVisualized = (props: any) => {
     const location = useLocation();
 
-    const { conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag, isLoading } = props;
+    const { conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag, isLoading, formId } = props;
     const validSchema = useSelector(getSelectedSchema);
     const [pumlURL, setPumlURL] = useState('');
     const data = useSelector(getValidVisualizations);
@@ -84,7 +84,7 @@ const SchemaVisualized = (props: any) => {
                             isSmStyle
                             isClearable />
                     </div>
-                    <div className='col-md-6'>
+                    <div className='col-md-6 align-self-center'>
                         <div className={`${conversion.length == 1 && convertedSchema[0].schema ? '' : ' d-none'}`}>
                             <SBCopyToClipboard buttonId='copyConvertedSchema' data={convertedSchema[0].schema} customClass='float-end' />
                             <SBDownloadBtn buttonId='schemaDownload' customClass={`me-1 float-end${convertedSchema[0].schema && conversion.length <= 1 ? '' : ' d-none'}`} data={convertedSchema[0].schema} ext={conversion.length == 1 ? conversion[0].value : conversion} />
@@ -131,14 +131,14 @@ const SchemaVisualized = (props: any) => {
                         </div>
 
                         <div>
-                            {isLoading ? <SBSpinner action={'Visualizing'} /> :
-                                <button type="submit"
-                                    id="convertSchema"
-                                    className="btn btn-success btn-sm me-1 float-end"
-                                    disabled={Object.keys(validSchema).length != 0 && conversion.length != 0 ? false : true}
-                                    title={"Visualize the given JADN schema to the selected format"}>
-                                    Visualize
-                                </button>}
+                            <SBSubmitBtn buttonId="visualizeSchema"
+                                buttonTitle="Visualize the given JADN schema to the selected format"
+                                buttonTxt="Visualize"
+                                customClass="me-1 float-end"
+                                isLoading={isLoading}
+                                formId={formId}
+                                isDisabled={Object.keys(validSchema).length != 0 && conversion.length != 0 ? false : true}>
+                            </SBSubmitBtn>
                         </div>
                     </div>
                 </div>

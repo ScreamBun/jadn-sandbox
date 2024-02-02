@@ -1,8 +1,5 @@
-import base64
 import json
 import random
-import re
-import cbor2
 import cbor_json
 import binascii
 
@@ -10,11 +7,11 @@ from io import StringIO
 from typing import Tuple, Union
 from jadnschema import jadn
 from jadnschema.schema import Schema
-from jadnschema.convert.message import Message, SerialFormats
+from jadnschema.convert.message import Message, SerialFormats, decode_msg
 from unittest import TextTestRunner
-
 from pydantic import ValidationError
 
+from webApp.utils import constants
 from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
 from .profiles import get_profile_suite, load_test_suite, tests_in_suite, TestResults
 
@@ -72,28 +69,45 @@ class Validator:
         
         
         serial = SerialFormats(fmt)
-        if fmt == "cbor":
-            try:
-                msg_hex_string = msg
-                msg_binary_string = binascii.unhexlify(msg_hex_string)
-                msg_native_json = cbor_json.native_from_cbor(msg_binary_string)
+        match serial:
+            case constants.JSON:
+                try:
+                    data_serialized = Message.oc2_loads(msg, serial)
+                except Exception as e: 
+                    err_msg = e
+                    return False, f"Invalid Data: {err_msg}", "", msg     
 
-                serial = SerialFormats('json')
-                message = Message.oc2_loads(msg_native_json, serial)
-            except Exception as e:
-                return "Error: " + e
-        else:
-            try:
-                message = Message.oc2_loads(msg, serial)
-            except Exception as e: 
-                err_msg = e
-                return False, f"Invalid Data: {err_msg}", "", msg
+            case constants.XML:
+                try:
+                    data_serialized = decode_msg(msg, serial, root=decode)
+                except Exception as e: 
+                    err_msg = e
+                    return False, f"Invalid Data: {err_msg}", "", msg
+
+            case constants.CBOR:
+                try:
+                    msg_hex_string = msg
+                    msg_binary_string = binascii.unhexlify(msg_hex_string)
+                    msg_native_json = cbor_json.native_from_cbor(msg_binary_string)
+
+                    serial = SerialFormats('json')
+                    data_serialized = Message.oc2_loads(msg_native_json, serial)
+                except Exception as e:
+                    return False, f"Invalid Data: {e}", "", msg
+            
+            case _:
+                return False, "Unknown format selected", "", msg       
+            
             
         records = list(s.types.keys())
         if decode in records:
 
             try:
-                s.validate_as(decode, message.content)
+                if fmt == constants.XML:
+                    s.validate_as(decode, data_serialized)
+                else:
+                    s.validate_as(decode, data_serialized.content)
+                    
                 return True, random.choice(self.validMsgs), json.dumps(msg), msg
 
             except Exception as err: 
@@ -106,7 +120,14 @@ class Validator:
                         path = [i for i in err_path.split('/') if i != '__root__'] 
                         new_path = '/'.join(path)
                         
-                        errorMsgs.append(err_msg + " at " +  new_path)
+                        if err_path:
+                            errorMsgs.append(err_msg + " at " +  new_path)
+                        else:
+                            errorMsgs.append(err_msg)
+                    return False, errorMsgs, "", msg
+                elif isinstance(err, AttributeError):
+                    for error in err.args:
+                        errorMsgs.append(error)
                     return False, errorMsgs, "", msg
                 else:
                     return False, err, "", msg

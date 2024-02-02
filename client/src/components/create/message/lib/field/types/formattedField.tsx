@@ -134,14 +134,13 @@ const FormattedField = (props: any) => {
                                 value={data}
                                 name={name}
                                 type='time'
-                                step="any"
-                                min={dayjs().format('HH:mm:ssZ[Z]')}
+                                step="1"
                                 onChange={e => {
                                     setData(e.target.value);
                                 }}
                                 onBlur={e => {
                                     //TODO? check for min/max?
-                                    optChange(name, dayjs(e.target.value).format('HH:mm:ssZ[Z]'), arr);
+                                    optChange(name, e.target.value, arr);
                                 }}
                                 style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                             />

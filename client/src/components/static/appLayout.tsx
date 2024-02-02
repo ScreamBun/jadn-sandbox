@@ -56,7 +56,7 @@ const AppLayout = () => {
   return (
     <div>
       <div className='fixed-top'>
-        <nav className='navbar navbar-expand-md bg-primary py-0 px-2' data-bs-theme="dark">
+        <nav className='navbar navbar-expand-lg bg-primary py-0 px-2' data-bs-theme="dark">
           <button className='navbar-toggler collapsed' type='button' onClick={onToggleNav} data-toggle='collapse' data-target='#navToggle' aria-controls='navToggle' aria-expanded='false' aria-label='Toggle navigation'>
             <span className='navbar-toggler-icon' />
           </button>
@@ -146,7 +146,7 @@ const AppLayout = () => {
       </nav>
 
       <ToastContainer enableMultiContainer position={toast.POSITION.BOTTOM_RIGHT} containerId='clear-all-toasts' className='d-flex justify-content-end' theme='colored' />
-      <ToastContainer enableMultiContainer position={toast.POSITION.BOTTOM_RIGHT} containerId='notification-toasts' className='mt-5' autoClose={4000} theme='colored' />
+      <ToastContainer enableMultiContainer position={toast.POSITION.BOTTOM_RIGHT} containerId='notification-toasts' className='mb-5' autoClose={4000} theme='colored' />
     </div>
 
   );

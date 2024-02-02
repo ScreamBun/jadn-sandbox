@@ -26,6 +26,26 @@ $max-scroll: 20em;
 /* Custom Styles */
 /* Use frugally, last resort, bootstrap first */
 
+.hoverSubmit span {
+    width: auto;
+    max-width: 0;
+    -webkit-transition: max-width 1s;
+    transition: max-width 1s;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.hoverSubmit:hover span {
+    max-width: 5rem;
+    margin-right: 10px;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
 .title-text {
     color: var(--bs-link-color-rgb);
 }
@@ -41,7 +61,12 @@ body {
     right: 1em;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin-top: 0.25rem !important;
     line-height: normal !important;
 }
@@ -279,15 +304,15 @@ a,
     $primary: #375a7f;
     $secondary: #383a40;
 
-    .sb-outline  {
+    .sb-outline {
         .highlight-color {
-            background-color: #{$secondary} !important;    
+            background-color: #{$secondary} !important;
         }
     }
 
     .form-control {
-        background-color:  #383a40!important;
-    }    
+        background-color: #383a40 !important;
+    }
 
     [class*="primary"]:not(.btn-outline-primary) {
         background-color: #{$primary} !important;
@@ -295,7 +320,7 @@ a,
 
     [class*="secondary"]:not(.btn-outline-secondary) {
         background-color: #{$secondary} !important;
-    }    
+    }
 
     .btn-outline-primary,
     .btn-primary {
@@ -307,9 +332,9 @@ a,
 @include color-mode(light) {
     $secondary: #E0E0E0;
 
-    .sb-outline  {
+    .sb-outline {
         .highlight-color {
-            background-color: #{$secondary} !important;    
+            background-color: #{$secondary} !important;
         }
     }
 
