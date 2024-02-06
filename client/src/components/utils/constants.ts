@@ -1,12 +1,14 @@
 // eslint-disable-next-line import/prefer-default-export
 export const LANG_JADN = 'jadn';
 export const LANG_JSON = 'json';
+export const LANG_JSON_UPPER = 'JSON';
 export const LANG_HTML = 'html';
 export const LANG_MARKDOWN = 'md';
 export const LANG_GRAPHVIZ = 'gv';
 export const LANG_PLANTUML = 'puml';
 export const LANG_CBOR = 'cbor'
 export const LANG_XML = 'xml';
+export const LANG_XML_UPPER = 'XML';
 export const LANG_XSD = 'xsd';
 
 export const LANG_JIDL = 'jidl';

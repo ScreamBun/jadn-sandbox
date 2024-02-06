@@ -6,12 +6,17 @@ import { faker } from "@faker-js/faker/locale/en";
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import { convertSchema } from 'actions/convert'
-import { LANG_JSON } from 'components/utils/constants'
+import { LANG_JSON, LANG_JSON_UPPER } from 'components/utils/constants'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
-import { Option } from 'components/common/SBSelect'
 import { SchemaJADN } from 'components/create/schema/interface'
 import ExampleCreator from './ExampleCreator'
+
+
+export interface Option {
+    readonly value: string | any;
+    readonly label: string;
+}
 
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
@@ -21,6 +26,9 @@ const ExampleGenerator = () => {
     const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
     const [numOfMsg, setNumOfMsg] = useState<number>(1);
+
+    const defaultLangOption = new Option(LANG_JSON_UPPER)
+    const [langSel, setLangSel] = useState<Option | null>(defaultLangOption);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -44,6 +52,7 @@ const ExampleGenerator = () => {
         setSelectedFile(null);
         setLoadedSchema(null);
         setNumOfMsg(1);
+        setLangSel(defaultLangOption);
         setGeneratedMessages([]);
         dispatch(setSchema(null));
     }
@@ -179,8 +188,10 @@ const ExampleGenerator = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <ExampleCreator
+                                            formId={formId}
                                             generatedMessages={generatedMessages} isLoading={isLoading}
-                                            numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg} formId={formId}
+                                            numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg} 
+                                            langSel={langSel} setLangSel={setLangSel} 
                                         />
                                     </div>
                                 </div>

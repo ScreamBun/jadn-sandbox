@@ -75,6 +75,7 @@ const smStyle = {
     control: (base: any) => ({
         ...base,
         maxHeight: 30,
+        minHeight: 30,
         cursor: 'pointer',
         border: 'var(--bs-border-width) solid var(--bs-border-color)',
     }),
@@ -106,6 +107,7 @@ const smStyle = {
     input: (provided: any) => ({
         ...provided,
         margin: '0px',
+        paddingBottom: '0px'
     }),
 
     dropdownIndicator: (provided: any) => ({
