@@ -6,11 +6,12 @@ import { faker } from "@faker-js/faker/locale/en";
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import { convertSchema } from 'actions/convert'
-import { LANG_JSON, LANG_JSON_UPPER } from 'components/utils/constants'
+import { LANG_JSON, LANG_JSON_UPPER, LANG_XML_UPPER } from 'components/utils/constants'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { SchemaJADN } from 'components/create/schema/interface'
 import ExampleCreator from './ExampleCreator'
+import { toXML } from 'jstoxml';
 
 
 export interface Option {
@@ -123,21 +124,79 @@ const ExampleGenerator = () => {
                         for (const [k, v] of Object.entries(ex)) {
                             if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
                                 if (schemaProps && schemaProps.includes(k)) {
-                                    generated.push(JSON.stringify(v, null, 2));
+
+                                    if(langSel && langSel.value == LANG_JSON_UPPER){
+                                        generated.push(JSON.stringify(v, null, 2));
+                                    } else if(langSel && langSel.value == LANG_XML_UPPER) {
+
+                                        // TODO: Move to util
+                                        const config = {
+                                            indent: '    '
+                                        };
+
+                                        const json_string = JSON.stringify(v, null, 2)
+                                        const json_data = JSON.parse(json_string)
+                                        const xml_data = toXML(json_data, config);
+                                        generated.push(xml_data);
+                                    }
+
                                     i += 1
                                 } else {
-                                    generated.push(JSON.stringify({ [k]: v }, null, 2));
+                                    if(langSel && langSel.value == LANG_JSON_UPPER){
+                                        generated.push(JSON.stringify({ [k]: v }, null, 2));
+                                    } else if(langSel && langSel.value == LANG_XML_UPPER) {
+                                        // TODO: Move to util
+                                        const config = {
+                                            indent: '    '
+                                        };
+
+                                        const json_string = JSON.stringify({ [k]: v }, null, 2)
+                                        const json_data = JSON.parse(json_string)
+                                        const xml_data = toXML(json_data, config);
+                                        generated.push(xml_data);                                        
+                                    }
+
                                     i += 1
                                 }
                             }
                         }
                     } else {
                         if (Object.values(ex).length != 0) { // CHECK IF GENERATED DATA OBJ HAS DATA
-                            if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {
-                                generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
+                            if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {                                
+
+                                if(langSel && langSel.value == LANG_JSON_UPPER){
+                                    generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
+                                } else if(langSel && langSel.value == LANG_XML_UPPER) {
+
+                                    // TODO: Move to util
+                                    const config = {
+                                        indent: '    '
+                                    };
+
+                                    const json_string = JSON.stringify(Object.values(ex)[0], null, 2)
+                                    const json_data = JSON.parse(json_string)
+                                    const xml_data = toXML(json_data, config);
+                                    generated.push(xml_data);
+                                }
+
                                 i += 1
                             } else {
-                                generated.push(JSON.stringify(ex, null, 2));
+
+                                if(langSel && langSel.value == LANG_JSON_UPPER){
+                                    generated.push(JSON.stringify(ex, null, 2));
+                                } else if(langSel && langSel.value == LANG_XML_UPPER) {
+
+                                    // TODO: Move to util
+                                    const config = {
+                                        indent: '    '
+                                    };
+
+                                    const json_string = JSON.stringify(ex, null, 2)
+                                    const json_data = JSON.parse(json_string)
+                                    const xml_data = toXML(json_data, config);
+                                    generated.push(xml_data);
+                                }
+
                                 i += 1
                             }
                         }
@@ -188,8 +247,8 @@ const ExampleGenerator = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <ExampleCreator
-                                            formId={formId}
-                                            generatedMessages={generatedMessages} isLoading={isLoading}
+                                            formId={formId} isLoading={isLoading}
+                                            generatedMessages={generatedMessages} setGeneratedMessages={setGeneratedMessages} 
                                             numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg} 
                                             langSel={langSel} setLangSel={setLangSel} 
                                         />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { toXML } from 'jstoxml';
 import { useSelector } from 'react-redux'
 import { getSelectedSchema } from 'reducers/util'
 import { LANG_JSON, LANG_JSON_UPPER, LANG_XML_UPPER } from 'components/utils/constants'
@@ -18,7 +19,7 @@ export interface Option {
 //TODO: create messages in other languages ?
 //TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
-    const { formId, generatedMessages, isLoading, numOfMsg, setNumOfMsg, langSel, setLangSel } = props;
+    const { formId, generatedMessages, setGeneratedMessages, isLoading, numOfMsg, setNumOfMsg, langSel, setLangSel } = props;
     const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
 
     const jsonOpt = new Option(LANG_JSON_UPPER);
@@ -38,7 +39,6 @@ const ExampleCreator = (props: any) => {
 
     const onLangChange = (e: React.ChangeEvent<Option>) => {
         setLangSel(e);
-        console.log("onLangChange: " + e.value)
     }
 
     const msgList = generatedMessages.map((message: string, i: number) => (

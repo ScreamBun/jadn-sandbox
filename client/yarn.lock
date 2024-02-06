@@ -4937,6 +4937,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jstoxml@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "@types/jstoxml@npm:2.0.4"
+  checksum: 2aad1f2e6d57d477948f5f02b7aee3d444b85601e8eb8fc2e938faa6781a79c6d49959b0b231393537c89e2339f870172f9022c08a955bd7eed149068243be08
+  languageName: node
+  linkType: hard
+
 "@types/lodash@npm:^4.14.199":
   version: 4.14.199
   resolution: "@types/lodash@npm:4.14.199"
@@ -7430,6 +7437,7 @@ __metadata:
     "@types/file-saver": ^2.0.5
     "@types/history": ^5.0.0
     "@types/jest": ^29.5.5
+    "@types/jstoxml": ^2.0.4
     "@types/lodash": ^4.14.199
     "@types/min-document": ^2.19.0
     "@types/node": ^20.8.5
@@ -7487,6 +7495,7 @@ __metadata:
     immutability-helper: ^3.1.1
     jest: ^29.7.0
     json-schema-faker: ^0.5.3
+    jstoxml: ^5.0.0
     lodash: ^4.17.21
     marked: ^9.1.1
     min-document: ^2.19.0
@@ -11873,6 +11882,13 @@ __metadata:
   version: 5.0.1
   resolution: "jsonpointer@npm:5.0.1"
   checksum: 0b40f712900ad0c846681ea2db23b6684b9d5eedf55807b4708c656f5894b63507d0e28ae10aa1bddbea551241035afe62b6df0800fc94c2e2806a7f3adecd7c
+  languageName: node
+  linkType: hard
+
+"jstoxml@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "jstoxml@npm:5.0.0"
+  checksum: 698ad6ce42a906f4ba9c5311de158ba2312e746f7367b34232628fa1037667501eda88526c0faa2eeee0eb463e42723a457b67f22ec13b0f66fbc2a185c687ad
   languageName: node
   linkType: hard
 
