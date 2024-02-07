@@ -10,6 +10,7 @@ from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
+from jadnxml.builder.xml_builder import build_xml_from_json_str
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
@@ -155,6 +156,39 @@ class ConvertPDF(Resource):
 resources = {
     Convert: {"urls": ("/", )},
     ConvertPDF: {"urls": ("/pdf",)}
+}
+
+
+class ConvertJSON(Resource):
+    """
+    Endpoint for api/convert/convert_json
+    """
+
+    def post(self):
+        request_json = request.json
+        root = request_json["root"] 
+        
+        json_data = {
+            "person": {
+            "name": "John Doe",
+            "age": 30,
+            "city": "New York"
+            }
+        }        
+
+        try:
+        xml = build_xml_from_json_str(json_data, root)
+        
+        return jsonify({
+            "data": {
+                "convert": xml
+            }
+        }) 
+
+
+resources = {
+    Convert: {"urls": ("/", )},
+    ConvertJSON: {"urls": ("/convert_json",)}
 }
 
 

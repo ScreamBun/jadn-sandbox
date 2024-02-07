@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { toXML } from 'jstoxml';
 import { useSelector } from 'react-redux'
 import { getSelectedSchema } from 'reducers/util'
 import { LANG_JSON, LANG_JSON_UPPER, LANG_XML_UPPER } from 'components/utils/constants'
