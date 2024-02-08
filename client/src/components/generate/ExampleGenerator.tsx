@@ -5,7 +5,7 @@ import { JSONSchemaFaker } from 'json-schema-faker';
 import { faker } from "@faker-js/faker/locale/en";
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
-import { convertSchema } from 'actions/convert'
+import { convertJsonSchema, convertSchema } from 'actions/convert'
 import { LANG_JSON, LANG_JSON_UPPER, LANG_XML_UPPER } from 'components/utils/constants'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -94,6 +94,8 @@ const ExampleGenerator = () => {
             return;
         }
 
+
+
         //TODO? : lazy load data to show data is being generated
         dispatch(convertSchema(schemaObj, schemaFormat?.value, [LANG_JSON]))
             .then((convertSchemaVal) => {
@@ -125,36 +127,36 @@ const ExampleGenerator = () => {
                             if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
                                 if (schemaProps && schemaProps.includes(k)) {
 
-                                    if(langSel && langSel.value == LANG_JSON_UPPER){
+                                    // if(langSel && langSel.value == LANG_JSON_UPPER){
                                         generated.push(JSON.stringify(v, null, 2));
-                                    } else if(langSel && langSel.value == LANG_XML_UPPER) {
+                                    // } else if(langSel && langSel.value == LANG_XML_UPPER) {
 
                                         // TODO: Move to util
-                                        const config = {
-                                            indent: '    '
-                                        };
+                                        // const config = {
+                                        //     indent: '    '
+                                        // };
 
-                                        const json_string = JSON.stringify(v, null, 2)
-                                        const json_data = JSON.parse(json_string)
-                                        const xml_data = toXML(json_data, config);
-                                        generated.push(xml_data);
-                                    }
+                                        // const json_string = JSON.stringify(v, null, 2)
+                                        // const json_data = JSON.parse(json_string)
+                                        // const xml_data = toXML(json_data, config);
+                                        // generated.push(xml_data);
+                                    // }
 
                                     i += 1
                                 } else {
-                                    if(langSel && langSel.value == LANG_JSON_UPPER){
+                                    // if(langSel && langSel.value == LANG_JSON_UPPER){
                                         generated.push(JSON.stringify({ [k]: v }, null, 2));
-                                    } else if(langSel && langSel.value == LANG_XML_UPPER) {
+                                    // } else if(langSel && langSel.value == LANG_XML_UPPER) {
                                         // TODO: Move to util
-                                        const config = {
-                                            indent: '    '
-                                        };
+                                        // const config = {
+                                        //     indent: '    '
+                                        // };
 
-                                        const json_string = JSON.stringify({ [k]: v }, null, 2)
-                                        const json_data = JSON.parse(json_string)
-                                        const xml_data = toXML(json_data, config);
-                                        generated.push(xml_data);                                        
-                                    }
+                                        // const json_string = JSON.stringify({ [k]: v }, null, 2)
+                                        // const json_data = JSON.parse(json_string)
+                                        // const xml_data = toXML(json_data, config);
+                                        // generated.push(xml_data);                                        
+                                    // }
 
                                     i += 1
                                 }
@@ -164,38 +166,38 @@ const ExampleGenerator = () => {
                         if (Object.values(ex).length != 0) { // CHECK IF GENERATED DATA OBJ HAS DATA
                             if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {                                
 
-                                if(langSel && langSel.value == LANG_JSON_UPPER){
+                                // if(langSel && langSel.value == LANG_JSON_UPPER){
                                     generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
-                                } else if(langSel && langSel.value == LANG_XML_UPPER) {
+                                // } else if(langSel && langSel.value == LANG_XML_UPPER) {
 
                                     // TODO: Move to util
-                                    const config = {
-                                        indent: '    '
-                                    };
+                                    // const config = {
+                                    //     indent: '    '
+                                    // };
 
-                                    const json_string = JSON.stringify(Object.values(ex)[0], null, 2)
-                                    const json_data = JSON.parse(json_string)
-                                    const xml_data = toXML(json_data, config);
-                                    generated.push(xml_data);
-                                }
+                                    // const json_string = JSON.stringify(Object.values(ex)[0], null, 2)
+                                    // const json_data = JSON.parse(json_string)
+                                    // const xml_data = toXML(json_data, config);
+                                    // generated.push(xml_data);
+                                // }
 
                                 i += 1
                             } else {
 
-                                if(langSel && langSel.value == LANG_JSON_UPPER){
+                                // if(langSel && langSel.value == LANG_JSON_UPPER){
                                     generated.push(JSON.stringify(ex, null, 2));
-                                } else if(langSel && langSel.value == LANG_XML_UPPER) {
+                                // } else if(langSel && langSel.value == LANG_XML_UPPER) {
 
                                     // TODO: Move to util
-                                    const config = {
-                                        indent: '    '
-                                    };
+                                    // const config = {
+                                    //     indent: '    '
+                                    // };
 
-                                    const json_string = JSON.stringify(ex, null, 2)
-                                    const json_data = JSON.parse(json_string)
-                                    const xml_data = toXML(json_data, config);
-                                    generated.push(xml_data);
-                                }
+                                    // const json_string = JSON.stringify(ex, null, 2)
+                                    // const json_data = JSON.parse(json_string)
+                                    // const xml_data = toXML(json_data, config);
+                                    // generated.push(xml_data);
+                                // }
 
                                 i += 1
                             }
@@ -211,10 +213,23 @@ const ExampleGenerator = () => {
                     setIsLoading(false);
                     sbToastSuccess('Examples generated successfully');
                     setGeneratedMessages(generated);
+
+
+                    if(langSel && langSel.value == LANG_XML_UPPER) {
+                        // dispatch(convertJsonSchema(JSON.stringify(generated)))
+                        dispatch(convertJsonSchema("test"))
+                        .then((response) => {
+                            let test = response;
+                            let a = "";
+                        });
+                    }                    
+
                 } else {
                     setIsLoading(false);
                     sbToastError('Failed to generate examples');
                 }
+
+
 
             }).catch((convertSchemaErr) => {
                 setIsLoading(false);

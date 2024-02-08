@@ -166,7 +166,10 @@ class ConvertJSON(Resource):
 
     def post(self):
         request_json = request.json
-        root = request_json["root"] 
+        json_data = request_json["json_data"] 
+        root = "root"
+        
+        # Iterate over array to convert inner json data to xml
         
         json_data = {
             "person": {
@@ -177,7 +180,11 @@ class ConvertJSON(Resource):
         }        
 
         try:
-        xml = build_xml_from_json_str(json_data, root)
+            xml = build_xml_from_json_str(json_data, root)
+        except Exception:  
+            tb = traceback.format_exc()
+            print(tb)            
+            return "Unable to convert JSON to XML", 500              
         
         return jsonify({
             "data": {
