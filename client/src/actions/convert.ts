@@ -62,7 +62,7 @@ export interface ConvertSchemaSuccessAction extends ActionSuccessResult {
   };
 }
 
-// POST - /api/convert/convert_json - convert the given schema to a different format
+// POST - /api/convert/convert_json - convert json to xml
 const CONVERT_JSON_REQUEST = '@@convert/CONVERT_JSON_REQUEST';
 export const CONVERT_JSON_SUCCESS = '@@convert/CONVERT_JSON_SUCCESS';
 export const CONVERT_JSON_FAILURE = '@@convert/CONVERT_JSON_FAILURE';
@@ -83,9 +83,7 @@ export const convertJsonSchema = (json_data: string) => createAction({
 export interface ConvertJsonSuccessAction extends ActionSuccessResult {
   type: typeof CONVERT_JSON_SUCCESS;
   payload: {
-    data: {
-      convert: Array<string>;
-    };
+      data: any;
   };
 }
 

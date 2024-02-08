@@ -120,44 +120,17 @@ const ExampleGenerator = () => {
                     //TODO? : does not resolve ref ===> use .resolve = need to specify ref and cwd
                     //Note: external ref can't be resolved by JSONSchemaFaker; must have a fully resolved schema
                     //TODO: generation dies here !! 
+                    //TODO: Move to SS
                     let ex = JSONSchemaFaker.generate(schema);
 
                     if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
                         for (const [k, v] of Object.entries(ex)) {
                             if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
                                 if (schemaProps && schemaProps.includes(k)) {
-
-                                    // if(langSel && langSel.value == LANG_JSON_UPPER){
-                                        generated.push(JSON.stringify(v, null, 2));
-                                    // } else if(langSel && langSel.value == LANG_XML_UPPER) {
-
-                                        // TODO: Move to util
-                                        // const config = {
-                                        //     indent: '    '
-                                        // };
-
-                                        // const json_string = JSON.stringify(v, null, 2)
-                                        // const json_data = JSON.parse(json_string)
-                                        // const xml_data = toXML(json_data, config);
-                                        // generated.push(xml_data);
-                                    // }
-
+                                    generated.push(JSON.stringify(v, null, 2));
                                     i += 1
                                 } else {
-                                    // if(langSel && langSel.value == LANG_JSON_UPPER){
-                                        generated.push(JSON.stringify({ [k]: v }, null, 2));
-                                    // } else if(langSel && langSel.value == LANG_XML_UPPER) {
-                                        // TODO: Move to util
-                                        // const config = {
-                                        //     indent: '    '
-                                        // };
-
-                                        // const json_string = JSON.stringify({ [k]: v }, null, 2)
-                                        // const json_data = JSON.parse(json_string)
-                                        // const xml_data = toXML(json_data, config);
-                                        // generated.push(xml_data);                                        
-                                    // }
-
+                                    generated.push(JSON.stringify({ [k]: v }, null, 2));
                                     i += 1
                                 }
                             }
@@ -165,40 +138,10 @@ const ExampleGenerator = () => {
                     } else {
                         if (Object.values(ex).length != 0) { // CHECK IF GENERATED DATA OBJ HAS DATA
                             if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {                                
-
-                                // if(langSel && langSel.value == LANG_JSON_UPPER){
-                                    generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
-                                // } else if(langSel && langSel.value == LANG_XML_UPPER) {
-
-                                    // TODO: Move to util
-                                    // const config = {
-                                    //     indent: '    '
-                                    // };
-
-                                    // const json_string = JSON.stringify(Object.values(ex)[0], null, 2)
-                                    // const json_data = JSON.parse(json_string)
-                                    // const xml_data = toXML(json_data, config);
-                                    // generated.push(xml_data);
-                                // }
-
+                                generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
                                 i += 1
                             } else {
-
-                                // if(langSel && langSel.value == LANG_JSON_UPPER){
-                                    generated.push(JSON.stringify(ex, null, 2));
-                                // } else if(langSel && langSel.value == LANG_XML_UPPER) {
-
-                                    // TODO: Move to util
-                                    // const config = {
-                                    //     indent: '    '
-                                    // };
-
-                                    // const json_string = JSON.stringify(ex, null, 2)
-                                    // const json_data = JSON.parse(json_string)
-                                    // const xml_data = toXML(json_data, config);
-                                    // generated.push(xml_data);
-                                // }
-
+                                generated.push(JSON.stringify(ex, null, 2));
                                 i += 1
                             }
                         }
@@ -216,20 +159,22 @@ const ExampleGenerator = () => {
 
 
                     if(langSel && langSel.value == LANG_XML_UPPER) {
-                        // dispatch(convertJsonSchema(JSON.stringify(generated)))
-                        dispatch(convertJsonSchema("test"))
+                        dispatch(convertJsonSchema(JSON.stringify(generated)))
                         .then((response) => {
-                            let test = response;
-                            let a = "";
-                        });
+                            let xml_data = response.payload.data;
+                            setGeneratedMessages(xml_data)
+
+                        }).catch((err) => {
+                            setIsLoading(false);
+                            sbToastError('Error generating XML');
+                            console.error(err);
+                        });                        
                     }                    
 
                 } else {
                     setIsLoading(false);
                     sbToastError('Failed to generate examples');
                 }
-
-
 
             }).catch((convertSchemaErr) => {
                 setIsLoading(false);

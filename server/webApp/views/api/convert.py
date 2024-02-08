@@ -1,9 +1,11 @@
+import json
 import logging
 
 from io import BytesIO
 import os
 import sys
 import traceback
+from xml.etree import ElementTree
 import jadn
 from flask import current_app, jsonify, Response, request, send_file
 from flask_restful import Resource
@@ -131,6 +133,32 @@ class Convert(Resource):
             raise ValueError
         
 
+class ConvertJSON(Resource):
+    """
+    Endpoint for api/convert/convert_json
+    """
+
+    def post(self):
+        request_json = request.json
+        json_data = request_json["json_data"] 
+        root = "root"
+        
+        return_array = []
+        json_wrapper = json.loads(json_data)
+
+        for json_value in json_wrapper:            
+            try:
+                json_data = json.loads(json_value)
+                return_array.append(build_xml_from_json_str(json_data, root))
+            except Exception:  
+                tb = traceback.format_exc()
+                print(tb)            
+                return_array.append("Unable to generate XML")          
+        
+        return jsonify({
+            "data":  return_array
+        }) 
+
 
 class ConvertPDF(Resource):
     """
@@ -151,52 +179,6 @@ class ConvertPDF(Resource):
         pdf_obj.write_pdf(target=pdf)  # file handle to receive result
         
         return Response(pdf.getvalue(), mimetype="application/pdf")
-
-
-resources = {
-    Convert: {"urls": ("/", )},
-    ConvertPDF: {"urls": ("/pdf",)}
-}
-
-
-class ConvertJSON(Resource):
-    """
-    Endpoint for api/convert/convert_json
-    """
-
-    def post(self):
-        request_json = request.json
-        json_data = request_json["json_data"] 
-        root = "root"
-        
-        # Iterate over array to convert inner json data to xml
-        
-        json_data = {
-            "person": {
-            "name": "John Doe",
-            "age": 30,
-            "city": "New York"
-            }
-        }        
-
-        try:
-            xml = build_xml_from_json_str(json_data, root)
-        except Exception:  
-            tb = traceback.format_exc()
-            print(tb)            
-            return "Unable to convert JSON to XML", 500              
-        
-        return jsonify({
-            "data": {
-                "convert": xml
-            }
-        }) 
-
-
-resources = {
-    Convert: {"urls": ("/", )},
-    ConvertJSON: {"urls": ("/convert_json",)}
-}
 
 
 class DownloadXML(Resource):
@@ -221,9 +203,10 @@ class DownloadXML(Resource):
 
 resources = {
     Convert: {"urls": ("/", )},
+    ConvertJSON: {"urls": ("/convert_json",)},
+    ConvertPDF: {"urls": ("/pdf",)},
     DownloadXML: {"urls": ("/download_xml",)}
 }
-
 
 
 def add_resources(bp, url_prefix=""):
