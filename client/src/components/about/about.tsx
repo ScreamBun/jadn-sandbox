@@ -72,9 +72,7 @@ const About = () => {
               </li>
               <li className="list-group-item"><a href={NAV_EXTERNAL_GH_README} target='_blank' rel='noreferrer'>Sandbox ReadMe</a>
                 <ul className="list-group list-group-flush">
-                  <li className="list-group-item border-0">
-                    <a href={NAV_EXTERNAL_MANUAL_PPTX} target='_blank' rel='noreferrer'>Walkthrough PPTX</a></li>
-                  <li className="list-group-item border-0">
+                  <li className="list-group-item">
                     <a href={NAV_EXTERNAL_MANUAL_PDF} target='_blank' rel='noreferrer'>Walkthrough PDF</a>
                   </li>
                 </ul>
