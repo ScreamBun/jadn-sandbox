@@ -11,12 +11,13 @@ from flask import current_app, jsonify, Response, request, send_file
 from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
+from jadnschema.convert.schema.helpers import gen_data
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadnxml.builder.xml_builder import build_xml_from_json_str
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
-from webApp.utils.constants import JADN, JSON
+from webApp.utils.constants import JADN, JSON, XML
 
 
 logger = logging.getLogger(__name__)
@@ -140,20 +141,33 @@ class ConvertJSON(Resource):
 
     def post(self):
         request_json = request.json
-        json_data = request_json["json_data"] 
-        root = "root"
+        json_schema = request_json["json_schema"] 
+        fmt = request_json["fmt"]
+        num_to_gen = request_json["num_to_gen"]
         
         return_array = []
-        json_wrapper = json.loads(json_data)
-
-        for json_value in json_wrapper:            
-            try:
-                json_data = json.loads(json_value)
-                return_array.append(build_xml_from_json_str(json_data, root))
-            except Exception:  
-                tb = traceback.format_exc()
-                print(tb)            
-                return_array.append("Unable to generate XML")          
+        array_of_json_data = []
+        
+        i = 0
+        while i < num_to_gen:
+            # json_schema_str = json.dumps(json_schema)
+            g_data = gen_data(json_schema)
+            array_of_json_data.append(g_data)
+            print(i)
+            i += 1
+        
+        if fmt == XML:
+            for json_gen_data in array_of_json_data:
+                try:
+                    # json_data = json.loads(json_gen_data)
+                    return_array.append(build_xml_from_json_str(json_gen_data))
+                except Exception:  
+                    tb = traceback.format_exc()
+                    print(tb)            
+                    return_array.append("Unable to generate XML")
+                    
+        elif fmt == JSON:
+            return_array = array_of_json_data       
         
         return jsonify({
             "data":  return_array

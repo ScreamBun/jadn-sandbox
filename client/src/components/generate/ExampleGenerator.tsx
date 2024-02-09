@@ -61,8 +61,9 @@ const ExampleGenerator = () => {
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
+
         let schemaObj: SchemaJADN | string = loadedSchema;
-        let schemaProps: any[] = [];
+        // let schemaProps: any[] = [];
 
         if (typeof schemaObj == 'string') {
             try {
@@ -94,9 +95,7 @@ const ExampleGenerator = () => {
             return;
         }
 
-
-
-        //TODO? : lazy load data to show data is being generated
+        // Convert to JSONSchema
         dispatch(convertSchema(schemaObj, schemaFormat?.value, [LANG_JSON]))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
@@ -106,75 +105,97 @@ const ExampleGenerator = () => {
                     return;
                 }
 
-                //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
+                // Get JSONSchema
                 const schema = JSON.parse(convertSchemaVal.payload.schema.convert[0].schema);
-                schemaProps = schema.properties ? Object.keys(schema.properties) : [];
-                var generated: any[] = [] // LIST OF GENERATED EXAMPLES
-                let i = 0;
 
-                while (i < numOfMsg) {
+                // Generate Fake Data for Examples
+                dispatch(convertJsonSchema(schema, langSel.value, numOfMsg))
+                    .then((response) => {
+                        let gen_data = response.payload.data;
+
+                        if (gen_data.length != 0) {
+                            setIsLoading(false);
+                            sbToastSuccess('Examples generated successfully');
+                            setGeneratedMessages(gen_data)
+                        } else {
+                            setIsLoading(false);
+                            sbToastError('Failed to generate examples');
+                        }
+
+                    }).catch((err) => {
+                        setIsLoading(false);
+                        sbToastError('Error generating examples');
+                        console.error(err);
+                    });  
+
+
+                // schemaProps = schema.properties ? Object.keys(schema.properties) : [];
+                // var generated: any[] = [] // LIST OF GENERATED EXAMPLES
+                // let i = 0;
+
+                // while (i < numOfMsg) {
                     //TODO: add custom format options
-                    JSONSchemaFaker.extend("faker", () => faker);
-                    JSONSchemaFaker.option({ ignoreMissingRefs: true, omitNulls: true });
+                    // JSONSchemaFaker.extend("faker", () => faker);
+                    // JSONSchemaFaker.option({ ignoreMissingRefs: true, omitNulls: true });
 
                     //TODO? : does not resolve ref ===> use .resolve = need to specify ref and cwd
                     //Note: external ref can't be resolved by JSONSchemaFaker; must have a fully resolved schema
                     //TODO: generation dies here !! 
                     //TODO: Move to SS
-                    let ex = JSONSchemaFaker.generate(schema);
+                    // let ex = JSONSchemaFaker.generate(schema);
 
-                    if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
-                        for (const [k, v] of Object.entries(ex)) {
-                            if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
-                                if (schemaProps && schemaProps.includes(k)) {
-                                    generated.push(JSON.stringify(v, null, 2));
-                                    i += 1
-                                } else {
-                                    generated.push(JSON.stringify({ [k]: v }, null, 2));
-                                    i += 1
-                                }
-                            }
-                        }
-                    } else {
-                        if (Object.values(ex).length != 0) { // CHECK IF GENERATED DATA OBJ HAS DATA
-                            if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {                                
-                                generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
-                                i += 1
-                            } else {
-                                generated.push(JSON.stringify(ex, null, 2));
-                                i += 1
-                            }
-                        }
-                    }
+                    // if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
+                    //     for (const [k, v] of Object.entries(ex)) {
+                    //         if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
+                    //             if (schemaProps && schemaProps.includes(k)) {
+                    //                 generated.push(JSON.stringify(v, null, 2));
+                    //                 i += 1
+                    //             } else {
+                    //                 generated.push(JSON.stringify({ [k]: v }, null, 2));
+                    //                 i += 1
+                    //             }
+                    //         }
+                    //     }
+                    // } else {
+                    //     if (Object.values(ex).length != 0) { // CHECK IF GENERATED DATA OBJ HAS DATA
+                    //         if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {                                
+                    //             generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
+                    //             i += 1
+                    //         } else {
+                    //             generated.push(JSON.stringify(ex, null, 2));
+                    //             i += 1
+                    //         }
+                    //     }
+                    // }
 
-                    if (i == 0) {
-                        break;
-                    }
-                }
+                    // if (i == 0) {
+                    //     break;
+                    // }
+                // }
 
-                if (generated.length != 0) {
-                    setIsLoading(false);
-                    sbToastSuccess('Examples generated successfully');
-                    setGeneratedMessages(generated);
+                // if (generated.length != 0) {
+                //     setIsLoading(false);
+                //     sbToastSuccess('Examples generated successfully');
+                //     setGeneratedMessages(generated);
 
 
-                    if(langSel && langSel.value == LANG_XML_UPPER) {
-                        dispatch(convertJsonSchema(JSON.stringify(generated)))
-                        .then((response) => {
-                            let xml_data = response.payload.data;
-                            setGeneratedMessages(xml_data)
+                //     if(langSel && langSel.value == LANG_XML_UPPER) {
+                //         dispatch(convertJsonSchema(JSON.stringify(generated)))
+                //         .then((response) => {
+                //             let xml_data = response.payload.data;
+                //             setGeneratedMessages(xml_data)
 
-                        }).catch((err) => {
-                            setIsLoading(false);
-                            sbToastError('Error generating XML');
-                            console.error(err);
-                        });                        
-                    }                    
+                //         }).catch((err) => {
+                //             setIsLoading(false);
+                //             sbToastError('Error generating XML');
+                //             console.error(err);
+                //         });                        
+                //     }                    
 
-                } else {
-                    setIsLoading(false);
-                    sbToastError('Failed to generate examples');
-                }
+                // } else {
+                //     setIsLoading(false);
+                //     sbToastError('Failed to generate examples');
+                // }
 
             }).catch((convertSchemaErr) => {
                 setIsLoading(false);

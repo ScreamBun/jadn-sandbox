@@ -66,14 +66,16 @@ export interface ConvertSchemaSuccessAction extends ActionSuccessResult {
 const CONVERT_JSON_REQUEST = '@@convert/CONVERT_JSON_REQUEST';
 export const CONVERT_JSON_SUCCESS = '@@convert/CONVERT_JSON_SUCCESS';
 export const CONVERT_JSON_FAILURE = '@@convert/CONVERT_JSON_FAILURE';
-export const convertJsonSchema = (json_data: string) => createAction({
+export const convertJsonSchema = (json_schema: string, fmt: string, num_to_gen: number) => createAction({
   endpoint: `${baseAPI}/convert_json`,
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    'json_data': json_data
+    'json_schema': json_schema,
+    'fmt': fmt,
+    'num_to_gen': num_to_gen,
   }),
   types: [
     CONVERT_JSON_REQUEST, CONVERT_JSON_SUCCESS, CONVERT_JSON_FAILURE
