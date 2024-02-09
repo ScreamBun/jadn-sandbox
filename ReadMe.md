@@ -7,6 +7,7 @@
 ## Background
 
 The JADN Sandbox provides the ability to create, convert, translate, transform, and validate JADN compliant schemas. In addition, for applications that communicate via messaging, the app provides the ability to create and validate messages against a schema, as well as, generate test messages based on the provided schema. Within JADN Sandbox users can interact with the JADN information modeling tools and create schemas or messages based on their application or systems needs or just to learn more about JADN with a hands on approach.
+For a downloadable version of the JADN Sandbox walkthrough, you may choose from [PDF](https://github.com/ScreamBun/jadn-sandbox/blob/master/documentation/JADNSandboxInfo.pdf) and [PPTX](https://github.com/ScreamBun/jadn-sandbox/blob/master/documentation/JADNSandboxInfo.pptx) formats.
 
 ## Quick Startup
 

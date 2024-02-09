@@ -1,4 +1,4 @@
-import { NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OPENC2_FAQ, NAV_EXTERNAL_OPENC2_JADN_INFO_MODELING, NAV_EXTERNAL_OPENC2_JADN_PYPI, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2_JADN_SRC } from "components/utils/constants";
+import { NAV_EXTERNAL_OPENC2, NAV_EXTERNAL_OPENC2_FAQ, NAV_EXTERNAL_OPENC2_JADN_INFO_MODELING, NAV_EXTERNAL_OPENC2_JADN_PYPI, NAV_EXTERNAL_OPENC2_JADN_SPEC, NAV_EXTERNAL_OPENC2_JADN_SRC, NAV_EXTERNAL_GH_README, NAV_EXTERNAL_MANUAL_PPTX, NAV_EXTERNAL_MANUAL_PDF } from "components/utils/constants";
 import React from "react"
 
 const About = () => {
@@ -67,6 +67,15 @@ const About = () => {
                 <ul className="list-group list-group-flush">
                   <li className="list-group-item">
                     <a href={NAV_EXTERNAL_OPENC2_FAQ} target='_blank' rel='noreferrer'>FAQ</a>
+                  </li>
+                </ul>
+              </li>
+              <li className="list-group-item"><a href={NAV_EXTERNAL_GH_README} target='_blank' rel='noreferrer'>Sandbox ReadMe</a>
+                <ul className="list-group list-group-flush">
+                  <li className="list-group-item border-0">
+                    <a href={NAV_EXTERNAL_MANUAL_PPTX} target='_blank' rel='noreferrer'>Walkthrough PPTX</a></li>
+                  <li className="list-group-item border-0">
+                    <a href={NAV_EXTERNAL_MANUAL_PDF} target='_blank' rel='noreferrer'>Walkthrough PDF</a>
                   </li>
                 </ul>
               </li>
