@@ -40,3 +40,6 @@ export const NAV_EXTERNAL_OPENC2_JADN_INFO_MODELING = 'https://github.com/oasis-
 export const NAV_EXTERNAL_OPENC2_JADN_PYPI = 'https://pypi.org/project/jadn/';
 export const NAV_EXTERNAL_OPENC2_JADN_SRC = 'https://github.com/oasis-open/openc2-jadn/';
 export const NAV_EXTERNAL_OPENC2_JADN_SPEC = 'https://docs.oasis-open.org/openc2/jadn/v1.0/jadn-v1.0.html';
+export const NAV_EXTERNAL_GH_README = 'https://github.com/ScreamBun/jadn-sandbox/blob/develop/ReadMe.md';
+export const NAV_EXTERNAL_MANUAL_PPTX = 'https://github.com/ScreamBun/jadn-sandbox/blob/develop/documentation/JADNSandboxInfo.pptx';
+export const NAV_EXTERNAL_MANUAL_PDF = 'https://github.com/ScreamBun/jadn-sandbox/blob/develop/documentation/JADNSandboxInfo.pdf';
