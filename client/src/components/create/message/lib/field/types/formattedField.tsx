@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
-import { v4 as uuid4 } from 'uuid';
+//import { v4 as uuid4 } from 'uuid';
+import SBUUIDv4Btn from "components/common/SBUUID4Btn";
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
 import { hasProperty } from "components/utils";
@@ -24,14 +25,29 @@ const FormattedField = (props: any) => {
     );
 
     //UUID
-    const createUUID = () => {
-        const randomID = uuid4();
-        setData(randomID);
-        optChange(name, randomID, arr);
+
+    const [uuidValue, setUUIDValue] = useState("");
+    const uuidOnchg = (generatedUUID: string) => {
+    
+
+        console.log("uuid On Change Hit ",{generatedUUID});
+
+         setData(generatedUUID);
+         //optChange(name, generatedUUID, arr);
     }
+
+
+    // }
+
+    // const createUUID = () => {
+    //     const randomID = uuid4();
+    //     setData(randomID);
+    //     optChange(name, randomID, arr);
+    // }
 
     //ipv4-net 
     //ipv6-net
+    
     const [ipValue, setIpValue] = useState<any[]>(['', '']);
     const ipvNetOnchg = (k: string, v: any, idx: number) => {
         const newArr = ipValue.map((obj, i) => {
@@ -395,15 +411,17 @@ const FormattedField = (props: any) => {
                                     name={name}
                                     onChange={e => {
                                         setData(e.target.value);
+                                        console.log(e.target.value)
                                     }}
                                     onBlur={e => {
                                         const errCheck = validateOptDataStr(config, optData, e.target.value);
                                         setErrMsg(errCheck);
                                         optChange(name, e.target.value, arr);
+                                        console.log(e.target.value)
                                     }}
                                     style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                                 />
-                                <button type="button" className='btn btn-sm btn-primary float-end text-nowrap' onClick={createUUID}>Generate UUID</button>
+                                <SBUUIDv4Btn uuidOnClick={uuidOnchg}/>
                             </div>
                         </div>
                         {err}
