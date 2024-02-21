@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
-import { v4 as uuid4 } from 'uuid';
+//import { v4 as uuid4 } from 'uuid';
+import SBUUIDv4Btn from "components/common/SBUUID4Btn";
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
 import { hasProperty } from "components/utils";
@@ -24,14 +25,15 @@ const FormattedField = (props: any) => {
     );
 
     //UUID
-    const createUUID = () => {
-        const randomID = uuid4();
-        setData(randomID);
-        optChange(name, randomID, arr);
+    const [uuidValue, setUUIDValue] = useState("");
+    const uuidOnchg = (generatedUUID: string) => {
+        setData(generatedUUID);
+        const errCheck = validateOptDataStr(config, optData, generatedUUID);
+        setErrMsg(errCheck);
+        optChange(name, generatedUUID, arr);
     }
-
-    //ipv4-net 
-    //ipv6-net
+    
+    //IP Values
     const [ipValue, setIpValue] = useState<any[]>(['', '']);
     const ipvNetOnchg = (k: string, v: any, idx: number) => {
         const newArr = ipValue.map((obj, i) => {
@@ -403,7 +405,7 @@ const FormattedField = (props: any) => {
                                     }}
                                     style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                                 />
-                                <button type="button" className='btn btn-sm btn-primary float-end text-nowrap' onClick={createUUID}>Generate UUID</button>
+                                <SBUUIDv4Btn uuidOnClick={uuidOnchg}/>
                             </div>
                         </div>
                         {err}

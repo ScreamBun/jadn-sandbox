@@ -1,0 +1,9 @@
+{
+  "info": {
+    "package": "http://example.fake",
+    "exports": ["UUID-String"]
+  },
+  "types": [
+    ["UUID-String", "String", ["/uuid"], ""]
+  ]
+}
