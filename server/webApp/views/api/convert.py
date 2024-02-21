@@ -14,6 +14,7 @@ from jadnschema.convert.schema.writers.json_schema.schema_validator import valid
 from jadnschema.convert.schema.helpers import gen_data
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadnxml.builder.xml_builder import build_xml_from_json_str
+from jadnjson.generators.json_generator import gen_data_from_schema
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
@@ -151,6 +152,7 @@ class ConvertJSON(Resource):
         i = 0
         while i < num_to_gen:
             # json_schema_str = json.dumps(json_schema)
+            # g_data_test = gen_data_from_schema(json_schema)
             g_data = gen_data(json_schema)
             array_of_json_data.append(g_data)
             print(i)
