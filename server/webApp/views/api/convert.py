@@ -149,7 +149,7 @@ class ConvertJSON(Resource):
         return_array = []
         
         i = 0
-        while i < num_to_gen:
+        while i < int(num_to_gen):
             
             try:
                 g_data = gen_data_from_schema(json_schema)
@@ -163,7 +163,7 @@ class ConvertJSON(Resource):
                 
             if fmt == XML:
                 try:
-                    g_data = return_array.append(build_xml_from_json_str(g_data))
+                    g_data = build_xml_from_json_str(g_data)
                 except Exception:  
                     tb = traceback.format_exc()
                     print(tb)            
