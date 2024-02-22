@@ -147,29 +147,32 @@ class ConvertJSON(Resource):
         num_to_gen = request_json["num_to_gen"]
         
         return_array = []
-        array_of_json_data = []
         
         i = 0
         while i < num_to_gen:
-            # json_schema_str = json.dumps(json_schema)
-            # g_data_test = gen_data_from_schema(json_schema)
-            g_data = gen_data(json_schema)
-            array_of_json_data.append(g_data)
-            print(i)
-            i += 1
-        
-        if fmt == XML:
-            for json_gen_data in array_of_json_data:
+            
+            try:
+                g_data = gen_data_from_schema(json_schema)
+            except Exception:  
+                tb = traceback.format_exc()
+                print(tb)            
+                return_array.append("Unable to generate JSON")                  
+            
+            if isinstance(g_data, dict):
+                g_data = json.dumps(g_data, indent=2)
+                
+            if fmt == XML:
                 try:
-                    # json_data = json.loads(json_gen_data)
-                    return_array.append(build_xml_from_json_str(json_gen_data))
+                    g_data = return_array.append(build_xml_from_json_str(g_data))
                 except Exception:  
                     tb = traceback.format_exc()
                     print(tb)            
-                    return_array.append("Unable to generate XML")
-                    
-        elif fmt == JSON:
-            return_array = array_of_json_data       
+                    return_array.append("Unable to generate XML")                                
+
+            return_array.append(g_data)
+            print(i)
+            i += 1
+   
         
         return jsonify({
             "data":  return_array
