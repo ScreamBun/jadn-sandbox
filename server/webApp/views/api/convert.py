@@ -1,17 +1,14 @@
-import json
 import logging
 
 from io import BytesIO
 import os
 import sys
 import traceback
-from xml.etree import ElementTree
 import jadn
-from flask import current_app, jsonify, Response, request, send_file
+from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
-from jadnschema.convert.schema.helpers import gen_data
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadnxml.builder.xml_builder import build_xml_from_json_str
 from jadnjson.generators.json_generator import gen_data_from_schema
@@ -157,11 +154,8 @@ class ConvertJSON(Resource):
                 tb = traceback.format_exc()
                 print(tb)            
                 return_array.append("Unable to generate JSON")                  
-            
-            if isinstance(g_data, dict):
-                g_data = json.dumps(g_data, indent=2)
                 
-            if fmt == XML:
+            if fmt == XML.upper():
                 try:
                     g_data = build_xml_from_json_str(g_data)
                 except Exception:  
@@ -170,10 +164,8 @@ class ConvertJSON(Resource):
                     return_array.append("Unable to generate XML")                                
 
             return_array.append(g_data)
-            print(i)
             i += 1
    
-        
         return jsonify({
             "data":  return_array
         }) 

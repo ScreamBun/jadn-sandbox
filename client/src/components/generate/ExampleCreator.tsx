@@ -18,7 +18,7 @@ export interface Option {
 //TODO: create messages in other languages ?
 //TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
-    const { formId, generatedMessages, setGeneratedMessages, isLoading, numOfMsg, setNumOfMsg, langSel, setLangSel } = props;
+    const { formId, generatedMessages, isLoading, numOfMsg, setNumOfMsg, langSel, setLangSel } = props;
     const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
 
     const jsonOpt = new Option(LANG_JSON_UPPER);
@@ -37,6 +37,7 @@ const ExampleCreator = (props: any) => {
     }
 
     const onLangChange = (e: React.ChangeEvent<Option>) => {
+        console.log(e)
         setLangSel(e);
     }
 
@@ -55,7 +56,7 @@ const ExampleCreator = (props: any) => {
 
             {toggle[i] == true ?
                 <div className="card-body" key={i}>
-                    <SBEditor data={message} isReadOnly={true} height={'35vh'}></SBEditor>
+                    <SBEditor data={message} convertTo={langSel.value || "JSON"} isReadOnly={true} height={'35vh'}></SBEditor>
                 </div> : ''}
         </div>
     ));

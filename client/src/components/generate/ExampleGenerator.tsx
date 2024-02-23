@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { JSONSchemaFaker } from 'json-schema-faker';
-import { faker } from "@faker-js/faker/locale/en";
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import { convertJsonSchema, convertSchema } from 'actions/convert'
-import { LANG_JSON, LANG_JSON_UPPER, LANG_XML_UPPER } from 'components/utils/constants'
+import { LANG_JSON, LANG_JSON_UPPER } from 'components/utils/constants'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { SchemaJADN } from 'components/create/schema/interface'
 import ExampleCreator from './ExampleCreator'
-import { toXML } from 'jstoxml';
 
 
 export interface Option {
@@ -127,75 +124,6 @@ const ExampleGenerator = () => {
                         sbToastError('Error generating examples');
                         console.error(err);
                     });  
-
-
-                // schemaProps = schema.properties ? Object.keys(schema.properties) : [];
-                // var generated: any[] = [] // LIST OF GENERATED EXAMPLES
-                // let i = 0;
-
-                // while (i < numOfMsg) {
-                    //TODO: add custom format options
-                    // JSONSchemaFaker.extend("faker", () => faker);
-                    // JSONSchemaFaker.option({ ignoreMissingRefs: true, omitNulls: true });
-
-                    //TODO? : does not resolve ref ===> use .resolve = need to specify ref and cwd
-                    //Note: external ref can't be resolved by JSONSchemaFaker; must have a fully resolved schema
-                    //TODO: generation dies here !! 
-                    //TODO: Move to SS
-                    // let ex = JSONSchemaFaker.generate(schema);
-
-                    // if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
-                    //     for (const [k, v] of Object.entries(ex)) {
-                    //         if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
-                    //             if (schemaProps && schemaProps.includes(k)) {
-                    //                 generated.push(JSON.stringify(v, null, 2));
-                    //                 i += 1
-                    //             } else {
-                    //                 generated.push(JSON.stringify({ [k]: v }, null, 2));
-                    //                 i += 1
-                    //             }
-                    //         }
-                    //     }
-                    // } else {
-                    //     if (Object.values(ex).length != 0) { // CHECK IF GENERATED DATA OBJ HAS DATA
-                    //         if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {                                
-                    //             generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
-                    //             i += 1
-                    //         } else {
-                    //             generated.push(JSON.stringify(ex, null, 2));
-                    //             i += 1
-                    //         }
-                    //     }
-                    // }
-
-                    // if (i == 0) {
-                    //     break;
-                    // }
-                // }
-
-                // if (generated.length != 0) {
-                //     setIsLoading(false);
-                //     sbToastSuccess('Examples generated successfully');
-                //     setGeneratedMessages(generated);
-
-
-                //     if(langSel && langSel.value == LANG_XML_UPPER) {
-                //         dispatch(convertJsonSchema(JSON.stringify(generated)))
-                //         .then((response) => {
-                //             let xml_data = response.payload.data;
-                //             setGeneratedMessages(xml_data)
-
-                //         }).catch((err) => {
-                //             setIsLoading(false);
-                //             sbToastError('Error generating XML');
-                //             console.error(err);
-                //         });                        
-                //     }                    
-
-                // } else {
-                //     setIsLoading(false);
-                //     sbToastError('Failed to generate examples');
-                // }
 
             }).catch((convertSchemaErr) => {
                 setIsLoading(false);
