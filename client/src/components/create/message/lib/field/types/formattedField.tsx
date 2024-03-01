@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
-//import { v4 as uuid4 } from 'uuid';
 import SBUUIDv4Btn from "components/common/SBUUID4Btn";
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
@@ -220,6 +219,7 @@ const FormattedField = (props: any) => {
             );
 
         case 'ipv4-net':
+            //console.log("ipv4-net array detected")
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -233,7 +233,7 @@ const FormattedField = (props: any) => {
                         <div className='card-body m-0 p-0 input-group'>
                             <input
                                 type='text'
-                                name={name}
+                                name={"IPv4 Address"}
                                 value={data}
                                 onChange={e => {
                                     setIpValue(ipValue => [e.target.value, ipValue[1]]);
@@ -247,7 +247,7 @@ const FormattedField = (props: any) => {
                             <input
                                 type='number'
                                 onWheel={(e) => { e.target.blur(); }}
-                                name={name}
+                                name={"Prefix Length"}
                                 min={0}
                                 max={128}
                                 value={data}
