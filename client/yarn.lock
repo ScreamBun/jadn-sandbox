@@ -7532,6 +7532,7 @@ __metadata:
     webpack-dev-server: ^4.15.1
     webpack-merge: ^5.9.0
     workbox-webpack-plugin: ^7.0.0
+    xspattern: ^3.1.0
   languageName: unknown
   linkType: soft
 
@@ -16439,6 +16440,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"whynot@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "whynot@npm:5.0.0"
+  checksum: d3bd123496f2e6d9699097bc3e1fadf4ef9e53c4091acd460c413c76b14210b9b660d884f7af0f1fbc06dfb30d06bb5e2254598c2623a0b6d1e3a1e7c2daa248
+  languageName: node
+  linkType: hard
+
 "wide-align@npm:^1.1.5":
   version: 1.1.5
   resolution: "wide-align@npm:1.1.5"
@@ -16715,6 +16723,15 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 53e991bbf928faf5dc6efac9b8eb9ab6497c69feeb94f963d648b7a3530a720b19ec2e0ec037344257e05a4f35bd9ad04d9de6f289615ffb133282031b18c61c
+  languageName: node
+  linkType: hard
+
+"xspattern@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "xspattern@npm:3.1.0"
+  dependencies:
+    whynot: ^5.0.0
+  checksum: acac9c8148613296438d6c93eb986eea87b2068232d5765f48b48f98398837d5ca0a69e54847189c83e4df3a3584ed335b39fd94b9a771a9f496f804624a512d
   languageName: node
   linkType: hard
 

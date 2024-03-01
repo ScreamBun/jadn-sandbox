@@ -10,6 +10,7 @@ import { hasProperty } from 'components/utils';
 import { FormattedField } from './Types';
 import { Buffer } from 'buffer';
 import SBECMARegexBtn from 'components/common/SBECMARegexBtn';
+import SBXMLRegexBtn from 'components/common/SBXMLRegexBtn';
 
 // Interface
 interface BasicFieldProps {
@@ -30,10 +31,12 @@ const BasicField = (props: BasicFieldProps) => {
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState(value);
 
-  //used for regex checker button
-  const [isValid, setIsValid] = useState(false);
-  const [isValidating, setIsValidating] = useState(false);
+  //used for ECMAScript regex checker button
+  const [isECMAScriptValid, setIsECMAScriptValid] = useState(false);
+  //used for XML regex checker button
+  const [isXMLRegexValid, setIsXMLRegexValid] = useState(false);
   //used for ALL regex checkers
+  const [isValidating, setIsValidating] = useState(false);
   const patternOnchg = (patternData: string) => {
       setData(patternData);
       optChange(name, patternData, arr);
@@ -243,12 +246,19 @@ const BasicField = (props: BasicFieldProps) => {
               }}
               style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} /> 
               <SBECMARegexBtn 
-                isValid={isValid}
-                setIsValid={setIsValid}
+                isECMAScriptValid={isECMAScriptValid}
+                setIsECMAScriptValid={setIsECMAScriptValid}
                 setIsValidating={setIsValidating}
                 patternData={data}                         
                 onValidateClick={patternOnchg}
-              />    
+              />                
+              <SBXMLRegexBtn 
+                isXMLRegexValid={isXMLRegexValid}
+                setIsXMLRegexValid={setIsXMLRegexValid}
+                setIsValidating={setIsValidating}
+                patternData={data}                         
+                onValidateClick={patternOnchg}
+              />  
     
           </div>
           {err}

@@ -5,12 +5,12 @@ import { sbToastSuccess, dismissAllToast, sbToastError } from "./SBToast";
 
 const SBECMARegexBtn = (props: any) => {
 
-    const { isValid, setIsValid, setIsValidating, patternData, customClass } = props;
+    const { isECMAScriptValid, setIsECMAScriptValid, setIsValidating, patternData, customClass } = props;
 
     const onValidateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         dismissAllToast();
-        setIsValid(false);
+        setIsECMAScriptValid(false);
 
         if (!patternData) {
             sbToastError('Validation Error: No Pattern to validate');
@@ -27,7 +27,7 @@ const SBECMARegexBtn = (props: any) => {
                 const regexECMA = new RegExp(regexObj);
                 console.log(regexECMA.exec(""));
                 sbToastSuccess("Valid ECMAScript Regex "+regexObj)
-                setIsValid(true)
+                setIsECMAScriptValid(true)
 
             } catch (err: any) {
                 sbToastError(`Invalid ECMAScript Regex: ${err.message}`)
@@ -40,10 +40,10 @@ const SBECMARegexBtn = (props: any) => {
 
     return (
         <>
-            <button id='validateECMAButton' type='button' className={`btn btn-sm btn-primary ms-1 me-1 + ${customClass}`} title={isValid ? "Schema is valid" : "Click to validate Schema"}
+            <button id='validateECMAButton' type='button' className={`btn btn-sm btn-primary ms-1 me-1 + ${customClass}`} title={isECMAScriptValid ? "Schema is valid" : "Click to validate Schema"}
                 onClick={onValidateClick}>
                 <span className="m-1">ECMA</span>
-                {isValid ? (
+                {isECMAScriptValid ? (
                     <span className="badge rounded-pill text-bg-success">
                         <FontAwesomeIcon icon={faCheck} />
                     </span>) : (
