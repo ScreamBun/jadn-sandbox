@@ -10,7 +10,7 @@ from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
-from jadnxml.builder.xml_builder import build_xml_from_json_str
+from jadnxml.builder.xml_builder import build_xml_from_json
 from jadnjson.generators.json_generator import gen_data_from_schema
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
@@ -157,7 +157,7 @@ class ConvertJSON(Resource):
                 
             if fmt == XML.upper():
                 try:
-                    g_data = build_xml_from_json_str(g_data)
+                    g_data = build_xml_from_json(g_data)
                 except Exception:  
                     tb = traceback.format_exc()
                     print(tb)            
