@@ -9,6 +9,8 @@ import { validateOptDataNum, validateOptDataBinary, validateOptDataStr } from '.
 import { hasProperty } from 'components/utils';
 import { FormattedField } from './Types';
 import { Buffer } from 'buffer';
+import SBECMARegexBtn from 'components/common/SBECMARegexBtn';
+import SBXMLRegexBtn from 'components/common/SBXMLRegexBtn';
 
 // Interface
 interface BasicFieldProps {
@@ -28,6 +30,17 @@ const BasicField = (props: BasicFieldProps) => {
   const [idx, name, type, opts, comment] = def;
   const msgName = (parent ? [parent, name] : [name]).join('.');
   const [data, setData] = useState(value);
+
+  //used for ECMAScript regex checker button
+  const [isECMAScriptValid, setIsECMAScriptValid] = useState(false);
+  //used for XML regex checker button
+  const [isXMLRegexValid, setIsXMLRegexValid] = useState(false);
+  //used for ALL regex checkers
+  const [isValidating, setIsValidating] = useState(false);
+  const patternOnchg = (patternData: string) => {
+      setData(patternData);
+      optChange(name, patternData, arr);
+  }
 
   var optData: Record<string, any> = {};
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
@@ -206,6 +219,54 @@ const BasicField = (props: BasicFieldProps) => {
     }
   }
 
+  if (optData.pattern)
+    return (
+      <div className='form-group'>
+        <div className='card'>
+          <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+            <div>
+              <p className='card-title m-0'>{`${name}${isOptional(def) ? '' : '*'}`}</p>
+              {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
+            </div>
+            {children}
+          </div>
+          <div className='card-body m-0 p-0'>
+            <input
+              type='text'
+              name={name}
+              value={data}
+              placeholder={optData.pattern ? optData.pattern : ''}
+              onChange={e => {
+                setData(e.target.value);
+              }}
+              onBlur={e => {
+                const errCheck = validateOptDataStr(config, optData, e.target.value);
+                setErrMsg(errCheck);
+                optChange(name, e.target.value, arr);
+              }}
+              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} /> 
+              <SBECMARegexBtn 
+                isECMAScriptValid={isECMAScriptValid}
+                setIsECMAScriptValid={setIsECMAScriptValid}
+                setIsValidating={setIsValidating}
+                patternData={data}                         
+                onValidateClick={patternOnchg}
+              />                
+              <SBXMLRegexBtn 
+                isXMLRegexValid={isXMLRegexValid}
+                setIsXMLRegexValid={setIsXMLRegexValid}
+                setIsValidating={setIsValidating}
+                patternData={data}                         
+                onValidateClick={patternOnchg}
+              />  
+    
+          </div>
+          {err}
+        </div>
+      </div>
+    )
+
+
   //DEFAULT: STRING 
   return (
     <div className='form-group'>
@@ -231,7 +292,7 @@ const BasicField = (props: BasicFieldProps) => {
               setErrMsg(errCheck);
               optChange(name, e.target.value, arr);
             }}
-            style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} />
+            style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} />            
         </div>
         {err}
       </div>

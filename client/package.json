@@ -60,7 +60,8 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
     "uuid": "^9.0.1",
-    "vkbeautify": "^0.99.3"
+    "vkbeautify": "^0.99.3",
+    "xspattern": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
