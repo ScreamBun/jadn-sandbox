@@ -155,7 +155,7 @@ class ConvertJSON(Resource):
                 print(tb)            
                 return_array.append("Unable to generate JSON")                  
                 
-            if fmt == XML.upper():
+            if fmt == XML:
                 try:
                     g_data = build_xml_from_json(g_data)
                 except Exception:  

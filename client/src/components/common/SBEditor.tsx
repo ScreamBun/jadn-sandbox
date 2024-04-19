@@ -6,12 +6,6 @@ import { LANG_HTML, LANG_MARKDOWN, LANG_XML, LANG_XSD } from 'components/utils/c
 import { FormatJADN } from 'components/utils';
 import { ThemeContext } from 'components/static/ThemeProvider';
 
-// References:
-// https://reactjsexample.com/codemirror-component-for-react/
-// https://uiwjs.github.io/react-codemirror/
-// https://uiwjs.github.io/react-codemirror/#/extensions/basic-setup
-// https://uiwjs.github.io/react-codemirror/#/theme/data/xcode/light
-// Possible dark theme: abcdef
 
 const SBEditor = (props: any) => {
 
