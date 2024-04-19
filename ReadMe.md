@@ -91,12 +91,12 @@ Important Notes:
 
 * You will need to know the screambunn DockerHub login in order to push a new image.
 * A new version tag and image should be pushed after each docker build and push.  
-* When you run docker_push.py it will askf for the version # (v[Major].[Minor].[Bug])
+* When you run docker_push.py it will ask for the version # (v[Major].[Minor].[Bug])
 
 1. Run this command once to build the image and push to Dockhub/
 
 ```bash
-./docker_push.py
+python ./docker_push.py
 ```
 
 2. To start your image, enter the following, this will start the image without rebuilding
