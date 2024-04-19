@@ -200,7 +200,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
                             </div>
                         </div>
                         <div className={`${selectedFile == 'file' ? '' : ' d-none'}`} style={{ display: 'inline' }}>
-                            <input type="file" id="file-input" name="file-input" accept={LANG_JADN} onChange={onFileUpload} ref={sbFileUploaderRef} multiple={true} />
+                            <input type="file" id="file-input" name="file-input" accept={".jadn"} onChange={onFileUpload} ref={sbFileUploaderRef} multiple={true} />
                             <button id="cancelFileUpload" type='button' className="btn btn-sm btn-secondary ms-0" onClick={() => onCancelFileUpload} style={{ display: 'inline' }}>
                                 <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
                             </button>
