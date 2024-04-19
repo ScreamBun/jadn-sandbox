@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import { convertJsonSchema, convertSchema } from 'actions/convert'
-import { LANG_JSON, LANG_JSON_UPPER } from 'components/utils/constants'
+import { LANG_JSON } from 'components/utils/constants'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { SchemaJADN } from 'components/create/schema/interface'
@@ -25,7 +25,7 @@ const ExampleGenerator = () => {
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
     const [numOfMsg, setNumOfMsg] = useState<number>(1);
 
-    const defaultLangOption = new Option(LANG_JSON_UPPER)
+    const defaultLangOption = new Option(LANG_JSON)
     const [langSel, setLangSel] = useState<Option | null>(defaultLangOption);
 
     const [isLoading, setIsLoading] = useState(false);

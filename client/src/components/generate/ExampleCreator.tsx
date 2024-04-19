@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getSelectedSchema } from 'reducers/util'
-import { LANG_JSON, LANG_JSON_UPPER, LANG_XML_UPPER } from 'components/utils/constants'
+import { LANG_JSON, LANG_XML } from 'components/utils/constants'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
-import SBSaveFile from 'components/common/SBSaveFile'
 import SBSubmitBtn from 'components/common/SBSubmitBtn'
 import SBSelect from 'components/common/SBSelect'
 
@@ -21,8 +20,8 @@ const ExampleCreator = (props: any) => {
     const { formId, generatedMessages, isLoading, numOfMsg, setNumOfMsg, langSel, setLangSel } = props;
     const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
 
-    const jsonOpt = new Option(LANG_JSON_UPPER);
-    const xmlOpt = new Option(LANG_XML_UPPER);
+    const jsonOpt = new Option(LANG_JSON);
+    const xmlOpt = new Option(LANG_XML);
     const [langs, setLangs] = useState<Option[]>([jsonOpt, xmlOpt]);
 
     const validSchema = useSelector(getSelectedSchema);
@@ -37,7 +36,7 @@ const ExampleCreator = (props: any) => {
     }
 
     const onLangChange = (e: React.ChangeEvent<Option>) => {
-        console.log(e)
+        console.log(e.value)
         setLangSel(e);
     }
 
@@ -49,14 +48,13 @@ const ExampleCreator = (props: any) => {
                         Data Example #{i + 1}
                     </button>
                     <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-end' />
-                    <SBSaveFile data={message} loc={'messages'} customClass={"float-end me-1"} filename={`MessageExample${i + 1}`} ext={LANG_JSON} />
-                    <SBDownloadBtn buttonId={`downloadMsgExample${i}`} customClass='me-1 float-end' filename={`MessageExample${i + 1}`} data={message} ext={LANG_JSON} />
+                    <SBDownloadBtn buttonId={`downloadMsgExample${i}`} customClass='me-1 float-end' filename={`MessageExample${i + 1}`} data={message} ext={langSel.value} />
                 </h5>
             </div>
 
             {toggle[i] == true ?
                 <div className="card-body" key={i}>
-                    <SBEditor data={message} convertTo={langSel.value || "JSON"} isReadOnly={true} height={'35vh'}></SBEditor>
+                    <SBEditor data={message} convertTo={langSel.value || LANG_JSON} isReadOnly={true} height={'35vh'}></SBEditor>
                 </div> : ''}
         </div>
     ));
