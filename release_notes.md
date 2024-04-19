@@ -1,5 +1,11 @@
 # JADN Sandbox Release Notes
 
+## v0.11.0
+
+* Data Validation - UUID Button added
+* Data Validation - File upload only allows JADN
+* Data Generation - XML/JSON Generation & Refinement
+
 ## v0.10.0
 
 * Schema Creation - Ability to search through Outline based on type name
