@@ -8,6 +8,7 @@ import { ModalSize } from './ModalSize';
 import { sbToastError } from 'components/common/SBToast';
 import TypeOptionsEditor from './TypeOptionsEditor';
 import FieldOptionsEditor from './FieldOptionsEditor';
+import SBECMARegexBtn from 'components/common/SBECMARegexBtn';
 
 // Interface
 interface OptionsModalProps {

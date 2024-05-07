@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faMinusSquare, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import SBSelect, { Option } from 'components/common/SBSelect';
 
 // Interface
@@ -63,6 +63,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
       change(e.value);
     }
   }
+  const onPatternChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValueData(e.target.value);
+}
 
   if (type === 'SBCreatableSelect' && options) {
     return (
@@ -153,6 +156,28 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     );
   }
 
+  if (type === 'WithRegex' && options) {
+const patternValue=value.toString()  
+const onECMACheck = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    onAddClick();
+}
+const onAddClick = () => { 
+
+    setVal('');
+    return (
+      
+      <div className="input-group input-group-sm mb-2">
+      <input id={id + "_input"} name={id + "_input"} type='text' className="form-control" onChange={onPatternChange} placeholder='Enter Regex String' />
+      <button id="check_regex" type="button" className="btn btn-sm btn-primary" onClick={onECMACheck}>
+          <FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>
+      </button>
+  </div>
+      
+    );
+  }
+
+}; 
   const inputArgs: Record<string, any> = {
     value: valueData,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValueData(e.target.value),

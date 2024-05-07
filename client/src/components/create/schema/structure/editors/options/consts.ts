@@ -170,6 +170,7 @@ export const TypeOptionInputArgs = {
     description: '(optional) Semantic validation keyword'
   },
   pattern: {
+    type: 'WithRegex',
     description: '(optional) Regular expression used to validate a String type'
   },
   minf: {
