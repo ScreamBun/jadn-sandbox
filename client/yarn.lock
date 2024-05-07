@@ -4575,6 +4575,141 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stdlib/assert-has-own-property@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/assert-has-own-property@npm:0.2.1"
+  checksum: 9295019420296ea746c034ac245cd3ecb770db1ec198e3fa79ecc6869ad333b89339007c7dcdc198fd51d26ed3a36486833476b335ed70824eba417f6a175bc4
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/assert-has-symbol-support@npm:^0.2.0":
+  version: 0.2.1
+  resolution: "@stdlib/assert-has-symbol-support@npm:0.2.1"
+  checksum: 7488ef9b288aa1ddf52b42ab8f2651776f9829bb694802898544ea8a8ff236ca8543855c30d014ee69494106d12b889efb3876fd32a9f9a67283013d0ef814de
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/assert-has-tostringtag-support@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/assert-has-tostringtag-support@npm:0.2.1"
+  dependencies:
+    "@stdlib/assert-has-symbol-support": ^0.2.0
+  checksum: 84a85b042b3cd78ef4dce7db2eb05bf7668aa9fab735c0a5412abe32674dd3df66fcdc6b613af7d8db831d7150a535be597299b6570fe6199acf695d52586747
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/assert-is-regexp-string@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/assert-is-regexp-string@npm:0.2.1"
+  dependencies:
+    "@stdlib/assert-is-string": ^0.2.1
+    "@stdlib/regexp-regexp": ^0.2.1
+  checksum: d8152a80b4eb181d9517b589058bcc98d622726e286843f0b9da24ff56e8639f9657858050024c3225f4b19bf5a7b69069b0f00e37dc7710771073b5bcdb030d
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/assert-is-string@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/assert-is-string@npm:0.2.1"
+  dependencies:
+    "@stdlib/assert-has-tostringtag-support": ^0.2.1
+    "@stdlib/utils-define-nonenumerable-read-only-property": ^0.2.1
+    "@stdlib/utils-native-class": ^0.2.1
+  checksum: 4ccf5a74a0e2f998d588ec4afb9432983a31ba81ce088f91cf53693d89ee0c08fca683e93683a6b2d1b64a23adde1e2aee8d3a47908196640d618d8ebab52d30
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/error-tools-fmtprodmsg@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/error-tools-fmtprodmsg@npm:0.2.1"
+  checksum: 07bcb338824ec99474450b09610d711677476d49ed8b3c98570b5c4a5ce074c6658e96a2aa1e053e048a26fccadc9d3f1b7cfbce0d8ed5388c20bc5ae008930e
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/regexp-regexp@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/regexp-regexp@npm:0.2.1"
+  dependencies:
+    "@stdlib/utils-define-nonenumerable-read-only-property": ^0.2.1
+  checksum: 53c68482a51b029140a2c325329fcb1f393706679ccb4f2c95bba313d3af04fc3a336c4120bf31f7a2f1948267eb9747275f43503e49cba484b7140b6693e356
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/string-base-format-interpolate@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/string-base-format-interpolate@npm:0.2.1"
+  checksum: a29be56685fd2b2a911880c3c41b5387f5de54aa9c860d4b234b0be24c5975add915b44d3a3a3e52909e3f5fba07b22cd855df5495fe67c4caf54684291ccaf6
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/string-base-format-tokenize@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/string-base-format-tokenize@npm:0.2.1"
+  checksum: 7373a7acdb24d8418e9e27d9f4d5b7b9926479206280d11c0bb6d82c013d68c5f265364fd4edeff4b18d7d14ff8a9596a77af82503f7cdfd229440be782f11ee
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/string-format@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/string-format@npm:0.2.1"
+  dependencies:
+    "@stdlib/string-base-format-interpolate": ^0.2.1
+    "@stdlib/string-base-format-tokenize": ^0.2.1
+  checksum: 20ade0c17b85d0cedc82ea0f726691115f8f7a71ebebd17b78a2bdd3b126ad725af6c541076187ea4c346f6d4a7c21e33c67a45e10197ac73eefc1c2d52494b2
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/symbol-ctor@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/symbol-ctor@npm:0.2.1"
+  checksum: c3dadb5350fe8734737f4e0b2f5f3035a1b1c4ebf760613cf2ffc132e4ebce40db86f1679e766ff2791fb79eea6c62ca704a28f18a446a98e1ea364d4636c936
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/utils-define-nonenumerable-read-only-property@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/utils-define-nonenumerable-read-only-property@npm:0.2.1"
+  dependencies:
+    "@stdlib/utils-define-property": ^0.2.1
+  checksum: 2a64f006eb2716afdd0ff0e34f7bb45056b54190609e018a0be4110477f6525663cfd1955a033f36af9a616be3abd3602eb56bf7d2c4eebad1a3cf1b92f51a6d
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/utils-define-property@npm:^0.2.1":
+  version: 0.2.3
+  resolution: "@stdlib/utils-define-property@npm:0.2.3"
+  dependencies:
+    "@stdlib/error-tools-fmtprodmsg": ^0.2.1
+    "@stdlib/string-format": ^0.2.1
+  checksum: b6c009242465624ef199d2857497764d1cf8dbb2e978c57264a229f2ee6d847bfb8b662eea3bda2d1873e80983d81b5212721e17f4cd398e588978765e743827
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
+"@stdlib/utils-native-class@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@stdlib/utils-native-class@npm:0.2.1"
+  dependencies:
+    "@stdlib/assert-has-own-property": ^0.2.1
+    "@stdlib/assert-has-tostringtag-support": ^0.2.1
+    "@stdlib/symbol-ctor": ^0.2.1
+  checksum: 39d5a86e8db305486fa93b7a85cd0149f7731390b7926bfbe9780d932d23321d13d5c9a2e0bcaaa876bb39b72a6e8bf8bd7fe17821076d7b09e76f748e6d9ad8
+  conditions: (os=aix | os=darwin | os=freebsd | os=linux | os=macos | os=openbsd | os=sunos | os=win32 | os=windows)
+  languageName: node
+  linkType: hard
+
 "@surma/rollup-plugin-off-main-thread@npm:^2.2.3":
   version: 2.2.3
   resolution: "@surma/rollup-plugin-off-main-thread@npm:2.2.3"
@@ -7425,6 +7560,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": ^6.4.2
     "@fortawesome/react-fontawesome": ^0.2.0
     "@popperjs/core": ^2.11.8
+    "@stdlib/assert-is-regexp-string": ^0.2.1
     "@types/d3-graphviz": ^2.6.8
     "@types/dompurify": ^3.0.5
     "@types/file-saver": ^2.0.5
