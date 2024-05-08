@@ -184,7 +184,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
             </div>
             <div className={`col-md-${fieldColumns}`}>
               <div className="input-group">
-                <input id={id + "_input"} name={id + "_input"} type={type} className="form-control" {...inputArgs} placeholder='Enter Regex String' />
+                <input id={id + "_input"} name={id + "_input"} type={type} className="form-control" {...inputArgs} placeholder='Enter regex string' />
                 <button id="check_regex" type="button" title='check pattern validity' className="btn btn-sm btn-primary" onClick={onECMACheck}>
                     <FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>
                 </button>
