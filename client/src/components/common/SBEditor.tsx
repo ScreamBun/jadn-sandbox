@@ -25,23 +25,23 @@ const SBEditor = (props: any) => {
 
     const { theme } = useContext(ThemeContext);
 
-    let extensions = [langs.json()]
+    let ext = [langs.json()]
     if (convertTo != null && typeof convertTo != 'object') {
         switch (convertTo.toLowerCase()) {
             case LANG_HTML:
-                extensions = [langs.html()];
+                ext = [langs.html()];
                 break;
             case LANG_MARKDOWN:
-                extensions = [langs.markdown()];
+                ext = [langs.markdown()];
                 break;
             case LANG_XML:
-                extensions = [langs.xml()];
+                ext = [langs.xml()];
                 break;
             case LANG_XSD:
-                extensions = [langs.xml()];
+                ext = [langs.xml()];
                 break;                
             default:
-                extensions = [langs.json()];
+                ext = [langs.json()];
                 break;
         }
     }
@@ -55,7 +55,7 @@ const SBEditor = (props: any) => {
             maxHeight='100%'
             readOnly={isReadOnly}
             theme={theme == "light" ? githubLight : githubDark}
-            extensions={extensions}
+            extensions={ext}
             onChange={onChange}
         />
     );

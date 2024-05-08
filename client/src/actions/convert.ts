@@ -62,6 +62,38 @@ export interface ConvertSchemaSuccessAction extends ActionSuccessResult {
   };
 }
 
+// POST - /api/convert/convert_json - convert json to xml
+const CONVERT_JSON_REQUEST = '@@convert/CONVERT_JSON_REQUEST';
+export const CONVERT_JSON_SUCCESS = '@@convert/CONVERT_JSON_SUCCESS';
+export const CONVERT_JSON_FAILURE = '@@convert/CONVERT_JSON_FAILURE';
+export const convertJsonSchema = (json_schema: string, fmt: string, num_to_gen: number) => createAction({
+  endpoint: `${baseAPI}/convert_json`,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    'json_schema': json_schema,
+    'fmt': fmt,
+    'num_to_gen': num_to_gen,
+  }),
+  types: [
+    CONVERT_JSON_REQUEST, CONVERT_JSON_SUCCESS, CONVERT_JSON_FAILURE
+  ]
+});
+
+export interface ConvertJsonSuccessAction extends ActionSuccessResult {
+  type: typeof CONVERT_JSON_SUCCESS;
+  payload: {
+      data: any;
+  };
+}
+
+// JSON Request Actions
+export interface ConvertJsonActions extends ActionRequestResult {
+  type: typeof CONVERT_JSON_REQUEST;
+}
+
 // Request Actions
 export interface ConvertRequestActions extends ActionRequestResult {
   type: typeof INFO_REQUEST | typeof CONVERT_REQUEST;
@@ -73,9 +105,9 @@ export interface ConvertFailureActions extends ActionFailureResult {
 }
 
 export type ConvertActions = (
-  ConvertRequestActions | ConvertFailureActions |
+  ConvertJsonActions | ConvertRequestActions | ConvertFailureActions |
   // Success Actions
-  InfoSuccessAction | ConvertSchemaSuccessAction
+  ConvertJsonSuccessAction | InfoSuccessAction | ConvertSchemaSuccessAction
 );
 
 

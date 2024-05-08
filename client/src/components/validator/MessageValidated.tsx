@@ -92,7 +92,8 @@ const MessageValidated = (props: any) => {
             <div className="card-header p-2">
                 <div className='row no-gutters'>
                     <div className='col-sm-8'>
-                        <div className="d-flex">
+                        <div className="d-flex">                           
+
                             <SBFileLoader
                                 customClass={'me-1'}
                                 opts={msgOpts}
@@ -101,19 +102,21 @@ const MessageValidated = (props: any) => {
                                 setSelectedFile={setSelectedFile}
                                 onCancelFileUpload={onCancelFileUpload}
                                 onFileChange={onFileLoad}
-                                acceptableExt={[LANG_JSON, LANG_XML, LANG_CBOR]}
+                                acceptableExt={'.json, .cbor, .xml'}
                                 ref={ref}
                                 placeholder={'Select a data file...'}
                                 loc={'messages'}
                             />
+
                             <SBSelect id={"data-format-list"}
-                                customClass={'me-1'}
-                                data={validMsgFormat}
-                                onChange={(e: Option) => setMsgFormat(e)}
-                                value={msgFormat}
-                                placeholder={'Data format...'}
-                                isSmStyle
-                                isClearable />
+                                    customClass={'me-1'}
+                                    data={validMsgFormat}
+                                    onChange={(e: Option) => setMsgFormat(e)}
+                                    value={msgFormat}
+                                    placeholder={'Data format...'}
+                                    isSmStyle
+                                    isClearable />                             
+
                             <SBSelect id={"data-decode-list"}
                                 customClass={'me-1'}
                                 data={decodeSchemaTypes.exports}

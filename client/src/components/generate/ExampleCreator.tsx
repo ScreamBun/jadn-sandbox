@@ -1,18 +1,30 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getSelectedSchema } from 'reducers/util'
-import { LANG_JSON } from 'components/utils/constants'
+import { LANG_JSON, LANG_JSON_UPPER, LANG_XML_UPPER } from 'components/utils/constants'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBEditor from 'components/common/SBEditor'
 import SBSaveFile from 'components/common/SBSaveFile'
 import SBSubmitBtn from 'components/common/SBSubmitBtn'
+import SBSelect from 'components/common/SBSelect'
+
+
+export interface Option {
+    readonly value: string | any;
+    readonly label: string;
+}
 
 //TODO: create messages in other languages ?
 //TODO: create messages with specific requirements - filter ?
 const ExampleCreator = (props: any) => {
-    const { generatedMessages, isLoading, numOfMsg, setNumOfMsg, formId } = props;
+    const { formId, generatedMessages, isLoading, numOfMsg, setNumOfMsg, langSel, setLangSel } = props;
     const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
+
+    const jsonOpt = new Option(LANG_JSON_UPPER);
+    const xmlOpt = new Option(LANG_XML_UPPER);
+    const [langs, setLangs] = useState<Option[]>([jsonOpt, xmlOpt]);
+
     const validSchema = useSelector(getSelectedSchema);
 
     const onToggle = (index: number) => {
@@ -22,6 +34,11 @@ const ExampleCreator = (props: any) => {
     const onNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setNumOfMsg(e.target.value);
+    }
+
+    const onLangChange = (e: React.ChangeEvent<Option>) => {
+        console.log(e)
+        setLangSel(e);
     }
 
     const msgList = generatedMessages.map((message: string, i: number) => (
@@ -39,7 +56,7 @@ const ExampleCreator = (props: any) => {
 
             {toggle[i] == true ?
                 <div className="card-body" key={i}>
-                    <SBEditor data={message} isReadOnly={true} height={'35vh'}></SBEditor>
+                    <SBEditor data={message} convertTo={langSel.value || "JSON"} isReadOnly={true} height={'35vh'}></SBEditor>
                 </div> : ''}
         </div>
     ));
@@ -48,10 +65,12 @@ const ExampleCreator = (props: any) => {
         <div className="card">
             <div className="card-header p-2">
                 <div className='row no-gutters'>
-                    <div className='col-md-5'>
+                    <div className='col-md-2'>
                         <input id="numOfMsg" type='number' className='form-control form-control-sm' value={numOfMsg} onChange={onNumChange}
-                            style={{ height: '38px' }}
                             placeholder='Select number of examples...(1-10)' min={1} max={10} />
+                    </div>
+                    <div className='col-md-3'>
+                        <SBSelect id="langSel" data={langs} value={langSel} onChange={onLangChange} isSmStyle={true}></SBSelect>   
                     </div>
                     <div className='col-md-7 align-self-center'>
                         <SBSubmitBtn buttonId="generateSchema"

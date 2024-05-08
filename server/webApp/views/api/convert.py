@@ -5,15 +5,17 @@ import os
 import sys
 import traceback
 import jadn
-from flask import current_app, jsonify, Response, request, send_file
+from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
+from jadnxml.builder.xml_builder import build_xml_from_json
+from jadnjson.generators.json_generator import gen_data_from_schema
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
-from webApp.utils.constants import JADN, JSON
+from webApp.utils.constants import JADN, JSON, XML
 
 
 logger = logging.getLogger(__name__)
@@ -130,6 +132,44 @@ class Convert(Resource):
             raise ValueError
         
 
+class ConvertJSON(Resource):
+    """
+    Endpoint for api/convert/convert_json
+    """
+
+    def post(self):
+        request_json = request.json
+        json_schema = request_json["json_schema"] 
+        fmt = request_json["fmt"]
+        num_to_gen = request_json["num_to_gen"]
+        
+        return_array = []
+        
+        i = 0
+        while i < int(num_to_gen):
+            
+            try:
+                g_data = gen_data_from_schema(json_schema)
+            except Exception:  
+                tb = traceback.format_exc()
+                print(tb)            
+                return_array.append("Unable to generate JSON")                  
+                
+            if fmt == XML.upper():
+                try:
+                    g_data = build_xml_from_json(g_data)
+                except Exception:  
+                    tb = traceback.format_exc()
+                    print(tb)            
+                    return_array.append("Unable to generate XML")                                
+
+            return_array.append(g_data)
+            i += 1
+   
+        return jsonify({
+            "data":  return_array
+        }) 
+
 
 class ConvertPDF(Resource):
     """
@@ -150,12 +190,6 @@ class ConvertPDF(Resource):
         pdf_obj.write_pdf(target=pdf)  # file handle to receive result
         
         return Response(pdf.getvalue(), mimetype="application/pdf")
-
-
-resources = {
-    Convert: {"urls": ("/", )},
-    ConvertPDF: {"urls": ("/pdf",)}
-}
 
 
 class DownloadXML(Resource):
@@ -180,9 +214,10 @@ class DownloadXML(Resource):
 
 resources = {
     Convert: {"urls": ("/", )},
+    ConvertJSON: {"urls": ("/convert_json",)},
+    ConvertPDF: {"urls": ("/pdf",)},
     DownloadXML: {"urls": ("/download_xml",)}
 }
-
 
 
 def add_resources(bp, url_prefix=""):

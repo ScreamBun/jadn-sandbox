@@ -17,7 +17,7 @@ interface SBFileLoaderProps {
     loc: 'schemas' | 'messages';
     onCancelFileUpload: (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => void;
     onFileChange: (fileData?: string | ArrayBuffer | null, fileName?: Option | undefined) => void;
-    acceptableExt?: string[] | undefined;
+    acceptableExt?: string | undefined;
     isSaveable?: boolean;
     loadedFileData?: any;
     fileName?: {
@@ -93,7 +93,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
                     filename={fileName?.name} ext={fileExt} setDropdown={setSelectedFile} />}
             </div>
             <div className='d-none'>
-                <input type="file" id="file-input" name="file-input" accept={'.jadn, ' + acceptableExt} onChange={handleFileChange} ref={ref} />
+                <input type="file" id="file-input" name="file-input" accept={acceptableExt} onChange={handleFileChange} ref={ref} />
                 <button id="cancelFileUpload" type='button' className="btn btn-sm btn-secondary ms-0" onClick={() => onCancelFileUpload} style={{ display: 'inline' }}>
                     <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
                 </button>
