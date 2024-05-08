@@ -8,7 +8,6 @@ import { ModalSize } from './ModalSize';
 import { sbToastError } from 'components/common/SBToast';
 import TypeOptionsEditor from './TypeOptionsEditor';
 import FieldOptionsEditor from './FieldOptionsEditor';
-import SBECMARegexBtn from 'components/common/SBECMARegexBtn';
 
 // Interface
 interface OptionsModalProps {
@@ -113,6 +112,9 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
 
   const clearData = () => {
     setData(deserializeOptions([]));
+    const test = deserializeOptions([]);
+    const test2 = data;
+    console.log("8888");
   }
 
   return (

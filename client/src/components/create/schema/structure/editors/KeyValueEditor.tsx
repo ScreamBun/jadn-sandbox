@@ -56,6 +56,13 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   }, [value])
 
   const [val, setVal] = useState(value ? { value: value, label: value } : ''); //for select
+
+  const inputArgs: Record<string, any> = {
+    value: valueData,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValueData(e.target.value),
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.value); }
+  };
+
   const onSelectChange = (e: Option) => {
     if (e == null) {
       setVal('');
@@ -66,19 +73,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     }
   }
 
-  const onPatternChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValueData(e.target.value);
-    console.log("onPatternChange: " + e.target.value);
-  }
-
   const onECMACheck = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // onAddClick();
-    // TODO: Call ecma check
-    console.log("checking: " + valueData);
-
     const isRegex = isRegExpString( valueData );
-    console.log("isRegExpString: " + isRegex);
 
     if (isRegex) {
       sbToastSuccess("Valid regex");
@@ -86,7 +83,6 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
       sbToastError("Invalid regex");
       // TODO: More details would be nice....
     }
-
   }  
 
   if (type === 'SBCreatableSelect' && options) {
@@ -179,11 +175,6 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   }
 
   if (type === 'WithRegex' && options) {
-    // const patternValue=value.toString()  
-
-    // const onAddClick = () => { 
-
-      // setVal('');
       return (
           <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
             <div className={`col-md-${labelColumns}`}>
@@ -193,21 +184,16 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
             </div>
             <div className={`col-md-${fieldColumns}`}>
               <div className="input-group">
-          <input id={id + "_input"} name={id + "_input"} type='text'  className="form-control" onChange={onPatternChange} placeholder='Enter Regex String' />
-          <button id="check_regex" type="button" title='check pattern validity' className="btn btn-sm btn-primary" onClick={onECMACheck}>
-              <FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>
-          </button>
-          </div>
-          </div>
+                <span>type: {type}</span>
+                <input id={id + "_input"} name={id + "_input"} type={type} className="form-control" {...inputArgs} placeholder='Enter Regex String' />
+                <button id="check_regex" type="button" title='check pattern validity' className="btn btn-sm btn-primary" onClick={onECMACheck}>
+                    <FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>
+                </button>
+              </div>
+            </div>
           </div>
     );
   }; 
-
-  const inputArgs: Record<string, any> = {
-    value: valueData,
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValueData(e.target.value),
-    onBlur: (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.value); }
-  };
 
   if (['checkbox', 'radio'].includes(type)) {
     inputArgs.checked = type && valueData,
