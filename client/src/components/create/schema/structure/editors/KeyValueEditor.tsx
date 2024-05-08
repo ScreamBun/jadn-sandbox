@@ -185,17 +185,22 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
 
       // setVal('');
       return (
-        
-        <div className="input-group input-group-sm mb-2">
-          <input id={id + "_input"} name={id + "_input"} type='text' className="form-control" onChange={onPatternChange} placeholder='Enter Regex String' />
-          <button id="check_regex" type="button" className="btn btn-sm btn-primary" onClick={onECMACheck}>
+          <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
+            <div className={`col-md-${labelColumns}`}>
+              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>
+                <span title={description}>{name}{required ? '*' : ''}</span>
+              </label>
+            </div>
+            <div className={`col-md-${fieldColumns}`}>
+              <div className="input-group">
+          <input id={id + "_input"} name={id + "_input"} type='text'  className="form-control" onChange={onPatternChange} placeholder='Enter Regex String' />
+          <button id="check_regex" type="button" title='check pattern validity' className="btn btn-sm btn-primary" onClick={onECMACheck}>
               <FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>
           </button>
-        </div>
-        
-      );
-    // }
-
+          </div>
+          </div>
+          </div>
+    );
   }; 
 
   const inputArgs: Record<string, any> = {
