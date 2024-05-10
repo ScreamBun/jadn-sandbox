@@ -1,8 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusSquare, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faMinusSquare, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons';
 import SBSelect, { Option } from 'components/common/SBSelect';
-import isRegExpString from '@stdlib/assert-is-regexp-string';
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast';
 
 // Interface
@@ -40,6 +39,8 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     fieldColumns = 10
   } = props;
   const [valueData, setValueData] = useState(value);
+  const [isRegex, setIsRegex] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     if (!value) {
@@ -56,10 +57,10 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   }, [value])
 
   const [val, setVal] = useState(value ? { value: value, label: value } : ''); //for select
-
+  
   const inputArgs: Record<string, any> = {
     value: valueData,
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValueData(e.target.value),
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {setValueData(e.target.value); setIsChecked(false)},
     onBlur: (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.value); }
   };
 
@@ -75,13 +76,17 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
 
   const onECMACheck = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const isRegex = isRegExpString( valueData );
 
-    if (isRegex) {
+    try {
+      new RegExp(valueData.toString());
       sbToastSuccess("Valid regex");
-    } else {
-      sbToastError("Invalid regex");
-      // TODO: More details would be nice....
+      setIsRegex(true);
+      setIsChecked(true);
+    } catch (err: any) {
+      sbToastError(`Invalid ECMAScript Regex: ${err.message}`);
+      setIsRegex(false);
+      setIsChecked(true);
+      return;
     }
   }  
 
@@ -186,7 +191,13 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
               <div className="input-group">
                 <input id={id + "_input"} name={id + "_input"} type={type} className="form-control" {...inputArgs} placeholder='Enter regex string' />
                 <button id="check_regex" type="button" title='check pattern validity' className="btn btn-sm btn-primary" onClick={onECMACheck}>
-                    <FontAwesomeIcon icon={faQuestion}></FontAwesomeIcon>
+                {isChecked ?
+                  isRegex ? 
+                        <FontAwesomeIcon icon={faCheck} /> : 
+                        <FontAwesomeIcon icon={faXmark} />
+                  :
+                  <FontAwesomeIcon icon={faQuestion} /> 
+  }
                 </button>
               </div>
             </div>
