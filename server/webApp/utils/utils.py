@@ -2,6 +2,7 @@ import json
 import os
 
 from flask import current_app
+from cbor2 import dumps, loads
 
 
 def does_dir_exist(dir_path: str, isCreate: bool):
@@ -90,3 +91,11 @@ def write_file(path: str, filename: str, data):
         return True
     else:
         return False
+    
+def convert_json_to_cbor(json_data: dict) -> bytes:
+    test = dumps(json_data)
+    return test
+
+def convert_cbor_to_Json(cbor_str: str) -> str:
+    test = loads(cbor_str)
+    return test

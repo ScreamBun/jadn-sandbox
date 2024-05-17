@@ -5,6 +5,7 @@
 # -e /home/matt/workspace/sb-jadn-xml-util
 # -e /home/matt/workspace/sb-jadn-json-util
 # -e /home/kaitlyn_hsu/ScreamingBunnyRepo/Schema/jadnschema
+cbor-diag==1.0.2
 cbor-json==0.0.4
 cbor2
 Flask==2.3.1
