@@ -1,5 +1,7 @@
+import binascii
 import json
 import os
+import cbor_json
 
 from flask import current_app
 from cbor2 import dumps, loads
@@ -97,5 +99,10 @@ def convert_json_to_cbor(json_data: dict) -> bytes:
     return test
 
 def convert_cbor_to_Json(cbor_str: str) -> str:
-    test = loads(cbor_str)
+    
+    msg_hex_string = cbor_str
+    msg_binary_string = binascii.unhexlify(msg_hex_string)
+    msg_native_json = cbor_json.native_from_cbor(msg_binary_string)    
+    
+    test = msg_native_json
     return test
