@@ -1,10 +1,10 @@
-import binascii
 import json
 import os
-import cbor_json
+import cbor_diag
 
+from cbor2 import dumps
 from flask import current_app
-from cbor2 import dumps, loads
+from cbor2 import dumps
 
 
 def does_dir_exist(dir_path: str, isCreate: bool):
@@ -69,8 +69,7 @@ def remove_file(path: str, filename: str):
             return False
         
 
-def remove_files(path: str, filenames: []):
-
+def remove_files(path: str, filenames: list):
     for file in filenames:
         if is_file_in_dir(path, file):
             os.remove(os.path.join(path, file))
@@ -84,7 +83,6 @@ def remove_files(path: str, filenames: []):
 
 
 def write_file(path: str, filename: str, data):
-    
     fp = os.path.join(path, filename)
     with open(fp, 'w') as outfile:
         outfile.write(data)        
@@ -93,16 +91,38 @@ def write_file(path: str, filename: str, data):
         return True
     else:
         return False
+ 
     
-def convert_json_to_cbor(json_data: dict) -> bytes:
-    test = dumps(json_data)
-    return test
+def convert_json_to_cbor_str(data_dict: dict) -> bytes:
+    json_str = json.dumps(data_dict)
+    
+    encoded = cbor_diag.diag2cbor(json_str)
+    cbor_str= encoded.hex()    
+    
+    return cbor_str
+                         
 
-def convert_cbor_to_Json(cbor_str: str) -> str:
+def convert_cbor_str_to_json(cbor_str: str) -> str:
     
-    msg_hex_string = cbor_str
-    msg_binary_string = binascii.unhexlify(msg_hex_string)
-    msg_native_json = cbor_json.native_from_cbor(msg_binary_string)    
+    # Legacy conversion, returns dict
+    # msg_binary_string = binascii.unhexlify(hex_str)
+    # msg_native_json = cbor_json.native_from_cbor(msg_binary_string) 
+    # print("msg_native_json: " + str(msg_native_json))
     
-    test = msg_native_json
-    return test
+    bytes_obj = bytes.fromhex(cbor_str)
+    cbor_bytes_obj = dumps(bytes_obj, canonical=True)
+    
+    # No formatting, returns str
+    cbor_diag_str = cbor_diag.cbor2diag(bytes_obj)
+    print("cbor_diag_str: " + cbor_diag_str)
+    
+    return cbor_diag_str
+
+
+def convert_cbor_to_annoated_view(cbor_str: str) -> bytes:
+    annoated_view = ""
+    
+    # Call ruby script to generate annoated view
+    # Return annoated view
+    
+    return annoated_view
