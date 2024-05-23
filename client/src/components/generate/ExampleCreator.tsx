@@ -67,7 +67,7 @@ const ExampleCreator = (props: any) => {
                 <div className='row no-gutters'>
                     <div className='col-md-2'>
                         <input id="numOfMsg" type='number' className='form-control form-control-sm' value={numOfMsg} onChange={onNumChange}
-                            placeholder='Select number of examples...(1-10)' min={1} max={10} />
+                            placeholder='Select number of examples...(1-5)' min={1} max={5} />
                     </div>
                     <div className='col-md-3'>
                         <SBSelect id="langSel" data={langs} value={langSel} onChange={onLangChange} isSmStyle={true}></SBSelect>   
@@ -79,7 +79,7 @@ const ExampleCreator = (props: any) => {
                             customClass="me-1 float-end"
                             isLoading={isLoading}
                             formId={formId}
-                            isDisabled={Object.keys(validSchema).length != 0 && numOfMsg > 0 && numOfMsg <= 10 ? false : true}>
+                            isDisabled={Object.keys(validSchema).length != 0 && numOfMsg > 0 && numOfMsg <= 5 ? false : true}>
                         </SBSubmitBtn>
                     </div>
                 </div>
