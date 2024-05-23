@@ -1,0 +1,13 @@
+{
+  "info": {
+    "package": "http://test/v1.0",
+    "exports": ["Choice-Name"]
+  },
+  "types": [
+    ["Choice-Name", "Choice", [], "", [
+        [1, "field_value_1", "String", [], ""],
+        [2, "field_value_2", "String", [], ""],
+        [3, "field_value_3", "String", [], ""]
+      ]]
+  ]
+}

@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { JSONSchemaFaker } from 'json-schema-faker';
-import { faker } from "@faker-js/faker/locale/en";
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
-import { convertSchema } from 'actions/convert'
-import { LANG_JSON } from 'components/utils/constants'
+import { convertJsonSchema, convertSchema } from 'actions/convert'
+import { LANG_JSON, LANG_JSON_UPPER } from 'components/utils/constants'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
-import { Option } from 'components/common/SBSelect'
 import { SchemaJADN } from 'components/create/schema/interface'
 import ExampleCreator from './ExampleCreator'
+
+
+export interface Option {
+    readonly value: string | any;
+    readonly label: string;
+}
 
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
@@ -21,6 +24,9 @@ const ExampleGenerator = () => {
     const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
     const [numOfMsg, setNumOfMsg] = useState<number>(1);
+
+    const defaultLangOption = new Option(LANG_JSON_UPPER)
+    const [langSel, setLangSel] = useState<Option | null>(defaultLangOption);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -44,6 +50,7 @@ const ExampleGenerator = () => {
         setSelectedFile(null);
         setLoadedSchema(null);
         setNumOfMsg(1);
+        setLangSel(defaultLangOption);
         setGeneratedMessages([]);
         dispatch(setSchema(null));
     }
@@ -51,8 +58,9 @@ const ExampleGenerator = () => {
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
+
         let schemaObj: SchemaJADN | string = loadedSchema;
-        let schemaProps: any[] = [];
+        // let schemaProps: any[] = [];
 
         if (typeof schemaObj == 'string') {
             try {
@@ -84,7 +92,7 @@ const ExampleGenerator = () => {
             return;
         }
 
-        //TODO? : lazy load data to show data is being generated
+        // Convert to JSONSchema
         dispatch(convertSchema(schemaObj, schemaFormat?.value, [LANG_JSON]))
             .then((convertSchemaVal) => {
                 if (convertSchemaVal.error) {
@@ -94,59 +102,28 @@ const ExampleGenerator = () => {
                     return;
                 }
 
-                //CONVERTED JADN TO JSON SUCCESSFULLY : GENERATE FAKE DATA HERE
+                // Get JSONSchema
                 const schema = JSON.parse(convertSchemaVal.payload.schema.convert[0].schema);
-                schemaProps = schema.properties ? Object.keys(schema.properties) : [];
-                var generated: any[] = [] // LIST OF GENERATED EXAMPLES
-                let i = 0;
 
-                while (i < numOfMsg) {
-                    //TODO: add custom format options
-                    JSONSchemaFaker.extend("faker", () => faker);
-                    JSONSchemaFaker.option({ ignoreMissingRefs: true, omitNulls: true });
+                // Generate Fake Data for Examples
+                dispatch(convertJsonSchema(schema, langSel.value, numOfMsg))
+                    .then((response) => {
+                        let gen_data = response.payload.data;
 
-                    //TODO? : does not resolve ref ===> use .resolve = need to specify ref and cwd
-                    //Note: external ref can't be resolved by JSONSchemaFaker; must have a fully resolved schema
-                    //TODO: generation dies here !! 
-                    let ex = JSONSchemaFaker.generate(schema);
-
-                    if (Object.keys(ex).length > 1) { // CHECK IF GENERATED DATA HAS MULITPLE OBJ
-                        for (const [k, v] of Object.entries(ex)) {
-                            if (Object.keys(v).length != 0 && i < numOfMsg) { // CHECK IF EACH OBJ HAS DATA 
-                                if (schemaProps && schemaProps.includes(k)) {
-                                    generated.push(JSON.stringify(v, null, 2));
-                                    i += 1
-                                } else {
-                                    generated.push(JSON.stringify({ [k]: v }, null, 2));
-                                    i += 1
-                                }
-                            }
+                        if (gen_data.length != 0) {
+                            setIsLoading(false);
+                            sbToastSuccess('Examples generated successfully');
+                            setGeneratedMessages(gen_data)
+                        } else {
+                            setIsLoading(false);
+                            sbToastError('Failed to generate examples');
                         }
-                    } else {
-                        if (Object.values(ex).length != 0) { // CHECK IF GENERATED DATA OBJ HAS DATA
-                            if (schemaProps && schemaProps.includes(Object.keys(ex)[0])) {
-                                generated.push(JSON.stringify(Object.values(ex)[0], null, 2));
-                                i += 1
-                            } else {
-                                generated.push(JSON.stringify(ex, null, 2));
-                                i += 1
-                            }
-                        }
-                    }
 
-                    if (i == 0) {
-                        break;
-                    }
-                }
-
-                if (generated.length != 0) {
-                    setIsLoading(false);
-                    sbToastSuccess('Examples generated successfully');
-                    setGeneratedMessages(generated);
-                } else {
-                    setIsLoading(false);
-                    sbToastError('Failed to generate examples');
-                }
+                    }).catch((err) => {
+                        setIsLoading(false);
+                        sbToastError('Error generating examples');
+                        console.error(err);
+                    });  
 
             }).catch((convertSchemaErr) => {
                 setIsLoading(false);
@@ -179,8 +156,10 @@ const ExampleGenerator = () => {
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <ExampleCreator
-                                            generatedMessages={generatedMessages} isLoading={isLoading}
-                                            numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg} formId={formId}
+                                            formId={formId} isLoading={isLoading}
+                                            generatedMessages={generatedMessages} setGeneratedMessages={setGeneratedMessages} 
+                                            numOfMsg={numOfMsg} setNumOfMsg={setNumOfMsg} 
+                                            langSel={langSel} setLangSel={setLangSel} 
                                         />
                                     </div>
                                 </div>

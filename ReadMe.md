@@ -7,6 +7,7 @@
 ## Background
 
 The JADN Sandbox provides the ability to create, convert, translate, transform, and validate JADN compliant schemas. In addition, for applications that communicate via messaging, the app provides the ability to create and validate messages against a schema, as well as, generate test messages based on the provided schema. Within JADN Sandbox users can interact with the JADN information modeling tools and create schemas or messages based on their application or systems needs or just to learn more about JADN with a hands on approach.
+For a downloadable version of the JADN Sandbox walkthrough, [click here](https://github.com/ScreamBun/jadn-sandbox/blob/develop/documentation/JADNSandboxInfo.pdf).
 
 ## Quick Startup
 
@@ -90,12 +91,12 @@ Important Notes:
 
 * You will need to know the screambunn DockerHub login in order to push a new image.
 * A new version tag and image should be pushed after each docker build and push.  
-* When you run docker_push.py it will askf for the version # (v[Major].[Minor].[Bug])
+* When you run docker_push.py it will ask for the version # (v[Major].[Minor].[Bug])
 
 1. Run this command once to build the image and push to Dockhub/
 
 ```bash
-./docker_push.py
+python ./docker_push.py
 ```
 
 2. To start your image, enter the following, this will start the image without rebuilding

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { isOptional, validateOptDataBinary, validateOptDataElem, validateOptDataNum, validateOptDataStr } from "../../utils";
-import { v4 as uuid4 } from 'uuid';
+import SBUUIDv4Btn from "components/common/SBUUID4Btn";
 import dayjs from 'dayjs';
 import { Buffer } from 'buffer';
 import { hasProperty } from "components/utils";
@@ -24,14 +24,15 @@ const FormattedField = (props: any) => {
     );
 
     //UUID
-    const createUUID = () => {
-        const randomID = uuid4();
-        setData(randomID);
-        optChange(name, randomID, arr);
+    const [uuidValue, setUUIDValue] = useState("");
+    const uuidOnchg = (generatedUUID: string) => {
+        setData(generatedUUID);
+        const errCheck = validateOptDataStr(config, optData, generatedUUID);
+        setErrMsg(errCheck);
+        optChange(name, generatedUUID, arr);
     }
-
-    //ipv4-net 
-    //ipv6-net
+    
+    //IP Values
     const [ipValue, setIpValue] = useState<any[]>(['', '']);
     const ipvNetOnchg = (k: string, v: any, idx: number) => {
         const newArr = ipValue.map((obj, i) => {
@@ -218,6 +219,7 @@ const FormattedField = (props: any) => {
             );
 
         case 'ipv4-net':
+            //console.log("ipv4-net array detected")
             return (
                 <div className='form-group'>
                     <div className='card'>
@@ -231,7 +233,7 @@ const FormattedField = (props: any) => {
                         <div className='card-body m-0 p-0 input-group'>
                             <input
                                 type='text'
-                                name={name}
+                                name={"IPv4 Address"}
                                 value={data}
                                 onChange={e => {
                                     setIpValue(ipValue => [e.target.value, ipValue[1]]);
@@ -245,7 +247,7 @@ const FormattedField = (props: any) => {
                             <input
                                 type='number'
                                 onWheel={(e) => { e.target.blur(); }}
-                                name={name}
+                                name={"Prefix Length"}
                                 min={0}
                                 max={128}
                                 value={data}
@@ -403,7 +405,7 @@ const FormattedField = (props: any) => {
                                     }}
                                     style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
                                 />
-                                <button type="button" className='btn btn-sm btn-primary float-end text-nowrap' onClick={createUUID}>Generate UUID</button>
+                                <SBUUIDv4Btn uuidOnClick={uuidOnchg}/>
                             </div>
                         </div>
                         {err}

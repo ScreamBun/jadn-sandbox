@@ -67,6 +67,7 @@ const ArrayField = (props: ArrayFieldProps) => {
   );
 
   if (hasProperty(optData, 'format')) {
+    console.log("found a formatted array");
     return (<FormattedField
       basicProps={props} optData={optData} config={config}
       errMsg={errMsg} setErrMsg={setErrMsg}

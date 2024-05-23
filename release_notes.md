@@ -1,5 +1,19 @@
 # JADN Sandbox Release Notes
 
+## v0.11.1
+
+* Generation - Updated generation logic with Faker
+* Generation - Improved string data consistency, removed outlier characters
+* Generation Bug Fix - Multiple Choice options
+* Schema Creation - Improved validation of ECMAScript Regex
+* Data Creation - Ability to check Schema Regex validity
+
+## v0.11.0
+
+* Data Validation - UUID Button added
+* Data Validation - File upload only allows JADN
+* Data Generation - XML/JSON Generation & Refinement
+
 ## v0.10.0
 
 * Schema Creation - Ability to search through Outline based on type name

@@ -1,7 +1,8 @@
 import React, { memo, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faMinusSquare, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons';
 import SBSelect, { Option } from 'components/common/SBSelect';
+import { sbToastError, sbToastSuccess } from 'components/common/SBToast';
 
 // Interface
 interface KeyValueEditorProps {
@@ -38,6 +39,8 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     fieldColumns = 10
   } = props;
   const [valueData, setValueData] = useState(value);
+  const [isRegex, setIsRegex] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     if (!value) {
@@ -54,6 +57,13 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   }, [value])
 
   const [val, setVal] = useState(value ? { value: value, label: value } : ''); //for select
+  
+  const inputArgs: Record<string, any> = {
+    value: valueData,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {setValueData(e.target.value); setIsChecked(false)},
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.value); }
+  };
+
   const onSelectChange = (e: Option) => {
     if (e == null) {
       setVal('');
@@ -63,6 +73,22 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
       change(e.value);
     }
   }
+
+  const onECMACheck = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    try {
+      new RegExp(valueData.toString());
+      sbToastSuccess("Valid regex");
+      setIsRegex(true);
+      setIsChecked(true);
+    } catch (err: any) {
+      sbToastError(`Invalid ECMAScript Regex: ${err.message}`);
+      setIsRegex(false);
+      setIsChecked(true);
+      return;
+    }
+  }  
 
   if (type === 'SBCreatableSelect' && options) {
     return (
@@ -153,11 +179,31 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     );
   }
 
-  const inputArgs: Record<string, any> = {
-    value: valueData,
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValueData(e.target.value),
-    onBlur: (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.value); }
-  };
+  if (type === 'WithRegex' && options) {
+      return (
+          <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
+            <div className={`col-md-${labelColumns}`}>
+              <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>
+                <span title={description}>{name}{required ? '*' : ''}</span>
+              </label>
+            </div>
+            <div className={`col-md-${fieldColumns}`}>
+              <div className="input-group">
+                <input id={id + "_input"} name={id + "_input"} type={type} className="form-control" {...inputArgs} placeholder='Enter regex string' />
+                <button id="check_regex" type="button" title='check pattern validity' className="btn btn-sm btn-primary" onClick={onECMACheck}>
+                {isChecked ?
+                  isRegex ? 
+                        <FontAwesomeIcon icon={faCheck} /> : 
+                        <FontAwesomeIcon icon={faXmark} />
+                  :
+                  <FontAwesomeIcon icon={faQuestion} /> 
+  }
+                </button>
+              </div>
+            </div>
+          </div>
+    );
+  }; 
 
   if (['checkbox', 'radio'].includes(type)) {
     inputArgs.checked = type && valueData,
