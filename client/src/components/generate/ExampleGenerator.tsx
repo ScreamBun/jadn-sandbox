@@ -6,7 +6,7 @@ import { info, setSchema } from 'actions/util'
 import { convertJsonSchema, convertSchema } from 'actions/convert'
 import { LANG_JSON, LANG_JSON_UPPER } from 'components/utils/constants'
 import SchemaLoader from 'components/common/SchemaLoader'
-import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast, sbToastError, sbToastSuccess, sbToastWarning } from 'components/common/SBToast'
 import { SchemaJADN } from 'components/create/schema/interface'
 import ExampleCreator from './ExampleCreator'
 
@@ -89,6 +89,11 @@ const ExampleGenerator = () => {
         if (schemaObj.info && Object.keys(schemaObj.info).includes('namespaces')) {
             setIsLoading(false);
             sbToastError("Error: Schema must be resolved");
+            return;
+        }
+        if (schemaObj.info && !Object.keys(schemaObj.info).includes('exports')) {
+            setIsLoading(false);
+            sbToastWarning("Warning: Schema requires Exports to generate Type");
             return;
         }
 
