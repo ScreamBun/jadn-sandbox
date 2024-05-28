@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 import cbor_diag
 
 from cbor2 import dumps
@@ -119,10 +120,45 @@ def convert_cbor_str_to_json(cbor_str: str) -> str:
     return cbor_diag_str
 
 
-def convert_cbor_to_annoated_view(cbor_str: str) -> bytes:
+def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
     annoated_view = ""
     
     # Call ruby script to generate annoated view
     # Return annoated view
+    
+    # TODO: Add ruby install script
+    # TODO: Add ruby install logic to docker file
+    
+    # TODO: Clear file and add cbor val to file
+    
+    files_path = current_app.config.get("FILES_DATA")
+    app_path = current_app.config.get("APP_DIR")
+    # cbor_val_full_path = os.path.join(files_path, 'cbor_val.cbor')
+    # cbor_annotated_full_path = os.path.join(files_path, 'cbor_annotated.txt')
+    
+    # Left off here... not running ruby script....
+    # try: https://sentry.io/answers/running-external-programs-in-python/
+    # https://www.decalage.info/en/python/ruby_bridge
+    # os.system("cbor2pretty.rb " + cbor_val_full_path + " > " + cbor_annotated_full_path)
+    # os.system("ruby cbor2pretty.rb cbor_val.cbor > cbor_annotated.txt")
+    
+    # pwd = subprocess.run(["pwd"], shell=True, capture_output=True, text=True)
+    
+    path_to_gem_scripts = '/home/matt/.rbenv/versions/3.3.1/bin/'
+    path_to_json2cbor_script = os.path.join(path_to_gem_scripts, 'json2cbor.rb')
+    value_json2cbor_script_found = os.path.isfile(path_to_json2cbor_script)
+    
+    path_to_value_json_file = os.path.join(app_path, 'value_json.json')
+    value_json_file_found = os.path.isfile(path_to_value_json_file)
+    
+    path_to_value_cbor_file = os.path.join(app_path, 'value_cbor.cbor')
+    value_cbor_file_found = os.path.isfile(path_to_value_cbor_file)
+    
+    cbor_to_pretty_cmd = path_to_json2cbor_script + " " + path_to_value_json_file + " > " + path_to_value_cbor_file
+    
+    os.system("/home/matt/.rbenv/versions/3.3.1/bin/json2cbor.rb value_json.json > value_cbor.cbor")
+    os.system("/home/matt/.rbenv/versions/3.3.1/bin/cbor2pretty.rb value_cbor.cbor > value_cbor_pretty.txt")
+    
+    # TODO: Read from value_cbor_pretty.txt file
     
     return annoated_view

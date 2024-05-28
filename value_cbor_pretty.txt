@@ -1,0 +1,37 @@
+a1                                      # map(1)
+   65                                   # text(5)
+      496d616765                        # "Image"
+   a6                                   # map(6)
+      65                                # text(5)
+         5769647468                     # "Width"
+      19 0320                           # unsigned(800)
+      66                                # text(6)
+         486569676874                   # "Height"
+      19 0258                           # unsigned(600)
+      65                                # text(5)
+         5469746c65                     # "Title"
+      74                                # text(20)
+         566965772066726f6d203135746820466c6f6f72 # "View from 15th Floor"
+      69                                # text(9)
+         5468756d626e61696c             # "Thumbnail"
+      a3                                # map(3)
+         63                             # text(3)
+            55726c                      # "Url"
+         78 26                          # text(38)
+            687474703a2f2f7777772e6578616d706c652e636f6d2f696d6167652f343831393839393433 # "http://www.example.com/image/481989943"
+         66                             # text(6)
+            486569676874                # "Height"
+         18 7d                          # unsigned(125)
+         65                             # text(5)
+            5769647468                  # "Width"
+         18 64                          # unsigned(100)
+      68                                # text(8)
+         416e696d61746564               # "Animated"
+      f4                                # primitive(20)
+      63                                # text(3)
+         494473                         # "IDs"
+      84                                # array(4)
+         18 74                          # unsigned(116)
+         19 03af                        # unsigned(943)
+         18 ea                          # unsigned(234)
+         19 9789                        # unsigned(38793)

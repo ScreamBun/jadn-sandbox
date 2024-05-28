@@ -8,6 +8,7 @@ class Config:
 
     APP_DIR = os.path.realpath(os.path.dirname(__file__))
     APP_DATA = os.path.join(APP_DIR, "data")
+    FILES_DATA = os.path.join(APP_DIR, "files")
 
     path_to_toml = os.path.join(APP_DATA, "version.toml")
     version_data = toml.load(path_to_toml)
