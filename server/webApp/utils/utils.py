@@ -136,7 +136,6 @@ def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
     # cbor_val_full_path = os.path.join(files_path, 'cbor_val.cbor')
     # cbor_annotated_full_path = os.path.join(files_path, 'cbor_annotated.txt')
     
-    # Left off here... not running ruby script....
     # try: https://sentry.io/answers/running-external-programs-in-python/
     # https://www.decalage.info/en/python/ruby_bridge
     # os.system("cbor2pretty.rb " + cbor_val_full_path + " > " + cbor_annotated_full_path)
@@ -159,6 +158,7 @@ def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
     os.system("/home/matt/.rbenv/versions/3.3.1/bin/json2cbor.rb value_json.json > value_cbor.cbor")
     os.system("/home/matt/.rbenv/versions/3.3.1/bin/cbor2pretty.rb value_cbor.cbor > value_cbor_pretty.txt")
     
+    # Left off here... not running ruby script....
     # TODO: Read from value_cbor_pretty.txt file
     
     return annoated_view
