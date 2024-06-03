@@ -54,12 +54,12 @@ export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[
 }
 // optData validation for String
 export const validateOptDataStr = (config: InfoConfig, optData: any, data: string) => {
-	let m = [];
+	let m: string[] = [];
 	if (!data || data.length == 0) {
 		return m;
 	}
-	var minv = optData.minv || $MINV;
-	var maxv = optData.maxv || config.$MaxString;
+	let minv = optData.minv || $MINV;
+	let maxv = optData.maxv || config.$MaxString;
 	if (data.length < minv) {
 		m.push('Minv Error: must be greater than ' + minv + ' characters');
 	}

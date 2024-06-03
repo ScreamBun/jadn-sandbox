@@ -229,6 +229,7 @@ const BasicField = (props: BasicFieldProps) => {
           <div className='card-body m-0 p-0'>
             <input
               type='text'
+              className="form-control form-control-sm"
               name={name}
               value={data}
               placeholder={optData.pattern ? optData.pattern : ''}
@@ -240,15 +241,7 @@ const BasicField = (props: BasicFieldProps) => {
                 setErrMsg(errCheck);
                 optChange(name, e.target.value, arr);
               }}
-              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} /> 
-              <SBECMARegexBtn 
-                isECMAScriptValid={isECMAScriptValid}
-                setIsECMAScriptValid={setIsECMAScriptValid}
-                setIsValidating={setIsValidating}
-                patternData={optData.pattern}                         
-                onValidateClick={patternOnchg}
-              /> 
-    
+              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} />
           </div>
           {err}
         </div>

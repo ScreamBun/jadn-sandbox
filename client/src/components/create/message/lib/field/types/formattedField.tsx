@@ -391,9 +391,9 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <div className='d-flex justify-content-between'>
-                                <div className="input-group mb-3">
+                                <div className="input-group">
                                     <input
-                                        className="form-control"
+                                        className="form-control form-control-sm"
                                         value={data}
                                         placeholder=""
                                         type='text'
