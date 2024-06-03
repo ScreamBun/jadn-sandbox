@@ -1,0 +1,23 @@
+FROM dockerfile/ubuntu
+
+LABEL name="JADN Sandbox - Ruby" \
+version="2.0" \
+description="Ruby container used for development"
+
+# JADN Sandbox Working Directory
+WORKDIR /opt/jadn_sandbox/
+
+# ADD whls /opt/jadn_sandbox/whls
+# ADD requirements.txt /opt/jadn_sandbox
+# ADD webApp /opt/jadn_sandbox/webApp
+# ADD gunicorn /opt/jadn_sandbox/gunicorn
+
+RUN \
+    apt-get update && \
+    apt-get install -y ruby
+
+# Persistant volume
+# VOLUME '/logs'
+
+# Startup Command
+CMD ["gunicorn", "-b", ":8082", "--config", "gunicorn/gunicorn.conf.py", "--log-config", "gunicorn/logging.conf", "webApp:app"]

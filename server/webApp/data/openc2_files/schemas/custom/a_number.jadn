@@ -1,0 +1,9 @@
+{
+  "info": {
+    "package": "http://example.fake",
+    "exports": ["A-number"]
+  },
+  "types": [
+    ["A-number", "String", ["%[0-9]"], ""]
+  ]
+}

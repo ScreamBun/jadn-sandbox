@@ -6,7 +6,7 @@ license="BSD" \
 version="2.0" \
 description="This is the JADN Sandbox container"
 
-# Orchestrator Core Working Directory
+# JADN Sandbox Working Directory
 WORKDIR /opt/jadn_sandbox/
 
 ADD whls /opt/jadn_sandbox/whls

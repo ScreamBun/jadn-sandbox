@@ -4,6 +4,7 @@ import subprocess
 import cbor_diag
 
 from cbor2 import dumps
+import docker
 from flask import current_app
 from cbor2 import dumps
 
@@ -160,5 +161,47 @@ def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
     
     # Left off here... not running ruby script....
     # TODO: Read from value_cbor_pretty.txt file
+    
+    # CONTAINER_ID = "68f4c1f50e57"
+    # client = docker.client.from_env()
+    # container = client.containers.get(CONTAINER_ID)
+    # exit_code, output = container.exec_run("json2cbor.rb value_json.json > value_cbor.cbor")
+    
+    data = {
+        "Image": {
+            "Width": 802,
+            "Height": 602,
+            "Title": "View from 14th Floor",
+            "Thumbnail": {
+            "Url": "http://www.example.com/image/481989942",
+            "Height": 125,
+            "Width": 100
+            },
+            "Animated": False,
+            "IDs": [
+            2,
+            116,
+            943,
+            234,
+            38793
+            ]
+        }
+    }
+    
+    local_json_file_path = './cbor_files/test_json.json'
+    container_json_file_path = '/tmp/test_json.json'
+    container_name = 'testcontainer'
+
+    with open(local_json_file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+    
+    
+    # os.system("docker run --name testcontainer -d -i -t alpine /bin/sh")
+    # os.system("docker exec -d testcontainer touch /tmp/execWorks.txt")
+    # os.system("docker exec -d testcontainer n () { date >> /tmp/execWorks.txt; cat >> /tmp/execWorks.txt; }")
+
+    cp_cmd = "docker cp " + local_json_file_path + " " + container_name + ":" + container_json_file_path
+    
+    os.system(cp_cmd)
     
     return annoated_view
