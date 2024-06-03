@@ -391,21 +391,25 @@ const FormattedField = (props: any) => {
                         </div>
                         <div className='card-body m-0 p-0'>
                             <div className='d-flex justify-content-between'>
-                                <input
-                                    value={data}
-                                    type='text'
-                                    name={name}
-                                    onChange={e => {
-                                        setData(e.target.value);
-                                    }}
-                                    onBlur={e => {
-                                        const errCheck = validateOptDataStr(config, optData, e.target.value);
-                                        setErrMsg(errCheck);
-                                        optChange(name, e.target.value, arr);
-                                    }}
-                                    style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
-                                />
-                                <SBUUIDv4Btn uuidOnClick={uuidOnchg}/>
+                                <div className="input-group mb-3">
+                                    <input
+                                        className="form-control"
+                                        value={data}
+                                        placeholder=""
+                                        type='text'
+                                        name={name}
+                                        onChange={e => {
+                                            setData(e.target.value);
+                                        }}
+                                        onBlur={e => {
+                                            const errCheck = validateOptDataStr(config, optData, e.target.value);
+                                            setErrMsg(errCheck);
+                                            optChange(name, e.target.value, arr);
+                                        }}
+                                        style={{ borderColor: errMsg.length != 0 ? 'red' : '' }}
+                                    />
+                                    <SBUUIDv4Btn uuidOnClick={uuidOnchg}/>
+                                </div>
                             </div>
                         </div>
                         {err}
