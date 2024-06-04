@@ -94,7 +94,6 @@ const ExampleGenerator = () => {
         if (schemaObj.info && !Object.keys(schemaObj.info).includes('exports')) {
             setIsLoading(false);
             sbToastWarning("Warning: Schema requires Exports to generate Type");
-            return;
         }
 
         // Convert to JSONSchema
