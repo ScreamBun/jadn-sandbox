@@ -308,8 +308,11 @@ export const validateStringFormat = (data: string, type: string) => {
 		//TODO
 		return true;
 	}
-
 	// Regex has been moved up to so it can provide a detailed error response if needed.
+	if (type == 'regex') {
+		return true;
+	}
+
 
 	return false;
 }
