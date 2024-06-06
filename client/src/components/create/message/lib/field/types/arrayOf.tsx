@@ -173,7 +173,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
     const arrDef = arrDefs.length === 1 ? arrDefs[0] : def;
 
-    fieldDef = [0, arrDef[0].toLowerCase(), 'Enumerated', [], arrDef[arrDef.length - 1]];
+    fieldDef = [0, arrDef[0], 'Enumerated', [], arrDef[arrDef.length - 1]];
 
   } else {
     const arrDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
@@ -182,7 +182,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     //vtype is defined
     //vtype is primitive or vtype is not found (create string field)
     // TODO? : definition not found = unresolved schema (validate JADN should have failed)
-    fieldDef = arrDefs.length === 1 ? [0, arrDef[0].toLowerCase(), arrDef[0], [], arrDef[arrDef.length - 2]]
+    fieldDef = arrDefs.length === 1 ? [0, arrDef[0], arrDef[0], [], arrDef[arrDef.length - 2]]
       : [0, arrDef.toLowerCase(), arrDef, [], ''];
   }
 
@@ -221,17 +221,18 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
           </div>
           {children}
         </div>
-
-        <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
+        <div className={`card-body p-2 ${toggle ? '' : 'collapse'}`}>
           {fields}
-          {!max && <button
-            type='button'
-            className={`btn btn-primary btn-sm btn-block p-1${max ? ' disabled' : ''}`}
-            title={`Add Field to ${name}`}
-            onClick={addOpt}
-          >
-            <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-          </button>}
+          <div className="p-2">
+            {!max && <button
+                type='button'
+                className={`btn btn-primary btn-sm btn-block ${max ? ' disabled' : ''}`}
+                title={`Add Field to ${name}`}
+                onClick={addOpt}
+              >
+                <FontAwesomeIcon icon={faPlusSquare} />
+              </button>}
+            </div> 
         </div>
       </div>
     </div>

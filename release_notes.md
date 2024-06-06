@@ -1,10 +1,21 @@
 # JADN Sandbox Release Notes
 
+## v0.11.2
+
+* Data Generation - Added a warning, if the user is missing Exports
+* Data Creation - Minor input and button cleanup
+* Data Creation - Several issues addressed
+  * Regex input fields are now checked
+  * Nested arrays display multiple entries correctly
+  * Comments are being displayed correctly
+  * Type checking logic refinement applied
+  * Null values no longer incorrectly added to select fields
+
 ## v0.11.1
 
-* Generation - Updated generation logic with Faker
-* Generation - Improved string data consistency, removed outlier characters
-* Generation Bug Fix - Multiple Choice options
+* Data Generation - Updated generation logic with Faker
+* Data Generation - Improved string data consistency, removed outlier characters
+* Data Generation - Multiple Choice options fixed
 * Schema Creation - Improved validation of ECMAScript Regex
 * Data Creation - Ability to check Schema Regex validity
 

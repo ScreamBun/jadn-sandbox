@@ -94,7 +94,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     return (
       <>
         {removable ?
-          <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
+          <div className="row form-group" id={`${name}-${id}`}>
             <div className={`col-md-${labelColumns}`}>
               <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>
                 <span title={description}>{name}{required ? '*' : ''}</span>
@@ -110,12 +110,12 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   isGrouped={Array.isArray(options) ? false : true}
                   isCreatable
                   isClearable />
-                <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger ' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger ' onClick={() => remove(name)}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
           </div>
           :
-          <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
+          <div className="row form-group" id={`${name}-${id}`}>
             <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
               <span title={description}>{name}{required ? '*' : ''}</span>
             </label>
@@ -140,7 +140,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
       <>
         {removable ?
 
-          <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
+          <div className="row form-group" id={`${name}-${id}`}>
             <div className={`col-md-${labelColumns}`}>
               <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>
                 <span title={description}>{name}{required ? '*' : ''}</span>
@@ -155,12 +155,12 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   value={val}
                   isGrouped={Array.isArray(options) ? false : true}
                   isClearable />
-                <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger' onClick={() => remove(name)}><FontAwesomeIcon icon={faMinusSquare} /></button>
               </div>
             </div>
           </div>
           :
-          <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
+          <div className="row form-group" id={`${name}-${id}`}>
             <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
               <span title={description}>{name}{required ? '*' : ''}</span>
             </label>
@@ -181,7 +181,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
 
   if (type === 'WithRegex' && options) {
       return (
-          <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
+          <div className="row form-group" id={`${name}-${id}`}>
             <div className={`col-md-${labelColumns}`}>
               <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>
                 <span title={description}>{name}{required ? '*' : ''}</span>
@@ -212,7 +212,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     return (
       <>
         {removable ?
-          <div className="row" id={`${name.toLowerCase()}-${id}`}>
+          <div className="row" id={`${name}-${id}`}>
             <div className="col-md-12">
               <div className="row">
                 <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
@@ -220,13 +220,13 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                 </label>
                 <div className={`col-md-${fieldColumns} col-form-label d-flex align-items-start`}>
                   <input type={type} id={`editor-${placeholder}-${id}`} className={'w-auto'} {...inputArgs} />
-                  <button type="button" title={`Remove ${placeholder}`} className="btn btn-sm btn-danger ms-2" onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+                  <button type="button" title={`Remove ${placeholder}`} className="btn btn-sm btn-danger ms-2" onClick={() => remove(name)}><FontAwesomeIcon icon={faMinusSquare} /></button>
                 </div>
               </div>
             </div>
           </div>
           :
-          <div className="row" id={`${name.toLowerCase()}-${id}`}>
+          <div className="row" id={`${name}-${id}`}>
             <div className="col-md-12">
               <div className="row">
                 <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
@@ -246,7 +246,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   return (
     <>
       {removable ?
-        <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
+        <div className="row form-group" id={`${name}-${id}`}>
           <div className={`col-md-${labelColumns}`}>
             <label htmlFor={`editor-${placeholder}`} className={`pl-2 col-form-label font-weight-bold`}>
               <span title={description}>{name}{required ? '*' : ''}</span>
@@ -255,12 +255,12 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
           <div className={`col-md-${fieldColumns}`}>
             <div className="input-group">
               <input type={type} className="form-control" id={`editor-${placeholder}-${id}`} {...inputArgs} />
-              <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger' onClick={() => remove(name.toLowerCase())}><FontAwesomeIcon icon={faMinusSquare} /></button>
+              <button type="button" title={`Remove ${placeholder}`} className='btn btn-sm btn-danger' onClick={() => remove(name)}><FontAwesomeIcon icon={faMinusSquare} /></button>
             </div>
           </div>
         </div>
         :
-        <div className="row form-group" id={`${name.toLowerCase()}-${id}`}>
+        <div className="row form-group" id={`${name}-${id}`}>
           <label htmlFor={`editor-${placeholder}`} className={`col-md-${labelColumns} col-form-label font-weight-bold`}>
             <span title={description}>{name}{required ? '*' : ''}</span>
           </label>

@@ -40,21 +40,20 @@ const SBECMARegexBtn = (props: any) => {
     }
 
     return (
-        <button 
-            type='button' 
-            className="btn btn-sm btn-primary"
-            title="Click to validate the input data against the regex/pattern"
-            onClick={onValidateClick}>
-            <span className="m-1">ECMA</span>
-            {isECMAScriptValid ? (
-                <span className="badge rounded-pill text-bg-success">
-                    <FontAwesomeIcon icon={faCheck} />
-                </span>) : (
-                <span className="badge rounded-pill text-bg-danger">
-                    <FontAwesomeIcon icon={faXmark} />
-                </span>)
-            }
-        </button>
+        <>
+            <button id='validateECMAButton' type='button' className={`btn btn-sm btn-primary`} title={isECMAScriptValid ? "Valid ECMAScript Regex" : "Check Source Regex"}
+                onClick={onValidateClick}>
+                <span className="m-1">ECMA</span>
+                {isECMAScriptValid ? (
+                    <span className="badge rounded-pill text-bg-success">
+                        <FontAwesomeIcon icon={faCheck} />
+                    </span>) : (
+                    <span className="badge rounded-pill text-bg-danger">
+                        <FontAwesomeIcon icon={faXmark} />
+                    </span>)
+                }
+            </button>
+        </>
     );
 };
 
