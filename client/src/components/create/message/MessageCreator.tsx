@@ -65,14 +65,14 @@ const MessageCreator = (props: any) => {
     const recordDef = recordDefs.length === 1 ? recordDefs[0] : [];
     let commandFields: null | JSX.Element = null;
 
-    if (recordDef.length > 1 && recordDef[recordDef.length - 2].length > 0) {
-        commandFields = (
-            <small id="exportHelpBlock" className="form-text text-muted">
-                <b>Comment: </b>
-                {recordDef[recordDef.length - 2]}
-            </small>
-        );
-    }
+   // if (recordDef.length > 1 && recordDef[recordDef.length - 2].length > 0) {
+    //    commandFields = (
+    //        <small id="exportHelpBlock" className="form-text text-muted">
+   //             <b>Comment: </b>
+     //           {recordDef[recordDef.length - 2]}
+   //         </small>
+  //      );
+  //  }
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (commandType?.value) {
