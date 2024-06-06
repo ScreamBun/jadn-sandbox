@@ -1,4 +1,4 @@
-FROM dockerfile/ubuntu
+FROM ubuntu:22.04
 
 LABEL name="JADN Sandbox - Ruby" \
 version="2.0" \
@@ -16,8 +16,14 @@ RUN \
     apt-get update && \
     apt-get install -y ruby
 
+RUN gem install cbor-diag
+
+ADD value_cbor_pretty.txt $WORKDIR
+ADD value_cbor.cbor $WORKDIR
+ADD value_json.json $WORKDIR
+
 # Persistant volume
 # VOLUME '/logs'
 
 # Startup Command
-CMD ["gunicorn", "-b", ":8082", "--config", "gunicorn/gunicorn.conf.py", "--log-config", "gunicorn/logging.conf", "webApp:app"]
+# CMD ["gem", "install", "cbor-diag"]

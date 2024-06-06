@@ -1,3 +1,5 @@
+from io import TextIOBase
+import io
 import json
 import os
 import subprocess
@@ -144,20 +146,20 @@ def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
     
     # pwd = subprocess.run(["pwd"], shell=True, capture_output=True, text=True)
     
-    path_to_gem_scripts = '/home/matt/.rbenv/versions/3.3.1/bin/'
-    path_to_json2cbor_script = os.path.join(path_to_gem_scripts, 'json2cbor.rb')
-    value_json2cbor_script_found = os.path.isfile(path_to_json2cbor_script)
+    # path_to_gem_scripts = '/home/matt/.rbenv/versions/3.3.1/bin/'
+    # path_to_json2cbor_script = os.path.join(path_to_gem_scripts, 'json2cbor.rb')
+    # value_json2cbor_script_found = os.path.isfile(path_to_json2cbor_script)
     
-    path_to_value_json_file = os.path.join(app_path, 'value_json.json')
-    value_json_file_found = os.path.isfile(path_to_value_json_file)
+    # path_to_value_json_file = os.path.join(app_path, 'value_json.json')
+    # value_json_file_found = os.path.isfile(path_to_value_json_file)
     
-    path_to_value_cbor_file = os.path.join(app_path, 'value_cbor.cbor')
-    value_cbor_file_found = os.path.isfile(path_to_value_cbor_file)
+    # path_to_value_cbor_file = os.path.join(app_path, 'value_cbor.cbor')
+    # value_cbor_file_found = os.path.isfile(path_to_value_cbor_file)
     
-    cbor_to_pretty_cmd = path_to_json2cbor_script + " " + path_to_value_json_file + " > " + path_to_value_cbor_file
+    # cbor_to_pretty_cmd = path_to_json2cbor_script + " " + path_to_value_json_file + " > " + path_to_value_cbor_file
     
-    os.system("/home/matt/.rbenv/versions/3.3.1/bin/json2cbor.rb value_json.json > value_cbor.cbor")
-    os.system("/home/matt/.rbenv/versions/3.3.1/bin/cbor2pretty.rb value_cbor.cbor > value_cbor_pretty.txt")
+    # os.system("/home/matt/.rbenv/versions/3.3.1/bin/json2cbor.rb value_json.json > value_cbor.cbor")
+    # os.system("/home/matt/.rbenv/versions/3.3.1/bin/cbor2pretty.rb value_cbor.cbor > value_cbor_pretty.txt")
     
     # Left off here... not running ruby script....
     # TODO: Read from value_cbor_pretty.txt file
@@ -169,9 +171,9 @@ def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
     
     data = {
         "Image": {
-            "Width": 802,
-            "Height": 602,
-            "Title": "View from 14th Floor",
+            "Width": 800,
+            "Height": 600,
+            "Title": "View from 13th Floor",
             "Thumbnail": {
             "Url": "http://www.example.com/image/481989942",
             "Height": 125,
@@ -179,18 +181,19 @@ def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
             },
             "Animated": False,
             "IDs": [
-            2,
-            116,
-            943,
-            234,
-            38793
+                333,
+                116,
+                943,
+                234,
+                38793
             ]
         }
     }
     
-    local_json_file_path = './cbor_files/test_json.json'
-    container_json_file_path = '/tmp/test_json.json'
-    container_name = 'testcontainer'
+    local_json_file_path = './cbor_files/value_json.json'
+    # local_json_file_path = 'value_json.json'
+    container_json_file_path = '/opt/jadn_sandbox/value_json.json'
+    container_name = 'stingy_door'
 
     with open(local_json_file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
@@ -199,9 +202,34 @@ def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
     # os.system("docker run --name testcontainer -d -i -t alpine /bin/sh")
     # os.system("docker exec -d testcontainer touch /tmp/execWorks.txt")
     # os.system("docker exec -d testcontainer n () { date >> /tmp/execWorks.txt; cat >> /tmp/execWorks.txt; }")
+    
+    container_gem_path = "/usr/local/bin/"
+    container_workdir_path = "/opt/jadn_sandbox/"
+    json2cbor_script_path = "/usr/local/bin/json2cbor.rb"
+    cbor2pretty_script_path = "/usr/local/bin/cbor2pretty.rb"
+    value_json_file_path = os.path.join(container_workdir_path, 'value_json.json')
+    value_cbor_file_path = os.path.join(container_workdir_path, 'value_cbor.cbor')
+    value_cbor_pretty_file_path = os.path.join(container_workdir_path, 'value_cbor_pretty.txt')
 
     cp_cmd = "docker cp " + local_json_file_path + " " + container_name + ":" + container_json_file_path
+    json_to_cbor_cmd = "docker exec -d " + container_name + " " + json2cbor_script_path + " " + value_json_file_path + " > " +  value_cbor_file_path
+    cbor_to_hex_pretty_cmd = "docker exec -d " + container_name + " " + cbor2pretty_script_path + " " + value_cbor_file_path + " > " + value_cbor_pretty_file_path
     
     os.system(cp_cmd)
+    # os.system(json_to_cbor_cmd)
+    # os.system("docker exec -d stingy_door /usr/local/bin/json2cbor.rb /opt/jadn_sandbox/value_json.json > /opt/jadn_sandbox/value_cbor.cbor")
+    # os.system(cbor_to_hex_pretty_cmd)
+    
+    # ans = subprocess.call(["docker", "exec", "-d", "stingy_door", "/usr/local/bin/json2cbor.rb", "/opt/jadn_sandbox/value_json.json", ">", "/opt/jadn_sandbox/value_cbor.cbor"]) 
+    # if ans == 0: 
+    #     print("Command executed.") 
+    # else: 
+    #     print("Command failed.")    
+        
+    output = io.StringIO()
+    ans =  subprocess.run(
+        json_to_cbor_cmd,
+        shell=True
+    )        
     
     return annoated_view
