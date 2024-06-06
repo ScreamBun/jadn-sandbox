@@ -34,7 +34,7 @@ const DerivedEnum = (props: DerivedEnumProps) => {
         optData = (opts2obj(typeDef[2]));
     }
 
-    let fieldDef = [0, typeDef[0].toLowerCase(), typeDef[0], typeDef[2], typeDef[3]];
+    let fieldDef = [0, typeDef[0], typeDef[0], typeDef[2], typeDef[3]];
 
     return (
         <div className='form-group'>
