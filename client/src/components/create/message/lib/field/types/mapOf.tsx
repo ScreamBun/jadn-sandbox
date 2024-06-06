@@ -138,7 +138,7 @@ const MapOfField = (props: MapOfFieldProps) => {
         if (!v) {
             v = '';
         }
-        const vtype = msgName + "." + optData.vtype.toLowerCase();
+        const vtype = msgName + "." + optData.vtype;
         const arrKeys = vtype.split(".");
         const valKeys = k.split(".");
         const nestedKeys = valKeys.slice(arrKeys.length);
@@ -231,19 +231,19 @@ const MapOfField = (props: MapOfFieldProps) => {
         //no fields in def
         //StandardFieldKey = 'id' | 'name' | 'type' | 'options' | 'comment';
         keyDefs.length === 1 ? keyDef = keyDefs[0] : keyDef = keyDefs;
-        keyField = [0, keyDef.toLowerCase(), 'Enumerated', [], keyDef[keyDef.length - 1]];
+        keyField = [0, keyDef, 'Enumerated', [], keyDef[keyDef.length - 1]];
 
     } else {
         const keyDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.ktype);
         const keyDef = keyDefs.length === 1 ? keyDefs[0] : optData.ktype;
 
         if (keyDefs.length != 0) {
-            keyField = keyDef.length === 4 ? [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 1]]
-                : [0, keyDef[0].toLowerCase(), keyDef[0], [], keyDef[keyDef.length - 2]];
+            keyField = keyDef.length === 4 ? [0, keyDef[0], keyDef[0], [], keyDef[keyDef.length - 1]]
+                : [0, keyDef[0], keyDef[0], [], keyDef[keyDef.length - 2]];
         } else {
             //vtype is a primitive type or undefined (create string field)
             // TODO? : definition not found = unresolved schema (validate JADN should have failed)
-            keyField = [0, keyDef.toLowerCase(), keyDef, [], ''];
+            keyField = [0, keyDef, keyDef, [], ''];
         }
     }
 
@@ -254,19 +254,19 @@ const MapOfField = (props: MapOfFieldProps) => {
         optData.vtype = optData.vtype.slice(1);
         const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
         valDefs.length === 1 ? valDef = valDefs[0] : valDef = valDefs;
-        valField = [0, valDef.toLowerCase(), 'Enumerated', [], valDef[valDef.length - 1]];
+        valField = [0, valDef, 'Enumerated', [], valDef[valDef.length - 1]];
 
     } else {
         //vtype is an def
         const valDefs: TypeArray[] = schema.types.filter((t: any) => t[0] === optData.vtype);
         const valDef = valDefs.length === 1 ? valDefs[0] : optData.vtype;
         if (valDefs.length != 0) {
-            valField = valDef.length === 4 ? [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 1]]
-                : [0, valDef[0].toLowerCase(), valDef[0], [], valDef[valDef.length - 2]];
+            valField = valDef.length === 4 ? [0, valDef[0], valDef[0], [], valDef[valDef.length - 1]]
+                : [0, valDef[0], valDef[0], [], valDef[valDef.length - 2]];
         } else {
             //vtype is a primitive type or undefined (create string field)
             // TODO? : definition not found = unresolved schema (validate JADN should have failed)
-            valField = [0, valDef.toLowerCase(), valDef, [], ''];
+            valField = [0, valDef, valDef, [], ''];
         }
     }
 
@@ -318,18 +318,18 @@ const MapOfField = (props: MapOfFieldProps) => {
                     </div>
                     {children}
                 </div>
-
-                <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
+                <div className={`card-body p-2 ${toggle ? '' : 'collapse'}`}>
                     {fields}
-                    {!max && <button
-                        type="button"
-                        className={`btn btn-sm btn-block btn-primary p-1${max ? ' disabled' : ''}`}
-                        title={`Add Field to ${name}`}
-                        onClick={addOpt}
-                    >
-                        <FontAwesomeIcon icon={faPlusSquare} size="lg" />
-                    </button>}
-                </div>
+                    <div className="p-2">
+                        {!max && <button
+                            type="button"
+                            className={`btn btn-sm btn-block btn-primary ${max ? ' disabled' : ''}`}
+                            title={`Add Field to ${name}`}
+                            onClick={addOpt}>
+                            <FontAwesomeIcon icon={faPlusSquare} />
+                        </button>}                    
+                    </div>
+                </div>               
             </div>
         </div>
     );

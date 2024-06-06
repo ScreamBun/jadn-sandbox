@@ -1,9 +1,11 @@
 {
   "info": {
     "package": "http://example.fake",
-    "exports": ["UUID-String"]
+    "exports": ["UUID-String", "Reg-String", "Reg-Pattern"]
   },
   "types": [
-    ["UUID-String", "String", ["/uuid"], ""]
+    ["UUID-String", "String", ["/uuid"], ""],
+    ["Reg-String", "String", ["/regex"], ""],
+    ["Reg-Pattern", "String", ["%[0-9]"], ""]
   ]
 }

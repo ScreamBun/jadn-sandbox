@@ -65,14 +65,14 @@ const MessageCreator = (props: any) => {
     const recordDef = recordDefs.length === 1 ? recordDefs[0] : [];
     let commandFields: null | JSX.Element = null;
 
-    if (recordDef.length > 1 && recordDef[recordDef.length - 2].length > 0) {
-        commandFields = (
-            <small id="exportHelpBlock" className="form-text text-muted">
-                <b>Comment: </b>
-                {recordDef[recordDef.length - 2]}
-            </small>
-        );
-    }
+   // if (recordDef.length > 1 && recordDef[recordDef.length - 2].length > 0) {
+    //    commandFields = (
+    //        <small id="exportHelpBlock" className="form-text text-muted">
+   //             <b>Comment: </b>
+     //           {recordDef[recordDef.length - 2]}
+   //         </small>
+  //      );
+  //  }
 
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (commandType?.value) {
@@ -128,8 +128,8 @@ const MessageCreator = (props: any) => {
             </div>
             <div className='card-body-page' id="message-editor">
                 <div className='tab-content mb-2'>
-                    <div className={`container-fluid tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
-                        <div id='command-fields' className='p-2'>
+                    <div className={`container-fluid tab-pane fade ps-2 pe-2 ${activeView == 'creator' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
+                        <div id='command-fields'>
                             {commandFields}
                             <div id="fieldDefs">
                                 {fieldDefs}

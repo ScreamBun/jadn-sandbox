@@ -9,7 +9,7 @@ import { validateOptDataNum, validateOptDataBinary, validateOptDataStr } from '.
 import { hasProperty } from 'components/utils';
 import { FormattedField } from './Types';
 import { Buffer } from 'buffer';
-import SBECMARegexBtn from 'components/common/SBECMARegexBtn';
+// import SBECMARegexBtn from 'components/common/SBECMARegexBtn';
 
 // Interface
 interface BasicFieldProps {
@@ -31,12 +31,12 @@ const BasicField = (props: BasicFieldProps) => {
   const [data, setData] = useState(value);
 
   //used for ECMAScript regex checker button
-  const [isECMAScriptValid, setIsECMAScriptValid] = useState(false);
-  const [isValidating, setIsValidating] = useState(false);
-  const patternOnchg = (patternData: string) => {
-      setData(patternData);
-      optChange(name, patternData, arr);
-  }
+  // const [isECMAScriptValid, setIsECMAScriptValid] = useState(false);
+  // const [isValidating, setIsValidating] = useState(false);
+  // const patternOnchg = (patternData: string) => {
+  //     setData(patternData);
+  //     optChange(name, patternData, arr);
+  // }
 
   var optData: Record<string, any> = {};
   const schema = useAppSelector((state) => state.Util.selectedSchema) as SchemaJADN;
@@ -229,6 +229,7 @@ const BasicField = (props: BasicFieldProps) => {
           <div className='card-body m-0 p-0'>
             <input
               type='text'
+              className="form-control form-control-sm"
               name={name}
               value={data}
               placeholder={optData.pattern ? optData.pattern : ''}
@@ -240,15 +241,7 @@ const BasicField = (props: BasicFieldProps) => {
                 setErrMsg(errCheck);
                 optChange(name, e.target.value, arr);
               }}
-              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} /> 
-              <SBECMARegexBtn 
-                isECMAScriptValid={isECMAScriptValid}
-                setIsECMAScriptValid={setIsECMAScriptValid}
-                setIsValidating={setIsValidating}
-                patternData={optData.pattern}                         
-                onValidateClick={patternOnchg}
-              /> 
-    
+              style={{ borderColor: errMsg.length != 0 ? 'red' : '' }} />
           </div>
           {err}
         </div>
