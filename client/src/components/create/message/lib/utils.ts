@@ -21,7 +21,7 @@ export const isOptional = (def: TypeArray | FieldArray) => {
 // optData validation for Array, ArrayOf, Map, MapOf, or Record
 export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[], formatCheck: boolean = false) => {
 	let isFormatted: boolean = false;
-	let m = [];
+	let m: string[] = [];
 	if (!data || data.length == 0) {
 		return m;
 	}
@@ -54,12 +54,12 @@ export const validateOptDataElem = (config: InfoConfig, optData: any, data: any[
 }
 // optData validation for String
 export const validateOptDataStr = (config: InfoConfig, optData: any, data: string) => {
-	let m = [];
+	let m: string[] = [];
 	if (!data || data.length == 0) {
 		return m;
 	}
-	var minv = optData.minv || $MINV;
-	var maxv = optData.maxv || config.$MaxString;
+	let minv = optData.minv || $MINV;
+	let maxv = optData.maxv || config.$MaxString;
 	if (data.length < minv) {
 		m.push('Minv Error: must be greater than ' + minv + ' characters');
 	}
@@ -79,13 +79,23 @@ export const validateOptDataStr = (config: InfoConfig, optData: any, data: strin
 		if (!isFormatted) {
 			m.push('Format Error: Invalid ' + optData.format + ' value');
 		}
+
+		// Moved format.regex check up to allow detailed errors vs true/false
+		if (optData.format && optData.format == 'regex') {
+			try {
+				const regex = new RegExp(data);
+				console.log(regex.exec(""));
+			} catch (err: any) {
+				m.push(`Regex Error: Invalid Regex: ${err.message}`);			
+			}
+		}			
 	}
 
 	return m;
 }
 // optData validation for Number, Integer
 export const validateOptDataNum = (optData: any, data: number) => {
-	let m = [];
+	let m: string[] = [];
 	if (!data) {
 		return m;
 	}
@@ -298,8 +308,11 @@ export const validateStringFormat = (data: string, type: string) => {
 		//TODO
 		return true;
 	}
-	if (type == 'regex') { //check for valid pattern?
+	// Regex has been moved up to so it can provide a detailed error response if needed.
+	if (type == 'regex') {
 		return true;
 	}
+
+
 	return false;
 }
