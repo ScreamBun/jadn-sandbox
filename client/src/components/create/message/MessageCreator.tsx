@@ -128,8 +128,8 @@ const MessageCreator = (props: any) => {
             </div>
             <div className='card-body-page' id="message-editor">
                 <div className='tab-content mb-2'>
-                    <div className={`container-fluid tab-pane fade ${activeView == 'creator' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
-                        <div id='command-fields' className='p-2'>
+                    <div className={`container-fluid tab-pane fade ps-2 pe-2 ${activeView == 'creator' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
+                        <div id='command-fields'>
                             {commandFields}
                             <div id="fieldDefs">
                                 {fieldDefs}

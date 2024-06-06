@@ -1,13 +1,24 @@
 {
   "info": {
     "package": "http://test/v1.0",
-    "exports": ["Choice-Name"]
+    "exports": ["MapOf-Name", "ArrayOf-Name", "Choice-Name", "Map-Name", "Array-Name"]
   },
   "types": [
     ["Choice-Name", "Choice", [], "", [
         [1, "field_value_1", "String", [], ""],
         [2, "field_value_2", "String", [], ""],
         [3, "field_value_3", "String", [], ""]
+      ]],
+    ["MapOf-Name", "MapOf", ["+String-Name", "*Binary"], ""],
+    ["String-Name", "String", [], ""],
+    ["ArrayOf-Name", "ArrayOf", ["*String"], ""],
+    ["Array-Name", "Array", [], "", [
+        [1, "field_value_1", "String", [], ""],
+        [2, "field_value_2", "String", [], ""]
+      ]],
+    ["Map-Name", "Map", [], "", [
+        [1, "field_value_1", "String", [], ""],
+        [2, "field_value_2", "String", [], ""]
       ]]
   ]
 }
