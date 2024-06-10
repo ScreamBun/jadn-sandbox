@@ -4,13 +4,7 @@ LABEL name="JADN Sandbox - Ruby" \
 version="2.0" \
 description="Ruby container used for development"
 
-# JADN Sandbox Working Directory
 WORKDIR /opt/jadn_sandbox/
-
-# ADD whls /opt/jadn_sandbox/whls
-# ADD requirements.txt /opt/jadn_sandbox
-# ADD webApp /opt/jadn_sandbox/webApp
-# ADD gunicorn /opt/jadn_sandbox/gunicorn
 
 RUN \
     apt-get update && \
@@ -22,8 +16,3 @@ ADD value_cbor_pretty.txt $WORKDIR
 ADD value_cbor.cbor $WORKDIR
 ADD value_json.json $WORKDIR
 
-# Persistant volume
-# VOLUME '/logs'
-
-# Startup Command
-# CMD ["gem", "install", "cbor-diag"]

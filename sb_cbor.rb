@@ -1,1 +1,0 @@
-json2cbor.rb /opt/jadn_sandbox/value_json.json > /opt/jadn_sandbox/value_cbor.cbor
