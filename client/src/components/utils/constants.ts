@@ -24,7 +24,8 @@ export const NAV_CREATE_MESSAGE = '/create/message';
 export const NAV_CREATE_SCHEMA = '/create/schema';
 
 export const NAV_CONVERT_SCHEMA = '/convert-schema';
-export const NAV_TRANSLATE = '/translate-schema';
+export const NAV_TRANSLATE_SCHEMA = '/translate/translate-schema';
+export const NAV_TRANSLATE_DATA = '/translate/translate-data';
 
 export const NAV_TRANSFORM = '/transform-schema';
 

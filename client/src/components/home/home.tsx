@@ -1,7 +1,7 @@
 import { faCode, faCodeBranch, faEnvelopeCircleCheck, faEye, faFileCirclePlus, faPencilRuler } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_CREATE_SCHEMA, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE
+  NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_CREATE_SCHEMA, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE_SCHEMA
 } from 'components/utils/constants';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -74,15 +74,15 @@ const Home = () => {
               </div>
               <div className="card-body">
                 <h5 className="card-title">
-                  <Link className="card-link" to={NAV_TRANSLATE}>Schema Translation</Link>
+                  <Link className="card-link" to={NAV_TRANSLATE_SCHEMA}>Schema Translation</Link>
                 </h5>
                 <p className="card-text">Translate a JADN Schema to another Schema format.</p>
                 <p className="card-text">Translate a JSON Schema to a JADN Schema.</p>
               </div>
               <div className="card-footer bg-secondary">
-                <Link className="card-link" to={NAV_TRANSLATE} state={"json"}>JSON</Link>
-                <Link className="card-link" to={NAV_TRANSLATE} state={"rng"}>Relax (XML)</Link>
-                <Link className="card-link" to={NAV_TRANSLATE} state={"xsd"}>XSD</Link>
+                <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"json"}>JSON</Link>
+                <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"rng"}>Relax (XML)</Link>
+                <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"xsd"}>XSD</Link>
               </div>
             </div>
           </div>
