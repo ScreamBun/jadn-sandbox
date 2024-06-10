@@ -12,7 +12,5 @@ RUN \
 
 RUN gem install cbor-diag
 
-ADD value_cbor_pretty.txt $WORKDIR
-ADD value_cbor.cbor $WORKDIR
-ADD value_json.json $WORKDIR
+ADD cbor_files $WORKDIR
 

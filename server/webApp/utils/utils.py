@@ -155,19 +155,14 @@ def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
             ]
         }
     }
-    
-    local_json_file_path = './cbor_files/value_json.json'
-    container_json_file_path = '/opt/jadn_sandbox/value_json.json'
-    container_json2cbor_rb = '/usr/local/bin/json2cbor.rb'
-    container_cbor2pretty_rb = '/usr/local/bin/cbor2pretty.rb'
 
-    with open(local_json_file_path, 'w', encoding='utf-8') as f:
+    with open(constants.LOCAL_JSON_FILE_PATH, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-    cp_cmd = "docker cp " + local_json_file_path + " " + constants.CONTAINER_NAME + ":" + container_json_file_path
+    cp_cmd = "docker cp " + constants.LOCAL_JSON_FILE_PATH + " " + constants.CONTAINER_NAME + ":" + constants.CONTAINER_JSON_FILE_PATH
     
     os.system(cp_cmd)
-    os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + container_json2cbor_rb + ' value_json.json > value_cbor.cbor"')
-    os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + container_cbor2pretty_rb + ' value_cbor.cbor > value_cbor_pretty.txt"')
+    os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + constants.CONTAINER_JSON2CBOR_RB + ' value_json.json > value_cbor.cbor"')
+    os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + constants.CONTAINER_CBOR2PRETTY_RB + ' value_cbor.cbor > value_cbor_pretty.txt"')
        
     return True
