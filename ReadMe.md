@@ -45,23 +45,39 @@ Prerequisites:
 
 2. From commandline, go to the directory where you would like the application to live, here's an example:
 
-  ```bash
-  cd /home/username/workspace
-  ```
+   ```bash
+   cd /home/username/workspace
+   ```
 
 3. Using git, clone the jadn-sandbox repo to your local directory
 
-```bash
-git clone https://github.com/ScreamBun/jadn-sandbox.git
-```
+   ```bash
+   git clone https://github.com/ScreamBun/jadn-sandbox.git
+   ```
 
 4. (Optional, specific to Linux and Mac) Create a [virtual environment](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/) for the app
 
 5. Run the startup script to install the app's dependencies and fire up it's servers
 
-```bash
-./startup.sh
-```
+   ```bash
+   ./startup.sh
+   ```
+
+### Build Ruby Image and Container
+
+1. In a terminal window, from the JADN Sandbox Root dir, build the image:
+
+   ```bash
+   docker build -t sb-ruby-image -f Dockerfile_sb_ruby .
+   ```
+
+2. Next, build the container (/bin/bash is optional this allows you to immediately investigate the contents of the container)
+
+   ```bash
+   docker run -it --name=sb-ruby-container sb-ruby-image /bin/bash
+   ```
+
+3. Your ruby docker container is now ready to be used.
 
 ### Alternate startup
 
