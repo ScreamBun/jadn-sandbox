@@ -46,7 +46,7 @@ export const getFilenameOnly = (full_name: string) => {
 export const getFilenameExt = (full_name: string) => {
   const lastIndex = full_name.lastIndexOf('.');
   const dot_ext = full_name.substring(lastIndex);
-  let ext = null;
+  let ext = "";
   if (dot_ext) {
     let dot_char = dot_ext.charAt(0);
     if (dot_char == ".") {
