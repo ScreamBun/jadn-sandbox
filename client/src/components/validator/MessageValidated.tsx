@@ -64,9 +64,6 @@ const MessageValidated = (props: any) => {
     };
 
     const onMsgChange = (data: any) => {
-        //setSelectedFile('');
-        // setDecodeMsg('');
-        // setMsgFormat('');
         setLoadedMsg(data);
     }
 
@@ -83,8 +80,6 @@ const MessageValidated = (props: any) => {
         if (ref.current) {
             ref.current.value = '';
         }
-        //setDecodeMsg('');
-        //setMsgFormat('');
     }
 
     return (

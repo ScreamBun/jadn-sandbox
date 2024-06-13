@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { setSchema } from "actions/util";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { sbToastSuccess, dismissAllToast, sbToastError } from "./SBToast";
+import { dismissAllToast, sbToastError } from "./SBToast";
 import { validateSchema } from "actions/validate";
 import { LANG_JADN, LANG_JSON } from "components/utils/constants";
 
@@ -53,7 +53,7 @@ const SBValidateSchemaBtn = (props: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValid(true);
                         dispatch(setSchema(jsonObj));
-                        sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                        // sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
                         dispatch(setSchema(null));
                         sbToastError(validateSchemaVal.payload.valid_msg);
@@ -82,7 +82,7 @@ const SBValidateSchemaBtn = (props: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValid(true);
                         dispatch(setSchema(jsonObj));
-                        sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                        // sbToastSuccess(validateSchemaVal.payload.valid_msg);
                     } else {
                         dispatch(setSchema(null));
                         sbToastError(validateSchemaVal.payload.valid_msg);

@@ -11,8 +11,9 @@ import SBValidateSchemaBtn from "components/common/SBValidateSchemaBtn";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
 import { validateSchema } from "actions/validate";
 import { info, setSchema } from "../../actions/util";
-import { sbToastError } from "components/common/SBToast";
+import { dismissAllToast, sbToastError } from "components/common/SBToast";
 import { format } from "../utils";
+import SBSaveFile from "components/common/SBSaveFile";
 
 const DataTranslator = () => {
     const dispatch = useDispatch();
@@ -21,20 +22,30 @@ const DataTranslator = () => {
 
     const schemaOptions = useSelector(getAllSchemas);
     const dataOptions = useSelector(getMsgFiles);
-    const validDataTypes = useSelector(getValidMsgTypes)
+    const validDataTypeOptions = useSelector(getValidMsgTypes)
+
+    const [schemaExportOptions, setSchemaExportOptions] = useState<{
+        all: string[],
+        exports: string[]
+    }>({
+        all: [],
+        exports: []
+    });       
 
     const [isSchemaInView, setIsSchemaInView] = useState<boolean>(true);
     const [isDataInView, setIsDataInView] = useState<boolean>(false);
 
-    const [isSchemaValid, setSchemaIsValid] = useState(false);
-    const [isDataValid, setDataIsValid] = useState(false);
+    const [isSchemaValid, setIsSchemaValid] = useState(false);
+    const [isDataValid, setIsDataValid] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
 
     const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(null);
     const [selectedDataFile, setSelectedDataFile] = useState<Option | null>(null);
+    const [selectedDataType, setSelectedDataType] = useState<Option | null>(null);
+    const [selectedSchemaExport, setSelectedSchemaExport] = useState<Option | null>(null);
 
-    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);    
-    const [loadedData, setLoadedData] = useState<object | null>(null); 
+    const [loadedSchema, setLoadedSchema] = useState<string | null>(null);    
+    const [loadedData, setLoadedData] = useState<string | null>(null); 
 
     const [schemaFilename, setSchemaFilename] = useState({name: '', ext: LANG_JADN});
     const [dataFilename, setDataFilename] = useState({name: '', ext: LANG_JSON});
@@ -46,7 +57,7 @@ const DataTranslator = () => {
 
     useEffect(() => {
         if (!loadedSchema) {
-            setSchemaIsValid(false);
+            setIsSchemaValid(false);
             setSelectedSchemaFile(null);
             // setSchemaFormat(null);
         }
@@ -54,7 +65,7 @@ const DataTranslator = () => {
 
     useEffect(() => {
         if (!loadedData) {
-            setDataIsValid(false);
+            setIsDataValid(false);
             setSelectedDataFile(null);
         }
     }, [loadedData]);    
@@ -132,7 +143,7 @@ const DataTranslator = () => {
 
     // TODO: Cleanup
     const onSchemaFileLoad = async (schemaObj?: any, fileOption?: Option) => {
-        setSchemaIsValid(false);
+        setIsSchemaValid(false);
         setIsLoading(true);
         onSchemaInView();
 
@@ -148,7 +159,7 @@ const DataTranslator = () => {
                 dispatch(validateSchema(schemaObj, fileName.ext))
                     .then((validateSchemaVal: any) => {
                         if (validateSchemaVal.payload.valid_bool == true) {
-                            setSchemaIsValid(true);
+                            setIsSchemaValid(true);
                             if (typeof schemaObj == "string") {
                                 schemaObj = JSON.parse(schemaObj);
                             }
@@ -180,40 +191,44 @@ const DataTranslator = () => {
     } 
     
     const onDataFileLoad = async (dataFile?: any, fileOption?: Option) => {
-        setDataIsValid(false);
+        setIsDataValid(false);
         setIsLoading(true);        
         onDataInView();
 
         if (fileOption) {
             setSelectedDataFile(fileOption);
+            
             const fileName = {
                 name: getFilenameOnly(fileOption.label),
                 ext: getFilenameExt(fileOption.label) || LANG_JSON
             }
+
             setDataFilename(fileName);
             if (dataFile) {
-                // fileName.ext == LANG_JADN ? setMsgFormat({ value: LANG_JSON, label: LANG_JSON }) : setMsgFormat({ value: fileName.ext, label: fileName.ext });
                 fileName.ext == LANG_JSON;
                 const formattedData = format(dataFile, fileName.ext, 2);
                 if (formattedData.startsWith('Error')) {
                     setLoadedData(dataFile);
                 } else {
-                    // setLoadedData(formattedData);
                     setLoadedData(dataFile);
                 }
             } 
-            // else {
-            //     switch (fileName.ext) {
-            //         case 'cbor':
-            //             dataFile = escaped2cbor(hexify(dataFile));
-            //             break;
-            //         default:
-            //             sbToastError(`File cannot be loaded: Invalid JSON`);
-            //     }
-            // }
         }
-        setIsLoading(false) 
+
+        setIsLoading(false);
     }
+
+
+    const onSchemaChange = (data: string) => {
+        dismissAllToast();
+        setIsSchemaValid(false);
+        setLoadedSchema(data);
+        dispatch(setSchema(null));  // ?
+    }    
+
+    const onDataChange = (data: any) => {
+        setLoadedData(data);
+    }    
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
 
@@ -241,7 +256,7 @@ const DataTranslator = () => {
                                 <div className="card">
                                     <div className="card-header">
                                         <div className="row">
-                                            <div className="col-md-6">
+                                            <div className="col-md-12">
                                                 <div className={`d-flex`}>
                                                     <input id="schemaViewCheckbox" type="checkbox" className="form-check-input mt-2 me-1" title="View JADN Schema" checked={isSchemaInView} onChange={onSchemaCheckChange} />
                                                     <SBFileLoader
@@ -261,13 +276,15 @@ const DataTranslator = () => {
                                                     <SBValidateSchemaBtn
                                                         id={'schemaValidationButton'}
                                                         isValid={isSchemaValid}
-                                                        setIsValid={setSchemaIsValid}
+                                                        setIsValid={setIsSchemaValid}
                                                         setIsValidating={setIsValidating}
                                                         schemaData={loadedSchema}
                                                         schemaFormat={LANG_JADN} />   
-                                                </div>                                                 
+                                                </div>                                             
                                             </div>
-                                            <div className="col-md-6">
+                                        </div>                                            
+                                        <div className="row">
+                                            <div className="col-md-12 mt-2">
                                                 <div className={`d-flex`}>
                                                     <input id="dataViewCheckbox" type="checkbox" className="form-check-input mt-2 me-1" title="View Data" checked={isDataInView} onChange={onDataCheckChange} />
                                                     <SBFileLoader
@@ -277,16 +294,36 @@ const DataTranslator = () => {
                                                         setSelectedFile={setSelectedDataFile}
                                                         onCancelFileUpload={onCancelDataFileUpload}
                                                         onFileChange={onDataFileLoad}
-                                                        // acceptableExt={'.json, .cbor, .xml'}
                                                         acceptableExt={'.json'}
                                                         ref={ref}
                                                         placeholder={'Select a data file...'}
                                                         loc={'messages'} 
-                                                        isSaveable />
+                                                    />
+                                                    <SBSaveFile data={loadedData} loc={'messages'} customClass={"mx-1"} filename={dataFilename.name} ext={LANG_JSON} setDropdown={setSelectedDataFile} />
+
+                                                    <SBSelect id={"data-format-list"}
+                                                        customClass={'me-1'}
+                                                        data={validDataTypeOptions}
+                                                        onChange={(e: Option) => setSelectedDataType(e)}
+                                                        value={selectedDataType}
+                                                        placeholder={'Convert from...'}
+                                                        isSmStyle
+                                                        isClearable /> 
+
+                                                    <SBSelect id={"data-decode-list"}
+                                                        customClass={'me-1'}
+                                                        data={schemaExportOptions.exports}
+                                                        onChange={(e: Option) => setSelectedSchemaExport(e)}
+                                                        value={selectedSchemaExport}
+                                                        placeholder={'Schema Export...'}
+                                                        isSmStyle
+                                                        isClearable
+                                                        customNoOptionMsg={'Select a schema to begin'} />
+
                                                     <SBValidateSchemaBtn
                                                         id={'dataValidationButton'}
                                                         isValid={isDataValid}
-                                                        setIsValid={setDataIsValid}
+                                                        setIsValid={setIsDataValid}
                                                         setIsValidating={setIsValidating}
                                                         schemaData={loadedData}
                                                         schemaFormat={""} />
@@ -297,11 +334,11 @@ const DataTranslator = () => {
                                     <div className="card-body p-0 m-0">
                                         { isSchemaInView == true ?
                                             <div key='schemaEditor'>
-                                                <SBEditor data={loadedSchema || ''} convertTo={LANG_JADN} onChange={''}></SBEditor>
+                                                <SBEditor data={loadedSchema || ''} convertTo={LANG_JADN} onChange={onSchemaChange}></SBEditor>
                                             </div>
                                         : 
                                             <div key='dataEditor'>
-                                                <SBEditor data={loadedData || ''} convertTo={LANG_JSON} onChange={''}></SBEditor>
+                                                <SBEditor data={loadedData || ''} convertTo={LANG_JSON} onChange={onDataChange}></SBEditor>
                                             </div>
                                         } 
                                     </div>
@@ -316,7 +353,7 @@ const DataTranslator = () => {
                                                 <div className={`d-flex`}>
                                                     <SBSelect id={"data-format-list"}
                                                                 // customClass={''}
-                                                                data={validDataTypes}
+                                                                data={validDataTypeOptions}
                                                                 // onChange={(e: Option) => setMsgFormat(e)}
                                                                 // value={msgFormat}
                                                                 value={''}

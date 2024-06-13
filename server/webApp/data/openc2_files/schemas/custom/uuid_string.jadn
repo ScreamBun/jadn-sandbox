@@ -1,6 +1,6 @@
 {
   "info": {
-    "package": "http://example.fake",
+    "package": "http://example.faked",
     "exports": ["UUID-String", "Reg-String", "Reg-Pattern"]
   },
   "types": [
