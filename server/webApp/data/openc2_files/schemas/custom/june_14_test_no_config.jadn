@@ -1,0 +1,13 @@
+{
+  "info": {
+    "title": "JADN Metaschema",
+    "package": "http://oasis-open.org/jadn/v1.0/schema",
+    "exports": ["Schema"]
+  },
+  "types": [
+    ["Schema", "Record", [], "", [
+        [1, "field_name_1", "String", [], ""],
+        [2, "field_name_2", "String", [], ""]
+      ]]
+  ]
+}

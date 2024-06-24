@@ -1,0 +1,22 @@
+{
+  "info": {
+    "title": "JADN Metaschema",
+    "package": "http://oasis-open.org/jadn/v1.0/schema",
+    "exports": ["Schema"],
+    "config": {
+      "$MaxBinary": 255,
+      "$MaxString": 5555,
+      "$MaxElements": 500,
+      "$Sys": "$",
+      "$TypeName": "^[A-Za-z][-$A-Za-z0-9]{0,63}$",
+      "$FieldName": "^[A-Za-z][-_A-Za-z0-9]{0,63}$",
+      "$NSID": "^[A-Za-z][A-Za-z0-9]{0,7}$"
+    }
+  },
+  "types": [
+    ["Schema", "Record", [], "", [
+        [1, "field_name_1", "String", [], ""],
+        [2, "field_name_2", "String", [], ""]
+      ]]
+  ]
+}
