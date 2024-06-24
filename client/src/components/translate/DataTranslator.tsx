@@ -1,242 +1,113 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Helmet } from "react-helmet-async";
-import { useDispatch, useSelector } from "react-redux";
-import { getMsgFiles, getSelectedSchema, getValidMsgTypes, getAllSchemas, getPageTitle } from "reducers/util";
-import SBSelect, { Option } from 'components/common/SBSelect'
-import SBFileLoader from "components/common/SBFileLoader";
-import { LANG_JADN, LANG_JSON } from "components/utils/constants";
-import SBEditor from "components/common/SBEditor";
-import SBSubmitBtn from "components/common/SBSubmitBtn";
-import SBValidateSchemaBtn from "components/common/SBValidateSchemaBtn";
-import { getFilenameExt, getFilenameOnly } from "components/utils/general";
-import { validateSchema } from "actions/validate";
-import { info, setSchema } from "../../actions/util";
-import { dismissAllToast, sbToastError } from "components/common/SBToast";
-import { format } from "../utils";
-import SBSaveFile from "components/common/SBSaveFile";
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Helmet } from 'react-helmet-async'
+import DataTranslated from './DataTranslated'
+import { validateMessage } from 'actions/validate'
+import { info, setSchema } from 'actions/util'
+import { getPageTitle } from 'reducers/util'
+import SchemaLoader from 'components/common/SchemaLoader'
+import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { Option } from 'components/common/SBSelect'
+
 
 const DataTranslator = () => {
+
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(false);
-
-    const schemaOptions = useSelector(getAllSchemas);
-    const dataOptions = useSelector(getMsgFiles);
-    const validDataTypeOptions = useSelector(getValidMsgTypes)
-
-    const [schemaExportOptions, setSchemaExportOptions] = useState<{
+    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(null);
+    const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
+    const [selectedMsgFile, setSelectedMsgFile] = useState('');
+    const [loadedMsg, setLoadedMsg] = useState('');
+    const [msgFormat, setMsgFormat] = useState<Option | null>(null);
+    const [decodeMsg, setDecodeMsg] = useState<Option | null>(null);
+    const [decodeSchemaTypes, setDecodeSchemaTypes] = useState<{
         all: string[],
         exports: string[]
     }>({
         all: [],
         exports: []
-    });       
+    });
 
-    const [isSchemaInView, setIsSchemaInView] = useState<boolean>(true);
-    const [isDataInView, setIsDataInView] = useState<boolean>(false);
-
-    const [isSchemaValid, setIsSchemaValid] = useState(false);
-    const [isDataValid, setIsDataValid] = useState(false);
-    const [isValidating, setIsValidating] = useState(false);
-
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(null);
-    const [selectedDataFile, setSelectedDataFile] = useState<Option | null>(null);
-    const [selectedDataType, setSelectedDataType] = useState<Option | null>(null);
-    const [selectedSchemaExport, setSelectedSchemaExport] = useState<Option | null>(null);
-
-    const [loadedSchema, setLoadedSchema] = useState<string | null>(null);    
-    const [loadedData, setLoadedData] = useState<string | null>(null); 
-
-    const [schemaFilename, setSchemaFilename] = useState({name: '', ext: LANG_JADN});
-    const [dataFilename, setDataFilename] = useState({name: '', ext: LANG_JSON});
-    const ref = useRef<HTMLInputElement | null>(null);
-
-    const meta_title = useSelector(getPageTitle) + ' | Schema Translation'
+    const meta_title = useSelector(getPageTitle) + ' | Data Translation';
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
-    const formId = "data_translation_form";    
-
-    useEffect(() => {
-        if (!loadedSchema) {
-            setIsSchemaValid(false);
-            setSelectedSchemaFile(null);
-            // setSchemaFormat(null);
-        }
-    }, [loadedSchema]);
-
-    useEffect(() => {
-        if (!loadedData) {
-            setIsDataValid(false);
-            setSelectedDataFile(null);
-        }
-    }, [loadedData]);    
-
-    useEffect(() => {
-        // Gets drop down list data redux
-        dispatch(info());
-    }, [dispatch])    
-
-    const onSchemaInView = () => {
-        setIsSchemaInView(true);
-        setIsDataInView(false);
-    }    
-
-    const onSchemaCheckChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setIsSchemaInView(e.currentTarget.checked);
-        setIsDataInView(!e.currentTarget.checked);
-    }
-
-    const onDataInView = () => {
-        setIsSchemaInView(false);
-        setIsDataInView(true);
-    }      
-
-    const onDataCheckChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setIsSchemaInView(!e.currentTarget.checked);
-        setIsDataInView(e.currentTarget.checked);
-    }    
-
-    const onCancelSchemaFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => {
-        if (e) {
-            e.preventDefault();
-        }
-        // dismissAllToast();
-        // setIsLoading(false);
-        // setIsValidating(false);
-        // setIsValid(false);
-        // setLoadedSchema(null);
-        // dispatch(setSchema(null));
-        // setSelectedFile(null);
-        // setFileName({
-        //     name: '',
-        //     ext: LANG_JADN
-        // });
-        // if (ref.current) {
-        //     ref.current.value = '';
-        // }
-        // if (setDecodeSchemaTypes && setDecodeMsg) {
-        //     setDecodeMsg(null);
-        //     setDecodeSchemaTypes([]);
-    }
-
-    const onCancelDataFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => {
-        if (e) {
-            e.preventDefault();
-        }
-        // dismissAllToast();
-        // setIsLoading(false);
-        // setIsValidating(false);
-        // setIsValid(false);
-        // setLoadedSchema(null);
-        // dispatch(setSchema(null));
-        // setSelectedFile(null);
-        // setFileName({
-        //     name: '',
-        //     ext: LANG_JADN
-        // });
-        // if (ref.current) {
-        //     ref.current.value = '';
-        // }
-        // if (setDecodeSchemaTypes && setDecodeMsg) {
-        //     setDecodeMsg(null);
-        //     setDecodeSchemaTypes([]);
-    }    
-
-    // TODO: Cleanup
-    const onSchemaFileLoad = async (schemaObj?: any, fileOption?: Option) => {
-        setIsSchemaValid(false);
-        setIsLoading(true);
-        onSchemaInView();
-
-        if (schemaObj && fileOption) {
-            setSelectedSchemaFile(fileOption);
-            const fileName = {
-                name: getFilenameOnly(fileOption.label),
-                ext: getFilenameExt(fileOption.label)
-            }
-            setSchemaFilename(fileName);
-            setLoadedSchema(schemaObj);
-            try {
-                dispatch(validateSchema(schemaObj, fileName.ext))
-                    .then((validateSchemaVal: any) => {
-                        if (validateSchemaVal.payload.valid_bool == true) {
-                            setIsSchemaValid(true);
-                            if (typeof schemaObj == "string") {
-                                schemaObj = JSON.parse(schemaObj);
-                            }
-                            dispatch(setSchema(schemaObj));
-                            // sbToastSuccess(validateSchemaVal.payload.valid_msg);
-                        } else {
-                            sbToastError(validateSchemaVal.payload.valid_msg);
-                            dispatch(setSchema(null)); // TODO: is this needed?
-                        }
-                    })
-                    .catch((validateSchemaErr) => {
-                        sbToastError(validateSchemaErr.payload.valid_msg)
-                        dispatch(setSchema(null)); // TODO: is this needed?
-                    }).finally(() => {
-                        setIsValidating(false);
-                    })
-            } catch (err) {
-                if (err instanceof Error) {
-                    setIsValidating(false);
-                    sbToastError(err.message)
-                }
-            }
-
-            // if (setDecodeSchemaTypes && setDecodeMsg) {
-            //     loadDecodeTypes(schemaObj);
-            // }
-        }
-        setIsLoading(false);
-    } 
+    const formId = "validation_form";  
     
-    const onDataFileLoad = async (dataFile?: any, fileOption?: Option) => {
-        setIsDataValid(false);
-        setIsLoading(true);        
-        onDataInView();
-
-        if (fileOption) {
-            setSelectedDataFile(fileOption);
-            
-            const fileName = {
-                name: getFilenameOnly(fileOption.label),
-                ext: getFilenameExt(fileOption.label) || LANG_JSON
-            }
-
-            setDataFilename(fileName);
-            if (dataFile) {
-                fileName.ext == LANG_JSON;
-                const formattedData = format(dataFile, fileName.ext, 2);
-                if (formattedData.startsWith('Error')) {
-                    setLoadedData(dataFile);
-                } else {
-                    setLoadedData(dataFile);
-                }
-            } 
-        }
-
-        setIsLoading(false);
-    }
-
-
-    const onSchemaChange = (data: string) => {
+    useEffect(() => {
+        dispatch(info());
         dismissAllToast();
-        setIsSchemaValid(false);
-        setLoadedSchema(data);
-        dispatch(setSchema(null));  // ?
-    }    
-
-    const onDataChange = (data: any) => {
-        setLoadedData(data);
-    }    
+    }, [dispatch]);
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
-
+        e.preventDefault();
+        dismissAllToast();
+        setIsLoading(false);
+        setSelectedSchemaFile(null);
+        setLoadedSchema(null);
+        setSelectedMsgFile('');
+        setLoadedMsg('');
+        setMsgFormat(null);
+        setDecodeMsg(null);
+        setDecodeSchemaTypes({
+            all: [],
+            exports: []
+        });
+        dispatch(setSchema(null));
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsLoading(true);
 
-    }
+        if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
+            try {
+                dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat.value, decodeMsg.value))
+                    .then((submitVal: any) => {
+                        if (submitVal && submitVal.payload.valid_bool) {
+                            setIsLoading(false);
+                            sbToastSuccess(submitVal.payload.valid_msg)
+                        } else {
+                            if (submitVal.payload.valid_msg.length != 1 && typeof submitVal.payload.valid_msg == 'object') {
+                                setIsLoading(false);
+                                for (const index in submitVal.payload.valid_msg) {
+                                    sbToastError(submitVal.payload.valid_msg[index])
+                                }
+                            } else {
+                                setIsLoading(false);
+                                sbToastError(submitVal.payload.valid_msg)
+                            }
+                        }
+                    })
+                    .catch((submitErr: { message: string }) => {
+                        setIsLoading(false);
+                        sbToastError(submitErr.message)
+                        return false;
+                    })
+            } catch (err) {
+                if (err instanceof Error) {
+                    setIsLoading(false);
+                    sbToastError(err.message)
+                }
+            }
+        } else {
+            var err = '';
+            if (!loadedSchema) {
+                err += ' schema';
+            }
+            if (!loadedMsg) {
+                err += ', data';
+            }
+            if (!msgFormat) {
+                err += ', data format';
+            }
+            if (!decodeMsg) {
+                err += ', data type';
+            }
+            sbToastError('ERROR: Validation failed - Please select ' + err)
+            setIsLoading(false);
+        }
+    }    
 
     return (
         <div>
@@ -244,147 +115,43 @@ const DataTranslator = () => {
                 <title>{meta_title}</title>
                 <link rel="canonical" href={meta_canonical} />
             </Helmet>
-            <div className='card'>
-                <div className='card-header bg-secondary p-2'>
-                    <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Translation</span></h5>
-                    <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
-                </div>
-                <div className='card-body p-2'>
-                    <form id={formId} onSubmit={submitForm}>
-                        <div className='row'>
-                            <div className='col-md-6'>
-                                <div className="card">
-                                    <div className="card-header">
-                                        <div className="row">
-                                            <div className="col-md-12">
-                                                <div className={`d-flex`}>
-                                                    <input id="schemaViewCheckbox" type="checkbox" className="form-check-input mt-2 me-1" title="View JADN Schema" checked={isSchemaInView} onChange={onSchemaCheckChange} />
-                                                    <SBFileLoader
-                                                        opts={schemaOptions}
-                                                        selectedOpt={selectedSchemaFile}
-                                                        loadedFileData={loadedSchema}
-                                                        fileName={schemaFilename}
-                                                        fileExt={LANG_JADN}
-                                                        setSelectedFile={setSelectedSchemaFile}
-                                                        onCancelFileUpload={onCancelSchemaFileUpload}
-                                                        onFileChange={onSchemaFileLoad}
-                                                        acceptableExt={LANG_JADN}
-                                                        ref={ref}
-                                                        placeholder={'Select a schema...'}
-                                                        loc={'schemas'}
-                                                        isSaveable/>
-                                                    <SBValidateSchemaBtn
-                                                        id={'schemaValidationButton'}
-                                                        isValid={isSchemaValid}
-                                                        setIsValid={setIsSchemaValid}
-                                                        setIsValidating={setIsValidating}
-                                                        schemaData={loadedSchema}
-                                                        schemaFormat={LANG_JADN} />   
-                                                </div>                                             
-                                            </div>
-                                        </div>                                            
-                                        <div className="row">
-                                            <div className="col-md-12 mt-2">
-                                                <div className={`d-flex`}>
-                                                    <input id="dataViewCheckbox" type="checkbox" className="form-check-input mt-2 me-1" title="View Data" checked={isDataInView} onChange={onDataCheckChange} />
-                                                    <SBFileLoader
-                                                        opts={dataOptions}
-                                                        selectedOpt={selectedDataFile}
-                                                        fileName={dataFilename}
-                                                        setSelectedFile={setSelectedDataFile}
-                                                        onCancelFileUpload={onCancelDataFileUpload}
-                                                        onFileChange={onDataFileLoad}
-                                                        acceptableExt={'.json'}
-                                                        ref={ref}
-                                                        placeholder={'Select a data file...'}
-                                                        loc={'messages'} 
-                                                    />
-                                                    <SBSaveFile data={loadedData} loc={'messages'} customClass={"mx-1"} filename={dataFilename.name} ext={LANG_JSON} setDropdown={setSelectedDataFile} />
-
-                                                    <SBSelect id={"data-format-list"}
-                                                        customClass={'me-1'}
-                                                        data={validDataTypeOptions}
-                                                        onChange={(e: Option) => setSelectedDataType(e)}
-                                                        value={selectedDataType}
-                                                        placeholder={'Convert from...'}
-                                                        isSmStyle
-                                                        isClearable /> 
-
-                                                    <SBSelect id={"data-decode-list"}
-                                                        customClass={'me-1'}
-                                                        data={schemaExportOptions.exports}
-                                                        onChange={(e: Option) => setSelectedSchemaExport(e)}
-                                                        value={selectedSchemaExport}
-                                                        placeholder={'Schema Export...'}
-                                                        isSmStyle
-                                                        isClearable
-                                                        customNoOptionMsg={'Select a schema to begin'} />
-
-                                                    <SBValidateSchemaBtn
-                                                        id={'dataValidationButton'}
-                                                        isValid={isDataValid}
-                                                        setIsValid={setIsDataValid}
-                                                        setIsValidating={setIsValidating}
-                                                        schemaData={loadedData}
-                                                        schemaFormat={""} />
-                                                </div>                                                    
-                                            </div>                                  
-                                        </div>
+            <div className='row'>
+                <div className='col-md-12'>
+                    <div className='card'>
+                        <div className='card-header bg-secondary p-2'>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Translation</span></h5>
+                            <button type='reset' className='btn btn-sm btn-danger float-end' onClick={onReset}>Reset</button>
+                        </div>
+                        <div className='card-body p-2'>
+                            <form id={formId} onSubmit={submitForm}>
+                                <div className='row'>
+                                    <div className='col-md-6 pr-1'>
+                                        <SchemaLoader
+                                            selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
+                                            schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
+                                            decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
+                                            setDecodeSchemaTypes={setDecodeSchemaTypes} />
                                     </div>
-                                    <div className="card-body p-0 m-0">
-                                        { isSchemaInView == true ?
-                                            <div key='schemaEditor'>
-                                                <SBEditor data={loadedSchema || ''} convertTo={LANG_JADN} onChange={onSchemaChange}></SBEditor>
-                                            </div>
-                                        : 
-                                            <div key='dataEditor'>
-                                                <SBEditor data={loadedData || ''} convertTo={LANG_JSON} onChange={onDataChange}></SBEditor>
-                                            </div>
-                                        } 
+                                    <div className='col-md-6 pl-1'>
+                                        <DataTranslated
+                                            selectedFile={selectedMsgFile} setSelectedFile={setSelectedMsgFile}
+                                            loadedMsg={loadedMsg} setLoadedMsg={setLoadedMsg}
+                                            msgFormat={msgFormat} setMsgFormat={setMsgFormat}
+                                            decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
+                                            decodeSchemaTypes={decodeSchemaTypes}
+                                            isLoading={isLoading} formId={formId}
+                                        />
                                     </div>
                                 </div>
-                                                          
-                            </div>
-                            <div className='col-md-6'>
-                                <div className="card">
-                                    <div className="card-header p-2">
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <div className={`d-flex`}>
-                                                    <SBSelect id={"data-format-list"}
-                                                                // customClass={''}
-                                                                data={validDataTypeOptions}
-                                                                // onChange={(e: Option) => setMsgFormat(e)}
-                                                                // value={msgFormat}
-                                                                value={''}
-                                                                placeholder={'Translate to...'}
-                                                                isSmStyle
-                                                                isClearable />
-
-                                                    <SBSubmitBtn buttonId="translateSubmit"
-                                                        buttonTitle="Translate data"
-                                                        buttonTxt="Translate"
-                                                        customClass="ms-2"
-                                                        isLoading={isLoading}
-                                                        formId={formId}
-                                                        // isDisabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
-                                                        />    
-                                                </div>                                     
-                                            </div>                                                           
-                                        </div> 
-                                    </div>
-                                    <div className="card-body p-0 m-0">
-                                        <SBEditor data={''} convertTo={''} onChange={''}></SBEditor> 
-                                    </div>
-                                </div>                              
-                            </div>
+                            </form>
                         </div>
-                    </form>
-                </div>                            
+                    </div>
+                </div>
             </div>
         </div>
     )
 
 }
 
-export default DataTranslator
+export default DataTranslator    
