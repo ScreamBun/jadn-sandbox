@@ -35,7 +35,7 @@ class TestUtils(TestCase):
                                }
         
     def test_convert_json_to_cbor_str(self):  
-        cbor_str = utils.convert_json_to_cbor_str(self.test_json_2)
+        cbor_str = utils.convert_json_to_cbor_hex(self.test_json_2)
         
         print("cbor str: " + cbor_str)
         logging.info("cbor: " + cbor_str)
@@ -53,7 +53,7 @@ class TestUtils(TestCase):
     
         
     def test_convert_cbor_to_annotated_view(self):
-        annotated_view = utils.convert_cbor_to_annotated_view("")
+        annotated_view = utils.convert_json_to_cbor_annotated_hex("")
 
         print("cbor annotated: " + annotated_view)
         logging.info("cbor annotated: " + annotated_view)

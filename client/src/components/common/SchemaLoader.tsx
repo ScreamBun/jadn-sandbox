@@ -32,12 +32,30 @@ interface SchemaLoaderProps {
     acceptFormat?: string[];
     schemaFormat: Option | null;
     setSchemaFormat: (fmtOpt: Option | null) => void;
+    showCopy?: boolean;
+    showEditor?: boolean;
+    showFormatter?: boolean;
+    showSave?: boolean;
+    showToast?: boolean;
 }
 
 const SchemaLoader = (props: SchemaLoaderProps) => {
     const dispatch = useDispatch();
 
-    const { selectedFile, setSelectedFile, loadedSchema, setLoadedSchema, decodeMsg, setDecodeMsg, setDecodeSchemaTypes, acceptFormat, schemaFormat, setSchemaFormat } = props;
+    const { selectedFile, setSelectedFile, 
+            loadedSchema, setLoadedSchema, 
+            decodeMsg, setDecodeMsg, 
+            setDecodeSchemaTypes, 
+            acceptFormat, 
+            schemaFormat, 
+            setSchemaFormat,
+            showEditor = true, 
+            showCopy = true, 
+            showFormatter = true, 
+            showSave = true,
+            showToast = true
+         } = props;
+
     const [isValid, setIsValid] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -143,7 +161,9 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                                 schemaObj = JSON.parse(schemaObj);
                             }
                             dispatch(setSchema(schemaObj));
-                            sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                            if (showToast){
+                                sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                            }
                         } else {
                             sbToastError(validateSchemaVal.payload.valid_msg);
                             dispatch(setSchema(null));
@@ -211,7 +231,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             ref={ref}
                             placeholder={'Select a schema...'}
                             loc={'schemas'}
-                            isSaveable
+                            isSaveable={showSave}
                         />
                     </div>
                     {acceptFormat && <div className="col-lg-3 align-self-center">
@@ -231,18 +251,23 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                                 setIsValidating={setIsValidating}
                                 schemaData={loadedSchema}
                                 schemaFormat={schemaFormat?.value}
+                                showToast={showToast}
                             />
                         }
-                        <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='me-1' />
-                        <SBFormatBtn customClass="me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} />
+                        {showCopy ? <SBCopyToClipboard buttonId='copySchema' data={loadedSchema} customClass='me-1' /> : <></>}
+                        {showFormatter ? <SBFormatBtn customClass="me-1" handleFormatClick={onFormatClick} ext={schemaFormat?.value} data={loadedSchema} /> : <></>}
 
                     </div>
                 </div>
             </div>
-            <div className="card-body-page">
-                {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
-                    <SBEditor data={loadedSchema || ""} onChange={sbEditorOnChange}></SBEditor>}
-            </div>
+            { showEditor ? 
+                <div className="card-body-page">
+                    {isLoading ? <SBSpinner action={'Loading'} isDiv /> :
+                        <SBEditor data={loadedSchema || ""} onChange={sbEditorOnChange}></SBEditor>}
+                </div>
+                :
+                <></>
+            }
         </div>
     )
 }

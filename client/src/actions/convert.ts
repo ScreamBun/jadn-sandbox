@@ -89,7 +89,38 @@ export interface ConvertJsonSuccessAction extends ActionSuccessResult {
   };
 }
 
+// POST - /api/convert/convert_data - convert data to over languages
+const CONVERT_DATA_REQUEST = '@@convert/CONVERT_DATA_REQUEST';
+export const CONVERT_DATA_SUCCESS = '@@convert/CONVERT_DATA_SUCCESS';
+export const CONVERT_DATA_FAILURE = '@@convert/CONVERT_DATA_FAILURE';
+export const convertData = (data:string, from: string, to: string) => createAction({
+  endpoint: `${baseAPI}/convert_data`,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    'data': data,
+    'from': from,
+    'to': to,
+  }),
+  types: [
+    CONVERT_DATA_REQUEST, CONVERT_DATA_SUCCESS, CONVERT_DATA_FAILURE
+  ]
+});
+
+export interface ConvertDataSuccessAction extends ActionSuccessResult {
+  type: typeof CONVERT_DATA_SUCCESS;
+  payload: {
+      data: any;
+  };
+}
+
 // JSON Request Actions
+export interface ConvertDataActions extends ActionRequestResult {
+  type: typeof CONVERT_DATA_REQUEST;
+}
+
 export interface ConvertJsonActions extends ActionRequestResult {
   type: typeof CONVERT_JSON_REQUEST;
 }
@@ -105,9 +136,9 @@ export interface ConvertFailureActions extends ActionFailureResult {
 }
 
 export type ConvertActions = (
-  ConvertJsonActions | ConvertRequestActions | ConvertFailureActions |
+  ConvertDataActions | ConvertJsonActions | ConvertRequestActions | ConvertFailureActions |
   // Success Actions
-  ConvertJsonSuccessAction | InfoSuccessAction | ConvertSchemaSuccessAction
+  ConvertDataSuccessAction | ConvertJsonSuccessAction | InfoSuccessAction | ConvertSchemaSuccessAction
 );
 
 

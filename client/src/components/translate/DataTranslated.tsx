@@ -4,22 +4,33 @@ import {
     escaped2cbor, format, hexify
 } from '../utils';
 import { getMsgFiles, getSelectedSchema, getValidMsgTypes } from "reducers/util";
-import { sbToastError } from "components/common/SBToast";
+import { sbToastError, sbToastSuccess } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
+import { useDispatch } from 'react-redux'
 import SBSaveFile from "components/common/SBSaveFile";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
-import { LANG_CBOR, LANG_JADN, LANG_JSON, LANG_XML } from "components/utils/constants";
+import { LANG_JADN, LANG_JSON } from "components/utils/constants";
 import SBFileLoader from "components/common/SBFileLoader";
-import SBSubmitBtn from "components/common/SBSubmitBtn";
+import SBValidBtn from "components/common/SBValidBtn";
 
 
 const DataTranslated = (props: any) => {
     const location = useLocation();
+    const dispatch = useDispatch();
 
-    const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, isLoading, formId } = props;
+    const { selectedFile, setSelectedFile, 
+            loadedMsg, setLoadedMsg, 
+            msgFormat, setMsgFormat, 
+            decodeSchemaTypes, 
+            decodeMsg, setDecodeMsg, 
+            isLoading, 
+            isDataValid, 
+            setIsDataValid, 
+            formId } = props;
+
     const validSchema = useSelector(getSelectedSchema);
     const [fileName, setFileName] = useState({
         name: '',
@@ -66,6 +77,7 @@ const DataTranslated = (props: any) => {
 
     const onMsgChange = (data: any) => {
         setLoadedMsg(data);
+        setIsDataValid(false);
     }
 
     const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => {
@@ -109,7 +121,7 @@ const DataTranslated = (props: any) => {
                                     data={validMsgFormat}
                                     onChange={(e: Option) => setMsgFormat(e)}
                                     value={msgFormat}
-                                    placeholder={'Data format...'}
+                                    placeholder={'Format...'}
                                     isSmStyle
                                     isClearable />                             
 
@@ -118,25 +130,25 @@ const DataTranslated = (props: any) => {
                                 data={decodeSchemaTypes.exports}
                                 onChange={(e: Option) => setDecodeMsg(e)}
                                 value={decodeMsg}
-                                placeholder={'Data type...'}
+                                placeholder={'Type...'}
                                 isSmStyle
                                 isClearable
                                 customNoOptionMsg={'Select a schema to begin'} />
                         </div>
                     </div>
 
-                    <div className='col-sm-4 align-self-center'>
+                    <div className='col-sm-4'>
                         <div className='d-flex float-end'>
-                            <SBSubmitBtn buttonId="validateSchema"
-                                buttonTitle="Validate the data against the given schema"
-                                buttonTxt="Validate"
-                                customClass="me-1 float-end"
+                            <SBCopyToClipboard buttonId='copyData' data={loadedMsg} customClass='float-end me-1' />
+                            <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName.name} ext={msgFormat ? msgFormat.value : LANG_JSON} setDropdown={setSelectedFile} />                            
+                            <SBValidBtn buttonId='validateBtn'
+                                buttonTxt='Valid'
+                                buttonTitle='Validate the data against the given schema'
                                 isLoading={isLoading}
                                 formId={formId}
-                                isDisabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}>
-                            </SBSubmitBtn>
-                            <SBCopyToClipboard buttonId='copyData' data={loadedMsg} customClass='float-end me-1' />
-                            <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName.name} ext={msgFormat ? msgFormat.value : LANG_JSON} setDropdown={setSelectedFile} />
+                                isValid={isDataValid}
+                                isDisabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
+                            ></SBValidBtn>
                         </div>
                     </div>
                 </div>

@@ -88,6 +88,18 @@ def remove_files(path: str, filenames: list):
     return failed_files
 
 
+def read_file(path: str, filename: str = None):
+    data = None
+    
+    fp = path
+    if path and filename:   
+        fp = os.path.join(path, filename)
+        
+    f = open(fp, 'r')
+    data = f.read()
+    
+    return data
+
 def write_file(path: str, filename: str, data):
     fp = os.path.join(path, filename)
     with open(fp, 'w') as outfile:
@@ -99,13 +111,13 @@ def write_file(path: str, filename: str, data):
         return False
  
     
-def convert_json_to_cbor_str(data_dict: dict) -> bytes:
+def convert_json_to_cbor_hex(data_dict: dict) -> bytes:
     json_str = json.dumps(data_dict)
     
-    encoded = cbor_diag.diag2cbor(json_str)
-    cbor_str= encoded.hex()    
+    cbor_val = cbor_diag.diag2cbor(json_str)
+    cbor_hex_val = cbor_val.hex()    
     
-    return cbor_str
+    return cbor_hex_val
                          
 
 def convert_cbor_str_to_json(cbor_str: str) -> str:
@@ -125,44 +137,20 @@ def convert_cbor_str_to_json(cbor_str: str) -> str:
     return cbor_diag_str
 
 
-def convert_cbor_to_annotated_view(cbor_str: str) -> bytes:
-    
-    # TODO:
-    # Convert cbor to json
-    # Or compare cbor to json3cbor output, if the passed in cbor can match, then this step can be removed
-    # Built API to hit this util
-    # Build developer script/instructions to start ruby container
-    # Add ruby to the docker compose for the deployed version
-    # Send out for testing
-    
-    data = {
-        "Image": {
-            "Width": 800,
-            "Height": 600,
-            "Title": "View from 13th Floor",
-            "Thumbnail": {
-            "Url": "http://www.example.com/image/481989942",
-            "Height": 125,
-            "Width": 100
-            },
-            "Animated": False,
-            "IDs": [
-                333,
-                116,
-                943,
-                234,
-                38793
-            ]
-        }
-    }
+def convert_json_to_cbor_annotated_hex(data: dict) -> bytes:
 
     with open(constants.LOCAL_JSON_FILE_PATH, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-    cp_cmd = "docker cp " + constants.LOCAL_JSON_FILE_PATH + " " + constants.CONTAINER_NAME + ":" + constants.CONTAINER_JSON_FILE_PATH
+    cp_to_container_cmd = "docker cp " + constants.LOCAL_JSON_FILE_PATH + " " + constants.CONTAINER_NAME + ":" + constants.CONTAINER_JSON_FILE_PATH
     
-    os.system(cp_cmd)
+    os.system(cp_to_container_cmd)
     os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + constants.CONTAINER_JSON2CBOR_RB + ' value_json.json > value_cbor.cbor"')
     os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + constants.CONTAINER_CBOR2PRETTY_RB + ' value_cbor.cbor > value_cbor_pretty.txt"')
+    
+    cp_from_container_cmd = "docker cp " + constants.CONTAINER_NAME + ":" + constants.CONTAINER_CBOR2PRETTY_TXT + " " + constants.LOCAL_CBOR2PRETTY_FILE_PATH
+    os.system(cp_from_container_cmd)
+    
+    anna_hex = read_file(constants.LOCAL_CBOR2PRETTY_FILE_PATH)
        
-    return True
+    return anna_hex

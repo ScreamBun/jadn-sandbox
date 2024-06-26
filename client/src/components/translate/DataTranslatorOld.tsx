@@ -387,4 +387,4 @@ const DataTranslatorOld = () => {
 
 }
 
-export default DataTranslator
+export default DataTranslatorOld

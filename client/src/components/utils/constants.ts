@@ -7,6 +7,7 @@ export const LANG_MARKDOWN = 'md';
 export const LANG_GRAPHVIZ = 'gv';
 export const LANG_PLANTUML = 'puml';
 export const LANG_CBOR = 'cbor'
+export const LANG_ANNOTATED_HEX = 'anno_hex'
 export const LANG_XML = 'xml';
 export const LANG_XML_UPPER = 'XML';
 export const LANG_XSD = 'xsd';
