@@ -60,11 +60,11 @@ export const isString = (s: any) => {
   return typeof (s) === 'string' || s instanceof String;
 }
 
-export const getTypeName = (types_to_serach: any[], name: string) => {
+export const getTypeName = (types_to_search: any[], name: string) => {
   let return_name = name;
   let match_count = 0;
   let dups: any[] = [];
-  types_to_serach.map((type) => {
+  types_to_search.map((type) => {
 
     // orig name matches
     if (name == type[0]) {

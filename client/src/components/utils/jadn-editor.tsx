@@ -234,7 +234,7 @@ class JADNInput extends JSONInput {
       buffer.tokens_merge.push(mergedToken);
     }
 
-    const alphanumeric = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$';
+    const alphanumeric = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$'; //TODO EXPAND TO UTF8??
     const bracketList: Array<DomNode.Bracket> = [];
     const quotes = '\'"';
     let errorMsg: undefined|Tokens.ErrorMsg;
