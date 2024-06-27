@@ -13,6 +13,7 @@ ADD whls /opt/jadn_sandbox/whls
 ADD requirements.txt /opt/jadn_sandbox
 ADD webApp /opt/jadn_sandbox/webApp
 ADD gunicorn /opt/jadn_sandbox/gunicorn
+ADD cbor_files /opt/jadn_sandbox/
 
 # Package installation
 # Packages - https://pkgs.alpinelinux.org/packages
@@ -42,7 +43,11 @@ RUN apk add --no-cache \
     font-noto \
     terminus-font && \
     # Wheezyprint font config \
-    fc-cache -f
+    fc-cache -f \
+    ruby
+
+# Install Ruby Gem
+RUN gem install cbor-diag    
 
 # Logs folder
 RUN mkdir -p /logs/ 
