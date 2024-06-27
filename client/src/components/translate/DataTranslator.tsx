@@ -8,10 +8,11 @@ import { getPageTitle } from 'reducers/util'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SBSelect, { Option } from 'components/common/SBSelect'
-import SBEditor from 'components/common/SBEditor'
 import SBActionBtn from 'components/common/SBActionBtn'
-import { LANG_ANNOTATED_HEX, LANG_JSON } from 'components/utils/constants'
+import { LANG_ANNOTATED_HEX, LANG_CBOR, LANG_JSON, LANG_XML } from 'components/utils/constants'
 import { convertData } from "actions/convert";
+import CborTranslated from './CborTranslated'
+import XmlTranslated from './XmlTranslated'
 
 
 const DataTranslator = () => {
@@ -28,8 +29,9 @@ const DataTranslator = () => {
     const [loadedMsg, setLoadedMsg] = useState('');
     const [cborAnnoHex, setCborAnnoHex] = useState('');
     const [cborHex, setCborHex] = useState('');
+    const [xml, setXml] = useState('');
     const [msgFormat, setMsgFormat] = useState<Option | null>(null);
-    const [convertTo, setConvertTo] = useState<Option | null>({'label': 'cbor', 'value' : 'cbor'});
+    const [convertTo, setConvertTo] = useState<Option | null>({'label': LANG_CBOR, 'value' : LANG_CBOR});
     const [decodeMsg, setDecodeMsg] = useState<Option | null>(null);
     const [decodeSchemaTypes, setDecodeSchemaTypes] = useState<{
         all: string[],
@@ -154,6 +156,22 @@ const DataTranslator = () => {
 
     }    
 
+    const TranslationView = () => {
+        if (convertTo && convertTo.value === LANG_CBOR) {
+            return (
+                <CborTranslated cborHex={cborHex} cborAnnoHex={cborAnnoHex} ></CborTranslated>
+            )
+        } else if (convertTo && convertTo.value === LANG_XML) {
+            return (
+                <XmlTranslated xml={xml}></XmlTranslated>
+            )
+        } else {
+            return (
+                <></>
+            )
+        }
+    }
+
     return (
         <div>
             <Helmet>
@@ -207,7 +225,7 @@ const DataTranslator = () => {
                                                     <div className='col-md-4'>
                                                         <SBSelect id={"data-format-list"}
                                                             customClass={'me-1'}
-                                                            data={['cbor']}
+                                                            data={[LANG_CBOR, LANG_XML]}
                                                             onChange={(e: Option) => setConvertTo(e)}
                                                             value={convertTo}
                                                             placeholder={'Convert to...'}
@@ -228,28 +246,9 @@ const DataTranslator = () => {
                                                 </div>                                               
                                             </div>
                                             <div className="card-body p-2">
-
-                                                <div className="card mb-2">
-                                                    <div className="card-header p-2">
-                                                        CBOR Hex
-                                                    </div>
-                                                    <div className="card-body p-0 m-0">
-                                                        <SBEditor id='cborRawView' data={cborHex} convertTo={''} isReadOnly={'true'} onChange={''} height={'15vh'}></SBEditor> 
-                                                    </div>
-                                                </div>
-
-                                                <div className="card">
-                                                    <div className="card-header p-2">
-                                                        CBOR Annotated Hex
-                                                    </div>
-                                                    <div className="card-body p-0 m-0">
-                                                        <SBEditor id='annotatedHexView' data={cborAnnoHex} convertTo={''} isReadOnly={'true'} onChange={''} height={'49vh'}></SBEditor> 
-                                                    </div>
-                                                </div>
-
+                                                <TranslationView></TranslationView>
                                             </div>
                                         </div>
-                                         
                                     </div>
                                 </div>                                
                             </form>
