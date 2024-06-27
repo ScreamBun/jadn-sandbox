@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-    escaped2cbor, format, hexify
-} from '../utils';
+import { escaped2cbor, format, hexify } from '../../utils';
 import { getMsgFiles, getSelectedSchema, getValidMsgTypes } from "reducers/util";
-import { sbToastError, sbToastSuccess } from "components/common/SBToast";
+import { sbToastError } from "components/common/SBToast";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
 import SBEditor from "components/common/SBEditor";
 import { useLocation } from "react-router-dom";
-import { useDispatch } from 'react-redux'
 import SBSaveFile from "components/common/SBSaveFile";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
@@ -17,15 +14,14 @@ import SBFileLoader from "components/common/SBFileLoader";
 import SBValidBtn from "components/common/SBValidBtn";
 
 
-const DataTranslated = (props: any) => {
+const DataToTranslate = (props: any) => {
     const location = useLocation();
-    const dispatch = useDispatch();
 
     const { selectedFile, setSelectedFile, 
-            loadedMsg, setLoadedMsg, 
-            msgFormat, setMsgFormat, 
-            decodeSchemaTypes, 
-            decodeMsg, setDecodeMsg, 
+            loadedData, setLoadedData, 
+            dataFormat, setDataFormat, 
+            schemaTypes, 
+            dataType, setDataType, 
             isLoading, 
             isDataValid, 
             setIsDataValid, 
@@ -34,7 +30,7 @@ const DataTranslated = (props: any) => {
     const validSchema = useSelector(getSelectedSchema);
     const [fileName, setFileName] = useState({
         name: '',
-        ext: LANG_JADN
+        ext: LANG_JSON
     });
     const msgOpts = useSelector(getMsgFiles);
     const validMsgFormat = useSelector(getValidMsgTypes)
@@ -43,7 +39,7 @@ const DataTranslated = (props: any) => {
     useEffect(() => {
         if (location.state) {
             const index = Object.values(validMsgFormat).indexOf(location.state)
-            setMsgFormat({ value: Object.values(validMsgFormat)[index], label: Object.values(validMsgFormat)[index] });
+            setDataFormat({ value: Object.values(validMsgFormat)[index], label: Object.values(validMsgFormat)[index] });
         }
     }, [])
 
@@ -56,12 +52,12 @@ const DataTranslated = (props: any) => {
             }
             setFileName(fileName);
             if (dataFile) {
-                fileName.ext == LANG_JADN ? setMsgFormat({ value: LANG_JSON, label: LANG_JSON }) : setMsgFormat({ value: fileName.ext, label: fileName.ext });
+                fileName.ext == LANG_JADN ? setDataFormat({ value: LANG_JSON, label: LANG_JSON }) : setDataFormat({ value: fileName.ext, label: fileName.ext });
                 const formattedData = format(dataFile, fileName.ext, 2);
                 if (formattedData.startsWith('Error')) {
-                    setLoadedMsg(dataFile);
+                    setLoadedData(dataFile);
                 } else {
-                    setLoadedMsg(formattedData);
+                    setLoadedData(formattedData);
                 }
             } else {
                 switch (fileName.ext) {
@@ -76,7 +72,7 @@ const DataTranslated = (props: any) => {
     };
 
     const onMsgChange = (data: any) => {
-        setLoadedMsg(data);
+        setLoadedData(data);
         setIsDataValid(false);
     }
 
@@ -89,7 +85,7 @@ const DataTranslated = (props: any) => {
             name: '',
             ext: LANG_JADN
         });
-        setLoadedMsg('');
+        setLoadedData('');
         if (ref.current) {
             ref.current.value = '';
         }
@@ -119,17 +115,17 @@ const DataTranslated = (props: any) => {
                             <SBSelect id={"data-format-list"}
                                     customClass={'me-1'}
                                     data={validMsgFormat}
-                                    onChange={(e: Option) => setMsgFormat(e)}
-                                    value={msgFormat}
+                                    onChange={(e: Option) => setDataFormat(e)}
+                                    value={dataFormat}
                                     placeholder={'Format...'}
                                     isSmStyle
                                     isClearable />                             
 
                             <SBSelect id={"data-decode-list"}
                                 customClass={'me-1'}
-                                data={decodeSchemaTypes.exports}
-                                onChange={(e: Option) => setDecodeMsg(e)}
-                                value={decodeMsg}
+                                data={schemaTypes.exports}
+                                onChange={(e: Option) => setDataType(e)}
+                                value={dataType}
                                 placeholder={'Type...'}
                                 isSmStyle
                                 isClearable
@@ -139,25 +135,25 @@ const DataTranslated = (props: any) => {
 
                     <div className='col-sm-4'>
                         <div className='d-flex float-end'>
-                            <SBCopyToClipboard buttonId='copyData' data={loadedMsg} customClass='float-end me-1' />
-                            <SBSaveFile data={loadedMsg} loc={'messages'} customClass={"float-end"} filename={fileName.name} ext={msgFormat ? msgFormat.value : LANG_JSON} setDropdown={setSelectedFile} />                            
+                            <SBCopyToClipboard buttonId='copyData' data={loadedData} customClass='float-end me-1' />
+                            <SBSaveFile data={loadedData} loc={'messages'} customClass={"float-end"} filename={fileName.name} ext={dataFormat ? dataFormat.value : LANG_JSON} setDropdown={setSelectedFile} />                            
                             <SBValidBtn buttonId='validateBtn'
                                 buttonTxt='Valid'
                                 buttonTitle='Validate the data against the given schema'
                                 isLoading={isLoading}
                                 formId={formId}
                                 isValid={isDataValid}
-                                isDisabled={Object.keys(validSchema).length != 0 && loadedMsg && decodeMsg && msgFormat ? false : true}
+                                isDisabled={Object.keys(validSchema).length != 0 && loadedData && dataType && dataFormat ? false : true}
                             ></SBValidBtn>
                         </div>
                     </div>
                 </div>
             </div>
             <div className="card-body-page">
-                <SBEditor data={loadedMsg} convertTo={msgFormat ? msgFormat.value : ''} onChange={onMsgChange}></SBEditor>
+                <SBEditor data={loadedData} convertTo={dataFormat ? dataFormat.value : ''} onChange={onMsgChange}></SBEditor>
             </div>
         </div>
     )
 }
 
-export default DataTranslated
+export default DataToTranslate

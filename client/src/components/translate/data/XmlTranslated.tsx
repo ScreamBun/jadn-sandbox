@@ -1,4 +1,5 @@
 import SBEditor from "components/common/SBEditor"
+import { LANG_XML } from "components/utils/constants";
 import React from "react"
 
 const XmlTranslated = (props: any) => {
@@ -12,7 +13,7 @@ const XmlTranslated = (props: any) => {
                 XML
             </div>
             <div className="card-body p-0 m-0">
-                <SBEditor id='xmlView' data={xml} convertTo={''} isReadOnly={'true'} onChange={''} height={'69vh'}></SBEditor> 
+                <SBEditor id='xmlView' data={xml} convertTo={LANG_XML} isReadOnly={'true'} onChange={''} height={'69vh'}></SBEditor> 
             </div>
         </div>       
         </>

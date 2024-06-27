@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import DataTranslated from './DataTranslated'
+import DataToTranslate from './DataToTranslate'
 import { validateMessage } from 'actions/validate'
 import { info, setSchema } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
@@ -9,7 +9,7 @@ import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SBSelect, { Option } from 'components/common/SBSelect'
 import SBActionBtn from 'components/common/SBActionBtn'
-import { LANG_ANNOTATED_HEX, LANG_CBOR, LANG_JSON, LANG_XML } from 'components/utils/constants'
+import { LANG_CBOR, LANG_JSON, LANG_XML } from 'components/utils/constants'
 import { convertData } from "actions/convert";
 import CborTranslated from './CborTranslated'
 import XmlTranslated from './XmlTranslated'
@@ -25,15 +25,15 @@ const DataTranslator = () => {
     const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
-    const [selectedMsgFile, setSelectedMsgFile] = useState('');
-    const [loadedMsg, setLoadedMsg] = useState('');
+    const [selectedDataFile, setSelectedDataFile] = useState('');
+    const [loadedData, setLoadedData] = useState('');
     const [cborAnnoHex, setCborAnnoHex] = useState('');
     const [cborHex, setCborHex] = useState('');
     const [xml, setXml] = useState('');
-    const [msgFormat, setMsgFormat] = useState<Option | null>(null);
+    const [dataFormat, setDataFormat] = useState<Option | null>(null);
     const [convertTo, setConvertTo] = useState<Option | null>({'label': LANG_CBOR, 'value' : LANG_CBOR});
-    const [decodeMsg, setDecodeMsg] = useState<Option | null>(null);
-    const [decodeSchemaTypes, setDecodeSchemaTypes] = useState<{
+    const [dataType, setDataType] = useState<Option | null>(null);
+    const [schemaTypes, setSchemaTypes] = useState<{
         all: string[],
         exports: string[]
     }>({
@@ -56,14 +56,14 @@ const DataTranslator = () => {
         setIsLoading(false);
         setSelectedSchemaFile(null);
         setLoadedSchema(null);
-        setSelectedMsgFile('');
-        setLoadedMsg('');
+        setSelectedDataFile('');
+        setLoadedData('');
         setCborAnnoHex('');
         setCborHex('');
-        setMsgFormat(null);
+        setDataFormat(null);
         setConvertTo(null);
-        setDecodeMsg(null);
-        setDecodeSchemaTypes({
+        setDataType(null);
+        setSchemaTypes({
             all: [],
             exports: []
         });
@@ -75,9 +75,9 @@ const DataTranslator = () => {
         setIsLoading(true);
         setIsDataValid(false);
 
-        if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
+        if (loadedSchema && loadedData && dataFormat && dataType) {
             try {
-                dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat.value, decodeMsg.value))
+                dispatch(validateMessage(loadedSchema, loadedData, dataFormat.value, dataType.value))
                     .then((submitVal: any) => {
                         if (submitVal && submitVal.payload.valid_bool) {
                             setIsLoading(false);
@@ -110,13 +110,13 @@ const DataTranslator = () => {
             if (!loadedSchema) {
                 err += ' schema';
             }
-            if (!loadedMsg) {
+            if (!loadedData) {
                 err += ', data';
             }
-            if (!msgFormat) {
+            if (!dataFormat) {
                 err += ', data format';
             }
-            if (!decodeMsg) {
+            if (!dataType) {
                 err += ', data type';
             }
             sbToastError('ERROR: Validation failed - Please select ' + err)
@@ -128,19 +128,35 @@ const DataTranslator = () => {
         e.preventDefault();
         setIsTranslating(true);
 
+        if (!convertTo){
+            setIsTranslating(false);
+            return 
+        }
+
         try {
-            dispatch(convertData(loadedMsg, LANG_JSON, LANG_ANNOTATED_HEX))
+            dispatch(convertData(loadedData, LANG_JSON, convertTo.value))
                 .then((rsp: any) => {
                     setIsTranslating(false);
-                    sbToastSuccess("Translation complete");
 
-                    if(rsp.payload.data.cbor_annotated_hex) {
-                        setCborAnnoHex(rsp.payload.data.cbor_annotated_hex)
+                    if(rsp.payload.data) {
+                        
+                        if(rsp.payload.data.cbor_annotated_hex) {
+                            setCborAnnoHex(rsp.payload.data.cbor_annotated_hex)
+                        }
+    
+                        if(rsp.payload.data.cbor_hex) {
+                            setCborHex(rsp.payload.data.cbor_hex)
+                        } 
+                        
+                        if(rsp.payload.data.xml) {
+                            setXml(rsp.payload.data.xml)
+                        } 
+
+                        sbToastSuccess("Translation complete");
+                    } else {
+                        console.log(rsp.payload.message);
+                        sbToastError("Error translating data");
                     }
-
-                    if(rsp.payload.data.cbor_hex) {
-                        setCborHex(rsp.payload.data.cbor_hex)
-                    }                    
                     
                 })
                 .catch((submitErr: { message: string }) => {
@@ -194,8 +210,8 @@ const DataTranslator = () => {
                                                 selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                                 schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                                 loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
-                                                decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
-                                                setDecodeSchemaTypes={setDecodeSchemaTypes}
+                                                decodeMsg={dataType} setDecodeMsg={setDataType}
+                                                setDecodeSchemaTypes={setSchemaTypes}
                                                 showCopy={false}
                                                 showEditor={false}
                                                 showFormatter={false}
@@ -203,14 +219,12 @@ const DataTranslator = () => {
                                                 showToast={false} />
                                         </div>
                                         <div className='mt-2'>
-                                            <DataTranslated
-                                                selectedFile={selectedMsgFile} setSelectedFile={setSelectedMsgFile}
-                                                loadedMsg={loadedMsg} setLoadedMsg={setLoadedMsg}
-                                                setCborAnnoHex={setCborAnnoHex}
-                                                setCborHex={setCborHex}
-                                                msgFormat={msgFormat} setMsgFormat={setMsgFormat}
-                                                decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
-                                                decodeSchemaTypes={decodeSchemaTypes}
+                                            <DataToTranslate
+                                                selectedFile={selectedDataFile} setSelectedFile={setSelectedDataFile}
+                                                loadedData={loadedData} setLoadedData={setLoadedData}
+                                                dataFormat={dataFormat} setDataFormat={setDataFormat}
+                                                dataType={dataType} setDataType={setDataType}
+                                                schemaTypes={schemaTypes}
                                                 isLoading={isLoading} 
                                                 isDataValid={isDataValid} setIsDataValid={setIsDataValid}
                                                 formId={formId}
@@ -218,7 +232,6 @@ const DataTranslator = () => {
                                         </div>                                         
                                     </div>
                                     <div className='col-md-6 ps-1'>
-
                                         <div className="card">
                                             <div className="card-header p-2">
                                                 <div className='row'>

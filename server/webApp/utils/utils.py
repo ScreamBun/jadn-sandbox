@@ -1,12 +1,9 @@
-from io import TextIOBase
-import io
 import json
+from json2xml import json2xml
 import os
-import subprocess
 import cbor_diag
 
 from cbor2 import dumps
-import docker
 from flask import current_app
 from cbor2 import dumps
 
@@ -109,6 +106,14 @@ def write_file(path: str, filename: str, data):
         return True
     else:
         return False
+    
+    
+def convert_json_to_xml(data_dict: dict) -> str:
+    return_val = None
+    if data_dict:
+        return_val = json2xml.Json2xml(data_dict, wrapper="all", pretty=True).to_xml()
+        
+    return return_val
  
     
 def convert_json_to_cbor_hex(data_dict: dict) -> bytes:

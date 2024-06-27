@@ -11,11 +11,11 @@ import { useLocation } from "react-router-dom";
 import SBSaveFile from "components/common/SBSaveFile";
 import SBSelect, { Option } from "components/common/SBSelect";
 import { getFilenameExt, getFilenameOnly } from "components/utils/general";
-import { LANG_CBOR, LANG_JADN, LANG_JSON, LANG_XML } from "components/utils/constants";
+import { LANG_JADN, LANG_JSON } from "components/utils/constants";
 import SBFileLoader from "components/common/SBFileLoader";
 import SBSubmitBtn from "components/common/SBSubmitBtn";
 
-const MessageValidated = (props: any) => {
+const DataValidated = (props: any) => {
     const location = useLocation();
 
     const { selectedFile, setSelectedFile, loadedMsg, setLoadedMsg, msgFormat, setMsgFormat, decodeSchemaTypes, decodeMsg, setDecodeMsg, isLoading, formId } = props;
@@ -147,4 +147,4 @@ const MessageValidated = (props: any) => {
     )
 }
 
-export default MessageValidated
+export default DataValidated

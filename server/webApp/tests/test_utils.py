@@ -34,6 +34,16 @@ class TestUtils(TestCase):
                                     }
                                }
         
+        
+    def test_convert_json_to_xml(self):
+        rsp = utils.convert_json_to_xml(self.test_json_1)
+        
+        print("xml: " + rsp)
+        logging.info("xml: " + rsp)
+        
+        assert rsp != None        
+    
+        
     def test_convert_json_to_cbor_str(self):  
         cbor_str = utils.convert_json_to_cbor_hex(self.test_json_2)
         

@@ -16,8 +16,8 @@ from jadnjson.generators.json_generator import gen_data_from_schema
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
-from server.webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex
-from webApp.utils.constants import JADN, JSON, XML
+from server.webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
+from webApp.utils.constants import CBOR, JADN, JSON, XML
 
 
 logger = logging.getLogger(__name__)
@@ -184,13 +184,19 @@ class ConvertData(Resource):
         conv_from = request_json["from"]
         conv_to = request_json["to"]
         
-        cbor_annotated_hex_rsp = None
-        cbor_hex_rsp = None
+        cbor_annotated_hex_rsp = ""
+        cbor_hex_rsp = ""
+        xml_rsp = ""
             
         try:
             data_js = json.loads(data)
-            cbor_annotated_hex_rsp = convert_json_to_cbor_annotated_hex(data_js)
-            cbor_hex_rsp = convert_json_to_cbor_hex(data_js)
+            
+            if conv_to == CBOR:
+                cbor_annotated_hex_rsp = convert_json_to_cbor_annotated_hex(data_js)
+                cbor_hex_rsp = convert_json_to_cbor_hex(data_js)
+            elif conv_to == XML:
+                xml_rsp = convert_json_to_xml(data_js)
+                
         except Exception:  
             tb = traceback.format_exc()
             print(tb)            
@@ -199,7 +205,8 @@ class ConvertData(Resource):
         return jsonify({
             "data":  {
              "cbor_annotated_hex" : cbor_annotated_hex_rsp,   
-             "cbor_hex" : cbor_hex_rsp   
+             "cbor_hex" : cbor_hex_rsp,
+             "xml" : xml_rsp,
             }
         }) 
 
