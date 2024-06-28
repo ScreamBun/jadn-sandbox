@@ -48,12 +48,9 @@ print("Pushing new docker image...")
 is_err = False
 try:
      result = subprocess.run(["./docker_push.sh", curr_version, new_full_version], capture_output=True)
-     if result == None:
-          is_err = True
 except subprocess.CalledProcessError as e:
      is_err = True
      print(e.output)
-     
      
 version_data["app_mode"] = "local"
      
