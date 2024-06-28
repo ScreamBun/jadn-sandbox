@@ -1,13 +1,13 @@
+import binascii
 import json
 from json2xml import json2xml
 import os
-import cbor_diag
 
 from cbor2 import dumps
+import cbor_json
 from flask import current_app
-from cbor2 import dumps
 
-from server.webApp.utils import constants
+from webApp.utils import constants
 
 
 def does_dir_exist(dir_path: str, isCreate: bool):
@@ -117,45 +117,48 @@ def convert_json_to_xml(data_dict: dict) -> str:
  
     
 def convert_json_to_cbor_hex(data_dict: dict) -> bytes:
-    json_str = json.dumps(data_dict)
-    
-    cbor_val = cbor_diag.diag2cbor(json_str)
+    cbor_val = cbor_json.cbor_from_jsonable(data_dict)
     cbor_hex_val = cbor_val.hex()    
     
     return cbor_hex_val
                          
 
-def convert_cbor_str_to_json(cbor_str: str) -> str:
+def convert_cbor_hex_to_json(cbor_hex: str) -> str:
+    cbor_data = binascii.unhexlify(cbor_hex)
+    json_data = json.dumps(cbor_json.jsonable_from_cbor(cbor_data), indent=2)
     
-    # Legacy conversion, returns dict
-    # msg_binary_string = binascii.unhexlify(hex_str)
-    # msg_native_json = cbor_json.native_from_cbor(msg_binary_string) 
-    # print("msg_native_json: " + str(msg_native_json))
-    
-    bytes_obj = bytes.fromhex(cbor_str)
-    cbor_bytes_obj = dumps(bytes_obj, canonical=True)
-    
-    # No formatting, returns str
-    cbor_diag_str = cbor_diag.cbor2diag(bytes_obj)
-    print("cbor_diag_str: " + cbor_diag_str)
-    
-    return cbor_diag_str
+    return json_data
 
 
 def convert_json_to_cbor_annotated_hex(data: dict) -> bytes:
-
-    with open(constants.LOCAL_JSON_FILE_PATH, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
-
-    cp_to_container_cmd = "docker cp " + constants.LOCAL_JSON_FILE_PATH + " " + constants.CONTAINER_NAME + ":" + constants.CONTAINER_JSON_FILE_PATH
+        
+    app_mode = current_app.config.get("APP_MODE")
+    anna_hex = ""
     
-    os.system(cp_to_container_cmd)
-    os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + constants.CONTAINER_JSON2CBOR_RB + ' value_json.json > value_cbor.cbor"')
-    os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + constants.CONTAINER_CBOR2PRETTY_RB + ' value_cbor.cbor > value_cbor_pretty.txt"')
+    if app_mode == constants.APP_MODE_CONTAINER :
+        
+        with open(constants.CONTAINER_JSON_FILE_PATH, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)        
+        
+        os.system(constants.CONTAINER_JSON2CBOR_RB + ' value_json.json > value_cbor.cbor"')
+        os.system(constants.CONTAINER_CBOR2PRETTY_RB + ' value_cbor.cbor > value_cbor_pretty.txt"')
     
-    cp_from_container_cmd = "docker cp " + constants.CONTAINER_NAME + ":" + constants.CONTAINER_CBOR2PRETTY_TXT + " " + constants.LOCAL_CBOR2PRETTY_FILE_PATH
-    os.system(cp_from_container_cmd)
+        anna_hex = read_file(constants.CONTAINER_CBOR2PRETTY_TXT)         
+        
+    else :
+        
+        with open(constants.LOCAL_JSON_FILE_PATH, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)        
+        
+        cp_to_container_cmd = "docker cp " + constants.LOCAL_JSON_FILE_PATH + " " + constants.CONTAINER_NAME + ":" + constants.CONTAINER_JSON_FILE_PATH
+        
+        os.system(cp_to_container_cmd)
+        os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + constants.CONTAINER_JSON2CBOR_RB + ' value_json.json > value_cbor.cbor"')
+        os.system('docker exec ' + constants.CONTAINER_NAME + ' bash -c "' + constants.CONTAINER_CBOR2PRETTY_RB + ' value_cbor.cbor > value_cbor_pretty.txt"')
+        
+        cp_from_container_cmd = "docker cp " + constants.CONTAINER_NAME + ":" + constants.CONTAINER_CBOR2PRETTY_TXT + " " + constants.LOCAL_CBOR2PRETTY_FILE_PATH
+        os.system(cp_from_container_cmd)
     
-    anna_hex = read_file(constants.LOCAL_CBOR2PRETTY_FILE_PATH)
+        anna_hex = read_file(constants.LOCAL_CBOR2PRETTY_FILE_PATH)        
        
     return anna_hex

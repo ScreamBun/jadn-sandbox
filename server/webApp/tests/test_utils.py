@@ -44,7 +44,7 @@ class TestUtils(TestCase):
         assert rsp != None        
     
         
-    def test_convert_json_to_cbor_str(self):  
+    def test_convert_json_to_cbor_hex(self):  
         cbor_str = utils.convert_json_to_cbor_hex(self.test_json_2)
         
         print("cbor str: " + cbor_str)
@@ -53,8 +53,8 @@ class TestUtils(TestCase):
         assert cbor_str != None
     
         
-    def test_convert_cbor_str_to_json(self):
-        diag_str = utils.convert_cbor_str_to_json(self.test_cbor_hex_str_1)
+    def test_convert_cbor_hex_to_json(self):
+        diag_str = utils.convert_cbor_hex_to_json(self.test_cbor_hex_str_1)
         
         print("cbor diag: " + diag_str)
         logging.info("cbor diag: " + diag_str)

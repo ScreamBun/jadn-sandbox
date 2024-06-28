@@ -16,7 +16,7 @@ from jadnjson.generators.json_generator import gen_data_from_schema
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
-from server.webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
+from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
 from webApp.utils.constants import CBOR, JADN, JSON, XML
 
 

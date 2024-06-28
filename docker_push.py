@@ -37,6 +37,7 @@ version_data["minor"] = new_minor
 version_data["bug"] = new_bug
 version_data["build_date_in_millis"] = new_build_date_in_millis
 version_data["full_version"] = new_full_version
+version_data["app_mode"] = "container"
 
 f = open(path_to_toml,'w')
 toml.dump(version_data, f)
@@ -44,7 +45,18 @@ f.close()
 print("New version saved")
 
 print("Pushing new docker image...")
-subprocess.run(["./docker_push.sh", curr_version, new_full_version])
-print("Docker image pushed")
+is_err = False
+try:
+     result = subprocess.run(["./docker_push.sh", curr_version, new_full_version], capture_output=True)
+     if result == None:
+          is_err = True
+except subprocess.CalledProcessError as e:
+     is_err = True
+     print(e.output)
+     
+if is_err:     
+     print("*** Error building and pushing docker image")
+else:
+     print("Docker image pushed: " + new_full_version)
 
 

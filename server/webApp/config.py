@@ -14,6 +14,7 @@ class Config:
     version_data = toml.load(path_to_toml)
 
     VERSION_INFO = version_data["full_version"]
+    APP_MODE = version_data["app_mode"]
     APPLICATION_ROOT = "/"
     STATIC_FOLDER = os.path.join(APP_DIR, "static")
     TEMPLATE_FOLDER = os.path.join(APP_DIR, "templates")

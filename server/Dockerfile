@@ -43,11 +43,12 @@ RUN apk add --no-cache \
     font-noto \
     terminus-font && \
     # Wheezyprint font config \
-    fc-cache -f \
-    ruby
+    fc-cache -f
 
 # Install Ruby Gem
-RUN gem install cbor-diag    
+# RUN apk update
+# RUN apk add ruby
+# RUN gem install cbor-diag
 
 # Logs folder
 RUN mkdir -p /logs/ 
