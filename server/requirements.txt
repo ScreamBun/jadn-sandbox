@@ -1,5 +1,5 @@
  ./whls/jadnschema-0.2.20-py2.py3-none-any.whl
- ./whls/jadn_xml-1.6.0-py2.py3-none-any.whl
+ ./whls/jadnxml-1.6.0-py2.py3-none-any.whl
  ./whls/jadn_json-1.1.0-py2.py3-none-any.whl
 # -e /home/matt/screamingbunny/Schema/jadnschema
 # -e /home/matt/workspace/sb-jadn-xml-util
