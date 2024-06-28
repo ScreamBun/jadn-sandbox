@@ -54,6 +54,9 @@ except subprocess.CalledProcessError as e:
      is_err = True
      print(e.output)
      
+     
+version_data["app_mode"] = "local"
+     
 if is_err:     
      print("*** Error building and pushing docker image")
 else:

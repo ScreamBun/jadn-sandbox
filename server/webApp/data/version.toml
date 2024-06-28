@@ -4,4 +4,4 @@ bug = 444
 build_hash = ""
 build_date_in_millis = 1719594859943
 full_version = "v0.0.444_1719594859943"
-app_mode = "container"
+app_mode = "local"
