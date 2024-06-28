@@ -54,18 +54,7 @@ const DataTranslator = () => {
 
     useEffect(() => {
         if (location.state) {
-
             setConvertTo({ value: location.state, label: location.state });
-
-            // Object.keys(data).map((key) => {
-            //     const fmt = key.toLowerCase();
-            //     Object.entries(data[key]).map(([key, value]) => {
-            //         if (value == location.state) {
-            //             setSchemaFormat({ value: fmt, label: fmt });
-            //             setTranslation({ value: value, label: key });
-            //         }
-            //     })
-            // })
         }
     }, [])    
 
