@@ -13,11 +13,13 @@ import { LANG_CBOR, LANG_JSON, LANG_XML } from 'components/utils/constants'
 import { convertData } from "actions/convert";
 import CborTranslated from './CborTranslated'
 import XmlTranslated from './XmlTranslated'
+import { useLocation } from 'react-router-dom'
 
 
 const DataTranslator = () => {
 
     const dispatch = useDispatch();
+    const location = useLocation();
 
     const [isLoading, setIsLoading] = useState(false);
     const [isDataValid, setIsDataValid] = useState(false);
@@ -49,6 +51,23 @@ const DataTranslator = () => {
         dispatch(info());
         dismissAllToast();
     }, [dispatch]);
+
+    useEffect(() => {
+        if (location.state) {
+
+            setConvertTo({ value: location.state, label: location.state });
+
+            // Object.keys(data).map((key) => {
+            //     const fmt = key.toLowerCase();
+            //     Object.entries(data[key]).map(([key, value]) => {
+            //         if (value == location.state) {
+            //             setSchemaFormat({ value: fmt, label: fmt });
+            //             setTranslation({ value: value, label: key });
+            //         }
+            //     })
+            // })
+        }
+    }, [])    
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
