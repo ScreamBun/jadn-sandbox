@@ -42,7 +42,7 @@ export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
 export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend'];
 export const IntegerOpts = ['minc', 'maxc', 'tagid', 'minv', 'maxv'];
 export const FloatOpts = ['minf', 'maxf'];
-export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern', 'pointer', 'tagid', 'vtype'];
+export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype'];
 export const EnumId = TypeOptions.enum;
 export const PointerId = TypeOptions.pointer;
 
