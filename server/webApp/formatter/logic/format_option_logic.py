@@ -42,6 +42,7 @@ class FormatOptionLogic:
 
     f16 = FormatOptionModel("f16", "float16", "Serialize as IEEE 754 Half-Precision Float (#7.25)", FormatType.NUMBER.value, "").__dict__
     f32 = FormatOptionModel("f32", "float32", "Serialize as IEEE 754 Single-Precision Float (#7.26)", FormatType.NUMBER.value, "").__dict__
+    f64 = FormatOptionModel("f64", "float64", "Serialize as IEEE 754 Single-Precision Float (#7.27)", FormatType.NUMBER.value, "").__dict__
 
     def get_formats(self):
 
@@ -77,6 +78,7 @@ class FormatOptionLogic:
         formats.append(self.ud)
         formats.append(self.f16)
         formats.append(self.f32)
+        formats.append(self.f64)
 
         return formats  
     

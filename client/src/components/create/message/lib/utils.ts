@@ -257,6 +257,10 @@ export const validateNumericFormat = (data: any, type: string) => {
 		//check single precision point
 		return true;
 	}
+	if (type == 'f64') {
+		//check double precision point
+		return true;
+	}
 	return false;
 }
 //string: JSON schema section 7.3
