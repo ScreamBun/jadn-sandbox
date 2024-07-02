@@ -140,8 +140,8 @@ def convert_json_to_cbor_annotated_hex(data: dict) -> bytes:
         with open(constants.CONTAINER_JSON_FILE_PATH, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)        
         
-        os.system(constants.CONTAINER_JSON2CBOR_RB + ' value_json.json > value_cbor.cbor"')
-        os.system(constants.CONTAINER_CBOR2PRETTY_RB + ' value_cbor.cbor > value_cbor_pretty.txt"')
+        os.system(constants.CONTAINER_JSON2CBOR_RB + ' value_json.json > value_cbor.cbor')
+        os.system(constants.CONTAINER_CBOR2PRETTY_RB + ' value_cbor.cbor > value_cbor_pretty.txt')
     
         anna_hex = read_file(constants.CONTAINER_CBOR2PRETTY_TXT)         
         

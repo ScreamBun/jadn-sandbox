@@ -63,22 +63,6 @@ Prerequisites:
    ./startup.sh
    ```
 
-### Build Ruby Image and Container
-
-1. In a terminal window, from the JADN Sandbox Root dir, build the image:
-
-   ```bash
-   docker build -t sb-ruby-image -f Dockerfile_sb_ruby .
-   ```
-
-2. Next, build the container (/bin/bash is optional this allows you to immediately investigate the contents of the container)
-
-   ```bash
-   docker run -it --name=sb-ruby-container sb-ruby-image /bin/bash
-   ```
-
-3. Your ruby docker container is now ready to be used.
-
 ### Alternate startup
 
 1. Fire up server  
@@ -121,6 +105,13 @@ python ./docker_push.py
 ./docker_run.sh
 ```
 
+Or run the following, you can replace 'latest' with a specific version if you have previously built it or pulled it (see quick start).
+
+```bash
+docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
+```
+
+
 3. Once the build is complete go to here in your browser to verify and run smoke tests
 
 ```bash
@@ -130,6 +121,22 @@ http://localhost:8082/
 ### Create a jadnschema wheel
 
 * See readme under the jadnschema repo
+
+### Build Ruby Image and Container
+
+1. In a terminal window, from the JADN Sandbox Root dir, build the image:
+
+   ```bash
+   docker build -t sb-ruby-image -f Dockerfile_sb_ruby .
+   ```
+
+2. Next, build the container (/bin/bash is optional this allows you to immediately investigate the contents of the container)
+
+   ```bash
+   docker run -it --name=sb-ruby-container sb-ruby-image /bin/bash
+   ```
+
+3. Your ruby docker container is now ready to be used.
 
 ### Develop and Test JADN Schema on the Fly
 
