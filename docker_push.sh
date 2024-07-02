@@ -45,10 +45,10 @@ docker login
 docker build -f Dockerfile -t $NEW_IMG  .
 docker push $NEW_IMG
 
-# {
-#   docker build -f Dockerfile -t $IMG_LATEST  .
-# } || {
-#   exit $1
-# }
+{
+  docker build -f Dockerfile -t $IMG_LATEST  .
+} || {
+  exit $1
+}
 
-# docker push $IMG_LATEST
+docker push $IMG_LATEST
