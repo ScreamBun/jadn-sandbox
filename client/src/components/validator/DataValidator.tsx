@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import MessageValidated from './MessageValidated'
+import DataValidated from './DataValidated'
 import { validateMessage } from 'actions/validate'
 import { info, setSchema } from 'actions/util'
 import { getPageTitle } from 'reducers/util'
@@ -10,7 +10,7 @@ import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common
 import { Option } from 'components/common/SBSelect'
 
 
-const MessageValidator = () => {
+const DataValidator = () => {
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -133,7 +133,7 @@ const MessageValidator = () => {
                                             setDecodeSchemaTypes={setDecodeSchemaTypes} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
-                                        <MessageValidated
+                                        <DataValidated
                                             selectedFile={selectedMsgFile} setSelectedFile={setSelectedMsgFile}
                                             loadedMsg={loadedMsg} setLoadedMsg={setLoadedMsg}
                                             msgFormat={msgFormat} setMsgFormat={setMsgFormat}
@@ -151,4 +151,4 @@ const MessageValidator = () => {
         </div>
     );
 }
-export default MessageValidator
+export default DataValidator

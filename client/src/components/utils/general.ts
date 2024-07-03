@@ -46,7 +46,7 @@ export const getFilenameOnly = (full_name: string) => {
 export const getFilenameExt = (full_name: string) => {
   const lastIndex = full_name.lastIndexOf('.');
   const dot_ext = full_name.substring(lastIndex);
-  let ext = null;
+  let ext = "";
   if (dot_ext) {
     let dot_char = dot_ext.charAt(0);
     if (dot_char == ".") {
@@ -60,11 +60,11 @@ export const isString = (s: any) => {
   return typeof (s) === 'string' || s instanceof String;
 }
 
-export const getTypeName = (types_to_serach: any[], name: string) => {
+export const getTypeName = (types_to_search: any[], name: string) => {
   let return_name = name;
   let match_count = 0;
   let dups: any[] = [];
-  types_to_serach.map((type) => {
+  types_to_search.map((type) => {
 
     // orig name matches
     if (name == type[0]) {

@@ -1,0 +1,16 @@
+FROM ubuntu:22.04
+
+LABEL name="JADN Sandbox - Ruby" \
+version="2.0" \
+description="Ruby container used for development"
+
+WORKDIR /opt/jadn_sandbox/
+
+RUN \
+    apt-get update && \
+    apt-get install -y ruby
+
+RUN gem install cbor-diag
+
+ADD cbor_files $WORKDIR
+

@@ -8,11 +8,13 @@ class Config:
 
     APP_DIR = os.path.realpath(os.path.dirname(__file__))
     APP_DATA = os.path.join(APP_DIR, "data")
+    FILES_DATA = os.path.join(APP_DIR, "files")
 
     path_to_toml = os.path.join(APP_DATA, "version.toml")
     version_data = toml.load(path_to_toml)
 
     VERSION_INFO = version_data["full_version"]
+    APP_MODE = version_data["app_mode"]
     APPLICATION_ROOT = "/"
     STATIC_FOLDER = os.path.join(APP_DIR, "static")
     TEMPLATE_FOLDER = os.path.join(APP_DIR, "templates")

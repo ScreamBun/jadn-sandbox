@@ -20,6 +20,8 @@ export const TypeOptions = {
   'unique': 'q',     // ArrayOf instance must not contain duplicates
   'set': 's',        // ArrayOf instance is unordered and unique
   'unordered': 'b',  // ArrayOf instance is unordered and not unique (bag)
+  'seq': 'o',        // Map, MapOf, or Record instance is ordered and unique
+  'combine': 'C',    // Choice is an untagged union, a logical combination of types
   'extend': 'X',     // Type has an extension point where fields may be appended
   'default': '!'     // Default value
 };
@@ -42,7 +44,7 @@ export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
 export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend'];
 export const IntegerOpts = ['minc', 'maxc', 'tagid', 'minv', 'maxv'];
 export const FloatOpts = ['minf', 'maxf'];
-export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern', 'pointer', 'tagid', 'vtype'];
+export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype'];
 export const EnumId = TypeOptions.enum;
 export const PointerId = TypeOptions.pointer;
 
@@ -111,11 +113,11 @@ export const ValidOptions: Record<string, Array<string>> = {
   // Structures
   Array: ['extend', 'format', 'minv', 'maxv'],
   ArrayOf: ['vtype', 'minv', 'maxv', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
-  Choice: ['id', 'extend'],
+  Choice: ['id', 'extend', 'combine'],
   Enumerated: ['id', 'enum', 'pointer', 'extend'],
-  Map: ['id', 'extend', 'minv', 'maxv'],
-  MapOf: ['ktype', 'vtype', 'minv', 'maxv'],
-  Record: ['extend', 'minv', 'maxv']
+  Map: ['id', 'extend', 'minv', 'maxv', 'seq'],
+  MapOf: ['ktype', 'vtype', 'minv', 'maxv', 'seq'],
+  Record: ['extend', 'minv', 'maxv', 'seq']
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
@@ -200,6 +202,14 @@ export const TypeOptionInputArgs = {
   unordered: {
     type: 'checkbox',
     description: '(optional) If present, an ArrayOf instance is unordered'
+  },
+  seq: {
+    type: 'checkbox',
+    description: '(optional) If present, a Map, MapOf, or Record instance is ordered and unique'
+  },
+  combine: {
+    type: 'SBSelect',
+    description: '(optional) If present, a Choice instance is an untagged union, a logical combination of types'
   },
   extend: {
     type: 'checkbox',

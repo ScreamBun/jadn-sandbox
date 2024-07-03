@@ -22,6 +22,7 @@ class FormatOptionLogic:
     uri = FormatOptionModel("uri", "URI", "RFC 3986", FormatType.STRING.value, "", regex_uri_rfc_3986).__dict__
     uri_reference = FormatOptionModel("uri-reference", "URI Reference", "RFC 5322", FormatType.STRING.value, "").__dict__
     uri_template = FormatOptionModel("uri-template", "URI Template", "RFC 6570", FormatType.STRING.value, "").__dict__
+    uuid = FormatOptionModel("uuid", "UUID", "RFC 4122", FormatType.STRING.value, "").__dict__
     iri = FormatOptionModel("iri", "IRI", "RFC 3987", FormatType.STRING.value, "").__dict__
     iri_reference = FormatOptionModel("iri-reference", "IRI Reference", "RFC 3987", FormatType.STRING.value, "").__dict__
     json_pointer = FormatOptionModel("json-pointer", "JSON Pointer", "RFC 6901 5", FormatType.STRING.value, "").__dict__
@@ -41,6 +42,7 @@ class FormatOptionLogic:
 
     f16 = FormatOptionModel("f16", "float16", "Serialize as IEEE 754 Half-Precision Float (#7.25)", FormatType.NUMBER.value, "").__dict__
     f32 = FormatOptionModel("f32", "float32", "Serialize as IEEE 754 Single-Precision Float (#7.26)", FormatType.NUMBER.value, "").__dict__
+    f64 = FormatOptionModel("f64", "float64", "Serialize as IEEE 754 Single-Precision Float (#7.27)", FormatType.NUMBER.value, "").__dict__
 
     def get_formats(self):
 
@@ -59,6 +61,7 @@ class FormatOptionLogic:
         formats.append(self.uri)
         formats.append(self.uri_reference)
         formats.append(self.uri_template)
+        formats.append(self.uuid)
         formats.append(self.iri)
         formats.append(self.iri_reference)
         formats.append(self.json_pointer)
@@ -75,6 +78,7 @@ class FormatOptionLogic:
         formats.append(self.ud)
         formats.append(self.f16)
         formats.append(self.f32)
+        formats.append(self.f64)
 
         return formats  
     

@@ -7,6 +7,7 @@ export const LANG_MARKDOWN = 'md';
 export const LANG_GRAPHVIZ = 'gv';
 export const LANG_PLANTUML = 'puml';
 export const LANG_CBOR = 'cbor'
+export const LANG_ANNOTATED_HEX = 'anno_hex'
 export const LANG_XML = 'xml';
 export const LANG_XML_UPPER = 'XML';
 export const LANG_XSD = 'xsd';
@@ -24,7 +25,8 @@ export const NAV_CREATE_MESSAGE = '/create/message';
 export const NAV_CREATE_SCHEMA = '/create/schema';
 
 export const NAV_CONVERT_SCHEMA = '/convert-schema';
-export const NAV_TRANSLATE = '/translate-schema';
+export const NAV_TRANSLATE_SCHEMA = '/translate/translate-schema';
+export const NAV_TRANSLATE_DATA = '/translate/translate-data';
 
 export const NAV_TRANSFORM = '/transform-schema';
 
