@@ -3,6 +3,7 @@
 ## v0.12.0
 
 * Schema Creation - Added the UUID String Format
+* Schema Creation - Added f64 Floating Point Precision for Numbers
 * Schema Creation - Enhanced export logic to include checked vs. default
 * Data Creation - Included validation logic for UUID
 * Validation - Improved Export Naming Convention validation logic to allow for custom conventions via the Configuration Information
