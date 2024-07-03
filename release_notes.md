@@ -1,5 +1,13 @@
 # JADN Sandbox Release Notes
 
+## v0.12.0
+
+* Schema Creation - Added the UUID String Format
+* Schema Creation - Enhanced export logic to include checked vs. default
+* Data Creation - Included validation logic for UUID
+* Validation - Improved Export Naming Convention validation logic to allow for custom conventions via the Configuration Information
+* Data Translation - Introduced the new Data Translation page which can translate valid JSON into CBOR Hex and CBOR Annotated Hex or XML
+
 ## v0.11.2
 
 * Data Generation - Added a warning, if the user is missing Exports
