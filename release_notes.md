@@ -1,5 +1,9 @@
 # JADN Sandbox Release Notes
 
+## v0.12.1
+
+* Schema Creation - Removed the UUID String Format (will be moved under Binary soon)
+
 ## v0.12.0
 
 * Schema Creation - Added the UUID String Format
