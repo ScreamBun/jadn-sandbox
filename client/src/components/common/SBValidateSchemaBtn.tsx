@@ -5,7 +5,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { dismissAllToast, sbToastError, sbToastSuccess } from "./SBToast";
 import { validateSchema } from "actions/validate";
-import { LANG_JADN, LANG_JSON } from "components/utils/constants";
+import { LANG_JADN, LANG_JIDL, LANG_JSON } from "components/utils/constants";
 
 const SBValidateSchemaBtn = (props: any) => {
 
@@ -26,29 +26,32 @@ const SBValidateSchemaBtn = (props: any) => {
         setIsValidating(true);
 
         let jsonObj = schemaData;
-        if (typeof jsonObj == 'string') {
-            try {
-                jsonObj = JSON.parse(jsonObj);
-            } catch (err: any) {
-                sbToastError(`Invalid JSON: ${err.message}`)
-                setIsValidating(false);
-                return;
+        if (schemaFormat == LANG_JSON || schemaFormat == LANG_JADN) {
+            if (typeof jsonObj == 'string') {
+                try {
+                    jsonObj = JSON.parse(jsonObj);
+                } catch (err: any) {
+                    sbToastError(`Invalid JSON: ${err.message}`)
+                    setIsValidating(false);
+                    return;
+                }
             }
         }
 
         if (schemaFormat == LANG_JSON) {
-            validateJSONSchema(jsonObj);
+            sendSchemaToValidate(jsonObj, LANG_JSON);
+        } else if  (schemaFormat == LANG_JIDL) {
+            sendSchemaToValidate(jsonObj, LANG_JIDL);
         } else {
-            validateJADNSchema(jsonObj);
+            sendSchemaToValidate(jsonObj, LANG_JADN);
         }
 
         setIsValidating(false);
     }
 
-
-    const validateJADNSchema = (jsonObj: any) => {
+    const sendSchemaToValidate = (jsonObj: any, schema_format: string) => {
         try {
-            dispatch(validateSchema(jsonObj, LANG_JADN))
+            dispatch(validateSchema(jsonObj, schema_format))
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValid(true);
@@ -71,37 +74,6 @@ const SBValidateSchemaBtn = (props: any) => {
         } catch (err) {
             if (err instanceof Error) {
                 dispatch(setSchema(null));
-                setIsValidating(false);
-                sbToastError(err.message)
-            }
-        }
-    }
-
-    const validateJSONSchema = (jsonObj: any) => {
-        try {
-            dispatch(validateSchema(jsonObj, LANG_JSON))
-                .then((validateSchemaVal: any) => {
-                    if (validateSchemaVal.payload.valid_bool == true) {
-                        setIsValid(true);
-                        dispatch(setSchema(jsonObj));
-                        if (showToast){
-                            sbToastSuccess(validateSchemaVal.payload.valid_msg);
-                        }
-                    } else {
-                        dispatch(setSchema(null));
-                        sbToastError(validateSchemaVal.payload.valid_msg);
-                    }
-                })
-                .catch((validateSchemaErr) => {
-                    dispatch(setSchema(null));
-                    sbToastError(validateSchemaErr.payload.valid_msg)
-
-                }).finally(() => {
-                    setIsValidating(false);
-                })
-        } catch (err) {
-            if (err instanceof Error) {
-                sbToastError(err.message)
                 setIsValidating(false);
                 sbToastError(err.message)
             }

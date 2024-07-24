@@ -57,11 +57,12 @@ class Config:
     OPEN_C2_SCHEMA_THEME = os.path.join(OPEN_C2_DATA, "openc2_schema_theme.css")
     PROFILE_TEST_DATA = os.path.join(APP_DATA, "test_messages")
 
-    VALID_SCHEMAS = ["jadn", "json" ]
+    VALID_SCHEMAS = ["jadn", "jidl", "json" ]
     VALID_SCHEMA_CONV = FrozenDict({fmt.name: fmt.value for fmt in SchemaFormats})
     VALID_SCHEMA_TRANSLATIONS = {
         'jadn': FrozenDict({fmt.name: fmt.value for fmt in SchemaTranslationFormatsForJADN}),
-        'json': FrozenDict({fmt.name: fmt.value for fmt in SchemaTranslationFormatsForJSON})
+        'json': FrozenDict({fmt.name: fmt.value for fmt in SchemaTranslationFormatsForJSON}),
+        'jidl': { 'JADN': 'jadn' }
         }
     VALID_SCHEMA_VISUALIZATIONS = FrozenDict({fmt.name: fmt.value for fmt in SchemaVisualizationFormats})
     VALID_MESSAGES = ["json", "cbor", "xml"]

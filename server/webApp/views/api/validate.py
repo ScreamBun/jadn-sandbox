@@ -8,7 +8,7 @@ from jadnschema.convert.schema.writers.json_schema.schema_validator import valid
 from flask import Blueprint, current_app, jsonify, redirect, request
 from flask_restful import Api, Resource, reqparse
 
-from webApp.utils.constants import JADN, JSON
+from webApp.utils import constants
 
 logger = logging.getLogger()
 validate = Blueprint("validate", __name__)
@@ -68,42 +68,46 @@ class ValidateSchema(Resource):
         schema = request_json["schema"]
         schema_fmt = request_json["schema_format"]
 
-        if(isinstance(schema, str)):
-            try: 
-                schema = json.loads(schema)
-            except Exception as ex:
-                print(f"JSON Error: {ex}")
-                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
-        
-        if schema_fmt == JSON:
-            try: 
-                validate_schema(schema) #TODO: check for JSON SCHEMA ?
-            except Exception as ex:
-                print(f"JSON Schema Error: {str(ex)}")
-                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
-
-
-        if schema_fmt == JADN:
-            try: 
-               validate_schema_jadn_syntax(schema) #TODO: add check for unknown keys (type opts) + bad info (bad fields)
-            except Exception as ex:
-                print(f"JADN Syntax Error: {str(ex)}")
-                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
+        if schema_fmt == constants.JSON or schema_fmt == constants.JADN:
+            if(isinstance(schema, str)):
+                try: 
+                    schema = json.loads(schema)
+                except Exception as ex:
+                    print(f"JSON Error: {ex}")
+                    return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
             
-            valid_bool, err = current_app.validator.validateSchema(schema) #TODO: finish pydantic validation - formats
-            if not valid_bool:
-                print(f"JADN Error: {str(err)} ")
-                return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": f"{str(err)}"})
-
-            try: 
-                #TODO: remove config check for info ?
-                jadn.check(schema) # uses jsonschema to check jadn - jadn_v1.0_schema.json
-            except Exception as ex:
-                print(f"JADN Schema Error : {ex}")
-                return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": f"{str(ex)}" })
+            if schema_fmt == constants.JSON:
+                try: 
+                    validate_schema(schema) #TODO: check for JSON SCHEMA ?
+                except Exception as ex:
+                    print(f"JSON Schema Error: {str(ex)}")
+                    return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
 
 
-        return jsonify( { "valid_bool": True, "valid_syntax": True, "valid_msg": "Schema is valid" })
+            if schema_fmt == constants.JADN:
+                try: 
+                    validate_schema_jadn_syntax(schema) #TODO: add check for unknown keys (type opts) + bad info (bad fields)
+                except Exception as ex:
+                    print(f"JADN Syntax Error: {str(ex)}")
+                    return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
+                
+                valid_bool, err = current_app.validator.validateSchema(schema) #TODO: finish pydantic validation - formats
+                if not valid_bool:
+                    print(f"JADN Error: {str(err)} ")
+                    return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": f"{str(err)}"})
+
+                try: 
+                    #TODO: remove config check for info ?
+                    jadn.check(schema) # uses jsonschema to check jadn - jadn_v1.0_schema.json
+                except Exception as ex:
+                    print(f"JADN Schema Error : {ex}")
+                    return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": f"{str(ex)}" })
+                
+        if schema_fmt == constants.JIDL:
+            # JIDL Validation needed
+            placeholder = "" 
+
+        return jsonify( { "valid_bool": True, "valid_syntax": True, "valid_msg": "Passed validation" })
 
 
 # Register resources

@@ -53,7 +53,7 @@ class Convert(Resource):
             if is_valid != True:
                 return f"JSON Schema Error: {msg}", 500
         elif schema_fmt == constants.JIDL:
-            is_valid, msg = True
+            is_valid = True
             # TODO: JIDL validator needed          
         else:
             return "Invalid Schema Format", 500    
@@ -128,7 +128,8 @@ class Convert(Resource):
                     return json_to_jadn_dumps(schema, **kwargs)
                 
                 elif schemalang == constants.JIDL:
-                    return json_to_jadn_dumps(schema, **kwargs)
+                    jidl_doc = schema
+                    return jadn.convert.jidl_loads(jidl_doc)
                 
                 return dumps(schema, **kwargs)
             
