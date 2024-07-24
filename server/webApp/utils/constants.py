@@ -8,9 +8,13 @@ LOCAL_JSON_FILE_PATH = './server/cbor_files/value_json.json'
 LOCAL_CBOR2PRETTY_FILE_PATH = './server/cbor_files/value_cbor_pretty.txt'
 
 CBOR: str = "cbor"
+HTML: str = "html"
 JADN: str = "jadn"
+JIDL: str = "jidl"
 JSON: str = "json"
+PUML: str = "puml"
 XML: str = "xml"
+XSD: str = "xsd"
 
 APP_MODE_LOCAL = "local"
 APP_MODE_CONTAINER = "container"

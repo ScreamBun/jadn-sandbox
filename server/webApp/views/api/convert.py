@@ -17,7 +17,7 @@ from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
-from webApp.utils.constants import CBOR, JADN, JSON, XML
+from webApp.utils import constants
 
 
 logger = logging.getLogger(__name__)
@@ -43,15 +43,18 @@ class Convert(Resource):
         schema_lang = request_json["schema_format"]
         schema_fmt = SchemaFormats(schema_lang)
 
-        if schema_fmt == JADN:
+        if schema_fmt == constants.JADN:
             is_valid, schema = current_app.validator.validateSchema(schema_data, False)
             if not is_valid:
                 return "Schema is not valid", 500    
             jadn.check(schema_data) 
-        elif schema_fmt == JSON:
+        elif schema_fmt == constants.JSON:
             is_valid, msg = validate_schema(schema_data)
             if is_valid != True:
                 return f"JSON Schema Error: {msg}", 500
+        elif schema_fmt == constants.JIDL:
+            is_valid, msg = True
+            # TODO: JIDL validator needed          
         else:
             return "Invalid Schema Format", 500    
 
@@ -114,19 +117,27 @@ class Convert(Resource):
         kwargs = { "fmt": lang,}
 
         try:
-            if lang == "html":
+            if lang == constants.HTML:
                 kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
                 
-            if lang == "json":
+            if lang == constants.JSON:
                 return json_schema_dumps(schema)
-            elif lang == "jadn":
-                if schemalang == "json":
+            
+            elif lang == constants.JADN:
+                if schemalang == constants.JSON:
                     return json_to_jadn_dumps(schema, **kwargs)
+                
+                elif schemalang == constants.JIDL:
+                    return json_to_jadn_dumps(schema, **kwargs)
+                
                 return dumps(schema, **kwargs)
-            elif lang == "puml":
-                return plant_dumps(schema, style={'links': True, 'detail': 'information'})                                      
-            elif lang == "xsd":
+            
+            elif lang == constants.PUML:
+                return plant_dumps(schema, style={'links': True, 'detail': 'information'})
+            
+            elif lang == constants.XSD:
                 return convert_xsd_from_dict(schema)[0]
+            
             else:
                 return dumps(schema, **kwargs)
             
@@ -157,7 +168,7 @@ class ConvertJSON(Resource):
                 print(tb)            
                 return_array.append("Unable to generate JSON")                  
                 
-            if fmt == XML.upper():
+            if fmt == constants.XML.upper():
                 try:
                     g_data = build_xml_from_json(g_data)
                 except Exception:  
@@ -191,10 +202,10 @@ class ConvertData(Resource):
         try:
             data_js = json.loads(data)
             
-            if conv_to == CBOR:
+            if conv_to == constants.CBOR:
                 cbor_annotated_hex_rsp = convert_json_to_cbor_annotated_hex(data_js)
                 cbor_hex_rsp = convert_json_to_cbor_hex(data_js)
-            elif conv_to == XML:
+            elif conv_to == constants.XML:
                 xml_rsp = convert_json_to_xml(data_js)
                 
         except Exception:  
