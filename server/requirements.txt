@@ -1,4 +1,4 @@
-./whls/jadnschema-0.2.22-py2.py3-none-any.whl
+./whls/jadnschema-0.2.23-py2.py3-none-any.whl
 ./whls/jadnxml-1.8.0-py2.py3-none-any.whl
 ./whls/jadnjson-1.2.0-py2.py3-none-any.whl
 # -e /home/matt/screamingbunny/Schema/jadnschema
@@ -18,6 +18,6 @@ weasyprint==57.0
 
 # Use versions from JADNSchema
 cbor2 
-jadn  
+jadn
 lxml
 toml

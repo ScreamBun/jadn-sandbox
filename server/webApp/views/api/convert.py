@@ -47,6 +47,10 @@ class Convert(Resource):
             is_valid, schema = current_app.validator.validateSchema(schema_data, False)
             if not is_valid:
                 return "Schema is not valid", 500    
+            
+            if isinstance(schema_data, str):
+                schema_data = json.loads(schema_data)
+            
             jadn.check(schema_data) 
         elif schema_fmt == constants.JSON:
             is_valid, msg = validate_schema(schema_data)
