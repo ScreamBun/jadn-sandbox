@@ -1,5 +1,11 @@
 # JADN Sandbox Release Notes
 
+## v0.13.0
+
+* Translation - Introduced JIDL to JADN translation logic
+* Translation and Generation - Improved MapOf converstion logic
+* Dependencies - Updated JADN from 0.6.23 to 0.7.2
+
 ## v0.12.1
 
 * Schema Creation - Removed the UUID String Format (will be moved under Binary soon)
