@@ -113,15 +113,20 @@ const ExampleGenerator = () => {
                 // Generate Fake Data for Examples
                 dispatch(convertJsonSchema(schema, langSel.value, numOfMsg))
                     .then((response) => {
-                        let gen_data = response.payload.data;
+                        let rsp_data = response.payload.data;
+                        let err_msg = response.payload.err_msg;
 
-                        if (gen_data.length != 0) {
+                        if (rsp_data.length != 0) {
                             setIsLoading(false);
                             sbToastSuccess('Examples generated successfully');
-                            setGeneratedMessages(gen_data)
+                            setGeneratedMessages(rsp_data)
                         } else {
                             setIsLoading(false);
-                            sbToastError('Failed to generate examples');
+                            if (err_msg) {
+                                sbToastError(err_msg);
+                            } else {
+                                sbToastError('Failed to generate examples');
+                            }
                         }
 
                     }).catch((err) => {

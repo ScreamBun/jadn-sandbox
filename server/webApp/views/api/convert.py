@@ -12,7 +12,7 @@ from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, js
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadnxml.builder.xml_builder import build_xml_from_json
-from jadnjson.generators.json_generator import gen_data_from_schema
+from jadnjson.generators import json_generator
 from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
@@ -161,31 +161,39 @@ class ConvertJSON(Resource):
         fmt = request_json["fmt"]
         num_to_gen = request_json["num_to_gen"]
         
-        return_array = []
-        
+        data_gen_array = []
+        err_msg = None
         i = 0
+        
         while i < int(num_to_gen):
             
+            ret_val = json_generator.ReturnVal()
             try:
-                g_data = gen_data_from_schema(json_schema)
+                ret_val = json_generator.gen_data_from_schema(json_schema)
             except Exception:  
                 tb = traceback.format_exc()
-                print(tb)            
-                return_array.append("Unable to generate JSON")                  
+                print(tb)
+                raise Exception("Unable to generate JSON")
+                    
+            if isinstance(ret_val.err_msg, ValueError):
+                err_msg = ret_val.err_msg.args[0]
+                break
                 
             if fmt == constants.XML.upper():
                 try:
+                    # TODO: Update return value to return error msg
                     g_data = build_xml_from_json(g_data)
                 except Exception:  
                     tb = traceback.format_exc()
                     print(tb)            
-                    return_array.append("Unable to generate XML")                                
+                    raise Exception("Unable to generate XML")
 
-            return_array.append(g_data)
+            data_gen_array.append(g_data)
             i += 1
    
         return jsonify({
-            "data":  return_array
+            "data":  data_gen_array,
+            "err_msg": err_msg
         }) 
 
 
