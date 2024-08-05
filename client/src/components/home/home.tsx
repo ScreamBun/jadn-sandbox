@@ -86,7 +86,7 @@ const Home = () => {
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"json"}>JSON</Link>
-                <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"rng"}>Relax (XML)</Link>
+                {/* <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"rng"}>Relax (XML)</Link> */}
                 <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"xsd"}>XSD</Link> 
                 <span className='px-4'>|</span>
                 <Link className="card-link" to={NAV_TRANSLATE_DATA} state={"cbor"}>CBOR</Link>
@@ -108,7 +108,7 @@ const Home = () => {
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"cbor"}>CBOR</Link>
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"json"}>JSON</Link>
-                <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"xml"}>Relax (XML)</Link>
+                {/* <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"xml"}>Relax (XML)</Link> */}
               </div>
             </div>
             <div className="card mt-3">
