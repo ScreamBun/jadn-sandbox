@@ -129,6 +129,7 @@ class Convert(Resource):
                 
                 elif toLang == constants.HTML:
                     kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
+                    return dumps(src, **kwargs)
                 
                 elif toLang == constants.JSON:
                     return json_schema_dumps(src)
