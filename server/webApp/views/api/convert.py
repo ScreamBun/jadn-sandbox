@@ -133,9 +133,13 @@ class Convert(Resource):
                 
                 elif toLang == constants.JSON:
                     return json_schema_dumps(src)
+                    # TODO: Use Dave K's JADN logic to convert JADN to JSON Schema. 
             
                 elif toLang == constants.JIDL:
                     return jadn.convert.jidl_dumps(src)
+                
+                elif toLang == constants.MD:
+                    return dumps(src, **kwargs)                
                 
                 elif toLang == constants.PUML:
                     return plant_dumps(src, style={'links': True, 'detail': 'information'})
@@ -144,7 +148,7 @@ class Convert(Resource):
                     return convert_xsd_from_dict(src)[0]
                 
                 else:
-                    return None
+                    raise ValueError('Unknown JADN conversion type')
             
             elif fromLang == constants.JSON:
                 
@@ -152,7 +156,7 @@ class Convert(Resource):
                     return json_to_jadn_dumps(src, **kwargs)
                 
                 else:
-                    return None
+                    raise ValueError('Unknown JSON conversion type')
                 
             elif fromLang == constants.JIDL:
                 
@@ -160,11 +164,11 @@ class Convert(Resource):
                     return jadn.convert.jidl_loads(src)
                 
                 else:
-                    return None
+                    raise ValueError('Unknown JIDL conversion type')
             
             else:
                 # return dumps(src, **kwargs)
-                return None
+                raise ValueError('Unknown schema type')
             
         except:
             raise ValueError
