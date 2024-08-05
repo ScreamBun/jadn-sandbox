@@ -117,34 +117,50 @@ class Convert(Resource):
                 return item    
         return False  
     
-    def convertTo(self, schema, schemalang, lang):
-        kwargs = { "fmt": lang,}
+    def convertTo(self, src, fromLang, toLang):
+        kwargs = { "fmt": toLang,}
 
         try:
-            if lang == constants.HTML:
-                kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
-                
-            if lang == constants.JSON:
-                return json_schema_dumps(schema)
             
-            elif lang == constants.JADN:
-                if schemalang == constants.JSON:
-                    return json_to_jadn_dumps(schema, **kwargs)
+            if fromLang == constants.JADN:
                 
-                elif schemalang == constants.JIDL:
-                    jidl_doc = schema
-                    return jadn.convert.jidl_loads(jidl_doc)
+                if toLang == constants.HTML:
+                    kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
                 
-                return dumps(schema, **kwargs)
+                elif toLang == constants.JSON:
+                    return json_schema_dumps(src)
             
-            elif lang == constants.PUML:
-                return plant_dumps(schema, style={'links': True, 'detail': 'information'})
+                elif toLang == constants.JIDL:
+                    return jadn.convert.jidl_dumps(src)
+                
+                elif toLang == constants.PUML:
+                    return plant_dumps(src, style={'links': True, 'detail': 'information'})
+                
+                elif toLang == constants.XSD:
+                    return convert_xsd_from_dict(src)[0]
+                
+                else:
+                    return None
             
-            elif lang == constants.XSD:
-                return convert_xsd_from_dict(schema)[0]
+            elif fromLang == constants.JSON:
+                
+                if toLang == constants.JADN:
+                    return json_to_jadn_dumps(src, **kwargs)
+                
+                else:
+                    return None
+                
+            elif fromLang == constants.JIDL:
+                
+                if toLang == constants.JADN:
+                    return jadn.convert.jidl_loads(src)
+                
+                else:
+                    return None
             
             else:
-                return dumps(schema, **kwargs)
+                # return dumps(src, **kwargs)
+                return None
             
         except:
             raise ValueError
