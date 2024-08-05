@@ -41,18 +41,23 @@ class Convert(Resource):
         request_json = request.json      
         schema_data = request_json["schema"]
         schema_lang = request_json["schema_format"]
-        schema_fmt = SchemaFormats(schema_lang)
+        schema_fmt = SchemaFormats(schema_lang)      
 
         if schema_fmt == constants.JADN:
+            
+            if isinstance(schema_data, str):
+                    schema_data = json.loads(schema_data)              
+            
             is_valid, schema = current_app.validator.validateSchema(schema_data, False)
             if not is_valid:
                 return "Schema is not valid", 500    
             
-            if isinstance(schema_data, str):
-                schema_data = json.loads(schema_data)
-            
             jadn.check(schema_data) 
         elif schema_fmt == constants.JSON:
+            
+            if isinstance(schema_data, str):
+                    schema_data = json.loads(schema_data)              
+            
             is_valid, msg = validate_schema(schema_data)
             if is_valid != True:
                 return f"JSON Schema Error: {msg}", 500
