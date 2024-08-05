@@ -1,10 +1,10 @@
-./whls/jadnschema-0.2.23-py2.py3-none-any.whl
+./whls/jadnschema-0.2.24-py2.py3-none-any.whl
 ./whls/jadnxml-1.8.0-py2.py3-none-any.whl
 ./whls/jadnjson-1.2.0-py2.py3-none-any.whl
-# -e /home/matt/screamingbunny/Schema/jadnschema
+
 # -e /home/matt/workspace/sb-jadn-xml-util
 # -e /home/matt/workspace/sb-jadn-json-util
-# -e /home/kaitlyn_hsu/ScreamingBunnyRepo/Schema/jadnschema
+# -e /home/matt/workspace/jadn-schema
 
 cbor-json==0.0.4
 docker==7.1.0
