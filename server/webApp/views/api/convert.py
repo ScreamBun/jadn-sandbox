@@ -13,7 +13,6 @@ from jadnschema.convert.schema.writers.json_schema.schema_validator import valid
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadnxml.builder.xml_builder import build_xml_from_json
 from jadnjson.generators import json_generator
-from jadn.translate import json_schema_dumps
 from weasyprint import HTML
 
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
@@ -137,8 +136,7 @@ class Convert(Resource):
                     return dumps(src, **kwargs)
                 
                 elif toLang == constants.JSON:
-                    return json_schema_dumps(src)
-                    # TODO: Use Dave K's JADN logic to convert JADN to JSON Schema. 
+                    return jadn.translate.json_schema_dumps(src)
             
                 elif toLang == constants.JIDL:
                     return jadn.convert.jidl_dumps(src)
