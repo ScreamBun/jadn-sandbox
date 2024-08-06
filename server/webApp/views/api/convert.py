@@ -170,7 +170,6 @@ class Convert(Resource):
                     raise ValueError('Unknown JIDL conversion type')
             
             else:
-                # return dumps(src, **kwargs)
                 raise ValueError('Unknown schema type')
             
         except:
