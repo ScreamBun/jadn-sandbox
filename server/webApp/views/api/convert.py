@@ -210,7 +210,6 @@ class ConvertJSON(Resource):
                 
             if fmt == constants.XML.upper():
                 try:
-                    # TODO: Update return value to return error msg
                     ret_val.gen_data = build_xml_from_json(ret_val.gen_data)
                 except Exception:  
                     tb = traceback.format_exc()
