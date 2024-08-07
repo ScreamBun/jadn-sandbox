@@ -1,5 +1,6 @@
 import json
 import random
+import traceback
 import cbor_json
 import binascii
 
@@ -163,3 +164,19 @@ class Validator:
             ).run(test_suite)
             return results.getReport(verbose=True)
         return {}
+    
+    def validate_jidl(self, jidl_src: str) -> Tuple[bool, str]:
+        
+        try:
+            jidl_doc = jadn.convert.jidl_dumps(jidl_src)
+        except Exception as e:  # pylint: disable=broad-except
+            # TODO: pick better exception
+            return False, f"JIDL Invalid - {e}"   
+                          
+        # except (ValueError) as err:
+        #     tb = traceback.format_exc()
+        #     # TODO: Attempt to get error message
+        #     return_val = tb
+        
+        return True, "" 
+        

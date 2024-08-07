@@ -1,20 +1,19 @@
 import json
 import logging
-
-from io import BytesIO
 import os
 import sys
 import traceback
 import jadn
+from jadnjson.generators import json_generator
+
+from io import BytesIO
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadnxml.builder.xml_builder import build_xml_from_json
-from jadnjson.generators import json_generator
 from weasyprint import HTML
-
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
 from webApp.utils import constants
 
@@ -55,14 +54,18 @@ class Convert(Resource):
         elif schema_fmt == constants.JSON:
             
             if isinstance(schema_data, str):
-                    schema_data = json.loads(schema_data)              
+                schema_data = json.loads(schema_data)              
             
             is_valid, msg = validate_schema(schema_data)
-            if is_valid != True:
+            if not is_valid:
                 return f"JSON Schema Error: {msg}", 500
+            
         elif schema_fmt == constants.JIDL:
-            is_valid = True
-            # TODO: JIDL validator needed          
+            # LEFT OFF HERE
+            is_valid, msg = current_app.validator.validate_jidl(schema_data)
+            if not is_valid:
+                return f"JSON Schema Error: {msg}", 500  
+                                
         else:
             return "Invalid Schema Format", 500    
 
@@ -208,13 +211,13 @@ class ConvertJSON(Resource):
             if fmt == constants.XML.upper():
                 try:
                     # TODO: Update return value to return error msg
-                    g_data = build_xml_from_json(g_data)
+                    ret_val.gen_data = build_xml_from_json(ret_val.gen_data)
                 except Exception:  
                     tb = traceback.format_exc()
                     print(tb)            
                     raise Exception("Unable to generate XML")
 
-            data_gen_array.append(g_data)
+            data_gen_array.append(ret_val.gen_data)
             i += 1
    
         return jsonify({
