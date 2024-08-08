@@ -1,19 +1,24 @@
 import json
 import random
-import traceback
 import cbor_json
 import binascii
+from flask import current_app
+import jadn 
 
 from io import StringIO
 from typing import Tuple, Union
-from jadnschema import jadn
+
+from jadnschema.jadn import loads
 from jadnschema.schema import Schema
 from jadnschema.convert.message import Message, SerialFormats, decode_msg
+from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema_jadn_syntax
 from unittest import TextTestRunner
 from pydantic import ValidationError
 
 from webApp.utils import constants
 from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
+
+# TODO: Remove OC2 Specific
 from .profiles import get_profile_suite, load_test_suite, tests_in_suite, TestResults
 
 
@@ -43,10 +48,9 @@ class Validator:
         :return: (tuple) valid/invalid bool, message/schema
         """
         try:
-            j = jadn.loads(schema)
+            j = loads(schema)
             return True, "Schema is Valid" if sm else j
-        except Exception as e:  # pylint: disable=broad-except
-            # TODO: pick better exception
+        except Exception as e:
             return False, f"Schema Invalid - {e}"
 
     def validateMessage(self, schema: Union[bytes, dict, str], msg: Union[str, bytes, dict], fmt: str, decode: str) -> Tuple:
@@ -137,46 +141,62 @@ class Validator:
             return False, "Invalid Export: The decode message type was not found in the schema", "", msg
 
     # Profile test validation
-    def getProfileTests(self, profile: str = None) -> dict:
-        profile_tests = self._loaded_tests
-        if profile:
-            for unit, info in self._loaded_tests.items():
-                if profile in info["profiles"]:
-                    return {unit: info}
-            return {}
-        return profile_tests
+    # def getProfileTests(self, profile: str = None) -> dict:
+    #     profile_tests = self._loaded_tests
+    #     if profile:
+    #         for unit, info in self._loaded_tests.items():
+    #             if profile in info["profiles"]:
+    #                 return {unit: info}
+    #         return {}
+    #     return profile_tests
 
-    def validateSchemaProfile(self, schema: Union[bytes, dict, str, Schema], profile: str = "language") -> dict:
-        schema_obj: Schema = None
-        if isinstance(schema, Schema):
-            schema_obj = schema
-        elif isinstance(schema, dict):
-            schema_obj = Schema.parse_obj(schema)
-        elif isinstance(schema, (bytes, str)):
-            schema_obj = Schema.parse_raw(schema)
+    # def validateSchemaProfile(self, schema: Union[bytes, dict, str, Schema], profile: str = "language") -> dict:
+    #     schema_obj: Schema = None
+    #     if isinstance(schema, Schema):
+    #         schema_obj = schema
+    #     elif isinstance(schema, dict):
+    #         schema_obj = Schema.parse_obj(schema)
+    #     elif isinstance(schema, (bytes, str)):
+    #         schema_obj = Schema.parse_raw(schema)
 
-        if test_suite := get_profile_suite(self._unittest_suite, profile, schema=schema_obj):
-            test_log = StringIO()
-            results = TextTestRunner(
-                stream=test_log,
-                failfast=False,
-                resultclass=TestResults
-            ).run(test_suite)
-            return results.getReport(verbose=True)
-        return {}
+    #     if test_suite := get_profile_suite(self._unittest_suite, profile, schema=schema_obj):
+    #         test_log = StringIO()
+    #         results = TextTestRunner(
+    #             stream=test_log,
+    #             failfast=False,
+    #             resultclass=TestResults
+    #         ).run(test_suite)
+    #         return results.getReport(verbose=True)
+    #     return {}
+    
+    def validate_jadn(self, jadn_src: dict) -> Tuple[bool, str]:
+
+        try: 
+            validate_schema_jadn_syntax(jadn_src) 
+        except Exception as ex:
+            print(f"Syntax Error: {str(ex)}")
+            return False, f"Schema Error - {ex}"  
+        
+        valid_bool, err = current_app.validator.validateSchema(jadn_src) 
+        if not valid_bool:
+            print(f"JADN Error: {str(err)} ")
+            return False, f"JADN Error - {err}" 
+
+        try: 
+            jadn.check(jadn_src) # uses jsonschema to check jadn - jadn_v1.0_schema.json
+        except Exception as ex:
+            print(f"JADN Error : {ex}")
+            return False, f"JADN Error - {ex}"   
+        
+        return True, ""
     
     def validate_jidl(self, jidl_src: str) -> Tuple[bool, str]:
         
         try:
-            jidl_doc = jadn.convert.jidl_dumps(jidl_src)
+            # jidl_doc = jidl_dumps(jidl_src)
+            jadn_doc = jadn.convert.jidl_loads(jidl_src)
         except Exception as e:  # pylint: disable=broad-except
-            # TODO: pick better exception
             return False, f"JIDL Invalid - {e}"   
-                          
-        # except (ValueError) as err:
-        #     tb = traceback.format_exc()
-        #     # TODO: Attempt to get error message
-        #     return_val = tb
         
-        return True, "" 
+        return True, jadn_doc 
         

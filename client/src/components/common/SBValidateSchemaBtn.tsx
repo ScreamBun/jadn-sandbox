@@ -23,6 +23,12 @@ const SBValidateSchemaBtn = (props: any) => {
             return;
         }
 
+        if (!schemaFormat) {
+            sbToastError('Validation Error: Schema Format selection required');
+            setIsValidating(false);
+            return;
+        }        
+
         setIsValidating(true);
 
         let jsonObj = schemaData;
