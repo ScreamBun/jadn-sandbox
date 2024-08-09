@@ -2,7 +2,7 @@ import logging
 
 import os
 import traceback
-from flask import current_app, jsonify, request
+from flask import current_app, json, jsonify, request
 from flask_restful import Resource
 from jadnschema import transform
 from jadnschema.jadn import dumps
@@ -39,33 +39,36 @@ class Transform(Resource):
             if not is_valid:
                 invalid_schema_list.append({'name': schema['name'], 'err': msg})
         
-        # if not valid, return invalid schema list 
         if len(invalid_schema_list) != 0:
             return invalid_schema_list, 500
              
-        # else load all schemas
         else:
             transformed = request_json["transformation_type"]
             output = []
             if transformed == 'strip comments':
-                #CONSIDERATION: ALLOW STRIP COMMENTS EVEN IF INVALID JADN?
                 for schema in request_json["schema_list"]:
-                    schema_output = dumps(transform.strip_comments(schema['data']))
+                    schema_content_str = schema['data']
+                    schema_content_dict = json.loads(schema_content_str)
+                    schema_stripped = transform.strip_comments(schema_content_dict)
+                    schema_formatted = dumps(schema_stripped)
                     schema_name, ext = os.path.splitext(schema['name'])
                     output.append({
                         'schema_name': schema_name,
-                        'schema': schema_output,
+                        'schema': schema_formatted,
                         })
                 return output
             
             elif transformed == "resolve references":
-                # get base schema
                 schema_base = ''
                 schema_list = []
+                schema_base_name = ''
                 for schema in request_json["schema_list"]:
-                    schema_list.append(schema['data'])
+                    schema_content_str = schema['data']
+                    schema_content_dict = json.loads(schema_content_str)                    
+                    schema_list.append(schema_content_dict)
                     if schema['name'] == request_json["schema_base"]:
-                        schema_base = schema['data']
+                        schema_base = schema_content_dict
+                        schema_base_name = request_json["schema_base"]
 
                 if not schema_base:
                     return 'Base Schema not found', 404
@@ -74,7 +77,7 @@ class Transform(Resource):
                     return "No Schema files provided", 404
 
                 try:
-                    output = transform.resolve_references.resolve(request_json["schema_base"], schema_base, schema_list)
+                    output = transform.resolve_references.resolve(schema_base_name, schema_base, schema_list)
                 except Exception as err:            
                     tb = traceback.format_exc()
                     print(tb)
