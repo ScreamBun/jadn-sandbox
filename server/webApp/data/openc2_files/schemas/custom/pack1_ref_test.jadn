@@ -1,0 +1,9 @@
+{
+  "info": {
+    "package": "http://www.pack1.com",
+    "exports": ["String-Pack"]
+  },
+  "types": [
+    ["String-Pack", "String", [], ""]
+  ]
+}
