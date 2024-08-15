@@ -5,7 +5,7 @@
 # -e /home/matt/workspace/jadn-schema
 # -e /home/matt/workspace/sb-jadn-xml-util
 # -e /home/matt/workspace/sb-jadn-json-util
--e /home/matt/workspace/jadn-pypkg/distribution
+# -e /home/matt/workspace/jadn-pypkg/distribution
 
 cbor-json==0.0.4
 docker==7.1.0
@@ -19,6 +19,6 @@ weasyprint==57.0
 
 # Use versions from JADNSchema
 cbor2 
-# jadn
+jadn
 lxml
 toml
