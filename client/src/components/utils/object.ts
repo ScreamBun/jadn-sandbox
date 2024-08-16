@@ -1,5 +1,16 @@
 // Object utility functions
 
+
+export const isEmpty = (obj: Object) => {
+  for (const prop in obj) {
+    if (Object.prototype.hasOwnProperty(prop)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 /**
  * Check is object has property
  * @param {Record<string, any>} obj - object to check against
