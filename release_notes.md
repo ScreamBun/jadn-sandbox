@@ -2,9 +2,12 @@
 
 ## v0.13.0
 
+* Data Generation - Improved performance and the ability to handle larger schemas
+* Dependencies - Updated JADN from 0.6.23 to 0.7.4
 * Translation - Introduced JIDL to JADN translation logic
 * Translation and Generation - Improved MapOf converstion logic
-* Dependencies - Updated JADN from 0.6.23 to 0.7.2
+* Transformation - Fixed random unwrapped results
+* Transformation - Improved error response and general usage
 
 ## v0.12.1
 
