@@ -61,7 +61,6 @@ class Convert(Resource):
                 return f"JSON Schema Error: {msg}", 500
             
         elif schema_fmt == constants.JIDL:
-            # LEFT OFF HERE
             is_valid, msg = current_app.validator.validate_jidl(schema_data)
             if not is_valid:
                 return f"JSON Schema Error: {msg}", 500  

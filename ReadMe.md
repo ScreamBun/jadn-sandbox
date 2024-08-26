@@ -122,7 +122,7 @@ http://localhost:8082/
 
 * See readme under the jadnschema repo
 
-### Build Ruby Image and Container
+### Build Ruby Image and Container and use locally
 
 1. In a terminal window, from the JADN Sandbox Root dir, build the image:
 
@@ -136,7 +136,9 @@ http://localhost:8082/
    docker run -it --name=sb-ruby-container sb-ruby-image /bin/bash
    ```
 
-3. Your ruby docker container is now ready to be used.
+3. Go to server / webApp / data / version.toml and change the app_mode to "local".  
+
+4. Your ruby docker container is now ready to be used.
 
 ### Develop and Test JADN Schema on the Fly
 

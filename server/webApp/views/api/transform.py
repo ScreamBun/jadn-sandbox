@@ -83,7 +83,6 @@ class Transform(Resource):
                     print(tb)
                     return str(err), 500
 
-            #return transformed schema
                 return output, 200
             
             return 'Invalid Transformation', 500
