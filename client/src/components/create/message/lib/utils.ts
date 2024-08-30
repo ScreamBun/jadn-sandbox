@@ -189,20 +189,21 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 //binary: eui, ipv4-addr, ipv6-addr
 //TODO : if valid, return binary length of formatted data
 export const validateBinaryFormat = (data: string, type: string) => {
-	if (type == 'x' && data.match(/(0x)?[0-9A-F]+/)) { //hex encoding
+	if (type == 'x' && data.match(/^(0x)?[0-9A-F]+$/)) { //hex encoding
+		// determine if non-prefixed hex should validate
 		return Buffer.byteLength(data, 'hex');;
 	}
-	if (type == 'eui' && data.match(/[A-Fa-f\d]{2}(?:[:-][A-Fa-f\d]{2}){5}/)) { //MAC-addr
+	if (type == 'eui' && data.match(/^[A-Fa-f\d]{2}(?:[:-][A-Fa-f\d]{2}){5}$/)) { //MAC-addr
 		return Buffer.byteLength(data, 'hex');
 	}
 	if ((type == 'ipv4' || type == 'ipv4-addr') && data.match(
-		/(?:(?:\d|[01]?\d\d|2[0-4]\d|25[0-5])\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d|\d)(?:\/\d{1,2})?/)) {
+		/^(?:(?:\d|[01]?\d\d|2[0-4]\d|25[0-5])\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d|\d)(?:\/\d{1,2})?$/)) {
 		// Get length of binary value where length is sequence of octets
 		const binArr = data.split('.');
 		return binArr.length;
 	}
 	if ((type == 'ipv6' || type == 'ipv6-addr') && data.match(
-		/((?=.*::)(?!.*::.+::)(::)?([\dA-Fa-f]{1,4}:(:|\b)|){5}|([\dA-Fa-f]{1,4}:){6})((([\dA-Fa-f]{1,4}((?!\3)::|:\b|(?![\dA-Fa-f])))|(?!\2\3)){2}|(((2[0-4]|1\d|[1-9])?\d|25[0-5])\.?\b){4})/)) {
+		/^((?=.*::)(?!.*::.+::)(::)?([\dA-Fa-f]{1,4}:(:|\b)|){5}|([\dA-Fa-f]{1,4}:){6})((([\dA-Fa-f]{1,4}((?!\3)::|:\b|(?![\dA-Fa-f])))|(?!\2\3)){2}|(((2[0-4]|1\d|[1-9])?\d|25[0-5])\.?\b){4})$/)) {
 		return Buffer.byteLength(data, 'hex');
 	}
 	return false;
@@ -212,7 +213,7 @@ export const validateBinaryFormat = (data: string, type: string) => {
 export const validateArrayFormat = (data: any[], type: string) => {
 	if (type == 'ipv4-net') {
 		if (data[0].match(
-			/(?:(?:\d|[01]?\d\d|2[0-4]\d|25[0-5])\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d|\d)(?:\/\d{1,2})?/)) {
+			/^(?:(?:\d|[01]?\d\d|2[0-4]\d|25[0-5])\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d|\d)(?:\/\d{1,2})?$/)) {
 			if (data.length == 1) {
 				return true;
 			} else if (data.length == 2 && ((typeof parseInt(data[1]) == "number" && parseInt(data[1]) >= 0 && parseInt(data[1]) <= 128) || data[1] == '')) {
@@ -222,7 +223,7 @@ export const validateArrayFormat = (data: any[], type: string) => {
 	}
 	if (type == 'ipv6-net') {
 		if (data[0].match(
-			/((?=.*::)(?!.*::.+::)(::)?([\dA-Fa-f]{1,4}:(:|\b)|){5}|([\dA-Fa-f]{1,4}:){6})((([\dA-Fa-f]{1,4}((?!\3)::|:\b|(?![\dA-Fa-f])))|(?!\2\3)){2}|(((2[0-4]|1\d|[1-9])?\d|25[0-5])\.?\b){4})/)) {
+			/^((?=.*::)(?!.*::.+::)(::)?([\dA-Fa-f]{1,4}:(:|\b)|){5}|([\dA-Fa-f]{1,4}:){6})((([\dA-Fa-f]{1,4}((?!\3)::|:\b|(?![\dA-Fa-f])))|(?!\2\3)){2}|(((2[0-4]|1\d|[1-9])?\d|25[0-5])\.?\b){4})$/)) {
 			if (data.length == 1) {
 				return true;
 			} else if (data.length == 2 && ((typeof parseInt(data[1]) == "number" && parseInt(data[1]) >= 0 && parseInt(data[1]) <= 128) || data[1] == '')) {
@@ -281,18 +282,18 @@ export const validateStringFormat = (data: string, type: string) => {
 	if (type == 'email' && data.match(/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-zA-z]{2,3}$/)) {
 		return true;
 	}
-	if (type == 'idn-email' && data.match(/(?:[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9](?:[\u00A0-\uD7FF\uE000-\uFFFF-a-z0-9-]*[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9])?\.)+[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9](?:[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9-]*[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}\])/)) {
+	if (type == 'idn-email' && data.match(/^(?:[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9](?:[\u00A0-\uD7FF\uE000-\uFFFF-a-z0-9-]*[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9])?\.)+[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9](?:[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9-]*[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}\])$/)) {
 		return true;
 	}
-	if ((type == 'hostname' || type == 'idn-hostname') && data.match(/\b((?=[a-z0-9-]{1,63}\.)(xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,255}\b/)) {
+	if ((type == 'hostname' || type == 'idn-hostname') && data.match(/^\b((?=[a-z0-9-]{1,63}\.)(xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,255}\b$/)) {
 		return true;
 	}
 	if ((type == 'ipv4') && data.match(
-		/(?:(?:\d|[01]?\d\d|2[0-4]\d|25[0-5])\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d|\d)(?:\/\d{1,2})?/)) {
+		/^(?:(?:\d|[01]?\d\d|2[0-4]\d|25[0-5])\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d|\d)(?:\/\d{1,2})?$/)) {
 		return true;
 	}
 	if ((type == 'ipv6') && data.match(
-		/((?=.*::)(?!.*::.+::)(::)?([\dA-Fa-f]{1,4}:(:|\b)|){5}|([\dA-Fa-f]{1,4}:){6})((([\dA-Fa-f]{1,4}((?!\3)::|:\b|(?![\dA-Fa-f])))|(?!\2\3)){2}|(((2[0-4]|1\d|[1-9])?\d|25[0-5])\.?\b){4})/)) {
+		/^((?=.*::)(?!.*::.+::)(::)?([\dA-Fa-f]{1,4}:(:|\b)|){5}|([\dA-Fa-f]{1,4}:){6})((([\dA-Fa-f]{1,4}((?!\3)::|:\b|(?![\dA-Fa-f])))|(?!\2\3)){2}|(((2[0-4]|1\d|[1-9])?\d|25[0-5])\.?\b){4})$/)) {
 		return true;
 	}
 	if (type == 'uri-reference' || type == 'iri-reference') {
@@ -301,9 +302,9 @@ export const validateStringFormat = (data: string, type: string) => {
 		return true;
 	}
 	if (type == 'uri' || type == 'iri') {
-		if (data.match(/\w+:(\/?\/?)[^\s]+/)) {
+		if (data.match(/^(\w+:(\/?\/?)[^\s]+$)/)) {
 			if (type == 'iri') {
-				if (data.match(/^<(.*)>$/)) {
+				if (data.match(/^(.*)$/)) {
 					return true;
 				}
 			} else {
