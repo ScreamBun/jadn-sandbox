@@ -125,11 +125,9 @@ const BasicField = (props: BasicFieldProps) => {
                 name={name}
                 value={data}
                 onBlur={e => {
-                  //encode into base64 for valid JSON
-                  const encoded = Buffer.from(e.target.value, "utf8").toString('base64');
-                  const errCheck = validateOptDataBinary(config, optData, encoded);
+                  // pass Binary Hex or formatted Binary for validation
+                  const errCheck = validateOptDataBinary(config, optData, data);
                   setErrMsg(errCheck);
-                  optChange(name, encoded, arr);
                 }}
                 onChange={e => {
                   setData(e.target.value);

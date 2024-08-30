@@ -135,6 +135,10 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 	// JADN Binary - A sequence of octets. Length is the number of octets.
 	const binaryType = optData.format ?? 'binary';
 
+	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
+	var minv = optData.minv || $MINV;
+	var maxv = optData.maxv || config.$MaxBinary;
+
 	let m: string[] = [];
 	let length: number = 0;
 	if (!data) {
@@ -149,24 +153,32 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 		}
 		length = isFormatted;
 	} else {
-		if (!data.match(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/)) {
-			m.push('Invalid Binary value');
-			return m;
+		if (!data.match(/^(0[xX][0-9a-fA-F]+)$/)) {
+			if(!data.match(/^([0-9a-fA-F]+)$/)){
+				m.push('Invalid Hexadecimal value');
+				return m;
+			}
+			else {
+				length = data.length;
+				// Get length of binary value where length is sequence of octets. each pair of hex chars is an octet.
+				if (Math.ceil(length/2) < minv) {
+					m.push('Minv Error: must be greater than ' + minv + ' bytes');
+					return m;
+				}
+				if (Math.ceil(length/2) > maxv) {
+					m.push('Maxv Error: must be less than ' + maxv + ' bytes');
+				}
+			}
 		}
-		// Get length of binary value where length is sequence of octets
-		const binArr = data.split('.');
-		length = binArr.length;
 	}
-
-	// A Binary type, the minv and maxv type options constrain the number of octets (bytes) in the binary value.
-	var minv = optData.minv || $MINV;
-	var maxv = optData.maxv || config.$MaxBinary;
-
-	if (length < minv) {
-		m.push('Minv Error: must be greater than ' + minv + ' bytes');
+	length = data.length;
+	// Get length of binary value where length is sequence of octets. each pair of hex chars is an octet.
+	// Check accounts for 0x prefix (not part of the number)
+	if (Math.ceil((length-2)/2) < minv) {
+		m.push('Minv Error: must be greater than ' + minv + ' bytes. 0x prefix ignored.');
 	}
-	if (length > maxv) {
-		m.push('Maxv Error: must be less than ' + maxv + ' bytes');
+	if (Math.ceil((length-2)/2) > maxv) {
+		m.push('Maxv Error: must be less than ' + maxv + ' bytes. 0x prefix ignored.');
 	}
 
 	return m;
