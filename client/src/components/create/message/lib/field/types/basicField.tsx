@@ -128,6 +128,7 @@ const BasicField = (props: BasicFieldProps) => {
                   // pass Binary Hex or formatted Binary for validation
                   const errCheck = validateOptDataBinary(config, optData, data);
                   setErrMsg(errCheck);
+                  optChange(name, e.target.value, arr);
                 }}
                 onChange={e => {
                   setData(e.target.value);
