@@ -121,7 +121,7 @@ const SchemaTranslator = () => {
                                         <SchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} acceptFormat={['.json']} />
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} acceptFormat={['.jadn','.jidl','.json']} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaTranslated
