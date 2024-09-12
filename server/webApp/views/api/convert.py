@@ -9,7 +9,7 @@ from jadnjson.generators import json_generator
 from io import BytesIO
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
-from jadnschema.convert import SchemaFormats, dumps, html_dumps, plant_dumps, json_to_jadn_dumps
+from jadnschema.convert import SchemaFormats, dumps, html_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
 from jadnxml.builder.xsd_builder import convert_xsd_from_dict
 from jadnxml.builder.xml_builder import build_xml_from_json
@@ -147,7 +147,12 @@ class Convert(Resource):
                     return dumps(src, **kwargs)                
                 
                 elif toLang == constants.PUML:
-                    return plant_dumps(src, style={'links': True, 'detail': 'information'})
+                    puml_style = jadn.convert.diagram_style()
+                    puml_style['detail'] = 'information'
+                    puml_style['attributes'] = True
+                    puml_style['enums'] = 100
+                    puml_str = jadn.convert.diagram_dumps(src, puml_style)
+                    return puml_str
                 
                 elif toLang == constants.XSD:
                     return convert_xsd_from_dict(src)[0]
