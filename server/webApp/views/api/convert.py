@@ -4,6 +4,7 @@ import os
 import sys
 import traceback
 import jadn
+import jadn.convert
 from jadnjson.generators import json_generator
 
 from io import BytesIO
@@ -131,7 +132,12 @@ class Convert(Resource):
             if fromLang == constants.JADN:
                 
                 if toLang == constants.GV:
-                    return dumps(src, **kwargs)
+                    gv_style = jadn.convert.diagram_style()
+                    gv_style['format'] = 'graphviz'
+                    gv_style['detail'] = 'information'
+                    gv_style['attributes'] = True
+                    gv_style['enums'] = 100
+                    return jadn.convert.diagram_dumps(src, gv_style)
                 
                 elif toLang == constants.HTML:
                     kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
@@ -141,18 +147,20 @@ class Convert(Resource):
                     return jadn.translate.json_schema_dumps(src)
             
                 elif toLang == constants.JIDL:
-                    return jadn.convert.jidl_dumps(src)
+                    jidl_style = jadn.convert.jidl_style()
+                    return jadn.convert.jidl_dumps(src, jidl_style)
                 
                 elif toLang == constants.MD:
-                    return dumps(src, **kwargs)                
+                    md_style = jadn.convert.diagram_style()
+                    return jadn.convert.markdown_dumps(src, md_style)
                 
                 elif toLang == constants.PUML:
                     puml_style = jadn.convert.diagram_style()
+                    puml_style['format'] = 'plantuml'
                     puml_style['detail'] = 'information'
                     puml_style['attributes'] = True
                     puml_style['enums'] = 100
-                    puml_str = jadn.convert.diagram_dumps(src, puml_style)
-                    return puml_str
+                    return jadn.convert.diagram_dumps(src, puml_style)
                 
                 elif toLang == constants.XSD:
                     return convert_xsd_from_dict(src)[0]
