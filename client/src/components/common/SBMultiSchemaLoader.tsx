@@ -126,6 +126,7 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     const onSelectChange = async (options: Option[]) => {
         // If user clicks 'file upload'...
         if (options.value == 'file') {
+            sbFileUploaderRef.current.accept = '.jadn'
             sbFileUploaderRef.current?.click();
             return;
         }

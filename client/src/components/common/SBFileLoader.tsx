@@ -29,10 +29,20 @@ interface SBFileLoaderProps {
 
 const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, ref) {
     const dispatch = useDispatch();
-    const { customClass, opts, selectedOpt, loadedFileData,
-        setSelectedFile, placeholder, loc,
-        acceptableExt, onCancelFileUpload, onFileChange,
-        isSaveable, fileName, fileExt = LANG_JADN } = props;
+    const { 
+        customClass, 
+        opts, 
+        selectedOpt, 
+        loadedFileData,
+        setSelectedFile, 
+        placeholder, 
+        loc,
+        onCancelFileUpload, 
+        onFileChange,
+        isSaveable, 
+        fileName, 
+        acceptableExt = ".jadn",
+        fileExt = LANG_JADN } = props;
 
     const handleFileSelect = (e: Option) => {
         if (e == null) {
