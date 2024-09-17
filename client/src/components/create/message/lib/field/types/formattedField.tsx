@@ -69,7 +69,6 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 type={"datetime-local"}
                                 step="any"
-                                min={dayjs().format('YYYY-MM-DDTHH:mm:ssZ[Z]')}
                                 onChange={e => {
                                     setData(e.target.value);
                                 }}
@@ -102,7 +101,6 @@ const FormattedField = (props: any) => {
                                 name={name}
                                 type={"date"}
                                 step="any"
-                                min={dayjs().format('YYYY-MM-DD')}
                                 onChange={e => {
                                     setData(e.target.value);
                                 }}
