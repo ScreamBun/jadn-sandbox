@@ -5,15 +5,17 @@ import { faUndo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const convertToGvSplitView = (data: any, height = 320, width = 920) => {
-    d3.graphviz("#gv")
-        .renderDot('digraph  {a -> b}', () => {
-            d3.graphviz("#gv")
-            .fit(true)
-            .height(height)
-            .width(width)
-            .zoomScaleExtent([1, 10])
-            .renderDot(data);
-        });
+    if(data){
+        d3.graphviz("#gv")
+            .renderDot('digraph  {a -> b}', () => {
+                d3.graphviz("#gv")
+                .fit(true)
+                .height(height)
+                .width(width)
+                .zoomScaleExtent([1, 10])
+                .renderDot(data);
+            });
+    }
 }
 
 export const convertToGvFullView = (data: any) => {
@@ -21,7 +23,8 @@ export const convertToGvFullView = (data: any) => {
     var width = window.innerWidth - margin;
     var height = window.innerHeight - margin;
 
-    d3.graphviz("#fullGV")
+    if(data){
+        d3.graphviz("#fullGV")
         .renderDot('digraph  {a -> b}', () => {
             d3.graphviz("#fullGV")
             .fit(true)
@@ -30,6 +33,7 @@ export const convertToGvFullView = (data: any) => {
             .zoom(true)
             .renderDot(data);
         });
+    }
 }
 
 export const onGVPopOutClick = (e: React.MouseEvent<HTMLButtonElement>) => {
