@@ -153,8 +153,8 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 		}
 		length = isFormatted;
 	} else {
-		if (!data.match(/^(0[xX][0-9a-fA-F]+)$/)) {
-			if(!data.match(/^([0-9a-fA-F]+)$/)){
+		if (!data.match(/^(0[xX][:0-9a-fA-F\.]+)$/)) {
+			if(!data.match(/^([:0-9a-fA-F\.]+)$/)){
 				m.push('Invalid Hexadecimal value');
 				return m;
 			}
