@@ -5,7 +5,7 @@ import { faUndo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const convertToGvSplitView = (data: any, height = 320, width = 920) => {
-
+    console.log("TEST convertToGvSplitView")
     d3.graphviz("#gv")
         .renderDot('digraph  {a -> b}', () => {
             d3.graphviz("#gv")
@@ -22,6 +22,7 @@ export const convertToGvFullView = (data: any) => {
     var width = window.innerWidth - margin;
     var height = window.innerHeight - margin;
 
+    console.log("TEST convertToGvFullView")
     d3.graphviz("#fullGV")
         .renderDot('digraph  {a -> b}', () => {
             d3.graphviz("#fullGV")
