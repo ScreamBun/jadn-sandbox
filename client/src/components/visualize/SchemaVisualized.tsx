@@ -32,7 +32,7 @@ const SchemaVisualized = (props: any) => {
     }
 
     useEffect(() => {
-        if (location.state) {
+        if (location && location.state) {
             const index = Object.values(data).indexOf(location.state)
             setConversion({ value: Object.values(data)[index], label: Object.keys(data)[index] });
         }

@@ -3644,14 +3644,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hpcc-js/wasm@npm:2.13.1":
-  version: 2.13.1
-  resolution: "@hpcc-js/wasm@npm:2.13.1"
+"@hpcc-js/wasm@npm:^2.20.0":
+  version: 2.22.1
+  resolution: "@hpcc-js/wasm@npm:2.22.1"
   dependencies:
     yargs: 17.7.2
   bin:
-    dot-wasm: bin/dot-wasm.js
-  checksum: bdc290a118d4a191d9136b1be6c10bc1d4d1d8325e85c4e9786f6a644845d237ac43a8a452ab74b880a8ec16e645dea629734205e051eb91620dd932a9f59ae2
+    dot-wasm: node ./node_modules/@hpcc-js/wasm-graphviz-cli/bin/index.js
+  checksum: a039b415e00694ab27fdb41d84c310e7c3f643a9c2140120345007a2da947879fcde9a279997f2696c18ba03fca744fba9d21ae75a666538aae767f0495ac789
   languageName: node
   linkType: hard
 
@@ -4680,14 +4680,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/d3-graphviz@npm:^2.6.8":
-  version: 2.6.8
-  resolution: "@types/d3-graphviz@npm:2.6.8"
+"@types/d3-graphviz@npm:^2.6.10":
+  version: 2.6.10
+  resolution: "@types/d3-graphviz@npm:2.6.10"
   dependencies:
     "@types/d3-selection": ^1
     "@types/d3-transition": ^1
     "@types/d3-zoom": ^1
-  checksum: 1eda8d677312f647378c8f3af1ce11911af39c06c15b2804ff4caf10f8ba66addd8e689612b3ef81c89ef5c2fb5af4bf26d63092679469b6e2fc07ffe0141ab6
+  checksum: 796c0f90de5ab03537c805573d2ae0f550c95664b3b238c08ff0e38a8ae8f434bb00d323d638e0cc70d66edd55ad7e761d64b1684a131ea26bd2c421ca29b8c1
   languageName: node
   linkType: hard
 
@@ -7417,7 +7417,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": ^6.4.2
     "@fortawesome/react-fontawesome": ^0.2.0
     "@popperjs/core": ^2.11.8
-    "@types/d3-graphviz": ^2.6.8
+    "@types/d3-graphviz": ^2.6.10
     "@types/dompurify": ^3.0.5
     "@types/file-saver": ^2.0.5
     "@types/history": ^5.0.0
@@ -7455,7 +7455,7 @@ __metadata:
     copy-webpack-plugin: ^11.0.0
     cross-env: ^7.0.3
     css-loader: ^6.8.1
-    d3-graphviz: ^5.1.0
+    d3-graphviz: ^5.6.0
     dayjs: ^1.11.10
     dompurify: ^3.0.8
     eslint: ^8.51.0
@@ -8017,11 +8017,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3-graphviz@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "d3-graphviz@npm:5.1.0"
+"d3-graphviz@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "d3-graphviz@npm:5.6.0"
   dependencies:
-    "@hpcc-js/wasm": 2.13.1
+    "@hpcc-js/wasm": ^2.20.0
     d3-dispatch: ^3.0.1
     d3-format: ^3.1.0
     d3-interpolate: ^3.0.1
@@ -8031,7 +8031,7 @@ __metadata:
     d3-zoom: ^3.0.0
   peerDependencies:
     d3-selection: ^3.0.0
-  checksum: 7ecf45c5d8f68e50eaace04eb6e38965af91b3a41349cdf87ef1110d8d1d86ea33c4a7b3a323bbf1c838feeb6b2de4774c2d1d2ed265fdb9a99603116e776094
+  checksum: f211cee70cb68ddb3e04193f04d1c01ae6dd51eaf7271dc101cce2c2bf57e59b7d66772e23d9604d9290dae21ad7301e47b04594c3c66a199248343e1542639e
   languageName: node
   linkType: hard
 
