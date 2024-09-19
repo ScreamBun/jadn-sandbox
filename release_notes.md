@@ -1,5 +1,15 @@
 # JADN Sandbox Release Notes
 
+## v0.13.1
+
+* Data Creation - Date inputs allow past dates and times
+* Data Generation - Performance improvements
+* Schema Creation - UUID Binary format option added
+* Translate - Allows .JIDL file extensions
+* Visualization - Utilitzes the latest JADN lib for GraphViz and PlantUML Digrams
+* Visualization - Displaying enumerations and cardinality in GraphViz and PlantUML
+* Visualization - Tightened white space on .JIDL files
+
 ## v0.13.0
 
 * Data Generation - Improved performance and the ability to handle larger schemas
