@@ -7,8 +7,8 @@
 * Schema Creation - UUID Binary format option added
 * Translate - Allows .JIDL file extensions
 * Validation improvements on certain format options
-* Various Pages - Improved promise stability
-* Visualization - Utilitzes the latest JADN lib for GraphViz and PlantUML Digrams
+* Various Pages - Improved promise stability and drop down option wrapping
+* Visualization - Utilizes the latest JADN lib enhancements for GraphViz and PlantUML Diagrams
 * Visualization - Displaying enumerations and cardinality in GraphViz and PlantUML
 * Visualization - Tightened white space on .JIDL files
 
