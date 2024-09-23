@@ -6,6 +6,7 @@ export const LANG_HTML = 'html';
 export const LANG_MARKDOWN = 'md';
 export const LANG_GRAPHVIZ = 'gv';
 export const LANG_PLANTUML = 'puml';
+export const LANG_PLANTUML_2 = 'PlantUML';
 export const LANG_CBOR = 'cbor'
 export const LANG_ANNOTATED_HEX = 'anno_hex'
 export const LANG_XML = 'xml';
@@ -45,3 +46,5 @@ export const NAV_EXTERNAL_OPENC2_JADN_SPEC = 'https://docs.oasis-open.org/openc2
 export const NAV_EXTERNAL_GH_README = 'https://github.com/ScreamBun/jadn-sandbox/blob/develop/ReadMe.md';
 export const NAV_EXTERNAL_MANUAL_PPTX = 'https://github.com/ScreamBun/jadn-sandbox/blob/develop/documentation/JADNSandboxInfo.pptx';
 export const NAV_EXTERNAL_MANUAL_PDF = 'https://github.com/ScreamBun/jadn-sandbox/blob/develop/documentation/JADNSandboxInfo.pdf';
+
+export const PLANTUML_RENDER_LIMIT = 8000

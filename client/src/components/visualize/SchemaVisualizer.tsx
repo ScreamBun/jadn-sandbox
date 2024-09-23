@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getPageTitle } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import SchemaLoader from 'components/common/SchemaLoader'
-import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast, sbToastError, sbToastSuccess, sbToastWarning } from 'components/common/SBToast'
 import { SchemaJADN } from 'components/create/schema/interface'
 import SchemaVisualized from './SchemaVisualized'
 import { Option } from 'components/common/SBSelect'
 import { setSchema } from 'actions/util'
+import { LANG_PLANTUML_2, PLANTUML_RENDER_LIMIT } from 'components/utils/constants'
 
 export const initConvertedSchemaState = [{
     schema: '',
@@ -85,6 +86,13 @@ const SchemaVisualizer = () => {
                     for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
                         if (convertedArr.includes(arr[i])) {
                             if (convertSchemaVal.payload.schema.convert[i].err == false) {
+
+                                if(convertSchemaVal.payload.schema.convert[i].fmt && convertSchemaVal.payload.schema.convert[i].fmt === LANG_PLANTUML_2){
+                                    if(convertSchemaVal.payload.schema.convert[i].schema && convertSchemaVal.payload.schema.convert[i].schema.length > PLANTUML_RENDER_LIMIT){
+                                        sbToastWarning("The generated PlantUML file is larger than "+PLANTUML_RENDER_LIMIT+" characters and may not reneder visually in the browser.")
+                                    }
+                                }
+
                                 sbToastSuccess(`Schema visualized to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                             } else {
                                 sbToastError(`Schema failed to visualize ${convertSchemaVal.payload.schema.convert[i].fmt} ${convertSchemaVal.payload.schema.convert[i].schema ? `: ${convertSchemaVal.payload.schema.convert[i].schema}` : ''}`);
