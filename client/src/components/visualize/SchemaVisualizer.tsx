@@ -87,13 +87,14 @@ const SchemaVisualizer = () => {
                         if (convertedArr.includes(arr[i])) {
                             if (convertSchemaVal.payload.schema.convert[i].err == false) {
 
+                                sbToastSuccess(`Schema visualized to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                                
                                 if(convertSchemaVal.payload.schema.convert[i].fmt && convertSchemaVal.payload.schema.convert[i].fmt === LANG_PLANTUML_2){
                                     if(convertSchemaVal.payload.schema.convert[i].schema && convertSchemaVal.payload.schema.convert[i].schema.length > PLANTUML_RENDER_LIMIT){
-                                        sbToastWarning("The generated PlantUML file is larger than "+PLANTUML_RENDER_LIMIT+" characters and may not reneder visually in the browser.")
+                                        sbToastWarning("The generated PlantUML file is larger than "+PLANTUML_RENDER_LIMIT+" characters and may not render visually in the browser.")
                                     }
                                 }
 
-                                sbToastSuccess(`Schema visualized to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
                             } else {
                                 sbToastError(`Schema failed to visualize ${convertSchemaVal.payload.schema.convert[i].fmt} ${convertSchemaVal.payload.schema.convert[i].schema ? `: ${convertSchemaVal.payload.schema.convert[i].schema}` : ''}`);
                             }
