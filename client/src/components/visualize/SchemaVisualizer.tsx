@@ -10,6 +10,7 @@ import SchemaVisualized from './SchemaVisualized'
 import { Option } from 'components/common/SBSelect'
 import { setSchema } from 'actions/util'
 import { LANG_PLANTUML_2, PLANTUML_RENDER_LIMIT } from 'components/utils/constants'
+import { VisualOptionsModal } from './VisualOptionsModal'
 
 export const initConvertedSchemaState = [{
     schema: '',
@@ -27,6 +28,8 @@ const SchemaVisualizer = () => {
     const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
     const [isLoading, setIsLoading] = useState(false);
     const [spiltViewFlag, setSplitViewFlag] = useState(false);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Visualization'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -57,61 +60,84 @@ const SchemaVisualizer = () => {
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
+
         if (conversion) {
-            let schemaObj: SchemaJADN | string = loadedSchema;
 
-            if (typeof schemaObj == 'string') {
-                try {
-                    schemaObj = JSON.parse(loadedSchema);
-                } catch (err) {
-                    if (err instanceof Error) {
-                        setIsLoading(false);
-                        sbToastError(err.message);
-                    }
-                }
-            }
-            //convertSchema takes in an array of values
             const arr = conversion.map(obj => obj.value);
-            dispatch(convertSchema(schemaObj, schemaFormat?.value, arr))
-                .then((convertSchemaVal) => {
-                    if (convertSchemaVal.error) {
-                        setIsLoading(false);
-                        setConvertedSchema(initConvertedSchemaState);
-                        sbToastError(convertSchemaVal.payload.response);
-                        return;
-                    }
-                    setIsLoading(false);
-                    setConvertedSchema(convertSchemaVal.payload.schema.convert);
-                    const convertedArr = convertSchemaVal.payload.schema.convert.map(obj => obj.fmt_ext);
-                    for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
-                        if (convertedArr.includes(arr[i])) {
-                            if (convertSchemaVal.payload.schema.convert[i].err == false) {
+            if (arr.indexOf("gv") > -1 || arr.indexOf("puml") > -1) {
+                setIsModalOpen(true);
+            } else {
+                submitConversions();
+            }            
 
-                                sbToastSuccess(`Schema visualized to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
-                                
-                                if(convertSchemaVal.payload.schema.convert[i].fmt && convertSchemaVal.payload.schema.convert[i].fmt === LANG_PLANTUML_2){
-                                    if(convertSchemaVal.payload.schema.convert[i].schema && convertSchemaVal.payload.schema.convert[i].schema.length > PLANTUML_RENDER_LIMIT){
-                                        sbToastWarning("The generated PlantUML file is larger than "+PLANTUML_RENDER_LIMIT+" characters and may not render visually in the browser.")
-                                    }
-                                }
-
-                            } else {
-                                sbToastError(`Schema failed to visualize ${convertSchemaVal.payload.schema.convert[i].fmt} ${convertSchemaVal.payload.schema.convert[i].schema ? `: ${convertSchemaVal.payload.schema.convert[i].schema}` : ''}`);
-                            }
-                        } else {
-                            sbToastError(`Failed to visualize to ${conversion[i].label}`);
-                        }
-                    }
-                })
-                .catch((convertSchemaErr: string) => {
-                    setIsLoading(false);
-                    sbToastError(convertSchemaErr);
-                })
         } else {
             setIsLoading(false);
-            sbToastError("No language selected for conversion");
+            sbToastError("A visualization selection is required");
         }
     }
+
+    const submitConversions = (opts?: string[]) => {
+
+        let schemaObj: SchemaJADN | string = loadedSchema;
+
+        if (typeof schemaObj == 'string') {
+            try {
+                schemaObj = JSON.parse(loadedSchema);
+            } catch (err) {
+                if (err instanceof Error) {
+                    setIsLoading(false);
+                    sbToastError(err.message);
+                }
+            }
+        }        
+
+        const arr = conversion.map(obj => obj.value);
+        dispatch(convertSchema(schemaObj, schemaFormat?.value, arr, opts))
+            .then((convertSchemaVal) => {
+                if (convertSchemaVal.error) {
+                    setIsLoading(false);
+                    setConvertedSchema(initConvertedSchemaState);
+                    sbToastError(convertSchemaVal.payload.response);
+                    return;
+                }
+                setIsLoading(false);
+                setConvertedSchema(convertSchemaVal.payload.schema.convert);
+                const convertedArr = convertSchemaVal.payload.schema.convert.map(obj => obj.fmt_ext);
+                for (let i = 0; i < convertSchemaVal.payload.schema.convert.length; i++) {
+                    if (convertedArr.includes(arr[i])) {
+                        if (convertSchemaVal.payload.schema.convert[i].err == false) {
+
+                            sbToastSuccess(`Schema visualized to ${convertSchemaVal.payload.schema.convert[i].fmt} successfully`);
+                            
+                            if(convertSchemaVal.payload.schema.convert[i].fmt && convertSchemaVal.payload.schema.convert[i].fmt === LANG_PLANTUML_2){
+                                if(convertSchemaVal.payload.schema.convert[i].schema && convertSchemaVal.payload.schema.convert[i].schema.length > PLANTUML_RENDER_LIMIT){
+                                    sbToastWarning("The generated PlantUML file is larger than "+PLANTUML_RENDER_LIMIT+" characters and may not render visually in the browser.")
+                                }
+                            }
+
+                        } else {
+                            sbToastError(`Schema failed to visualize ${convertSchemaVal.payload.schema.convert[i].fmt} ${convertSchemaVal.payload.schema.convert[i].schema ? `: ${convertSchemaVal.payload.schema.convert[i].schema}` : ''}`);
+                        }
+                    } else {
+                        sbToastError(`Failed to visualize to ${conversion[i].label}`);
+                    }
+                }
+            })
+            .catch((convertSchemaErr: string) => {
+                setIsLoading(false);
+                sbToastError(convertSchemaErr);
+            })
+
+    }
+
+    const onModalResponse = (response: boolean, opts: string[]) => {
+        setIsModalOpen(false);
+        if (response === true){
+            submitConversions(opts) 
+        } else {
+            setIsLoading(false);
+        }
+      }    
 
     return (
         <div>
@@ -148,6 +174,11 @@ const SchemaVisualizer = () => {
                     </div>
                 </div>
             </div>
+            <VisualOptionsModal
+                isOpen={isModalOpen}
+                conversions={conversion}
+                onResponse={onModalResponse} >
+            </VisualOptionsModal>
         </div>
     );
 }

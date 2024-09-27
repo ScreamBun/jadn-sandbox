@@ -36,7 +36,7 @@ export interface InfoSuccessAction extends ActionSuccessResult {
 const CONVERT_REQUEST = '@@convert/CONVERT_REQUEST';
 export const CONVERT_SUCCESS = '@@convert/CONVERT_SUCCESS';
 export const CONVERT_FAILURE = '@@convert/CONVERT_FAILURE';
-export const convertSchema = (schema: SchemaJADN, schema_fmt: string, t: string[]) => createAction({
+export const convertSchema = (schema: SchemaJADN, schema_fmt: string, t: string[], opts: string[]) => createAction({
   endpoint: `${baseAPI}/`,
   method: 'POST',
   headers: {
@@ -45,7 +45,8 @@ export const convertSchema = (schema: SchemaJADN, schema_fmt: string, t: string[
   body: JSON.stringify({
     'schema': schema,
     'schema_format': schema_fmt,
-    'convert-to': t
+    'convert-to': t,
+    'opts': opts
   }),
   types: [
     CONVERT_REQUEST, CONVERT_SUCCESS, CONVERT_FAILURE
