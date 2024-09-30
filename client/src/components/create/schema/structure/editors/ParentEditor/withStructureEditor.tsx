@@ -9,7 +9,7 @@ import { zip } from '../../../../../utils';
 import {
   EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
 } from '../../../interface';
-import { StandardTypeObject, TypeKeys } from '../consts';
+import { StandardTypeObject, TypeKeys, ipv4_net_address, ipv4_net_format, ipv4_net_prefix_len, ipv6_net_address, ipv6_net_format, ipv6_net_prefix_len } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import { dismissAllToast, sbToastError } from 'components/common/SBToast';
@@ -247,13 +247,46 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
       if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
         return;
       }
-      var updatevalue = { ...valueObj, options: modalData }
-      // if EnumeratedField && enum || pointer, remove fields 
-      if (updatevalue.type == "Enumerated" && (updatevalue.options.find(str => str.startsWith('#'))) || (updatevalue.options.find(str => str.startsWith('>')))) {
-        updatevalue = { ...updatevalue, fields: [] }
+
+      if (modalData && modalData[0] && (modalData[0] === ipv4_net_format || modalData[0] === ipv6_net_format)){
+
+        const clear_fields = { ...valueObj, fields: [], options: [] }; 
+        flushSync(() => {
+          setValueObj(clear_fields);
+          change(clear_fields, dataIndex);
+        });        
+
+        // const field_1: StandardFieldArray = [1, "ipv4_addr", "IPv4-Addr", [], "IPv4 address as defined in [[RFC0791]](#rfc0791)"]; // Requires a IPv4-Addr field type
+        let field_1: StandardFieldArray = ipv4_net_address; 
+        let field_2: StandardFieldArray = ipv4_net_prefix_len; 
+        if (modalData[0] === '/ipv6-net'){
+          // field_1 = [1, "ipv6_addr", "IPv6-Addr", [], "IPv6 address as defined in [[RFC8200]](#rfc8200)"]; // Requires a IPv6-Addr field type
+          field_1 = ipv6_net_address;
+          field_2 = ipv6_net_prefix_len;
+        }
+        const ipv_net: StandardFieldArray[] = [field_1, field_2];
+
+
+        const update_fields = { ...valueObj, fields: ipv_net, options: modalData }; 
+        flushSync(() => {
+          setValueObj(update_fields);
+          change(update_fields, dataIndex);
+        });
+
+      } else {
+        let updatevalue = { ...valueObj, options: modalData }
+
+        // if EnumeratedField && enum || pointer, remove fields 
+        if (updatevalue.type == "Enumerated" && (updatevalue.options.find(str => str.startsWith('#'))) || (updatevalue.options.find(str => str.startsWith('>')))) {
+          updatevalue = { ...updatevalue, fields: [] }
+        }
+  
+        flushSync(() => {
+          setValueObj(updatevalue);
+          change(updatevalue, dataIndex);
+        });
       }
-      setValueObj(updatevalue);
-      change(updatevalue, dataIndex);
+      
     }
 
     const toggleModal = () => {

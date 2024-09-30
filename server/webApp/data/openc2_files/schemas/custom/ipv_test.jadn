@@ -1,0 +1,13 @@
+{
+  "info": {
+    "package": "http://test/v1.0",
+    "exports": ["Array-Name"]
+  },
+  "types": [
+    ["Array-Name", "Array", [], "", [
+        [1, "ipv4_addr", "IPv4-Addr", [], "IPv4 address as defined in [[RFC0791]](#rfc0791)"],
+        [2, "prefix_length", "Integer", ["[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+      ]],
+    ["IPv4-Addr", "String", ["/ipv4"], ""]
+  ]
+}

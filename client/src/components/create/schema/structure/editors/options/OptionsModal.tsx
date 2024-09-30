@@ -112,9 +112,6 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
 
   const clearData = () => {
     setData(deserializeOptions([]));
-    const test = deserializeOptions([]);
-    const test2 = data;
-    console.log("8888");
   }
 
   return (
