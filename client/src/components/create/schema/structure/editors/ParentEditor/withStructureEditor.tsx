@@ -238,7 +238,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
       const updatevalue = { ...valueObj, fields: tmpFieldValues };
       setValueObj(updatevalue);
       change(updatevalue, dataIndex);
-    };
+    };   
 
     const saveModal = (modalData: Array<string>) => {
       toggleModal();
@@ -248,7 +248,10 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
         return;
       }
 
-      if (modalData && modalData[0] && (modalData[0] === ipv4_net_format || modalData[0] === ipv6_net_format)){
+      if(modalData && modalData.indexOf(ipv4_net_format) > -1 || modalData.indexOf(ipv6_net_format) > -1){
+
+        let minv = modalData.find(str => str.startsWith('{'));
+        let maxv = modalData.find(str => str.startsWith('}'));
 
         const clear_fields = { ...valueObj, fields: [], options: [] }; 
         flushSync(() => {
@@ -256,16 +259,24 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
           change(clear_fields, dataIndex);
         });        
 
-        // const field_1: StandardFieldArray = [1, "ipv4_addr", "IPv4-Addr", [], "IPv4 address as defined in [[RFC0791]](#rfc0791)"]; // Requires a IPv4-Addr field type
         let field_1: StandardFieldArray = ipv4_net_address; 
-        let field_2: StandardFieldArray = ipv4_net_prefix_len; 
-        if (modalData[0] === '/ipv6-net'){
-          // field_1 = [1, "ipv6_addr", "IPv6-Addr", [], "IPv6 address as defined in [[RFC8200]](#rfc8200)"]; // Requires a IPv6-Addr field type
+        let field_2: StandardFieldArray = ipv4_net_prefix_len;        
+
+        if (modalData.indexOf(ipv6_net_format) > -1){
           field_1 = ipv6_net_address;
           field_2 = ipv6_net_prefix_len;
         }
         const ipv_net: StandardFieldArray[] = [field_1, field_2];
 
+        if(!minv){
+          minv = "{1"
+          modalData.push(minv);
+        }
+
+        if(!maxv){
+          maxv = "{2"
+          modalData.push(maxv);
+        }         
 
         const update_fields = { ...valueObj, fields: ipv_net, options: modalData }; 
         flushSync(() => {

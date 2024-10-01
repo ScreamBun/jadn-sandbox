@@ -102,7 +102,7 @@ export const ipv4_net_format = "/ipv4-net"
 export const ipv6_net_format = "/ipv6-net"
 
 // IPv JADN Fields
-export const ipv4_net_address: StandardFieldArray = [1, "ipv4_addr", "Binary", ["/ipv4-addr"], "IPv4 address as defined in [[RFC0791]](#rfc0791)"]; 
-export const ipv4_net_prefix_len: StandardFieldArray = [2, "prefix_length", "Integer", ['[0'], "CIDR prefix-length. If omitted, refers to a single host address."]; 
-export const ipv6_net_address: StandardFieldArray = [1, "ipv6_addr", "Binary", ["/ipv6-addr"], "IPv6 address as defined in [[RFC8200]](#rfc8200)"];
-export const ipv6_net_prefix_len: StandardFieldArray = [2, "prefix_length", "Integer", ["[0"], "prefix length. If omitted, refers to a single host address."];
+export const ipv4_net_address: StandardFieldArray = [1, "ipv4_addr", "Binary", ["/ipv4-addr", "{1", "[1"], "IPv4 address as defined in [[RFC0791]](#rfc0791)"]; 
+export const ipv4_net_prefix_len: StandardFieldArray = [2, "prefix_length", "Integer", ["{0", "}32", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]; 
+export const ipv6_net_address: StandardFieldArray = [1, "ipv6_addr", "Binary", ["/ipv6-addr", "{1", "[1"], "IPv6 address as defined in [[RFC8200]](#rfc8200)"];
+export const ipv6_net_prefix_len: StandardFieldArray = [2, "prefix_length", "Integer", ["{0", "}128", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."];
