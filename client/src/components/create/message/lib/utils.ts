@@ -99,6 +99,7 @@ export const validateOptDataNum = (optData: any, data: number) => {
 	if (!data) {
 		return m;
 	}
+	var dataStr = String(data)
 
 	if (hasProperty(optData, 'format')) {
 		const isFormatted = validateNumericFormat(data, optData.format);
@@ -109,12 +110,27 @@ export const validateOptDataNum = (optData: any, data: number) => {
 	//INTEGER
 	var minv = optData.minv || $MINV;
 	var maxv = optData.maxv;
-	if (minv && data < minv) {
-		m.push('Minv Error: must be greater than ' + minv);
-	}
-	if (maxv && data > maxv) {
+
+	if (dataStr.includes(".")) {
 		m.push('Maxv Error: must be less than ' + maxv);
+		
 	}
+
+	if (data == parseInt(data.toString())) {
+		if (minv && data < minv) {
+			m.push('Minv Error: must be greater than ' + minv);
+		}
+		if (maxv && data > maxv) {
+			m.push('Maxv Error: must be less than ' + maxv);
+		}
+	}
+	else if (dataStr.includes(".")) {
+		if (!dataStr.includes("e") && !dataStr.includes("E")) {
+			m.push('Syntax Error: Non-Integer number entry');
+		}
+		
+	}
+	
 
 	//NUMBER
 	//TODO: check for minf/maxf defaults

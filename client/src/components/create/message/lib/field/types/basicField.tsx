@@ -199,7 +199,7 @@ const BasicField = (props: BasicFieldProps) => {
                   setData(e.target.value);
                 }}
                 onBlur={e => {
-                  const errCheck = validateOptDataNum(optData, parseInt(e.target.value));
+                  const errCheck = validateOptDataNum(optData, parseInt(e.target.value)); //currently behaving unfortunately as parseInt does not like zero.
                   setErrMsg(errCheck);
                   optChange(name, parseInt(e.target.value), arr);
                 }}
