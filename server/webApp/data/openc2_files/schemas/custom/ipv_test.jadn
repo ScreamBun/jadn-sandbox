@@ -1,0 +1,16 @@
+{
+  "info": {
+    "package": "http://test/v1.0",
+    "exports": ["IPv4-net"]
+  },
+  "types": [
+    ["IPv4-net", "Array", ["/ipv4-net", "{1", "{2"], "", [
+        [1, "ipv4_addr", "Binary", ["/ipv4-addr", "{1", "[1"], "IPv4 address as defined in [[RFC0791]](#rfc0791)"],
+        [2, "prefix_length", "Integer", ["{0", "}32", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+      ]],
+    ["IPv6-net", "Array", ["/ipv6-net", "{1", "{2"], "", [
+        [1, "ipv6_addr", "Binary", ["/ipv6-addr", "{1", "[1"], "IPv6 address as defined in [[RFC8200]](#rfc8200)"],
+        [2, "prefix_length", "Integer", ["{0", "}128", "[0"], "CIDR prefix-length. If omitted, refers to a single host address."]
+      ]]
+  ]
+}

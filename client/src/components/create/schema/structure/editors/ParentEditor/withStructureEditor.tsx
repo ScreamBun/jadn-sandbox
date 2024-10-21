@@ -9,7 +9,7 @@ import { zip } from '../../../../../utils';
 import {
   EnumeratedFieldArray, FieldArray, InfoConfig, StandardFieldArray, TypeArray
 } from '../../../interface';
-import { StandardTypeObject, TypeKeys } from '../consts';
+import { StandardTypeObject, TypeKeys, ipv4_net_address, ipv4_net_format, ipv4_net_prefix_len, ipv6_net_address, ipv6_net_format, ipv6_net_prefix_len } from '../consts';
 import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import { dismissAllToast, sbToastError } from 'components/common/SBToast';
@@ -238,7 +238,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
       const updatevalue = { ...valueObj, fields: tmpFieldValues };
       setValueObj(updatevalue);
       change(updatevalue, dataIndex);
-    };
+    };   
 
     const saveModal = (modalData: Array<string>) => {
       toggleModal();
@@ -247,13 +247,57 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
       if (JSON.stringify(prevState) === JSON.stringify(modalData)) {
         return;
       }
-      var updatevalue = { ...valueObj, options: modalData }
-      // if EnumeratedField && enum || pointer, remove fields 
-      if (updatevalue.type == "Enumerated" && (updatevalue.options.find(str => str.startsWith('#'))) || (updatevalue.options.find(str => str.startsWith('>')))) {
-        updatevalue = { ...updatevalue, fields: [] }
+
+      if(modalData && modalData.indexOf(ipv4_net_format) > -1 || modalData.indexOf(ipv6_net_format) > -1){
+
+        let minv = modalData.find(str => str.startsWith('{'));
+        let maxv = modalData.find(str => str.startsWith('}'));
+
+        const clear_fields = { ...valueObj, fields: [], options: [] }; 
+        flushSync(() => {
+          setValueObj(clear_fields);
+          change(clear_fields, dataIndex);
+        });        
+
+        let field_1: StandardFieldArray = ipv4_net_address; 
+        let field_2: StandardFieldArray = ipv4_net_prefix_len;        
+
+        if (modalData.indexOf(ipv6_net_format) > -1){
+          field_1 = ipv6_net_address;
+          field_2 = ipv6_net_prefix_len;
+        }
+        const ipv_net: StandardFieldArray[] = [field_1, field_2];
+
+        if(!minv){
+          minv = "{1"
+          modalData.push(minv);
+        }
+
+        if(!maxv){
+          maxv = "{2"
+          modalData.push(maxv);
+        }         
+
+        const update_fields = { ...valueObj, fields: ipv_net, options: modalData }; 
+        flushSync(() => {
+          setValueObj(update_fields);
+          change(update_fields, dataIndex);
+        });
+
+      } else {
+        let updatevalue = { ...valueObj, options: modalData }
+
+        // if EnumeratedField && enum || pointer, remove fields 
+        if (updatevalue.type == "Enumerated" && (updatevalue.options.find(str => str.startsWith('#'))) || (updatevalue.options.find(str => str.startsWith('>')))) {
+          updatevalue = { ...updatevalue, fields: [] }
+        }
+  
+        flushSync(() => {
+          setValueObj(updatevalue);
+          change(updatevalue, dataIndex);
+        });
       }
-      setValueObj(updatevalue);
-      change(updatevalue, dataIndex);
+      
     }
 
     const toggleModal = () => {

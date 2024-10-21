@@ -40,7 +40,8 @@ class Convert(Resource):
         request_json = request.json      
         schema_data = request_json["schema"]
         schema_lang = request_json["schema_format"]
-        schema_fmt = SchemaFormats(schema_lang)      
+        schema_fmt = SchemaFormats(schema_lang)     
+        opts = request_json["opts"]
 
         if schema_fmt == constants.JADN:
             
@@ -82,7 +83,7 @@ class Convert(Resource):
                 return "Invalid Conversion Type", 500
                 
             try:
-                conv = self.convertTo(schema_data, schema_fmt, lang)
+                conv = self.convertTo(schema_data, schema_fmt, lang, opts)
                 convertedData.append({'fmt': valid_fmt_name, 'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
             
             except (TypeError, ValueError) as err:
@@ -100,7 +101,7 @@ class Convert(Resource):
                     return "Invalid Conversion Type", 500              
                     
                 try:
-                    conv = self.convertTo(schema_data, schema_fmt, conv_type)
+                    conv = self.convertTo(schema_data, schema_fmt, conv_type, opts)
                     convertedData.append({'fmt': valid_fmt_name,'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
 
                 except (TypeError, ValueError) as err:
@@ -124,7 +125,7 @@ class Convert(Resource):
                 return item    
         return False  
     
-    def convertTo(self, src, fromLang, toLang):
+    def convertTo(self, src, fromLang, toLang, opts):
         kwargs = { "fmt": toLang,}
 
         try:
@@ -137,6 +138,10 @@ class Convert(Resource):
                     gv_style['detail'] = 'information'
                     gv_style['attributes'] = True
                     gv_style['enums'] = 100
+                    
+                    if opts and opts["graphVizOpt"]:
+                        gv_style['detail'] = opts["graphVizOpt"]
+                    
                     return jadn.convert.diagram_dumps(src, gv_style)
                 
                 elif toLang == constants.HTML:
@@ -160,6 +165,10 @@ class Convert(Resource):
                     puml_style['detail'] = 'information'
                     puml_style['attributes'] = True
                     puml_style['enums'] = 100
+                    
+                    if opts and opts["pumlOpt"]:
+                        puml_style['detail'] = opts["pumlOpt"]                   
+                    
                     return jadn.convert.diagram_dumps(src, puml_style)
                 
                 elif toLang == constants.XSD:
