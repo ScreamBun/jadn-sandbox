@@ -40,8 +40,11 @@ class Convert(Resource):
         request_json = request.json      
         schema_data = request_json["schema"]
         schema_lang = request_json["schema_format"]
-        schema_fmt = SchemaFormats(schema_lang)     
-        opts = request_json["opts"]
+        schema_fmt = SchemaFormats(schema_lang) 
+        
+        opts = None
+        if 'opts' in request_json:    
+            opts = request_json["opts"]
 
         if schema_fmt == constants.JADN:
             
