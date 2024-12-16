@@ -15,9 +15,8 @@ print("Starting JADN Sandbox...")
 app.validator = Validator()
 app.formatOptionLogic = FormatOptionLogic()
 
-from .views import *  # pylint: disable=wrong-import-position
-register_all(app)
-
-print("The JADN Sandbox is ready for work!")
 print("Go to the URL below in your browser:")
 print("http://localhost:8082/")
+
+from .views import *  # pylint: disable=wrong-import-position
+register_all(app)
