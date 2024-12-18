@@ -156,13 +156,14 @@ const FieldEditorBtn = memo(function FieldEditorBtn(props: FieldEditorProps) {
                         {!isLast && <button type='button' className='btn btn-sm btn-primary' onClick={() => changeIndex(value, dataIndex, dataIndex + 1)}
                             title={`Move Field Down`} >
                             <FontAwesomeIcon icon={faSquareCaretDown} />
-                        </button>}
-                    </div>
-                    <button type='button' className='btn btn-danger btn-sm float-end'
+                        </button>}                    
+                        <button type='button' className='btn btn-danger btn-sm float-end'
                         onClick={onRemoveItemClick}
                         title={`Delete Field`}>
                         <FontAwesomeIcon icon={faMinusCircle} />
                     </button>
+                    </div>
+
 
                     {makeOptions()}
                 </div>
