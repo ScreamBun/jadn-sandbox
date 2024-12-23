@@ -4,6 +4,7 @@
 
 * Message Creation - The display of the Fixed IP-Net format option has been improved.
 * Schema Creation - Enhanced the creation of IPv4 Net and IPv6 Net.
+* Schema Creation: Within Fields, tabbing to the Field Deletion button comes after the comment input (last tabbable item within the field, rather than the first).
 * Visualization - You now have more chart generation options, including Conceptual, Logical, and Informational.
 * Translation - Resolved an Undefined Error that occurred when translating JSON to JADN. Additionally, definitions are no longer required for JSON to JADN translations.
 * Schema Creation - Number Formatting logic has been enhanced.
