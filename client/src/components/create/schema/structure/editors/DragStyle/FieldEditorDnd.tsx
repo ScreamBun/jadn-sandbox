@@ -251,7 +251,7 @@ const FieldEditorDnd = memo(function FieldEditorDnd(props: FieldEditorProps) {
               <div ref={dragRef} style={{ cursor: 'move' }}>
                 <FontAwesomeIcon className='float-end pt-1 pl-2 m-1' title={'Drag and drop to reorder'} icon={faGrip}></FontAwesomeIcon>
               </div>
-              <a id={`deleteField-${parentIndex}-${dataIndex}`} name={`deleteField-${parentIndex}-${dataIndex}`} href="#" role="button" onClick={onRemoveItemClick}>
+              <a id={`deleteField-${parentIndex}-${dataIndex}`} href="#" role="button" onClick={onRemoveItemClick}>
                 <FontAwesomeIcon className='float-end pt-1 m-1' color='red' title={`Delete Field`} icon={faMinusCircle}></FontAwesomeIcon>
               </a>              
             </div>            
