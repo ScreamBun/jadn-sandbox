@@ -6,7 +6,7 @@
 * Schema Creation - Enhanced the creation of IPv4 Net and IPv6 Net.
 * Schema Creation: Within Fields, tabbing to the Field Deletion button comes after the comment input (last tabbable item within the field, rather than the first).
 * Visualization - You now have more chart generation options, including Conceptual, Logical, and Informational.
-* Translation - Resolved an Undefined Error that occurred when translating JSON to JADN. Additionally, definitions are no longer required for JSON to JADN translations.
+* Translation - Resolved an Undefined Error that occurred when translating JSON to JADN. Additionally, "definitions" / "$defs" are no longer required for JSON to JADN translations.
 * Schema Creation - Number Formatting logic has been enhanced.
 * Data Validation - Pydantic handling of IP-Net formats has been improved.
 * App Startup - The startup URL has been adjusted for better consistency.
