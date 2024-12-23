@@ -116,26 +116,26 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
                         <span>
                             {valueObj.type == 'Enumerated' ? 'Items' : 'Fields'} < span className="badge rounded-pill text-bg-secondary" > {valueObj.fields?.length} </span>
 
-                            < span
-                                className="badge rounded-pill text-bg-primary ms-1 cursor-pointer"
+                            <a href="#" role="button"
+                                className="badge rounded-pill text-bg-primary ms-1"
                                 title='Add Field'
-                                onClick={onAddField} >
+                                onClick={() => onAddField} >
                                 <FontAwesomeIcon icon={faPlusSquare} />
-                            </span>
-
-                            < a href="#" role="button"
-                                onClick={() => setFieldCollapse(!fieldCollapse, dataIndex)}>
-                                <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
-                                    className='float-end btn btn-sm'
-                                    title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
                             </a>
 
-                            {
-                                isEditableID ? <a href="#" role="button" onClick={sortFields} >
+                            <div className='float-end'>
+                                <a href="#" role="button" onClick={sortFields} >
                                     <FontAwesomeIcon icon={faArrowDown19}
-                                        className='float-end btn btn-sm'
+                                        className='btn btn-sm p-0'
                                         title={'Sort Fields by ID'} />
-                                </a> : <></>}
+                                </a>                                
+                                <a href="#" role="button"
+                                    onClick={() => setFieldCollapse(!fieldCollapse, dataIndex)}>
+                                    <FontAwesomeIcon icon={fieldCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                        className='btn btn-sm'
+                                        title={fieldCollapse ? ' Show Fields' : ' Hide Fields'} />
+                                </a>
+                            </div>
 
                         </span>
 
