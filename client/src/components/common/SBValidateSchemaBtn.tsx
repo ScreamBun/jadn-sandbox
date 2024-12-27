@@ -9,7 +9,7 @@ import { LANG_JADN, LANG_JIDL, LANG_JSON } from "components/utils/constants";
 
 const SBValidateSchemaBtn = (props: any) => {
 
-    const { isValid, setIsValid, setIsValidating, schemaData, schemaFormat, customClass, showToast = true } = props;
+    const { isValid, setIsValid, setIsValidating, schemaData, schemaFormat = "jadn", customClass, showToast = true } = props;
     const dispatch = useDispatch();
 
     const onValidateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
