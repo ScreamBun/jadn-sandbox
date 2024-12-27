@@ -1,0 +1,11 @@
+{
+  "info": {
+    "package": "http://test/v1.0",
+    "exports": ["Record-Name"]
+  },
+  "types": [
+    ["Record-Name", "Record", [], "record comment goes here....", [
+        [1, "field_value_1", "String", [], "field comment goes here..."]
+      ]]
+  ]
+}
