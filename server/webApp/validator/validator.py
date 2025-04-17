@@ -1,25 +1,19 @@
 import json
-import random
-import cbor_json
-import binascii
-from flask import current_app
+import cbor2
 import jadn 
+import xml.etree.ElementTree as ET
 
-from io import StringIO
+from flask import current_app
 from typing import Tuple, Union
 
 from jadnschema.jadn import loads
 from jadnschema.schema import Schema
-from jadnschema.convert.message import Message, SerialFormats, decode_msg
+from jadnschema.convert.message import SerialFormats
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema_jadn_syntax
-from unittest import TextTestRunner
-from pydantic import ValidationError
+
+from jadnvalidation import DataValidation
 
 from webApp.utils import constants
-from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
-
-# TODO: Remove OC2 Specific
-from .profiles import get_profile_suite, load_test_suite, tests_in_suite, TestResults
 
 
 class Validator:
@@ -36,9 +30,16 @@ class Validator:
         "Validation failed",
         "Validation error"
     ]
-    # Schema Test suites
-    _unittest_suite = load_test_suite()
-    _loaded_tests = tests_in_suite(_unittest_suite)
+    
+    def find_first_list(self, data):
+        if isinstance(data, list):
+            return data
+        if isinstance(data, dict):
+            for value in data.values():
+                result = self.find_first_list(value)
+                if result is not None:
+                    return result
+        return None
 
     def validateSchema(self, schema: Union[bytes, dict, str], sm: bool = True) -> Tuple[bool, Union[str, Schema]]:
         """
@@ -53,7 +54,7 @@ class Validator:
         except Exception as e:
             return False, f"Schema Invalid - {e}"
 
-    def validateMessage(self, schema: Union[bytes, dict, str], msg: Union[str, bytes, dict], fmt: str, decode: str) -> Tuple:
+    def validateMessage(self, schema: Union[bytes, dict, str], data: Union[str, bytes, dict], data_format: str, root: str) -> Tuple:
         """
         Validate messages against the given schema
         :param schema: schema to validate against
@@ -64,111 +65,58 @@ class Validator:
         """
         v, s = self.validateSchema(schema, False)
         if not v:
-            return False, s, "", msg
+            return False, s, "", data
 
         if isinstance(s, str):
-            return False, "Schema Invalid - The schema failed to load", "", msg
+            return False, "Schema Invalid - The schema failed to load", "", data
 
-        if fmt not in SerialFormats:
-            return False, "Serialization Format not found", "", msg
+        if data_format not in SerialFormats:
+            return False, "Serialization Format not found", "", data
         
-        
-        serial = SerialFormats(fmt)
+        # TODO: Validation logic should be moved to jadnvalidation \ data validaiton
+        serial = SerialFormats(data_format)
         match serial:
             case constants.JSON:
                 try:
-                    data_serialized = Message.oc2_loads(msg, serial)
+                    data = json.loads(data)
                 except Exception as e: 
                     err_msg = e
-                    return False, f"Invalid Data: {err_msg}", "", msg     
+                    return False, f"Invalid Data: {err_msg}", "", data     
 
             case constants.XML:
                 try:
-                    data_serialized = decode_msg(msg, serial, root=decode)
+                    ET.fromstring(data)       
                 except Exception as e: 
                     err_msg = e
-                    return False, f"Invalid Data: {err_msg}", "", msg
+                    return False, f"Invalid Data: {err_msg}", "", data
 
             case constants.CBOR:
                 try:
-                    msg_hex_string = msg
-                    msg_binary_string = binascii.unhexlify(msg_hex_string)
-                    msg_native_json = cbor_json.native_from_cbor(msg_binary_string)
-
-                    serial = SerialFormats('json')
-                    data_serialized = Message.oc2_loads(msg_native_json, serial)
+                    # TODO: Add logic to support hex or base64 encoded CBOR
+                    # TODO: Move logic to jadn cbor
+                    cbor_data = bytes.fromhex(data)
+                    data = cbor2.loads(cbor_data)
                 except Exception as e:
-                    return False, f"Invalid Data: {e}", "", msg
+                    return False, f"Invalid Data: {e}", "", data
             
             case _:
-                return False, "Unknown format selected", "", msg       
-            
-            
-        records = list(s.types.keys())
-        if decode in records:
+                return False, "Unknown format selected", "", data
+        
+        try :
+            j_validation = DataValidation(schema, root, data, data_format)
+            j_validation.validate()
+            return True, "Validation passed", json.dumps(data), data
+        except Exception as err:
+            errorMsgs=[]
+            if isinstance(err, ValueError):
+                for error in err.args:
+                    errorMsgs.append(error)
+                return False, errorMsgs, "", data
+            else:
+                errorMsgs.append(str(err))
+                return False, errorMsgs, "", data
 
-            try:
-                if fmt == constants.XML:
-                    s.validate_as(decode, data_serialized)
-                else:
-                    s.validate_as(decode, data_serialized.content)
-                    
-                return True, random.choice(self.validMsgs), json.dumps(msg), msg
 
-            except Exception as err: 
-                errorMsgs=[]
-                if isinstance(err, ValidationError):
-                    for error in err.errors():
-                        err_msg = getValidationErrorMsg(error)
-                        err_path = getValidationErrorPath(error)
-
-                        path = [i for i in err_path.split('/') if i != '__root__'] 
-                        new_path = '/'.join(path)
-                        
-                        if err_path:
-                            errorMsgs.append(err_msg + " at " +  new_path)
-                        else:
-                            errorMsgs.append(err_msg)
-                    return False, errorMsgs, "", msg
-                elif isinstance(err, AttributeError):
-                    for error in err.args:
-                        errorMsgs.append(error)
-                    return False, errorMsgs, "", msg
-                else:
-                    return False, err, "", msg
-
-        else:
-            return False, "Invalid Export: The decode message type was not found in the schema", "", msg
-
-    # Profile test validation
-    # def getProfileTests(self, profile: str = None) -> dict:
-    #     profile_tests = self._loaded_tests
-    #     if profile:
-    #         for unit, info in self._loaded_tests.items():
-    #             if profile in info["profiles"]:
-    #                 return {unit: info}
-    #         return {}
-    #     return profile_tests
-
-    # def validateSchemaProfile(self, schema: Union[bytes, dict, str, Schema], profile: str = "language") -> dict:
-    #     schema_obj: Schema = None
-    #     if isinstance(schema, Schema):
-    #         schema_obj = schema
-    #     elif isinstance(schema, dict):
-    #         schema_obj = Schema.parse_obj(schema)
-    #     elif isinstance(schema, (bytes, str)):
-    #         schema_obj = Schema.parse_raw(schema)
-
-    #     if test_suite := get_profile_suite(self._unittest_suite, profile, schema=schema_obj):
-    #         test_log = StringIO()
-    #         results = TextTestRunner(
-    #             stream=test_log,
-    #             failfast=False,
-    #             resultclass=TestResults
-    #         ).run(test_suite)
-    #         return results.getReport(verbose=True)
-    #     return {}
-    
     def validate_jadn(self, jadn_src: dict) -> Tuple[bool, str]:
 
         try: 

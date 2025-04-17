@@ -1,6 +1,7 @@
-./whls/jadnschema-0.2.27-py2.py3-none-any.whl
-./whls/jadnxml-1.9.0-py2.py3-none-any.whl
+./whls/jadnschema-0.3.0-py2.py3-none-any.whl
+./whls/jadnxml-1.10.0-py2.py3-none-any.whl
 ./whls/jadnjson-1.4.0-py2.py3-none-any.whl
+./whls/jadnvalidation-1.0.0-py2.py3-none-any.whl
 
 # -e /Users/kevincressman/GitLabThings/jadn-schema
 # -e /home/matt/workspace/sb-jadn-xml-util
@@ -16,6 +17,7 @@ flask-restplus==0.13.0
 gunicorn==20.1.0
 json2xml==5.0.2
 weasyprint==57.0
+xmltodict==0.13.0
 
 # Use versions from JADNSchema
 cbor2 
