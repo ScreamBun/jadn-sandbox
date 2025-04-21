@@ -1,5 +1,12 @@
 # JADN Sandbox Release Notes
 
+## v0.14.0
+
+* Data Validation - Major update and overhaul of the Data Validaiton logic.  Includes, JSON, CBOR and XML improvements.  
+* Data Validation - Logic added to allow users to validation simple data just as strings, integers and booleans.  
+* Data Validation - Adjustsments to the logic to align with [JADN 2.0](https://docs.oasis-open.org/openc2/imjadn/v2.0/imjadn-v2.0.html>)
+  * Further JADN 2.0 application updates coming soon
+
 ## v0.13.2
 
 * Message Creation - The display of the Fixed IP-Net format option has been improved.
