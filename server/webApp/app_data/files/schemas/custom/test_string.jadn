@@ -1,0 +1,9 @@
+{
+  "info": {
+    "package": "http://test/v1.0",
+    "exports": ["String-Name"]
+  },
+  "types": [
+    ["String-Name", "String", [], ""]
+  ]
+}

@@ -32,18 +32,29 @@ class API(Resource):
         all_ext = "*"
         isReturnNamesOnly = True
 
-        custom_msg_path = os.path.join(current_app.config.get("OPEN_C2_MESSAGE_CUSTOM_DATA"))
-        message_files['custom'] = utils.find_file_names_by_extension(all_ext, custom_msg_path, isReturnNamesOnly)
+        custom_msg_path = os.path.join(current_app.config.get("CUSTOM_DATA"))
+        custom_data = utils.find_file_names_by_extension(all_ext, custom_msg_path, isReturnNamesOnly)
+        if custom_data:
+            message_files['custom'].extend(custom_data)
+            message_files['custom'] = sorted(message_files['custom'])
 
-        example_msg_path = os.path.join(current_app.config.get("OPEN_C2_MESSAGE_EXAMPLE_DATA"))
-        message_files['examples'] = utils.find_file_names_by_extension(all_ext, example_msg_path, isReturnNamesOnly)
+        example_msg_path = os.path.join(current_app.config.get("EXAMPLE_DATA"))
+        example_data = utils.find_file_names_by_extension(all_ext, example_msg_path, isReturnNamesOnly)
+        if example_data:
+            message_files['examples'].extend(example_data)
+            message_files['examples'] = sorted(message_files['examples'])
 
-        custom_schema_path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_CUSTOM_DATA"))
-        schema_files['custom'] = utils.find_file_names_by_extension(jadn_ext, custom_schema_path, isReturnNamesOnly)
+        custom_schema_path = os.path.join(current_app.config.get("SCHEMA_CUSTOM_DATA"))
+        custom_schemas = utils.find_file_names_by_extension(jadn_ext, custom_schema_path, isReturnNamesOnly)
+        if custom_schemas:
+            schema_files['custom'].extend(custom_schemas)
+            schema_files['custom'] = sorted(schema_files['custom'])
 
-        example_schema_path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_EXAMPLE_DATA"))
-        schema_files['examples'] = utils.find_file_names_by_extension(jadn_ext, example_schema_path, isReturnNamesOnly)  
-        schema_files['examples'].sort()
+        example_schema_path = os.path.join(current_app.config.get("SCHEMA_EXAMPLE_DATA"))
+        example_schemas = utils.find_file_names_by_extension(jadn_ext, example_schema_path, isReturnNamesOnly)  
+        if example_schemas:
+            schema_files['examples'].extend(example_schemas)
+            schema_files['examples'] = sorted(schema_files['examples'])
 
         version_info = current_app.config.get("VERSION_INFO")
 

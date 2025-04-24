@@ -3,7 +3,7 @@ import time
 import toml
 
 
-path_to_toml = "./server/webApp/data/version.toml"
+path_to_toml = "./server/webApp/app_data/version.toml"
 
 version_data = toml.load(path_to_toml)
 major = version_data["major"]

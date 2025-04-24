@@ -7,7 +7,7 @@ from jadnschema.convert import SchemaFormats, SchemaVisualizationFormats, Schema
 class Config:
 
     APP_DIR = os.path.realpath(os.path.dirname(__file__))
-    APP_DATA = os.path.join(APP_DIR, "data")
+    APP_DATA = os.path.join(APP_DIR, "app_data")
     FILES_DATA = os.path.join(APP_DIR, "files")
 
     path_to_toml = os.path.join(APP_DATA, "version.toml")
@@ -34,28 +34,26 @@ class Config:
         "X-Forwarded-For",
     ]
     METHODS = [
-        "DELETE",
+        # "DELETE",
         "GET",
         "HEAD",
         "OPTIONS",
-        "POST",
-        "PUT"
+        "POST"
+        # "PUT"
     ]
     # Options parsed in from cmdline
     OPTIONS = None
-    # OpenC2 Options
-    OPEN_C2_DATA = os.path.join(APP_DATA, "openc2_files")
+    APP_DATA = os.path.join(APP_DATA, "files")
 
-    OPEN_C2_SCHEMA_DATA = os.path.join(APP_DATA, "openc2_files", "schemas")
-    OPEN_C2_SCHEMA_CUSTOM_DATA = os.path.join(OPEN_C2_SCHEMA_DATA, "custom")
-    OPEN_C2_SCHEMA_EXAMPLE_DATA = os.path.join(OPEN_C2_SCHEMA_DATA, "examples")
+    SCHEMA_DATA = os.path.join(APP_DATA, "schemas")
+    SCHEMA_CUSTOM_DATA = os.path.join(SCHEMA_DATA, "custom")
+    SCHEMA_EXAMPLE_DATA = os.path.join(SCHEMA_DATA, "examples")
 
-    OPEN_C2_MESSAGE_DATA = os.path.join(APP_DATA, "openc2_files", "messages")
-    OPEN_C2_MESSAGE_CUSTOM_DATA = os.path.join(OPEN_C2_MESSAGE_DATA, "custom")
-    OPEN_C2_MESSAGE_EXAMPLE_DATA = os.path.join(OPEN_C2_MESSAGE_DATA, "examples")
+    DATA = os.path.join(APP_DATA, "data")
+    CUSTOM_DATA = os.path.join(DATA, "custom")
+    EXAMPLE_DATA = os.path.join(DATA, "examples")
 
-    OPEN_C2_SCHEMA_THEME = os.path.join(OPEN_C2_DATA, "openc2_schema_theme.css")
-    PROFILE_TEST_DATA = os.path.join(APP_DATA, "test_messages")
+    APP_THEME = os.path.join(APP_DATA, "app_theme.css")
 
     VALID_SCHEMAS = ["jadn", "jidl", "json" ]
     VALID_SCHEMA_CONV = FrozenDict({fmt.name: fmt.value for fmt in SchemaFormats})
