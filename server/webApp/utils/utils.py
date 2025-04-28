@@ -49,9 +49,9 @@ def find_file_names_by_extension(ext: str, path: str, isReturnNamesOnly: bool):
 
 def get_upload_loc(loc: str):
     if loc == 'schemas':
-        return current_app.config.get("OPEN_C2_SCHEMA_CUSTOM_DATA")
+        return current_app.config.get("SCHEMA_CUSTOM_DATA")
     elif loc == 'messages':
-        return current_app.config.get("OPEN_C2_MESSAGE_CUSTOM_DATA")
+        return current_app.config.get("CUSTOM_DATA")
     else:
         return False
 

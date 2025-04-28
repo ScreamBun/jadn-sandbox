@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 
@@ -29,13 +28,13 @@ class LoadFile(Resource):
            custom = False 
 
         if custom == False and filetype == 'schemas':
-            path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_DATA"))
+            path = os.path.join(current_app.config.get("SCHEMA_DATA"))
         elif custom == False and filetype == 'messages':
-            path = os.path.join(current_app.config.get("OPEN_C2_MESSAGE_DATA"))
+            path = os.path.join(current_app.config.get("EXAMPLE_DATA"))
         elif custom == True and filetype == 'schemas':
-            path = os.path.join(current_app.config.get("OPEN_C2_SCHEMA_CUSTOM_DATA"))
+            path = os.path.join(current_app.config.get("SCHEMA_CUSTOM_DATA"))
         elif custom == True and filetype == 'messages':
-            path = os.path.join(current_app.config.get("OPEN_C2_MESSAGE_CUSTOM_DATA"))
+            path = os.path.join(current_app.config.get("CUSTOM_DATA"))
         else:
              return 'Unable to find save location', 500            
 
