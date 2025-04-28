@@ -65,7 +65,10 @@ const SBSaveFile = (props: any) => {
                     sbToastSuccess(val.payload);
                     setToggleSaveDialog(false);
                     setToggleOverwriteDialog(false);
-                    setDropdown({ label: filename, value: filename });
+                    if (setDropdown) {
+                        setDropdown({ label: filename, value: filename });
+                    }
+                    // setDropdown({ label: filename, value: filename });
                     dispatch(info());
                 })
                 .catch((err) => {
