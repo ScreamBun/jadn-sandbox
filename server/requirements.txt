@@ -6,7 +6,7 @@
 # -e /Users/kevincressman/GitLabThings/jadn-schema
 # -e /home/matt/workspace/sb-jadn-xml-util
 # -e /home/matt/workspace/sb-jadn-json-util
-# -e /home/matt/workspace/jadn-pypkg/distribution
+# -e /home/matt/workspace/jadn-validation
 
 cbor-json==0.0.4
 docker==7.1.0

@@ -1,3 +1,4 @@
+import ast
 import binascii
 import json
 from json2xml import json2xml
@@ -162,3 +163,56 @@ def convert_json_to_cbor_annotated_hex(data: dict) -> bytes:
         anna_hex = read_file(constants.LOCAL_CBOR2PRETTY_FILE_PATH)        
        
     return anna_hex
+
+def is_string_wrapping_list(text):
+    try:
+        result = None
+        result = ast.literal_eval(text)
+        return isinstance(result, list), result
+    except (SyntaxError, ValueError):
+        return False, result
+
+def get_error(e):
+    err_found = None
+    
+    if isinstance(e, ValueError):
+        err = str(e)
+        
+        if isinstance(err, str):
+            err_found = err
+        
+        elif isinstance(err, ValueError):
+            err_found = get_error(err)
+            
+        else:
+            err_found = str(err)
+
+    elif isinstance(e, str): 
+        err_found = e            
+    else:   
+        err_found = str(err)
+    
+    return err_found
+
+def error_finder(e, errors: list = []) -> list:
+    errors = []
+    
+    err = get_error(e)
+    
+    is_list, inner_err_list = is_string_wrapping_list(err)
+    if is_list:
+        for item in inner_err_list:
+            errors.append(get_error(item))
+    else:
+        errors.append(err)
+        
+    return errors  
+    
+def get_value_errors(e) -> list:
+    err_list = error_finder(e)
+    
+    unique_list = []
+    if err_list:
+        unique_list = list(set(err_list))     
+    
+    return unique_list

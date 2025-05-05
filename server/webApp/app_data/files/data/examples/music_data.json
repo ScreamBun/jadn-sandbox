@@ -1,0 +1,36 @@
+{
+    "012345678912": {
+      "album_artist": {
+        "artist_name": "John Michael Stipe",
+        "instruments": "vocals"
+      },
+      "album_title": "test",
+      "pub_data": {
+        "publisher": "test",
+        "release_date": "2025-04-24"
+      },
+      "tracks": {
+        "location": "test",
+        "metadata": {
+          "track_number": 1,
+          "title": "test",
+          "length": 5,
+          "audio_format": "MP3",
+          "featured_artist": {
+            "artist_name": "test",
+            "instruments": "guitar"
+          },
+          "track_art": {
+            "image_format": "PNG",
+            "image_content": "test"
+          },
+          "genre": "rock"
+        }
+      },
+      "total_tracks": 1,
+      "cover_art": {
+        "image_format": "PNG",
+        "image_content": "test"
+      }
+    }
+  }

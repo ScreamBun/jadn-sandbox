@@ -13,6 +13,7 @@ from jadnschema.convert.schema.writers.json_schema.schema_validator import valid
 
 from jadnvalidation import DataValidation
 
+from webApp.utils.utils import get_value_errors
 from webApp.utils import constants
 
 
@@ -30,16 +31,6 @@ class Validator:
         "Validation failed",
         "Validation error"
     ]
-    
-    def find_first_list(self, data):
-        if isinstance(data, list):
-            return data
-        if isinstance(data, dict):
-            for value in data.values():
-                result = self.find_first_list(value)
-                if result is not None:
-                    return result
-        return None
 
     def validateSchema(self, schema: Union[bytes, dict, str], sm: bool = True) -> Tuple[bool, Union[str, Schema]]:
         """
@@ -53,6 +44,7 @@ class Validator:
             return True, "Schema is Valid" if sm else j
         except Exception as e:
             return False, f"Schema Invalid - {e}"
+        
 
     def validateMessage(self, schema: Union[bytes, dict, str], data: Union[str, bytes, dict], data_format: str, root: str) -> Tuple:
         """
@@ -81,14 +73,14 @@ class Validator:
                     data = json.loads(data)
                 except Exception as e: 
                     err_msg = e
-                    return False, f"Invalid Data: {err_msg}", "", data     
+                    return False, f"Invalid JSON Data: {err_msg}", "", data     
 
             case constants.XML:
                 try:
                     ET.fromstring(data)       
                 except Exception as e: 
                     err_msg = e
-                    return False, f"Invalid Data: {err_msg}", "", data
+                    return False, f"Invalid XML Data: {err_msg}", "", data
 
             case constants.CBOR:
                 try:
@@ -106,15 +98,10 @@ class Validator:
             j_validation = DataValidation(schema, root, data, data_format)
             j_validation.validate()
             return True, "Validation passed", json.dumps(data), data
-        except Exception as err:
-            errorMsgs=[]
-            if isinstance(err, ValueError):
-                for error in err.args:
-                    errorMsgs.append(error)
-                return False, errorMsgs, "", data
-            else:
-                errorMsgs.append(str(err))
-                return False, errorMsgs, "", data
+        except Exception as e:
+            errorMsgs = []
+            errorMsgs = get_value_errors(e)
+            return False, errorMsgs, "", data
 
 
     def validate_jadn(self, jadn_src: dict) -> Tuple[bool, str]:

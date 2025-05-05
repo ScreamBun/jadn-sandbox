@@ -1,0 +1,11 @@
+{
+    "action": "scan",
+    "target": {
+        "artifact": {
+        "mime_type": "test",
+        "payload": {
+            "bin": "test"
+        }
+      }
+  }
+}

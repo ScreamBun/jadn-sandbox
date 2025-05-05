@@ -207,7 +207,6 @@
   * webpack-merge ^5.8.0 → ^5.9.0
   * workbox-webpack-plugin ^6.5.4 → ^7.0.0
 
-
 ## v0.6.0
 
 * Fixed field re-rendering issue
@@ -217,7 +216,6 @@
 * Added insert at index Logic 
 * Added button style outline
 * Added logic to check for duplicate Type names
-
 
 ## v0.5.2
 

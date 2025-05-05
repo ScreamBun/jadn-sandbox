@@ -38,6 +38,7 @@ class Validate(Resource):
                 return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
         
         
+        valMsg = []
         val, valMsg, msgJson, msgOrig = current_app.validator.validateMessage(schema, args["message"], fmt, args["message-decode"])
 
         page_data = {
