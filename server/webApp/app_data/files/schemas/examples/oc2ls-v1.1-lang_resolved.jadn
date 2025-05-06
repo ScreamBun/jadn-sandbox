@@ -178,7 +178,7 @@
       [3, "complete", "Respond when all aspects of Command completed"]
     ]],
     ["Versions", "ArrayOf", ["*Version", "{0", "}10", "q"], "List of OpenC2 language versions"],
-    ["Profiles", "ArrayOf", ["*Namespace", "{0", "}0", "q"], "List of OpenC2 profiles"],
+    ["Profiles", "ArrayOf", ["*Namespace", "{0", "}10", "q"], "List of OpenC2 profiles"],
     ["Version", "String", [], "Major.Minor version number"],
     ["Namespace", "String", ["/uri"], "Unique name of an Actuator Profile"],
     ["Command-ID", "String", ["%^\\S{0,36}$"], "Command Identifier"]

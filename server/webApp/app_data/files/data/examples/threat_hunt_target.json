@@ -1,0 +1,13 @@
+{
+    "huntflows": {
+      "path": "/hunts/",
+      "tags": ["test 1", "test 2"],
+      "arg_types": ["network-traffic1", "network-traffic2"],
+      "arg_names": ["x_unique_id.", "x_unique_id.2"],
+      "format_types": {
+          "var_name": "test",
+          "var_type": "test"
+      },
+      "return_format": ["version"]
+    }
+}

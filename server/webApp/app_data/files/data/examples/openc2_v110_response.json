@@ -1,0 +1,11 @@
+{
+    "status": 102,
+    "status_text": "successful test",
+    "results": {
+      "versions": ["test1", "test2"],
+      "profiles": ["https://www.example.com/"],
+      "pairs": {
+        "locate": ["artifact", "command"]
+      }
+    }
+}
