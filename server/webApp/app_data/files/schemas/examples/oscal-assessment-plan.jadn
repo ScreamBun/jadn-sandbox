@@ -937,7 +937,7 @@
     ["TokenDatatype", "String", ["%^(\\p{L}|_)(\\p{L}|\\p{N}|[.\\-_])*$"], "A non-colonized name as defined by XML Schema Part 2: Datatypes Second Edition. https://www.w3.org/TR/xmlschema11-2/#NCName.", []],
     ["URIDatatype", "String", ["%^[a-zA-Z][a-zA-Z0-9+\\-.]+:.+$"], "A universal resource identifier (URI) formatted according to RFC3986.", []],
     ["URIReferenceDatatype", "String", [], "A URI Reference, either a URI or a relative-reference, formatted according to section 4.1 of RFC3986.", []],
-    ["UUIDDatatype", "String", ["%^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[45][0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$"], "A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.", []],
+    ["UUIDDatatype", "String", ["%^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[4-5][0-9A-Fa-f]{3}-[8-9A-Ba-b][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$"], "A type 4 ('random' or 'pseudorandom') or type 5 UUID per RFC 4122.", []],
     ["Finding-Target-Status", "Record", [], "A determination of if the objective is satisfied or not within a given system.", [
         [1, "state", "TokenDatatype", ["[1"], "An indication as to whether the objective is satisfied or not."],
         [2, "reason", "TokenDatatype", ["[0"], "The reason the objective was given it's status."],
