@@ -77,19 +77,77 @@ const MessageCreator = (props: any) => {
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (commandType?.value) {
         //TODO: add value={} --> This is for uploading preloaded messages.
+
+        // Does schema type have fields?
         if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
-            if (recordDef[1] && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { //check not choice or enum type
+
+            // If the type is not a choice or enumerated type, then create fields
+            if (recordDef[1] && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { 
+
+                // Get fields
                 const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
-                fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} config={configOpt} />);
+
+                // Iterate through fields and create field components
+                // fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} config={configOpt} />);
+
+                const parent = recordDef;
+                // const data = fields;
+                // const fieldDefs = [];
+
+                // for (let i = 0; i < fields.length; i++) {
+                //     const child = fields[i];
+                //     const child_field = <Field key={`${child[0]}-${child[1]}`} def={child} optChange={optChange} config={configOpt} />
+                //     if (parent[1] == child[2]) {
+                //         fieldDefs.push(child_field);
+                //         break; // Exit the loop
+                //     } else {
+                //         fieldDefs.push(child_field);
+                //     }
+                // }
+
+                fieldDefs = fields.reduce((acc: JSX.Element[], child, index) => {
+                    const child_field = (
+                        <Field
+                            key={`${child[0]}-${child[1]}-${index}`} // Include index in the key for uniqueness
+                            def={child}
+                            optChange={optChange}
+                            config={configOpt}
+                        />
+                    );
+                    const recurring_field = (
+                        <div
+                            id={`${child[0]}-${child[1]}-${index}`}
+                            key={`${child[0]}-${child[1]}-${index}`} // Include index in the key for uniqueness
+                            className="m-2 p-2 alert alert-danger"
+                        >
+                            <b>Warning: </b>
+                            {`Field ${child[1]} is recursive.  Please check the field definition.`}
+                        </div>
+                    );                    
+
+                    if (parent[0] === child[2]) {
+                        acc.push(recurring_field);
+                        return acc; // Break the iteration by returning the accumulator early
+                    } else {
+                        acc.push(child_field);
+                    }
+
+                    return acc;
+                }, []);              
+
+
             } else if (recordDef[1] && recordDef[1].toLowerCase() == 'choice' || recordDef[1].toLowerCase() == 'enumerated') {
                 const field = [0, recordDef[0], recordDef[0], recordDef[2], recordDef[3], recordDef[4]];
                 fieldDefs = <Field key={field[0]} def={field} optChange={optChange} config={configOpt} />;
             }
+
         } else { //baseType = Primitive type, ArrayOf , MapOf --- convert TypeArray to FieldArray
             const field = [0, recordDef[0], recordDef[1], recordDef[2], recordDef[3], recordDef[4]];
             fieldDefs = <Field key={field[0]} def={field} optChange={optChange} config={configOpt} />;
         }
+
     } else {
+
         fieldDefs = (
             <small id="msgGenHelpBlock" className="form-text text-muted">
                 Data generator will appear here after selecting a data type
@@ -97,6 +155,7 @@ const MessageCreator = (props: any) => {
                 {commandType?.value}
             </small>
         );
+
     }
 
     return (

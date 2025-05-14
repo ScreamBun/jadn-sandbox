@@ -182,7 +182,7 @@ const ArrayOfField = (props: ArrayOfFieldProps) => {
     //vtype is defined
     //vtype is primitive or vtype is not found (create string field)
     // TODO? : definition not found = unresolved schema (validate JADN should have failed)
-    fieldDef = arrDefs.length === 1 ? [0, arrDef[0], arrDef[0], [], arrDef[arrDef.length - 2]]
+    fieldDef = arrDefs.length === 1 ? [0, arrDef[0], arrDef[1], [], arrDef[arrDef.length - 2]]
       : [0, arrDef.toLowerCase(), arrDef, [], ''];
   }
 
