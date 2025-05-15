@@ -274,7 +274,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
         }
 
         if(!maxv){
-          maxv = "{2"
+          maxv = "}2"
           modalData.push(maxv);
         }         
 
