@@ -65,7 +65,7 @@ class Validator:
         if data_format not in SerialFormats:
             return False, "Serialization Format not found", "", data
         
-        # TODO: Validation logic should be moved to jadnvalidation \ data validaiton
+        # # TODO: Validation logic should be moved to jadnvalidation \ data validaiton
         serial = SerialFormats(data_format)
         match serial:
             case constants.JSON:

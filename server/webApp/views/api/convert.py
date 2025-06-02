@@ -148,7 +148,7 @@ class Convert(Resource):
                     return jadn.convert.diagram_dumps(src, gv_style)
                 
                 elif toLang == constants.HTML:
-                    kwargs["styles"] = current_app.config.get("OPEN_C2_SCHEMA_THEME", "")
+                    kwargs["styles"] = current_app.config.get("APP_THEME", "")
                     return dumps(src, **kwargs)
                 
                 elif toLang == constants.JSON:
@@ -299,7 +299,7 @@ class ConvertPDF(Resource):
         print("convert to pdf")
         val, schema = current_app.validator.validateSchema(request_json["schema"], False)
         if val:  # Valid Schema
-            html = html_dumps(schema, styles=current_app.config.get("OPEN_C2_SCHEMA_THEME", ""))
+            html = html_dumps(schema, styles=current_app.config.get("APP_THEME", ""))
         else:  # Invalid Schema
             html = "<h1>ERROR: Invalid Schema. Fix the base schema errors before converting...</h1>"
             
