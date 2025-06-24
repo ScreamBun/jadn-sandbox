@@ -5,7 +5,6 @@ import { useAppSelector } from 'reducers';
 import { getFormatOptions } from 'reducers/format';
 import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
-
 interface TypeOptionsEditorProps {
   id?: string;
   placeholder?: string;
@@ -20,22 +19,23 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
   const schemaTypesObject = useAppSelector((state) => (state.Util.types.schema), shallowEqual);
   const formatTypes = useSelector(getFormatOptions);
   const schemaTypes = Object.keys(schemaTypesObject);
+  const schemaTypesArr = Object.values(schemaTypesObject).map(arr => arr[0]);
+  const primitiveTypes = useAppSelector((state) => (state.Util.types.primitive), shallowEqual);
+
   const types = {
     base: baseTypes,
     schema: schemaTypes
   };
 
+  const primitiveAndSchemaTypes = {
+    primitive: primitiveTypes,
+    schema: schemaTypesArr
+  }
+
   const getOptions = (key: string) => {
     switch (key) {
       case 'ktype':
-        //SHOULD be a Defined type, 
-        //either an enumeration or a type with constraints such as a pattern 
-        //or semantic valuation keyword that specify a fixed subset of values that belong to a category.
-        const schemaTypesArr = Object.values(schemaTypesObject);
-        const keyTypesArr = schemaTypesArr; //SHOULD constraint for Schema-Defined type respected, loosened type constraints to allow for other Schema-Defined types
-        //const keyTypesArr = schemaTypesArr.filter((arr) => arr[1].toLowerCase() == "enumerated" || arr[1].toLowerCase() == "string");
-        const keyTypes = keyTypesArr.map(arr => arr[0]);
-        return keyTypes;
+        return primitiveAndSchemaTypes
       case 'vtype':
         return types;
       case 'enum':
