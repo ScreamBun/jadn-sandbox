@@ -31,11 +31,13 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
         //SHOULD be a Defined type, 
         //either an enumeration or a type with constraints such as a pattern 
         //or semantic valuation keyword that specify a fixed subset of values that belong to a category.
-        const schemaTypesArr = Object.values(schemaTypesObject);
+        /* const schemaTypesArr = Object.values(schemaTypesObject);
         const keyTypesArr = schemaTypesArr; //SHOULD constraint for Schema-Defined type respected, loosened type constraints to allow for other Schema-Defined types
         //const keyTypesArr = schemaTypesArr.filter((arr) => arr[1].toLowerCase() == "enumerated" || arr[1].toLowerCase() == "string");
         const keyTypes = keyTypesArr.map(arr => arr[0]);
         return keyTypes;
+        */
+        return types;
       case 'vtype':
         return types;
       case 'enum':
