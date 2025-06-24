@@ -21,6 +21,7 @@ export interface UtilState {
   types: {
     base: Array<string>;
     schema: Array<string>;
+    primitive: Array<string>;
   }
 }
 
@@ -43,7 +44,8 @@ const initialState: UtilState = {
   selectedSchema: {},
   types: {
     base: ['Array', 'ArrayOf', 'Binary', 'Boolean', 'Choice', 'Enumerated', 'Integer', 'Map', 'MapOf', 'Number', 'Record', 'String'],
-    schema: []
+    schema: [],
+    primitive: ['Binary', 'Boolean', 'Integer', 'Number', 'String']
   }
 };
 
