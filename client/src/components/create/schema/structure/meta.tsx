@@ -125,14 +125,14 @@ export default {
       />
     )
   },
-  exports: {
-    key: 'Exports',
-    edit: (val: Array<string> = []) => metaDef({ k: 'exports', v: val }),
+  roots: {
+    key: 'Roots',
+    edit: (val: Array<string> = []) => metaDef({ k: 'roots', v: val }),
     editor: (props: EditorProps) => (
       <KeyArrayEditor
         {...props}
-        id="Exports"
-        name="Exports"
+        id="Roots"
+        name="Roots"
         description="Type definitions exported by this module"
       />
     )

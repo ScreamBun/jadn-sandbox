@@ -26,18 +26,18 @@ interface KeyArrayEditorProps {
   config: InfoConfig;
 }
 
-// Key Array Editor: Exports
+// Key Array Editor: Roots
 const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) {
   const { name, description, placeholder, value, config, change, addTypeChange, remove } = props;
   const [dataArr, setDataArr] = useState(value);
-  const [newExportType, setNewExportType] = useState<Option | null>(null);
+  const [newRootType, setNewRootType] = useState<Option | null>(null);
   const [addTypeName, setAddTypeName] = useState<string>('');
 
   const schemaTypes = useAppSelector((state) => (Object.keys(state.Util.types.schema)), shallowEqual) //TODO: keep state after validation 
   const types = useAppSelector((state) => ({
     base: (state.Util.types.base)
   }), shallowEqual);
-  const validExports = dataArr.length != 0 ? schemaTypes.filter(type => !dataArr.includes(type)) : schemaTypes;
+  const validRoots = dataArr.length != 0 ? schemaTypes.filter(type => !dataArr.includes(type)) : schemaTypes;
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [toggleAddToTypesModal, setToggleAddToTypesModal] = useState(false);
@@ -51,20 +51,20 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
       tmpValues[idx] = "";
       //Check Config 
     } else if (baseTypes.includes(e.value.toLowerCase())) {
-      sbToastError('Error: Export TypeName MUST NOT be a JADN predefined type');
+      sbToastError('Error: Root TypeName MUST NOT be a JADN predefined type');
       return;
     } else if (e.value.length >= 64) {
-      sbToastError('Error: Export Character Max length reached');
+      sbToastError('Error: Root Character Max length reached');
       return;
     } else if (e.value.includes(config.$Sys)) { //TODO empty
-      sbToastError('Error: Export TypeNames SHOULD NOT contain the System character');
+      sbToastError('Error: Root TypeNames SHOULD NOT contain the System character');
       return;
     } else if (!regex.test(e.value)) {
-      sbToastError('Error: Export TypeName format is not permitted');
+      sbToastError('Error: Root TypeName format is not permitted');
       return;
-      //Check if export exists
+      //Check if root exists
     } else if (tmpValues.includes(e.value)) {
-      sbToastError(`Export ${e.value} already exists.`);
+      sbToastError(`Root ${e.value} already exists.`);
       return;
     } else {
       tmpValues[idx] = e.value;
@@ -111,9 +111,9 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
 
   const onSelectChange = (e: Option) => {
     if (e == null) {
-      setNewExportType(null);
+      setNewRootType(null);
     } else {
-      setNewExportType(e);
+      setNewRootType(e);
     }
   }
 
@@ -123,18 +123,18 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
     setToggleAddToTypesModal(false)
   };
 
-  const onCreateTypeClick = (e: React.MouseEvent<HTMLElement>, newExportType: Option | null) => {
+  const onCreateTypeClick = (e: React.MouseEvent<HTMLElement>, newRootType: Option | null) => {
     e.preventDefault();
-    const exportType: string = newExportType?.value;
-    if (newExportType == null) {
+    const rootType: string = newRootType?.value;
+    if (newRootType == null) {
       sbToastError('Please select a type');
       return;
     }
 
     let typeArr;
-    if (Types[exportType.toLowerCase()].type == 'structure') {
+    if (Types[rootType.toLowerCase()].type == 'structure') {
       const typeVal = typeDef({
-        type: exportType,
+        type: rootType,
         name: addTypeName,
         options: [],
         comment: ''
@@ -143,7 +143,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
 
     } else {
       const typeVal = typeDef({
-        type: exportType,
+        type: rootType,
         name: addTypeName,
         options: [],
         comment: ''
@@ -162,17 +162,17 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
         placeholder={placeholder}
         value={val ? { value: val, label: val } : null}
         onChange={(e: Option) => onChange(e, i)}
-        data={validExports}
+        data={validRoots}
         isSmStyle
         isCreatable
-        customNoOptionMsg={'Begin typing to add an Export...'}
+        customNoOptionMsg={'Begin typing to add a Root...'}
       />
       <button type='button' className='btn btn-sm btn-danger' onClick={removeIndex} data-index={i}>
         <FontAwesomeIcon icon={faMinusSquare} />
       </button>
       {val && !schemaTypes.includes(val) &&
         <button type='button' className='btn btn-sm btn-primary' onClick={() => addToTypes(val)} data-index={i}
-          title={'Add Export to Types'}>
+          title={'Add Root to Types'}>
           <FontAwesomeIcon icon={faPlusSquare} />
         </button>
       }
@@ -218,15 +218,15 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
           <div className='modal-content'>
             <div className="modal-header">
               <h5 className='modal-title'>
-                Add Export {addTypeName}  to Types
+                Add Root {addTypeName}  to Types
               </h5>
               <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={onCloseClick} />
             </div>
             <div className="modal-body">
               <p>Please specify Type</p>
-              <SBSelect id={`newExportType`}
+              <SBSelect id={`newRootType`}
                 name="type"
-                value={newExportType}
+                value={newRootType}
                 onChange={onSelectChange}
                 data={types}
                 isGrouped
@@ -234,7 +234,7 @@ const KeyArrayEditor = memo(function KeyArrayEditor(props: KeyArrayEditorProps) 
                 isClearable />
             </div>
             <div className="modal-footer">
-              <button type='button' className='btn btn-sm btn-success' onClick={(e) => onCreateTypeClick(e, newExportType)}>Create</button>
+              <button type='button' className='btn btn-sm btn-success' onClick={(e) => onCreateTypeClick(e, newRootType)}>Create</button>
               <button type='button' className='btn btn-sm btn-secondary' onClick={onCloseClick}>Cancel</button>
             </div>
           </div>

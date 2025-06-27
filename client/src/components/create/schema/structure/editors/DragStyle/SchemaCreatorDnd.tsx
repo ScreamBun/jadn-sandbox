@@ -246,7 +246,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     }
 
                     setCardsState(updatedCards);
-                    sbToastSuccess(`Successfully added Export ${val.name} to Types`);
+                    sbToastSuccess(`Successfully added Root ${val.name} to Types`);
                     onScrollToCard(idx);
                 },
                 remove: (id: string) => {
@@ -355,9 +355,9 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     }
                 }
 
-                if (generatedSchema?.meta?.exports?.includes(removedType[0])) {
-                    const tmpMeta = generatedSchema.meta.exports.filter((typeName: string) => typeName != removedType[0]);
-                    setGeneratedSchema((prev: any) => ({ ...prev, meta: { ...prev.meta, exports: tmpMeta } }));
+                if (generatedSchema?.meta?.roots?.includes(removedType[0])) {
+                    const tmpMeta = generatedSchema.meta.roots.filter((typeName: string) => typeName != removedType[0]);
+                    setGeneratedSchema((prev: any) => ({ ...prev, meta: { ...prev.meta, roots: tmpMeta } }));
                 }
 
                 setCardsState(tmpCards);

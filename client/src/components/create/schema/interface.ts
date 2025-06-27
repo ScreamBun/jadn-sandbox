@@ -20,7 +20,7 @@ export interface Meta {
   comment?: string;
   copyright?:string;
   license?: string;
-  exports?: Array<string>;
+  roots?: Array<string>;
   config?: InfoConfig;
 }
 
