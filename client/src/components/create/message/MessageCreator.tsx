@@ -26,11 +26,11 @@ const MessageCreator = (props: any) => {
     })
 
     let schemaObj = useSelector(getSelectedSchema);
-    const exportRecords = schemaObj.info ? schemaObj.info && schemaObj.info.exports : [];
+    const exportRecords = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
     const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
 
     //set configuration data
-    const configDefs = schemaObj.info && schemaObj.info.config ? schemaObj.info.config : [];
+    const configDefs = schemaObj.meta && schemaObj.meta.config ? schemaObj.meta.config : [];
     if (configDefs) {
         for (const [key, value] of Object.entries(configDefs)) {
             if (key in configOpt && configOpt[key] != value && value != '') {
@@ -112,7 +112,7 @@ const MessageCreator = (props: any) => {
                                 value={commandType}
                                 isSmStyle
                                 isClearable
-                                customNoOptionMsg={Object.keys(schemaObj).length != 0 ? 'Schema is missing Exports' : 'Select a schema to begin'}
+                                customNoOptionMsg={Object.keys(schemaObj).length != 0 ? 'Schema is missing Roots' : 'Select a schema to begin'}
                             />
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                         </div>
@@ -128,7 +128,7 @@ const MessageCreator = (props: any) => {
             </div>
             <div className='card-body-page' id="message-editor">
                 <div className='tab-content mb-2'>
-                    <div className={`container-fluid tab-pane fade ps-2 pe-2 ${activeView == 'creator' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
+                    <div className={`container-fluid tab-pane fade ps-2 pe-2 ${activeView == 'creator' ? 'show active' : ''}`} id="meta" role="tabpanel" aria-labelledby="meta-tab" tabIndex={0}>
                         <div id='command-fields'>
                             {commandFields}
                             <div id="fieldDefs">
