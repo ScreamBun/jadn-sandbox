@@ -1,4 +1,4 @@
-./whls/jadnschema-0.3.0-py2.py3-none-any.whl
+./whls/jadnschema-0.4.0-py2.py3-none-any.whl
 ./whls/jadnxml-1.10.0-py2.py3-none-any.whl
 ./whls/jadnjson-1.4.0-py2.py3-none-any.whl
 ./whls/jadnvalidation-1.0.0-py2.py3-none-any.whl

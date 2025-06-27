@@ -12,7 +12,7 @@ export interface InfoConfig {
   $NSID?: string;
 }
 
-export interface Info {
+export interface Meta {
   package: string;
   version?: string;
   title?: string;
@@ -45,6 +45,6 @@ export type TypeArray = PrimitiveTypeArray|StandardTypeArray
 
 // Schema
 export interface SchemaJADN {
-  info?: Info;
+  meta?: Meta;
   types: Array<TypeArray>;
 }

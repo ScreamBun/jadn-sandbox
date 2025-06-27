@@ -1,8 +1,8 @@
-import Info from './info';
+import Meta from './meta';
 import Types from './types';
 
 // Structure
 export {
-  Info,
+  Meta,
   Types
 };

@@ -56,7 +56,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
         const [isLoading, setIsLoading] = useState(false);
 
         const [activeView, setActiveView] = useState('creator');
-        const [activeOpt, setActiveOpt] = useState('info');
+        const [activeOpt, setActiveOpt] = useState('meta');
 
         const listRef = useRef<any>(null);
         const rowHeight = useRef({});

@@ -20,7 +20,7 @@ interface EditorProps {
 
 const metaDef = ({ k = 'key', v = '' }: InfoDef) => ({ [k]: v } as Record<string, any>);
 
-// JADN Info Structure
+// JADN Meta Structure
 export default {
   package: {
     key: 'Package*',

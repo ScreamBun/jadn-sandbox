@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { v4 as uuid4 } from 'uuid';
 import { VariableSizeList as List } from "react-window";
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { Info, Types } from '../../structure';
+import { Meta, Types } from '../../structure';
 import { TypeArray, StandardTypeArray } from 'components/create/schema/interface';
 import { TypeObject } from '../consts';
 import withSchemaCreator, { configInitialState } from '../ParentEditor/withSchemaCreator';
@@ -23,7 +23,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         cardsState, setCardsState, getItemSize, listRef, setRowHeight,
         setIsValidJADN, setIsValidating, isLoading,
         activeOpt, setActiveOpt, activeView, configOpt, setConfigOpt,
-        fieldCollapseState, setFieldCollapseState, infoCollapse, setInfoCollapse,
+        fieldCollapseState, setFieldCollapseState, metaCollapse, setMetaCollapse,
         typesCollapse, setTypesCollapse,
         allFieldsCollapse, collapseAllFields, fieldCollapseStateRef } = props;
 
@@ -31,18 +31,18 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
 
     const onSchemaDrop = (item: Item) => {
         let key = item.text;
-        if (Object.keys(Info).includes(key)) {
-            const edit = key == 'config' ? Info[key].edit(configInitialState) : Info[key].edit();
+        if (Object.keys(Meta).includes(key)) {
+            const edit = key == 'config' ? Meta[key].edit(configInitialState) : Meta[key].edit();
             const updatedSchema = generatedSchema.types ? {
-                info: {
-                    ...generatedSchema.info || {},
+                meta: {
+                    ...generatedSchema.meta || {},
                     ...edit
                 },
                 types: [...generatedSchema.types]
             } :
                 {
-                    info: {
-                        ...generatedSchema.info || {},
+                    meta: {
+                        ...generatedSchema.meta || {},
                         ...edit
                     },
                 }
@@ -166,21 +166,21 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         onScrollToCard(insertAt);
     }
 
-    let infoKeys;
-    if (generatedSchema.info) {
-        const unusedInfoKeys = Object.keys(Info).filter(k =>
-            !(Object.keys(generatedSchema.info).includes(k)));
+    let metaKeys;
+    if (generatedSchema.meta) {
+        const unusedMetaKeys = Object.keys(Meta).filter(k =>
+            !(Object.keys(generatedSchema.meta).includes(k)));
 
-        const unusedInfo = Object.fromEntries(Object.entries(Info).filter(([key]) => unusedInfoKeys.includes(key)));
+        const unusedMeta = Object.fromEntries(Object.entries(Meta).filter(([key]) => unusedMetaKeys.includes(key)));
 
-        infoKeys = Object.keys(unusedInfo).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()}
+        metaKeys = Object.keys(unusedMeta).map(k => (
+            <DraggableKey item={Meta[k].key} acceptableType={'MetaKeys'} key={uuid4()}
                 id={uuid4()} index={-1} text={k}
                 isDraggable={selectedFile?.value == 'file' ? false : true} />
         ));
     } else {
-        infoKeys = Object.keys(Info).map(k => (
-            <DraggableKey item={Info[k].key} acceptableType={'InfoKeys'} key={uuid4()}
+        metaKeys = Object.keys(Meta).map(k => (
+            <DraggableKey item={Meta[k].key} acceptableType={'MetaKeys'} key={uuid4()}
                 id={uuid4()} index={-1} text={k}
                 isDraggable={selectedFile?.value == 'file' ? false : true} />
         ));
@@ -194,12 +194,12 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         />
     ));
 
-    const infoEditors = Object.keys(Info).map((k, i) => {
-        const key = k as keyof typeof Info;
-        if (generatedSchema.info && k in generatedSchema.info) {
-            return Info[key].editor({
+    const metaEditors = Object.keys(Meta).map((k, i) => {
+        const key = k as keyof typeof Meta;
+        if (generatedSchema.meta && k in generatedSchema.meta) {
+            return Meta[key].editor({
                 key: self.crypto.randomUUID(),
-                value: generatedSchema.info[key],
+                value: generatedSchema.meta[key],
                 dataIndex: i,
                 placeholder: k,
                 change: (val: any) => {
@@ -209,9 +209,9 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
 
                     setGeneratedSchema((prev: any) => ({
                         ...prev,
-                        info: {
-                            ...prev.info,
-                            ...Info[key].edit(val)
+                         meta: {
+                            ...prev.meta,
+                            ...Meta[key].edit(val)
                         }
                     }));
 
@@ -238,8 +238,8 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     if (tmpTypes.length != 0) {
                         setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                     } else {
-                        if (generatedSchema.info) {
-                            setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
+                        if (generatedSchema.meta) {
+                            setGeneratedSchema((prev: any) => ({ meta: { ...prev.meta } }));
                         } else {
                             setGeneratedSchema({});
                         }
@@ -250,22 +250,22 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                     onScrollToCard(idx);
                 },
                 remove: (id: string) => {
-                    if (generatedSchema.info && id in generatedSchema.info) {
+                    if (generatedSchema.meta && id in generatedSchema.meta) {
                         if (id == 'config') {
                             setConfigOpt(configInitialState);
                         }
-                        const tmpInfo = { ...generatedSchema.info };
-                        delete tmpInfo[id];
+                        const tmpMeta = { ...generatedSchema.meta };
+                        delete tmpMeta[id];
                         let updatedSchema;
-                        //remove info if empty
-                        if (Object.keys(tmpInfo).length == 0) {
+                        //remove meta if empty
+                        if (Object.keys(tmpMeta).length == 0) {
                             const tmpData = { ...generatedSchema };
-                            delete tmpData['info'];
+                            delete tmpData['meta'];
                             updatedSchema = tmpData;
                         } else {
                             updatedSchema = {
                                 ...generatedSchema,
-                                info: tmpInfo
+                                meta: tmpMeta
                             };
                         }
                         setGeneratedSchema(updatedSchema);
@@ -329,8 +329,8 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                 if (tmpTypes.length != 0) {
                     setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                 } else {
-                    if (generatedSchema.info) {
-                        setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
+                    if (generatedSchema.meta) {
+                        setGeneratedSchema((prev: any) => ({ meta: { ...prev.meta } }));
                     } else {
                         setGeneratedSchema({});
                     }
@@ -348,16 +348,16 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                 if (tmpTypes.length != 0) {
                     setGeneratedSchema((prev: any) => ({ ...prev, types: tmpTypes }));
                 } else {
-                    if (generatedSchema.info) {
-                        setGeneratedSchema((prev: any) => ({ info: { ...prev.info } }));
+                    if (generatedSchema.meta) {
+                        setGeneratedSchema((prev: any) => ({ meta: { ...prev.meta } }));
                     } else {
                         setGeneratedSchema({});
                     }
                 }
 
-                if (generatedSchema?.info?.exports?.includes(removedType[0])) {
-                    const tmpInfo = generatedSchema.info.exports.filter((typeName: string) => typeName != removedType[0]);
-                    setGeneratedSchema((prev: any) => ({ ...prev, info: { ...prev.info, exports: tmpInfo } }));
+                if (generatedSchema?.meta?.exports?.includes(removedType[0])) {
+                    const tmpMeta = generatedSchema.meta.exports.filter((typeName: string) => typeName != removedType[0]);
+                    setGeneratedSchema((prev: any) => ({ ...prev, meta: { ...prev.meta, exports: tmpMeta } }));
                 }
 
                 setCardsState(tmpCards);
@@ -384,13 +384,13 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                                         <li className='nav-item me-2'>
                                             <a
                                                 className={`nav-link 
-                                                    ${activeOpt == 'info' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${activeOpt == 'meta' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
                                                     ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
-                                                onClick={() => setActiveOpt('info')}
+                                                onClick={() => setActiveOpt('meta')}
                                                 title="meta data (about a schema package)"
                                                 data-bs-toggle="pill"
                                             >
-                                                Info
+                                                Meta
                                             </a>
                                         </li>
                                         <li className='nav-item'>
@@ -407,9 +407,9 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                                         </li>
                                     </ul>
                                     <div className='tab-content mb-2'>
-                                        <div className={`tab-pane fade ${activeOpt == 'info' ? 'show active' : ''}`} id="info" role="tabpanel" aria-labelledby="info-tab" tabIndex={0}>
+                                        <div className={`tab-pane fade ${activeOpt == 'meta' ? 'show active' : ''}`} id="meta" role="tabpanel" aria-labelledby="meta-tab" tabIndex={0}>
                                             <ul className="list-group">
-                                                {infoKeys.length != 0 ? infoKeys : <div className='col'>No Info to add</div>}
+                                                {metaKeys.length != 0 ? metaKeys : <div className='col'>No Meta to add</div>}
                                             </ul>
                                         </div>
                                         <div className={`tab-pane fade ${activeOpt == 'types' ? 'show active' : ''}`} id="types" role="tabpanel" aria-labelledby="types-tab" tabIndex={0}>
@@ -443,25 +443,25 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                                                 <div className='card-header text-light bg-primary' style={{ justifyContent: 'center', display: 'flex', flexDirection: 'column' }}>
                                                     <div className='row'>
                                                         <div className='col'>
-                                                            <h5 id="info" className="card-title text-light">Info <small style={{ fontSize: '10px' }}> metadata </small></h5>
+                                                            <h5 id="meta" className="card-title text-light">Meta <small style={{ fontSize: '10px' }}> metadata </small></h5>
                                                         </div>
                                                         <div className='col'>
                                                             <span>
-                                                                <FontAwesomeIcon icon={infoCollapse ? faCircleChevronDown : faCircleChevronUp}
+                                                                <FontAwesomeIcon icon={metaCollapse ? faCircleChevronDown : faCircleChevronUp}
                                                                     className='float-end btn btn-sm text-light'
-                                                                    onClick={() => setInfoCollapse(!infoCollapse)}
-                                                                    title={infoCollapse ? ' Show Info' : ' Hide Info'} />
+                                                                    onClick={() => setMetaCollapse(!metaCollapse)}
+                                                                    title={metaCollapse ? ' Show Meta' : ' Hide Meta'} />
                                                             </span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className='card-body'>
-                                                    {!infoCollapse &&
-                                                        <Droppable onDrop={onSchemaDrop} acceptableType={'InfoKeys'} >
-                                                            {generatedSchema.info ?
-                                                                <>{infoEditors}</>
+                                                    {!metaCollapse &&
+                                                        <Droppable onDrop={onSchemaDrop} acceptableType={'MetaKeys'} >
+                                                            {generatedSchema.meta ?
+                                                                <>{metaEditors}</>
                                                                 :
-                                                                <><p>To add metadata info click and drag items from Info</p></>
+                                                                <><p>To add metadata click and drag items from Meta</p></>
                                                             }
                                                         </Droppable>
                                                     }
