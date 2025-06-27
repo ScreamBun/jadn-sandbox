@@ -123,7 +123,7 @@ const DataToTranslate = (props: any) => {
 
                             <SBSelect id={"data-decode-list"}
                                 customClass={'me-1'}
-                                data={schemaTypes.exports}
+                                data={schemaTypes.roots}
                                 onChange={(e: Option) => setDataType(e)}
                                 value={dataType}
                                 placeholder={'Type...'}

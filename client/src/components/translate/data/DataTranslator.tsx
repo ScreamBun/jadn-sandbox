@@ -37,10 +37,10 @@ const DataTranslator = () => {
     const [dataType, setDataType] = useState<Option | null>(null);
     const [schemaTypes, setSchemaTypes] = useState<{
         all: string[],
-        exports: string[]
+        roots: string[]
     }>({
         all: [],
-        exports: []
+        roots: []
     });
 
     const meta_title = useSelector(getPageTitle) + ' | Data Translation';
@@ -73,7 +73,7 @@ const DataTranslator = () => {
         setDataType(null);
         setSchemaTypes({
             all: [],
-            exports: []
+            roots: []
         });
         dispatch(setSchema(null));
     }
