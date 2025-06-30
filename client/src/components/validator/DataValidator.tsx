@@ -23,10 +23,10 @@ const DataValidator = () => {
     const [decodeMsg, setDecodeMsg] = useState<Option | null>(null);
     const [decodeSchemaTypes, setDecodeSchemaTypes] = useState<{
         all: string[],
-        exports: string[]
+        roots: string[]
     }>({
         all: [],
-        exports: []
+        roots: []
     });
 
     const meta_title = useSelector(getPageTitle) + ' | Data Validation';
@@ -50,7 +50,7 @@ const DataValidator = () => {
         setDecodeMsg(null);
         setDecodeSchemaTypes({
             all: [],
-            exports: []
+            roots: []
         });
         dispatch(setSchema(null));
     }

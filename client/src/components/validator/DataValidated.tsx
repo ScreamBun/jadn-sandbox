@@ -114,7 +114,7 @@ const DataValidated = (props: any) => {
 
                             <SBSelect id={"data-decode-list"}
                                 customClass={'me-1'}
-                                data={decodeSchemaTypes.exports}
+                                data={decodeSchemaTypes.roots}
                                 onChange={(e: Option) => setDecodeMsg(e)}
                                 value={decodeMsg}
                                 placeholder={'Data type...'}

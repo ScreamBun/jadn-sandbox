@@ -27,7 +27,7 @@ interface SchemaLoaderProps {
     setDecodeMsg?: (msgType: Option | null) => void;
     setDecodeSchemaTypes?: (obj: {
         all: string[] | [],
-        exports: string[] | []
+        roots: string[] | []
     }) => void;
     acceptFormat?: string[];
     schemaFormat: Option | null;
@@ -86,9 +86,9 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     }, [dispatch])
 
     const loadDecodeTypes = (schemaObj: any) => {
-        let decodeTypes: { all: any[], exports: any[] } = {
+        let decodeTypes: { all: any[], roots: any[] } = {
             all: [],
-            exports: []
+            roots: []
         };
         let msgDecode = '';
 
@@ -100,19 +100,19 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             }
         }
 
-        if (schemaObj.info !== undefined) {
-            if (schemaObj.info.exports !== undefined) {
-                decodeTypes.exports = schemaObj.info.exports;
+        if (schemaObj.meta !== undefined) {
+            if (schemaObj.meta.roots !== undefined) {
+                decodeTypes.roots = schemaObj.meta.roots;
             }
         }
         if (schemaObj.types !== undefined) {
             decodeTypes.all = schemaObj.types.map((def: any[]) => def[0]);
-            decodeTypes.all = decodeTypes.all.filter(dt => !decodeTypes.exports.includes(dt));
+            decodeTypes.all = decodeTypes.all.filter(dt => !decodeTypes.roots.includes(dt));
             decodeTypes.all.sort();
         }
         if (decodeMsg === null || !decodeTypes.all.includes(decodeMsg)) {
-            if (decodeTypes.exports.length >= 1) {
-                msgDecode = decodeTypes.exports[0];
+            if (decodeTypes.roots.length >= 1) {
+                msgDecode = decodeTypes.roots[0];
             } else if (decodeTypes.all.length >= 1) {
                 msgDecode = decodeTypes.all[0];
             }
