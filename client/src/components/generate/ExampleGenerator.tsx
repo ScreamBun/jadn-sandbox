@@ -86,14 +86,14 @@ const ExampleGenerator = () => {
         }
 
         //TODO? : allow user to provide reference data to resolve schema 
-        if (schemaObj.info && Object.keys(schemaObj.info).includes('namespaces')) {
+        if (schemaObj.meta && Object.keys(schemaObj.meta).includes('namespaces')) {
             setIsLoading(false);
             sbToastError("Error: Schema must be resolved");
             return;
         }
-        if (schemaObj.info && !Object.keys(schemaObj.info).includes('exports')) {
+        if (schemaObj.meta && !Object.keys(schemaObj.meta).includes('roots')) {
             setIsLoading(false);
-            sbToastWarning("Warning: Schema requires Exports in order to generate data");
+            sbToastWarning("Warning: Schema requires Roots in order to generate data");
             return;
         }
 
