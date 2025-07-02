@@ -204,6 +204,7 @@ export const validateOptDataBinary = (config: InfoConfig, optData: any, data: st
 //FORMAT TYPE OPTION VALIDATION: given [type of value/format] and [data], validate
 //binary: eui, ipv4-addr, ipv6-addr
 //TODO : if valid, return binary length of formatted data
+//TODO: Use Server Side Validaiton Logic.
 export const validateBinaryFormat = (data: string, type: string) => {
 	if (type == 'x' && data.match(/^(0x)?[0-9A-F]+$/)) { //hex encoding
 		// determine if non-prefixed hex should validate

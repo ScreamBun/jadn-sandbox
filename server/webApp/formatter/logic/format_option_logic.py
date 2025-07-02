@@ -43,6 +43,10 @@ class FormatOptionLogic:
     f16 = FormatOptionModel("f16", "float16", "Serialize as IEEE 754 Half-Precision Float (#7.25)", FormatType.NUMBER.value, "").__dict__
     f32 = FormatOptionModel("f32", "float32", "Serialize as IEEE 754 Single-Precision Float (#7.26)", FormatType.NUMBER.value, "").__dict__
     f64 = FormatOptionModel("f64", "float64", "Serialize as IEEE 754 Single-Precision Float (#7.27)", FormatType.NUMBER.value, "").__dict__
+    
+    hex_binary = FormatOptionModel("x", "hexBinary", "Hex - base16 - lowercase out, case-folding in", FormatType.BINARY.value, "").__dict__
+    hex_binary_upper_only = FormatOptionModel("X", "hexBinaryUpperOnly", "Hex - RFC 4648 Section 8 - uppercase only", FormatType.BINARY.value, "").__dict__
+    base_64_binary = FormatOptionModel("b", "base64Binary", "Base64url - RFC 4648 Section 5 (default text representation of Binary type)", FormatType.BINARY.value, "").__dict__
 
     def get_formats(self):
 
@@ -79,6 +83,9 @@ class FormatOptionLogic:
         formats.append(self.f16)
         formats.append(self.f32)
         formats.append(self.f64)
+        formats.append(self.hex_binary)
+        formats.append(self.hex_binary_upper_only)
+        formats.append(self.base_64_binary)
 
         return formats  
     
