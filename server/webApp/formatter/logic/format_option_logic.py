@@ -48,6 +48,13 @@ class FormatOptionLogic:
     hex_binary_upper_only = FormatOptionModel("X", "hexBinaryUpperOnly", "Hex - RFC 4648 Section 8 - uppercase only", FormatType.BINARY.value, "").__dict__
     base_64_binary = FormatOptionModel("b", "base64Binary", "Base64url - RFC 4648 Section 5 (default text representation of Binary type)", FormatType.BINARY.value, "").__dict__
 
+    date_time_int = FormatOptionModel("date-time", "Date Time", "POSIX time: the number of seconds since the Epoch", FormatType.INTEGER.value, "ex: 835810335").__dict__
+    time_int = FormatOptionModel("time", "Time", "POSIX Time", FormatType.INTEGER.value, "ex: 835810335").__dict__
+    date_int = FormatOptionModel("date", "Date", "POSIX Time", FormatType.INTEGER.value, "ex: 835810335").__dict__
+    gyear_month = FormatOptionModel("gYearMonth", "gYearMonth", "RFC 3339", FormatType.INTEGER.value, "ex: 197001").__dict__
+    gyear = FormatOptionModel("gYear", "gYear", "RFC 3339", FormatType.INTEGER.value, "ex: 1970").__dict__
+    gmonth_day = FormatOptionModel("gMonthDay", "gMonthDay", "RFC 3339", FormatType.INTEGER.value, "ex: 0101").__dict__
+
     def get_formats(self):
 
         formats = []
@@ -86,6 +93,12 @@ class FormatOptionLogic:
         formats.append(self.hex_binary)
         formats.append(self.hex_binary_upper_only)
         formats.append(self.base_64_binary)
+        formats.append(self.date_time_int)
+        formats.append(self.time_int)
+        formats.append(self.date_int)
+        formats.append(self.gyear_month)
+        formats.append(self.gyear)
+        formats.append(self.gmonth_day)
 
         return formats  
     

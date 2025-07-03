@@ -251,7 +251,7 @@ export const validateArrayFormat = (data: any[], type: string) => {
 	return false;
 }
 
-//integer: i8, i16, i32, u<n>
+//integer: i8, i16, i32, u<n>, date-time, date, time, gYearMonth, gYear, gMonthDay
 //number: f16, f32
 export const validateNumericFormat = (data: any, type: string) => {
 	if (type == 'i8') {
@@ -278,6 +278,30 @@ export const validateNumericFormat = (data: any, type: string) => {
 		if (0 < data && data < (2 ** (parseInt(n) - 1))) {
 			return true;
 		}
+	}
+	if (type == 'date-time') {
+		//check date-time
+		return true;
+	}
+	if (type == 'date') {
+		//check date
+		return true;
+	}
+	if (type == 'time') {
+		//check time
+		return true;
+	}
+	if (type == 'gYearMonth') {
+		//check gYearMonth
+		return true;
+	}
+	if (type == 'gYear') {
+		//check gYear
+		return true;
+	}
+	if (type == 'gMonthDay') {
+		//check gMonthDay
+		return true;
 	}
 	if (type == 'f16') {
 		//check half precision point
