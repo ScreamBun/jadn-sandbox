@@ -54,6 +54,8 @@ class FormatOptionLogic:
     gyear_month = FormatOptionModel("gYearMonth", "gYearMonth", "RFC 3339", FormatType.INTEGER.value, "ex: 197001").__dict__
     gyear = FormatOptionModel("gYear", "gYear", "RFC 3339", FormatType.INTEGER.value, "ex: 1970").__dict__
     gmonth_day = FormatOptionModel("gMonthDay", "gMonthDay", "RFC 3339", FormatType.INTEGER.value, "ex: 0101").__dict__
+    day_time_duration = FormatOptionModel("dayTimeDuration", "Day Time Duration", "", FormatType.INTEGER.value, "").__dict__
+    year_month_duration = FormatOptionModel("yearMonthDuration", "Year Month Duration", "", FormatType.INTEGER.value, "").__dict__
 
     def get_formats(self):
 
@@ -63,6 +65,8 @@ class FormatOptionLogic:
         formats.append(self.date)
         formats.append(self.time)
         formats.append(self.duration)
+        formats.append(self.day_time_duration)
+        formats.append(self.year_month_duration)
         formats.append(self.email)
         formats.append(self.idn_email)
         formats.append(self.hostname)

@@ -315,6 +315,15 @@ export const validateNumericFormat = (data: any, type: string) => {
 		//check double precision point
 		return true;
 	}
+	if (type == 'duration') {
+		return true
+	}
+	if (type == 'dayTimeDuration') {
+		return true
+	}
+	if (type == 'yearMonthDuration') {
+		return true
+	}
 	return false;
 }
 //string: JSON schema section 7.3
