@@ -316,13 +316,40 @@ export const validateNumericFormat = (data: any, type: string) => {
 		return true;
 	}
 	if (type == 'duration') {
-		return true
+		return true;
 	}
 	if (type == 'dayTimeDuration') {
-		return true
+		return true;
 	}
 	if (type == 'yearMonthDuration') {
-		return true
+		return true;
+	}
+	if (type == 'i64') {
+		return true;
+	}
+	if (type == 'nonNegativeInteger') {
+		return data >= 0 ? true : false;
+	}
+	if (type == 'positiveInteger') {
+		return data > 0 ? true : false;
+	}
+	if (type == 'nonPositiveInteger') {
+		return data <= 0 ? true : false;
+	}
+	if (type == 'negativeInteger') {
+		return data < 0 ? true : false;
+	}
+	if (type == 'u64') {
+		return true;
+	}
+	if (type == 'u32') {
+		return true;
+	}
+	if (type == 'u16') {
+		return true;
+	}
+	if (type == 'u8') {
+		return true;
 	}
 	return false;
 }
