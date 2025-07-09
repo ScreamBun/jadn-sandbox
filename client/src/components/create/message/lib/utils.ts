@@ -379,7 +379,27 @@ export const validateStringFormat = (data: string, type: string) => {
 	if (type == 'regex') {
 		return true;
 	}
-
-
+	if (type == 'normalizedString' && data.match(/^[\S]*$/)) {
+		return true;
+	}
+	if (type == 'token' && data.match(/^\S+(?:\s+\S+)*$/)) {
+		return true;
+	}
+	if (type == 'language' && data.match(/^[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*$/)) {
+		return true;
+	}	
+	if (type == 'name' && data.match(/^[a-zA-Z_:][a-zA-Z-_:\.]*$/)) {
+		return true;
+	}		
+	if (type == 'anyUri' && (data.match(/^(((ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*))?(\/?)(\{?)([a-zA-Z0-9\-\.\?\,\'\/\\\+\~\{\}\&%\$#_]*)?(\}?)(\/?)$/)
+		|| data.match(/^(\w+:(\/?\/?)[^\s]+$)/) || data.match(/^(.*)$/))) {
+		return true;
+	}
+	if (type == 'qName' && data.match(/^[a-zA-Z_][a-zA-Z-_\.]*[:][a-zA-Z_][a-zA-Z-_\.]*$/)) {
+		return true;
+	}
+	if (type == 'notation') {
+		return true; // TODO
+	}				
 	return false;
 }

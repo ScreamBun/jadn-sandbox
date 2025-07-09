@@ -28,6 +28,13 @@ class FormatOptionLogic:
     json_pointer = FormatOptionModel("json-pointer", "JSON Pointer", "RFC 6901 5", FormatType.STRING.value, "").__dict__
     relative_json_pointer = FormatOptionModel("relative-json-pointer", "Relative JSON Pointer", "JSONP", FormatType.STRING.value, "").__dict__
     regex = FormatOptionModel("regex", "Regex", "ECMA 262", FormatType.STRING.value, "").__dict__
+    normalizedString = FormatOptionModel("normalizedString", "Normalized String", "", FormatType.STRING.value, "").__dict__
+    token = FormatOptionModel("token", "Token", "", FormatType.STRING.value, "").__dict__
+    language = FormatOptionModel("language", "Language", "", FormatType.STRING.value, "").__dict__
+    name = FormatOptionModel("name", "Name", "RFC 3066", FormatType.STRING.value, "").__dict__
+    anyURI = FormatOptionModel("anyUri", "Any URI", "", FormatType.STRING.value, "").__dict__
+    qName = FormatOptionModel("qName", "QName", "", FormatType.STRING.value, "").__dict__
+    notation = FormatOptionModel("notation", "Notation", "", FormatType.STRING.value, "").__dict__
 
     # JADN Formats
     eui = FormatOptionModel("eui", "EUI", "IEEE Extended Unique Identifier (MAC Address), EUI-48 or EUI-64 specified in EUI", FormatType.BINARY.value, "").__dict__
@@ -103,6 +110,13 @@ class FormatOptionLogic:
         formats.append(self.gyear_month)
         formats.append(self.gyear)
         formats.append(self.gmonth_day)
+        formats.append(self.normalizedString)
+        formats.append(self.token)
+        formats.append(self.language)
+        formats.append(self.name)
+        formats.append(self.anyURI)
+        formats.append(self.qName)
+        formats.append(self.notation)
 
         return formats  
     
