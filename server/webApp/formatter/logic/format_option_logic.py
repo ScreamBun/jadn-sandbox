@@ -33,7 +33,7 @@ class FormatOptionLogic:
     language = FormatOptionModel("language", "Language", "", FormatType.STRING.value, "").__dict__
     name = FormatOptionModel("name", "Name", "RFC 3066", FormatType.STRING.value, "").__dict__
     anyURI = FormatOptionModel("anyUri", "Any URI", "", FormatType.STRING.value, "").__dict__
-    qName = FormatOptionModel("qName", "QName", "", FormatType.STRING.value, "").__dict__
+    QName = FormatOptionModel("QName", "QName", "", FormatType.STRING.value, "").__dict__
     notation = FormatOptionModel("notation", "Notation", "", FormatType.STRING.value, "").__dict__
 
     # JADN Formats
@@ -115,7 +115,7 @@ class FormatOptionLogic:
         formats.append(self.language)
         formats.append(self.name)
         formats.append(self.anyURI)
-        formats.append(self.qName)
+        formats.append(self.QName)
         formats.append(self.notation)
 
         return formats  

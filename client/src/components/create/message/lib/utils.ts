@@ -395,7 +395,7 @@ export const validateStringFormat = (data: string, type: string) => {
 		|| data.match(/^(\w+:(\/?\/?)[^\s]+$)/) || data.match(/^(.*)$/))) {
 		return true;
 	}
-	if (type == 'qName' && data.match(/^[a-zA-Z_][a-zA-Z-_\.]*[:][a-zA-Z_][a-zA-Z-_\.]*$/)) {
+	if (type == 'QName' && data.match(/^[a-zA-Z_][a-zA-Z-_\.]*[:][a-zA-Z_][a-zA-Z-_\.]*$/)) {
 		return true;
 	}
 	if (type == 'notation') {
