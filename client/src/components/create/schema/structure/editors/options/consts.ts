@@ -112,13 +112,13 @@ export const ValidOptions: Record<string, Array<string>> = {
   Number: ['minf', 'maxf', 'format'],
   String: ['minv', 'maxv', 'format', 'pattern'],
   // Structures
-  Array: ['extend', 'format', 'minv', 'maxv', 'attr'],
-  ArrayOf: ['vtype', 'minv', 'maxv', 'unique', 'set', 'unordered', 'attr'], //MUST NOT include more than one collection option (set, unique, or unordered)
+  Array: ['extend', 'format', 'minv', 'maxv'],
+  ArrayOf: ['vtype', 'minv', 'maxv', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
   Choice: ['id', 'extend', 'combine', 'attr'],
-  Enumerated: ['id', 'enum', 'pointer', 'extend', 'attr'],
-  Map: ['id', 'extend', 'minv', 'maxv', 'seq', 'attr'],
-  MapOf: ['ktype', 'vtype', 'minv', 'maxv', 'seq', 'attr'],
-  Record: ['extend', 'minv', 'maxv', 'seq', 'attr']
+  Enumerated: ['id', 'enum', 'pointer', 'extend'],
+  Map: ['id', 'extend', 'minv', 'maxv', 'seq'],
+  MapOf: ['ktype', 'vtype', 'minv', 'maxv', 'seq'],
+  Record: ['extend', 'minv', 'maxv', 'seq']
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
