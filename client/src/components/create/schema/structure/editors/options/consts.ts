@@ -32,7 +32,8 @@ export const FieldOptions = {
   'tagid': '&',  // field that specifies the type of this field
   'dir': '<',    // pointer enumeration treats field as a collection
   'key': 'K',    // field is a primary key for this type
-  'link': 'L'    // field is a link (foreign key) to an instance of FieldType
+  'link': 'L',    // field is a link (foreign key) to an instance of FieldType
+  'attr': '/attr' // field is an attribute
 };
 
 export const OptionTypes = {
@@ -41,7 +42,7 @@ export const OptionTypes = {
 };
 
 export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
-export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend'];
+export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend', 'attr'];
 export const IntegerOpts = ['minc', 'maxc', 'tagid', 'minv', 'maxv'];
 export const FloatOpts = ['minf', 'maxf'];
 export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype'];
@@ -111,13 +112,13 @@ export const ValidOptions: Record<string, Array<string>> = {
   Number: ['minf', 'maxf', 'format'],
   String: ['minv', 'maxv', 'format', 'pattern'],
   // Structures
-  Array: ['extend', 'format', 'minv', 'maxv'],
-  ArrayOf: ['vtype', 'minv', 'maxv', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
-  Choice: ['id', 'extend', 'combine'],
-  Enumerated: ['id', 'enum', 'pointer', 'extend'],
-  Map: ['id', 'extend', 'minv', 'maxv', 'seq'],
-  MapOf: ['ktype', 'vtype', 'minv', 'maxv', 'seq'],
-  Record: ['extend', 'minv', 'maxv', 'seq']
+  Array: ['extend', 'format', 'minv', 'maxv', 'attr'],
+  ArrayOf: ['vtype', 'minv', 'maxv', 'unique', 'set', 'unordered', 'attr'], //MUST NOT include more than one collection option (set, unique, or unordered)
+  Choice: ['id', 'extend', 'combine', 'attr'],
+  Enumerated: ['id', 'enum', 'pointer', 'extend', 'attr'],
+  Map: ['id', 'extend', 'minv', 'maxv', 'seq', 'attr'],
+  MapOf: ['ktype', 'vtype', 'minv', 'maxv', 'seq', 'attr'],
+  Record: ['extend', 'minv', 'maxv', 'seq', 'attr']
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
@@ -144,6 +145,10 @@ export const FieldOptionInputArgs: { [key: string]: any } = {
   link: {
     type: 'checkbox',
     description: 'Field is a relationship link to a type instance'
+  },
+  attr: {
+    type: 'checkbox',
+    description: 'Field is an attribute'
   }
 };
 
