@@ -49,7 +49,7 @@ const MessageGenerator2 = () => {
     const viewEditor = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (selectedFile == null || loadedSchema == null) {
-            sbToastError("Load a schema before switching to  editor view.");
+            sbToastError("Load a schema before switching to editor view.");
             return;
         }
         setActiveView('creator');
