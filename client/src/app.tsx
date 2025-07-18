@@ -6,7 +6,6 @@ import SBSpinner from 'components/common/SBSpinner';
 const AppLayout = lazy(() => import('./components/static/appLayout'));
 const Home = lazy(() => import('components/home/home'));
 const MessageGenerator = lazy(() => import('./components/create/message/MessageGenerator'));
-const MessageGenerator2 = lazy(() => import('./components/create/message2/MessageGenerator'));
 const SchemaGenerator = lazy(() => import('./components/create/schema/SchemaGenerator'));
 const SchemaVisualizer = lazy(() => import('./components/visualize/SchemaVisualizer'));
 const MessageValidator = lazy(() => import('./components/validator/DataValidator'));
@@ -30,7 +29,6 @@ export const App = () => {
               <Route path="validate-message" element={<MessageValidator />} />
               <Route path="convert-schema" element={<SchemaVisualizer />} />
               <Route path="create/message" element={<MessageGenerator />} />
-              <Route path="create/message2" element={<MessageGenerator2 />} />
               <Route path="create/schema" element={<SchemaGenerator />} />
               <Route path="transform-schema" element={<SchemaTransformer />} />
               <Route path="generate-message" element={<ExampleGenerator />} />

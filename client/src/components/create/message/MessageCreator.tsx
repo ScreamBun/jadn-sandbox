@@ -13,8 +13,9 @@ import SBScrollToTop from 'components/common/SBScrollToTop'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
 
 const MessageCreator = (props: any) => {
+    // Destructure props
     const { generatedMessage, setGeneratedMessage, commandType, setCommandType } = props
-    const [activeView, setActiveView] = useState('creator');
+    // Configuration Options
     const [configOpt, setConfigOpt] = useState({
         $MaxBinary: $MAX_BINARY,
         $MaxString: $MAX_STRING,
@@ -25,11 +26,12 @@ const MessageCreator = (props: any) => {
         $NSID: $NSID
     })
 
+    // Initiate Schema Object and pull exports and types
     let schemaObj = useSelector(getSelectedSchema);
-    const exportRecords = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
-    const recordDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
+    const roots = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
+    const typeDefs = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === commandType?.value) : [];
 
-    //set configuration data
+    // Set Configuration Data
     const configDefs = schemaObj.meta && schemaObj.meta.config ? schemaObj.meta.config : [];
     if (configDefs) {
         for (const [key, value] of Object.entries(configDefs)) {
@@ -42,11 +44,13 @@ const MessageCreator = (props: any) => {
         }
     }
 
+    // Handle User Dropdown Selection
     const handleSelection = (e: Option) => {
         setCommandType(e);
         setGeneratedMessage({});
     }
 
+    // This is what changes the JSON
     const optChange = (k: string, v: any) => {
         const keys = k.split('.');
 
@@ -60,34 +64,45 @@ const MessageCreator = (props: any) => {
         }
 
         setGeneratedMessage(generatedMessage);
+        console.log(generatedMessage);
     }
 
-    const recordDef = recordDefs.length === 1 ? recordDefs[0] : [];
+    const updateJson = () => {
+        setGeneratedMessage({ ...generatedMessage });
+    }
+
+    const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
     let commandFields: null | JSX.Element = null;
-
-   // if (recordDef.length > 1 && recordDef[recordDef.length - 2].length > 0) {
-    //    commandFields = (
-    //        <small id="exportHelpBlock" className="form-text text-muted">
-   //             <b>Comment: </b>
-     //           {recordDef[recordDef.length - 2]}
-   //         </small>
-  //      );
-  //  }
-
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
+
+    // Decide which fields to display based on command type
     if (commandType?.value) {
-        //TODO: add value={} --> This is for uploading preloaded messages.
-        if (Array.isArray(recordDef[recordDef.length - 1]) && recordDef[recordDef.length - 1].length != 0) {
-            if (recordDef[1] && recordDef[1].toLowerCase() != 'choice' && recordDef[1].toLowerCase() != 'enumerated') { //check not choice or enum type
-                const fields = recordDef[recordDef.length - 1] as Array<StandardFieldArray>;
-                fieldDefs = fields.map(def => <Field key={`${def[0]}-${def[1]}`} def={def} optChange={optChange} config={configOpt} />);
-            } else if (recordDef[1] && recordDef[1].toLowerCase() == 'choice' || recordDef[1].toLowerCase() == 'enumerated') {
-                const field = [0, recordDef[0], recordDef[0], recordDef[2], recordDef[3], recordDef[4]];
-                fieldDefs = <Field key={field[0]} def={field} optChange={optChange} config={configOpt} />;
+        if (Array.isArray(typeDef[typeDef.length - 1]) && typeDef[typeDef.length - 1].length != 0) {
+            // If not choice or enumerated
+            if (typeDef[1] && typeDef[1].toLowerCase() != 'choice' && typeDef[1].toLowerCase() != 'enumerated') {
+                const fields = typeDef[typeDef.length - 1] as Array<StandardFieldArray>;
+                fieldDefs = fields.map(def => 
+                    <Field key={`${def[0]}-${def[1]}`} 
+                        def={def} 
+                        optChange={optChange} 
+                        config={configOpt} />);
+            // If choice or enumerated
+            } else if (typeDef[1] && typeDef[1].toLowerCase() == 'choice' || typeDef[1].toLowerCase() == 'enumerated') {
+                const field = [0, typeDef[0], typeDef[0], typeDef[2], typeDef[3], typeDef[4]];
+                fieldDefs = 
+                    <Field key={field[0]} 
+                        def={field} 
+                        optChange={optChange} 
+                        config={configOpt} />;
             }
-        } else { //baseType = Primitive type, ArrayOf , MapOf --- convert TypeArray to FieldArray
-            const field = [0, recordDef[0], recordDef[1], recordDef[2], recordDef[3], recordDef[4]];
-            fieldDefs = <Field key={field[0]} def={field} optChange={optChange} config={configOpt} />;
+        // Core Types
+        } else {
+            const field = [0, typeDef[0], typeDef[1], typeDef[2], typeDef[3], typeDef[4]];
+            fieldDefs = 
+                <Field key={field[0]} 
+                    def={field} 
+                    optChange={optChange} 
+                    config={configOpt} />;
         }
     } else {
         fieldDefs = (
@@ -100,13 +115,13 @@ const MessageCreator = (props: any) => {
     }
 
     return (
-        <div className="card">
-            <div className="card-header p-2">
-                <div className='row no-gutters'>
-                    <div className='col-md-6 align-self-center'>
+        <div className='row'>
+            <div className='col-md-6'>
+                <div className='card'>
+                    <div className='card-body p-2'>
                         <div className="d-flex">
                             <SBSelect id={"command-list"}
-                                data={exportRecords}
+                                data={roots}
                                 onChange={handleSelection}
                                 placeholder={'Select a data type...'}
                                 value={commandType}
@@ -114,36 +129,34 @@ const MessageCreator = (props: any) => {
                                 isClearable
                                 customNoOptionMsg={Object.keys(schemaObj).length != 0 ? 'Schema is missing Roots' : 'Select a schema to begin'}
                             />
-                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                         </div>
-                    </div>
-                    <div className='col align-self-center'>
-                        <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
-                        <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
-
-                        <button type='button' onClick={() => setActiveView('message')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'message' ? ' d-none' : ''}`} >View JSON</button>
-                        <button type='button' onClick={() => setActiveView('creator')} className={`btn btn-primary float-end btn-sm me-1 ${activeView == 'creator' ? ' d-none' : ''}`} >View Creator</button>
-                    </div>
-                </div>
-            </div>
-            <div className='card-body-page' id="message-editor">
-                <div className='tab-content mb-2'>
-                    <div className={`container-fluid tab-pane fade ps-2 pe-2 ${activeView == 'creator' ? 'show active' : ''}`} id="meta" role="tabpanel" aria-labelledby="meta-tab" tabIndex={0}>
                         <div id='command-fields'>
                             {commandFields}
-                            <div id="fieldDefs">
+                            <div id="fieldDefs" className = "overflow-auto" style={{maxHeight:'585px'}}>
                                 {fieldDefs}
                             </div>
                         </div>
                     </div>
-
-                    <div className={`tab-pane fade ${activeView == 'message' ? 'show active' : ''}`} id="message" role="tabpanel" aria-labelledby="message-tab" tabIndex={0}>
+                </div>
+            </div>
+            <div className ='col-md-6'>
+                <div className='card'>
+                    <div className = "card-header p-2 d-flex align-items-center">
+                        <h5 className = "mb-0">JSON Viewer</h5>
+                        <div className = "ms-auto">
+                            <button type='button' onClick={updateJson} className={`btn btn-sm btn-primary float-end ms-1`} >Update JSON</button>
+                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
+                            <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
+                            <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
+                        </div>
+                    </div>
+                    <div className='card-body p-2'>
                         <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
                     </div>
                     <SBScrollToTop divID='message-editor' />
                 </div>
             </div>
         </div>
-    )
+    );
 }
-export default MessageCreator 
+export default MessageCreator
