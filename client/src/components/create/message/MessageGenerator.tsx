@@ -16,7 +16,7 @@ const MessageGenerator2 = () => {
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessage, setGeneratedMessage] = useState({});
-    const [commandType, setCommandType] = useState<Option | null>();
+    const [selection, setSelection] = useState<Option | null>();
 
     const meta_title = useSelector(getPageTitle) + ' | Data Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`
@@ -29,7 +29,7 @@ const MessageGenerator2 = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setCommandType(null);
+        setSelection(null);
         setGeneratedMessage({});
         dispatch(setSchema(loadedSchema));
     }, [loadedSchema])
@@ -39,7 +39,7 @@ const MessageGenerator2 = () => {
         dismissAllToast();
         setSelectedFile(null);
         setLoadedSchema(null);
-        setCommandType(null);
+        setSelection(null);
         setGeneratedMessage({});
         setActiveView('message');
         sbToastSuccess("Schema reset successfully");
@@ -85,7 +85,7 @@ const MessageGenerator2 = () => {
                                         <div className="tab-pane fade show active" id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
                                             <MessageCreator
                                                 generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                                commandType={commandType} setCommandType={setCommandType} />
+                                                selection={selection} setSelection={setSelection} />
                                         </div>
                                     )}
                                 </div>
