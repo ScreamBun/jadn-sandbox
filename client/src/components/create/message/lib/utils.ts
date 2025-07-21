@@ -7,7 +7,7 @@ export const makeCards = (field: any, schemaObj: SchemaJADN): JSX.Element | JSX.
     if(field[1] === 'Record') {
         return record(field, schemaObj);
     } else if (field[1] === 'Enumeration') {
-        return enumerated(field, schemaObj);
+        return enumerated(field);
     } else if (field[1] === 'Array') {
         return array(field, schemaObj);
     } else if (field[1] === 'MapOf') {

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeCards, findKeys, findValues, hasChildren, getChildren, getRootType } from "./utils"
 import { SchemaJADN } from "components/create/schema/interface";
+import SBSelect from "components/common/SBSelect";
 
 // Aux Functions
 const isOptional = (field: Array<any>): JSX.Element | JSX.Element[] | null => {
@@ -19,6 +20,15 @@ const makeChildCards = (children: Array<any>, schemaObj: SchemaJADN): JSX.Elemen
         return null;
     }
     let childrenCards: JSX.Element[] = [];
+
+    // Check to see if child length == 3 -> enumerated
+    if (children[0].length == 3) {
+        return <div className="col my-1 px-0">
+                                <SBSelect id={"Enumeration"} name={"Enumeration"} data={children.map(child => child[1])}
+                                placeholder={`Enumerated options`}
+                                isClearable />
+                        </div>
+    }
 
     for (let child of children) {
         if (hasChildren(child, schemaObj)) {
@@ -108,7 +118,32 @@ export const record = (field: Array<any>, schemaObj: SchemaJADN): JSX.Element | 
 }
 
 export const enumerated = (field: Array<any>, schemaObj: SchemaJADN): JSX.Element | JSX.Element[] => {
-    return <div></div>
+    const name = field[0]
+    const type = field[1];
+    const fieldOpts = field[2]
+    const showOpts = fieldOpts && fieldOpts.length > 0 ? `Opts: ${fieldOpts}` : '';
+    const comment = field[3]
+    const children = field[4]
+
+    const card = 
+        <div className='form-group'>
+            <div className='card'>
+                <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                    <div>
+                        <p className='card-title m-0'>{`${type} - ${name}${isOptional(field) ? '' : '*'} ${showOpts}`}</p>
+                        {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
+                    </div>
+                </div>
+                <div className = 'card-body mx-2'>
+                    <div className='row'>
+                        <div className="col my-1 px-0">
+                            {makeChildCards(children, schemaObj)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    return card
 }
 
 export const array = (field: Array<any>, schemaObj: SchemaJADN): JSX.Element | JSX.Element[] => {
@@ -193,8 +228,37 @@ export const arrayOf = (field: Array<any>): JSX.Element | JSX.Element[] => {
     </div>
 }
 
-export const choice = (field: Array<any>, schemaObj: SchemaJADN): JSX.Element | JSX.Element[] => {
-    return []
+export const choice = (field: Array<any>): JSX.Element | JSX.Element[] => {
+    const name = field[0]
+    const type = field[1];
+    const fieldOpts = field[2]
+    const showOpts = fieldOpts && fieldOpts.length > 0 ? `Opts: ${fieldOpts}` : '';
+    const comment = field[3]
+    const children = field[4]
+
+    const card = 
+        <div className='form-group'>
+            <div className='card'>
+                <div className={`card-header p-2 ${children ? 'd-flex justify-content-between' : ''}`}>
+                    <div>
+                        <p className='card-title m-0'>{`${type} - ${name}${isOptional(field) ? '' : '*'} ${showOpts}`}</p>
+                        {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
+                    </div>
+                </div>
+                <div className = 'card-body mx-2'>
+                    <div className='row'>
+                        <div className="col my-1 px-0">
+                            <div className="col my-1 px-0">
+                                <SBSelect id={"Choice"} name={"Choice"} data={children.map((child: any[]) => child[1])}
+                                placeholder={`Choices`}
+                                isClearable />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    return card
 }
 
 export const basetype = (field: Array<any>): JSX.Element | JSX.Element[] => {
