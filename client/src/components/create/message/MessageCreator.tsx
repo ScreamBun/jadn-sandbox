@@ -51,7 +51,7 @@ const MessageCreator = (props: any) => {
 
     const updateJson = () => {
         setGeneratedMessage({ ...generatedMessage });
-    }
+    }    
 
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
     let commandFields: null | JSX.Element = null;

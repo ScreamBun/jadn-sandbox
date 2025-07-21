@@ -7,7 +7,7 @@ export const makeCards = (field: any, schemaObj: SchemaJADN): JSX.Element | JSX.
     if(field[1] === 'Record') {
         return record(field, schemaObj);
     } else if (field[1] === 'Enumeration') {
-        return enumerated(field);
+        return enumerated(field, schemaObj);
     } else if (field[1] === 'Array') {
         return array(field, schemaObj);
     } else if (field[1] === 'MapOf') {
@@ -15,7 +15,7 @@ export const makeCards = (field: any, schemaObj: SchemaJADN): JSX.Element | JSX.
     } else if (field[1] === 'ArrayOf') {
         return arrayOf(field);
     } else if (field[1] === 'Choice') {
-        return choice(field, schemaObj);
+        return choice(field);
     } else if (field[1] === 'Binary' || field[1] === 'Boolean' || field[1] === 'Integer' || field[1] === 'Number' || field[1] === 'String'){
         return basetype(field);
     } else {

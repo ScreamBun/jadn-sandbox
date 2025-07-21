@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeCards, findKeys, findValues, hasChildren, getChildren, getRootType } from "./utils"
 import { SchemaJADN } from "components/create/schema/interface";
 import SBSelect from "components/common/SBSelect";
+import SBInputField from "components/create/message/lib/SBInputField";
 
 // Aux Functions
 const isOptional = (field: Array<any>): JSX.Element | JSX.Element[] | null => {
@@ -65,6 +66,7 @@ const makeFieldValueCard = (field: Array<any>): JSX.Element | JSX.Element[] => {
                     <div>
                         <p className='card-title m-0'>{`${type} - ${name}${isOptional(field) ? '' : '*'} ${showOpts}`}</p>
                         {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
+                        <SBInputField></SBInputField>
                     </div>
                 </div>
             </div>
@@ -277,6 +279,7 @@ export const basetype = (field: Array<any>): JSX.Element | JSX.Element[] => {
                             <div>
                                 <p className='card-title m-0'>{`${type} - ${name}${isOptional(field) ? '' : '*'} ${showOpts}`}</p>
                                 {comment ? <small className='card-subtitle form-text text-muted text-wrap'>{comment}</small> : ''}
+                                <SBInputField></SBInputField>
                             </div>
                         </div>
                     </div>
