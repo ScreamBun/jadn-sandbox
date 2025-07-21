@@ -49,10 +49,6 @@ const MessageCreator = (props: any) => {
         setGeneratedMessage({});
     }
 
-    const updateJson = () => {
-        setGeneratedMessage({ ...generatedMessage });
-    }    
-
     const typeDef = typeDefs.length === 1 ? typeDefs[0] : [];
     let commandFields: null | JSX.Element = null;
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
@@ -70,6 +66,11 @@ const MessageCreator = (props: any) => {
             </small>
         );
     }
+
+    const updateJson = () => {
+        //setGeneratedMessage({ ...generatedMessage });
+        setGeneratedMessage(JSON_OBJ);
+    }    
 
     return (
         <div className='row'>

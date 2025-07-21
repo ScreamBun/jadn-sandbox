@@ -2,7 +2,7 @@ import React from "react";
 import { makeCards, findKeys, findValues, hasChildren, getChildren, getRootType } from "./utils"
 import { SchemaJADN } from "components/create/schema/interface";
 import SBSelect from "components/common/SBSelect";
-import SBInputField from "components/create/message/lib/SBInputField";
+import SBInputField from "components/common/SBInputField";
 
 // Aux Functions
 const isOptional = (field: Array<any>): JSX.Element | JSX.Element[] | null => {
