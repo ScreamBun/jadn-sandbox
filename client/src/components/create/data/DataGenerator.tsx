@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import MessageCreator from './MessageCreator'
+import DataCreator from './DataCreator'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
@@ -9,7 +9,7 @@ import { dismissAllToast } from 'components/common/SBToast'
 import { sbToastSuccess, sbToastError } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 
-const MessageGenerator2 = () => {
+const DataGenerator = () => {
     const dispatch = useDispatch()
 
     const [selectedFile, setSelectedFile] = useState<Option | null>(null);
@@ -83,7 +83,7 @@ const MessageGenerator2 = () => {
                                     )}
                                     {activeView === 'creator' && (
                                         <div className="tab-pane fade show active" id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
-                                            <MessageCreator
+                                            <DataCreator
                                                 generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
                                                 selection={selection} setSelection={setSelection} />
                                         </div>
@@ -97,4 +97,4 @@ const MessageGenerator2 = () => {
         </div>
     );
 }
-export default MessageGenerator2
+export default DataGenerator
