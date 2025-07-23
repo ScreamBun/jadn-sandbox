@@ -33,6 +33,10 @@ export type EnumeratedFieldKey = 'id' | 'value' | 'comment';
 export type EnumeratedFieldArray = [number, number|string, string]
 // General Field
 export type FieldArray = StandardFieldArray | EnumeratedFieldArray;
+export type ArrayFieldKey = 'name' | 'type' | 'options' | 'comment' | 'children';
+export type ArrayFieldArray = [string, string, Array<string>, string, Array<StandardFieldArray>];
+
+export type AllFieldArray = StandardFieldArray | ArrayFieldArray | EnumeratedFieldArray;
 
 // Types
 // Standard Type

@@ -1,9 +1,10 @@
-import { StandardFieldArray } from "components/create/schema/interface";
+import { ArrayFieldArray } from "components/create/schema/interface";
 import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
+import Field from "../Field";
 
 interface FieldProps {
-    field: StandardFieldArray;
+    field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
     children: JSX.Element | JSX.Element[];
     parent?: string;
@@ -11,24 +12,34 @@ interface FieldProps {
 }
 
 const Array = (props: FieldProps) => {
-    const { field, fieldChange, children, parent, value } = props;
-    const [_idx, name, type, options, _comment] = field;
+    const { field, fieldChange, parent, value } = props;
+    const [name, type, options, _comment, children] = field;
     const [toggle, setToggle] = useState(true);
-    const [data, setData] = useState(value || {});
+    const [data, setData] = useState(value);
 
     const handleChange = (childKey: string, childValue: any) => {
-        setData((prev: any) => {
-            const updated = { ...prev };
-            if (childValue === "" || childValue === undefined || childValue === null) {
-                delete updated[childKey];
-            } else {
-                updated[childKey] = childValue;
+        setData((prev: any[] = []) => {
+            const idx = children.findIndex((child: any) => child[0] === childKey || child[1] === childKey);
+            const updated = [...prev];
+            updated[idx] = childValue;
+            while (updated.length && (updated[updated.length - 1] === undefined || updated[updated.length - 1] === "" || updated[updated.length - 1] === null)) {
+                updated.pop();
             }
-            // Update the overarching generatedMessage under this array field's key (name)
             fieldChange(name, updated);
             return updated;
         });
     };
+
+    const childrenCards = children.map((child, idx) => {
+        return (
+            <Field
+                key={idx}
+                field={child}
+                fieldChange={handleChange}
+                parent={name}
+            />
+        );
+    });
 
     return (
         <div className='form-group m-3'>
@@ -39,17 +50,7 @@ const Array = (props: FieldProps) => {
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} />
                 </div>
                 <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
-                    {React.Children.map(children, (child) => {
-                        if (React.isValidElement(child)) {
-                            // Map each child with a clone of itself with updates fieldChange to update nested values instead of parent
-                            return React.cloneElement(child as React.ReactElement<any>, {
-                                fieldChange: handleChange,
-                                parent: parent,
-                                value: data[(child.props as any).field[1]]
-                            });
-                        }
-                        return child;
-                    })}
+                    {childrenCards}
                 </div>
             </div>
         </div>

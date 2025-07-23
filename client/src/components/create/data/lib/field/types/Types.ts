@@ -1,9 +1,9 @@
 import CoreType from './CoreType';
-import { Record } from './Record';
+import Record from './Record';
 import { MapOf } from './MapOf';
-import { Map } from './Map';
-import { Enumerated } from './Enumerated';
-import { Choice } from './Choice';
+import Map from './Map';
+import Enumerated from './Enumerated';
+import Choice from './Choice';
 import { ArrayOf } from './ArrayOf';
 import Array from './Array';
 

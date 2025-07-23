@@ -4,18 +4,23 @@ import React, {useState} from "react";
 interface FieldProps {
     field: StandardFieldArray;
     fieldChange: (k:string, v:any) => void;
-    children?: JSX.Element;
+    children?: JSX.Element | JSX.Element[];
     parent?: string;
     value?: any;
 }
 
 const CoreType = (props: FieldProps) => {
     const { field, fieldChange, children, parent, value } = props;
-    const [_idx, name, type, options, _comment] = field;
+    let [_idx, name, type, options, _comment] = [0, '', '', [] as any|any[], ''];
+    if (field.length == 5) {
+        [_idx, name, type, options, _comment] = field;
+    } else {
+        [name as any, type, options, _comment as any] = field;
+    }
 
     const [data, setData] = useState(value);
     
-    if (type === "boolean") {
+    if (type === "Boolean") {
         return (
             <div className='form-group m-3'>
                 <div className='card'>
@@ -39,7 +44,7 @@ const CoreType = (props: FieldProps) => {
                 </div>
             </div>
         );
-    } else if (type == "binary") {
+    } else if (type == "Binary") {
         return (
             <div className='form-group m-3'>
                 <div className='card'>
@@ -61,7 +66,7 @@ const CoreType = (props: FieldProps) => {
                 </div>
             </div>
         );
-    } else if (type == "number") {
+    } else if (type == "Number") {
         return (
             <div className='form-group m-3'>
                 <div className='card'>
@@ -73,17 +78,17 @@ const CoreType = (props: FieldProps) => {
                         type='number'
                         value={data}
                         onChange={e => {
-                            setData(e.target.value);
+                            setData(parseFloat(e.target.value));
                         }}
                         onBlur = {e => {
-                            fieldChange(name, e.target.value)
+                            fieldChange(name, parseFloat(e.target.value));
                         }}
                     />
                     {children}
                 </div>
             </div>
         );   
-    } else if (type == "integer") {
+    } else if (type == "Integer") {
         return (
             <div className='form-group m-3'>
                 <div className='card'>
@@ -95,10 +100,10 @@ const CoreType = (props: FieldProps) => {
                         type='number'
                         value={data}
                         onChange={e => {
-                            setData(e.target.value);
+                            setData(parseInt(e.target.value));
                         }}
                         onBlur = {e => {
-                            fieldChange(name, e.target.value)
+                            fieldChange(name, parseInt(e.target.value));
                         }}
                     />
                     {children}

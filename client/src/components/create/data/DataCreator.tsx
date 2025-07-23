@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { getSelectedSchema } from 'reducers/util'
 import { useSelector } from 'react-redux'
-import { $FIELDNAME, $MAX_BINARY, $MAX_ELEMENTS, $MAX_STRING, $NSID, $SYS, $TYPENAME } from '../consts'
-import { StandardFieldArray } from '../schema/interface'
-import { CoreType, Array } from 'components/create/data/lib/field/types/Types' // Uncomment if Array is a named export and needed
+import { AllFieldArray } from '../schema/interface'
+import Field from 'components/create/data/lib/field/Field'
 import SBEditor from 'components/common/SBEditor'
 import SBScrollToTop from 'components/common/SBScrollToTop'
+import SBSelect, { Option } from 'components/common/SBSelect'
 
 const DataCreator = (props: any) => {
     // Destructure props
@@ -24,31 +24,49 @@ const DataCreator = (props: any) => {
         });
     };
 
-    const card1 =  <CoreType {...{
-                            field: [0, "Card 2", "boolean", [], "This is a test boolean"],
-                            fieldChange: fieldChange}}
-                        />  
-    const card2 =  <CoreType {...{
-                            field: [0, "Card 1", "binary", [], "This is a test binary"],
-                            fieldChange: fieldChange}}
-                        />  
-    const card3 =  <Array
-                                field={[0, "Array", "array", [], "This is a test array"]}
-                                fieldChange={fieldChange}
-                                children={[card1, card2]}
-                            />  
+    // Get the selected schema & selected roots/types
+    const schemaObj = useSelector(getSelectedSchema);
+    const roots = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
+    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === selection?.value) : [];
+
+    // Handle user dropdown selection
+    const handleSelection = (e: Option) => {
+        setSelection(e);
+        setGeneratedMessage({});
+    }
+
+    // Decide which fields to display
+    let fieldDefs: null | JSX.Element | JSX.Element[] = null;
+    if (selection?.value) {
+        fieldDefs = types.map((field: AllFieldArray, idx: number) => {
+            return (
+                <Field
+                    key={idx}
+                    field={field}
+                    fieldChange={fieldChange}
+                />
+            );
+        });
+    }
 
     return (
         <div className='row'>
             <div className='col-md-6'>
                 <div className='card'>
                     <div className='card-body p-2'>
+                         <div className="d-flex">
+                            <SBSelect id={"command-list"}
+                                data={roots}
+                                onChange={handleSelection}
+                                placeholder={'Select a data type...'}
+                                value={selection}
+                                isSmStyle
+                                isClearable
+                                customNoOptionMsg={"Schema is missing Roots"}
+                            />
+                        </div>
                         <div id = "message-editor" className = 'card-body-page'>
-                            <Array
-                                field={[0, "Parent Array", "array", [], "This is a test array"]}
-                                fieldChange={fieldChange}
-                                children={[card3]}
-                            />  
+                            {fieldDefs}
                         </div>
                         <SBScrollToTop divID = "message-editor" />
                     </div>
