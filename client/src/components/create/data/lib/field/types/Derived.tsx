@@ -43,7 +43,7 @@ const Derived = (props: FieldProps) => {
     const card = <Field field={newField as AllFieldArray} fieldChange={fieldChange} parent={parent} value={value} />
 
     return (
-        <div className={"card-body mx-2"}>
+        <div>
             {card}
         </div>
     );
