@@ -1,5 +1,5 @@
 import React from 'react';
-import { CoreType, Array, Record, Map, Enumerated, Choice } from 'components/create/data/lib/field/types/Types';
+import { CoreType, Array, Record, Map, Enumerated, Choice, Derived } from 'components/create/data/lib/field/types/Types';
 import { AllFieldArray, StandardFieldArray, ArrayFieldArray } from '../../../schema/interface';
 
 interface FieldProps {
@@ -36,7 +36,7 @@ const Field = (props: FieldProps) => {
         case 'Choice':
             return <Choice field={field as ArrayFieldArray} fieldChange={fieldChange} parent={parent} value={value} />;
         default:
-            return null;
+            return <Derived field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} />;
     }
 }
 

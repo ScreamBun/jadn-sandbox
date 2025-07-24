@@ -1,9 +1,8 @@
-import { ArrayFieldArray, StandardFieldArray } from "components/create/schema/interface";
+import { ArrayFieldArray, StandardFieldArray, AllFieldArray } from "components/create/schema/interface";
 import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
-import { set } from "lodash";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -17,33 +16,48 @@ const Choice = (props: FieldProps) => {
     const [name, type, options, _comment, children] = field;
     const [toggle, setToggle] = useState(true);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
-    const [selectedChild, setSelectedChild] = useState<any>();
+    const [selectedChild, setSelectedChild] = useState<JSX.Element>();
+    const [childData, setChildData] = useState<any>({});
 
     const handleChange = (e: Option | null) => {
-        if (e == null) {
-            if (selectedChild) {
-                selectedChild.props.fieldChange(selectedChild.props.field[1], '');
-            }
+        if (e == null || e.value === '' || e.value === undefined) {
             setSelectedValue('');
-            setSelectedChild('');
+            setSelectedChild(undefined);
+            setChildData({});
             fieldChange(name, '');
         } else {
+            const child = getChild(e.value)
             setSelectedValue(e);
-            setSelectedChild(getChild(e.value));
-            fieldChange(name, selectedChild);
+            setSelectedChild(child);
+            fieldChange(name, {[e.value]:selectedChild});
         }
     }
 
-    const childCards = children.map((child: StandardFieldArray, idx: number) => {
-        return <Field key={idx} field={child} fieldChange={fieldChange} parent={name} />;
-    });
+    const updateChildData = (k: string, v: any) => {
+        setChildData((prev: Record<string, any>) => {
+            let updated: Record<string, any> = { ...prev, [k]: v };
+            if (v === "" || v === undefined || v === null) {
+                delete updated[k];
+            } else {
+                updated[k] = v;
+            }
+            if (Object.keys(updated).length === 0) {
+                fieldChange(name, '');
+                return {};
+            }
+            fieldChange(name, updated);
+            return updated;
+        });
+    };
 
     const getChild = (field_name: string) => { 
-        return children.length > 0 ? childCards.find(card => card.props.field[0] === field_name || card.props.field[1] === field_name) : null;
+        const child = children.find((child: AllFieldArray) => child[1] === field_name || child[0] === field_name);
+        if (!child) return undefined;
+        return <Field key={field_name} field={child} fieldChange={updateChildData} parent={name} />;
     }
 
-    const getOptions = children.map((child: StandardFieldArray) => {
-        return child[1];
+    const getOptions = children.map((child: AllFieldArray) => {
+        return (typeof child[0] === 'string') ? { label: child[0], value: child[0] } : { label: child[1], value: child[1] };
     });
 
     return (
