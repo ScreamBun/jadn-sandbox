@@ -4,7 +4,7 @@ import MapOf from './MapOf';
 import Map from './Map';
 import Enumerated from './Enumerated';
 import Choice from './Choice';
-import { ArrayOf } from './ArrayOf';
+import ArrayOf from './ArrayOf';
 import Array from './Array';
 import Derived from './Derived';
 
