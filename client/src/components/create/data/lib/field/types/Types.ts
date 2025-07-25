@@ -1,6 +1,6 @@
 import CoreType from './CoreType';
 import Record from './Record';
-import {MapOf} from './MapOf';
+import MapOf from './MapOf';
 import Map from './Map';
 import Enumerated from './Enumerated';
 import Choice from './Choice';
