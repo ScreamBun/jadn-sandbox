@@ -92,8 +92,19 @@ const MapOf = (props: FieldProps) => {
         const key = item?.key ?? "";
         const value = item?.value ?? "";
         
-        const keyField: AllFieldArray = [i, `${name} ${i+1} ${key}`, key, options, ""]; 
-        const valField: AllFieldArray = [i, `${name} ${i+1} ${value}`, value, options, ""]; 
+        let keyField: AllFieldArray;
+        if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
+            keyField = [`${name} ${i+1} ${key}`, key, options, "", []];
+        } else {
+            keyField = [i, `${name} ${i+1} ${key}`, key, options, ""];
+        }
+
+        let valField: AllFieldArray;
+        if (value === "Array" || value === "Record" || value === "Map" || value === "Enumerated" || value === "Choice") {
+            valField = [`${name} ${i+1} ${value}`, value, options, "", []];
+        } else {
+            valField = [i, `${name} ${i+1} ${value}`, value, options, ""];
+        }
 
         const keyEntry = keyList.find(entry => entry.name === `${name} ${i+1} ${key}`);
         const valueEntry = valueList.find(entry => entry.name === `${name} ${i+1} ${value}`);
