@@ -4,6 +4,9 @@ import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
+import { getSelectedSchema } from "reducers/util";
+import Derived from "./Derived";
 interface FieldProps {
     field: FieldOfArray;
     fieldChange: (k:string, v:any) => void;
@@ -24,6 +27,7 @@ const MapOf = (props: FieldProps) => {
     const [cards, setCards] = useState([{ key: keyType, value: valueType }]);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const [valueList, setValueList] = useState<Array<{name: any , value: any}>>([]);
+    const [output, setOutput] = useState<any>();
 
     const onChange = (nextKeyList?: typeof keyList, nextValueList?: typeof valueList) => {
         const keys = nextKeyList ?? keyList;
@@ -31,22 +35,36 @@ const MapOf = (props: FieldProps) => {
 
         const isRecord = keyType === "String" || keyType === "Enumerated" ? true : false;
 
-        let output: any;
         if (isRecord) {
-            output = {};
+            if (output === undefined) {
+                setOutput({});
+            }
         } else {
-            output = [];
-        }
-        for (let i = 0; i < keys.length; i++) {
-            if (isRecord) {
-                output[keys[i].key] = values[i]?.value;
-            } else {
-                output.push(keys[i].key, values[i]?.value);
+            if (output === undefined) {
+                setOutput([])
             }
         }
-        fieldChange(name, output);
+        let newOutput: any = isRecord ? {} : [];
+        for (let i = 0; i < keys.length; i++) {
+            const keyVal = keys[i]?.key;
+            const valVal = values[i]?.value;
+            if (isRecord) {
+                if (newOutput[keyVal] === undefined) {
+                    newOutput[keyVal] = [valVal];
+                } else {
+                    newOutput[keyVal] = [...newOutput[keyVal], valVal];
+                }
+            } else {
+                newOutput.push(keyVal, valVal);
+            }
+        }
+        setOutput(newOutput);
+        fieldChange(name, newOutput);
     };
 
+    React.useEffect(() => {
+        onChange();
+    }, [keyList, valueList]);
 
     const addKey = (entryName: any, key: any) => {
         setKeyList(prev => {
@@ -59,7 +77,6 @@ const MapOf = (props: FieldProps) => {
             } else {
                 updated.push({ name: entryName, key });
             }
-            onChange(updated, valueList);
             return updated;
         });
     };
@@ -75,7 +92,6 @@ const MapOf = (props: FieldProps) => {
             } else {
                 updated.push({ name: entryName, value });
             }
-            onChange(keyList, updated);
             return updated;
         });
     };
@@ -91,26 +107,38 @@ const MapOf = (props: FieldProps) => {
     const fields = cards.map((item, i) => {
         const key = item?.key ?? "";
         const value = item?.value ?? "";
-        
+
+        const keyEntry = keyList.find(entry => entry.name === `${name} ${i+1} ${key}`);
+        const valueEntry = valueList.find(entry => entry.name === `${name} ${i+1} ${value}`);
+
+        const handleKeyChange = (_: string, v: any) => addKey(keyEntry?.name, v);
+        const handleValueChange = (_: string, v: any) => addValue(valueEntry?.name, v);
+
+        const schemaObj = useSelector(getSelectedSchema);
+        const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === key) : [];
+        let trueTypeDef: string = types.find((t:any) => t[0] === key || t[1] === key);
+        let trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
+
         let keyField: AllFieldArray;
-        if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
+        if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
             keyField = [`${name} ${i+1} ${key}`, key, options, "", []];
         } else {
             keyField = [i, `${name} ${i+1} ${key}`, key, options, ""];
         }
 
+        const valtypes = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === value) : [];
+        trueTypeDef = valtypes.find((t:any) => t[0] === value || t[1] === value);
+        trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
+
         let valField: AllFieldArray;
-        if (value === "Array" || value === "Record" || value === "Map" || value === "Enumerated" || value === "Choice") {
+        if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
             valField = [`${name} ${i+1} ${value}`, value, options, "", []];
         } else {
             valField = [i, `${name} ${i+1} ${value}`, value, options, ""];
         }
 
-        const keyEntry = keyList.find(entry => entry.name === `${name} ${i+1} ${key}`);
-        const valueEntry = valueList.find(entry => entry.name === `${name} ${i+1} ${value}`);
-
         return (
-            <div className='form-group' key={self.crypto.randomUUID()}>
+            <div className='form-group' key={keyEntry?.name}>
                 <div className='card'>
                     <div className='card-header p-2'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
@@ -120,8 +148,8 @@ const MapOf = (props: FieldProps) => {
                         </SBToggleBtn>
                     </div>
                     <div className={`card-body mx-2 ${toggleField[i] == true ? '' : 'collapse'}`} id={`${i}`}>
-                        <Field key={keyField[1]} field={keyField} parent={name} fieldChange={addKey} value={keyEntry?.key ?? ""} />
-                        <Field key={valField[1]} field={valField} parent={name} fieldChange={addValue} value={valueEntry?.value ?? ""} />
+                        <Field key={typeof keyField[0] === "string" ? keyField[0] : keyField[1]} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} />
+                        <Field key={typeof valField[0] === "string" ? valField[0] : valField[1]} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
                     </div>
                 </div>
             </div >

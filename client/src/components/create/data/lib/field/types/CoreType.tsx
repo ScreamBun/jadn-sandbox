@@ -1,8 +1,8 @@
-import { StandardFieldArray } from "components/create/schema/interface";
+import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/interface";
 import React, {useState} from "react";
 
 interface FieldProps {
-    field: StandardFieldArray;
+    field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
     children?: JSX.Element | JSX.Element[];
     parent?: string;
@@ -13,7 +13,11 @@ const CoreType = (props: FieldProps) => {
     const { field, fieldChange, children, parent, value } = props;
     let [_idx, name, type, options, _comment] = [0, '', '', [] as any|any[], ''];
     if (field.length == 5) {
-        [_idx, name, type, options, _comment] = field;
+        if (Array.isArray(field[4])) {
+            [name as any, type, options, _comment as any, children as any[]] = field;
+        } else {
+            [_idx as any, name, type as any, options, _comment as any] = field;
+        }
     } else {
         [name as any, type, options, _comment as any] = field;
     }
