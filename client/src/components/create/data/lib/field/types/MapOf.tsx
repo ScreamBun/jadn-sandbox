@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
-import Derived from "./Derived";
 interface FieldProps {
     field: FieldOfArray;
     fieldChange: (k:string, v:any) => void;
@@ -20,11 +19,15 @@ const MapOf = (props: FieldProps) => {
     const [name, type, options, _comment] = field;
     const [toggle, setToggle] = useState(true);
     const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
+    const schemaObj = useSelector(getSelectedSchema);
+
+    // Keep track of cards
+    const [idNumber, setIdNumber] = useState(1);
 
     // Extract ktype and vtype
     const keyType = options.find(opt => opt.startsWith("+") || opt.startsWith(">"))?.slice(1);
     const valueType = options.find(opt => opt.startsWith("*"))?.slice(1);
-    const [cards, setCards] = useState([{ key: keyType, value: valueType }]);
+    const [cards, setCards] = useState([{ id: 1, key: keyType, value: valueType }]);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const [valueList, setValueList] = useState<Array<{name: any , value: any}>>([]);
     const [output, setOutput] = useState<any>();
@@ -97,33 +100,37 @@ const MapOf = (props: FieldProps) => {
     };
 
     const addCard = () => {
-        setCards(prevCards => [
-            ...prevCards,
-            { key: keyType, value: valueType }
-        ]);
+        setIdNumber(prevId => {
+            const newId = prevId + 1;
+            setCards(prevCards => [
+                ...prevCards,
+                { id: newId, key: keyType, value: valueType }
+            ]);
+            return newId;
+        });
     };
 
     // Return MapOf-Name : {k:v, k:v} or MapOf-Name : [k,v,k,v]
     const fields = cards.map((item, i) => {
         const key = item?.key ?? "";
         const value = item?.value ?? "";
+        const id = item?.id ?? i;
 
-        const keyEntry = keyList.find(entry => entry.name === `${name} ${i+1} ${key}`);
-        const valueEntry = valueList.find(entry => entry.name === `${name} ${i+1} ${value}`);
+        const keyEntry = keyList.find(entry => entry.name === `${name} ${id} ${key}`);
+        const valueEntry = valueList.find(entry => entry.name === `${name} ${id} ${value}`);
 
-        const handleKeyChange = (_: string, v: any) => addKey(keyEntry?.name, v);
-        const handleValueChange = (_: string, v: any) => addValue(valueEntry?.name, v);
+        const handleKeyChange = (_: string, v: any) => addKey(`${name} ${id} ${key}`, v);
+        const handleValueChange = (_: string, v: any) => addValue(`${name} ${id} ${value}`, v);
 
-        const schemaObj = useSelector(getSelectedSchema);
         const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === key) : [];
         let trueTypeDef: string = types.find((t:any) => t[0] === key || t[1] === key);
         let trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
 
         let keyField: AllFieldArray;
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
-            keyField = [`${name} ${i+1} ${key}`, key, options, "", []];
+            keyField = [`${name} ${id} ${key}`, key, options, "", []];
         } else {
-            keyField = [i, `${name} ${i+1} ${key}`, key, options, ""];
+            keyField = [id, `${name} ${id} ${key}`, key, options, ""];
         }
 
         const valtypes = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === value) : [];
@@ -132,22 +139,22 @@ const MapOf = (props: FieldProps) => {
 
         let valField: AllFieldArray;
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
-            valField = [`${name} ${i+1} ${value}`, value, options, "", []];
+            valField = [`${name} ${id} ${value}`, value, options, "", []];
         } else {
-            valField = [i, `${name} ${i+1} ${value}`, value, options, ""];
+            valField = [id, `${name} ${id} ${value}`, value, options, ""];
         }
 
         return (
-            <div className='form-group' key={keyEntry?.name}>
+            <div className='form-group' key={typeof valField[0] === "string" ? valField[0] : valField[1]}>
                 <div className='card'>
                     <div className='card-header p-2'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title m-2'>
-                                {name} {i + 1}
+                                {name} {id}
                             </div>
                         </SBToggleBtn>
                     </div>
-                    <div className={`card-body mx-2 ${toggleField[i] == true ? '' : 'collapse'}`} id={`${i}`}>
+                    <div className={`card-body mx-2 ${toggleField[i] == true ? '' : 'collapse'}`} id={`${id}`}>
                         <Field key={typeof keyField[0] === "string" ? keyField[0] : keyField[1]} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} />
                         <Field key={typeof valField[0] === "string" ? valField[0] : valField[1]} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
                     </div>
@@ -155,8 +162,6 @@ const MapOf = (props: FieldProps) => {
             </div >
         )
     });
-    
-    // Add mapping button
 
     // Remove mapping button
 
