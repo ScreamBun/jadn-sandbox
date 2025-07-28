@@ -1,5 +1,6 @@
 import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/interface";
 import React, {useState} from "react";
+import { validate } from "components/create/data/lib/InputValidator";
 
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
@@ -23,6 +24,7 @@ const CoreType = (props: FieldProps) => {
     }
 
     const [data, setData] = useState(value);
+    const [errMsg, setErrMsg] = useState("");
     
     if (type === "Boolean") {
         return (
@@ -61,11 +63,14 @@ const CoreType = (props: FieldProps) => {
                         value={data}
                         onChange={e => {
                             setData(e.target.value);
+                            setErrMsg(validate(e.target.value, type, options));
                         }}
                         onBlur = {e => {
                             fieldChange(name, e.target.value)
                         }}
+                        style={{ borderColor: errMsg === "" ? '' : 'red' }}
                     />
+                    {errMsg && <div className="text-danger">{errMsg}</div>}
                     {children}
                 </div>
             </div>
