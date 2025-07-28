@@ -159,8 +159,8 @@ const MapOf = (props: FieldProps) => {
                         </SBToggleBtn>
                     </div>
                     <div className={`card-body mx-2 ${toggleField[i] == true ? '' : 'collapse'}`} id={`${id}`}>
-                        <Field key={typeof keyField[0] === "string" ? keyField[0] : keyField[1]} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} />
-                        <Field key={typeof valField[0] === "string" ? valField[0] : valField[1]} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
+                        <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} />
+                        <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
                     </div>
                 </div>
             </div >

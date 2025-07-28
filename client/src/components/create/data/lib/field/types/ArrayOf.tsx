@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 
 interface FieldProps {
-    field: FieldOfArray;
+    field: AllFieldArray | FieldOfArray;
     fieldChange: (k:string, v:any) => void;
     children: JSX.Element | JSX.Element[];
     parent?: string;
@@ -15,7 +15,15 @@ interface FieldProps {
 
 const ArrayOf = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
-    const [name, type, options, _comment] = field;
+
+    let _idx, name, type, optionsRaw, options: string[], _comment;
+    if (field.length == 5) {
+        [_idx, name, type, optionsRaw, _comment] = field;
+    } else {
+        [name, type, optionsRaw, _comment] = field;
+    }
+    options = Array.isArray(optionsRaw) ? optionsRaw : [optionsRaw];
+        
     const [toggle, setToggle] = useState(true);
     const keyType = options.find(opt => opt.startsWith("*"))?.slice(1);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
@@ -28,7 +36,7 @@ const ArrayOf = (props: FieldProps) => {
         for (let i = 0; i < keys.length; i++) {
             output.push(keys[i].key);
         }
-        fieldChange(name, output);
+        fieldChange(String(name), output);
     };
 
     const addKey = (name:any, key: any) => {
