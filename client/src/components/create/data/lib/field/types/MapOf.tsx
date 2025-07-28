@@ -36,7 +36,11 @@ const MapOf = (props: FieldProps) => {
         const keys = nextKeyList ?? keyList;
         const values = nextValueList ?? valueList;
 
-        const isRecord = keyType === "String" || keyType === "Enumerated" ? true : false;
+        const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === keyType) : [];
+        let trueTypeDef: string = types.find((t:any) => t[0] === keyType || t[1] === keyType);
+        let trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
+
+        const isRecord = trueTypeVal === "String" || trueTypeVal === "Enumerated" ? true : false;
 
         if (isRecord) {
             if (output === undefined) {
@@ -53,9 +57,9 @@ const MapOf = (props: FieldProps) => {
             const valVal = values[i]?.value;
             if (isRecord) {
                 if (newOutput[keyVal] === undefined) {
-                    newOutput[keyVal] = [valVal];
+                    newOutput[keyVal] = valVal;
                 } else {
-                    newOutput[keyVal] = [...newOutput[keyVal], valVal];
+                    newOutput[keyVal] = {...newOutput[keyVal], valVal};
                 }
             } else {
                 newOutput.push(keyVal, valVal);
