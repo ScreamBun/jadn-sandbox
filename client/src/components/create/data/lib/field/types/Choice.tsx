@@ -1,4 +1,4 @@
-import { ArrayFieldArray, StandardFieldArray, AllFieldArray } from "components/create/schema/interface";
+import { ArrayFieldArray, AllFieldArray } from "components/create/schema/interface";
 import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import SBSelect, { Option } from 'components/common/SBSelect';
@@ -26,10 +26,14 @@ const Choice = (props: FieldProps) => {
             setChildData({});
             fieldChange(name, '');
         } else {
-            const child = getChild(e.value)
+            const child = getChild(e.value);
             setSelectedValue(e);
             setSelectedChild(child);
-            fieldChange(name, {[e.value]:selectedChild});
+            
+            const newData = {};
+            setChildData(newData);
+            
+            fieldChange(name, e.value);
         }
     }
 
