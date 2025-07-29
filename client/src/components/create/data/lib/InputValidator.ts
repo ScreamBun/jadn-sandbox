@@ -13,8 +13,10 @@ export const validate = (input: any, type: string, options: string[]): string =>
             return validateIntegerInput(input, options);
         case "Number":
             return validateNumberInput(input, options);
+        case "String":
+            return validateStringInput(input, options);
         default: 
-            return `No validator found for input ${input} of type ${type}.`
+            return "";
     }
 }
 
@@ -172,6 +174,56 @@ const validateNumberInput = (input: number, options: string[]): string => {
                 const F64_MAX = 1.7976931348623157e+308;
                 if (input < F64_MIN || input > F64_MAX) {
                     m = `Input ${input} is not a valid f64 float.`;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    return m;
+}
+
+const validateStringInput = (input: string, options: string[]): string => {
+    let m: string = "";
+
+    for (const option of options) {
+        switch (option) {
+            case "/date-time":
+                const dateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+                if (!dateTimeRegex.test(input)) {
+                    m = `Input ${input} is not a valid RFC 9557 date-time format (e.g., 2023-01-01T12:00:00Z, 2023-01-01T12:00:00+01:00).`;
+                }
+                break;
+            case "/date":
+                const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+                if (!dateRegex.test(input)) {
+                    m = `Input ${input} is not a valid RFC 3339 full-date format (e.g., 2023-01-01).`;
+                }
+                break;
+            case "/time":
+                case "/time":
+                    const timeRegex = /^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.[0-9]+)?(Z?|[+-]([01][0-9]|2[0-3]):[0-5][0-9])$/;
+                    if (!timeRegex.test(input)) {
+                        m = `Input ${input} is not a valid RFC 3339 full-time format (e.g., 15:00:00, 12:00:00Z, 12:00:00+01:00).`;
+                    }
+                    break;
+            case "/duration":
+                const durationRegex = /^P((\d+Y)?(\d+M)?(\d+D)?)(T(\d+H)?(\d+M)?(\d+S)?)?|P(\d+W)|PT(\d+H|\d+M|\d+S)$/;
+                if (!durationRegex.test(input)) {
+                    m = `Input ${input} is not a valid RFC 3339 duration format (e.g., P1Y2M3DT4H5M6S, P1W, PT1H).`;
+                }
+                break;
+            case "/email":
+                const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
+                if (!emailRegex.test(input)) {
+                    m = `Input ${input} is not a valid email address as specified in RFC 5321.`;
+                }
+                break;
+            case "/idm-email":
+                const idnEmailRegex = /^(?:[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9](?:[\u00A0-\uD7FF\uE000-\uFFFF-a-z0-9-]*[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9])?\.)+[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9](?:[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9-]*[\u00A0-\uD7FF\uE000-\uFFFFa-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}\])$/;
+                if (!idnEmailRegex.test(input)) {
+                    m = `Input ${input} is not a valid internationalized email address as specified in RFC 6531.`;
                 }
                 break;
             default:

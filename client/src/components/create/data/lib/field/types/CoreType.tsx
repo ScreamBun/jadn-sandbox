@@ -138,11 +138,14 @@ const CoreType = (props: FieldProps) => {
                         value={data}
                         onChange={e => {
                             setData(e.target.value);
+                            setErrMsg(validate(e.target.value, "String", options));
                         }}
                         onBlur = {e => {
                             fieldChange(name, e.target.value)
                         }}
+                        style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
+                    {errMsg && <div className="text-danger">{errMsg}</div>}
                     {children}
                 </div>
             </div>
