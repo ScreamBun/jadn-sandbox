@@ -11,6 +11,8 @@ export const validate = (input: any, type: string, options: string[]): string =>
             return validateBinaryInput(input, options);
         case "Integer":
             return validateIntegerInput(input, options);
+        case "Number":
+            return validateNumberInput(input, options);
         default: 
             return `No validator found for input ${input} of type ${type}.`
     }
@@ -136,6 +138,40 @@ const validateIntegerInput = (input: number, options: string[]): string => {
                 const gMonthDayRegex = /^--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$/;
                 if (!gMonthDayRegex.test(String(input))) {
                     m = `Input ${input} is not a valid gMonthDay format (e.g., --01-01, --12-31, --01-01Z, --12-31+01:00).`;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    return m;
+}
+
+const validateNumberInput = (input: number, options: string[]): string => {
+    let m: string = "";
+
+    for (const option of options) {
+        switch (option) {
+            case "/f16":
+                const F16_MIN = -65504.0;
+                const F16_MAX = 65504.0;
+                if (input < F16_MIN || input > F16_MAX) {
+                    m = `Input ${input} is not a valid f16 float.`;
+                }
+                break;
+            case "/f32":
+                const F32_MIN = -3.402823466e+38;
+                const F32_MAX = 3.402823466e+38;
+                if (input < F32_MIN || input > F32_MAX) {
+                    m = `Input ${input} is not a valid f32 float.`;
+                }
+                break;
+            case "/f64":
+                const F64_MIN = -1.7976931348623157e+308;
+                const F64_MAX = 1.7976931348623157e+308;
+                if (input < F64_MIN || input > F64_MAX) {
+                    m = `Input ${input} is not a valid f64 float.`;
                 }
                 break;
             default:
