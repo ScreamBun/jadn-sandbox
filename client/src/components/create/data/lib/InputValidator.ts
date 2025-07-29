@@ -1,4 +1,4 @@
-export const validate = (input: string, type: string, options: string[]): string => {
+export const validate = (input: any, type: string, options: string[]): string => {
     if (options.length === 0) {
         return ""; // No options means generic typed input is valid
     }
@@ -9,6 +9,8 @@ export const validate = (input: string, type: string, options: string[]): string
     switch (type) {
         case "Binary":
             return validateBinaryInput(input, options);
+        case "Integer":
+            return validateIntegerInput(input, options);
         default: 
             return `No validator found for input ${input} of type ${type}.`
     }
@@ -53,7 +55,91 @@ const validateBinaryInput = (input: string, options: string[]): string => {
                 }
                 break;
             default:
-                continue;
+                break;
+        }
+    }
+
+    return m;
+}
+
+const validateIntegerInput = (input: number, options: string[]): string => {
+    let m: string = "";
+
+    for (const option of options) {
+        switch (option) {
+            case "/i8":
+                if (input <= -128 || input >= 127) m = `Input ${input} is not a valid i8 integer.`;
+                break;
+            case "/i16":
+                if (input <= -32768 || input >= 32767) m = `Input ${input} is not a valid i16 integer.`;
+                break;
+            case "/i32":
+                if (input <= -2147483648 || input >= 2147483647) m = `Input ${input} is not a valid i32 integer.`;
+                break;
+            case "/i64":
+                if (input <= -9223372036854775808 || input >= 9223372036854775807) m = `Input ${input} is not a valid i64 integer.`;
+                break;
+            case "u<n>":
+                const n = String(input).substring(1);
+                if (0 >= input && input >= (2 ** (parseInt(n) - 1))) {
+                    m = `Input ${input} is not a valid u${n} integer.`;
+                }
+                break;
+            case "/nonNegativeInteger":
+                if (input < 0) m = `Input ${input} is not a valid non-negative integer.`;
+                break;
+            case "/nonPositiveInteger":
+                if (input > 0) m = `Input ${input} is not a valid non-positive integer.`;
+                break;
+            case "/positiveInteger":
+                if (input <= 0) m = `Input ${input} is not a valid positive integer.`;
+                break;
+            case "/negativeInteger":
+                if (input >= 0) m = `Input ${input} is not a valid negative integer.`;
+                break;
+            case "/duration":
+                break;
+            case "/date":
+                // any integer - posix time
+                break;
+            case "/dateTime":
+                // any integer - posix time
+                break;
+            case "/time":
+                // any integer - posix time
+                break;
+            case "/dayTimeDuration":
+                const dayTimeDurationRegex = /^-?P(([0-9]+D)?T?([0-9]+H)?([0-9]+M)?([0-9]+S)?)$/;
+                if (!dayTimeDurationRegex.test(String(input))) {
+                    m = `Input ${input} is not a valid day-time duration.`;
+                }
+                break;
+            case "/yearMonthDuration":
+                const yearMonthDurationRegex = /^-?P((([0-9]+Y)([0-9]+M)?)|([0-9]+M))$/;
+                if (!yearMonthDurationRegex.test(String(input))) {
+                    m = `Input ${input} is not a valid year-month duration.`;
+                }
+                break;
+            case "/gYear":
+                const gYearRegex = /^-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$/;
+                if (!gYearRegex.test(String(input))) {
+                    m = `Input ${input} is not a valid gYear format (e.g., 2023, -0999, 2023Z, 2023+01:00).`;
+                }
+                break;
+            case "/gYearMonth":
+                const gYearMonthRegex = /^-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$/;
+                if (!gYearMonthRegex.test(String(input))) {
+                    m = `Input ${input} is not a valid gYearMonth format (e.g., 2023-01, -0999-12, 2023-01Z, 2023-01+01:00).`;
+                }
+                break;
+            case "/gMonthDay":
+                const gMonthDayRegex = /^--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$/;
+                if (!gMonthDayRegex.test(String(input))) {
+                    m = `Input ${input} is not a valid gMonthDay format (e.g., --01-01, --12-31, --01-01Z, --12-31+01:00).`;
+                }
+                break;
+            default:
+                break;
         }
     }
 

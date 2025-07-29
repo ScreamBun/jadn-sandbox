@@ -11,7 +11,7 @@ interface FieldProps {
 }
 
 const CoreType = (props: FieldProps) => {
-    const { field, fieldChange, children, parent, value } = props;
+    const { field, fieldChange, children, value } = props;
     let [_idx, name, type, options, _comment] = [0, '', '', [] as any|any[], ''];
     if (field.length == 5) {
         if (Array.isArray(field[4])) {
@@ -68,7 +68,7 @@ const CoreType = (props: FieldProps) => {
                         onBlur = {e => {
                             fieldChange(name, e.target.value)
                         }}
-                        style={{ borderColor: errMsg === "" ? '' : 'red' }}
+                        style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
                     {errMsg && <div className="text-danger">{errMsg}</div>}
                     {children}
@@ -110,11 +110,14 @@ const CoreType = (props: FieldProps) => {
                         value={data}
                         onChange={e => {
                             setData(parseInt(e.target.value));
+                            setErrMsg(validate(parseInt(e.target.value), type, options));
                         }}
                         onBlur = {e => {
                             fieldChange(name, parseInt(e.target.value));
                         }}
+                        style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
+                    {errMsg && <div className="text-danger">{errMsg}</div>}
                     {children}
                 </div>
             </div>
