@@ -63,10 +63,12 @@ const CoreType = (props: FieldProps) => {
                         value={data}
                         onChange={e => {
                             setData(e.target.value);
-                            setErrMsg(validate(e.target.value, type, options));
                         }}
                         onBlur = {e => {
                             fieldChange(name, e.target.value)
+                            validate(e.target.value, type, options).then(result => {
+                                setErrMsg(result);
+                            });
                         }}
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
@@ -88,10 +90,12 @@ const CoreType = (props: FieldProps) => {
                         value={data}
                         onChange={e => {
                             setData(parseFloat(e.target.value));
-                            setErrMsg(validate(parseFloat(e.target.value), type, options));
                         }}
                         onBlur = {e => {
                             fieldChange(name, parseFloat(e.target.value));
+                            validate(parseFloat(e.target.value), type, options).then(result => {
+                                setErrMsg(result);
+                            });                            
                         }}
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
@@ -113,10 +117,12 @@ const CoreType = (props: FieldProps) => {
                         value={data}
                         onChange={e => {
                             setData(parseInt(e.target.value));
-                            setErrMsg(validate(parseInt(e.target.value), type, options));
                         }}
                         onBlur = {e => {
                             fieldChange(name, parseInt(e.target.value));
+                            validate(parseInt(e.target.value), type, options).then(result => {
+                                setErrMsg(result);
+                            });                            
                         }}
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
@@ -138,10 +144,12 @@ const CoreType = (props: FieldProps) => {
                         value={data}
                         onChange={e => {
                             setData(e.target.value);
-                            setErrMsg(validate(e.target.value, "String", options));
                         }}
                         onBlur = {e => {
                             fieldChange(name, e.target.value)
+                            validate(e.target.value, "String", options).then(result => {
+                                setErrMsg(result);
+                            });                            
                         }}
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
