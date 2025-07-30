@@ -1,4 +1,4 @@
-import { FieldOfArray, AllFieldArray } from "components/create/schema/interface";
+import { FieldOfArray, ArrayFieldArray, StandardFieldArray, AllFieldArray } from "components/create/schema/interface";
 import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
@@ -7,7 +7,7 @@ import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 interface FieldProps {
-    field: FieldOfArray;
+    field: FieldOfArray | ArrayFieldArray | StandardFieldArray;
     fieldChange: (k:string, v:any) => void;
     children: JSX.Element | JSX.Element[];
     parent?: string;
@@ -16,7 +16,18 @@ interface FieldProps {
 
 const MapOf = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
-    const [name, type, options, _comment] = field;
+
+    let [_idx, name, type, options, _comment, children] = [0, '', '', [] as any|any[], '', [] as any[]];
+    if (field.length == 5) {
+        if (Array.isArray(field[4])) {
+            [name as any, type, options, _comment as any, children as any[]] = field;
+        } else {
+            [_idx as any, name, type as any, options, _comment as any] = field;
+        }
+    } else {
+        [name as any, type, options, _comment as any] = field;
+    }
+
     const [toggle, setToggle] = useState(true);
     const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
     const schemaObj = useSelector(getSelectedSchema);
@@ -25,8 +36,8 @@ const MapOf = (props: FieldProps) => {
     const [idNumber, setIdNumber] = useState(1);
 
     // Extract ktype and vtype
-    const keyType = options.find(opt => opt.startsWith("+") || opt.startsWith(">"))?.slice(1);
-    const valueType = options.find(opt => opt.startsWith("*"))?.slice(1);
+    const keyType = options.find((opt: string) => opt.startsWith("+") || opt.startsWith(">"))?.slice(1);
+    const valueType = options.find((opt: string) => opt.startsWith("*"))?.slice(1);
     const [cards, setCards] = useState([{ id: 1, key: keyType, value: valueType }]);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const [valueList, setValueList] = useState<Array<{name: any , value: any}>>([]);

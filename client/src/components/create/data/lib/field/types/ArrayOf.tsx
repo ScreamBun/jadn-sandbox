@@ -25,6 +25,7 @@ const ArrayOf = (props: FieldProps) => {
     options = Array.isArray(optionsRaw) ? optionsRaw : [optionsRaw];
         
     const [toggle, setToggle] = useState(true);
+    const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: false });
     const keyType = options.find(opt => opt.startsWith("*"))?.slice(1);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const [cards, setCards] = useState([keyType]);
@@ -75,16 +76,25 @@ const ArrayOf = (props: FieldProps) => {
         const keyEntry = keyList.find(entry => entry.name === `${name} ${i+1} ${key}`);
 
         return (
-            <Field key={keyField[1]} field={keyField} parent={name} fieldChange={addKey} value={keyEntry?.key ?? ""} />
+            <div className="card my-1">
+                <div className='card-header p-2'>
+                    <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
+                        <div className='card-title'>
+                            {`${key} ${i+1}`}
+                            <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                        </div>
+                    </SBToggleBtn>
+                </div>
+                <div className={`card-body ${toggleField[i] == true ? '' : 'collapse'}`} id={`${i}`}>
+                    <Field key={keyField[1]} field={keyField} parent={String(name)} fieldChange={addKey} value={keyEntry?.key ?? ""} />
+                </div>
+            </div>
         )
     });
 
     return (
-        <div className='form-group m-1'>
-            <label><strong>{name}</strong></label>
-            <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
-            <hr />
-            <div className={`card-body m-1 ${toggle ? '' : 'collapse'}`}>
+        <div className='form-group'>
+            <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                 {fields}
                 <div className="p-2">
                     {<button

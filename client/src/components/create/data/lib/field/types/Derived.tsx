@@ -33,12 +33,13 @@ const Derived = (props: FieldProps) => {
     }
 
     let trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
+    let trueOptions = typeof trueTypeDef[0] === 'string' ? trueTypeDef[2] : trueTypeDef[3];
 
     let newField;
     if (trueTypeDef.length == 5 && Array.isArray(trueTypeDef[4])) {
-        newField = [name, trueTypeVal, options, _comment, trueTypeDef[4]];
+        newField = [name, trueTypeVal, trueOptions, _comment, trueTypeDef[4]];
     } else {
-        newField = [_idx, name, trueTypeVal, options, _comment];
+        newField = [_idx, name, trueTypeVal, trueOptions, _comment];
     }
     const card = <Field field={newField as AllFieldArray} fieldChange={fieldChange} parent={parent} value={value} />
 
