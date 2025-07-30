@@ -69,7 +69,7 @@ const DataCreator = (props: any) => {
                                 customNoOptionMsg={"Schema is missing Roots"}
                             />
                         </div>
-                        <div id = "message-editor" className = 'card-body-page'>
+                        <div id = "message-editor" className = 'card-body-page' >
                             {fieldDefs}
                         </div>
                         <SBScrollToTop divID = "message-editor" />

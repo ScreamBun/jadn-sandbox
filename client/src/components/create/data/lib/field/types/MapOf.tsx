@@ -151,14 +151,14 @@ const MapOf = (props: FieldProps) => {
         return (
             <div className='form-group' key={typeof valField[0] === "string" ? valField[0] : valField[1]}>
                 <div className='card'>
-                    <div className='card-header p-2'>
+                    <div className='card-header p-1'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title m-2'>
                                 {name} {id}
                             </div>
                         </SBToggleBtn>
                     </div>
-                    <div className={`card-body mx-2 ${toggleField[i] == true ? '' : 'collapse'}`} id={`${id}`}>
+                    <div className={`card-body ml-1 my-1 ${toggleField[i] == true ? '' : 'collapse'}`} id={`${id}`}>
                         <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} />
                         <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
                     </div>
@@ -170,14 +170,14 @@ const MapOf = (props: FieldProps) => {
     // Remove mapping button
 
     return (
-        <div className='form-group m-3'>
+        <div className='form-group m-1'>
             <div className = 'card'>
-                <div className='card-header p-4 d-flex align-items-center justify-content-between'>
+                <div className='card-header p-2 d-flex align-items-center justify-content-between'>
                     <label><strong>{name}</strong></label>
                     {_comment ? <small className = "card-subtitle form-text text-muted test-wrap mr-3">{_comment}</small> : ""}
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} />
                 </div>
-                <div className={`card-body mx-2 ${toggle ? '' : 'collapse'}`}>
+                <div className={`card-body ml-1 my-1 ${toggle ? '' : 'collapse'}`}>
                     {fields}
                     <div className="p-2">
                         {<button

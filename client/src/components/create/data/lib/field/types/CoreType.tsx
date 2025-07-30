@@ -28,9 +28,9 @@ const CoreType = (props: FieldProps) => {
     
     if (type === "Boolean") {
         return (
-            <div className='form-group m-3'>
+            <div className='form-group ml-1 my-1 mb-1'>
                 <div className='card'>
-                    <div className='card-header p-4 d-flex justify-content-between'>
+                    <div className='card-header p-2 d-flex justify-content-between'>
                         <label><strong>{name}</strong></label>
                         {_comment ? <small className = "card-subtitle form-text text-muted test-wrap">{_comment}</small> : ""}
                     </div>
@@ -52,9 +52,9 @@ const CoreType = (props: FieldProps) => {
         );
     } else if (type == "Binary") {
         return (
-            <div className='form-group m-3'>
+            <div className='form-group ml-1 my-1 mb-1'>
                 <div className='card'>
-                    <div className='card-header p-4 d-flex justify-content-between'>
+                    <div className='card-header p-2 d-flex justify-content-between'>
                         <label><strong>{name}</strong></label>
                         {_comment ? <small className = "card-subtitle form-text text-muted test-wrap">{_comment}</small> : ""}
                     </div>
@@ -79,9 +79,9 @@ const CoreType = (props: FieldProps) => {
         );
     } else if (type == "Number") {
         return (
-            <div className='form-group m-3'>
+            <div className='form-group ml-1 my-1 mb-1'>
                 <div className='card'>
-                    <div className='card-header p-4 d-flex justify-content-between'>
+                    <div className='card-header p-2 d-flex justify-content-between'>
                         <label><strong>{name}</strong></label>
                         {_comment ? <small className = "card-subtitle form-text text-muted test-wrap">{_comment}</small> : ""}
                     </div>
@@ -106,9 +106,9 @@ const CoreType = (props: FieldProps) => {
         );   
     } else if (type == "Integer") {
         return (
-            <div className='form-group m-3'>
+            <div className='form-group ml-1 my-1 mb-1'>
                 <div className='card'>
-                    <div className='card-header p-4 d-flex justify-content-between'>
+                    <div className='card-header p-2 d-flex justify-content-between'>
                         <label><strong>{name}</strong></label>
                         {_comment ? <small className = "card-subtitle form-text text-muted test-wrap">{_comment}</small> : ""}
                     </div>
@@ -133,9 +133,9 @@ const CoreType = (props: FieldProps) => {
         );   
     } else { // default string
         return (
-            <div className='form-group m-3'>
+            <div className='form-group ml-1 my-1 mb-1'>
                 <div className='card'>
-                    <div className='card-header p-4 d-flex justify-content-between'>
+                    <div className='card-header p-2 d-flex justify-content-between'>
                         <label><strong>{name}</strong></label>
                         {_comment ? <small className = "card-subtitle form-text text-muted test-wrap">{_comment}</small> : ""}
                     </div>

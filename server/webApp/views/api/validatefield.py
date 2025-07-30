@@ -5,6 +5,13 @@ from jadnvalidation.data_validation.string import String
 from jadnvalidation.data_validation.binary import Binary
 from jadnvalidation.data_validation.number import Number
 from jadnvalidation.data_validation.boolean import Boolean
+from jadnvalidation.data_validation.enumerated import Enumerated
+from jadnvalidation.data_validation.array import Array
+from jadnvalidation.data_validation.array_of import ArrayOf
+from jadnvalidation.data_validation.map import Map
+from jadnvalidation.data_validation.map_of import MapOf
+from jadnvalidation.data_validation.choice import Choice
+from jadnvalidation.data_validation.record import Record
 from pydantic import ValidationError
 
 from flask import Blueprint, request, jsonify, current_app
@@ -46,6 +53,34 @@ class ValidateField(Resource):
                     return jsonify({"valid": True})
                 case "Boolean":
                     validator = Boolean(j_type=["Boolean", "Boolean", options, ""], data=value)
+                    validator.validate()
+                    return jsonify({"valid": True})
+                case "Enumerated":
+                    validator = Enumerated(j_type=["Enumerated", "Enumerated", options, ""], data=value)
+                    validator.validate()
+                    return jsonify({"valid": True})
+                case "Array":
+                    validator = Array(j_type=["Array", "Array", options, ""], data=value)
+                    validator.validate()
+                    return jsonify({"valid": True})
+                case "ArrayOf":
+                    validator = ArrayOf(j_type=["ArrayOf", "ArrayOf", options, ""], data=value)
+                    validator.validate()
+                    return jsonify({"valid": True})
+                case "Map":
+                    validator = Map(j_type=["Map", "Map", options, ""], data=value)
+                    validator.validate()
+                    return jsonify({"valid": True})
+                case "MapOf":
+                    validator = MapOf(j_type=["MapOf", "MapOf", options, ""], data=value)
+                    validator.validate()
+                    return jsonify({"valid": True})
+                case "Choice":
+                    validator = Choice(j_type=["Choice", "Choice", options, ""], data=value)
+                    validator.validate()
+                    return jsonify({"valid": True})
+                case "Record":
+                    validator = Record(j_type=["Record", "Record", options, ""], data=value)
                     validator.validate()
                     return jsonify({"valid": True})
                 case _:
