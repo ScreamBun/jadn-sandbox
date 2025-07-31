@@ -33,7 +33,7 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
+                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <label htmlFor={`checkbox-${_idx}`} className="custom-control-label">
@@ -55,7 +55,7 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
+                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -80,7 +80,7 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
+                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -105,7 +105,7 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
+                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -130,7 +130,7 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
+                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input

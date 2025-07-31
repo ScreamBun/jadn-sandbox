@@ -37,7 +37,7 @@ const Enumerated = (props: FieldProps) => {
 
     return (
         <div className='form-group'>
-            <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
+            <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
             <SBInfoBtn comment={_comment} />
             <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                 <SBSelect id={name} name = {name} data = {getOptions}

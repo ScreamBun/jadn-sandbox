@@ -101,7 +101,7 @@ const ArrayOf = (props: FieldProps) => {
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
                 <div className='card-header p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-                        <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
+                        <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                     </SBToggleBtn>
                 </div>

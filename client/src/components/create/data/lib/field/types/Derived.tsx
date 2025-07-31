@@ -3,6 +3,7 @@ import React from "react";
 import Field from "../Field";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from 'reducers/util'
+import { isOptional } from "../../utils";
 
 
 interface FieldProps {
@@ -34,7 +35,15 @@ const Derived = (props: FieldProps) => {
 
     let trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
     let trueOptions = typeof trueTypeDef[0] === 'string' ? trueTypeDef[2] : trueTypeDef[3];
+
     let newOpts = [...(Array.isArray(trueOptions) ? trueOptions : []), ...(Array.isArray(options) ? options : [])];
+    // If true type is optional, remove the optionality from the options
+    if (Array.isArray(trueOptions) && isOptional(trueOptions)) {
+        const idx = trueOptions.findIndex((opt: string) => opt.includes("]0"));
+        if (idx !== -1) {
+            newOpts.splice(idx, 1);
+        }
+    }
 
     let newField;
     if (trueTypeDef.length == 5 && Array.isArray(trueTypeDef[4])) {
