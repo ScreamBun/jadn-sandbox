@@ -28,7 +28,7 @@ export const App = () => {
               <Route path="home" element={<Home />} />
               <Route path="validate-message" element={<MessageValidator />} />
               <Route path="convert-schema" element={<SchemaVisualizer />} />
-              <Route path="create/message" element={<DataGenerator />} />
+              <Route path="create/data" element={<DataGenerator />} />
               <Route path="create/schema" element={<SchemaGenerator />} />
               <Route path="transform-schema" element={<SchemaTransformer />} />
               <Route path="generate-message" element={<ExampleGenerator />} />
