@@ -5,6 +5,7 @@ import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import SBInfoBtn from "components/common/SBInfoBtn";
+import { isOptional } from "../../utils";
 
 interface FieldProps {
     field: AllFieldArray | FieldOfArray;
@@ -64,6 +65,8 @@ const ArrayOf = (props: FieldProps) => {
         ]);
     };
 
+    const _optional = isOptional(options);
+
    const fields = cards.map((item, i) => {
         const key = item? item : "";
         
@@ -98,7 +101,7 @@ const ArrayOf = (props: FieldProps) => {
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
                 <div className='card-header p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-                        <strong>{name}</strong>
+                        <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
                         <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                     </SBToggleBtn>
                 </div>

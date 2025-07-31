@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
+import { isOptional } from "../../utils";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -42,12 +43,14 @@ const Array = (props: FieldProps) => {
         );
     });
 
+    const _optional = isOptional(options);
+
     return (
         <div className='form-group'>
             <div className="card" style={{ border: '0px solid #ffffff' }}>
                 <div className='card-header p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-                        <strong>{name}</strong>
+                        <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
                         <SBInfoBtn comment={_comment} />
                     </SBToggleBtn>
                 </div>

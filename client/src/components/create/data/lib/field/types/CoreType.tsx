@@ -2,6 +2,7 @@ import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/in
 import React, {useState} from "react";
 import { validate } from "components/create/data/lib/InputValidator";
 import SBInfoBtn from "components/common/SBInfoBtn";
+import { isOptional } from "components/create/data/lib/utils";
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -25,12 +26,14 @@ const CoreType = (props: FieldProps) => {
 
     const [data, setData] = useState(value);
     const [errMsg, setErrMsg] = useState("");
+
+    const _optional = isOptional(options);
     
     if (type === "Boolean") {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}</strong></label>
+                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <label htmlFor={`checkbox-${_idx}`} className="custom-control-label">
@@ -52,7 +55,7 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}</strong></label>
+                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -77,7 +80,7 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}</strong></label>
+                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -102,7 +105,7 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}</strong></label>
+                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -127,7 +130,7 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}</strong></label>
+                    <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input

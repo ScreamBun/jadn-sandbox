@@ -7,6 +7,7 @@ import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBInfoBtn from "components/common/SBInfoBtn";
+import { isOptional } from "../../utils";
 interface FieldProps {
     field: FieldOfArray | ArrayFieldArray | StandardFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -35,6 +36,8 @@ const MapOf = (props: FieldProps) => {
 
     // Keep track of cards
     const [idNumber, setIdNumber] = useState(1);
+
+    const _optional = isOptional(options);
 
     // Extract ktype and vtype
     const keyType = options.find((opt: string) => opt.startsWith("+") || opt.startsWith(">"))?.slice(1);
@@ -186,7 +189,7 @@ const MapOf = (props: FieldProps) => {
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
                 <div className='card-header p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-                        <strong>{name}</strong>
+                        <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
                         <SBInfoBtn comment={_comment} />
                     </SBToggleBtn>
                 </div>

@@ -1,9 +1,9 @@
 import { ArrayFieldArray, AllFieldArray } from "components/create/schema/interface";
 import React, { useState } from "react";
-import SBToggleBtn from "components/common/SBToggleBtn";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
+import { isOptional } from "../../utils";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -15,7 +15,6 @@ interface FieldProps {
 const Choice = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
     const [name, type, options, _comment, children] = field;
-    const [toggle, setToggle] = useState(true);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const [selectedChild, setSelectedChild] = useState<JSX.Element>();
     const [childData, setChildData] = useState<any>({});
@@ -65,11 +64,13 @@ const Choice = (props: FieldProps) => {
         return (typeof child[0] === 'string') ? { label: child[0], value: child[0] } : { label: child[1], value: child[1] };
     });
 
+    const _optional = isOptional(options);
+
     return (
         <div className='form-group'>
-            <label><strong>{name}</strong></label>
+            <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
             <SBInfoBtn comment={_comment} />
-            <div className={`card-body ${toggle ? '' : 'collapse'}`}>
+            <div className="card-body">
                 <SBSelect id={name} name = {name} data = {getOptions}
                 onChange={handleChange}
                 placeholder={`${name} options`}

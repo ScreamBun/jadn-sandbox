@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBInfoBtn from "components/common/SBInfoBtn";
+import { isOptional } from "../../utils";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -32,9 +33,11 @@ const Enumerated = (props: FieldProps) => {
         return child[1];
     });
 
+    const _optional = isOptional(options);
+
     return (
         <div className='form-group'>
-            <label><strong>{name}</strong></label>
+            <label><strong>{name} { _optional ? "(Optional)" : ""}</strong></label>
             <SBInfoBtn comment={_comment} />
             <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                 <SBSelect id={name} name = {name} data = {getOptions}
