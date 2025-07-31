@@ -4,6 +4,7 @@ import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import SBInfoBtn from "components/common/SBInfoBtn";
 
 interface FieldProps {
     field: AllFieldArray | FieldOfArray;
@@ -81,7 +82,7 @@ const ArrayOf = (props: FieldProps) => {
                     <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                         <div className='card-title'>
                             {`${key} ${i+1}`}
-                            <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                            <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                         </div>
                     </SBToggleBtn>
                 </div>
@@ -98,7 +99,7 @@ const ArrayOf = (props: FieldProps) => {
                 <div className='card-header p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <strong>{name}</strong>
-                        <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                        <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                     </SBToggleBtn>
                 </div>
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>

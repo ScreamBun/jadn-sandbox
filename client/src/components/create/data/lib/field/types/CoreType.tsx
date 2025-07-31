@@ -1,7 +1,7 @@
 import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/interface";
 import React, {useState} from "react";
 import { validate } from "components/create/data/lib/InputValidator";
-
+import SBInfoBtn from "components/common/SBInfoBtn";
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -29,8 +29,10 @@ const CoreType = (props: FieldProps) => {
     if (type === "Boolean") {
         return (
             <div className='form-group'>
-                <label><strong>{name}</strong></label>
-                <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                <div className='d-flex align-items-center'>
+                    <label><strong>{name}</strong></label>
+                    <SBInfoBtn comment={_comment} />
+                </div>
                 <label htmlFor={`checkbox-${_idx}`} className="custom-control-label">
                     <input
                         id = {`checkbox-${_idx}`}
@@ -49,8 +51,10 @@ const CoreType = (props: FieldProps) => {
     } else if (type == "Binary") {
         return (
             <div className='form-group'>
-                <label><strong>{name}</strong></label>
-                <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                <div className='d-flex align-items-center'>
+                    <label><strong>{name}</strong></label>
+                    <SBInfoBtn comment={_comment} />
+                </div>
                 <input
                     type='text'
                     value={data}
@@ -72,8 +76,10 @@ const CoreType = (props: FieldProps) => {
     } else if (type == "Number") {
         return (
             <div className='form-group'>
-                <label><strong>{name}</strong></label>
-                <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                <div className='d-flex align-items-center'>
+                    <label><strong>{name}</strong></label>
+                    <SBInfoBtn comment={_comment} />
+                </div>
                 <input
                     type='number'
                     value={data}
@@ -95,8 +101,10 @@ const CoreType = (props: FieldProps) => {
     } else if (type == "Integer") {
         return (
             <div className='form-group'>
-                <label><strong>{name}</strong></label>
-                <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                <div className='d-flex align-items-center'>
+                    <label><strong>{name}</strong></label>
+                    <SBInfoBtn comment={_comment} />
+                </div>
                 <input
                     type='number'
                     value={data}
@@ -118,8 +126,10 @@ const CoreType = (props: FieldProps) => {
     } else { // default string
         return (
             <div className='form-group'>
-                <label><strong>{name}</strong></label>
-                <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                <div className='d-flex align-items-center'>
+                    <label><strong>{name}</strong></label>
+                    <SBInfoBtn comment={_comment} />
+                </div>
                 <input
                     type='string'
                     value={data}

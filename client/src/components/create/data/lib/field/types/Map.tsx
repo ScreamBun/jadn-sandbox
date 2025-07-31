@@ -2,6 +2,7 @@ import { ArrayFieldArray } from "components/create/schema/interface";
 import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
+import SBInfoBtn from "components/common/SBInfoBtn";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -48,7 +49,7 @@ const Map = (props: FieldProps) => {
                 <div className='card-header p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <strong>{name}</strong>
-                        <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                        <SBInfoBtn comment={_comment} />
                     </SBToggleBtn>
                 </div>
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>

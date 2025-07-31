@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
+import SBInfoBtn from "components/common/SBInfoBtn";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -67,7 +68,7 @@ const Choice = (props: FieldProps) => {
     return (
         <div className='form-group'>
             <label><strong>{name}</strong></label>
-            <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+            <SBInfoBtn comment={_comment} />
             <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                 <SBSelect id={name} name = {name} data = {getOptions}
                 onChange={handleChange}

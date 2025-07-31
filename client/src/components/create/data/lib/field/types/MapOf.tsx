@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
+import SBInfoBtn from "components/common/SBInfoBtn";
 interface FieldProps {
     field: FieldOfArray | ArrayFieldArray | StandardFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -186,7 +187,7 @@ const MapOf = (props: FieldProps) => {
                 <div className='card-header p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <strong>{name}</strong>
-                        <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                        <SBInfoBtn comment={_comment} />
                     </SBToggleBtn>
                 </div>
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
