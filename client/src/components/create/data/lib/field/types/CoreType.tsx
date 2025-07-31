@@ -28,7 +28,7 @@ const CoreType = (props: FieldProps) => {
     
     if (type === "Boolean") {
         return (
-            <div className='form-group m-1'>
+            <div className='form-group'>
                 <label><strong>{name}</strong></label>
                 <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
                 <label htmlFor={`checkbox-${_idx}`} className="custom-control-label">
@@ -48,7 +48,7 @@ const CoreType = (props: FieldProps) => {
         );
     } else if (type == "Binary") {
         return (
-            <div className='form-group m-1'>
+            <div className='form-group'>
                 <label><strong>{name}</strong></label>
                 <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
                 <input
@@ -71,7 +71,7 @@ const CoreType = (props: FieldProps) => {
         );
     } else if (type == "Number") {
         return (
-            <div className='form-group m-1'>
+            <div className='form-group'>
                 <label><strong>{name}</strong></label>
                 <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
                 <input
@@ -94,7 +94,7 @@ const CoreType = (props: FieldProps) => {
         );   
     } else if (type == "Integer") {
         return (
-            <div className='form-group m-1'>
+            <div className='form-group'>
                 <label><strong>{name}</strong></label>
                 <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
                 <input
@@ -117,7 +117,7 @@ const CoreType = (props: FieldProps) => {
         );   
     } else { // default string
         return (
-            <div className='form-group m-1'>
+            <div className='form-group'>
                 <label><strong>{name}</strong></label>
                 <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
                 <input

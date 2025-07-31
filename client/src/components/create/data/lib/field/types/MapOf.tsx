@@ -161,15 +161,15 @@ const MapOf = (props: FieldProps) => {
 
         return (
             <div className='form-group' key={typeof valField[0] === "string" ? valField[0] : valField[1]}>
-                <div className='card'>
-                    <div className='card-header p-2'>
+                <div className='card' style={{ border: '0px solid #ffffff' }}>
+                    <div className='card-header p-1 border-secondary bg-primary text-white'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
-                            <div className='card-title m-1'>
+                            <div className='card-title'>
                                 {name} {id}
                             </div>
                         </SBToggleBtn>
                     </div>
-                    <div className={`card-body m-1 ${toggleField[i] == true ? '' : 'collapse'}`} id={`${id}`}>
+                    <div className={`card-body ${toggleField[i] == true ? '' : 'collapse'}`} id={`${id}`}>
                         <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} />
                         <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
                     </div>
@@ -181,20 +181,25 @@ const MapOf = (props: FieldProps) => {
     // Remove mapping button
 
     return (
-        <div className='form-group m-1'>
-            <label><strong>{name}</strong></label>
-            <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
-            <hr />
-            <div className={`card-body m-1 ${toggle ? '' : 'collapse'}`}>
-                {fields}
-                <div className="p-2">
-                    {<button
-                        type="button"
-                        className={`btn btn-sm btn-block btn-primary`}
-                        title={`Add Field to ${name}`}
-                        onClick={addCard}>
-                        <FontAwesomeIcon icon={faPlusSquare} />
-                    </button>}                    
+        <div className='form-group'>
+            <div className = "card" style={{ border: '0px solid #ffffff' }}>
+                <div className='card-header p-1 border-secondary bg-primary text-white'>
+                    <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+                        <strong>{name}</strong>
+                        <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                    </SBToggleBtn>
+                </div>
+                <div className={`card-body ${toggle ? '' : 'collapse'}`}>
+                    {fields}
+                    <div className="p-1">
+                        {<button
+                            type="button"
+                            className={`btn btn-sm btn-block btn-primary`}
+                            title={`Add Field to ${name}`}
+                            onClick={addCard}>
+                            <FontAwesomeIcon icon={faPlusSquare} />
+                        </button>}                    
+                    </div>
                 </div>
             </div>
         </div>

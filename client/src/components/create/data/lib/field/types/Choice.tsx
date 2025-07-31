@@ -65,10 +65,10 @@ const Choice = (props: FieldProps) => {
     });
 
     return (
-        <div className='form-group m-1'>
+        <div className='form-group'>
             <label><strong>{name}</strong></label>
             <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
-            <div className={`card-body m-1 ${toggle ? '' : 'collapse'}`}>
+            <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                 <SBSelect id={name} name = {name} data = {getOptions}
                 onChange={handleChange}
                 placeholder={`${name} options`}

@@ -32,7 +32,7 @@ const Enumerated = (props: FieldProps) => {
     });
 
     return (
-        <div className='form-group m-1'>
+        <div className='form-group'>
             <label><strong>{name}</strong></label>
             <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
             <div className={`card-body ${toggle ? '' : 'collapse'}`}>

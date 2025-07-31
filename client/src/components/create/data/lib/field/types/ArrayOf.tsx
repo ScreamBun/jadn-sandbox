@@ -25,7 +25,7 @@ const ArrayOf = (props: FieldProps) => {
     options = Array.isArray(optionsRaw) ? optionsRaw : [optionsRaw];
         
     const [toggle, setToggle] = useState(true);
-    const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: false });
+    const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
     const keyType = options.find(opt => opt.startsWith("*"))?.slice(1);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const [cards, setCards] = useState([keyType]);
@@ -76,8 +76,8 @@ const ArrayOf = (props: FieldProps) => {
         const keyEntry = keyList.find(entry => entry.name === `${name} ${i+1} ${key}`);
 
         return (
-            <div className="card my-1">
-                <div className='card-header p-2'>
+            <div className="card" style={{ border: '0px solid #ffffff' }}>
+                <div className='card-header p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                         <div className='card-title'>
                             {`${key} ${i+1}`}
@@ -93,17 +93,25 @@ const ArrayOf = (props: FieldProps) => {
     });
 
     return (
-        <div className='form-group'>
-            <div className={`card-body ${toggle ? '' : 'collapse'}`}>
-                {fields}
-                <div className="p-2">
-                    {<button
-                        type="button"
-                        className={`btn btn-sm btn-block btn-primary`}
-                        title={`Add Field to ${name}`}
-                        onClick={addCard}>
-                        <FontAwesomeIcon icon={faPlusSquare} />
-                    </button>}                    
+       <div className='form-group'>
+            <div className = "card" style={{ border: '0px solid #ffffff' }}>
+                <div className='card-header p-1 border-secondary bg-primary text-white'>
+                    <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+                        <strong>{name}</strong>
+                        <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                    </SBToggleBtn>
+                </div>
+                <div className={`card-body ${toggle ? '' : 'collapse'}`}>
+                    {fields}
+                    <div className="p-1">
+                        {<button
+                            type="button"
+                            className={`btn btn-sm btn-block btn-primary`}
+                            title={`Add Field to ${name}`}
+                            onClick={addCard}>
+                            <FontAwesomeIcon icon={faPlusSquare} />
+                        </button>}                    
+                    </div>
                 </div>
             </div>
         </div>

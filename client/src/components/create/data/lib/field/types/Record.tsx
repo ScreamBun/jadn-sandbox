@@ -43,12 +43,17 @@ const Record = (props: FieldProps) => {
     });
 
     return (
-        <div className='form-group m-1'>
-            <label><strong>{name}</strong></label>
-            <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
-            <hr />
-            <div className={`card-body m-1 ${toggle ? '' : 'collapse'}`}>
-                {childrenCards}
+        <div className='form-group'>
+            <div className = "card" style={{ border: '0px solid #ffffff' }}>
+                <div className='card-header p-1 border-secondary bg-primary text-white'>
+                    <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+                        <strong>{name}</strong>
+                        <p className = "card-subtitle form-text text-muted text-wrap">{_comment}</p>
+                    </SBToggleBtn>
+                </div>
+                <div className={`card-body ${toggle ? '' : 'collapse'}`}>
+                    {childrenCards}
+                </div>
             </div>
         </div>
     );
