@@ -67,19 +67,24 @@ const MapOf = (props: FieldProps) => {
             }
         }
         let newOutput: any = isRecord ? {} : [];
-        for (let i = 0; i < keys.length; i++) {
-            const keyVal = keys[i]?.key;
-            const valVal = values[i]?.value;
-            if (isRecord) {
-                if (newOutput[keyVal] === undefined) {
+        
+        // Find keyEntry and valueEntry corresponding to each other
+        cards.forEach(card => {
+            const keyEntry = keys.find(k => k.name === `${name} ${card.id} ${card.key}`);
+            const valueEntry = values.find(v => v.name === `${name} ${card.id} ${card.value}`);
+            
+            const keyVal = keyEntry?.key;
+            const valVal = valueEntry?.value;
+            
+            // Only add to output if both key and value exist
+            if (keyVal !== undefined && valVal !== undefined) {
+                if (isRecord) {
                     newOutput[keyVal] = valVal;
                 } else {
-                    newOutput[keyVal] = {...newOutput[keyVal], valVal};
+                    newOutput.push(keyVal, valVal);
                 }
-            } else {
-                newOutput.push(keyVal, valVal);
             }
-        }
+        });
         setOutput(newOutput);
         fieldChange(name, newOutput);
     };
