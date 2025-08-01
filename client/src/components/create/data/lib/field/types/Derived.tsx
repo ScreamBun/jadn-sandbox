@@ -39,7 +39,7 @@ const Derived = (props: FieldProps) => {
     let newOpts = [...(Array.isArray(trueOptions) ? trueOptions : []), ...(Array.isArray(options) ? options : [])];
     // If true type is optional, remove the optionality from the options
     if (Array.isArray(trueOptions) && isOptional(trueOptions)) {
-        const idx = trueOptions.findIndex((opt: string) => opt.includes("]0"));
+        const idx = trueOptions.findIndex((opt: string) => opt.includes("[0"));
         if (idx !== -1) {
             newOpts.splice(idx, 1);
         }
