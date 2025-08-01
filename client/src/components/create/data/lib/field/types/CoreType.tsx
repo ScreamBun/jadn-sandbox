@@ -33,7 +33,8 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
+                    {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                    <label>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <label htmlFor={`checkbox-${_idx}`} className="custom-control-label">
@@ -46,6 +47,7 @@ const CoreType = (props: FieldProps) => {
                             setData(e.target.checked);
                             fieldChange(name, e.target.checked)
                         }}
+                        className="form-control-sm"
                     />
                 </label>
                 {children}
@@ -55,7 +57,8 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
+                    {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                    <label>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -70,6 +73,7 @@ const CoreType = (props: FieldProps) => {
                             setErrMsg(result);
                         });
                     }}
+                    className="form-control-sm"
                     style={{ borderColor: errMsg === "" ? "" : 'red' }}
                 />
                 {errMsg && <div className="text-danger">{errMsg}</div>}
@@ -80,7 +84,8 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
+                    {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                    <label>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -95,6 +100,7 @@ const CoreType = (props: FieldProps) => {
                             setErrMsg(result);
                         });                            
                     }}
+                    className="form-control-sm"
                     style={{ borderColor: errMsg === "" ? "" : 'red' }}
                 />
                 {errMsg && <div className="text-danger">{errMsg}</div>}
@@ -105,7 +111,8 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
+                    {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                    <label>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -120,6 +127,7 @@ const CoreType = (props: FieldProps) => {
                             setErrMsg(result);
                         });                            
                     }}
+                    className="form-control-sm"
                     style={{ borderColor: errMsg === "" ? "" : 'red' }}
                 />
                 {errMsg && <div className="text-danger">{errMsg}</div>}
@@ -130,7 +138,8 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='form-group'>
                 <div className='d-flex align-items-center'>
-                    <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
+                    {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                    <label>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
                 </div>
                 <input
@@ -145,6 +154,7 @@ const CoreType = (props: FieldProps) => {
                             setErrMsg(result);
                         });                            
                     }}
+                    className="form-control-sm"
                     style={{ borderColor: errMsg === "" ? "" : 'red' }}
                 />
                 {errMsg && <div className="text-danger">{errMsg}</div>}

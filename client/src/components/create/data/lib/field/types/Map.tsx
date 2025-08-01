@@ -35,23 +35,25 @@ const Map = (props: FieldProps) => {
 
     const childrenCards = children.map((child, idx) => {
         return (
-            <Field
-                key={idx}
-                field={child}
-                fieldChange={handleChange}
-                parent={name}
-            />
+            <div className="ms-3 mt-2">
+                <Field
+                    key={idx}
+                    field={child}
+                    fieldChange={handleChange}
+                    parent={name}
+                />
+            </div>
         );
     });
 
     const _optional = isOptional(options);
 
     return (
-        <div className='form-group'>
-            <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                <div className='card-header p-1 border-secondary bg-primary text-white'>
+        <div className="p-1 form-group">
+            <div className="card jadn-type">
+                <div className='card-header'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-                        <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
+                        <label>{name}{ _optional ? "" : "*"}</label>
                         <SBInfoBtn comment={_comment} />
                     </SBToggleBtn>
                 </div>

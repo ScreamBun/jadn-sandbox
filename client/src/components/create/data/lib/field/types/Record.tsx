@@ -35,12 +35,14 @@ const Record = (props: FieldProps) => {
 
     const childrenCards = children.map((child, idx) => {
         return (
-            <Field
-                key={idx}
-                field={child}
-                fieldChange={handleChange}
-                parent={name}
-            />
+            <div className="ms-3 mt-2">
+                <Field
+                    key={idx}
+                    field={child}
+                    fieldChange={handleChange}
+                    parent={name}
+                />
+            </div>
         );
     });
 

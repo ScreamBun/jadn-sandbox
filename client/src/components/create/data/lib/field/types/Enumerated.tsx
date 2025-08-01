@@ -36,15 +36,22 @@ const Enumerated = (props: FieldProps) => {
     const _optional = isOptional(options);
 
     return (
-        <div className='form-group'>
-            <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
-            <SBInfoBtn comment={_comment} />
-            <div className={`card-body ${toggle ? '' : 'collapse'}`}>
-                <SBSelect id={name} name = {name} data = {getOptions}
-                onChange={handleChange}
-                placeholder={`${name} options`}
-                value={selectedValue}
-                isClearable />
+
+        <div className="p-1 form-group">
+            <div className="card jadn-type">
+                <div className='card-header'>
+                    <label>{name}{ _optional ? "" : "*"}</label>
+                    <SBInfoBtn comment={_comment} />
+                </div>
+                <div className={`card-body ${toggle ? '' : 'collapse'}`}>
+                    <SBSelect id={name} name = {name} data = {getOptions}
+                        onChange={handleChange}
+                        placeholder={`${name} options`}
+                        value={selectedValue}
+                        isClearable 
+                        isSmStyle
+                    />
+                </div>
             </div>
         </div>
     );

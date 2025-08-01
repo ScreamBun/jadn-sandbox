@@ -18,6 +18,7 @@ const Choice = (props: FieldProps) => {
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const [selectedChild, setSelectedChild] = useState<JSX.Element>();
     const [childData, setChildData] = useState<any>({});
+    const [bgColorClass, setBgColorClass] = useState('bg-light'); // Initial background color
 
     const handleChange = (e: Option | null) => {
         if (e == null || e.value === '' || e.value === undefined) {
@@ -57,7 +58,7 @@ const Choice = (props: FieldProps) => {
     const getChild = (field_name: string) => { 
         const child = children.find((child: AllFieldArray) => child[1] === field_name || child[0] === field_name);
         if (!child) return undefined;
-        return <Field key={field_name} field={child} fieldChange={updateChildData} parent={name} />;
+        return <div className="ms-3 mt-2"><Field key={field_name} field={child} fieldChange={updateChildData} parent={name} /></div>
     }
 
     const getOptions = children.map((child: AllFieldArray) => {
@@ -67,16 +68,21 @@ const Choice = (props: FieldProps) => {
     const _optional = isOptional(options);
 
     return (
-        <div className='form-group'>
-            <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
-            <SBInfoBtn comment={_comment} />
-            <div className="card-body">
-                <SBSelect id={name} name = {name} data = {getOptions}
-                onChange={handleChange}
-                placeholder={`${name} options`}
-                value={selectedValue}
-                isClearable />
-                {selectedValue ? selectedChild : ""}
+        <div className="p-1 form-group">
+            <div className="card jadn-type">
+                <div className='card-header'>
+                    <label>{name}{ _optional ? "" : "*"}</label>
+                    <SBInfoBtn comment={_comment} />
+                </div>
+                <div className={`card-body}`}>
+                    <SBSelect id={name} name={name} data={getOptions}
+                        onChange={handleChange}
+                        placeholder={`${name} options`}
+                        value={selectedValue}
+                        isSmStyle
+                        isClearable />
+                    {selectedValue ? selectedChild : ""}
+                </div>
             </div>
         </div>
     );

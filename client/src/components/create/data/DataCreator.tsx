@@ -10,6 +10,8 @@ import SBSaveFile from 'components/common/SBSaveFile'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
 import { LANG_JSON } from 'components/utils/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUndo } from '@fortawesome/free-solid-svg-icons'
 
 const DataCreator = (props: any) => {
     // Destructure props
@@ -39,6 +41,12 @@ const DataCreator = (props: any) => {
         setGeneratedMessage({});
     }
 
+    const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setSelection(null);
+        setGeneratedMessage({});
+    }    
+
     // Decide which fields to display
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (selection?.value) {
@@ -57,30 +65,38 @@ const DataCreator = (props: any) => {
         <div className='row'>
             <div className='col-md-6'>
                 <div className='card'>
-                    <div className='card-body p-2'>
-                         <div className="d-flex">
-                            <SBSelect id={"command-list"}
-                                data={roots}
-                                onChange={handleSelection}
-                                placeholder={'Select a data type...'}
-                                value={selection}
-                                isSmStyle
-                                isClearable
-                                customNoOptionMsg={"Schema is missing Roots"}
-                            />
+                    <div className = "card-header p-2 d-flex align-items-center">
+                        <h5 className = "mb-0">Data Builder</h5>
+                        <div className = "ms-auto">
+                            <button type='reset' className='btn btn-sm btn-danger float-end ms-1' title='Reset Builder' onClick={onReset}>
+                                <FontAwesomeIcon icon={faUndo} />
+                            </button>
                         </div>
-                        <div id = "message-editor" className = 'card-body-page' >
+                    </div>
+                    <div className = "card-header p-2 d-flex">
+                        <SBSelect id={"command-list"}
+                            data={roots}
+                            onChange={handleSelection}
+                            placeholder={'Select a root type...'}
+                            value={selection}
+                            isSmStyle
+                            isClearable
+                            customNoOptionMsg={"Schema is missing a root type"}
+                        />
+                    </div>                      
+                    <div className='card-body p-2'>
+                        <div id = "data-builder" className = 'card-body-page' >
                             {fieldDefs}
                         </div>
-                        <SBScrollToTop divID = "message-editor" />
+                        <SBScrollToTop divID = "data-builder" />
                     </div>
                 </div>
             </div>
              <div className ='col-md-6'>
                 <div className='card'>
-                    <div className = "card-header p-2 d-flex align-items-center">
-                        <h5 className = "mb-0">JSON Viewer</h5>
-                        <div className = "ms-auto">
+                    <div className="card-header p-2 d-flex align-items-center">
+                        <h5 className="mb-0">JSON Viewer</h5>
+                        <div className="ms-auto">
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                             <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
                             <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
