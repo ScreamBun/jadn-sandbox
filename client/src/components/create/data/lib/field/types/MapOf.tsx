@@ -52,8 +52,8 @@ const MapOf = (props: FieldProps) => {
         const values = nextValueList ?? valueList;
 
         const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === keyType) : [];
-        let trueTypeDef: string = types.find((t:any) => t[0] === keyType || t[1] === keyType);
-        let trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
+        let trueTypeDef: any = types.find((t:any) => t[0] === keyType || t[1] === keyType);
+        let trueTypeVal = trueTypeDef ? (typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2]) : keyType;
 
         const isRecord = trueTypeVal === "String" || trueTypeVal === "Enumerated" ? true : false;
 
@@ -67,7 +67,7 @@ const MapOf = (props: FieldProps) => {
             }
         }
         let newOutput: any = isRecord ? {} : [];
-        
+
         // Find keyEntry and valueEntry corresponding to each other
         cards.forEach(card => {
             const keyEntry = keys.find(k => k.name === `${name} ${card.id} ${card.key}`);
@@ -147,8 +147,8 @@ const MapOf = (props: FieldProps) => {
         const handleValueChange = (_: string, v: any) => addValue(`${name} ${id} ${value}`, v);
 
         const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === key) : [];
-        let trueTypeDef: string = types.find((t:any) => t[0] === key || t[1] === key);
-        let trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
+        let trueTypeDef: string = types ? types.find((t:any) => t[0] === key || t[1] === key) : keyEntry;
+        let trueTypeVal = trueTypeDef ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2] : key;
 
         let keyField: AllFieldArray;
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
@@ -158,8 +158,8 @@ const MapOf = (props: FieldProps) => {
         }
 
         const valtypes = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === value) : [];
-        trueTypeDef = valtypes.find((t:any) => t[0] === value || t[1] === value);
-        trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
+        trueTypeDef = valtypes ? valtypes.find((t:any) => t[0] === value || t[1] === value) : valueEntry;
+        trueTypeVal = trueTypeDef ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2] : value;
 
         let valField: AllFieldArray;
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
