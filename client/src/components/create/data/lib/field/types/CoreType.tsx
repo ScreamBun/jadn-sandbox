@@ -33,11 +33,12 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='p-1 form-group'>
                 <div className='card jadn-type'>
-                    <div className='card-header'>
-                        {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
-                        <label>{name}{ _optional ? "" : "*"}</label>
-                        <SBInfoBtn comment={_comment} />
-                    </div>
+                    <div className='card-header d-flex align-items-center justify-content-between'>
+                        <div className="d-flex align-items-center">
+                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                            <label>{name}{ _optional ? "" : "*"}</label>
+                            <SBInfoBtn comment={_comment} />
+                        </div>
                     <label htmlFor={`checkbox-${_idx}`} className="custom-control-label">
                         <input
                             id = {`checkbox-${_idx}`}
@@ -51,6 +52,7 @@ const CoreType = (props: FieldProps) => {
                             className="form-control-sm"
                         />
                     </label>
+                    </div>
                     {children}
                 </div>
             </div>
@@ -59,11 +61,12 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='p-1 form-group'>
                 <div className='card jadn-type'>
-                    <div className='card-header'>
-                        {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
-                        <label>{name}{ _optional ? "" : "*"}</label>
-                        <SBInfoBtn comment={_comment} />
-                    </div>
+                    <div className='card-header d-flex align-items-center justify-content-between'>
+                        <div className="d-flex align-items-center">
+                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                            <label>{name}{ _optional ? "" : "*"}</label>
+                            <SBInfoBtn comment={_comment} />
+                        </div>
                     <input
                         type='text'
                         value={data}
@@ -79,6 +82,7 @@ const CoreType = (props: FieldProps) => {
                         className="form-control-sm"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
+                    </div>
                     {errMsg && <div className="text-danger">{errMsg}</div>}
                     {children}
                 </div>
@@ -88,11 +92,12 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='p-1 form-group'>
                 <div className='card jadn-type'>
-                    <div className='card-header'>
-                        {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
-                        <label>{name}{ _optional ? "" : "*"}</label>
-                        <SBInfoBtn comment={_comment} />
-                    </div>
+                    <div className='card-header d-flex align-items-center justify-content-between'>
+                        <div className="d-flex align-items-center">
+                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                            <label>{name}{ _optional ? "" : "*"}</label>
+                            <SBInfoBtn comment={_comment} />
+                        </div>
                     <input
                         type='number'
                         value={data}
@@ -108,6 +113,7 @@ const CoreType = (props: FieldProps) => {
                         className="form-control-sm"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
+                    </div>
                     {errMsg && <div className="text-danger">{errMsg}</div>}
                     {children}
                 </div>
@@ -117,11 +123,12 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='p-1 form-group'>
                 <div className='card jadn-type'>
-                    <div className='card-header'>
-                        {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
-                        <label>{name}{ _optional ? "" : "*"}</label>
-                        <SBInfoBtn comment={_comment} />
-                    </div>
+                    <div className='card-header d-flex align-items-center justify-content-between'>
+                        <div className="d-flex align-items-center">
+                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                            <label>{name}{ _optional ? "" : "*"}</label>
+                            <SBInfoBtn comment={_comment} />
+                        </div>
                     <input
                         type='number'
                         value={data}
@@ -137,6 +144,7 @@ const CoreType = (props: FieldProps) => {
                         className="form-control-sm"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
+                    </div>
                     {errMsg && <div className="text-danger">{errMsg}</div>}
                     {children}
                 </div>
@@ -146,28 +154,30 @@ const CoreType = (props: FieldProps) => {
         return (
             <div className='p-1 form-group'>
                 <div className='card jadn-type'>
-                    <div className='card-header'>
-                        {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
-                        <label>{name}{ _optional ? "" : "*"}</label>
-                        <SBInfoBtn comment={_comment} />
-                    </div>
-                    <input
-                        type='string'
-                        value={data}
-                        onChange={e => {
-                            setData(e.target.value);
-                        }}
-                        onBlur = {e => {
-                            fieldChange(name, e.target.value)
-                            validate(e.target.value, "String", options).then(result => {
-                                setErrMsg(result);
-                            });                            
-                        }}
-                        className="form-control-sm"
-                        style={{ borderColor: errMsg === "" ? "" : 'red' }}
-                    />
-                    {errMsg && <div className="text-danger">{errMsg}</div>}
-                    {children}
+                    <div className='card-header d-flex align-items-center justify-content-between'>
+                        <div className="d-flex align-items-center">
+                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
+                            <label>{name}{ _optional ? "" : "*"}</label>
+                            <SBInfoBtn comment={_comment} />
+                        </div>
+                        <input
+                            type='string'
+                            value={data}
+                            onChange={e => {
+                                setData(e.target.value);
+                            }}
+                            onBlur = {e => {
+                                fieldChange(name, e.target.value)
+                                validate(e.target.value, "String", options).then(result => {
+                                    setErrMsg(result);
+                                });                            
+                            }}
+                            className="form-control-sm"
+                            style={{ borderColor: errMsg === "" ? "" : 'red' }}
+                        />
+                        </div>
+                        {errMsg && <div className="text-danger">{errMsg}</div>}
+                        {children}
                 </div>
             </div>
         );   

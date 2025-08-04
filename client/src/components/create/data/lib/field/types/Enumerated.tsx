@@ -39,11 +39,11 @@ const Enumerated = (props: FieldProps) => {
 
         <div className="p-1 form-group">
             <div className="card jadn-type">
-                <div className='card-header'>
-                    <label>{name}{ _optional ? "" : "*"}</label>
-                    <SBInfoBtn comment={_comment} />
-                </div>
-                <div className={`card-body ${toggle ? '' : 'collapse'}`}>
+                <div className='card-header d-flex align-items-center justify-content-between'>
+                    <div className="d-flex align-items-center">
+                        <label>{name}{ _optional ? "" : "*"}</label>
+                        <SBInfoBtn comment={_comment} />
+                    </div>
                     <SBSelect id={name} name = {name} data = {getOptions}
                         onChange={handleChange}
                         placeholder={`${name} options`}
