@@ -82,8 +82,8 @@ const Choice = (props: FieldProps) => {
                         isSearchable
                         isClearable />
                 </div>
-                {selectedValue ? selectedChild : ""}
             </div>
+            {selectedValue ? selectedChild : ""}
         </div>
     );
 };

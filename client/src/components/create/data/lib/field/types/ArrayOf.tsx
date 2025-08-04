@@ -72,23 +72,23 @@ const ArrayOf = (props: FieldProps) => {
         
         let keyField: AllFieldArray;
         if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
-            keyField = [`${name} ${key} ${i+1}`, key, options, "", []];
+            keyField = [`${key} ${i+1}`, key, options, "", []];
         } else {
-            keyField = [i, `${name} ${key} ${i+1}`, key, options, ""];
+            keyField = [i, `${key} ${i+1}`, key, options, ""];
         }
 
         const keyEntry = keyList.find(entry => entry.name === `${name} ${i+1} ${key}`);
 
         return (
             <div className="card" style={{ border: '0px solid #ffffff' }}>
-                <div className='card p-1 border-secondary bg-primary text-white'>
+                {<div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                         <div className='card-title'>
                             {`${key} ${i+1}`}
                             <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                         </div>
                     </SBToggleBtn>
-                </div>
+                </div>}
                 <div className={`card-body ${toggleField[i] == true ? '' : 'collapse'}`} id={`${i}`}>
                     <Field key={keyField[1]} field={keyField} parent={String(name)} fieldChange={addKey} value={keyEntry?.key ?? ""} />
                 </div>
@@ -99,12 +99,12 @@ const ArrayOf = (props: FieldProps) => {
     return (
        <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                <div className='card p-1 border-secondary bg-primary text-white'>
+                {/*<div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                     </SBToggleBtn>
-                </div>
+                </div>*/}
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                     {fields}
                     <div className="p-1">

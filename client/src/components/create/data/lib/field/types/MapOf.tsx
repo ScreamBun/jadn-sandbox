@@ -152,9 +152,9 @@ const MapOf = (props: FieldProps) => {
 
         let keyField: AllFieldArray;
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
-            keyField = [`${name} ${id} ${key}`, key, options, "", []];
+            keyField = [`${key} ${id}`, key, options, "", []];
         } else {
-            keyField = [id, `${name} ${id} ${key}`, key, options, ""];
+            keyField = [id, `${key} ${id}`, key, options, ""];
         }
 
         const valtypes = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === value) : [];
@@ -163,9 +163,9 @@ const MapOf = (props: FieldProps) => {
 
         let valField: AllFieldArray;
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
-            valField = [`${name} ${id} ${value}`, value, options, "", []];
+            valField = [`${value} ${id}`, value, options, "", []];
         } else {
-            valField = [id, `${name} ${id} ${value}`, value, options, ""];
+            valField = [id, `${value} ${id}`, value, options, ""];
         }
 
         return (
@@ -175,6 +175,7 @@ const MapOf = (props: FieldProps) => {
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title'>
                                 {name} {id}
+                                <SBInfoBtn comment={_comment} />
                             </div>
                         </SBToggleBtn>
                     </div>
@@ -192,12 +193,12 @@ const MapOf = (props: FieldProps) => {
     return (
         <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                <div className='card p-1 border-secondary bg-primary text-white'>
+                {/*<div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={_comment} />
                     </SBToggleBtn>
-                </div>
+                </div>*/}
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                     {fields}
                     <div className="p-1">
