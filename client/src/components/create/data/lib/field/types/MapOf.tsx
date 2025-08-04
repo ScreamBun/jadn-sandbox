@@ -171,7 +171,7 @@ const MapOf = (props: FieldProps) => {
         return (
             <div className='form-group' key={typeof valField[0] === "string" ? valField[0] : valField[1]}>
                 <div className='card' style={{ border: '0px solid #ffffff' }}>
-                    <div className='card-header p-1 border-secondary bg-primary text-white'>
+                    <div className='card p-1 border-secondary bg-primary text-white'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title'>
                                 {name} {id}
@@ -192,7 +192,7 @@ const MapOf = (props: FieldProps) => {
     return (
         <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                <div className='card-header p-1 border-secondary bg-primary text-white'>
+                <div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={_comment} />

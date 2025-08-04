@@ -50,8 +50,8 @@ const Map = (props: FieldProps) => {
 
     return (
         <div className="p-1 form-group">
-            <div className="card">
-                <div className='card-header'>
+            <div className="card" style={{ border: '0px solid #ffffff' }}>
+                <div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label>{name}{ _optional ? "" : "*"}</label>
                         <SBInfoBtn comment={_comment} />

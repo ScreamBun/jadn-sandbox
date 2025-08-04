@@ -51,7 +51,7 @@ const Record = (props: FieldProps) => {
     return (
         <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                <div className='card-header p-1 border-secondary bg-primary text-white'>
+                <div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={_comment} />
