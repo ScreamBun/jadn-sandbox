@@ -47,6 +47,9 @@ const MapOf = (props: FieldProps) => {
     const [valueList, setValueList] = useState<Array<{name: any , value: any}>>([]);
     const [output, setOutput] = useState<any>();
 
+    // Track if an instance has been made. If so, remove top header
+    const [instanceMade, setInstanceMade] = useState(false);
+
     const onChange = (nextKeyList?: typeof keyList, nextValueList?: typeof valueList) => {
         const keys = nextKeyList ?? keyList;
         const values = nextValueList ?? valueList;
@@ -132,6 +135,7 @@ const MapOf = (props: FieldProps) => {
             ]);
             return newId;
         });
+        setInstanceMade(true);
     };
 
     // Return MapOf-Name : {k:v, k:v} or MapOf-Name : [k,v,k,v]
@@ -191,12 +195,12 @@ const MapOf = (props: FieldProps) => {
     return (
         <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                <div className='card p-1 border-secondary bg-primary text-white'>
+                {!instanceMade ? <div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={_comment} />
                     </SBToggleBtn>
-                </div>
+                </div> : <div></div>}
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                     {fields}
                     <div className="p-1">

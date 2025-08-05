@@ -18,7 +18,7 @@ const isDerived = (type: string): Boolean => {
 
 const trueTypeHelper = (types: any, type: string): [string, any] | undefined => {
     const trueTypeDef = types.find((t: any) => t[0] === type || t[1] === type);
-    const trueType = trueTypeDef ? (typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2]) : type;
+    const trueType = trueTypeDef ? (typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2]) : undefined;
     if (trueType && isDerived(trueType)) {
         return trueTypeHelper(types, trueType);
     } else if (trueType && !isDerived(trueType)) {

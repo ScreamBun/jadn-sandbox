@@ -40,6 +40,9 @@ const ArrayOf = (props: FieldProps) => {
     let keyType = trueTypeVal == undefined ? keyName : trueTypeVal;
     const [cards, setCards] = useState<string[]>([]);
 
+    // Track if an instance has been made. If so, remove top header
+    const [instanceMade, setInstanceMade] = useState(false);
+
     React.useEffect(() => {
         const keys = keyList;
         let output = [];
@@ -67,6 +70,7 @@ const ArrayOf = (props: FieldProps) => {
     const addCard = () => {
         if (!keyType) return;
         setCards(prevCards => [...prevCards, keyType]);
+        setInstanceMade(true);
     };
 
     const _optional = isOptional(options);
@@ -108,12 +112,12 @@ const ArrayOf = (props: FieldProps) => {
     return (
        <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                <div className='card p-1 border-secondary bg-primary text-white'>
+                {!instanceMade ? <div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                     </SBToggleBtn>
-                </div>
+                </div> : <div></div>}
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                     {fields}
                     <div className="p-1">
