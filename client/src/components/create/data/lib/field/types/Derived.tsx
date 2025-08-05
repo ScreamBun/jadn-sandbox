@@ -3,8 +3,7 @@ import React from "react";
 import Field from "../Field";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from 'reducers/util'
-import { isOptional } from "../../utils";
-
+import { getTrueType } from "../../utils";
 
 interface FieldProps {
     field: AllFieldArray;
@@ -25,15 +24,11 @@ const Derived = (props: FieldProps) => {
     }
 
     const schemaObj = useSelector(getSelectedSchema);
-    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
-
-    let trueTypeDef: string = types.find((t:any) => t[0] === type || t[1] === type);
-
-    if (!trueTypeDef || trueTypeDef == null || trueTypeDef == undefined) {
+    const types = schemaObj.types;
+    const [trueTypeVal, trueTypeDef] = getTrueType(types, type);
+    if (trueTypeDef == undefined || trueTypeVal == undefined) {
         return <div>No derivative type found</div>
     }
-
-    let trueTypeVal = typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2];
     let trueOptions = typeof trueTypeDef[0] === 'string' ? trueTypeDef[2] : trueTypeDef[3];
     let newOpts = [...(Array.isArray(trueOptions) ? trueOptions : []), ...(Array.isArray(options) ? options : [])];
 

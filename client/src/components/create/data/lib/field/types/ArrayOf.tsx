@@ -5,7 +5,9 @@ import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { isOptional } from "../../utils";
+import { getTrueType, isOptional } from "../../utils";
+import { useSelector } from "react-redux";
+import { getSelectedSchema } from "reducers/util";
 
 interface FieldProps {
     field: AllFieldArray | FieldOfArray;
@@ -19,8 +21,10 @@ const ArrayOf = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
 
     let _idx, name, type, optionsRaw, options: string[], _comment;
-    if (field.length == 5) {
+    if (field.length == 5 && typeof(field[0]) === "number") {
         [_idx, name, type, optionsRaw, _comment] = field;
+    } else if (field.length == 5) {
+        [name, type, optionsRaw, _comment, []] = field;
     } else {
         [name, type, optionsRaw, _comment] = field;
     }
@@ -28,19 +32,22 @@ const ArrayOf = (props: FieldProps) => {
         
     const [toggle, setToggle] = useState(true);
     const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
-    const keyType = options.find(opt => opt.startsWith("*"))?.slice(1);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
-    const [cards, setCards] = useState([keyType]);
+    const schemaObj = useSelector(getSelectedSchema);
 
-    const onChange = (nextKeyList?: typeof keyList) => {
-        const keys = nextKeyList ?? keyList;
+    const keyName = options.find(opt => opt.startsWith("*"))?.slice(1);
+    const [trueTypeVal, trueTypeDef] = getTrueType(schemaObj.types, String(keyName));
+    let keyType = trueTypeVal == undefined ? keyName : trueTypeVal;
+    const [cards, setCards] = useState<string[]>([]);
+
+    React.useEffect(() => {
+        const keys = keyList;
         let output = [];
-
         for (let i = 0; i < keys.length; i++) {
             output.push(keys[i].key);
         }
         fieldChange(String(name), output);
-    };
+    }, [keyList, name, fieldChange]);
 
     const addKey = (name:any, key: any) => {
         setKeyList(prev => {
@@ -53,44 +60,46 @@ const ArrayOf = (props: FieldProps) => {
             } else {
                 updated.push({ name, key });
             }
-            onChange(updated);
             return updated;
         });
     };
 
     const addCard = () => {
-        setCards(prevCards => [
-            ...prevCards,
-            keyType
-        ]);
+        if (!keyType) return;
+        setCards(prevCards => [...prevCards, keyType]);
     };
 
     const _optional = isOptional(options);
 
    const fields = cards.map((item, i) => {
         const key = item? item : "";
+        if (!key) return null;
+
+        const fieldName = `${keyName} ${i+1}`;
+        const entryName = `${key} ${i+1}`;
         
         let keyField: AllFieldArray;
         if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
-            keyField = [`${key} ${i+1}`, key, options, "", []];
+            let keyChildren = trueTypeDef != undefined ? trueTypeDef[4] ? Array.isArray(trueTypeDef[4]) ? trueTypeDef[4] : [] : [] : [];
+            keyField = [fieldName, key, options, "", keyChildren];
         } else {
-            keyField = [i, `${key} ${i+1}`, key, options, ""];
+            keyField = [i, fieldName, key, options, ""];
         }
 
-        const keyEntry = keyList.find(entry => entry.name === `${name} ${i+1} ${key}`);
+        const keyEntry = keyList.find(entry => entry.name === entryName);
 
         return (
-            <div className="card" style={{ border: '0px solid #ffffff' }}>
+            <div key = {i} className="card" style={{ border: '0px solid #ffffff' }}>
                 {<div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                         <div className='card-title'>
-                            {`${key} ${i+1}`}
+                            {`${name} ${i+1}${ _optional ? "" : "*" }`}
                             <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                         </div>
                     </SBToggleBtn>
                 </div>}
                 <div className={`card-body ${toggleField[i] == true ? '' : 'collapse'}`} id={`${i}`}>
-                    <Field key={keyField[1]} field={keyField} parent={String(name)} fieldChange={addKey} value={keyEntry?.key ?? ""} />
+                    <Field key={`${key} ${i+1}`} field={keyField} parent={String(name)} fieldChange={(n, k) => addKey(entryName, k)} value={keyEntry?.key ?? ""} />
                 </div>
             </div>
         )
@@ -99,12 +108,12 @@ const ArrayOf = (props: FieldProps) => {
     return (
        <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                {/*<div className='card p-1 border-secondary bg-primary text-white'>
+                <div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                     </SBToggleBtn>
-                </div>*/}
+                </div>
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                     {fields}
                     <div className="p-1">

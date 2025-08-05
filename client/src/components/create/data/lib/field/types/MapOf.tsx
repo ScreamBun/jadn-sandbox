@@ -7,7 +7,7 @@ import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { isOptional } from "../../utils";
+import { getTrueType, isOptional } from "../../utils";
 interface FieldProps {
     field: FieldOfArray | ArrayFieldArray | StandardFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -35,14 +35,14 @@ const MapOf = (props: FieldProps) => {
     const schemaObj = useSelector(getSelectedSchema);
 
     // Keep track of cards
-    const [idNumber, setIdNumber] = useState(1);
+    const [idNumber, setIdNumber] = useState(0);
 
     const _optional = isOptional(options);
 
     // Extract ktype and vtype
     const keyType = options.find((opt: string) => opt.startsWith("+") || opt.startsWith(">"))?.slice(1);
     const valueType = options.find((opt: string) => opt.startsWith("*"))?.slice(1);
-    const [cards, setCards] = useState([{ id: 1, key: keyType, value: valueType }]);
+    const [cards, setCards] = useState<Array<{id: number, key: string | undefined, value: string | undefined}>>([]); // Start empty
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const [valueList, setValueList] = useState<Array<{name: any , value: any}>>([]);
     const [output, setOutput] = useState<any>();
@@ -146,9 +146,8 @@ const MapOf = (props: FieldProps) => {
         const handleKeyChange = (_: string, v: any) => addKey(`${name} ${id} ${key}`, v);
         const handleValueChange = (_: string, v: any) => addValue(`${name} ${id} ${value}`, v);
 
-        const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === key) : [];
-        let trueTypeDef: string = types ? types.find((t:any) => t[0] === key || t[1] === key) : keyEntry;
-        let trueTypeVal = trueTypeDef ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2] : key;
+        const types = schemaObj.types;
+        let [ trueTypeVal, trueTypeDef ] = getTrueType(types, key);
 
         let keyField: AllFieldArray;
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
@@ -158,8 +157,7 @@ const MapOf = (props: FieldProps) => {
         }
 
         const valtypes = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === value) : [];
-        trueTypeDef = valtypes ? valtypes.find((t:any) => t[0] === value || t[1] === value) : valueEntry;
-        trueTypeVal = trueTypeDef ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2] : value;
+        [ trueTypeVal, trueTypeDef ] = getTrueType(valtypes, value);
 
         let valField: AllFieldArray;
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
@@ -174,7 +172,7 @@ const MapOf = (props: FieldProps) => {
                     <div className='card p-1 border-secondary bg-primary text-white'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title'>
-                                {name} {id}
+                                {`${name} ${id}${ _optional ? "" : "*"}`}
                                 <SBInfoBtn comment={_comment} />
                             </div>
                         </SBToggleBtn>
@@ -193,12 +191,12 @@ const MapOf = (props: FieldProps) => {
     return (
         <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                {/*<div className='card p-1 border-secondary bg-primary text-white'>
+                <div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={_comment} />
                     </SBToggleBtn>
-                </div>*/}
+                </div>
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                     {fields}
                     <div className="p-1">

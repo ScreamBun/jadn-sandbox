@@ -62,9 +62,9 @@ const DataCreator = (props: any) => {
     }
 
     return (
-        <div className='row'>
-            <div className='col-md-6'>
-                <div className='card'>
+        <div className='row h-100'>
+            <div className='col-md-6 d-flex'>
+                <div className='card flex-fill'>
                     <div className = "card-header p-2 d-flex align-items-center">
                         <h5 className = "mb-0">Data Builder</h5>
                         <div className = "ms-auto">
@@ -92,8 +92,8 @@ const DataCreator = (props: any) => {
                     </div>
                 </div>
             </div>
-             <div className ='col-md-6'>
-                <div className='card'>
+             <div className ='col-md-6 d-flex'>
+                <div className='card flex-fill'>
                     <div className="card-header p-2 d-flex align-items-center">
                         <h5 className="mb-0">JSON Viewer</h5>
                         <div className="ms-auto">
