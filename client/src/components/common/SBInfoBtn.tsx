@@ -26,8 +26,8 @@ const SBInfoBtn = (props: SBInfoProps) => {
         </button>
         {showTooltip && (
           <div 
-            className="w-auto alert alert-secondary p-2 position-absolute start-100 top-0 ms-2 border-secondary border-2 text-white"
-            style={{ zIndex: 1050, whiteSpace: 'normal', fontSize: '0.875rem', minWidth: '10rem', maxWidth: '30rem' }}
+            className="alert alert-secondary p-2 position-absolute start-100 top-0 ms-2 border-secondary border-2 text-white"
+            style={{ zIndex: 1050, whiteSpace: 'normal', fontSize: '0.875rem', minWidth: '15rem', maxWidth: '30rem' }}
             role="alert"
           >
               {comment}
