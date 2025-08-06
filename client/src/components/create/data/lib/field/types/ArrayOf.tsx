@@ -18,7 +18,7 @@ interface FieldProps {
 }
 
 const ArrayOf = (props: FieldProps) => {
-    const { field, fieldChange, parent, value } = props;
+    const { field, fieldChange } = props;
 
     let _idx, name, type, optionsRaw, options: string[], _comment;
     if (field.length == 5 && typeof(field[0]) === "number") {
@@ -39,9 +39,6 @@ const ArrayOf = (props: FieldProps) => {
     const [trueTypeVal, trueTypeDef] = getTrueType(schemaObj.types, String(keyName));
     let keyType = trueTypeVal == undefined ? keyName : trueTypeVal;
     const [cards, setCards] = useState<Array<{idx: number, key: string}>>([]);
-
-    // Track if an instance has been made. If so, remove top header
-    const [instanceMade, setInstanceMade] = useState(false);
 
     React.useEffect(() => {
         const keys = keyList;
@@ -71,13 +68,11 @@ const ArrayOf = (props: FieldProps) => {
         if (!keyType) return;
         setCards(prevCards => [...prevCards, { idx: idNumber, key: keyType }]);
         setIdNumber(prev => prev + 1);
-        setInstanceMade(true);
     };
 
     const removeCard = (index: number, entryName: string) => {
         setCards(prev => prev.filter((item) => item.idx !== index));
         setKeyList(prev => prev.filter(item => item.name !== entryName));
-        if (cards.length === 1) setInstanceMade(false);
     };
 
     const _optional = isOptional(options);
@@ -87,15 +82,16 @@ const ArrayOf = (props: FieldProps) => {
         const i = item.idx;
         if (!key) return null;
 
-        const fieldName = `${keyName} ${i+1}`;
+        const fieldName = `${keyName}`;
         const entryName = `${key} ${i+1}`;
+        const trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
         
         let keyField: AllFieldArray;
         if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
             let keyChildren = trueTypeDef != undefined ? trueTypeDef[4] ? Array.isArray(trueTypeDef[4]) ? trueTypeDef[4] : [] : [] : [];
-            keyField = [fieldName, key, options, "", keyChildren];
+            keyField = [fieldName, key, options, trueTypeComment, keyChildren];
         } else {
-            keyField = [i, fieldName, key, options, ""];
+            keyField = [i, fieldName, key, options, trueTypeComment];
         }
 
         const keyEntry = keyList.find(entry => entry.name === entryName);
@@ -112,8 +108,7 @@ const ArrayOf = (props: FieldProps) => {
                     >
                         <FontAwesomeIcon icon={faMinusSquare} size="lg" />
                     </button>
-                    <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
-                    <div style={{ flex: '0 1 80%' }}>
+                    <div style={{ flex: '0 1 100%' }}>
                         <Field
                             key={`${key} ${i+1}`}
                             field={keyField}
