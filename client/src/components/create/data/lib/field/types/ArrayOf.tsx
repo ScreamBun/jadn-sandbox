@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { faMinusSquare, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { getTrueType, isOptional } from "../../utils";
 import { useSelector } from "react-redux";
@@ -31,14 +31,14 @@ const ArrayOf = (props: FieldProps) => {
     options = Array.isArray(optionsRaw) ? optionsRaw : [optionsRaw];
         
     const [toggle, setToggle] = useState(true);
-    const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const schemaObj = useSelector(getSelectedSchema);
+    const [idNumber, setIdNumber] = useState(0);
 
     const keyName = options.find(opt => opt.startsWith("*"))?.slice(1);
     const [trueTypeVal, trueTypeDef] = getTrueType(schemaObj.types, String(keyName));
     let keyType = trueTypeVal == undefined ? keyName : trueTypeVal;
-    const [cards, setCards] = useState<string[]>([]);
+    const [cards, setCards] = useState<Array<{idx: number, key: string}>>([]);
 
     // Track if an instance has been made. If so, remove top header
     const [instanceMade, setInstanceMade] = useState(false);
@@ -69,14 +69,22 @@ const ArrayOf = (props: FieldProps) => {
 
     const addCard = () => {
         if (!keyType) return;
-        setCards(prevCards => [...prevCards, keyType]);
+        setCards(prevCards => [...prevCards, { idx: idNumber, key: keyType }]);
+        setIdNumber(prev => prev + 1);
         setInstanceMade(true);
+    };
+
+    const removeCard = (index: number, entryName: string) => {
+        setCards(prev => prev.filter((item) => item.idx !== index));
+        setKeyList(prev => prev.filter(item => item.name !== entryName));
+        if (cards.length === 1) setInstanceMade(false);
     };
 
     const _optional = isOptional(options);
 
-   const fields = cards.map((item, i) => {
-        const key = item? item : "";
+   const fields = cards.map((item) => {
+        const key = item.key ? item.key : "";
+        const i = item.idx;
         if (!key) return null;
 
         const fieldName = `${keyName} ${i+1}`;
@@ -94,16 +102,26 @@ const ArrayOf = (props: FieldProps) => {
 
         return (
             <div key = {i} className="card" style={{ border: '0px solid #ffffff' }}>
-                {<div className='card p-1 border-secondary bg-primary text-white'>
-                    <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
-                        <div className='card-title'>
-                            {`${name} ${i+1}${ _optional ? "" : "*" }`}
-                            <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
-                        </div>
-                    </SBToggleBtn>
-                </div>}
-                <div className={`card-body ${toggleField[i] == true ? '' : 'collapse'}`} id={`${i}`}>
-                    <Field key={`${key} ${i+1}`} field={keyField} parent={String(name)} fieldChange={(n, k) => addKey(entryName, k)} value={keyEntry?.key ?? ""} />
+                <div className="d-flex align-items-center" style={{ gap: '0.25rem' }}>
+                    <button
+                        type="button"
+                        className="btn btn-sm btn-danger"
+                        title="Remove Field"
+                        onClick={() => removeCard(i, entryName)}
+                        style={{ marginLeft: '0.25rem' }}
+                    >
+                        <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+                    </button>
+                    <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
+                    <div style={{ flex: '0 1 80%' }}>
+                        <Field
+                            key={`${key} ${i+1}`}
+                            field={keyField}
+                            parent={String(name)}
+                            fieldChange={(n, k) => addKey(entryName, k)}
+                            value={keyEntry?.key ?? ""}
+                        />
+                    </div>
                 </div>
             </div>
         )
@@ -112,12 +130,12 @@ const ArrayOf = (props: FieldProps) => {
     return (
        <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                {!instanceMade ? <div className='card p-1 border-secondary bg-primary text-white'>
+                <div className='card p-1 border-secondary bg-primary text-white'>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
                     </SBToggleBtn>
-                </div> : <div></div>}
+                </div>
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                     {fields}
                     <div className="p-1">
