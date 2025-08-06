@@ -2,7 +2,7 @@ import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/in
 import React, {useState} from "react";
 import { validate } from "components/create/data/lib/InputValidator";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { isOptional } from "components/create/data/lib/utils";
+import { destructureField, isOptional } from "components/create/data/lib/utils";
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -13,16 +13,7 @@ interface FieldProps {
 
 const CoreType = (props: FieldProps) => {
     const { field, fieldChange, children, value } = props;
-    let [_idx, name, type, options, _comment] = [0, '', '', [] as any|any[], ''];
-    if (field.length == 5) {
-        if (Array.isArray(field[4])) {
-            [name as any, type, options, _comment as any, children as any[]] = field;
-        } else {
-            [_idx as any, name, type as any, options, _comment as any] = field;
-        }
-    } else {
-        [name as any, type, options, _comment as any] = field;
-    }
+    let [_idx, name, type, options, _comment, _children] = destructureField(field);
 
     const [data, setData] = useState(value);
     const [errMsg, setErrMsg] = useState("");

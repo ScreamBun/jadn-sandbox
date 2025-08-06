@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { isOptional } from "../../utils";
+import { destructureField, isOptional } from "../../utils";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -15,7 +15,7 @@ interface FieldProps {
 
 const Map = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
-    const [name, type, options, _comment, children] = field;
+    let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [toggle, setToggle] = useState(true);
     const [data, setData] = useState(value);
 

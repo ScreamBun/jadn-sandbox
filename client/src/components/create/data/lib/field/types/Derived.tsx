@@ -3,7 +3,7 @@ import React from "react";
 import Field from "../Field";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from 'reducers/util'
-import { getTrueType } from "../../utils";
+import { destructureField, getTrueType } from "../../utils";
 
 interface FieldProps {
     field: AllFieldArray;
@@ -15,17 +15,11 @@ interface FieldProps {
 
 const Derived = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
-    // Destructure the field array into its components
-    let _idx: any, name: any, type: any, options: any, _comment: any, children: any;
-    if (field.length == 5 && Array.isArray(field[4])) { // ArrayField
-        [name, type, options, _comment, children] = field;
-    } else {
-        [_idx, name, type, options, _comment] = field
-    }
+    let [_idx, name, type, options, _comment, _children] = destructureField(field);
 
     const schemaObj = useSelector(getSelectedSchema);
     const types = schemaObj.types;
-    const [trueTypeVal, trueTypeDef] = getTrueType(types, type);
+    const [trueTypeVal, trueTypeDef] = getTrueType(types, String(type));
     if (trueTypeDef == undefined || trueTypeVal == undefined) {
         return <div>No derivative type found</div>
     }

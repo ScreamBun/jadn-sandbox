@@ -5,7 +5,7 @@ import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusSquare, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { getTrueType, isOptional } from "../../utils";
+import { destructureField, getTrueType, isOptional } from "../../utils";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 
@@ -20,16 +20,8 @@ interface FieldProps {
 const ArrayOf = (props: FieldProps) => {
     const { field, fieldChange } = props;
 
-    let _idx, name, type, optionsRaw, options: string[], _comment;
-    if (field.length == 5 && typeof(field[0]) === "number") {
-        [_idx, name, type, optionsRaw, _comment] = field;
-    } else if (field.length == 5) {
-        [name, type, optionsRaw, _comment, []] = field;
-    } else {
-        [name, type, optionsRaw, _comment] = field;
-    }
-    options = Array.isArray(optionsRaw) ? optionsRaw : [optionsRaw];
-        
+    let [_idx, name, _type, options, _comment, _children] = destructureField(field);
+
     const [toggle, setToggle] = useState(true);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const schemaObj = useSelector(getSelectedSchema);

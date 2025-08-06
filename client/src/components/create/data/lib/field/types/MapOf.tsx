@@ -7,7 +7,7 @@ import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { getTrueType, isOptional } from "../../utils";
+import { destructureField, getTrueType, isOptional } from "../../utils";
 interface FieldProps {
     field: FieldOfArray | ArrayFieldArray | StandardFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -18,17 +18,7 @@ interface FieldProps {
 
 const MapOf = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
-
-    let [_idx, name, type, options, _comment, children] = [0, '', '', [] as any|any[], '', [] as any[]];
-    if (field.length == 5) {
-        if (Array.isArray(field[4])) {
-            [name as any, type, options, _comment as any, children as any[]] = field;
-        } else {
-            [_idx as any, name, type as any, options, _comment as any] = field;
-        }
-    } else {
-        [name as any, type, options, _comment as any] = field;
-    }
+    let [_idx, name, _type, options, _comment, _children] = destructureField(field);
 
     const [toggle, setToggle] = useState(true);
     const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });

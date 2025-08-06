@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { isOptional } from "../../utils";
+import { destructureField, isOptional } from "../../utils";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -14,7 +14,7 @@ interface FieldProps {
 
 const Choice = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
-    const [name, type, options, _comment, children] = field;
+    const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const [selectedChild, setSelectedChild] = useState<JSX.Element>();
     const [childData, setChildData] = useState<any>({});
