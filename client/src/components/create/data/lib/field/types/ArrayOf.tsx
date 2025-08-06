@@ -50,7 +50,7 @@ const ArrayOf = (props: FieldProps) => {
             output.push(keys[i].key);
         }
         fieldChange(String(name), output);
-    }, [keyList, name, fieldChange]);
+    }, [keyList]);
 
     const addKey = (name:any, key: any) => {
         setKeyList(prev => {
@@ -103,7 +103,7 @@ const ArrayOf = (props: FieldProps) => {
                     </SBToggleBtn>
                 </div>}
                 <div className={`card-body ${toggleField[i] == true ? '' : 'collapse'}`} id={`${i}`}>
-                    <Field key={`${key} ${i+1}`} field={keyField} parent={String(name)} fieldChange={(n, k) => addKey(entryName, k)} value={keyEntry?.key ?? ""} />
+                    <Field key={`${key} ${i+1}`} field={keyField} parent={String(name)} fieldChange={(k) => addKey(entryName, k)} value={keyEntry?.key ?? ""} />
                 </div>
             </div>
         )
