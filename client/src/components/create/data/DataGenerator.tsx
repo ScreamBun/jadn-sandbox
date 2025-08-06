@@ -73,21 +73,19 @@ const DataGenerator = () => {
                         <div className='card-body p-2'>
                             <div className='row no-gutters'>
                                 <div className='col-md-12 pr-2'>
-                                    {activeView === 'message' && (
-                                        <div className="tab-pane fade show active" id="message" role="tabpanel" aria-labelledby="message-tab" tabIndex={0}>
-                                            <SchemaLoader
-                                                selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                                schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
-                                                loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                                        </div>
-                                    )}
-                                    {activeView === 'creator' && (
-                                        <div className="tab-pane fade show active" id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
-                                            <DataCreator
-                                                generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                                selection={selection} setSelection={setSelection} />
-                                        </div>
-                                    )}
+                                    <div className="tab-pane fade show active" id="message" role="tabpanel" aria-labelledby="message-tab" tabIndex={0}
+                                        style={{display: activeView === 'message' ? 'block' : 'none'}}>
+                                        <SchemaLoader
+                                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                            schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                    </div>
+                                    <div className="tab-pane fade show active" id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}
+                                        style={{display: activeView === 'creator' ? 'block' : 'none'}}>
+                                        <DataCreator
+                                            generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
+                                            selection={selection} setSelection={setSelection} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

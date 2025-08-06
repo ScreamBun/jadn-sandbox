@@ -11,7 +11,7 @@ import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
 import { LANG_JSON } from 'components/utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUndo } from '@fortawesome/free-solid-svg-icons'
+import { faExpand, faUndo } from '@fortawesome/free-solid-svg-icons'
 
 const DataCreator = (props: any) => {
     // Destructure props
@@ -47,6 +47,9 @@ const DataCreator = (props: any) => {
         setGeneratedMessage({});
     }    
 
+    const [dataFullScreen, setDataFullScreen] = React.useState(false);
+    const [jsonFullScreen, setJsonFullScreen] = React.useState(false);
+
     // Decide which fields to display
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (selection?.value) {
@@ -63,13 +66,17 @@ const DataCreator = (props: any) => {
 
     return (
         <div className='row'>
-            <div className='col-md-6'>
+            {<div className={dataFullScreen ? 'col-md-12' : 'col-md-6'}
+                style={{display: jsonFullScreen ? 'none' : 'block'}}>
                 <div className='card'>
                     <div className = "card-header p-2 d-flex align-items-center">
                         <h5 className = "mb-0">Data Builder</h5>
                         <div className = "ms-auto">
                             <button type='reset' className='btn btn-sm btn-danger float-end ms-1' title='Reset Builder' onClick={onReset}>
                                 <FontAwesomeIcon icon={faUndo} />
+                            </button>
+                            <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen Data' onClick={() => setDataFullScreen(!dataFullScreen)}>
+                                <FontAwesomeIcon icon={faExpand} />
                             </button>
                         </div>
                     </div>
@@ -91,12 +98,16 @@ const DataCreator = (props: any) => {
                         <SBScrollToTop divID = "data-builder" />
                     </div>
                 </div>
-            </div>
-             <div className ='col-md-6'>
+            </div>}
+            <div className={jsonFullScreen ? 'col-md-12' : 'col-md-6'}
+                style={{display: dataFullScreen ? 'none' : 'block'}}>
                 <div className='card'>
                     <div className="card-header p-2 d-flex align-items-center">
                         <h5 className="mb-0">JSON Viewer</h5>
                         <div className="ms-auto">
+                            <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen JSON' onClick={() => setJsonFullScreen(!jsonFullScreen)}>
+                                <FontAwesomeIcon icon={faExpand} />
+                            </button>
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                             <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
                             <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
