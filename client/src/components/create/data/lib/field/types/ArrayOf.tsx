@@ -5,7 +5,7 @@ import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusSquare, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getTrueType, isOptional } from "../../utils";
+import { destructureField, getMaxv, getMinv, getTrueType, isOptional } from "../../utils";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 
@@ -26,6 +26,10 @@ const ArrayOf = (props: FieldProps) => {
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const schemaObj = useSelector(getSelectedSchema);
     const [idNumber, setIdNumber] = useState(0);
+    // Check if there are enough / too many items
+    const [numberOfItems, setNumberOfItems] = useState(0);
+    const minv = getMinv(options);
+    const maxv = getMaxv(options);
 
     const keyName = options.find(opt => opt.startsWith("*"))?.slice(1);
     const [trueTypeVal, trueTypeDef] = getTrueType(schemaObj.types, String(keyName));
@@ -60,11 +64,13 @@ const ArrayOf = (props: FieldProps) => {
         if (!keyType) return;
         setCards(prevCards => [...prevCards, { idx: idNumber, key: keyType }]);
         setIdNumber(prev => prev + 1);
+        setNumberOfItems(prev => prev + 1);
     };
 
     const removeCard = (index: number, entryName: string) => {
         setCards(prev => prev.filter((item) => item.idx !== index));
         setKeyList(prev => prev.filter(item => item.name !== entryName));
+        setNumberOfItems(prev => prev - 1);
     };
 
     const _optional = isOptional(options);
@@ -97,6 +103,7 @@ const ArrayOf = (props: FieldProps) => {
                         title="Remove Field"
                         onClick={() => removeCard(i, entryName)}
                         style={{ marginLeft: '0.25rem' }}
+                        disabled = {numberOfItems <= minv}
                     >
                         <FontAwesomeIcon icon={faMinusSquare} size="lg" />
                     </button>
@@ -130,7 +137,9 @@ const ArrayOf = (props: FieldProps) => {
                             type="button"
                             className={`btn btn-sm btn-block btn-primary`}
                             title={`Add Field to ${name}`}
-                            onClick={addCard}>
+                            onClick={addCard}
+                            disabled={maxv !== undefined && (typeof maxv === "number" && numberOfItems >= maxv)}
+                        >
                             <FontAwesomeIcon icon={faPlusSquare} />
                         </button>}                    
                     </div>

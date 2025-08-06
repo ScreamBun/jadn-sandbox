@@ -7,7 +7,7 @@ import { faMinusSquare, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getTrueType, isOptional } from "../../utils";
+import { destructureField, getMaxv, getMinv, getTrueType, isOptional } from "../../utils";
 interface FieldProps {
     field: FieldOfArray | ArrayFieldArray | StandardFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -26,6 +26,11 @@ const MapOf = (props: FieldProps) => {
 
     // Keep track of cards
     const [idNumber, setIdNumber] = useState(0);
+
+    // Check if there are enough / too many items
+    const [numberOfItems, setNumberOfItems] = useState(0);
+    const minv = getMinv(options);
+    const maxv = getMaxv(options);
 
     const _optional = isOptional(options);
 
@@ -129,6 +134,7 @@ const MapOf = (props: FieldProps) => {
             }));
             return newId;
         });
+        setNumberOfItems(prev => prev + 1);
         setInstanceMade(true);
     };
 
@@ -141,6 +147,7 @@ const MapOf = (props: FieldProps) => {
             delete newToggle[index];
             return newToggle;
         });
+        setNumberOfItems(prev => prev - 1);
         if (cards.length === 1) {
             setInstanceMade(false);
         }
@@ -188,19 +195,20 @@ const MapOf = (props: FieldProps) => {
                     className="btn btn-sm btn-danger mt-1"
                     title="Remove Field"
                     onClick={() => removeCard(id, keyEntry?.name ?? "", valueEntry?.name ?? "")}
+                    disabled = {numberOfItems <= minv}
                 >
                     <FontAwesomeIcon icon={faMinusSquare} size="lg" />
                 </button>
                 <div className='card' style={{ border: '0px solid #ffffff', flex: '1 1 auto' }}>
                     <div className='card p-1 border-secondary bg-primary text-white'>
-                        <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
+                        <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={id} >
                             <div className='card-title'>
                                 {`${name}${ _optional ? "" : "*"}`}
                                 <SBInfoBtn comment={_comment} />
                             </div>
                         </SBToggleBtn>
                     </div>
-                    <div className={`card-body ${toggleField[i] == true ? '' : 'collapse'}`} id={`${id}`}>
+                    <div className={`card-body ${toggleField[id] == true ? '' : 'collapse'}`} id={`${id}`}>
                         <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} />
                         <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
                     </div>
@@ -226,7 +234,8 @@ const MapOf = (props: FieldProps) => {
                             type="button"
                             className={`btn btn-sm btn-block btn-primary`}
                             title={`Add Field to ${name}`}
-                            onClick={addCard}>
+                            onClick={addCard}
+                            disabled={maxv !== undefined && (typeof maxv === "number" && numberOfItems >= maxv)}>
                             <FontAwesomeIcon icon={faPlusSquare} />
                         </button>}                    
                     </div>

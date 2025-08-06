@@ -55,3 +55,14 @@ export const destructureField = (field: any[]): [number, string, string, string[
 
     return [_idx, name, type, options, _comment, children];
 }
+
+//FUNCTION: Get the minv (minimum length) of an ArrayOf, MapOf
+export const getMinv = (opts: any[]): number => {
+    const minvOpt = opts.find(opt => opt.startsWith("{"));
+    return minvOpt ? parseInt(minvOpt.slice(1)) : 0;
+}
+
+export const getMaxv = (opts: any[]): number | undefined => {
+    const maxvOpt = opts.find(opt => opt.startsWith("}"));
+    return maxvOpt ? parseInt(maxvOpt.slice(1)) : undefined;
+}
