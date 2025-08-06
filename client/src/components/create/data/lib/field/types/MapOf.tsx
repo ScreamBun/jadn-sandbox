@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { faMinusSquare, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBInfoBtn from "components/common/SBInfoBtn";
@@ -123,9 +123,27 @@ const MapOf = (props: FieldProps) => {
                 ...prevCards,
                 { id: newId, key: keyType, value: valueType }
             ]);
+            setToggleField(prev => ({
+                ...prev,
+                [newId]: true
+            }));
             return newId;
         });
         setInstanceMade(true);
+    };
+
+    const removeCard = (index: number, keyKey: string, valueKey: string) => {
+        setCards(prev => prev.filter((item) => item.id !== index));
+        setKeyList(prev => prev.filter(item => item.name !== keyKey));
+        setValueList(prev => prev.filter(item => item.name !== valueKey));
+        setToggleField(prev => {
+            const newToggle = { ...prev };
+            delete newToggle[index];
+            return newToggle;
+        });
+        if (cards.length === 1) {
+            setInstanceMade(false);
+        }
     };
 
     // Return MapOf-Name : {k:v, k:v} or MapOf-Name : [k,v,k,v]
@@ -144,29 +162,40 @@ const MapOf = (props: FieldProps) => {
         let [ trueTypeVal, trueTypeDef ] = getTrueType(types, key);
 
         let keyField: AllFieldArray;
+        let trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
-            keyField = [`${key} ${id}`, key, options, "", []];
+            keyField = [`${key}`, key, options, trueTypeComment, []];
         } else {
-            keyField = [id, `${key} ${id}`, key, options, ""];
+            keyField = [id, `${key}`, key, options, trueTypeComment];
         }
 
         const valtypes = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === value) : [];
         [ trueTypeVal, trueTypeDef ] = getTrueType(valtypes, value);
 
         let valField: AllFieldArray;
+        trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
         if (trueTypeVal === "Array" || trueTypeVal === "Record" || trueTypeVal === "Map" || trueTypeVal === "Enumerated" || trueTypeVal === "Choice") {
-            valField = [`${value} ${id}`, value, options, "", []];
+            valField = [`${value}`, value, options, trueTypeComment, []];
         } else {
-            valField = [id, `${value} ${id}`, value, options, ""];
+            valField = [id, `${value}`, value, options, trueTypeComment];   
         }
 
-        return (
-            <div className='form-group' key={typeof valField[0] === "string" ? valField[0] : valField[1]}>
-                <div className='card' style={{ border: '0px solid #ffffff' }}>
+    return (
+        <div className='form-group' key={typeof valField[0] === "string" ? valField[0] : valField[1]}>
+            <div className="d-flex align-items-start" style={{ gap: '0.25rem' }}>
+                <button
+                    type="button"
+                    className="btn btn-sm btn-danger mt-1"
+                    title="Remove Field"
+                    onClick={() => removeCard(id, keyEntry?.name ?? "", valueEntry?.name ?? "")}
+                >
+                    <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+                </button>
+                <div className='card' style={{ border: '0px solid #ffffff', flex: '1 1 auto' }}>
                     <div className='card p-1 border-secondary bg-primary text-white'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={i} >
                             <div className='card-title'>
-                                {`${name} ${id}${ _optional ? "" : "*"}`}
+                                {`${name}${ _optional ? "" : "*"}`}
                                 <SBInfoBtn comment={_comment} />
                             </div>
                         </SBToggleBtn>
@@ -176,11 +205,10 @@ const MapOf = (props: FieldProps) => {
                         <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
                     </div>
                 </div>
-            </div >
-        )
-    });
-
-    // Remove mapping button
+            </div>
+        </div>
+    );
+});
 
     return (
         <div className='form-group'>
@@ -192,7 +220,7 @@ const MapOf = (props: FieldProps) => {
                     </SBToggleBtn>
                 </div> : <div></div>}
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
-                    {fields}
+                    {cards.length > 0 ? fields : null}
                     <div className="p-1">
                         {<button
                             type="button"

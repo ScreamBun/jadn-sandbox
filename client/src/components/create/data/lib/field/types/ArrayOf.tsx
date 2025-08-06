@@ -90,10 +90,10 @@ const ArrayOf = (props: FieldProps) => {
 
         return (
             <div key = {i} className="card" style={{ border: '0px solid #ffffff' }}>
-                <div className="d-flex align-items-center" style={{ gap: '0.25rem' }}>
+                <div className="d-flex align-items-start" style={{ gap: '0.25rem' }}>
                     <button
                         type="button"
-                        className="btn btn-sm btn-danger"
+                        className="btn btn-sm btn-danger mt-1"
                         title="Remove Field"
                         onClick={() => removeCard(i, entryName)}
                         style={{ marginLeft: '0.25rem' }}
