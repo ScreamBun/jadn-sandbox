@@ -42,9 +42,6 @@ const MapOf = (props: FieldProps) => {
     const [valueList, setValueList] = useState<Array<{name: any , value: any}>>([]);
     const [output, setOutput] = useState<any>();
 
-    // Track if an instance has been made. If so, remove top header
-    const [instanceMade, setInstanceMade] = useState(false);
-
     const onChange = (nextKeyList?: typeof keyList, nextValueList?: typeof valueList) => {
         const keys = nextKeyList ?? keyList;
         const values = nextValueList ?? valueList;
@@ -135,7 +132,6 @@ const MapOf = (props: FieldProps) => {
             return newId;
         });
         setNumberOfItems(prev => prev + 1);
-        setInstanceMade(true);
     };
 
     const removeCard = (index: number, keyKey: string, valueKey: string) => {
@@ -148,9 +144,6 @@ const MapOf = (props: FieldProps) => {
             return newToggle;
         });
         setNumberOfItems(prev => prev - 1);
-        if (cards.length === 1) {
-            setInstanceMade(false);
-        }
     };
 
     // Return MapOf-Name : {k:v, k:v} or MapOf-Name : [k,v,k,v]
@@ -203,7 +196,7 @@ const MapOf = (props: FieldProps) => {
                     <div className='card p-1 border-secondary bg-primary text-white'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={id} >
                             <div className='card-title'>
-                                {`${name}${ _optional ? "" : "*"}`}
+                                {`${name} ${id}${ _optional ? "" : "*"}`}
                                 <SBInfoBtn comment={_comment} />
                             </div>
                         </SBToggleBtn>
@@ -221,12 +214,13 @@ const MapOf = (props: FieldProps) => {
     return (
         <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                {!instanceMade ? <div className='card p-1 border-secondary bg-primary text-white'>
+                <div className='card p-1 bg-secondary text-white'
+                style={{ borderColor: numberOfItems < minv ? 'red' : undefined, borderWidth: numberOfItems < minv ? '1px' : undefined, borderStyle: numberOfItems < minv ? 'dashed' : undefined }}>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={_comment} />
                     </SBToggleBtn>
-                </div> : <div></div>}
+                </div>
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
                     {cards.length > 0 ? fields : null}
                     <div className="p-1">

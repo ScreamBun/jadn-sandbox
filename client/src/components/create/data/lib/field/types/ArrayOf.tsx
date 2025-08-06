@@ -124,7 +124,10 @@ const ArrayOf = (props: FieldProps) => {
     return (
        <div className='form-group'>
             <div className = "card" style={{ border: '0px solid #ffffff' }}>
-                <div className='card p-1 border-secondary bg-primary text-white'>
+                <div
+                    className='card p-1 bg-secondary text-white'
+                    style={{ borderColor: numberOfItems < minv ? 'red' : undefined, borderWidth: numberOfItems < minv ? '1px' : undefined, borderStyle: numberOfItems < minv ? 'dashed' : undefined }}
+                >
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >
                         <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
                         <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
