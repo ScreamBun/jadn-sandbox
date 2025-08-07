@@ -11,9 +11,13 @@ import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
 import { LANG_JSON } from 'components/utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExpand, faUndo } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExpand, faUndo } from '@fortawesome/free-solid-svg-icons'
+import { useDispatch } from 'react-redux'
+import { validateMessage } from 'actions/validate'
+import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 
 const DataCreator = (props: any) => {
+    const dispatch = useDispatch();
     // Destructure props
     const { generatedMessage, setGeneratedMessage, selection, setSelection } = props;
 
@@ -40,6 +44,30 @@ const DataCreator = (props: any) => {
         setSelection(e);
         setGeneratedMessage({});
     }
+
+    const handleValidate = async () => {
+        if (!schemaObj || !generatedMessage) {
+            sbToastError('ERROR: Validation failed - Please select schema and enter data');
+            return;
+        }
+        try {
+            const type = selection?.value || '';
+            const newMsg = JSON.stringify(generatedMessage[type]);
+            const action: any = await dispatch(validateMessage(schemaObj, newMsg, LANG_JSON, type));
+            // Check if the action is a success or failure
+            if (action.type === '@@validate/VALIDATE_MESSAGE_SUCCESS') {
+                if (action.payload?.valid_bool) {
+                    sbToastSuccess(action.payload.valid_msg);
+                } else {
+                    sbToastError(action.payload.valid_msg);
+                }
+            } else if (action.type === '@@validate/VALIDATE_FAILURE') {
+                sbToastError(action.payload?.valid_msg || 'Validation failed');
+            }
+        } catch (err: any) {
+            sbToastError(err.message || 'Validation error');
+        }
+    };
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -107,6 +135,13 @@ const DataCreator = (props: any) => {
                         <div className="ms-auto">
                             <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen JSON' onClick={() => setJsonFullScreen(!jsonFullScreen)}>
                                 <FontAwesomeIcon icon={faExpand} />
+                            </button>
+                            <button type="button"
+                                className="btn btn-sm btn-primary me-1"
+                                onClick={handleValidate}
+                                disabled = {selection && generatedMessage? false:true}
+                            >
+                                Validate
                             </button>
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                             <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
