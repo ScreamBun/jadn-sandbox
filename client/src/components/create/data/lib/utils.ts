@@ -47,9 +47,16 @@ export const destructureField = (field: any[]): [number, string, string, string[
     } else if (len == 5) { // Field = [_idx, name, type, options, _comment]
         [_idx, name, type, options, _comment] = field;
         children = [];
-    } else { // Field = [name, type, options, _comment]
+    } else if (len == 4) { // Field = [name, type, options, _comment]
         _idx = 0;
         [name, type, options, _comment] = field;
+        children = [];
+    } else { // Field = [_idx, name, _comment]
+        _idx = field[0];
+        name = field[1];
+        _comment = field[2];
+        type = "";
+        options = [];
         children = [];
     }
 
@@ -66,3 +73,45 @@ export const getMaxv = (opts: any[]): number | undefined => {
     const maxvOpt = opts.find(opt => opt.startsWith("}"));
     return maxvOpt ? parseInt(maxvOpt.slice(1)) : undefined;
 }
+
+//FUNCTION: Recursively get pointer children
+const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], path: string[]): any[] => {
+    let newPath = [...path];
+    if (path.length == 1) {
+        newPath = []; // don't include root name
+    }
+
+    let [_idx, _name, _type, _options, _comment, children] = destructureField(type);
+    if (!Array.isArray(children)) {
+        return [];
+    }
+    if (children.length === 0) {
+        const [_trueType, trueTypeDef] = getTrueType(schemaObj.types, _type);
+        const trueChildren = trueTypeDef && trueTypeDef[4] ? trueTypeDef[4] : [];
+        if (trueChildren.length > 0) {
+            return trueChildren.map((child: any) => {
+                let [_idx, childName, _type, _options, _comment, _children] = destructureField(child);
+                return [[...newPath, _name, childName].join('/')]; // include path and field name
+            });
+        }
+        return [[[...newPath, _name].join('/')]];
+    }
+
+    for (const child of children) {
+        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name])];
+    }
+    return pointerChildren;
+}
+
+export const getPointerChildren = (schemaObj: any, pointer: string, children: any[]): any[] => {
+    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === pointer) : [];
+    let pointerChildren: any[] = [];
+    for (const type of types) {
+        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, type, [], [])];
+    }
+    let childrenOpts = [...children, ...pointerChildren];   
+    return childrenOpts.map((child: any) => {
+        return [0, ...child];
+    });
+}
+

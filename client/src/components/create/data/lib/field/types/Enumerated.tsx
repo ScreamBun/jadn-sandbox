@@ -1,8 +1,10 @@
 import { ArrayFieldArray, EnumeratedFieldArray } from "components/create/schema/interface";
 import React, { useState } from "react";
+import { useSelector } from 'react-redux'
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, isOptional } from "../../utils";
+import { destructureField, getPointerChildren, isOptional } from "../../utils";
+import { getSelectedSchema } from "reducers/util";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -14,7 +16,7 @@ interface FieldProps {
 
 const Enumerated = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
-    const [_idx, name, _type, options, _comment, children] = destructureField(field);
+    let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
 
     const handleChange = (e: Option) => {
@@ -27,11 +29,25 @@ const Enumerated = (props: FieldProps) => {
         }
     }
 
+    const _optional = isOptional(options);
+
+    // Check for pointer
+    let pointer: string | undefined = undefined;
+    options.forEach((opt) => {
+        if (String(opt).startsWith('>')) {
+            pointer = String(opt).substring(1);
+        }
+    });
+
+    // Add pointer children to children if pointer exists
+    if (pointer !== undefined) {
+        const schemaObj = useSelector(getSelectedSchema);
+        children = [...children, ...getPointerChildren(schemaObj, pointer, [])];
+    }
+
     const getOptions = children.map((child) => {
         return child[1];
     });
-
-    const _optional = isOptional(options);
 
     return (
 
