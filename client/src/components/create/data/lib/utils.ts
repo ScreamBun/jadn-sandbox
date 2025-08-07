@@ -84,6 +84,11 @@ const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], p
     }
     if (children.length === 0) {
         const [_trueType, trueTypeDef] = getTrueType(schemaObj.types, _type);
+        // Don't need to list enum or choice
+        if (_trueType === "Enumerated" || _trueType === "Choice") {
+            return [[[...newPath, _name].join('/')]];
+        }
+
         const trueChildren = trueTypeDef && trueTypeDef[4] ? trueTypeDef[4] : [];
         if (trueChildren.length > 0) {
             for (const child of trueChildren) {
