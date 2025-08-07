@@ -77,9 +77,6 @@ export const getMaxv = (opts: any[]): number | undefined => {
 //FUNCTION: Recursively get pointer children
 const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], path: string[]): any[] => {
     let newPath = [...path];
-    if (path.length == 1) {
-        newPath = []; // don't include root name
-    }
 
     let [_idx, _name, _type, _options, _comment, children] = destructureField(type);
     if (!Array.isArray(children)) {
@@ -89,10 +86,10 @@ const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], p
         const [_trueType, trueTypeDef] = getTrueType(schemaObj.types, _type);
         const trueChildren = trueTypeDef && trueTypeDef[4] ? trueTypeDef[4] : [];
         if (trueChildren.length > 0) {
-            return trueChildren.map((child: any) => {
-                let [_idx, childName, _type, _options, _comment, _children] = destructureField(child);
-                return [[...newPath, _name, childName].join('/')]; // include path and field name
-            });
+            for (const child of trueChildren) {
+                pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name])];
+            }
+            return pointerChildren;
         }
         return [[[...newPath, _name].join('/')]];
     }
