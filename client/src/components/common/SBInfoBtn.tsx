@@ -18,7 +18,7 @@ const SBInfoBtn = (props: SBInfoProps) => {
       <div className="position-relative d-inline-block">
         <button 
             type="button" 
-            className="btn btn-sm"
+            className="btn btn-med"
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
         >
