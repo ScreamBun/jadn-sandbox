@@ -1,5 +1,5 @@
 import { ArrayFieldArray } from "components/create/schema/interface";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
@@ -16,7 +16,7 @@ interface FieldProps {
 const Array = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
-    const [toggle, setToggle] = useState(true);
+    const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
 
     const handleChange = (childKey: string, childValue: any) => {
@@ -32,16 +32,22 @@ const Array = (props: FieldProps) => {
         });
     };
 
-    const childrenCards = children.map((child, idx) => {
-        return (
-            <Field
-                key={idx}
-                field={child}
-                fieldChange={handleChange}
-                parent={name}
-            />
-        );
-    });
+    const childrenCards = useMemo(() => {
+        if (!toggle) return null;
+        
+        return children.map((child, idx) => {
+            return (
+                <div className="ms-3 mt-2" key={idx}>
+                    <Field
+                        key = {idx}
+                        field={child}
+                        fieldChange={handleChange}
+                        parent={name}
+                    />
+                </div>
+            );
+        });
+    }, [toggle, children, name]);
 
     const _optional = isOptional(options);
 

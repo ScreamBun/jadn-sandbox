@@ -18,7 +18,6 @@ const Choice = (props: FieldProps) => {
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const [selectedChild, setSelectedChild] = useState<JSX.Element>();
     const [childData, setChildData] = useState<any>({});
-    const [bgColorClass, setBgColorClass] = useState('bg-light'); // Initial background color
 
     const handleChange = (e: Option | null) => {
         if (e == null || e.value === '' || e.value === undefined) {
