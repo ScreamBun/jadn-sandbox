@@ -79,7 +79,8 @@ const Choice = (props: FieldProps) => {
                         placeholder={`${name} options`}
                         value={selectedValue}
                         isSearchable
-                        isClearable />
+                        isClearable
+                        isSmStyle />
                 </div>
             </div>
             {selectedValue ? selectedChild : ""}
