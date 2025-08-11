@@ -19,15 +19,33 @@ const Map = (props: FieldProps) => {
     const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
 
-    const handleChange = (childKey: string, childValue: any) => {
-         setData((prev: any) => {
-            const updated = { ...prev };
-            if (childValue === "" || childValue === undefined || childValue === null) {
-                delete updated[childKey];
-            } else {
-                updated[childKey] = childValue;
+    const isID = options.some(opt => String(opt) === '=');
+
+    // If isID, map child field name to child ID
+    const nameToIdMap = useMemo(() => {
+        if (!Array.isArray(children)) return {};
+
+        const newChildren: Record<string | number, string | number> = {};
+        children.forEach(child => {
+            if (Array.isArray(child)) {
+                const childID = child[0]; 
+                const childName = child[1];
+                newChildren[childName] = childID;
             }
-            // Update the overarching generatedMessage under this array field's key (name)
+        });
+        return newChildren;
+    }, [children]);
+
+    const handleChange = (childKey: string, childValue: any) => {
+        setData((prev: any) => {
+            const updated = { ...prev };
+            const key = isID ? (nameToIdMap[childKey] ?? childKey) : childKey;
+
+            if (childValue === "" || childValue === undefined || childValue === null) {
+                delete updated[key];
+            } else {
+                updated[key] = childValue;
+            }
             fieldChange(name, updated);
             return updated;
         });

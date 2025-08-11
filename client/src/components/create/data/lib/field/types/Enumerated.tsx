@@ -14,7 +14,7 @@ interface FieldProps {
 
 const Enumerated = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
-    const [_idx, name, _type, options, _comment, children] = destructureField(field);
+    let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
 
     const handleChange = (e: Option) => {
@@ -27,8 +27,17 @@ const Enumerated = (props: FieldProps) => {
         }
     }
 
-    const getOptions = children.map((child) => {
-        return child[1];
+    const isID = options.some(opt => String(opt) === '=');
+
+    const enumChildren = Array.isArray(children) ? children.filter(c => Array.isArray(c)) : [];
+
+    const getOptions: Option[] = enumChildren.map(child => {
+        const id = child[0];
+        const fname = child[1];
+        if (isID) {
+            return { label: String(fname), value: id };
+        }
+        return { label: String(fname), value: String(fname) };
     });
 
     const _optional = isOptional(options);

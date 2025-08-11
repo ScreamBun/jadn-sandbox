@@ -1,5 +1,5 @@
 import { ArrayFieldArray, AllFieldArray } from "components/create/schema/interface";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
@@ -18,6 +18,23 @@ const Choice = (props: FieldProps) => {
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const [selectedChild, setSelectedChild] = useState<JSX.Element>();
     const [childData, setChildData] = useState<any>({});
+
+    const isID = options.some(opt => String(opt) === '=');
+
+    // If isID, map child field name to child ID
+    const nameToIdMap = useMemo(() => {
+        if (!Array.isArray(children)) return {};
+
+        const newChildren: Record<string | number, string | number> = {};
+        children.forEach(child => {
+            if (Array.isArray(child)) {
+                const childID = child[0]; 
+                const childName = child[1];
+                newChildren[childName] = childID;
+            }
+        });
+        return newChildren;
+    }, [children]);
 
     const handleChange = (e: Option | null) => {
         if (e == null || e.value === '' || e.value === undefined) {
@@ -39,16 +56,20 @@ const Choice = (props: FieldProps) => {
 
     const updateChildData = (k: string, v: any) => {
         setChildData((prev: Record<string, any>) => {
-            let updated: Record<string, any> = { ...prev, [k]: v };
+            let updated: Record<string, any> = { ...prev };
+            const key = isID ? (nameToIdMap[k] ?? k) : k;
+
             if (v === "" || v === undefined || v === null) {
-                delete updated[k];
+                delete updated[key];
             } else {
-                updated[k] = v;
+                updated[key] = v;
             }
+
             if (Object.keys(updated).length === 0) {
                 fieldChange(name, '');
                 return {};
             }
+
             fieldChange(name, updated);
             return updated;
         });
