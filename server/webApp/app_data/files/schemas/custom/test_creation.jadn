@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "roots": ["Record-Name", "Enumerated-Name", "Choice-Name", "Map-Name", "Array-Name", "MapOf-Name", "ArrayOf-Name", "Binary-Name", "Boolean-Name", "Integer-Name", "Number-Name", "String-Name"],
+    "package": "https:www.123.com"
+  },
+  "types": [
+    ["Record-Name", "Record", [], "test comment", [
+        [1, "field_value_1", "String", [], ""],
+        [2, "field_value_2", "Binary", [], ""],
+        [3, "field_value_3", "Number", [], ""]
+      ]],
+    ["Enumerated-Name", "Enumerated", [], "test comment", [
+        [1, "field_value_1", ""]
+      ]],
+    ["Choice-Name", "Choice", [], "test comment", [
+        [1, "field_value_1", "String", [], ""]
+      ]],
+    ["Map-Name", "Map", [], "test comment", []],
+    ["Array-Name", "Array", ["{1", "}2"], "test comment", [
+        [1, "field_value_1", "String", [], "test comment"]
+      ]],
+    ["MapOf-Name", "MapOf", ["*String", "+Number", "{2", "}4"], ""],
+    ["ArrayOf-Name", "ArrayOf", ["*Integer"], ""],
+    ["Binary-Name", "Binary", [], ""],
+    ["Boolean-Name", "Boolean", [], ""],
+    ["Integer-Name", "Integer", [], ""],
+    ["Number-Name", "Number", [], "comment commentcommentcommentcommentcommentcommentcommentcommentcommentcommentcommentcomment"],
+    ["String-Name", "String", ["/date-time"], "comment"]
+  ]
+}

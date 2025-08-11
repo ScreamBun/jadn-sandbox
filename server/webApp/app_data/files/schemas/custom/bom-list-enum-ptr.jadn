@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "package": "https://www.enum-test.com",
+    "roots": ["BOM-List"]
+  },
+  "types": [
+    ["BOM", "Record", [], "", [
+        [1, "bom_format", "BOM-Format", [], ""],
+        [2, "version", "String", [], ""],
+        [3, "metadata", "Metadata", [], ""]
+      ]],
+    ["BOM-List", "Enumerated", [">BOM"], "", []],
+    ["BOM-Format", "Enumerated", [], "", [
+        [1, "cyclonedx", ""],
+        [2, "spdx", ""]
+      ]],
+    ["Metadata", "Record", [], "", [
+        [1, "timestamp", "String", ["/date-time"], ""],
+        [2, "tools", "Tool", [], ""]
+      ]],
+    ["Tool", "Record", [], "", [
+        [1, "vendor", "String", [], ""],
+        [2, "name", "String", [], ""]
+      ]]
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "package": "https:///www.id.com",
+    "roots": ["Status-Codes-Map", "Status-Codes-Enum", "Status-Codes-Choice"]
+  },
+  "types": [
+    ["Status-Codes-Map", "Map", ["="], "", [
+        [200, "ok", "String", [], ""],
+        [404, "not_found", "String", [], ""]
+      ]],
+    ["Status-Codes-Enum", "Enumerated", ["="], "", [
+        [200, "OK", ""],
+        [404, "NOT_FOUND", ""]
+      ]],
+    ["Status-Codes-Choice", "Choice", ["="], "", [
+        [200, "ok", "String", [], ""],
+        [404, "not_found", "String", [], ""]
+      ]]
+  ]
+}
