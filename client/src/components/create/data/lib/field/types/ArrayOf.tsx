@@ -95,7 +95,7 @@ const ArrayOf = (props: FieldProps) => {
         const keyEntry = keyList.find(entry => entry.name === entryName);
 
         return (
-            <div key = {i} className="card" style={{ border: '0px solid #ffffff' }}>
+            <div key = {i} className="card" style={{ border: '0px' }}>
                 <div className="d-flex align-items-start" style={{ gap: '0.25rem' }}>
                     <button
                         type="button"
@@ -123,7 +123,7 @@ const ArrayOf = (props: FieldProps) => {
 
     return (
        <div className='form-group'>
-            <div className = "card" style={{ border: '0px solid #ffffff' }}>
+            <div className = "card" style={{ border: '0px' }}>
                 <div
                     className='card p-1 bg-secondary text-white'
                     style={{ borderColor: numberOfItems < minv ? 'red' : undefined, borderWidth: numberOfItems < minv ? '1px' : undefined, borderStyle: numberOfItems < minv ? 'dashed' : undefined }}

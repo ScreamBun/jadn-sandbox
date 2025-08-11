@@ -192,7 +192,7 @@ const MapOf = (props: FieldProps) => {
                 >
                     <FontAwesomeIcon icon={faMinusSquare} size="lg" />
                 </button>
-                <div className='card' style={{ border: '0px solid #ffffff', flex: '1 1 auto' }}>
+                <div className='card' style={{ border: '0px', flex: '1 1 auto' }}>
                     <div className='card p-1 border-secondary bg-primary text-white'>
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={id} >
                             <div className='card-title'>
@@ -213,7 +213,7 @@ const MapOf = (props: FieldProps) => {
 
     return (
         <div className='form-group'>
-            <div className = "card" style={{ border: '0px solid #ffffff' }}>
+            <div className = "card" style={{ border: '0px' }}>
                 <div className='card p-1 bg-secondary text-white'
                 style={{ borderColor: numberOfItems < minv ? 'red' : undefined, borderWidth: numberOfItems < minv ? '1px' : undefined, borderStyle: numberOfItems < minv ? 'dashed' : undefined }}>
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} >

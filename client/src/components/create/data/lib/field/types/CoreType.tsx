@@ -25,24 +25,20 @@ const CoreType = (props: FieldProps) => {
             <div className='p-1 form-group'>
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
-                        <div className="d-flex align-items-center">
-                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
-                            <label>{name}{ _optional ? "" : "*"}</label>
-                            <SBInfoBtn comment={_comment} />
-                        </div>
-                    <label htmlFor={`checkbox-${_idx}`} className="custom-control-label">
+                        <label>{name}{_optional ? "" : "*"}</label>
+                        <SBInfoBtn comment={_comment} />
                         <input
-                            id = {`checkbox-${_idx}`}
+                            id={`checkbox-${_idx}`}
                             type='checkbox'
                             checked={data}
                             value={data}
                             onChange={e => {
                                 setData(e.target.checked);
-                                fieldChange(name, e.target.checked)
+                                fieldChange(name, e.target.checked);
                             }}
-                            className="form-control-sm"
+                            className="form-control-medium"
+                            style={{ width: "1rem", height: "1rem", marginRight: "15rem" }}
                         />
-                    </label>
                     </div>
                     {children}
                 </div>
