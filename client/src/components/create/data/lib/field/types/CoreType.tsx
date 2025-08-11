@@ -1,8 +1,11 @@
 import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/interface";
 import React, {useState} from "react";
-import { validate } from "components/create/data/lib/InputValidator";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, isOptional } from "components/create/data/lib/utils";
+import { useDispatch, useSelector } from 'react-redux';
+import { validateField as validateFieldAction, clearFieldValidation } from 'actions/validatefield';
+import { getFieldError, isFieldValidating } from 'reducers/validatefield';
+
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -16,10 +19,32 @@ const CoreType = (props: FieldProps) => {
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
 
     const [data, setData] = useState(value);
-    const [errMsg, setErrMsg] = useState("");
+    const dispatch = useDispatch();
+    const errMsg = useSelector((s: any) => getFieldError(s, name));
+    const validating = useSelector((s: any) => isFieldValidating(s, name));
 
     const _optional = isOptional(options);
-    
+
+    const handleBlur = (val: any, valType: string) => {
+        if (val === '' || val === undefined || val === null) {
+            dispatch(clearFieldValidation(name));
+            return;
+        }
+        if (options.length === 0) {
+            dispatch(clearFieldValidation(name));
+            return;
+        }
+        dispatch(validateFieldAction(name, val, valType, options));
+    };
+
+    const commonFooter = (
+        <>
+            {errMsg && <div className="text-danger">{errMsg}</div>}
+            {validating && !errMsg && <div className="text-muted"><small>Validating...</small></div>}
+            {children}
+        </>
+    );
+
     if (type === "Boolean") {
         return (
             <div className='p-1 form-group'>
@@ -30,17 +55,19 @@ const CoreType = (props: FieldProps) => {
                         <input
                             id={`checkbox-${_idx}`}
                             type='checkbox'
-                            checked={data}
-                            value={data}
+                            checked={!!data}
                             onChange={e => {
                                 setData(e.target.checked);
-                                fieldChange(name, e.target.checked);
+                                fieldChange(name, e.target.checked)
+                                if (!e.target.checked && _optional) {
+                                    dispatch(clearFieldValidation(name));
+                                }
                             }}
                             className="form-control-medium"
                             style={{ width: "1rem", height: "1rem", marginRight: "15rem" }}
                         />
                     </div>
-                    {children}
+                    {commonFooter}
                 </div>
             </div>
         );
@@ -50,28 +77,26 @@ const CoreType = (props: FieldProps) => {
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
                         <div className="d-flex align-items-center">
-                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
                             <label>{name}{ _optional ? "" : "*"}</label>
                             <SBInfoBtn comment={_comment} />
                         </div>
                     <input
                         type='text'
-                        value={data}
+                        value={data || ''}
                         onChange={e => {
-                            setData(e.target.value);
+                            const v = e.target.value;
+                            setData(v);
+                            if (v === '') dispatch(clearFieldValidation(name));
                         }}
                         onBlur = {e => {
-                            fieldChange(name, e.target.value)
-                            validate(e.target.value, type, options).then(result => {
-                                setErrMsg(result);
-                            });
+                            fieldChange(name, e.target.value);
+                            handleBlur(e.target.value, type);
                         }}
                         className="form-control-sm"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
                     </div>
-                    {errMsg && <div className="text-danger">{errMsg}</div>}
-                    {children}
+                    {commonFooter}
                 </div>
             </div>
         );
@@ -81,28 +106,31 @@ const CoreType = (props: FieldProps) => {
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
                         <div className="d-flex align-items-center">
-                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
                             <label>{name}{ _optional ? "" : "*"}</label>
                             <SBInfoBtn comment={_comment} />
                         </div>
                     <input
                         type='number'
-                        value={data}
+                        value={data ?? ''}
                         onChange={e => {
-                            setData(parseFloat(e.target.value));
+                            const raw = e.target.value;
+                            const num = raw === '' ? '' : parseFloat(raw);
+                            setData(num === '' ? '' : num);
+                            if (raw === '') dispatch(clearFieldValidation(name));
                         }}
                         onBlur = {e => {
-                            fieldChange(name, parseFloat(e.target.value));
-                            validate(parseFloat(e.target.value), type, options).then(result => {
-                                setErrMsg(result);
-                            });                            
+                            const raw = e.target.value;
+                            if (raw === '') { fieldChange(name, ''); dispatch(clearFieldValidation(name)); return; }
+                            const num = parseFloat(raw);
+                            if (isNaN(num)) { fieldChange(name, ''); dispatch(clearFieldValidation(name)); return; }
+                            fieldChange(name, num);
+                            handleBlur(num, type);
                         }}
                         className="form-control-sm"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
                     </div>
-                    {errMsg && <div className="text-danger">{errMsg}</div>}
-                    {children}
+                    {commonFooter}
                 </div>
             </div>
         );   
@@ -112,28 +140,31 @@ const CoreType = (props: FieldProps) => {
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
                         <div className="d-flex align-items-center">
-                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
                             <label>{name}{ _optional ? "" : "*"}</label>
                             <SBInfoBtn comment={_comment} />
                         </div>
                     <input
                         type='number'
-                        value={data}
+                        value={data ?? ''}
                         onChange={e => {
-                            setData(parseInt(e.target.value));
+                            const raw = e.target.value;
+                            const num = raw === '' ? '' : parseInt(raw);
+                            setData(num === '' ? '' : num);
+                            if (raw === '') dispatch(clearFieldValidation(name));
                         }}
                         onBlur = {e => {
-                            fieldChange(name, parseInt(e.target.value));
-                            validate(parseInt(e.target.value), type, options).then(result => {
-                                setErrMsg(result);
-                            });                            
+                            const raw = e.target.value;
+                            if (raw === '') { fieldChange(name, ''); dispatch(clearFieldValidation(name)); return; }
+                            const num = parseInt(raw);
+                            if (isNaN(num)) { fieldChange(name, ''); dispatch(clearFieldValidation(name)); return; }
+                            fieldChange(name, num);
+                            handleBlur(num, type);
                         }}
                         className="form-control-sm"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
                     </div>
-                    {errMsg && <div className="text-danger">{errMsg}</div>}
-                    {children}
+                    {commonFooter}
                 </div>
             </div>
         );   
@@ -143,28 +174,26 @@ const CoreType = (props: FieldProps) => {
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
                         <div className="d-flex align-items-center">
-                            {/* <label><strong>{name}{ _optional ? "" : "*"}</strong></label> */}
                             <label>{name}{ _optional ? "" : "*"}</label>
                             <SBInfoBtn comment={_comment} />
                         </div>
                         <input
                             type='string'
-                            value={data}
+                            value={data || ''}
                             onChange={e => {
-                                setData(e.target.value);
+                                const v = e.target.value;
+                                setData(v);
+                                if (v === '') dispatch(clearFieldValidation(name));
                             }}
                             onBlur = {e => {
-                                fieldChange(name, e.target.value)
-                                validate(e.target.value, "String", options).then(result => {
-                                    setErrMsg(result);
-                                });                            
+                                fieldChange(name, e.target.value);
+                                handleBlur(e.target.value, 'String');
                             }}
                             className="form-control-sm"
                             style={{ borderColor: errMsg === "" ? "" : 'red' }}
                         />
                         </div>
-                        {errMsg && <div className="text-danger">{errMsg}</div>}
-                        {children}
+                        {commonFooter}
                 </div>
             </div>
         );   
