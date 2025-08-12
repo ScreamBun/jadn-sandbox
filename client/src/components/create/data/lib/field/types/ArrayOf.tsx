@@ -5,7 +5,7 @@ import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusSquare, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getMaxv, getMinv, getTrueType, isOptional } from "../../utils";
+import { destructureField, getMaxv, getMinv, getTrueType, getUniqueOrSet, isOptional } from "../../utils";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 
@@ -36,6 +36,8 @@ const ArrayOf = (props: FieldProps) => {
     let keyType = trueTypeVal == undefined ? keyName : trueTypeVal;
     const [cards, setCards] = useState<Array<{idx: number, key: string}>>([]);
 
+    const [errMsg, setErrMsg] = useState<string | undefined>(undefined);
+
     React.useEffect(() => {
         const keys = keyList;
         let output = [];
@@ -43,6 +45,7 @@ const ArrayOf = (props: FieldProps) => {
             output.push(keys[i].key);
         }
         fieldChange(String(name), output);
+        setErrMsg(getUniqueOrSet(keyList, options));
     }, [keyList]);
 
     const addKey = (name:any, key: any) => {
@@ -134,6 +137,7 @@ const ArrayOf = (props: FieldProps) => {
                     </SBToggleBtn>
                 </div>
                 <div className={`card-body ${toggle ? '' : 'collapse'}`}>
+                    {errMsg && <div className="text-danger">{errMsg}</div>}
                     {fields}
                     <div className="p-1">
                         {<button

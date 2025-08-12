@@ -66,3 +66,16 @@ export const getMaxv = (opts: any[]): number | undefined => {
     const maxvOpt = opts.find(opt => opt.startsWith("}"));
     return maxvOpt ? parseInt(maxvOpt.slice(1)) : undefined;
 }
+
+//FUNCTION: ArrayOf unique & set check
+export const getUniqueOrSet = (children: any[], opts: any[]): string => {
+    const isUnique = opts.some(opt => opt === "q");
+    const isSet = opts.some(opt => opt === "s");
+    let m = "";
+    if (isUnique || isSet) {
+        if (Array.from(new Set(children.map(c => c.key))).length != children.map(c => c.key).length) {
+            m = ("Error: Must not contain duplicate values");
+        }
+    }
+    return m;
+}
