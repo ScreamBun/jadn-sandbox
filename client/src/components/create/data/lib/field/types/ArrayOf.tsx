@@ -52,8 +52,9 @@ const ArrayOf = (props: FieldProps) => {
         setKeyList(prev => {
             const existingIndex = prev.findIndex(item => item.name === name);
             let updated = [...prev];
-            if (key === undefined || key === null || key === "") {
-                if (existingIndex !== -1) updated.splice(existingIndex, 1);
+            if (key === null || key === "") {
+                //if (existingIndex !== -1) updated.splice(existingIndex, 1);
+                updated[existingIndex].key = undefined;
             } else if (existingIndex !== -1) {
                 updated[existingIndex].key = key;
             } else {
@@ -66,6 +67,7 @@ const ArrayOf = (props: FieldProps) => {
     const addCard = () => {
         if (!keyType) return;
         setCards(prevCards => [...prevCards, { idx: idNumber, key: keyType }]);
+        addKey(`${keyType} ${idNumber + 1}`, undefined); // Add new key every time new card is added to maintain order
         setIdNumber(prev => prev + 1);
         setNumberOfItems(prev => prev + 1);
     };
