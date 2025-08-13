@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { validateField as validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { getFieldError, isFieldValidating } from 'reducers/validatefield';
 import { timeZones } from 'components/create/consts';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -169,11 +171,12 @@ const CoreType = (props: FieldProps) => {
             </div>
         );   
     } else { // default string
-        //Check for date option
+        //Check for date options
         const isDate = options.some(opt => opt === "/date");
         const isDateTime = options.some(opt => opt === "/date-time");
         const isTime = options.some(opt => opt === "/time");
         const [timezone, setTimezone] = useState('');
+        const [dateToggle, setDateToggle] = useState(false);
         return (
             <div className='p-1 form-group'>
                 <div className='card jadn-type'>
@@ -181,11 +184,20 @@ const CoreType = (props: FieldProps) => {
                         <div className="d-flex align-items-center">
                             <label className="nowrap">{name}{ _optional ? "" : "*"}</label>
                             <SBInfoBtn comment={_comment} />
+                            {isTime || isDateTime || isDate ? <button
+                                type="button"
+                                className="btn btm-sm"
+                                onClick={() => {
+                                    setDateToggle(!dateToggle);
+                                }}
+                            >
+                                <FontAwesomeIcon icon={dateToggle ? faToggleOn : faToggleOff} title = "Show or Hide Date/Time Options"/>
+                            </button> : null}
                         </div>
                         <input
-                            type={isDate ? 'date' : isDateTime ? 'datetime-local' : isTime ? 'time' : 'string'}
+                            type={!dateToggle ? 'string' : isDate ? 'date' : isDateTime ? 'datetime-local' : isTime ? 'time' : 'string'}
                             step={isTime ? '1' : undefined}
-                            value={data || ''}
+                            value={!dateToggle ? `${data || ''}${timezone}` : data || ''}
                             onChange={e => {
                                 const v = e.target.value;
                                 setData(v);
@@ -194,7 +206,7 @@ const CoreType = (props: FieldProps) => {
                             onBlur={e => {
                                 let val = e.target.value;
                                 if (isDateTime && timezone) {
-                                    val = `${val}${timezone}`;
+                                    val = val.replace(/([+-]\d{2}:\d{2})$/, '') + timezone;
                                 }
                                 fieldChange(name, val);
                                 handleBlur(val, 'String');
@@ -202,14 +214,14 @@ const CoreType = (props: FieldProps) => {
                             className="form-control-sm"
                             style={{ borderColor: errMsg === "" ? "" : 'red' }}
                         />
-                        {isDateTime && (
+                        {isDateTime && dateToggle && (
                             <select
                                 className="form-control-sm ms-2"
                                 value={timezone}
                                 onChange={e => setTimezone(e.target.value)}
                                 onBlur={e => {
                                     if (data) {
-                                        const val = `${data}${timezone}`;
+                                        let val = data.replace(/([+-]\d{2}:\d{2})$/, '') + timezone;
                                         fieldChange(name, val);
                                         handleBlur(val, 'String');
                                     }
