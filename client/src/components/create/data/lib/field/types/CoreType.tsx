@@ -5,7 +5,7 @@ import { destructureField, isOptional } from "components/create/data/lib/utils";
 import { useDispatch, useSelector } from 'react-redux';
 import { validateField as validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { getFieldError, isFieldValidating } from 'reducers/validatefield';
-
+import { timeZones } from 'components/create/consts';
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -169,6 +169,11 @@ const CoreType = (props: FieldProps) => {
             </div>
         );   
     } else { // default string
+        //Check for date option
+        const isDate = options.some(opt => opt === "/date");
+        const isDateTime = options.some(opt => opt === "/date-time");
+        const isTime = options.some(opt => opt === "/time");
+        const [timezone, setTimezone] = useState('');
         return (
             <div className='p-1 form-group'>
                 <div className='card jadn-type'>
@@ -178,22 +183,45 @@ const CoreType = (props: FieldProps) => {
                             <SBInfoBtn comment={_comment} />
                         </div>
                         <input
-                            type='string'
+                            type={isDate ? 'date' : isDateTime ? 'datetime-local' : isTime ? 'time' : 'string'}
+                            step={isTime ? '1' : undefined}
                             value={data || ''}
                             onChange={e => {
                                 const v = e.target.value;
                                 setData(v);
                                 if (v === '') dispatch(clearFieldValidation(name));
                             }}
-                            onBlur = {e => {
-                                fieldChange(name, e.target.value);
-                                handleBlur(e.target.value, 'String');
+                            onBlur={e => {
+                                let val = e.target.value;
+                                if (isDateTime && timezone) {
+                                    val = `${val}${timezone}`;
+                                }
+                                fieldChange(name, val);
+                                handleBlur(val, 'String');
                             }}
                             className="form-control-sm"
                             style={{ borderColor: errMsg === "" ? "" : 'red' }}
                         />
-                        </div>
-                        {commonFooter}
+                        {isDateTime && (
+                            <select
+                                className="form-control-sm ms-2"
+                                value={timezone}
+                                onChange={e => setTimezone(e.target.value)}
+                                onBlur={e => {
+                                    if (data) {
+                                        const val = `${data}${timezone}`;
+                                        fieldChange(name, val);
+                                        handleBlur(val, 'String');
+                                    }
+                                }}
+                            >
+                                {timeZones.map(tz => (
+                                    <option key={tz} value={tz}>{tz || 'Select TZ'}</option>
+                                ))}
+                            </select>
+                        )}
+                    </div>
+                    {commonFooter}
                 </div>
             </div>
         );   
