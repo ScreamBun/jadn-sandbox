@@ -104,13 +104,13 @@ const ArrayOf = (props: FieldProps) => {
                 <div className="d-flex align-items-start" style={{ gap: '0.25rem' }}>
                     <button
                         type="button"
-                        className="btn btn-sm btn-danger mt-1"
+                        className="btn btn-sm btn-danger mt-2"
                         title="Remove Field"
                         onClick={() => removeCard(i, entryName)}
                         style={{ marginLeft: '0.25rem' }}
                         disabled = {numberOfItems <= minv}
                     >
-                        <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+                        <FontAwesomeIcon icon={faMinusSquare} />
                     </button>
                     <div style={{ flex: '0 1 100%' }}>
                         <Field

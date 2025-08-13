@@ -185,12 +185,13 @@ const MapOf = (props: FieldProps) => {
             <div className="d-flex align-items-start" style={{ gap: '0.25rem' }}>
                 <button
                     type="button"
-                    className="btn btn-sm btn-danger mt-1"
+                    className="btn btn-sm btn-danger mt-2"
                     title="Remove Field"
                     onClick={() => removeCard(id, keyEntry?.name ?? "", valueEntry?.name ?? "")}
                     disabled = {numberOfItems <= minv}
+                    style={{ marginLeft: '0.25rem' }}
                 >
-                    <FontAwesomeIcon icon={faMinusSquare} size="lg" />
+                    <FontAwesomeIcon icon={faMinusSquare} />
                 </button>
                 <div className='card' style={{ border: '0px', flex: '1 1 auto' }}>
                     <div className='card p-1 border-secondary bg-primary text-white'>

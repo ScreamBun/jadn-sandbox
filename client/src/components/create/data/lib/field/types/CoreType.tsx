@@ -50,7 +50,7 @@ const CoreType = (props: FieldProps) => {
             <div className='p-1 form-group'>
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
-                        <label>{name}{_optional ? "" : "*"}</label>
+                        <label className="nowrap">{name}{_optional ? "" : "*"}</label>
                         <SBInfoBtn comment={_comment} />
                         <input
                             id={`checkbox-${_idx}`}
@@ -77,7 +77,7 @@ const CoreType = (props: FieldProps) => {
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
                         <div className="d-flex align-items-center">
-                            <label>{name}{ _optional ? "" : "*"}</label>
+                            <label className="nowrap">{name}{ _optional ? "" : "*"}</label>
                             <SBInfoBtn comment={_comment} />
                         </div>
                     <input
@@ -106,7 +106,7 @@ const CoreType = (props: FieldProps) => {
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
                         <div className="d-flex align-items-center">
-                            <label>{name}{ _optional ? "" : "*"}</label>
+                            <label className="nowrap">{name}{ _optional ? "" : "*"}</label>
                             <SBInfoBtn comment={_comment} />
                         </div>
                     <input
@@ -140,7 +140,7 @@ const CoreType = (props: FieldProps) => {
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
                         <div className="d-flex align-items-center">
-                            <label>{name}{ _optional ? "" : "*"}</label>
+                            <label className="nowrap">{name}{ _optional ? "" : "*"}</label>
                             <SBInfoBtn comment={_comment} />
                         </div>
                     <input
@@ -174,7 +174,7 @@ const CoreType = (props: FieldProps) => {
                 <div className='card jadn-type'>
                     <div className='card-header d-flex align-items-center justify-content-between'>
                         <div className="d-flex align-items-center">
-                            <label>{name}{ _optional ? "" : "*"}</label>
+                            <label className="nowrap">{name}{ _optional ? "" : "*"}</label>
                             <SBInfoBtn comment={_comment} />
                         </div>
                         <input
