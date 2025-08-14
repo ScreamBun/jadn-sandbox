@@ -189,6 +189,7 @@ const CoreType = (props: FieldProps) => {
                                 className="btn btm-sm"
                                 onClick={() => {
                                     setDateToggle(!dateToggle);
+                                    setTimezone(timeZones[0]);
                                 }}
                             >
                                 <FontAwesomeIcon icon={dateToggle ? faToggleOn : faToggleOff} title = "Show or Hide Date/Time Options"/>
