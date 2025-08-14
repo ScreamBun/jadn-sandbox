@@ -131,3 +131,32 @@ export const getUniqueOrSet = (children: any[], opts: any[]): string => {
     }
     return m;
 }
+
+//FUNCTION: Deal with field multiplicity for primitives
+export const getMultiplicity = (opts: any[]): [number | undefined, number | undefined] => {
+    let minOccurs = opts.find(opt => opt.startsWith("["))?.substring(1);
+    minOccurs = minOccurs ? parseInt(minOccurs) : undefined;
+    let maxOccurs = opts.find(opt => opt.startsWith("]"))?.substring(1);
+    maxOccurs = maxOccurs ? parseInt(maxOccurs) : undefined;
+    return [minOccurs, maxOccurs];
+}
+
+export const convertToArrayOf = (field: any[], minOccurs: number | undefined, maxOccurs: number | undefined): any[] | undefined => {
+    let [_idx, name, type, options, _comment, _children] = destructureField(field);
+    // Remove minOccurs and maxOccurs from options
+    if (minOccurs === 0) {
+        options = options.filter(opt => !opt.startsWith("]"));
+    } else {
+        options = options.filter(opt => !opt.startsWith("[") && !opt.startsWith("]"));
+    }
+    
+    // Convert minOccurs and maxOccurs to minLength and maxLength
+    let newOpts = [`*${type}`, `${minOccurs ? "{"+String(minOccurs) : ""}`, `${maxOccurs ? "}"+String(maxOccurs): ""}`, ...options]
+
+    if ((minOccurs && minOccurs !== 0) || maxOccurs) {
+        const newField = [name, "ArrayOf", newOpts, ""]
+        return newField
+    }
+
+    return undefined;
+}

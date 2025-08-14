@@ -1,6 +1,7 @@
 import React from 'react';
 import { CoreType, Array, ArrayOf, Record, Map, MapOf, Enumerated, Choice, Derived } from 'components/create/data/lib/field/types/Types';
 import { AllFieldArray, StandardFieldArray, ArrayFieldArray, FieldOfArray } from '../../../schema/interface';
+import { convertToArrayOf, destructureField, getMultiplicity } from '../utils';
 
 interface FieldProps {
     field: AllFieldArray;
@@ -12,7 +13,14 @@ interface FieldProps {
 
 const Field = (props: FieldProps) => {
     const { field, fieldChange, children, parent, value } = props;
-    const type = typeof field[0] === 'string' ? field[1] : field[2]
+    const [_idx, name, type, options, _comment, _children] = destructureField(field);
+    // Check for multiplicities
+    const hasMultiplicity = convertToArrayOf(field, ...getMultiplicity(options));
+    if (hasMultiplicity) {
+        return (
+            <Field field={hasMultiplicity as unknown as AllFieldArray} fieldChange={fieldChange} parent={props.parent} value={value}/>
+        );
+    }
 
     switch (type) {
         case 'Boolean':
