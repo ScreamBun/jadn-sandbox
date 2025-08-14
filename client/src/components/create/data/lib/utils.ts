@@ -152,6 +152,8 @@ export const convertToArrayOf = (field: any[], minOccurs: number | undefined, ma
     
     // Convert minOccurs and maxOccurs to minLength and maxLength
     let newOpts = [`*${type}`, `${minOccurs ? "{"+String(minOccurs) : ""}`, `${maxOccurs ? "}"+String(maxOccurs): ""}`, ...options]
+    // Remove empty strings
+    newOpts = newOpts.filter(opt => opt !== "");
 
     if ((minOccurs && minOccurs !== 0) || maxOccurs) {
         const newField = [name, "ArrayOf", newOpts, ""]

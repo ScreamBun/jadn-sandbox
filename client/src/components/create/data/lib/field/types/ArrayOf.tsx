@@ -88,6 +88,11 @@ const ArrayOf = (props: FieldProps) => {
         const fieldName = `${keyName}`;
         const entryName = `${key} ${i+1}`;
         const trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
+
+        // Remove *key from options
+        options = options.filter(opt => !opt.startsWith("*"));
+        // Add true options
+        options = [...options, ...trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[2] : trueTypeDef[3] : []];
         
         let keyField: AllFieldArray;
         if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
