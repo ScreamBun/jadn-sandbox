@@ -131,3 +131,27 @@ export const getUniqueOrSet = (children: any[], opts: any[]): string => {
     }
     return m;
 }
+
+//FUNCTION: Extract keys from an enumeration
+const getEnumKeys = (children: any[]): any[] => {
+    return children.map((child: any) => {
+        let [_idx, name, _type, _options, _comment, _children] = destructureField(child);
+        return name;
+    });
+}
+
+export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
+    let [_idx, name, type, options, _comment, _children] = destructureField(field);
+    let enumKeys: any[] = [];
+    if (type === "MapOf") {
+        // Check if key type or true type of key type is Enumerated
+        const keyType = options.find(opt => opt.startsWith("+"))?.substring(1);
+        const [trueType, trueTypeDef] = getTrueType(schemaObj.types, keyType ? keyType : "");
+        if (keyType === "Enumerated" || trueType === "Enumerated") {
+            let [_idx, _name, _type, _options, _comment, children] = destructureField(trueTypeDef ? trueTypeDef : []);
+            enumKeys = getEnumKeys(children);
+        }
+    }
+
+    return enumKeys;
+}
