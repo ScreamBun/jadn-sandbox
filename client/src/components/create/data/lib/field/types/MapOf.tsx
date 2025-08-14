@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinusSquare, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { faMinusSquare, faPlus, faPlusSquare, faX } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBInfoBtn from "components/common/SBInfoBtn";
@@ -185,24 +185,20 @@ const MapOf = (props: FieldProps) => {
             <div className="d-flex align-items-start" style={{ gap: '0.25rem' }}>
                 <button
                     type="button"
-                    className="btn btn-sm btn-danger mt-2"
+                    className="btn btn-sm btn-danger me-1 mt-1"
                     title="Remove Field"
                     onClick={() => removeCard(id, keyEntry?.name ?? "", valueEntry?.name ?? "")}
                     disabled = {numberOfItems <= minv}
-                    style={{ marginLeft: '0.25rem' }}
                 >
-                    <FontAwesomeIcon icon={faMinusSquare} />
+                    <FontAwesomeIcon icon={faX} size = "sm" />
                 </button>
-                <div className='card' style={{ border: '0px', flex: '1 1 auto' }}>
-                    <div className='card p-1 border-secondary bg-primary text-white'>
-                        <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={id} >
-                            <div className='card-title'>
-                                {`${name} ${id}${ _optional ? "" : "*"}`}
-                                <SBInfoBtn comment={_comment} />
-                            </div>
-                        </SBToggleBtn>
+                <div style={{ flex: '0 1 100%' }}>
+                    <div className="d-flex align-items-center w-100">
+                        <label style={{ fontSize: "1.1rem" }}>{`${name} ${id}${ _optional ? "" : "*"}`}</label>
+                        <SBInfoBtn comment={_comment} />
+                        <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={id} />
                     </div>
-                    <div className={`card-body ${toggleField[id] == true ? '' : 'collapse'}`} id={`${id}`}>
+                    <div className={`${toggleField[id] == true ? '' : 'collapse'}`} id={`${id}`}>
                         <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} />
                         <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
                     </div>
@@ -213,30 +209,31 @@ const MapOf = (props: FieldProps) => {
 });
 
     return (
-        <div className='form-group'>
-            <div className = "card" style={{ border: '0px' }}>
-                <div className='card p-1 bg-secondary text-white'
-                style={{ borderColor: numberOfItems < minv ? 'red' : undefined, borderWidth: numberOfItems < minv ? '1px' : undefined, borderStyle: numberOfItems < minv ? 'dashed' : undefined }}>
-                    <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-                        <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
-                        <SBInfoBtn comment={_comment} />
-                    </SBToggleBtn>
-                </div>
-                <div className={`card-body ${toggle ? '' : 'collapse'}`}>
-                    {cards.length > 0 ? fields : null}
-                    <div className="p-1">
-                        {<button
+        <>
+            <div className='form-group'>
+                <div className="d-flex align-items-center w-100"
+                    style={{ borderColor: numberOfItems < minv ? 'red' : undefined, 
+                        borderWidth: numberOfItems < minv ? '1px' : undefined, 
+                        borderStyle: numberOfItems < minv ? 'dashed' : undefined }}>
+                    <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                    <SBInfoBtn comment={_comment} />
+                    <SBToggleBtn toggle={toggle} setToggle={setToggle} />
+                    {<button
                             type="button"
-                            className={`btn btn-sm btn-block btn-primary`}
+                            className={`btn btn-sm btn-primary ms-1`}
                             title={`Add Field to ${name}`}
                             onClick={addCard}
-                            disabled={maxv !== undefined && (typeof maxv === "number" && numberOfItems >= maxv)}>
-                            <FontAwesomeIcon icon={faPlusSquare} />
-                        </button>}                    
-                    </div>
+                            disabled={maxv !== undefined && (typeof maxv === "number" && numberOfItems >= maxv)}
+                        >
+                            <FontAwesomeIcon icon={faPlus} size="sm" />
+                            {` Add Item`}
+                    </button>}    
+                </div>
+                <div className={`ms-5 ${toggle ? '' : 'collapse'}`}>
+                    {cards.length > 0 ? fields : null}
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
