@@ -44,9 +44,18 @@ const Enumerated = (props: FieldProps) => {
         const schemaObj = useSelector(getSelectedSchema);
         children = [...children, ...getPointerChildren(schemaObj, pointer, [])];
     }
+    
+    const isID = options.some(opt => String(opt) === '=');
 
-    const getOptions = children.map((child) => {
-        return child[1];
+    const enumChildren = Array.isArray(children) ? children.filter(c => Array.isArray(c)) : [];
+
+    const getOptions: Option[] = enumChildren.map(child => {
+        const id = child[0];
+        const fname = child[1];
+        if (isID) {
+            return { label: String(fname), value: id };
+        }
+        return { label: String(fname), value: String(fname) };
     });
 
     return (
