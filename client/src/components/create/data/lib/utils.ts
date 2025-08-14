@@ -75,7 +75,7 @@ export const getMaxv = (opts: any[]): number | undefined => {
 }
 
 //FUNCTION: Recursively get pointer children
-const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], path: string[]): any[] => {
+const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], path: string[], isID: boolean = false): any[] => {
     let newPath = [...path];
 
     let [_idx, _name, _type, _options, _comment, children] = destructureField(type);
@@ -86,21 +86,22 @@ const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], p
         const [_trueType, trueTypeDef] = getTrueType(schemaObj.types, _type);
         // Don't need to list enum or choice
         if (_trueType === "Enumerated" || _trueType === "Choice") {
-            return [[[...newPath, _name].join('/')]];
+            return [[[...newPath, isID ? String(_idx) : _name].join('/')]];
         }
 
         const trueChildren = trueTypeDef && trueTypeDef[4] ? trueTypeDef[4] : [];
         if (trueChildren.length > 0) {
             for (const child of trueChildren) {
-                pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name])];
+                pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, isID ? String(_idx) : _name])];
             }
             return pointerChildren;
         }
-        return [[[...newPath, _name].join('/')]];
+        return [[[...newPath, isID ? String(_idx) : _name].join('/')]];
     }
 
     for (const child of children) {
-        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name])];
+        const isID = _options.some(opt => String(opt) === '=');
+        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name], isID)];
     }
     return pointerChildren;
 }
