@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useSelector } from 'react-redux'
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getPointerChildren, isOptional } from "../../utils";
+import { destructureField, getDefaultValue, getPointerChildren, isOptional } from "../../utils";
 import { getSelectedSchema } from "reducers/util";
 
 interface FieldProps {
@@ -57,6 +57,20 @@ const Enumerated = (props: FieldProps) => {
         }
         return { label: String(fname), value: String(fname) };
     });
+
+    const setDefaults = useSelector((state: any) => state.toggleDefaults);
+    React.useEffect(() => {
+        if (
+            (value === undefined || value === null || value === '') ||
+            (selectedValue === undefined || selectedValue === null || selectedValue === '')
+        ) {
+            const defaultValue = getDefaultValue("Enumerated", [], getOptions.map(opt => opt.value));
+            if (/*!_optional && */defaultValue !== undefined && setDefaults) {
+                setSelectedValue({ label: defaultValue, value: defaultValue });
+                fieldChange(name, defaultValue);
+            }
+        }
+    }, [setDefaults]);
 
     return (
 
