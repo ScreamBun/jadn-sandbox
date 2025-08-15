@@ -52,18 +52,19 @@ const Array = (props: FieldProps) => {
     const _optional = isOptional(options);
 
     return (
-        <>
-            <div className='form-group d-flex'>
-                <div className="d-flex align-items-center w-100">
-                    <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
-                    <SBInfoBtn comment={_comment} />
-                    <SBToggleBtn toggle={toggle} setToggle={setToggle} />
+        <div className='form-group'>
+            <div className="card" style={{ border: '0px' }}>
+                <div className='card p-1 border-secondary bg-primary text-white'>
+                    <SBToggleBtn toggle={toggle} setToggle={setToggle} >
+                        <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
+                        <SBInfoBtn comment={_comment} />
+                    </SBToggleBtn>
+                </div>
+                <div className={`card-body ${toggle ? '' : 'collapse'}`}>
+                    {childrenCards}
                 </div>
             </div>
-            <div className={`ms-5 ${toggle ? '' : 'collapse'}`}>
-                {childrenCards}
-            </div>
-        </>
+        </div>
     );
 };
 

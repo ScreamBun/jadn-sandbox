@@ -88,17 +88,21 @@ const Choice = (props: FieldProps) => {
     const _optional = isOptional(options);
 
     return (
-        <div className="form-group">
-            <div className='form-group d-flex align-items-center justify-content-between'>
-                <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
-                <SBInfoBtn comment={_comment} />
-                <SBSelect id={name} name={name} data={getOptions}
-                    onChange={handleChange}
-                    placeholder={`${name} options`}
-                    value={selectedValue}
-                    isSearchable
-                    isClearable
-                    isMediumStyle />
+        <div className="p-1 form-group">
+            <div className="card jadn-type">
+                <div className='card-header d-flex align-items-center justify-content-between'>
+                    <div className="d-flex align-items-center">
+                        <label>{name}{ _optional ? "" : "*"}</label>
+                        <SBInfoBtn comment={_comment} />
+                    </div>
+                    <SBSelect id={name} name={name} data={getOptions}
+                        onChange={handleChange}
+                        placeholder={`${name} options`}
+                        value={selectedValue}
+                        isSearchable
+                        isClearable
+                        isSmStyle />
+                </div>
             </div>
             {selectedValue ? selectedChild : ""}
         </div>
