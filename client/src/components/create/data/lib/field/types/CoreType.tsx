@@ -50,6 +50,9 @@ const CoreType = (props: FieldProps) => {
             if (/*!_optional && */defaultValue !== undefined && setDefaults) {
                 setData(defaultValue);
                 fieldChange(name, defaultValue);
+            } else {
+                setData('');
+                fieldChange(name, '');
             }
         }
     }, [setDefaults]);

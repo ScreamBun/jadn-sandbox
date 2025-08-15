@@ -43,6 +43,7 @@ const DataCreator = (props: any) => {
     const handleSelection = (e: Option) => {
         setSelection(e);
         setGeneratedMessage({});
+        dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
     }
 
     const handleValidate = async () => {
@@ -88,9 +89,10 @@ const DataCreator = (props: any) => {
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (selection?.value) {
         fieldDefs = types.map((field: AllFieldArray, idx: number) => {
+            const fieldKey = `${selection?.value || 'root'}-${idx}`;
             return (
                 <Field
-                    key={idx}
+                    key={fieldKey}
                     field={field}
                     fieldChange={fieldChange}
                 />
