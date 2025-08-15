@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinusSquare, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faX } from "@fortawesome/free-solid-svg-icons";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, getMaxv, getMinv, getTrueType, getUniqueOrSet, isOptional } from "../../utils";
 import { useSelector } from "react-redux";
@@ -109,13 +109,12 @@ const ArrayOf = (props: FieldProps) => {
                 <div className="d-flex align-items-start" style={{ gap: '0.25rem' }}>
                     <button
                         type="button"
-                        className="btn btn-sm btn-danger mt-2"
+                        className="btn btn-sm btn-danger me-1"
                         title="Remove Field"
                         onClick={() => removeCard(i, entryName)}
-                        style={{ marginLeft: '0.25rem' }}
                         disabled = {numberOfItems <= minv}
                     >
-                        <FontAwesomeIcon icon={faMinusSquare} />
+                        <FontAwesomeIcon icon={faX} size="sm"/>
                     </button>
                     <div style={{ flex: '0 1 100%' }}>
                         <Field
@@ -132,34 +131,32 @@ const ArrayOf = (props: FieldProps) => {
     });
 
     return (
-       <div className='form-group'>
-            <div className = "card" style={{ border: '0px' }}>
-                <div
-                    className='card p-1 bg-secondary text-white'
-                    style={{ borderColor: numberOfItems < minv ? 'red' : undefined, borderWidth: numberOfItems < minv ? '1px' : undefined, borderStyle: numberOfItems < minv ? 'dashed' : undefined }}
-                >
-                    <SBToggleBtn toggle={toggle} setToggle={setToggle} >
-                        <label><strong>{name}{ _optional ? "" : "*"}</strong></label>
-                        <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
-                    </SBToggleBtn>
-                </div>
-                <div className={`card-body ${toggle ? '' : 'collapse'}`}>
-                    {errMsg && <div className="text-danger">{errMsg}</div>}
-                    {fields}
-                    <div className="p-1">
-                        {<button
+        <>
+            <div className='form-group'>
+                <div className="d-flex align-items-center w-100"
+                    style={{ borderColor: numberOfItems < minv ? 'red' : undefined, 
+                        borderWidth: numberOfItems < minv ? '1px' : undefined, 
+                        borderStyle: numberOfItems < minv ? 'dashed' : undefined }} >
+                    <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                    <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
+                    <SBToggleBtn toggle={toggle} setToggle={setToggle} />
+                    {<button
                             type="button"
-                            className={`btn btn-sm btn-block btn-primary`}
+                            className={`btn btn-sm btn-primary ms-1`}
                             title={`Add Field to ${name}`}
                             onClick={addCard}
                             disabled={maxv !== undefined && (typeof maxv === "number" && numberOfItems >= maxv)}
                         >
-                            <FontAwesomeIcon icon={faPlusSquare} />
-                        </button>}                    
-                    </div>
+                            <FontAwesomeIcon icon={faPlus} size="sm" />
+                            {` Add Item`}
+                    </button>} 
+                </div>
+                <div className={`ms-5 ${toggle ? '' : 'collapse'}`}>
+                    {errMsg && <div className="text-danger">{errMsg}</div>}
+                    {fields}
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
