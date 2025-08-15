@@ -60,17 +60,21 @@ const Enumerated = (props: FieldProps) => {
 
     return (
 
-        <div className="form-group">
-            <div className='form-group d-flex align-items-center justify-content-between'>
-                <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
-                <SBInfoBtn comment={_comment} />
-                <SBSelect id={name} name = {name} data = {getOptions}
-                    onChange={handleChange}
-                    placeholder={`${name} options`}
-                    value={selectedValue}
-                    isClearable 
-                    isSmStyle
-                />
+        <div className="p-1 form-group">
+            <div className="card jadn-type">
+                <div className='card-header d-flex align-items-center justify-content-between'>
+                    <div className="d-flex align-items-center">
+                        <label>{name}{ _optional ? "" : "*"}</label>
+                        <SBInfoBtn comment={_comment} />
+                    </div>
+                    <SBSelect id={name} name = {name} data = {getOptions}
+                        onChange={handleChange}
+                        placeholder={`${name} options`}
+                        value={selectedValue}
+                        isClearable 
+                        isSmStyle
+                    />
+                </div>
             </div>
         </div>
     );
