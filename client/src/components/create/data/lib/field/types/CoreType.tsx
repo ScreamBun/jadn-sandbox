@@ -1,13 +1,14 @@
 import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/interface";
 import React, {useState} from "react";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, isOptional } from "components/create/data/lib/utils";
+import { destructureField, getDefaultValue, isOptional } from "components/create/data/lib/utils";
 import { useDispatch, useSelector } from 'react-redux';
 import { validateField as validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { getFieldError, isFieldValidating } from 'reducers/validatefield';
 import { timeZones } from 'components/create/consts';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
+import { toggleDefaults } from 'actions/defaults';
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -38,6 +39,20 @@ const CoreType = (props: FieldProps) => {
         }
         dispatch(validateFieldAction(name, val, valType, options));
     };
+
+    const setDefaults = useSelector((state: any) => state.toggleDefaults);
+    React.useEffect(() => {
+        if (
+            (value === undefined || value === null || value === '') ||
+            (data === undefined || data === null || data === '')
+        ) {
+            const defaultValue = getDefaultValue(type, options);
+            if (/*!_optional && */defaultValue !== undefined && setDefaults) {
+                setData(defaultValue);
+                fieldChange(name, defaultValue);
+            }
+        }
+    }, [setDefaults]);
 
     const commonFooter = (
         <>

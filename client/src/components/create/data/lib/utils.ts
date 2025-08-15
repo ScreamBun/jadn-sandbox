@@ -1,3 +1,5 @@
+import { defaultValues } from "components/create/consts";
+
 // FUNCTION: Determine if a field is optional based on its options. Optional field has '[0']
 export const isOptional = (options: any[]): boolean => {
     for (const opt of options) {
@@ -65,13 +67,13 @@ export const destructureField = (field: any[]): [number, string, string, string[
 
 //FUNCTION: Get the minv (minimum length) of an ArrayOf, MapOf
 export const getMinv = (opts: any[]): number => {
-    const minvOpt = opts.find(opt => opt.startsWith("{"));
-    return minvOpt ? parseInt(minvOpt.slice(1)) : 0;
+    const minvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("{"));
+    return minvOpt ? parseInt((minvOpt as string).slice(1), 10) : 0;
 }
 
 export const getMaxv = (opts: any[]): number | undefined => {
-    const maxvOpt = opts.find(opt => opt.startsWith("}"));
-    return maxvOpt ? parseInt(maxvOpt.slice(1)) : undefined;
+    const maxvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("}"));
+    return maxvOpt ? parseInt((maxvOpt as string).slice(1), 10) : undefined;
 }
 
 //FUNCTION: Recursively get pointer children
@@ -131,4 +133,19 @@ export const getUniqueOrSet = (children: any[], opts: any[]): string => {
         }
     }
     return m;
+}
+
+//FUNCTION: Get default value. If option has default value, that takes precedence over the type default value.
+export const getDefaultValue = (type: string, options: any[], children: any[] = []): any => {
+    for (const option of options) {
+        const val = defaultValues(option, getMinv(options), children);
+        if (val !== undefined) {
+            return val;
+        }
+    }
+    const val2 = defaultValues(type, getMinv(options), children);
+    if (val2 !== undefined) {
+        return val2;
+    }
+    return undefined;
 }

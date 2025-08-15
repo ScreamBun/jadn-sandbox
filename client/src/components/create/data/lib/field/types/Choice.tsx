@@ -3,7 +3,8 @@ import React, { useMemo, useState } from "react";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, isOptional } from "../../utils";
+import { destructureField, getDefaultValue, isOptional } from "../../utils";
+import { useSelector } from "react-redux";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -86,6 +87,21 @@ const Choice = (props: FieldProps) => {
     });
 
     const _optional = isOptional(options);
+
+    const setDefaults = useSelector((state: any) => state.toggleDefaults);
+    React.useEffect(() => {
+        if (
+            (value === undefined || value === null || value === '') ||
+            (selectedValue === undefined || selectedValue === null || selectedValue === '')
+        ) {
+            const defaultValue = getDefaultValue("Choice", [], children);
+            if (/*!_optional && */defaultValue !== undefined && setDefaults) {
+                setSelectedValue({ label: defaultValue, value: defaultValue });
+                fieldChange(name, defaultValue);
+                setSelectedChild(getChild(defaultValue));
+            }
+        }
+    }, [setDefaults]);
 
     return (
         <div className="p-1 form-group">

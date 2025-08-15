@@ -38,6 +38,7 @@
     "lodash": "^4.17.21",
     "marked": "^9.1.1",
     "plantuml-encoder": "^1.4.0",
+    "randexp": "^0.5.3",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
