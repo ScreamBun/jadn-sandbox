@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import MessageCreator from './MessageCreator'
+import DataCreator from './DataCreator'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
@@ -9,14 +9,14 @@ import { dismissAllToast } from 'components/common/SBToast'
 import { sbToastSuccess, sbToastError } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 
-const MessageGenerator2 = () => {
+const DataGenerator = () => {
     const dispatch = useDispatch()
 
     const [selectedFile, setSelectedFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
     const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessage, setGeneratedMessage] = useState({});
-    const [commandType, setCommandType] = useState<Option | null>();
+    const [selection, setSelection] = useState<Option | null>();
 
     const meta_title = useSelector(getPageTitle) + ' | Data Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`
@@ -29,7 +29,7 @@ const MessageGenerator2 = () => {
     }, [dispatch])
 
     useEffect(() => {
-        setCommandType(null);
+        setSelection(null);
         setGeneratedMessage({});
         dispatch(setSchema(loadedSchema));
     }, [loadedSchema])
@@ -39,7 +39,7 @@ const MessageGenerator2 = () => {
         dismissAllToast();
         setSelectedFile(null);
         setLoadedSchema(null);
-        setCommandType(null);
+        setSelection(null);
         setGeneratedMessage({});
         setActiveView('message');
         sbToastSuccess("Schema reset successfully");
@@ -73,21 +73,19 @@ const MessageGenerator2 = () => {
                         <div className='card-body p-2'>
                             <div className='row no-gutters'>
                                 <div className='col-md-12 pr-2'>
-                                    {activeView === 'message' && (
-                                        <div className="tab-pane fade show active" id="message" role="tabpanel" aria-labelledby="message-tab" tabIndex={0}>
-                                            <SchemaLoader
-                                                selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                                                schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
-                                                loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
-                                        </div>
-                                    )}
-                                    {activeView === 'creator' && (
-                                        <div className="tab-pane fade show active" id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}>
-                                            <MessageCreator
-                                                generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                                commandType={commandType} setCommandType={setCommandType} />
-                                        </div>
-                                    )}
+                                    <div className="tab-pane fade show active" id="message" role="tabpanel" aria-labelledby="message-tab" tabIndex={0}
+                                        style={{display: activeView === 'message' ? 'block' : 'none'}}>
+                                        <SchemaLoader
+                                            selectedFile={selectedFile} setSelectedFile={setSelectedFile}
+                                            schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                    </div>
+                                    <div className="tab-pane fade show active" id="creator" role="tabpanel" aria-labelledby="creator-tab" tabIndex={0}
+                                        style={{display: activeView === 'creator' ? 'block' : 'none'}}>
+                                        <DataCreator
+                                            generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
+                                            selection={selection} setSelection={setSelection} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -97,4 +95,4 @@ const MessageGenerator2 = () => {
         </div>
     );
 }
-export default MessageGenerator2
+export default DataGenerator
