@@ -220,7 +220,7 @@ const CoreType = (props: FieldProps) => {
                         className="form-control-medium ms-2"
                         value={timezone}
                         onChange={e => setTimezone(e.target.value)}
-                        onBlur={e => {
+                        onBlur={_e => {
                             if (data) {
                                 let val = data.replace(/([+-]\d{2}:\d{2})$/, '') + timezone;
                                 fieldChange(name, val);

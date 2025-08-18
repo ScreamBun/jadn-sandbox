@@ -11,7 +11,7 @@ import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
 import { LANG_JSON } from 'components/utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExpand, faUndo, faWandSparkles } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExpand, faUndo, faWandSparkles, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch } from 'react-redux'
 import { validateMessage } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -46,7 +46,6 @@ const DataCreator = (props: any) => {
         setSelection(e);
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
-        dispatch(clearFieldValidation());
     }
 
     const [jsonValidated, setJsonValidated] = useState(false);
@@ -121,7 +120,7 @@ const DataCreator = (props: any) => {
                             <button className='btn btn-sm btn-primary float-start ms-1' title='Generate Data' onClick={setDefaults}>
                                 <FontAwesomeIcon icon = {faWandSparkles} />
                             </button>
-                            <button type='reset' className='btn btn-sm btn-danger float-end ms-1' title='Reset Builder' onClick={onReset}>
+                            <button type='reset' className='btn btn-sm btn-danger-primary float-end ms-1' title='Reset Builder' onClick={onReset}>
                                 <FontAwesomeIcon icon={faUndo} />
                             </button>
                             <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen Data' onClick={() => setDataFullScreen(!dataFullScreen)}>
@@ -150,8 +149,7 @@ const DataCreator = (props: any) => {
             </div>}
             <div className={jsonFullScreen ? 'col-md-12' : 'col-md-6'}
                 style={{display: dataFullScreen ? 'none' : 'block'}}>
-                <div className='card'
-                    style={{border: jsonValidated ? '2px solid green' : '0px'}}>
+                <div className='card'>
                     <div className="card-header p-2 d-flex align-items-center">
                         <h5 className="mb-0">JSON Viewer</h5>
                         <div className="ms-auto">
@@ -163,7 +161,15 @@ const DataCreator = (props: any) => {
                                 onClick={handleValidate}
                                 disabled = {selection && generatedMessage? false:true}
                             >
-                                Validate
+                                Valid
+                                {jsonValidated ? (
+                                    <span className="badge rounded-pill text-bg-success ms-1">
+                                        <FontAwesomeIcon icon={faCheck} />
+                                    </span>) : (
+                                    <span className="badge rounded-pill text-bg-danger ms-1">
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </span>)
+                                }
                             </button>
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                             <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />

@@ -311,6 +311,7 @@ a,
 @include color-mode(dark) {
     $primary: #375a7f;
     $secondary: #383a40;
+    $danger: #dc3545;
 
     .sb-outline {
         .highlight-color {
@@ -330,9 +331,17 @@ a,
         background-color: #{$secondary} !important;
     }
 
+    [class*="danger-primary"]:not(.btn-outline-danger) {
+        background-color: #{$danger} !important;
+    }
+
     .btn-outline-primary,
     .btn-primary {
         border: $primary;
+    }
+
+    .btn-danger-primary {
+        border: $danger;
     }
 
 }
