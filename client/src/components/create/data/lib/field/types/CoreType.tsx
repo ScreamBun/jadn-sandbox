@@ -67,14 +67,13 @@ const CoreType = (props: FieldProps) => {
 
     if (type === "Boolean") {
         return (
-            <div className='p-1 form-group'>
-                <div className='card jadn-type'>
-                    <div className='card-header d-flex align-items-center justify-content-between'>
-                        <label className="nowrap">{name}{_optional ? "" : "*"}</label>
-                        <SBInfoBtn comment={_comment} />
-                        <input
-                            id={`checkbox-${_idx}`}
-                            type='checkbox'
+            <div className='form-group'>
+                <div className='form-group d-flex align-items-center justify-content-left'>
+                    <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{_optional ? "" : "*"}</label>
+                    <SBInfoBtn comment={_comment} />
+                    <input
+                        id={`checkbox-${_idx}`}
+                        type='checkbox'
                             checked={!!data}
                             onChange={e => {
                                 setData(e.target.checked);
@@ -83,23 +82,19 @@ const CoreType = (props: FieldProps) => {
                                     dispatch(clearFieldValidation(name));
                                 }
                             }}
-                            className="form-control-medium"
+                            className="form-control-medium ms-1"
                             style={{ width: "1rem", height: "1rem", marginRight: "15rem" }}
                         />
-                    </div>
-                    {commonFooter}
                 </div>
+                {commonFooter}
             </div>
         );
     } else if (type == "Binary") {
         return (
-            <div className='p-1 form-group'>
-                <div className='card jadn-type'>
-                    <div className='card-header d-flex align-items-center justify-content-between'>
-                        <div className="d-flex align-items-center">
-                            <label className="nowrap">{name}{ _optional ? "" : "*"}</label>
-                            <SBInfoBtn comment={_comment} />
-                        </div>
+            <div className='form-group'>
+                <div className='form-group d-flex align-items-center justify-content-between'>
+                    <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                    <SBInfoBtn comment={_comment} />
                     <input
                         type='text'
                         value={data || ''}
@@ -112,23 +107,19 @@ const CoreType = (props: FieldProps) => {
                             fieldChange(name, e.target.value);
                             handleBlur(e.target.value, type);
                         }}
-                        className="form-control-sm"
+                        className="form-control-medium ms-1"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
-                    </div>
-                    {commonFooter}
                 </div>
+                {commonFooter}
             </div>
         );
     } else if (type == "Number") {
         return (
-            <div className='p-1 form-group'>
-                <div className='card jadn-type'>
-                    <div className='card-header d-flex align-items-center justify-content-between'>
-                        <div className="d-flex align-items-center">
-                            <label className="nowrap">{name}{ _optional ? "" : "*"}</label>
-                            <SBInfoBtn comment={_comment} />
-                        </div>
+            <div className='form-group'>
+                <div className='form-group d-flex align-items-center justify-content-between'>
+                    <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                    <SBInfoBtn comment={_comment} />
                     <input
                         type='number'
                         value={data ?? ''}
@@ -146,23 +137,19 @@ const CoreType = (props: FieldProps) => {
                             fieldChange(name, num);
                             handleBlur(num, type);
                         }}
-                        className="form-control-sm"
+                        className="form-control-medium ms-1"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
-                    </div>
-                    {commonFooter}
                 </div>
+                {commonFooter}
             </div>
         );   
     } else if (type == "Integer") {
         return (
-            <div className='p-1 form-group'>
-                <div className='card jadn-type'>
-                    <div className='card-header d-flex align-items-center justify-content-between'>
-                        <div className="d-flex align-items-center">
-                            <label className="nowrap">{name}{ _optional ? "" : "*"}</label>
-                            <SBInfoBtn comment={_comment} />
-                        </div>
+            <div className='form-group'>
+                <div className='form-group d-flex align-items-center justify-content-between'>
+                    <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                    <SBInfoBtn comment={_comment} />
                     <input
                         type='number'
                         value={data ?? ''}
@@ -180,12 +167,11 @@ const CoreType = (props: FieldProps) => {
                             fieldChange(name, num);
                             handleBlur(num, type);
                         }}
-                        className="form-control-sm"
+                        className="form-control-medium ms-1"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
                     />
-                    </div>
-                    {commonFooter}
                 </div>
+                {commonFooter}
             </div>
         );   
     } else { // default string
@@ -196,65 +182,61 @@ const CoreType = (props: FieldProps) => {
         const [timezone, setTimezone] = useState('');
         const [dateToggle, setDateToggle] = useState(false);
         return (
-            <div className='p-1 form-group'>
-                <div className='card jadn-type'>
-                    <div className='card-header d-flex align-items-center justify-content-between'>
-                        <div className="d-flex align-items-center">
-                            <label className="nowrap">{name}{ _optional ? "" : "*"}</label>
-                            <SBInfoBtn comment={_comment} />
-                            {isTime || isDateTime || isDate ? <button
-                                type="button"
-                                className="btn btm-sm"
-                                onClick={() => {
-                                    setDateToggle(!dateToggle);
-                                    setTimezone(timeZones[0]);
-                                }}
-                            >
-                                <FontAwesomeIcon icon={dateToggle ? faToggleOn : faToggleOff} title = "Show or Hide Date/Time Options"/>
-                            </button> : null}
-                        </div>
-                        <input
-                            type={!dateToggle ? 'string' : isDate ? 'date' : isDateTime ? 'datetime-local' : isTime ? 'time' : 'string'}
-                            step={isTime ? '1' : undefined}
-                            value={!dateToggle ? `${data || ''}${timezone}` : data || ''}
-                            onChange={e => {
-                                const v = e.target.value;
-                                setData(v);
-                                if (v === '') dispatch(clearFieldValidation(name));
-                            }}
-                            onBlur={e => {
-                                let val = e.target.value;
-                                if (isDateTime && timezone) {
-                                    val = val.replace(/([+-]\d{2}:\d{2})$/, '') + timezone;
-                                }
+        <div className='form-group'>
+            <div className='form-group d-flex align-items-center justify-content-between'>
+                <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                <SBInfoBtn comment={_comment} />
+                {isTime || isDateTime || isDate ? <button
+                    type="button"
+                    className="btn btm-sm"
+                    onClick={() => {
+                        setDateToggle(!dateToggle);
+                        setTimezone(timeZones[0]);
+                    }}
+                >
+                    <FontAwesomeIcon icon={dateToggle ? faToggleOn : faToggleOff} title = "Show or Hide Date/Time Options"/>
+                </button> : null}
+                <input
+                    type={!dateToggle ? 'string' : isDate ? 'date' : isDateTime ? 'datetime-local' : isTime ? 'time' : 'string'}
+                    step={isTime ? '1' : undefined}
+                    value={!dateToggle ? `${data || ''}${timezone}` : data || ''}
+                    onChange={e => {
+                        const v = e.target.value;
+                        setData(v);
+                        if (v === '') dispatch(clearFieldValidation(name));
+                    }}
+                    onBlur={e => {
+                        let val = e.target.value;
+                        if (isDateTime && timezone) {
+                            val = val.replace(/([+-]\d{2}:\d{2})$/, '') + timezone;
+                        }
+                        fieldChange(name, val);
+                        handleBlur(val, 'String');
+                    }}
+                    className="form-control-medium ms-1"
+                    style={{ borderColor: errMsg === "" ? "" : 'red' }}
+                />
+                {isDateTime && dateToggle && (
+                    <select
+                        className="form-control-medium ms-2"
+                        value={timezone}
+                        onChange={e => setTimezone(e.target.value)}
+                        onBlur={e => {
+                            if (data) {
+                                let val = data.replace(/([+-]\d{2}:\d{2})$/, '') + timezone;
                                 fieldChange(name, val);
                                 handleBlur(val, 'String');
-                            }}
-                            className="form-control-sm"
-                            style={{ borderColor: errMsg === "" ? "" : 'red' }}
-                        />
-                        {isDateTime && dateToggle && (
-                            <select
-                                className="form-control-sm ms-2"
-                                value={timezone}
-                                onChange={e => setTimezone(e.target.value)}
-                                onBlur={e => {
-                                    if (data) {
-                                        let val = data.replace(/([+-]\d{2}:\d{2})$/, '') + timezone;
-                                        fieldChange(name, val);
-                                        handleBlur(val, 'String');
-                                    }
-                                }}
-                            >
-                                {timeZones.map(tz => (
-                                    <option key={tz} value={tz}>{tz || 'Select TZ'}</option>
-                                ))}
-                            </select>
-                        )}
-                    </div>
-                    {commonFooter}
-                </div>
+                            }
+                        }}
+                    >
+                        {timeZones.map(tz => (
+                            <option key={tz} value={tz}>{tz || 'Select TZ'}</option>
+                        ))}
+                    </select>
+                )}
             </div>
+            {commonFooter}
+        </div>
         );   
     }
 };
