@@ -91,6 +91,10 @@ const ArrayOf = (props: FieldProps) => {
         const entryName = `${key} ${i+1}`;
         const trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
 
+        // Add true options
+        const trueOptions = typeof trueTypeDef[0] === "string" ? trueTypeDef[2] : trueTypeDef[3];
+        options = [...options, ...trueOptions];
+
         let keyField: AllFieldArray;
         if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
             let keyChildren = trueTypeDef != undefined ? trueTypeDef[4] ? Array.isArray(trueTypeDef[4]) ? trueTypeDef[4] : [] : [] : [];
