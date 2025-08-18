@@ -34,7 +34,7 @@ export const defaultValues = (option: string, minLength: number = 0, children: a
     const intValue = minLength > 0 ? parseInt('1'.repeat(minLength), 2) : 0;
     const floatValue = minLength > 0 ? parseFloat('1.' + '9'.repeat(minLength)) : 0.0;
     const strValue = minLength > 0 ? 'a'.repeat(minLength) : "abcdefg";
-    const binValue = minLength > 0 ? '\x80'.repeat(minLength / 2) : "\x80\x81\x82";
+    const binValue = minLength > 0 ? '\x80'.repeat(Math.ceil(minLength / 2)) : "\x80\x81\x82";
     const pattern = option && option.startsWith('%') ? option.slice(1) : undefined;
     // w,x,y,z for integer and number
     let w, y;

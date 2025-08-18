@@ -8,7 +8,6 @@ import { getFieldError, isFieldValidating } from 'reducers/validatefield';
 import { timeZones } from 'components/create/consts';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
-import { toggleDefaults } from 'actions/defaults';
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -43,7 +42,7 @@ const CoreType = (props: FieldProps) => {
     const setDefaults = useSelector((state: any) => state.toggleDefaults);
     React.useEffect(() => {
         if (
-            (value === undefined || value === null || value === '') ||
+            (value === undefined || value === null || value === '') &&
             (data === undefined || data === null || data === '')
         ) {
             const defaultValue = getDefaultValue(type, options);

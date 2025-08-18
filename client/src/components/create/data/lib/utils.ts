@@ -144,7 +144,7 @@ const getEnumKeys = (children: any[]): any[] => {
 }
 
 export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
-    let [_idx, name, type, options, _comment, _children] = destructureField(field);
+    let [_idx, _name, type, options, _comment, _children] = destructureField(field);
     let enumKeys: any[] = [];
     if (type === "MapOf") {
         // Check if key type or true type of key type is Enumerated

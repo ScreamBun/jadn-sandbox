@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { getSelectedSchema } from 'reducers/util'
 import { useSelector } from 'react-redux'
 import { AllFieldArray } from '../schema/interface'
@@ -23,6 +23,7 @@ const DataCreator = (props: any) => {
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
+        setJsonValidated(false);
         setGeneratedMessage((prev: any) => {
             const updated = { ...prev };
             if (v === "" || v === undefined || v === null) {
@@ -46,9 +47,11 @@ const DataCreator = (props: any) => {
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
     }
 
+    const [jsonValidated, setJsonValidated] = useState(false);
     const handleValidate = async () => {
         if (!schemaObj || !generatedMessage) {
             sbToastError('ERROR: Validation failed - Please select schema and enter data');
+            setJsonValidated(false);
             return;
         }
         try {
@@ -59,14 +62,18 @@ const DataCreator = (props: any) => {
             if (action.type === '@@validate/VALIDATE_MESSAGE_SUCCESS') {
                 if (action.payload?.valid_bool) {
                     sbToastSuccess(action.payload.valid_msg);
+                    setJsonValidated(true);
                 } else {
                     sbToastError(action.payload.valid_msg);
+                    setJsonValidated(false);
                 }
             } else if (action.type === '@@validate/VALIDATE_FAILURE') {
                 sbToastError(action.payload?.valid_msg || 'Validation failed');
+                setJsonValidated(false);
             }
         } catch (err: any) {
             sbToastError(err.message || 'Validation error');
+            setJsonValidated(false);
         }
     };
 
@@ -82,8 +89,8 @@ const DataCreator = (props: any) => {
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: true });
     }
 
-    const [dataFullScreen, setDataFullScreen] = React.useState(false);
-    const [jsonFullScreen, setJsonFullScreen] = React.useState(false);
+    const [dataFullScreen, setDataFullScreen] = useState(false);
+    const [jsonFullScreen, setJsonFullScreen] = useState(false);
 
     // Decide which fields to display
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
@@ -140,7 +147,8 @@ const DataCreator = (props: any) => {
             </div>}
             <div className={jsonFullScreen ? 'col-md-12' : 'col-md-6'}
                 style={{display: dataFullScreen ? 'none' : 'block'}}>
-                <div className='card'>
+                <div className='card'
+                    style={{border: jsonValidated ? '2px solid green' : '0px'}}>
                     <div className="card-header p-2 d-flex align-items-center">
                         <h5 className="mb-0">JSON Viewer</h5>
                         <div className="ms-auto">
