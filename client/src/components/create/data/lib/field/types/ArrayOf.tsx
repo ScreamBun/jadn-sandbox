@@ -30,6 +30,8 @@ const ArrayOf = (props: FieldProps) => {
     const [numberOfItems, setNumberOfItems] = useState(0);
     const minv = getMinv(options);
     const maxv = getMaxv(options);
+    // Remove { and } from options so they aren't passed to child fields
+    options = options.filter(opt => !opt.startsWith('{') && !opt.startsWith('}'));
 
     const keyName = options.find(opt => opt.startsWith("*"))?.slice(1);
     const [trueTypeVal, trueTypeDef] = getTrueType(schemaObj.types, String(keyName));
@@ -88,7 +90,7 @@ const ArrayOf = (props: FieldProps) => {
         const fieldName = `${keyName}`;
         const entryName = `${key} ${i+1}`;
         const trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
-        
+
         let keyField: AllFieldArray;
         if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
             let keyChildren = trueTypeDef != undefined ? trueTypeDef[4] ? Array.isArray(trueTypeDef[4]) ? trueTypeDef[4] : [] : [] : [];
