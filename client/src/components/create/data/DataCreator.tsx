@@ -15,6 +15,7 @@ import { faExpand, faUndo, faWandSparkles } from '@fortawesome/free-solid-svg-ic
 import { useDispatch } from 'react-redux'
 import { validateMessage } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -45,6 +46,7 @@ const DataCreator = (props: any) => {
         setSelection(e);
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        dispatch(clearFieldValidation());
     }
 
     const [jsonValidated, setJsonValidated] = useState(false);
@@ -82,6 +84,7 @@ const DataCreator = (props: any) => {
         setSelection(null);
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        dispatch(clearFieldValidation());
     }    
 
     const setDefaults = (e: React.MouseEvent<HTMLButtonElement>) => {
