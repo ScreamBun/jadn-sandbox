@@ -13,18 +13,22 @@ const SBInfoBtn = (props: SBInfoProps) => {
     const [showTooltip, setShowTooltip] = useState(false);
     const { theme } = useContext(ThemeContext);
     const themeColors = getSelectTheme(theme);
+    
 
     if (!comment) {
         return null;
     }
+
+    const toggleTooltip = () => {
+      setShowTooltip((prev) => !prev)
+    };
 
     return (
       <div className="position-relative d-inline-block">
         <button 
             type="button" 
             className="btn btn-med"
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
+            onClick = {toggleTooltip}
         >
             <FontAwesomeIcon icon={faInfoCircle} />
         </button>
@@ -46,8 +50,8 @@ const SBInfoBtn = (props: SBInfoProps) => {
               borderColor: themeColors?.primary25
             }}
             role="alert"
+            dangerouslySetInnerHTML={{ __html: comment }}
             >
-              {comment}
             </div>
         )}
       </div>
