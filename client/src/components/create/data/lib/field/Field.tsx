@@ -1,7 +1,9 @@
 import React from 'react';
 import { CoreType, Array, ArrayOf, Record, Map, MapOf, Enumerated, Choice, Derived } from 'components/create/data/lib/field/types/Types';
 import { AllFieldArray, StandardFieldArray, ArrayFieldArray, FieldOfArray } from '../../../schema/interface';
-import { convertToArrayOf, destructureField, getMultiplicity } from '../utils';
+import { useSelector } from 'react-redux';
+import { getSelectedSchema } from 'reducers/util';
+import { caseMapOfEnumKey, destructureField, convertToArrayOf, getMultiplicity } from '../utils';
 
 interface FieldProps {
     field: AllFieldArray;
@@ -13,7 +15,23 @@ interface FieldProps {
 
 const Field = (props: FieldProps) => {
     const { field, fieldChange, children, parent, value } = props;
-    const [_idx, name, type, options, _comment, _children] = destructureField(field);
+    let [_idx, name, type, options, _comment, _children] = destructureField(field);
+    const schemaObj = useSelector(getSelectedSchema);
+
+    // Special Case Check: Type MapOf w/ keytype of Enum
+    const enumKeys = caseMapOfEnumKey(schemaObj, field);
+    if (enumKeys.length > 0) {
+        const valType = options.find(opt => opt.startsWith("*"))?.substring(1);
+        let childrenArray = enumKeys.map((key: string, idx: number) => {
+            let fieldArray = [idx, key, valType, [], ""]; // TODO: handle options and comment?
+            return fieldArray;
+        });
+        // Remove key and val from options
+        options = options.filter(opt => !opt.startsWith("+") && !opt.startsWith("*"));
+        let newField = [name, "Map", options, _comment, childrenArray];
+        return <Map field={newField as ArrayFieldArray} fieldChange={fieldChange} children = {[]} parent={parent} value={value} />;
+    }   
+    
     // Check for multiplicities
     const hasMultiplicity = convertToArrayOf(field, ...getMultiplicity(options));
     if (hasMultiplicity) {

@@ -38,6 +38,7 @@
     "lodash": "^4.17.21",
     "marked": "^9.1.1",
     "plantuml-encoder": "^1.4.0",
+    "randexp": "^0.5.3",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -59,6 +60,7 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
+    "sass": "^1.90.0",
     "uuid": "^9.0.1",
     "vkbeautify": "^0.99.3"
   },
@@ -137,7 +139,6 @@
     "jest": "^29.7.0",
     "min-document": "^2.19.0",
     "mini-css-extract-plugin": "^2.7.6",
-    "node-sass": "^9.0.0",
     "path": "^0.12.7",
     "prettier": "^3.0.3",
     "resolve-url-loader": "^5.0.0",

@@ -44,6 +44,7 @@ const DataGenerator = () => {
         setActiveView('message');
         sbToastSuccess("Schema reset successfully");
         dispatch(setSchema(null));
+        dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
     }
 
     const viewEditor = (e: React.MouseEvent<HTMLButtonElement>) => {

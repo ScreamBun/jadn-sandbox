@@ -1,3 +1,5 @@
+import { defaultValues } from "components/create/consts";
+
 // FUNCTION: Determine if a field is optional based on its options. Optional field has '[0']
 export const isOptional = (options: any[]): boolean => {
     for (const opt of options) {
@@ -65,17 +67,17 @@ export const destructureField = (field: any[]): [number, string, string, string[
 
 //FUNCTION: Get the minv (minimum length) of an ArrayOf, MapOf
 export const getMinv = (opts: any[]): number => {
-    const minvOpt = opts.find(opt => opt.startsWith("{"));
-    return minvOpt ? parseInt(minvOpt.slice(1)) : 0;
+    const minvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("{"));
+    return minvOpt ? parseInt((minvOpt as string).slice(1), 10) : 0;
 }
 
 export const getMaxv = (opts: any[]): number | undefined => {
-    const maxvOpt = opts.find(opt => opt.startsWith("}"));
-    return maxvOpt ? parseInt(maxvOpt.slice(1)) : undefined;
+    const maxvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("}"));
+    return maxvOpt ? parseInt((maxvOpt as string).slice(1), 10) : undefined;
 }
 
 //FUNCTION: Recursively get pointer children
-const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], path: string[]): any[] => {
+const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], path: string[], isID: boolean = false): any[] => {
     let newPath = [...path];
 
     let [_idx, _name, _type, _options, _comment, children] = destructureField(type);
@@ -86,21 +88,22 @@ const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], p
         const [_trueType, trueTypeDef] = getTrueType(schemaObj.types, _type);
         // Don't need to list enum or choice
         if (_trueType === "Enumerated" || _trueType === "Choice") {
-            return [[[...newPath, _name].join('/')]];
+            return [[[...newPath, isID ? String(_idx) : _name].join('/')]];
         }
 
         const trueChildren = trueTypeDef && trueTypeDef[4] ? trueTypeDef[4] : [];
         if (trueChildren.length > 0) {
             for (const child of trueChildren) {
-                pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name])];
+                pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, isID ? String(_idx) : _name])];
             }
             return pointerChildren;
         }
-        return [[[...newPath, _name].join('/')]];
+        return [[[...newPath, isID ? String(_idx) : _name].join('/')]];
     }
 
     for (const child of children) {
-        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name])];
+        const isID = _options.some(opt => String(opt) === '=');
+        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name], isID)];
     }
     return pointerChildren;
 }
@@ -130,6 +133,45 @@ export const getUniqueOrSet = (children: any[], opts: any[]): string => {
         }
     }
     return m;
+}
+
+//FUNCTION: Extract keys from an enumeration
+const getEnumKeys = (children: any[]): any[] => {
+    return children.map((child: any) => {
+        let [_idx, name, _type, _options, _comment, _children] = destructureField(child);
+        return name;
+    });
+}
+
+export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
+    let [_idx, name, type, options, _comment, _children] = destructureField(field);
+    let enumKeys: any[] = [];
+    if (type === "MapOf") {
+        // Check if key type or true type of key type is Enumerated
+        const keyType = options.find(opt => opt.startsWith("+"))?.substring(1);
+        const [trueType, trueTypeDef] = getTrueType(schemaObj.types, keyType ? keyType : "");
+        if (keyType === "Enumerated" || trueType === "Enumerated") {
+            let [_idx, _name, _type, _options, _comment, children] = destructureField(trueTypeDef ? trueTypeDef : []);
+            enumKeys = getEnumKeys(children);
+        }
+    }
+
+    return enumKeys;
+}
+
+//FUNCTION: Get default value. If option has default value, that takes precedence over the type default value.
+export const getDefaultValue = (type: string, options: any[], children: any[] = []): any => {
+    for (const option of options) {
+        const val = defaultValues(option, getMinv(options), children);
+        if (val !== undefined) {
+            return val;
+        }
+    }
+    const val2 = defaultValues(type, getMinv(options), children);
+    if (val2 !== undefined) {
+        return val2;
+    }
+    return undefined;
 }
 
 //FUNCTION: Deal with field multiplicity for primitives

@@ -11,7 +11,7 @@ import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
 import { LANG_JSON } from 'components/utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExpand, faUndo } from '@fortawesome/free-solid-svg-icons'
+import { faExpand, faUndo, faWandSparkles } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch } from 'react-redux'
 import { validateMessage } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -43,6 +43,7 @@ const DataCreator = (props: any) => {
     const handleSelection = (e: Option) => {
         setSelection(e);
         setGeneratedMessage({});
+        dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
     }
 
     const handleValidate = async () => {
@@ -73,7 +74,13 @@ const DataCreator = (props: any) => {
         e.preventDefault();
         setSelection(null);
         setGeneratedMessage({});
+        dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
     }    
+
+    const setDefaults = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        dispatch({ type: 'TOGGLE_DEFAULTS', payload: true });
+    }
 
     const [dataFullScreen, setDataFullScreen] = React.useState(false);
     const [jsonFullScreen, setJsonFullScreen] = React.useState(false);
@@ -82,9 +89,10 @@ const DataCreator = (props: any) => {
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (selection?.value) {
         fieldDefs = types.map((field: AllFieldArray, idx: number) => {
+            const fieldKey = `${selection?.value || 'root'}-${idx}`;
             return (
                 <Field
-                    key={idx}
+                    key={fieldKey}
                     field={field}
                     fieldChange={fieldChange}
                 />
@@ -100,6 +108,9 @@ const DataCreator = (props: any) => {
                     <div className = "card-header p-2 d-flex align-items-center">
                         <h5 className = "mb-0">Data Builder</h5>
                         <div className = "ms-auto">
+                            <button className='btn btn-sm btn-primary float-start ms-1' title='Generate Data' onClick={setDefaults}>
+                                <FontAwesomeIcon icon = {faWandSparkles} />
+                            </button>
                             <button type='reset' className='btn btn-sm btn-danger float-end ms-1' title='Reset Builder' onClick={onReset}>
                                 <FontAwesomeIcon icon={faUndo} />
                             </button>

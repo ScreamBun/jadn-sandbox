@@ -8,6 +8,7 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import format, { FormatState } from './format';
 import transform, { TransformState } from './transform';
 import validateField, { ValidateFieldState } from './validatefield';
+import toggleDefaultsReducer from './defaults';
 
 export interface RootState {  // export so store.ts import is valid
   router: Reducer<RouterState<History>, LocationChangeAction<History>>; // MUST BE 'router'
@@ -28,7 +29,8 @@ export default (history: History) => combineReducers({
   Validate: validate,
   Format: format,
   Transform: transform,
-  ValidateField: validateField
+  ValidateField: validateField,
+  toggleDefaults: toggleDefaultsReducer
 });
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
