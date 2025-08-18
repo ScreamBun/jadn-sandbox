@@ -187,7 +187,7 @@ const CoreType = (props: FieldProps) => {
                 <SBInfoBtn comment={_comment} />
                 {isTime || isDateTime || isDate ? <button
                     type="button"
-                    className="btn btm-sm"
+                    className="btn btm-sm p-0 ms-1 me-1"
                     onClick={() => {
                         setDateToggle(!dateToggle);
                         setTimezone(timeZones[0]);

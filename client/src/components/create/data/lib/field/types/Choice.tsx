@@ -114,7 +114,7 @@ const Choice = (props: FieldProps) => {
                     value={selectedValue}
                     isSearchable
                     isClearable
-                    isMediumStyle />
+                    isSmStyle />
             </div>
             {selectedValue ? selectedChild : ""}
         </div>
