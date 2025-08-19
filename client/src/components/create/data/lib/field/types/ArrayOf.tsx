@@ -88,13 +88,14 @@ const ArrayOf = (props: FieldProps) => {
         const fieldName = `${keyName}`;
         const entryName = `${key} ${i+1}`;
         const trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
+        const trueTypeOptions = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? [...options, ...trueTypeDef[2]] : [...options, ...trueTypeDef[3]] : [];
         
         let keyField: AllFieldArray;
         if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
             let keyChildren = trueTypeDef != undefined ? trueTypeDef[4] ? Array.isArray(trueTypeDef[4]) ? trueTypeDef[4] : [] : [] : [];
-            keyField = [fieldName, key, options, trueTypeComment, keyChildren];
+            keyField = [fieldName, key, trueTypeOptions, trueTypeComment, keyChildren];
         } else {
-            keyField = [i, fieldName, key, options, trueTypeComment];
+            keyField = [i, fieldName, key, trueTypeOptions, trueTypeComment];
         }
 
         const keyEntry = keyList.find(entry => entry.name === entryName);
