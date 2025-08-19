@@ -31,8 +31,8 @@ export const timeZones = [
 // Example data for data generator
 import RandExp from "randexp";
 export const defaultValues = (option: string, minLength: number = 0, children: any = []) => {
-    const intValue = minLength > 0 ? parseInt('1'.repeat(minLength), 2) : 0;
-    const floatValue = minLength > 0 ? parseFloat('1.' + '9'.repeat(minLength)) : 0.0;
+    const intValue = minLength > 0 ? parseInt('1'.repeat(minLength), 2) : 1;
+    const floatValue = minLength > 0 ? parseFloat('1.' + '9'.repeat(minLength)) : 1.5;
     const strValue = minLength > 0 ? 'a'.repeat(minLength) : "abcdefg";
     const binValue = minLength > 0 ? '\x80'.repeat(Math.ceil(minLength / 2)) : "\x80\x81\x82";
     const pattern = option && option.startsWith('%') ? option.slice(1) : undefined;

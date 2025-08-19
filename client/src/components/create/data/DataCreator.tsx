@@ -115,7 +115,16 @@ const DataCreator = (props: any) => {
                 style={{display: jsonFullScreen ? 'none' : 'block'}}>
                 <div className='card'>
                     <div className = "card-header p-2 d-flex align-items-center">
-                        <h5 className = "mb-0">Data Builder</h5>
+                        <h5 className = "mb-0 me-1">Data Builder</h5>
+                        <SBSelect id={"command-list"}
+                            data={roots}
+                            onChange={handleSelection}
+                            placeholder={'Select a root type...'}
+                            value={selection}
+                            isSmStyle
+                            isClearable
+                            customNoOptionMsg={"Schema is missing a root type"}
+                        />
                         <div className = "ms-auto">
                             <button className='btn btn-sm btn-primary float-start ms-1' title='Generate Data' onClick={setDefaults}>
                                 <FontAwesomeIcon icon = {faWandSparkles} />
@@ -127,18 +136,7 @@ const DataCreator = (props: any) => {
                                 <FontAwesomeIcon icon={faExpand} />
                             </button>
                         </div>
-                    </div>
-                    <div className = "card-header p-2 d-flex">
-                        <SBSelect id={"command-list"}
-                            data={roots}
-                            onChange={handleSelection}
-                            placeholder={'Select a root type...'}
-                            value={selection}
-                            isSmStyle
-                            isClearable
-                            customNoOptionMsg={"Schema is missing a root type"}
-                        />
-                    </div>                      
+                    </div>                 
                     <div className='card-body p-2'>
                         <div id = "data-builder" className = 'card-body-page' >
                             {fieldDefs}
