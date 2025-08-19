@@ -55,6 +55,9 @@ const Map = (props: FieldProps) => {
         if (!toggle) return null;
         
         return children.map((child, idx) => {
+            let [_childIdx, childName, _childType, _childOptions, _childComment] = destructureField(child);
+            const key = isID ? (nameToIdMap[childName] ?? childName) : childName;
+            let childValue = data?.[key];
             return (
                 <div className="ms-3 mt-2" key={idx}>
                     <Field
@@ -62,6 +65,7 @@ const Map = (props: FieldProps) => {
                         field={child}
                         fieldChange={handleChange}
                         parent={name}
+                        value={childValue}
                     />
                 </div>
             );
