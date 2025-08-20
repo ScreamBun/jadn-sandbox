@@ -36,6 +36,7 @@ const Array = (props: FieldProps) => {
         if (!toggle) return null;
         
         return children.map((child, idx) => {
+            const childValue = data?.[idx];
             return (
                 <div className="ms-3 mt-2" key={idx}>
                     <Field
@@ -43,6 +44,7 @@ const Array = (props: FieldProps) => {
                         field={child}
                         fieldChange={handleChange}
                         parent={name}
+                        value={childValue}
                     />
                 </div>
             );

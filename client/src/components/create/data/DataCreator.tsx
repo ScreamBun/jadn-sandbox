@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { getSelectedSchema } from 'reducers/util'
 import { useSelector } from 'react-redux'
 import { AllFieldArray } from '../schema/interface'
@@ -11,10 +11,11 @@ import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
 import { LANG_JSON } from 'components/utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExpand, faUndo, faWandSparkles } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExpand, faUndo, faWandSparkles, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch } from 'react-redux'
 import { validateMessage } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
+import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const DataCreator = (props: any) => {
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
+        setJsonValidated(false);
         setGeneratedMessage((prev: any) => {
             const updated = { ...prev };
             if (v === "" || v === undefined || v === null) {
@@ -46,9 +48,11 @@ const DataCreator = (props: any) => {
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
     }
 
+    const [jsonValidated, setJsonValidated] = useState(false);
     const handleValidate = async () => {
         if (!schemaObj || !generatedMessage) {
             sbToastError('ERROR: Validation failed - Please select schema and enter data');
+            setJsonValidated(false);
             return;
         }
         try {
@@ -59,14 +63,18 @@ const DataCreator = (props: any) => {
             if (action.type === '@@validate/VALIDATE_MESSAGE_SUCCESS') {
                 if (action.payload?.valid_bool) {
                     sbToastSuccess(action.payload.valid_msg);
+                    setJsonValidated(true);
                 } else {
                     sbToastError(action.payload.valid_msg);
+                    setJsonValidated(false);
                 }
             } else if (action.type === '@@validate/VALIDATE_FAILURE') {
                 sbToastError(action.payload?.valid_msg || 'Validation failed');
+                setJsonValidated(false);
             }
         } catch (err: any) {
             sbToastError(err.message || 'Validation error');
+            setJsonValidated(false);
         }
     };
 
@@ -75,6 +83,7 @@ const DataCreator = (props: any) => {
         setSelection(null);
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        dispatch(clearFieldValidation());
     }    
 
     const setDefaults = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -82,8 +91,8 @@ const DataCreator = (props: any) => {
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: true });
     }
 
-    const [dataFullScreen, setDataFullScreen] = React.useState(false);
-    const [jsonFullScreen, setJsonFullScreen] = React.useState(false);
+    const [dataFullScreen, setDataFullScreen] = useState(false);
+    const [jsonFullScreen, setJsonFullScreen] = useState(false);
 
     // Decide which fields to display
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
@@ -106,20 +115,7 @@ const DataCreator = (props: any) => {
                 style={{display: jsonFullScreen ? 'none' : 'block'}}>
                 <div className='card'>
                     <div className = "card-header p-2 d-flex align-items-center">
-                        <h5 className = "mb-0">Data Builder</h5>
-                        <div className = "ms-auto">
-                            <button className='btn btn-sm btn-primary float-start ms-1' title='Generate Data' onClick={setDefaults}>
-                                <FontAwesomeIcon icon = {faWandSparkles} />
-                            </button>
-                            <button type='reset' className='btn btn-sm btn-danger float-end ms-1' title='Reset Builder' onClick={onReset}>
-                                <FontAwesomeIcon icon={faUndo} />
-                            </button>
-                            <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen Data' onClick={() => setDataFullScreen(!dataFullScreen)}>
-                                <FontAwesomeIcon icon={faExpand} />
-                            </button>
-                        </div>
-                    </div>
-                    <div className = "card-header p-2 d-flex">
+                        <h5 className = "mb-0 me-1">Data Builder</h5>
                         <SBSelect id={"command-list"}
                             data={roots}
                             onChange={handleSelection}
@@ -129,7 +125,18 @@ const DataCreator = (props: any) => {
                             isClearable
                             customNoOptionMsg={"Schema is missing a root type"}
                         />
-                    </div>                      
+                        <div className = "ms-auto">
+                            <button className='btn btn-sm btn-primary float-start ms-1' title='Generate Data' onClick={setDefaults}>
+                                <FontAwesomeIcon icon = {faWandSparkles} />
+                            </button>
+                            <button type='reset' className='btn btn-sm btn-danger-primary float-end ms-1' title='Reset Builder' onClick={onReset}>
+                                <FontAwesomeIcon icon={faUndo} />
+                            </button>
+                            <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen Data' onClick={() => setDataFullScreen(!dataFullScreen)}>
+                                <FontAwesomeIcon icon={faExpand} />
+                            </button>
+                        </div>
+                    </div>                 
                     <div className='card-body p-2'>
                         <div id = "data-builder" className = 'card-body-page' >
                             {fieldDefs}
@@ -152,7 +159,15 @@ const DataCreator = (props: any) => {
                                 onClick={handleValidate}
                                 disabled = {selection && generatedMessage? false:true}
                             >
-                                Validate
+                                Valid
+                                {jsonValidated ? (
+                                    <span className="badge rounded-pill text-bg-success ms-1">
+                                        <FontAwesomeIcon icon={faCheck} />
+                                    </span>) : (
+                                    <span className="badge rounded-pill text-bg-danger ms-1">
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </span>)
+                                }
                             </button>
                             <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                             <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />

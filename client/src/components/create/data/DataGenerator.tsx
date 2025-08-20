@@ -6,8 +6,9 @@ import SchemaLoader from 'components/common/SchemaLoader'
 import { getPageTitle } from 'reducers/util'
 import { info, setSchema } from 'actions/util'
 import { dismissAllToast } from 'components/common/SBToast'
-import { sbToastSuccess, sbToastError } from 'components/common/SBToast'
+import { sbToastSuccess } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
+import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 
 const DataGenerator = () => {
     const dispatch = useDispatch()
@@ -32,6 +33,7 @@ const DataGenerator = () => {
         setSelection(null);
         setGeneratedMessage({});
         dispatch(setSchema(loadedSchema));
+        dispatch(clearFieldValidation());
     }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -45,6 +47,7 @@ const DataGenerator = () => {
         sbToastSuccess("Schema reset successfully");
         dispatch(setSchema(null));
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        dispatch(clearFieldValidation());
     }
 
     const viewEditor = (e: React.MouseEvent<HTMLButtonElement>) => {
