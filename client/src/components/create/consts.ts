@@ -34,7 +34,7 @@ export const defaultValues = (option: string, minLength: number = 0, children: a
     const intValue = minLength > 0 ? parseInt('1'.repeat(minLength), 2) : 1;
     const floatValue = minLength > 0 ? parseFloat('1.' + '9'.repeat(minLength)) : 1.5;
     const strValue = minLength > 0 ? 'a'.repeat(minLength) : "abcdefg";
-    const binValue = minLength > 0 ? '\x80'.repeat(Math.ceil(minLength / 2)) : "\x80\x81\x82";
+    const binValue = minLength > 0 ? '\x65'.repeat(minLength) : "\x65\x66\x67";
     const pattern = option && option.startsWith('%') ? option.slice(1) : undefined;
     // w,x,y,z for integer and number
     let w, y;
@@ -67,7 +67,7 @@ export const defaultValues = (option: string, minLength: number = 0, children: a
         "/ipv4": "127.0.0.1",
         "/idn-hostname": "xn--bcher-kva.example.com",
         "/hostname": "example.com",
-        "/idn-email": "test@ツ.life",
+        "/idn-email": "test@test.life",
         "/email": "jarvis@stark.com",
         "/regex": "A(BB){1,4}",
         "/NOTATION": "http://www.test.com",
