@@ -212,9 +212,9 @@ const MapOf = (props: FieldProps) => {
         <>
             <div className='form-group'>
                 <div className="d-flex align-items-center w-100"
-                    style={{ borderColor: numberOfItems < minv ? 'red' : undefined, 
-                        borderWidth: numberOfItems < minv ? '1px' : undefined, 
-                        borderStyle: numberOfItems < minv ? 'dashed' : undefined }}>
+                    style={{ borderColor: numberOfItems < minv && !_optional ? 'red' : undefined,
+                        borderWidth: numberOfItems < minv && !_optional ? '1px' : undefined,
+                        borderStyle: numberOfItems < minv && !_optional ? 'dashed' : undefined }}>
                     <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} />
