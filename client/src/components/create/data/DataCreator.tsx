@@ -86,9 +86,15 @@ const DataCreator = (props: any) => {
         dispatch(clearFieldValidation());
     }    
 
+    const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
+
     const setDefaults = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        dispatch({ type: 'TOGGLE_DEFAULTS', payload: true });
+        if (toggleDefaults) {
+            dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        } else {
+            dispatch({ type: 'TOGGLE_DEFAULTS', payload: true });
+        }
     }
 
     const [dataFullScreen, setDataFullScreen] = useState(false);
@@ -126,7 +132,7 @@ const DataCreator = (props: any) => {
                             customNoOptionMsg={"Schema is missing a root type"}
                         />
                         <div className = "ms-auto">
-                            <button className='btn btn-sm btn-primary float-start ms-1' title='Generate Data' onClick={setDefaults}>
+                            <button className={`btn btn-sm ${toggleDefaults ? 'btn-warning' : 'btn-primary'} float-start ms-1`} title='Generate Data' onClick={setDefaults}>
                                 <FontAwesomeIcon icon = {faWandSparkles} />
                             </button>
                             <button type='reset' className='btn btn-sm btn-danger-primary float-end ms-1' title='Reset Builder' onClick={onReset}>

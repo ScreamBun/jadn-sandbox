@@ -312,6 +312,8 @@ a,
     $primary: #375a7f;
     $secondary: #383a40;
     $danger: #dc3545;
+    $success: #28a745;
+    $warning: #ffc107;
 
     .sb-outline {
         .highlight-color {
@@ -335,6 +337,14 @@ a,
         background-color: #{$danger} !important;
     }
 
+    [class*="success"]:not(.btn-outline-success) {
+        background-color: #{$success} !important;
+    }
+
+    [class*="warning"]:not(.btn-outline-warning) {
+        background-color: #{$warning} !important;
+    }
+
     .btn-outline-primary,
     .btn-primary {
         border: $primary;
@@ -342,6 +352,14 @@ a,
 
     .btn-danger-primary {
         border: $danger;
+    }
+
+    .btn-success {
+        border: $success;
+    }
+
+    .btn-warning {
+        border: $warning;
     }
 
 }
