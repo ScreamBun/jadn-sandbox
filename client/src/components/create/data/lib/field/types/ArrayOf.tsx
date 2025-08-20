@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faX } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, getMaxv, getMinv, getTrueType, getUniqueOrSet, isOptional } from "../../utils";
 import { useSelector } from "react-redux";
@@ -105,12 +105,12 @@ const ArrayOf = (props: FieldProps) => {
                 <div className="d-flex align-items-start" style={{ gap: '0.25rem' }}>
                     <button
                         type="button"
-                        className="btn btn-sm btn-danger me-1"
+                        className="border-0 px-2 py-1 btn btn-sm rounded-pill me-1 mt-1"
                         title="Remove Field"
                         onClick={() => removeCard(i, entryName)}
                         disabled = {numberOfItems <= minv}
                     >
-                        <FontAwesomeIcon icon={faX} size="sm"/>
+                        <FontAwesomeIcon icon={faCircleXmark} size="lg"/>
                     </button>
                     <div style={{ flex: '0 1 100%' }}>
                         <Field
