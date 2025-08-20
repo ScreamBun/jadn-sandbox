@@ -143,9 +143,8 @@ const CoreType = (props: FieldProps) => {
                             if (raw === '') { fieldChange(name, ''); dispatch(clearFieldValidation(name)); return; }
                             const num = parseFloat(raw);
                             if (isNaN(num)) { fieldChange(name, ''); dispatch(clearFieldValidation(name)); return; }
-                            const newNum = num % 1 === 0 ? num.toFixed(1) : num; // If whole number, dont change to Integer
-                            fieldChange(name, newNum);
-                            handleBlur(newNum, type);
+                            fieldChange(name, num);
+                            handleBlur(num, type);
                         }}
                         className="form-control-medium ms-1"
                         style={{ borderColor: errMsg === "" ? "" : 'red' }}
