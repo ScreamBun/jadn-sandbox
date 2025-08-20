@@ -27,14 +27,14 @@ const SBInfoBtn = (props: SBInfoProps) => {
       <div className="position-relative d-inline-block">
         <button 
             type="button" 
-            className="btn btn-med"
+            className="btn btn-sm"
             onClick = {toggleTooltip}
         >
-            <FontAwesomeIcon icon={faInfoCircle} />
+            <FontAwesomeIcon icon={faInfoCircle}/>
         </button>
         {showTooltip && (
             <div 
-            className={`alert p-2 position-absolute start-100 top-0 ms-2 border-2 ${
+            className={`alert p-0 ms-1 me-1 position-absolute start-100 top-0 border-2 ${
               theme === 'dark' 
               ? 'alert-secondary border-secondary text-white' 
               : 'alert-info border-info text-dark'
