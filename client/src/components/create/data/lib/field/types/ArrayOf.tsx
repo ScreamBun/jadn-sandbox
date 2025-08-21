@@ -92,7 +92,7 @@ const ArrayOf = (props: FieldProps) => {
         const trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
 
         // Add true options
-        const trueOptions = typeof trueTypeDef[0] === "string" ? trueTypeDef[2] : trueTypeDef[3];
+        const trueOptions = trueTypeDef ? (typeof trueTypeDef[0] === "string" ? trueTypeDef[2] : trueTypeDef[3]) : [];
         options = [...options, ...trueOptions];
 
         let keyField: AllFieldArray;
