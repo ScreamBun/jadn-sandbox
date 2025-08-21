@@ -16,10 +16,52 @@ interface FieldProps {
 const Choice = (props: FieldProps) => {
     const { field, fieldChange, parent, value } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
-    const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
-    const [selectedChild, setSelectedChild] = useState<JSX.Element>();
-    const [childData, setChildData] = useState<any>({});
 
+    const selectedLabel = value ? Object.keys(value)?.[0] : '';
+    const selectedVal = value ? { value: Object.values(value)?.[0] } : {};
+    const [selectedValue, setSelectedValue] = useState<Option | string>(selectedLabel != '' ? { 'label': selectedLabel, 'value': selectedLabel } : '');
+
+    const updateChildData = (k: string, v: any) => {
+        setChildData((prev: Record<string, any>) => {
+            let updated: Record<string, any> = { ...prev };
+            const key = isID ? (nameToIdMap[k] ?? k) : k;
+
+            if (v === "" || v === undefined || v === null) {
+                delete updated[key];
+            } else {
+                updated[key] = v;
+            }
+
+            if (Object.keys(updated).length === 0) {
+                fieldChange(name, '');
+                return {};
+            }
+
+            fieldChange(name, updated);
+            return updated;
+        });
+    };
+
+    const getChild = (field_name: string) => { 
+        const child = children.find((child: AllFieldArray) => child[1] === field_name || child[0] === field_name);
+        if (!child) return undefined;
+        return <div className="ms-3 mt-2">
+            <Field 
+                key={field_name} 
+                field={child}
+                fieldChange={updateChildData}
+                parent={name}
+                value={selectedVal.value} />
+            </div>
+    }
+
+
+    const [selectedChild, setSelectedChild] = useState<JSX.Element | undefined>(
+        selectedLabel ? getChild(selectedLabel) : undefined
+    );
+    const [childData, setChildData] = useState<any>(
+        value && typeof value === 'object' ? value : {}
+    );
     const isID = options.some(opt => String(opt) === '=');
 
     // If isID, map child field name to child ID
@@ -55,33 +97,6 @@ const Choice = (props: FieldProps) => {
         }
     }
 
-    const updateChildData = (k: string, v: any) => {
-        setChildData((prev: Record<string, any>) => {
-            let updated: Record<string, any> = { ...prev };
-            const key = isID ? (nameToIdMap[k] ?? k) : k;
-
-            if (v === "" || v === undefined || v === null) {
-                delete updated[key];
-            } else {
-                updated[key] = v;
-            }
-
-            if (Object.keys(updated).length === 0) {
-                fieldChange(name, '');
-                return {};
-            }
-
-            fieldChange(name, updated);
-            return updated;
-        });
-    };
-
-    const getChild = (field_name: string) => { 
-        const child = children.find((child: AllFieldArray) => child[1] === field_name || child[0] === field_name);
-        if (!child) return undefined;
-        return <div className="ms-3 mt-2"><Field key={field_name} field={child} fieldChange={updateChildData} parent={name} /></div>
-    }
-
     const getOptions = children.map((child: AllFieldArray) => {
         return (typeof child[0] === 'string') ? { label: child[0], value: child[0] } : { label: child[1], value: child[1] };
     });
@@ -114,7 +129,7 @@ const Choice = (props: FieldProps) => {
                     value={selectedValue}
                     isSearchable
                     isClearable
-                    isMediumStyle />
+                    isSmStyle />
             </div>
             {selectedValue ? selectedChild : ""}
         </div>

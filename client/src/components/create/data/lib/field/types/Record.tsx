@@ -37,6 +37,8 @@ const Record = (props: FieldProps) => {
         if (!toggle) return null;
         
         return children.map((child, idx) => {
+            let [_childIdx, childName, _childType, _childOptions, _childComment] = destructureField(child);
+            let childValue = data?.[childName];
             return (
                 <div key={idx}>
                     <Field
@@ -44,6 +46,7 @@ const Record = (props: FieldProps) => {
                         field={child}
                         fieldChange={handleChange}
                         parent={name}
+                        value={childValue}
                     />
                 </div>
             );

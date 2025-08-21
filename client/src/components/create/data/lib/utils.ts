@@ -102,25 +102,23 @@ const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], p
     }
 
     for (const child of children) {
-        const isID = _options.some(opt => String(opt) === '=');
-        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name], isID)];
+        const hasID = isID === true ? isID : _options.some(opt => String(opt) === '=');
+        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, child, [], [...newPath, _name], hasID)];
     }
     return pointerChildren;
 }
 
-export const getPointerChildren = (schemaObj: any, pointer: string, children: any[]): any[] => {
+export const getPointerChildren = (schemaObj: any, pointer: string, children: any[], isID: boolean = false): any[] => {
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === pointer) : [];
     let pointerChildren: any[] = [];
     for (const type of types) {
-        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, type, [], [])];
+        pointerChildren = [...pointerChildren, ...addPointerChildren(schemaObj, type, [], [], isID)];
     }
     let childrenOpts = [...children, ...pointerChildren];   
     return childrenOpts.map((child: any) => {
         return [0, ...child];
     });
 }
-
-
 
 //FUNCTION: ArrayOf unique & set check
 export const getUniqueOrSet = (children: any[], opts: any[]): string => {
@@ -136,23 +134,33 @@ export const getUniqueOrSet = (children: any[], opts: any[]): string => {
 }
 
 //FUNCTION: Extract keys from an enumeration
-const getEnumKeys = (children: any[]): any[] => {
+const getEnumKeys = (children: any[], isID: boolean = false): any[] => {
     return children.map((child: any) => {
         let [_idx, name, _type, _options, _comment, _children] = destructureField(child);
-        return name;
+        return isID ? _idx : name;
     });
 }
 
 export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
-    let [_idx, name, type, options, _comment, _children] = destructureField(field);
+    let [_idx, _name, type, options, _comment, _children] = destructureField(field);
     let enumKeys: any[] = [];
     if (type === "MapOf") {
         // Check if key type or true type of key type is Enumerated
         const keyType = options.find(opt => opt.startsWith("+"))?.substring(1);
         const [trueType, trueTypeDef] = getTrueType(schemaObj.types, keyType ? keyType : "");
         if (keyType === "Enumerated" || trueType === "Enumerated") {
-            let [_idx, _name, _type, _options, _comment, children] = destructureField(trueTypeDef ? trueTypeDef : []);
-            enumKeys = getEnumKeys(children);
+            let [_idx, _trueName, _type, _options, _comment, children] = destructureField(trueTypeDef ? trueTypeDef : []);
+            const isID = _options.some(opt => opt.startsWith("=")); // Check if enum option has ID
+            enumKeys = getEnumKeys(children, isID);
+
+            // Check if enum is pointer
+            const hasPointer = _options.find(opt => opt.startsWith(">"))?.slice(1);
+            if (enumKeys.length === 0 && hasPointer) {
+                enumKeys = getPointerChildren(schemaObj, hasPointer, children, isID).map((child: any) => {
+                    let [_idx, name, _type, _options, _comment, _children] = destructureField(child);
+                    return name;
+                });
+            }
         }
     }
 

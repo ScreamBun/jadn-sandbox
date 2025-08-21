@@ -8,7 +8,8 @@ import { getFieldError, isFieldValidating } from 'reducers/validatefield';
 import { timeZones } from 'components/create/consts';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
-import { toggleDefaults } from 'actions/defaults';
+import { Buffer } from 'buffer';
+
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -43,7 +44,7 @@ const CoreType = (props: FieldProps) => {
     const setDefaults = useSelector((state: any) => state.toggleDefaults);
     React.useEffect(() => {
         if (
-            (value === undefined || value === null || value === '') ||
+            (value === undefined || value === null || value === '') &&
             (data === undefined || data === null || data === '')
         ) {
             const defaultValue = getDefaultValue(type, options);
@@ -90,6 +91,14 @@ const CoreType = (props: FieldProps) => {
             </div>
         );
     } else if (type == "Binary") {
+        const hexData = Buffer.from(data || '', 'utf8').toString('hex');
+        const ascii = Buffer.from(data || '', 'utf8').toString('ascii');
+        const base64 = Buffer.from(data || '', 'utf8').toString('base64');
+        if (_comment === "") {
+            if (data) _comment += `Hex: ${hexData}<br>ASCII: ${ascii}<br>Base64: ${base64}`;
+        } else {
+            if (data) _comment += `<br>Hex: ${hexData}<br>ASCII: ${ascii}<br>Base64: ${base64}`;
+        }
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-between'>
@@ -188,7 +197,7 @@ const CoreType = (props: FieldProps) => {
                 <SBInfoBtn comment={_comment} />
                 {isTime || isDateTime || isDate ? <button
                     type="button"
-                    className="btn btm-sm"
+                    className="btn btm-sm p-0 ms-1 me-1"
                     onClick={() => {
                         setDateToggle(!dateToggle);
                         setTimezone(timeZones[0]);
@@ -221,7 +230,7 @@ const CoreType = (props: FieldProps) => {
                         className="form-control-medium ms-2"
                         value={timezone}
                         onChange={e => setTimezone(e.target.value)}
-                        onBlur={e => {
+                        onBlur={_e => {
                             if (data) {
                                 let val = data.replace(/([+-]\d{2}:\d{2})$/, '') + timezone;
                                 fieldChange(name, val);

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinusSquare, faPlus, faPlusSquare, faX } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBInfoBtn from "components/common/SBInfoBtn";
@@ -185,12 +185,12 @@ const MapOf = (props: FieldProps) => {
             <div className="d-flex align-items-start" style={{ gap: '0.25rem' }}>
                 <button
                     type="button"
-                    className="btn btn-sm btn-danger me-1 mt-1"
+                    className="border-0 px-2 py-1 btn btn-sm rounded-pill me-1 mt-1"
                     title="Remove Field"
                     onClick={() => removeCard(id, keyEntry?.name ?? "", valueEntry?.name ?? "")}
                     disabled = {numberOfItems <= minv}
                 >
-                    <FontAwesomeIcon icon={faX} size = "sm" />
+                    <FontAwesomeIcon icon={faCircleXmark} size = "lg" />
                 </button>
                 <div style={{ flex: '0 1 100%' }}>
                     <div className="d-flex align-items-center w-100">
@@ -212,9 +212,9 @@ const MapOf = (props: FieldProps) => {
         <>
             <div className='form-group'>
                 <div className="d-flex align-items-center w-100"
-                    style={{ borderColor: numberOfItems < minv ? 'red' : undefined, 
-                        borderWidth: numberOfItems < minv ? '1px' : undefined, 
-                        borderStyle: numberOfItems < minv ? 'dashed' : undefined }}>
+                    style={{ borderColor: numberOfItems < minv && !_optional ? 'red' : undefined,
+                        borderWidth: numberOfItems < minv && !_optional ? '1px' : undefined,
+                        borderStyle: numberOfItems < minv && !_optional ? 'dashed' : undefined }}>
                     <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} />
