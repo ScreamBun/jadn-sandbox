@@ -46,7 +46,11 @@ const Map = (props: FieldProps) => {
             } else {
                 updated[key] = childValue;
             }
-            fieldChange(name, updated);
+            if (Object.keys(updated).length === 0) {
+                fieldChange(name, "");
+            } else {    
+                fieldChange(name, updated);
+            }
             return updated;
         });
     };

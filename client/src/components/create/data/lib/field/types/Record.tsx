@@ -28,7 +28,11 @@ const Record = (props: FieldProps) => {
                 updated[childKey] = childValue;
             }
             // Update the overarching generatedMessage under this array field's key (name)
-            fieldChange(name, updated);
+            if (Object.keys(updated).length === 0) {
+                fieldChange(name, "");
+            } else {    
+                fieldChange(name, updated);
+            }
             return updated;
         });
     };
