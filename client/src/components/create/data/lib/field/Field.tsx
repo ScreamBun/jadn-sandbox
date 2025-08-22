@@ -23,7 +23,7 @@ const Field = (props: FieldProps) => {
     if (enumKeys.length > 0) {
         const valType = options.find(opt => opt.startsWith("*"))?.substring(1);
         let childrenArray = enumKeys.map((key: string, idx: number) => {
-            let fieldArray = [idx, key, valType, [], ""]; // TODO: handle options and comment?
+            let fieldArray = [idx, key, valType, ["[0"], ""]; // TODO: handle options and comment?
             return fieldArray;
         });
         // Remove key and val from options

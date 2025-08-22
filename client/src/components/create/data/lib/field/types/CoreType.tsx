@@ -117,7 +117,7 @@ const CoreType = (props: FieldProps) => {
                             handleBlur(e.target.value, type);
                         }}
                         className="form-control-medium ms-1"
-                        style={{ borderColor: errMsg === "" ? "" : 'red' }}
+                        style={{ borderColor: errMsg === "" ? "" : 'red', minWidth: "20rem" }}
                     />
                 </div>
                 {commonFooter}
@@ -147,7 +147,7 @@ const CoreType = (props: FieldProps) => {
                             handleBlur(num, type);
                         }}
                         className="form-control-medium ms-1"
-                        style={{ borderColor: errMsg === "" ? "" : 'red' }}
+                        style={{ borderColor: errMsg === "" ? "" : 'red', minWidth: "20rem" }}
                     />
                 </div>
                 {commonFooter}
@@ -177,7 +177,7 @@ const CoreType = (props: FieldProps) => {
                             handleBlur(num, type);
                         }}
                         className="form-control-medium ms-1"
-                        style={{ borderColor: errMsg === "" ? "" : 'red' }}
+                        style={{ borderColor: errMsg === "" ? "" : 'red', minWidth: "20rem" }}
                     />
                 </div>
                 {commonFooter}
@@ -223,7 +223,7 @@ const CoreType = (props: FieldProps) => {
                         handleBlur(val, 'String');
                     }}
                     className="form-control-medium ms-1"
-                    style={{ borderColor: errMsg === "" ? "" : 'red' }}
+                    style={{ borderColor: errMsg === "" ? "" : 'red', minWidth: "20rem" }}
                 />
                 {isDateTime && dateToggle && (
                     <select
