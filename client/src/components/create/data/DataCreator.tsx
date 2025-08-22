@@ -110,6 +110,7 @@ const DataCreator = (props: any) => {
                     key={fieldKey}
                     field={field}
                     fieldChange={fieldChange}
+                    toClear={false}
                 />
             );
         });

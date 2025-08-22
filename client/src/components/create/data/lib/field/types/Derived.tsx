@@ -11,10 +11,11 @@ interface FieldProps {
     children: JSX.Element | JSX.Element[];
     parent?: string;
     value?: any;
+    toClear: boolean;
 }
 
 const Derived = (props: FieldProps) => {
-    const { field, fieldChange, parent, value } = props;
+    const { field, fieldChange, parent, value, toClear } = props;
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
 
     const schemaObj = useSelector(getSelectedSchema);
@@ -32,7 +33,7 @@ const Derived = (props: FieldProps) => {
     } else {
         newField = [_idx, name, trueTypeVal, newOpts, _comment];
     }
-    const card = <Field field={newField as AllFieldArray} fieldChange={fieldChange} parent={parent} value={value} />
+    const card = <Field field={newField as AllFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />
 
     return (
         <div>

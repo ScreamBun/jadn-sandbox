@@ -12,10 +12,11 @@ interface FieldProps {
     children?: EnumeratedFieldArray | EnumeratedFieldArray[];
     parent?: string;
     value?: any;
+    toClear: boolean;
 }
 
 const Enumerated = (props: FieldProps) => {
-    const { field, fieldChange, parent, value } = props;
+    const { field, fieldChange, parent, value, toClear } = props;
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
 
@@ -71,6 +72,13 @@ const Enumerated = (props: FieldProps) => {
             }
         }
     }, [setDefaults]);
+
+    React.useEffect(() => {
+        if (toClear) {
+            setSelectedValue('');
+            fieldChange(name, '');
+        }
+    }, [toClear]);
 
     return (
 

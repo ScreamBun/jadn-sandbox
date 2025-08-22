@@ -11,10 +11,11 @@ interface FieldProps {
     children?: JSX.Element | JSX.Element[];
     parent?: string;
     value?: any;
+    toClear: boolean;
 }
 
 const Field = (props: FieldProps) => {
-    const { field, fieldChange, children, parent, value } = props;
+    const { field, fieldChange, children, parent, value, toClear } = props;
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
     const schemaObj = useSelector(getSelectedSchema);
 
@@ -34,31 +35,31 @@ const Field = (props: FieldProps) => {
 
     switch (type) {
         case 'Boolean':
-            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} />;
+            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
         case 'Binary':
-            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} />;
+            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
         case 'String':
-            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} />;
+            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear}  />;
         case 'Number':
-            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} />;
+            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
         case 'Integer':
-            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} />;
+            return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
         case 'Array':
-            return <Array field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} />;
+            return <Array field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
         case 'ArrayOf':
-            return <ArrayOf field={field as unknown as FieldOfArray} fieldChange={fieldChange} children={[]} parent={parent} value={value} />;
+            return <ArrayOf field={field as unknown as FieldOfArray} fieldChange={fieldChange} children={[]} parent={parent} value={value} toClear={toClear} />;
         case 'Record':
-            return <Record field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} />;
+            return <Record field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
         case 'Map':
-            return <Map field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} />;
+            return <Map field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
         case 'MapOf':
-            return <MapOf field={field as unknown as FieldOfArray} fieldChange={fieldChange} children={[]} parent={parent} value={value} />;
+            return <MapOf field={field as unknown as FieldOfArray} fieldChange={fieldChange} children={[]} parent={parent} value={value} toClear={toClear} />;
         case 'Enumerated':
-            return <Enumerated field={field as ArrayFieldArray} fieldChange={fieldChange} parent={parent} value={value} />;
+            return <Enumerated field={field as ArrayFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
         case 'Choice':
-            return <Choice field={field as ArrayFieldArray} fieldChange={fieldChange} parent={parent} value={value} />;
+            return <Choice field={field as ArrayFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
         default:
-            return <Derived field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} />;
+            return <Derived field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
     }
 }
 

@@ -1,5 +1,5 @@
 import { FieldOfArray, AllFieldArray } from "components/create/schema/interface";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,6 +8,7 @@ import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, getMaxv, getMinv, getTrueType, getUniqueOrSet, isOptional } from "../../utils";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
+import SBClearDataBtn from "components/common/SBClearDataBtn";
 
 interface FieldProps {
     field: AllFieldArray | FieldOfArray;
@@ -15,10 +16,11 @@ interface FieldProps {
     children: JSX.Element | JSX.Element[];
     parent?: string;
     value?: any;
+    toClear: boolean;
 }
 
 const ArrayOf = (props: FieldProps) => {
-    const { field, fieldChange } = props;
+    const { field, fieldChange, toClear } = props;
 
     let [_idx, name, _type, options, _comment, _children] = destructureField(field);
 
@@ -30,6 +32,12 @@ const ArrayOf = (props: FieldProps) => {
     const [numberOfItems, setNumberOfItems] = useState(0);
     const minv = getMinv(options);
     const maxv = getMaxv(options);
+
+
+    const [clear, setClear] = useState(toClear);
+    useEffect(() => {
+        setClear(toClear);
+    }, [toClear]);
 
     const keyName = options.find(opt => opt.startsWith("*"))?.slice(1);
     const [trueTypeVal, trueTypeDef] = getTrueType(schemaObj.types, String(keyName));
@@ -119,6 +127,7 @@ const ArrayOf = (props: FieldProps) => {
                             parent={String(name)}
                             fieldChange={(n, k) => addKey(entryName, k)}
                             value={keyEntry?.key ?? ""}
+                            toClear={clear}
                         />
                     </div>
                 </div>
@@ -135,6 +144,10 @@ const ArrayOf = (props: FieldProps) => {
                         borderStyle: numberOfItems < minv && !_optional ? 'dashed' : undefined }} >
                     <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={typeof _comment === 'string' ? _comment : undefined} />
+                    <SBClearDataBtn onClick={() => {
+                        setClear(true);
+                        setTimeout(() => setClear(false), 0);
+                    }} />
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} />
                     {<button
                             type="button"

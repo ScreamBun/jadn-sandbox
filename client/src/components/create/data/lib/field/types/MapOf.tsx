@@ -1,5 +1,5 @@
 import { FieldOfArray, ArrayFieldArray, StandardFieldArray, AllFieldArray } from "components/create/schema/interface";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,21 +8,28 @@ import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, getMaxv, getMinv, getTrueType, isOptional } from "../../utils";
+import SBClearDataBtn from "components/common/SBClearDataBtn";
 interface FieldProps {
     field: FieldOfArray | ArrayFieldArray | StandardFieldArray;
     fieldChange: (k:string, v:any) => void;
     children: JSX.Element | JSX.Element[];
     parent?: string;
     value?: any;
+    toClear: boolean;
 }
 
 const MapOf = (props: FieldProps) => {
-    const { field, fieldChange, parent, value } = props;
+    const { field, fieldChange, parent, value, toClear } = props;
     let [_idx, name, _type, options, _comment, _children] = destructureField(field);
 
     const [toggle, setToggle] = useState(true);
     const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
     const schemaObj = useSelector(getSelectedSchema);
+
+    const [clear, setClear] = useState(toClear);
+    useEffect(() => {
+        setClear(toClear);
+    }, [toClear]);
 
     // Keep track of cards
     const [idNumber, setIdNumber] = useState(0);
@@ -199,8 +206,8 @@ const MapOf = (props: FieldProps) => {
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={id} />
                     </div>
                     <div className={`${toggleField[id] == true ? '' : 'collapse'}`} id={`${id}`}>
-                        <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} />
-                        <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} />
+                        <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} toClear={clear} />
+                        <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} toClear={clear} />
                     </div>
                 </div>
             </div>
@@ -217,6 +224,10 @@ const MapOf = (props: FieldProps) => {
                         borderStyle: numberOfItems < minv && !_optional ? 'dashed' : undefined }}>
                     <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBClearDataBtn onClick={() => {
+                            setClear(true);
+                            setTimeout(() => setClear(false), 0);
+                    }} />
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} />
                     {<button
                             type="button"

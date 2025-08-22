@@ -16,16 +16,18 @@ interface FieldProps {
     children?: JSX.Element | JSX.Element[];
     parent?: string;
     value?: any;
+    toClear: boolean;
 }
 
 const CoreType = (props: FieldProps) => {
-    const { field, fieldChange, children, value } = props;
+    const { field, fieldChange, children, value, toClear } = props;
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
 
     const [data, setData] = useState(value);
     const dispatch = useDispatch();
     const errMsg = useSelector((s: any) => getFieldError(s, name));
     const validating = useSelector((s: any) => isFieldValidating(s, name));
+    const [clear, setClear] = useState(toClear);
 
     const _optional = isOptional(options);
 
@@ -44,19 +46,25 @@ const CoreType = (props: FieldProps) => {
     const setDefaults = useSelector((state: any) => state.toggleDefaults);
     React.useEffect(() => {
         if (
-            (value === undefined || value === null || value === '') &&
+            (value === undefined || value === null || value === '') ||
             (data === undefined || data === null || data === '')
         ) {
             const defaultValue = getDefaultValue(type, options);
             if (/*!_optional && */defaultValue !== undefined && setDefaults) {
                 setData(defaultValue);
                 fieldChange(name, defaultValue);
-            } else {
-                setData('');
-                fieldChange(name, '');
             }
         }
-    }, [setDefaults]);
+    }, [setDefaults, fieldChange]);
+
+    React.useEffect(() => {
+        setClear(toClear);
+        if (toClear === true) {
+            setData('');
+            fieldChange(name, '');
+            dispatch(clearFieldValidation(name));
+        }
+    }, [toClear, fieldChange]);
 
     const commonFooter = (
         <>
