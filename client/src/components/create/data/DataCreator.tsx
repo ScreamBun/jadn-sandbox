@@ -16,11 +16,14 @@ import { useDispatch } from 'react-redux'
 import { validateMessage } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
+import SBLoadBuilder from 'components/common/SBLoadBuilder'
+import { destructureField } from './lib/utils'
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
     const { generatedMessage, setGeneratedMessage, selection, setSelection } = props;
+    const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
@@ -46,6 +49,7 @@ const DataCreator = (props: any) => {
         setSelection(e);
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        setLoadedFieldDefs(null);
     }
 
     const [jsonValidated, setJsonValidated] = useState(false);
@@ -84,6 +88,7 @@ const DataCreator = (props: any) => {
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         dispatch(clearFieldValidation());
+        setLoadedFieldDefs(null);
     }    
 
     const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
@@ -132,20 +137,54 @@ const DataCreator = (props: any) => {
                             customNoOptionMsg={"Schema is missing a root type"}
                         />
                         <div className = "ms-auto">
+                            <SBLoadBuilder
+                                customClass={"float-start ms-1"}
+                                onLoad={({root, fields, message}) => 
+                                    {
+                                        // Locate value of fields
+                                        const restoredMsg: any = {};
+                                        fields.forEach((f: any) => {
+                                            if (f && f.field) {
+                                                const [_idx, _name] = destructureField(f.field);
+                                                if (_name && f.value !== undefined && f.value !== null && f.value !== '') {
+                                                    restoredMsg[_name] = f.value;
+                                                }
+                                            }
+                                        });
+
+                                        const built = fields.map((f: any, idx: number) => {
+                                            const [_idx, _name] = destructureField(f.field);
+                                            return (
+                                                <Field
+                                                    key={`saved-${idx}`}
+                                                    field={f.field}
+                                                    fieldChange={fieldChange}
+                                                    parent={f.parent || undefined}
+                                                    value={restoredMsg[_name]}
+                                                />
+                                            );
+                                        });
+                                        setLoadedFieldDefs(built);
+                                        setGeneratedMessage(restoredMsg)
+                                    }}
+                                fieldDefs={loadedFieldDefs ? loadedFieldDefs : fieldDefs}
+                                selection={selection}
+                                generatedMessage={generatedMessage}
+                            />
                             <button className={`btn btn-sm ${toggleDefaults ? 'btn-warning' : 'btn-primary'} float-start ms-1`} title='Generate Data' onClick={setDefaults}>
                                 <FontAwesomeIcon icon = {faWandSparkles} />
                             </button>
+                            <button className='btn btn-sm btn-primary ms-1' title='Full Screen Data' onClick={() => setDataFullScreen(!dataFullScreen)}>
+                                <FontAwesomeIcon icon={faExpand} />
+                            </button>
                             <button type='reset' className='btn btn-sm btn-danger-primary float-end ms-1' title='Reset Builder' onClick={onReset}>
                                 <FontAwesomeIcon icon={faUndo} />
-                            </button>
-                            <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen Data' onClick={() => setDataFullScreen(!dataFullScreen)}>
-                                <FontAwesomeIcon icon={faExpand} />
                             </button>
                         </div>
                     </div>                 
                     <div className='card-body p-2'>
                         <div id = "data-builder" className = 'card-body-page' >
-                            {fieldDefs}
+                            {loadedFieldDefs ? loadedFieldDefs : fieldDefs}
                         </div>
                         <SBScrollToTop divID = "data-builder" />
                     </div>
