@@ -21,6 +21,18 @@
             ],
             "jinja": true,
             "justMyCode": false
+        },
+        {
+            "name": "Client: Chrome (React)",
+            "type": "pwa-chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/client",
+            "sourceMapPathOverrides": {
+                "webpack:///src/*": "${webRoot}/src/*",
+                "webpack:///*": "${webRoot}/*",
+                "/src/*": "${webRoot}/src/*"
+            },
         }
     ]
 }

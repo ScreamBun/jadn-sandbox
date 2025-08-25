@@ -93,6 +93,8 @@ const ArrayOf = (props: FieldProps) => {
 
         // Add true options
         const trueOptions = trueTypeDef ? (typeof trueTypeDef[0] === "string" ? trueTypeDef[2] : trueTypeDef[3]) : [];
+        // Remove parent * from child to prevent mixups
+        options = options.map(opt => opt.startsWith("*") ? opt.slice(1) : opt);
         options = [...options, ...trueOptions];
 
         let keyField: AllFieldArray;
