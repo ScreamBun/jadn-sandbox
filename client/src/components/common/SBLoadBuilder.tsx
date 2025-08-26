@@ -206,13 +206,13 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
                                 <div className='col-md-6 border-end'>
                                     <h6>Save Current</h6>
                                     <div className='mb-2'>
-                                        <label htmlFor='builderSaveName' className='form-label small'>Name</label>
+                                        <label htmlFor='builderSaveName' className='form-label'>Name</label>
                                         <input id='builderSaveName' className='form-control form-control-sm' type='text' value={fileNameInput} placeholder={`${selection?.value}-${new Date().toLocaleDateString('en-CA')}`}
                                             onChange={(e)=>{setFileNameInput(e.target.value); setShowOverwriteConfirm(false);}} />
                                     </div>
                                     {existingNames.length > 0 && (
                                         <div className='mb-2'>
-                                            <label className='form-label small'>Existing</label>
+                                            <label className='form-label'>Existing</label>
                                             <SBSelect
                                                 value={existingNames
                                                     .map(item => ({ label: item, value: item }))
@@ -239,13 +239,12 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
                                         </div>
                                     )}
                                 </div>
-                                <div className='col-md-6'>
-                                    <h6>Load Saved</h6>
+                                <div className='col-md-6 d-flex flex-column' style={{minHeight:200}}>
+                                    <h6>Load / Delete Saved Builder</h6>
                                     {savedItems.length === 0 ? (
                                         <div className='text-muted small'>No saved builders found.</div>
                                     ) : (
                                         <div className='mb-2'>
-                                            <label htmlFor='savedBuilderSelect' className='form-label small'>Saved Builders</label>
                                             <SBSelect
                                                 id='savedBuilderSelect'
                                                 value={savedItems
@@ -267,13 +266,12 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
                                             )}
                                         </div>
                                     )}
+                                    <div className='mt-auto d-flex gap-2 justify-content-end'>
+                                        <button type='button' className='btn btn-success btn-sm' disabled={!selectedName} onClick={handleLoad}>Load</button>
+                                        <button type='button' className='btn btn-danger btn-sm' disabled={!selectedName} onClick={handleDelete}>Delete</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className='modal-footer'>
-                            <button type='button' className='btn btn-success btn-sm' disabled={!selectedName} onClick={handleLoad}>Load</button>
-                            <button type='button' className='btn btn-outline-danger btn-sm' disabled={!selectedName} onClick={handleDelete}>Delete</button>
-                            <button type='button' className='btn btn-secondary btn-sm' onClick={() => setToggleDialog(false)}>Close</button>
                         </div>
                     </div>
                 </div>
