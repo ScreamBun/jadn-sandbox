@@ -129,7 +129,12 @@ const MapOf = (props: FieldProps) => {
             }
         });
         setOutput(newOutput);
-        fieldChange(name, newOutput);
+
+        if (Object.keys(newOutput).length === 0) {
+            fieldChange(String(name), "");
+        } else {    
+            fieldChange(String(name), newOutput);
+        }
     };
 
     React.useEffect(() => {

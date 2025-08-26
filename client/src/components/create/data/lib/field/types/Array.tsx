@@ -34,7 +34,11 @@ const Array = (props: FieldProps) => {
             while (updated.length && (updated[updated.length - 1] === undefined || updated[updated.length - 1] === "" || updated[updated.length - 1] === null)) {
                 updated.pop();
             }
-            fieldChange(name, updated);
+            if (Object.keys(updated).length === 0) {
+                fieldChange(name, "");
+            } else {    
+                fieldChange(name, updated);
+            }
             return updated;
         });
     };
