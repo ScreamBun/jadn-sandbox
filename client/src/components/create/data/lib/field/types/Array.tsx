@@ -1,9 +1,10 @@
 import { ArrayFieldArray } from "components/create/schema/interface";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, isOptional } from "../../utils";
+import SBClearDataBtn from "components/common/SBClearDataBtn";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -11,13 +12,19 @@ interface FieldProps {
     children: JSX.Element | JSX.Element[];
     parent?: string;
     value?: any;
+    toClear: boolean;
 }
 
 const Array = (props: FieldProps) => {
-    const { field, fieldChange, parent, value } = props;
+    const { field, fieldChange, parent, value, toClear } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
+
+    const [clear, setClear] = useState(toClear);
+    useEffect(() => {
+        setClear(toClear);
+    }, [toClear]);
 
     const handleChange = (childKey: string, childValue: any) => {
         setData((prev: any[] = []) => {
@@ -45,11 +52,12 @@ const Array = (props: FieldProps) => {
                         fieldChange={handleChange}
                         parent={name}
                         value={childValue}
+                        toClear={clear}
                     />
                 </div>
             );
         });
-    }, [toggle, children, name]);
+    }, [toggle, children, name, clear]);
 
     const _optional = isOptional(options);
 
@@ -59,6 +67,10 @@ const Array = (props: FieldProps) => {
                 <div className="d-flex align-items-center w-100">
                     <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBClearDataBtn onClick={() => {
+                        setClear(true);
+                        setTimeout(() => setClear(false), 0);
+                    }} />
                     <SBToggleBtn toggle={toggle} setToggle={setToggle} />
                 </div>
             </div>
