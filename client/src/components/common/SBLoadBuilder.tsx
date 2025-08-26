@@ -5,8 +5,9 @@ import SBSpinner from './SBSpinner';
 import { sbToastError, sbToastSuccess, sbToastWarning } from './SBToast';
 import { FILENAME_RULE } from 'components/utils/constants';
 import { destructureField } from 'components/create/data/lib/utils';
+import SBSelect from './SBSelect';
 
-interface SBLoadBuilderProps {
+interface SBLoadBuilderProps { // Props for the load builder component
     customClass?: string;
     onLoad: (payload: { root: string | null; message: any; fields: any[]; name: string }) => void;
     fieldDefs: null | JSX.Element | JSX.Element[];
@@ -14,7 +15,7 @@ interface SBLoadBuilderProps {
     generatedMessage?: any;
 }
 
-interface SavedBuilderEntry {
+interface SavedBuilderEntry { // Props for a saved builder entry
     version?: number;
     saved_at?: string;
     root: string | null;
@@ -36,6 +37,7 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
     const [showOverwriteConfirm, setShowOverwriteConfirm] = useState(false);
     const [pendingOverwriteName, setPendingOverwriteName] = useState('');
 
+    // Run if modal is opened or closed
     useEffect(() => {
         if (toggleDialog) {
             try {
@@ -53,6 +55,7 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
             setFileNameInput('');
             setShowOverwriteConfirm(false);
             setPendingOverwriteName('');
+            setSelectedName('');
         }
     }, [toggleDialog]);
 
@@ -61,7 +64,7 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
         setToggleDialog(true);
     };
 
-    // Serialize field definitions (from former SBSaveBuilder)
+    // Serialize field defs
     const serializeFields = (): any[] => {
         if (!fieldDefs) return [];
         const items = Array.isArray(fieldDefs) ? fieldDefs : [fieldDefs];
@@ -77,9 +80,10 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
         });
     };
 
+    // Handle save fieldDefs
     const handleSave = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const name = fileNameInput.trim();
+        const name = fileNameInput.trim().length > 0 ? fileNameInput.trim() : `${selection?.value}-${new Date().toLocaleDateString('en-CA')}`;
         if (!name) { sbToastWarning('Enter a name.'); return; }
         if (!FILENAME_RULE.test(name)) { sbToastWarning('Invalid name. Use letters, numbers, dash, underscore.'); return; }
         const rawFields = serializeFields();
@@ -111,12 +115,14 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
         }
     };
 
+    // Handle overwrite existing saved state
     const cancelOverwrite = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setShowOverwriteConfirm(false);
         setPendingOverwriteName('');
     };
 
+    // Handle loading state
     const handleLoad = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!selectedName) {
@@ -155,6 +161,7 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
         }
     };
 
+    // Handle deleting state
     const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!selectedName) {
@@ -169,11 +176,11 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
                 delete raw[selectedName];
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(raw));
                 setSavedItems(prev => prev.filter(p => p.name !== selectedName));
+                sbToastSuccess(`Deleted ${selectedName}`);
                 setSelectedName('');
-                sbToastSuccess('Deleted');
             }
         } catch (err:any) {
-            sbToastError(err?.message || 'Failed to delete');
+            sbToastError(err?.message || `Failed to delete ${selectedName}`);
         }
     };
 
@@ -186,7 +193,7 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
             )}
 
             <div id='loadBuilderModal' className={`modal fade ${toggleDialog ? 'show d-block' : 'd-none'}`} tabIndex={-1} role='dialog'>
-                <div className='modal-dialog modal-dialog-centered' role='document'>
+                <div className='modal-dialog modal-lg modal-dialog-centered' role='document'>
                     <div className='modal-content'>
                         <div className='modal-header'>
                             <h5 className='modal-title'>Load / Save Builder</h5>
@@ -198,16 +205,25 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
                                     <h6>Save Current</h6>
                                     <div className='mb-2'>
                                         <label htmlFor='builderSaveName' className='form-label small'>Name</label>
-                                        <input id='builderSaveName' className='form-control form-control-sm' type='text' value={fileNameInput} placeholder='myBuilder'
+                                        <input id='builderSaveName' className='form-control form-control-sm' type='text' value={fileNameInput} placeholder={`${selection?.value}-${new Date().toLocaleDateString('en-CA')}`}
                                             onChange={(e)=>{setFileNameInput(e.target.value); setShowOverwriteConfirm(false);}} />
                                     </div>
                                     {existingNames.length > 0 && (
                                         <div className='mb-2'>
                                             <label className='form-label small'>Existing</label>
-                                            <select className='form-select form-select-sm' value={fileNameInput} onChange={(e)=>{setFileNameInput(e.target.value); setShowOverwriteConfirm(false);}}>
-                                                <option value=''>-- select --</option>
-                                                {existingNames.map(n => <option key={n} value={n}>{n}</option>)}
-                                            </select>
+                                            <SBSelect
+                                                value={existingNames
+                                                    .map(item => ({ label: item, value: item }))
+                                                    .find(opt => opt.value === fileNameInput) || null}
+                                                onChange={(option: any) => {setFileNameInput(option ? option.value : ''); setShowOverwriteConfirm(false);}}
+                                                data={existingNames.map(item => ({
+                                                    label: item,
+                                                    value: item
+                                                }))}
+                                                isClearable
+                                                isSmStyle
+                                                placeholder="Select existing builder"
+                                            />
                                         </div>
                                     )}
                                     {!showOverwriteConfirm && <button type='button' className='btn btn-success btn-sm' onClick={handleSave} disabled={!fieldDefs}>Save</button>}
@@ -228,12 +244,20 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
                                     ) : (
                                         <div className='mb-2'>
                                             <label htmlFor='savedBuilderSelect' className='form-label small'>Saved Builders</label>
-                                            <select id='savedBuilderSelect' className='form-select form-select-sm' value={selectedName} onChange={(e) => setSelectedName(e.target.value)}>
-                                                <option value=''>-- select --</option>
-                                                {savedItems.map(item => (
-                                                    <option key={item.name} value={item.name}>{item.name}</option>
-                                                ))}
-                                            </select>
+                                            <SBSelect
+                                                id='savedBuilderSelect'
+                                                value={savedItems
+                                                    .map(item => ({ label: item.name, value: item.name }))
+                                                    .find(opt => opt.value === selectedName) || null}
+                                                onChange={(option: any) => setSelectedName(option ? option.value : '')}
+                                                data={savedItems.map(item => ({
+                                                    label: item.name,
+                                                    value: item.name
+                                                }))}
+                                                isClearable
+                                                isSmStyle
+                                                placeholder="Select saved builder"
+                                            />
                                             {selectedName && (
                                                 <div className='mt-1 small text-muted'>
                                                     Saved: {new Date(savedItems.find(i => i.name === selectedName)?.data.saved_at || '').toLocaleString()}

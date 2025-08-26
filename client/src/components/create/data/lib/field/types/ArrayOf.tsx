@@ -18,7 +18,7 @@ interface FieldProps {
 }
 
 const ArrayOf = (props: FieldProps) => {
-    const { field, fieldChange } = props;
+    const { field, fieldChange, value } = props;
 
     let [_idx, name, _type, options, _comment, _children] = destructureField(field);
 
@@ -37,6 +37,26 @@ const ArrayOf = (props: FieldProps) => {
     const [cards, setCards] = useState<Array<{idx: number, key: string}>>([]);
 
     const [errMsg, setErrMsg] = useState<string | undefined>(undefined);
+
+    // Load from saved builder only on first mount when no cards yet
+    React.useEffect(() => {
+        if (!value) return;
+        if (!Array.isArray(value)) return;
+        if (value.length === 0) return;
+        if (cards.length > 0) return;
+        if (!keyType) return;
+
+        const newCards: Array<{ idx: number; key: string }> = [];
+        const newKeyList: Array<{ name: any; key: any }> = [];
+        for (let i = 0; i < value.length; i++) {
+            newCards.push({ idx: i, key: keyType });
+            newKeyList.push({ name: `${keyType} ${i + 1}`, key: value[i] });
+        }
+        setCards(newCards);
+        setKeyList(newKeyList);
+        setIdNumber(value.length);
+        setNumberOfItems(value.length);
+    }, [value]);
 
     React.useEffect(() => {
         const keys = keyList;

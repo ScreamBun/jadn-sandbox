@@ -44,7 +44,7 @@ const DataCreator = (props: any) => {
     const roots = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === selection?.value) : [];
 
-    // Handle user dropdown selection
+    // Handle root dropdown selection
     const handleSelection = (e: Option) => {
         setSelection(e);
         setGeneratedMessage({});
@@ -52,6 +52,7 @@ const DataCreator = (props: any) => {
         setLoadedFieldDefs(null);
     }
 
+    // Handle full data validation
     const [jsonValidated, setJsonValidated] = useState(false);
     const handleValidate = async () => {
         if (!schemaObj || !generatedMessage) {
@@ -82,6 +83,7 @@ const DataCreator = (props: any) => {
         }
     };
 
+    // Handle reset of root
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setSelection(null);
@@ -93,6 +95,7 @@ const DataCreator = (props: any) => {
 
     const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
 
+    // Handle generate data
     const setDefaults = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (toggleDefaults) {
@@ -138,7 +141,7 @@ const DataCreator = (props: any) => {
                         />
                         <div className = "ms-auto">
                             <SBLoadBuilder
-                                customClass={"float-start ms-1"}
+                                customClass={`float-start ms-1 ${selection?.value ? '' : 'disabled'}`} 
                                 onLoad={({root, fields, message}) => 
                                     {
                                         // Locate value of fields

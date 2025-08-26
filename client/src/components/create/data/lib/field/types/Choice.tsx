@@ -22,24 +22,12 @@ const Choice = (props: FieldProps) => {
     const [selectedValue, setSelectedValue] = useState<Option | string>(selectedLabel != '' ? { 'label': selectedLabel, 'value': selectedLabel } : '');
 
     const updateChildData = (k: string, v: any) => {
-        setChildData((prev: Record<string, any>) => {
-            let updated: Record<string, any> = { ...prev };
-            const key = isID ? (nameToIdMap[k] ?? k) : k;
-
-            if (v === "" || v === undefined || v === null) {
-                delete updated[key];
-            } else {
-                updated[key] = v;
-            }
-
-            if (Object.keys(updated).length === 0) {
-                fieldChange(name, '');
-                return {};
-            }
-
-            fieldChange(name, updated);
-            return updated;
-        });
+        const key = isID ? (nameToIdMap[k] ?? k) : k;
+        if (v === "" || v === undefined || v === null) {
+            fieldChange(name, '');
+        } else {
+            fieldChange(name, { [key]: v });
+        }
     };
 
     const getChild = (field_name: string) => { 
@@ -59,9 +47,7 @@ const Choice = (props: FieldProps) => {
     const [selectedChild, setSelectedChild] = useState<JSX.Element | undefined>(
         selectedLabel ? getChild(selectedLabel) : undefined
     );
-    const [childData, setChildData] = useState<any>(
-        value && typeof value === 'object' ? value : {}
-    );
+    
     const isID = options.some(opt => String(opt) === '=');
 
     // If isID, map child field name to child ID
@@ -83,15 +69,11 @@ const Choice = (props: FieldProps) => {
         if (e == null || e.value === '' || e.value === undefined) {
             setSelectedValue('');
             setSelectedChild(undefined);
-            setChildData({});
             fieldChange(name, '');
         } else {
             const child = getChild(e.value);
             setSelectedValue(e);
             setSelectedChild(child);
-            
-            const newData = {};
-            setChildData(newData);
             
             fieldChange(name, e.value);
         }

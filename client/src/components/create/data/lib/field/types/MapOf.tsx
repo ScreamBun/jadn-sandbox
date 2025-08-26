@@ -24,6 +24,47 @@ const MapOf = (props: FieldProps) => {
     const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
     const schemaObj = useSelector(getSelectedSchema);
 
+    React.useEffect(() => {
+        if (value === undefined || value === null || cards.length > 0) return; // only run once if empty
+        try {
+            const incoming = value;
+            let initCards: Array<{id: number, key: string | undefined, value: string | undefined}> = [];
+            let initKeyList: Array<{name: any , key: any}> = [];
+            let initValueList: Array<{name: any , value: any}> = [];
+            let nextId = idNumber;
+
+            if (Array.isArray(incoming)) {
+                // Array form: [k1,v1,k2,v2,...]
+                for (let i = 0; i < incoming.length; i += 2) {
+                    const k = incoming[i];
+                    const v = incoming[i+1];
+                    if (k === undefined) continue;
+                    nextId += 1;
+                    initCards.push({ id: nextId, key: keyType, value: valueType });
+                    initKeyList.push({ name: `${name} ${nextId} ${keyType}`, key: k });
+                    initValueList.push({ name: `${name} ${nextId} ${valueType}`, value: v });
+                }
+            } else if (typeof incoming === 'object') {
+                for (const k of Object.keys(incoming)) {
+                    nextId += 1;
+                    initCards.push({ id: nextId, key: keyType, value: valueType });
+                    initKeyList.push({ name: `${name} ${nextId} ${keyType}`, key: k });
+                    initValueList.push({ name: `${name} ${nextId} ${valueType}`, value: incoming[k] });
+                }
+            }
+
+            if (initCards.length > 0) {
+                setCards(initCards);
+                setKeyList(initKeyList);
+                setValueList(initValueList);
+                setIdNumber(nextId);
+                setNumberOfItems(initCards.length);
+            }
+        } catch (err) {
+            // ignore malformed incoming value
+        }
+    }, [value]);
+
     // Keep track of cards
     const [idNumber, setIdNumber] = useState(0);
 
