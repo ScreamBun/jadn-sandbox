@@ -141,7 +141,13 @@ const DataCreator = (props: any) => {
                         />
                         <div className = "ms-auto">
                             <SBLoadBuilder
-                                customClass={`float-start ms-1 ${selection?.value ? '' : 'disabled'}`} 
+                                customClass={`float-start ms-1 
+                                    ${selection?.value && 
+                                    !loadedFieldDefs && 
+                                    (selection?.value && generatedMessage && generatedMessage[selection.value]? 
+                                        Object.keys(generatedMessage[selection.value]).length === 0 
+                                        : 
+                                        true) ? '' : 'disabled'}`} 
                                 onLoad={({root, fields, message}) => 
                                     {
                                         // Locate value of fields
@@ -167,6 +173,7 @@ const DataCreator = (props: any) => {
                                                 />
                                             );
                                         });
+                                        dispatch(clearFieldValidation());
                                         setLoadedFieldDefs(built);
                                         setGeneratedMessage(restoredMsg)
                                     }}
