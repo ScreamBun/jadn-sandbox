@@ -195,16 +195,16 @@ const MapOf = (props: FieldProps) => {
                     className="border-0 px-2 py-1 btn btn-sm rounded-pill me-1 mt-1"
                     title="Remove Field"
                     onClick={() => removeCard(id, keyEntry?.name ?? "", valueEntry?.name ?? "")}
-                    disabled = {numberOfItems <= minv}
+                    //disabled = {numberOfItems <= minv}
                 >
                     <FontAwesomeIcon icon={faCircleXmark} size = "lg" />
                 </button>
                 <div style={{ flex: '0 1 100%' }}>
-                    <div className="d-flex align-items-center w-100">
+                    {/*<div className="d-flex align-items-center w-100">
                         <label style={{ fontSize: "1.1rem" }}>{`${name} ${id}${ _optional ? "" : "*"}`}</label>
                         <SBInfoBtn comment={_comment} />
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={id} />
-                    </div>
+                    </div>*/}
                     <div className={`${toggleField[id] == true ? '' : 'collapse'}`} id={`${id}`}>
                         <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} toClear={clear} />
                         <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} toClear={clear} />

@@ -123,7 +123,7 @@ const ArrayOf = (props: FieldProps) => {
                         className="border-0 px-2 py-1 btn btn-sm rounded-pill me-1 mt-1"
                         title="Remove Field"
                         onClick={() => removeCard(i, entryName)}
-                        disabled = {numberOfItems <= minv}
+                        //disabled = {numberOfItems <= minv}
                     >
                         <FontAwesomeIcon icon={faCircleXmark} size="lg"/>
                     </button>
