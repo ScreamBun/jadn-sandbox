@@ -30,14 +30,14 @@ const Field = (props: FieldProps) => {
         // Remove key and val from options
         options = options.filter(opt => !opt.startsWith("+") && !opt.startsWith("*"));
         let newField = [name, "Map", options, _comment, childrenArray];
-        return <Map field={newField as ArrayFieldArray} fieldChange={fieldChange} children = {[]} parent={parent} value={value} />;
-    }   
-    
+        return <Map field={newField as ArrayFieldArray} fieldChange={fieldChange} children = {[]} parent={parent} value={value} toClear={toClear}/>;
+    }
+
     // Check for multiplicities
     const hasMultiplicity = convertToArrayOf(field, ...getMultiplicity(options));
     if (hasMultiplicity) {
         return (
-            <Field field={hasMultiplicity as unknown as AllFieldArray} fieldChange={fieldChange} parent={props.parent} value={value}/>
+            <Field field={hasMultiplicity as unknown as AllFieldArray} fieldChange={fieldChange} parent={props.parent} value={value} toClear={toClear}/>
         );
     }
 
