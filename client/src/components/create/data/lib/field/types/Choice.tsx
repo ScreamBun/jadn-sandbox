@@ -1,5 +1,5 @@
 import { ArrayFieldArray, AllFieldArray } from "components/create/schema/interface";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
@@ -11,15 +11,27 @@ interface FieldProps {
     children?: JSX.Element | JSX.Element[];
     parent?: string;
     value?: any;
+    toClear: boolean;
 }
 
 const Choice = (props: FieldProps) => {
-    const { field, fieldChange, parent, value } = props;
+    const { field, fieldChange, parent, value, toClear } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
 
     const selectedLabel = value ? Object.keys(value)?.[0] : '';
     const selectedVal = value ? { value: Object.values(value)?.[0] } : {};
     const [selectedValue, setSelectedValue] = useState<Option | string>(selectedLabel != '' ? { 'label': selectedLabel, 'value': selectedLabel } : '');
+
+    const [clear, setClear] = useState(toClear);
+    useEffect(() => {
+        setClear(toClear);
+        if (toClear === true) {
+            setSelectedValue('');
+            setSelectedChild(undefined);
+            setChildData('');
+            fieldChange(name, '');
+        }
+    }, [toClear, fieldChange]);
 
     const updateChildData = (k: string, v: any) => {
         setChildData((prev: Record<string, any>) => {
@@ -51,7 +63,8 @@ const Choice = (props: FieldProps) => {
                 field={child}
                 fieldChange={updateChildData}
                 parent={name}
-                value={selectedVal.value} />
+                value={selectedVal.value} 
+                toClear={clear} />
             </div>
     }
 
