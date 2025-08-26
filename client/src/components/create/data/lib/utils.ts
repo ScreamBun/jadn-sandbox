@@ -1,4 +1,4 @@
-import { defaultValues } from "components/create/consts";
+import { $MAX_ELEMENTS, defaultValues } from "components/create/consts";
 
 // FUNCTION: Determine if a field is optional based on its options. Optional field has '[0']
 export const isOptional = (options: any[]): boolean => {
@@ -179,5 +179,41 @@ export const getDefaultValue = (type: string, options: any[], children: any[] = 
     if (val2 !== undefined) {
         return val2;
     }
+    return undefined;
+}
+
+//FUNCTION: Deal with field multiplicity for primitives
+export const getMultiplicity = (opts: any[]): [number | undefined, number | undefined] => {
+    let minOccurs = opts.find(opt => typeof opt === 'string' && opt.startsWith("["))?.substring(1);
+    minOccurs = minOccurs ? parseInt(minOccurs) : undefined;
+    let maxOccurs = opts.find(opt => typeof opt === 'string' && opt.startsWith("]"))?.substring(1);
+    maxOccurs = maxOccurs ? parseInt(maxOccurs) : undefined;
+    return [minOccurs, maxOccurs];
+}
+
+export const convertToArrayOf = (field: any[], minOccurs: number | undefined, maxOccurs: number | undefined): any[] | undefined => {
+    let [_idx, name, type, options, _comment, _children] = destructureField(field);
+    // Remove minOccurs and maxOccurs from options
+    if (minOccurs === 0) {
+        options = options.filter(opt => typeof opt === 'string' && !opt.startsWith("]"));
+    } else {
+        options = options.filter(opt => typeof opt === 'string' && !opt.startsWith("[") && !opt.startsWith("]"));
+    }
+
+    // Case maxOccurs == -1
+    const useMaxElements = maxOccurs === -1;
+    // Case maxOccurs == -2
+    const upperBoundUnlimited = maxOccurs === -2;
+    
+    // Convert minOccurs and maxOccurs to minLength and maxLength
+    let newOpts = [`*${type}`, `${minOccurs ? "{"+String(minOccurs) : ""}`, useMaxElements ? `}${$MAX_ELEMENTS}` : upperBoundUnlimited ? `}Infinity` : `${maxOccurs ? "}"+String(maxOccurs): ""}`, ...options]
+    // Remove empty strings
+    newOpts = newOpts.filter(opt => typeof opt === 'string' && opt !== "");
+
+    if ((minOccurs && minOccurs !== 0) || maxOccurs) {
+        const newField = [name, "ArrayOf", newOpts, ""]
+        return newField
+    }
+
     return undefined;
 }

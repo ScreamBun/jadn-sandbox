@@ -3,7 +3,7 @@ import { CoreType, Array, ArrayOf, Record, Map, MapOf, Enumerated, Choice, Deriv
 import { AllFieldArray, StandardFieldArray, ArrayFieldArray, FieldOfArray } from '../../../schema/interface';
 import { useSelector } from 'react-redux';
 import { getSelectedSchema } from 'reducers/util';
-import { caseMapOfEnumKey, destructureField } from '../utils';
+import { caseMapOfEnumKey, destructureField, convertToArrayOf, getMultiplicity } from '../utils';
 
 interface FieldProps {
     field: AllFieldArray;
@@ -32,6 +32,14 @@ const Field = (props: FieldProps) => {
         let newField = [name, "Map", options, _comment, childrenArray];
         return <Map field={newField as ArrayFieldArray} fieldChange={fieldChange} children = {[]} parent={parent} value={value} />;
     }   
+    
+    // Check for multiplicities
+    const hasMultiplicity = convertToArrayOf(field, ...getMultiplicity(options));
+    if (hasMultiplicity) {
+        return (
+            <Field field={hasMultiplicity as unknown as AllFieldArray} fieldChange={fieldChange} parent={props.parent} value={value}/>
+        );
+    }
 
     switch (type) {
         case 'Boolean':
