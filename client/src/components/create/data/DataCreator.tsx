@@ -24,6 +24,7 @@ const DataCreator = (props: any) => {
     // Destructure props
     const { generatedMessage, setGeneratedMessage, selection, setSelection } = props;
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
+    const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
@@ -112,7 +113,7 @@ const DataCreator = (props: any) => {
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (selection?.value) {
         fieldDefs = types.map((field: AllFieldArray, idx: number) => {
-            const fieldKey = `${selection?.value || 'root'}-${idx}`;
+            const fieldKey = `${selection?.value || 'root'}-${loadVersion}-${idx}`;
             return (
                 <Field
                     key={fieldKey}
@@ -144,25 +145,34 @@ const DataCreator = (props: any) => {
                                 customClass={`float-start ms-1 ${selection?.value ? '' : 'disabled'}`} 
                                 onLoad={({root, fields, message}) => 
                                     {
-
+                                        // Force reload of Field components
+                                        setLoadVersion(v => v + 1);
                                         setLoadedFieldDefs(null);
 
                                         // Locate value of fields
-                                        const restoredMsg: any = {};
-                                        fields.forEach((f: any) => {
-                                            if (f && f.field) {
-                                                const [_idx, _name] = destructureField(f.field);
-                                                if (_name && f.value !== undefined && f.value !== null && f.value !== '') {
-                                                    restoredMsg[_name] = f.value;
+                                        let restoredMsg: any = (message && typeof message === 'object') ? { ...message } : {};
+                                        if (!message) {
+                                            // reconstruct from saved field entries
+                                            fields.forEach((f: any) => {
+                                                if (f && f.field) {
+                                                    const [_idx, _name] = destructureField(f.field);
+                                                    if (_name) {
+                                                        if (f.value !== undefined && f.value !== null && f.value !== "") {
+                                                            restoredMsg[_name] = f.value;
+                                                        } else {
+                                                            // ensure cleared fields are removed
+                                                            delete restoredMsg[_name];
+                                                        }
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
 
                                         const built = fields.map((f: any, idx: number) => {
                                             const [_idx, _name] = destructureField(f.field);
                                             return (
                                                 <Field
-                                                    key={`saved-${idx}`}
+                                                    key={`saved-${loadVersion}-${idx}`} // include loadVersion so reload forces remount
                                                     field={f.field}
                                                     fieldChange={fieldChange}
                                                     parent={f.parent || undefined}
