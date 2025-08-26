@@ -34,7 +34,7 @@ const SBInfoBtn = (props: SBInfoProps) => {
         </button>
         {showTooltip && (
             <div 
-            className={`alert p-0 ms-1 me-1 position-absolute start-100 top-0 border-2 ${
+            className={`alert p-1 ms-1 me-1 position-absolute start-100 top-0 border-1 ${
               theme === 'dark' 
               ? 'alert-secondary border-secondary text-white' 
               : 'alert-info border-info text-dark'
