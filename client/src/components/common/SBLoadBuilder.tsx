@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
+import { faCloudArrowDown, faCloudArrowUp, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SBSpinner from './SBSpinner';
 import { sbToastError, sbToastSuccess, sbToastWarning } from './SBToast';
@@ -188,7 +188,9 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
         <>
             {isLoading ? <SBSpinner color={'primary'} /> : (
                 <button type='button' id='loadSaveBuilder' title='Load / Save Builder' className={'btn btn-primary btn-sm ' + (customClass || '')} onClick={open}>
-                    <FontAwesomeIcon icon={faFolderOpen} />
+                    <FontAwesomeIcon icon={faCloudArrowDown} />
+                    <span style={{ borderLeft: '1px solid #ccc', height: '1.25em', margin: '0 8px', display: 'inline-block', verticalAlign: 'middle' }} />
+                    <FontAwesomeIcon icon={faCloudArrowUp} />
                 </button>
             )}
 
