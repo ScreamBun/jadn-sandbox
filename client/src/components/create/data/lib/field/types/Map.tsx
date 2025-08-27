@@ -24,9 +24,11 @@ const Map = (props: FieldProps) => {
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
         setClear(toClear);
-        setData("");
-        setToggle(true);
-        setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
+        if (toClear) {
+            setData("");
+            setToggle(true);
+            setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
+        }
     }, [toClear]);
     
     const [data, setData] = useState(value);

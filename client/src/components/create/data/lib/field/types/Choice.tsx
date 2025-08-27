@@ -28,7 +28,6 @@ const Choice = (props: FieldProps) => {
         if (toClear === true) {
             setSelectedValue('');
             setSelectedChild(undefined);
-            setChildData('');
             fieldChange(name, '');
         }
     }, [toClear, fieldChange]);
