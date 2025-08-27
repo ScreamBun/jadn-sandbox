@@ -20,10 +20,13 @@ const Record = (props: FieldProps) => {
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
-    
     const [clear, setClear] = useState(toClear);
+
     useEffect(() => {
         setClear(toClear);
+        setData("");
+        setToggle(true);
+        setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
     }, [toClear]);
 
     const handleChange = (childKey: string, childValue: any) => {
