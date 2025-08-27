@@ -251,7 +251,7 @@ const MapOf = (props: FieldProps) => {
                         <SBInfoBtn comment={_comment} />
                         <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={id} />
                     </div>*/}
-                    <div className={`${toggleField[id] == true ? '' : 'collapse'}`} id={`${id}`}>
+                    <div>
                         <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} toClear={clear} />
                         <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} toClear={clear} />
                     </div>
