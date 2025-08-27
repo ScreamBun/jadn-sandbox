@@ -239,7 +239,7 @@ const MapOf = (props: FieldProps) => {
                 <button
                     type="button"
                     className="border-0 px-2 py-1 btn btn-sm rounded-pill me-1 mt-1"
-                    title="Remove Field"
+                    title="Remove Structure"
                     onClick={() => removeCard(id, keyEntry?.name ?? "", valueEntry?.name ?? "")}
                     //disabled = {numberOfItems <= minv}
                 >
