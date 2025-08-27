@@ -178,6 +178,7 @@ const DataCreator = (props: any) => {
                                                     fieldChange={fieldChange}
                                                     parent={f.parent || undefined}
                                                     value={restoredMsg[_name]}
+                                                    toClear={false}
                                                 />
                                             );
                                         });
@@ -232,7 +233,7 @@ const DataCreator = (props: any) => {
                                     </span>)
                                 }
                             </button>
-                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Message'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
+                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
                             <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
                             <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
                         </div>
