@@ -74,7 +74,7 @@ const ArrayOf = (props: FieldProps) => {
         for (let i = 0; i < keys.length; i++) {
             output.push(keys[i].key);
         }
-        if (Object.keys(output).length === 0) {
+        if (Object.keys(output).length === 0 || Object.values(output).every(k => k === undefined)) {
             fieldChange(String(name), "");
         } else {    
             fieldChange(String(name), output);
