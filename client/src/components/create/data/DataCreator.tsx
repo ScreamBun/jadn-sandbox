@@ -109,6 +109,13 @@ const DataCreator = (props: any) => {
     const [dataFullScreen, setDataFullScreen] = useState(false);
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
 
+    // Handle making sure loaded defs are reset
+    React.useEffect(() => {
+        if (loadedFieldDefs) {
+            setLoadedFieldDefs(null);
+        }
+    }, [selection, schemaObj]);
+
     // Decide which fields to display
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
     if (selection?.value) {
