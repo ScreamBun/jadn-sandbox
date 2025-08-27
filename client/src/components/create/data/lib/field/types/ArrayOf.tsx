@@ -156,7 +156,7 @@ const ArrayOf = (props: FieldProps) => {
                             key={`${key} ${i+1}`}
                             field={keyField}
                             parent={String(name)}
-                            fieldChange={(n, k) => addKey(entryName, k)}
+                            fieldChange={(_n, k) => addKey(entryName, k)}
                             value={keyEntry?.key ?? ""}
                             toClear={clear}
                         />

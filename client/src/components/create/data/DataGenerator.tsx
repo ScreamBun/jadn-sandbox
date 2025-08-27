@@ -65,7 +65,7 @@ const DataGenerator = () => {
                 <div className='col-md-12'>
                     <div className = 'card'>
                         <div className='card-header bg-secondary p-2'>
-                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Creation</span></h5>
+                            <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Creation {selectedFile ? `(${selectedFile?.value})` : ''}</span></h5>
                             <button type='button' onClick={() => setActiveView('message')} className={`btn btn-sm btn-warning float-end ms-1 ${activeView == 'message' ? ' d-none' : ''}`} >View Schema</button>
                             <button type='button' onClick={viewEditor} className={`btn btn-sm btn-warning float-end ms-1 ${activeView == 'creator' ? ' d-none' : ''}`} >View Editor</button>
                             <button type='reset' className='btn btn-sm btn-danger float-end ms-1' onClick={onReset}>Reset</button>
