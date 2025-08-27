@@ -80,6 +80,10 @@ const Enumerated = (props: FieldProps) => {
         }
     }, [toClear]);
 
+    React.useEffect(() => {
+        setSelectedValue(value && value !== "" ? { label: value, value: value } : '');
+    }, [value]);
+
     return (
 
         <div className="form-group">
