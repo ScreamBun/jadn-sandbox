@@ -46,7 +46,7 @@ const CoreType = (props: FieldProps) => {
     const setDefaults = useSelector((state: any) => state.toggleDefaults);
     React.useEffect(() => {
         if (
-            (value === undefined || value === null || value === '') ||
+            (value === undefined || value === null || value === '') &&
             (data === undefined || data === null || data === '')
         ) {
             const defaultValue = getDefaultValue(type, options);
