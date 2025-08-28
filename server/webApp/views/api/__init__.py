@@ -12,6 +12,7 @@ from .validate import add_resources as add_validate
 from .format import add_resources as add_format
 from .transform import add_resources as add_transform
 from .save import add_resources as add_save
+from .validatefield import add_resources as add_validatefield
 
 log = logging.getLogger()
 api = Blueprint("api", __name__)
@@ -77,3 +78,4 @@ add_validate(api_root, url_prefix="/validate")
 add_format(api_root, url_prefix="/format")
 add_transform(api_root, url_prefix="/transform")
 add_save(api_root, url_prefix="/save")
+add_validatefield(api_root, url_prefix="/validate/field")

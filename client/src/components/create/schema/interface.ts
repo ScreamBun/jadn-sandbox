@@ -31,8 +31,15 @@ export type StandardFieldArray = [number, string, string, Array<string>, string]
 // Enumerated Field - [id, value, comment]
 export type EnumeratedFieldKey = 'id' | 'value' | 'comment';
 export type EnumeratedFieldArray = [number, number|string, string]
+// ArrayOf & MapOf Field
+export type FieldOfKey = 'name' | 'type' | 'options' | 'comment';
+export type FieldOfArray = [string, string, Array<string>, string];
 // General Field
 export type FieldArray = StandardFieldArray | EnumeratedFieldArray;
+export type ArrayFieldKey = 'name' | 'type' | 'options' | 'comment' | 'children';
+export type ArrayFieldArray = [string, string, Array<string>, string, Array<StandardFieldArray>];
+// Any field type
+export type AllFieldArray = StandardFieldArray | ArrayFieldArray | EnumeratedFieldArray;
 
 // Types
 // Standard Type
