@@ -36,6 +36,7 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
     const [existingNames, setExistingNames] = useState<string[]>([]);
     const [showOverwriteConfirm, setShowOverwriteConfirm] = useState(false);
     const [pendingOverwriteName, setPendingOverwriteName] = useState('');
+    const [deleteFileConfirm, setDeleteFileConfirm] = useState(false);
 
     // Run if modal is opened or closed
     useEffect(() => {
@@ -166,21 +167,25 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
         e.preventDefault();
         if (!selectedName) {
             sbToastWarning('Select a saved builder to delete.');
+            setDeleteFileConfirm(false);
             return;
         }
         try {
             const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
             if (!raw[selectedName]) {
                 sbToastWarning('Item already removed.');
+                setDeleteFileConfirm(false);
             } else {
                 delete raw[selectedName];
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(raw));
                 setSavedItems(prev => prev.filter(p => p.name !== selectedName));
                 sbToastSuccess(`Deleted ${selectedName}`);
                 setSelectedName('');
+                setDeleteFileConfirm(false);
             }
         } catch (err:any) {
             sbToastError(err?.message || `Failed to delete ${selectedName}`);
+            setDeleteFileConfirm(false);
         }
     };
 
@@ -264,11 +269,22 @@ const SBLoadBuilder = (props: SBLoadBuilderProps) => {
                                                     Saved: {new Date(savedItems.find(i => i.name === selectedName)?.data.saved_at || '').toLocaleString()}
                                                 </div>
                                             )}
+                                            {
+                                                deleteFileConfirm && (
+                                                    <div className='alert alert-danger p-2 mt-2'>
+                                                        Are you sure you want to delete <strong>{selectedName}</strong>?
+                                                        <div className='mt-2 d-flex gap-2'>
+                                                            <button className='btn btn-sm btn-danger' onClick={handleDelete}>Confirm</button>
+                                                            <button className='btn btn-sm btn-secondary' onClick={() => setDeleteFileConfirm(false)}>Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
                                         </div>
                                     )}
                                     <div className='mt-auto d-flex gap-2 justify-content-end'>
                                         <button type='button' className='btn btn-success btn-sm' disabled={!selectedName} onClick={handleLoad}>Load</button>
-                                        <button type='button' className='btn btn-danger btn-sm' disabled={!selectedName} onClick={handleDelete}>Delete</button>
+                                        <button type='button' className='btn btn-danger btn-sm' disabled={!selectedName} onClick={() => setDeleteFileConfirm(true)}>Delete</button>
                                     </div>
                                 </div>
                             </div>
