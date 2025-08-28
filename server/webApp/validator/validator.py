@@ -3,7 +3,7 @@ import cbor2
 import jadn 
 import xml.etree.ElementTree as ET
 
-from flask import current_app
+# from flask import current_app
 from typing import Tuple, Union
 
 # from jadnschema.jadn import loads
