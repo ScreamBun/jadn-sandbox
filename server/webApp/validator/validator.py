@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 
 from typing import Tuple, Union
 
+from jadnschema.jadn import loads
 from jadnvalidation import DataValidation
 
 from server.webApp.validator.utils import BaseEnum
@@ -148,14 +149,19 @@ class Validator:
         :param sm: (bool) return success message or schema
         :return: (tuple) valid/invalid bool, message/schema
         """
-        try :
-            j_validation = DataValidation(self.j_meta_schema, "Schema", schema)
-            j_validation.validate()
-            return True, "Validation passed", "", schema
+        # try :
+        #     j_validation = DataValidation(self.j_meta_schema, "Schema", schema)
+        #     j_validation.validate()
+        #     return True, "Validation passed", "", schema
+        # except Exception as e:
+        #     errorMsgs = []
+        #     errorMsgs = get_value_errors(e)
+        #     return False, errorMsgs, "", schema
+        try:
+            j = loads(schema)
+            return True, "Schema is Valid" if sm else j
         except Exception as e:
-            errorMsgs = []
-            errorMsgs = get_value_errors(e)
-            return False, errorMsgs, "", schema
+            return False, f"Schema Invalid - {e}"        
         
 
     def validateMessage(self, schema: Union[bytes, dict, str], data: Union[str, bytes, dict], data_format: str, root: str) -> Tuple:
@@ -175,7 +181,7 @@ class Validator:
             return False, "Serialization Format not found", "", data
         
         try :
-            j_validation = DataValidation(self.j_meta_schema, "Schema", schema, SerialFormats.JSON)
+            j_validation = DataValidation(self.j_meta_schema, "Schema", schema, SerialFormats.JSON.value)
             j_validation.validate()
         except Exception as e:
             errorMsgs = []
@@ -183,7 +189,7 @@ class Validator:
             return False, errorMsgs, "", schema
         
         serial = SerialFormats(data_format)
-        match serial:
+        match serial.value:
             case constants.JSON:
                 try:
                     data = json.loads(data)
