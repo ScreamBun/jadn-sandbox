@@ -1,8 +1,8 @@
 {
-  "info": {
+  "meta": {
     "title": "JADN Schema Start Up Template",
     "package": "http://JADN-Schema-Start-Up-Template-URI",
-    "exports": ["Schema"]
+    "roots": ["Schema"]
   },
   "types": [
     ["Schema", "Record", [], "", []]

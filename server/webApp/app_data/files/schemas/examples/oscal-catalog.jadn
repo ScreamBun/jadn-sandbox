@@ -1,8 +1,8 @@
 {
-  "info": {
+  "meta": {
     "package": "http://csrc.nist.gov/ns/oscal/1.1.0/oscal-catalog-schema.json",
     "comment": "OSCAL Control Catalog Model: JSON Schema",
-    "exports": ["Root", "Catalog"],
+    "roots": ["Root", "Catalog"],
     "config": {
       "$MaxBinary": 255,
       "$MaxString": 5555,
