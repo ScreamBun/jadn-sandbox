@@ -1,7 +1,7 @@
-import MessageGenerator from './message/MessageGenerator';
+import DataGenerator from './data/DataGenerator';
 import SchemaGenerator from './schema/SchemaGenerator';
 
 export {
-  MessageGenerator,
+  DataGenerator,
   SchemaGenerator
 };

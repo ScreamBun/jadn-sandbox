@@ -1,8 +1,8 @@
 {
-  "info": {
+  "meta": {
     "package": "http://csrc.nist.gov/ns/oscal/1.1.1/oscal-profile-schema.json",
     "comment": "OSCAL Profile Model: JSON Schema",
-    "exports": ["Root", "Profile"],
+    "roots": ["Root", "Profile"],
     "config": {
       "$MaxBinary": 255,
       "$MaxString": 5555,

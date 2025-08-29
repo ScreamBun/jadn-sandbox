@@ -1,8 +1,8 @@
 {
-  "info": {
+  "meta": {
     "package": "http://csrc.nist.gov/ns/oscal/1.1.1/oscal-ssp-schema.json",
     "comment": "OSCAL System Security Plan (SSP) Model: JSON Schema",
-    "exports": ["Root", "System-security-plan"],
+    "roots": ["Root", "System-security-plan"],
     "config": {
       "$MaxBinary": 255,
       "$MaxString": 5555,

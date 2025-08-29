@@ -22,7 +22,7 @@ export const FILENAME_RULE = new RegExp("^[a-zA-Z0-9-_]+$");
 
 export const NAV_HOME = '/home';
 
-export const NAV_CREATE_MESSAGE = '/create/message';
+export const NAV_CREATE_DATA = '/create/data';
 export const NAV_CREATE_SCHEMA = '/create/schema';
 
 export const NAV_CONVERT_SCHEMA = '/convert-schema';

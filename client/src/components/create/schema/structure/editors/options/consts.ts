@@ -170,6 +170,7 @@ export const TypeOptionInputArgs = {
     description: 'Extension: Enumerated type derived from the specified Array, Choice, Map or Record type'
   },
   pointer: {
+    type: 'SBCreatableSelect',
     description: 'Extension: Enumerated type containing pointers derived from the specified Array, Choice, Map or Record type'
   },
   format: {
