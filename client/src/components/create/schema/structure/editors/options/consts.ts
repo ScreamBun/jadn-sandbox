@@ -199,11 +199,11 @@ export const TypeOptionInputArgs = {
     type: 'number',
     description: '(optional) Maximum length, octet or character count, or element count'
   },
-  minIncusive: {
+  minInclusive: {
     type: 'number',
     description: '(optional) Minimum inclusive value'
   },
-  maxIncusive: {
+  maxInclusive: {
     type: 'number',
     description: '(optional) Maximum inclusive value'
   },
