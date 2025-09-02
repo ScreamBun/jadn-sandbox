@@ -70,7 +70,7 @@ export const defaultValues = (option: string, minLength: number = 0, minVal: num
         "/i8": 127,
         "/i16": 32767,
         "/i32": 2147483647,
-        "/i64": 9223372036854775807,
+        "/i64": 92233720368547758,
         "/u8": 127,
         "/u16": 32767,
         "/u32": 4294967294,
