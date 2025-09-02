@@ -95,7 +95,7 @@ export const defaultValues = (option: string, minLength: number = 0, minVal: num
         "/eui": "00:00:5e:00:53:01",
         "/ipv4-addr": "127.0.0.1",
         "/ipv6-addr": "2001:db8:3333:4444:5555:6666:1.2.3.4",
-        "/b": "ABCD",
+        "/b64": "ABCD",
         "/x": "acbd",
         "/X": "ABCD",
         // Core Types

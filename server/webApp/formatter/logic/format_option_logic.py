@@ -56,7 +56,7 @@ class FormatOptionLogic:
     
     hex_binary = FormatOptionModel("x", "hexBinary", "Hex - base16 - lowercase out, case-folding in", FormatType.BINARY.value, "").__dict__
     hex_binary_upper_only = FormatOptionModel("X", "hexBinaryUpperOnly", "Hex - RFC 4648 Section 8 - uppercase only", FormatType.BINARY.value, "").__dict__
-    base_64_binary = FormatOptionModel("b", "base64Binary", "Base64url - RFC 4648 Section 5 (default text representation of Binary type)", FormatType.BINARY.value, "").__dict__
+    base_64_binary = FormatOptionModel("b64", "base64Binary", "Base64url - RFC 4648 Section 5 (default text representation of Binary type)", FormatType.BINARY.value, "").__dict__
 
     date_time_int = FormatOptionModel("date-time", "Date Time", "POSIX time: the number of seconds since the Epoch", FormatType.INTEGER.value, "ex: 835810335").__dict__
     time_int = FormatOptionModel("time", "Time", "POSIX Time", FormatType.INTEGER.value, "ex: 835810335").__dict__
