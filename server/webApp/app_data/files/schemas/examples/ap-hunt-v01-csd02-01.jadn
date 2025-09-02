@@ -1,5 +1,5 @@
 {
-  "info": {
+  "meta": {
   "package": "http://docs.oasis-open.org/openc2/ns/ap-th/v1.0",
     "version": "v01-csd02-01",
     "title": "Threat Hunting Profile",
@@ -9,7 +9,7 @@
       "oca": "http://docs.oasis-open.org/openc2/ns/ext/oca",
       "sco": "http://docs.oasis-open.org/openc2/ns/ext/sco"
     },
-    "exports": ["TH-Target", "TH-Args", "TH-Specifiers", "TH-Results"],
+    "roots": ["TH-Target", "TH-Args", "TH-Specifiers", "TH-Results"],
     "config": {
       "$MaxBinary": 1555,
       "$MaxString": 1555,

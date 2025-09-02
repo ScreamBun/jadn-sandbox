@@ -32,7 +32,8 @@ export const FieldOptions = {
   'tagid': '&',  // field that specifies the type of this field
   'dir': '<',    // pointer enumeration treats field as a collection
   'key': 'K',    // field is a primary key for this type
-  'link': 'L'    // field is a link (foreign key) to an instance of FieldType
+  'link': 'L',    // field is a link (foreign key) to an instance of FieldType
+  'attr': '/attr' // field is an attribute
 };
 
 export const OptionTypes = {
@@ -41,7 +42,7 @@ export const OptionTypes = {
 };
 
 export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
-export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend'];
+export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend', 'attr'];
 export const IntegerOpts = ['minc', 'maxc', 'tagid', 'minv', 'maxv'];
 export const FloatOpts = ['minf', 'maxf'];
 export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype'];
@@ -144,6 +145,10 @@ export const FieldOptionInputArgs: { [key: string]: any } = {
   link: {
     type: 'checkbox',
     description: 'Field is a relationship link to a type instance'
+  },
+  attr: {
+    type: 'checkbox',
+    description: 'Field is an attribute'
   }
 };
 
@@ -165,6 +170,7 @@ export const TypeOptionInputArgs = {
     description: 'Extension: Enumerated type derived from the specified Array, Choice, Map or Record type'
   },
   pointer: {
+    type: 'SBCreatableSelect',
     description: 'Extension: Enumerated type containing pointers derived from the specified Array, Choice, Map or Record type'
   },
   format: {

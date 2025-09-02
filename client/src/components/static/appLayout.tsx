@@ -3,7 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 
 import { toast, ToastContainer } from 'react-toastify';
 import favicon from '../dependencies/assets/img/jadn-favicon.png';
-import { NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_VALIDATE_MESSAGE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE_SCHEMA, NAV_ABOUT, NAV_TRANSLATE_DATA } from 'components/utils/constants';
+import { NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_DATA, NAV_VALIDATE_MESSAGE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE_SCHEMA, NAV_ABOUT, NAV_TRANSLATE_DATA } from 'components/utils/constants';
 import { useAppSelector } from '../../reducers';
 import { ThemeContext } from './ThemeProvider';
 import { dismissAllToast } from 'components/common/SBToast';
@@ -91,7 +91,7 @@ const AppLayout = () => {
                 </NavLink>
                 <ul className={`dropdown-menu m-0 ${isCreationDropdownOpen ? 'show' : ''}`}>
                   <li><NavLink className='dropdown-item nav-link' to={NAV_CREATE_SCHEMA} onClick={onCreationDropDownClick}>Schema Creation</NavLink></li>
-                  <li><NavLink className='dropdown-item nav-link' to={NAV_CREATE_MESSAGE} onClick={onCreationDropDownClick}>Data Creation</NavLink></li>
+                  <li><NavLink className='dropdown-item nav-link' to={NAV_CREATE_DATA} onClick={onCreationDropDownClick}>Data Creation</NavLink></li>
                 </ul>
               </li>
 
