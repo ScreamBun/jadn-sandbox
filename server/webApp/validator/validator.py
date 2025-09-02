@@ -32,6 +32,7 @@ class Validator:
         "Validation error"
     ]
     
+    # TODO: Move to jadnvalidation at the default schema for validations
     j_meta_schema = {
         "meta": {
         "title": "JADN Metaschema",
@@ -158,6 +159,7 @@ class Validator:
         #     errorMsgs = get_value_errors(e)
         #     return False, errorMsgs, "", schema
         try:
+            # TODO: Look into this, see if we can replace it with jadnvalidation
             j = loads(schema)
             return True, "Schema is Valid" if sm else j
         except Exception as e:

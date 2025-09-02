@@ -49,13 +49,14 @@ class Convert(Resource):
         if schema_fmt == constants.JADN:
             
             if isinstance(schema_data, str):
-                    schema_data = json.loads(schema_data)              
+                schema_data = json.loads(schema_data)              
             
+            #TODO: Use new data / schema validation logic...
             is_valid, schema = current_app.validator.validateSchema(schema_data, False)
             if not is_valid:
                 return "Schema is not valid", 500    
             
-            jadn.check(schema_data) 
+            # jadn.check(schema_data) # Calls DK's validator which is not up to date yet
         elif schema_fmt == constants.JSON:
             
             if isinstance(schema_data, str):
