@@ -170,13 +170,22 @@ export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
 
 //FUNCTION: Get default value. If option has default value, that takes precedence over the type default value.
 export const getDefaultValue = (type: string, options: any[], children: any[] = []): any => {
+    const minInclusive = options.find(opt => typeof opt === 'string' && opt.startsWith("w"))?.slice(1);
+    let minExclusive = options.find(opt => typeof opt === 'string' && opt.startsWith("y"))?.slice(1);
+    // Adjust minExclusive
+    if (minExclusive) {
+        if (type === "Integer") minExclusive = parseInt(minExclusive) + 1;
+        if (type === "Number") minExclusive = parseFloat(minExclusive) + 0.01;
+    }
+    const minValue = minInclusive ? minInclusive : minExclusive ? minExclusive : undefined;
+
     for (const option of options) {
-        const val = defaultValues(option, getMinv(options), children);
+        const val = defaultValues(option, getMinv(options), minValue, children);
         if (val !== undefined) {
             return val;
         }
     }
-    const val2 = defaultValues(type, getMinv(options), children);
+    const val2 = defaultValues(type, getMinv(options), minValue, children);
     if (val2 !== undefined) {
         return val2;
     }

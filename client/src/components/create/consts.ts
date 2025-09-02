@@ -30,16 +30,10 @@ export const timeZones = [
 
 // Example data for data generator
 import RandExp from "randexp";
-export const defaultValues = (option: string, minLength: number = 0, children: any = []) => {
-    const intValue = minLength > 0 ? parseInt('1'.repeat(minLength), 2) : 1;
-    const floatValue = minLength > 0 ? parseFloat('1.' + '9'.repeat(minLength)) : 1.5;
+export const defaultValues = (option: string, minLength: number = 0, minVal: number = 1, children: any = []) => {
     const strValue = minLength > 0 ? 'a'.repeat(minLength) : "abcdefg";
     const binValue = minLength > 0 ? '\x65'.repeat(minLength) : "\x65\x66\x67";
     const pattern = option && option.startsWith('%') ? option.slice(1) : undefined;
-    // w,x,y,z for integer and number
-    let w, y;
-    if (option.startsWith('w')) w = option.slice(1) || undefined;
-    if (option.startsWith('y')) y = option.slice(1) || undefined;
 
 
     const choice = pattern ? "String" : option; // make sure sending right val to optDict
@@ -105,8 +99,8 @@ export const defaultValues = (option: string, minLength: number = 0, children: a
         "/x": "acbd",
         // Core Types
         "String": pattern !== undefined ? new RandExp(pattern).gen() : strValue,
-        "Integer": w ? parseInt(w) : y ? parseInt(y) : intValue,
-        "Number": w ? parseFloat(w) : y ? parseFloat(y) : floatValue,
+        "Integer": parseInt(minVal.toString()),
+        "Number": parseFloat(minVal.toString()),
         "Binary": binValue,
         "Boolean": true,
         "Enumerated": children.length > 0 ? children[0] : undefined,
