@@ -162,23 +162,31 @@ const CoreType = (props: FieldProps) => {
             </div>
         );   
     } else if (type == "Integer") {
+        const isStringDuration = options.some(opt => opt === "/dayTimeDuration") || options.some(opt => opt === "/yearMonthDuration");
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-between'>
                     <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
                     <input
-                        type='number'
+                        type={isStringDuration ? 'text' : 'number'}
                         value={data ?? ''}
                         onChange={e => {
                             const raw = e.target.value;
-                            const num = raw === '' ? '' : parseInt(raw);
-                            setData(num === '' ? '' : num);
+                            //const num = raw === '' ? '' : parseInt(raw);
+                            setData(raw === '' ? '' : raw);
                             if (raw === '') dispatch(clearFieldValidation(name));
                         }}
                         onBlur = {e => {
                             const raw = e.target.value;
                             if (raw === '') { fieldChange(name, ''); dispatch(clearFieldValidation(name)); return; }
+                            if (isStringDuration) {
+                                // For duration strings, just pass the raw value
+                                fieldChange(name, raw);
+                                handleBlur(raw, "String");
+                                return;
+                            }
+                            // For normal integers, parse and validate
                             const num = parseInt(raw);
                             if (isNaN(num)) { fieldChange(name, ''); dispatch(clearFieldValidation(name)); return; }
                             fieldChange(name, num);
