@@ -35,7 +35,6 @@ export const defaultValues = (option: string, minLength: number = 0, minVal: num
     const binValue = minLength > 0 ? '\x65'.repeat(minLength) : "\x65\x66\x67";
     const pattern = option && option.startsWith('%') ? option.slice(1) : undefined;
 
-
     const choice = pattern ? "String" : option; // make sure sending right val to optDict
 
     const optDict =  { // dont forget choice and enum
@@ -100,7 +99,7 @@ export const defaultValues = (option: string, minLength: number = 0, minVal: num
         // Core Types
         "String": pattern !== undefined ? new RandExp(pattern).gen() : strValue,
         "Integer": parseInt(minVal.toString()),
-        "Number": parseFloat(minVal.toString()),
+        "Number": parseFloat((minVal === 1 ? 1.1 : minVal).toString()),
         "Binary": binValue,
         "Boolean": true,
         "Enumerated": children.length > 0 ? children[0] : undefined,

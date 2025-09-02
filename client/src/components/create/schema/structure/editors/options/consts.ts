@@ -13,10 +13,12 @@ export const TypeOptions = {
   'pointer': '>',    // enumeration of pointers derived from Array/Choice/Map/Record type
   'format': '/',     // semantic validation keyword, may affect serialization
   'pattern': '%',    // regular expression that a string must match
-  'minf': 'y',       // minimum Number value
-  'maxf': 'z',       // maximum Number value
-  'minv': '{',       // minimum byte or text string length, Integer value, element count
-  'maxv': '}',       // maximum byte or text string length, Integer value, element count
+  'minInclusive': 'w',       // minimum inclusive value
+  'maxInclusive': 'x',       // maximum inclusive value
+  'minExclusive': 'y',       // minimum exclusive value
+  'maxExclusive': 'z',       // maximum exclusive value
+  'minLength': '{',       // minimum byte or text string length, Integer value, element count
+  'maxLength': '}',       // maximum byte or text string length, Integer value, element count
   'unique': 'q',     // ArrayOf instance must not contain duplicates
   'set': 's',        // ArrayOf instance is unordered and unique
   'unordered': 'b',  // ArrayOf instance is unordered and not unique (bag)
@@ -43,9 +45,9 @@ export const OptionTypes = {
 
 export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
 export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend', 'attr'];
-export const IntegerOpts = ['minc', 'maxc', 'tagid', 'minv', 'maxv'];
-export const FloatOpts = ['minf', 'maxf'];
-export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype'];
+export const IntegerOpts = ['minc', 'maxc', 'tagid', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
+export const FloatOpts = ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
+export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const EnumId = TypeOptions.enum;
 export const PointerId = TypeOptions.pointer;
 
@@ -106,19 +108,19 @@ export const RequiredOptions: Record<string, Array<string>> = {
 
 export const ValidOptions: Record<string, Array<string>> = {
   // Primitives
-  Binary: ['minv', 'maxv', 'format'],
+  Binary: ['minLength', 'maxLength', 'format'],
   Boolean: [],
-  Integer: ['minv', 'maxv', 'format'],
-  Number: ['minf', 'maxf', 'format'],
-  String: ['minv', 'maxv', 'format', 'pattern'],
+  Integer: ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'format'],
+  Number: ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'format'],
+  String: ['minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'format', 'pattern'],
   // Structures
-  Array: ['extend', 'format', 'minv', 'maxv'],
-  ArrayOf: ['vtype', 'minv', 'maxv', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
+  Array: ['extend', 'format', 'minLength', 'maxLength'],
+  ArrayOf: ['vtype', 'minLength', 'maxLength', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
   Choice: ['id', 'extend', 'combine'],
   Enumerated: ['id', 'enum', 'pointer', 'extend'],
-  Map: ['id', 'extend', 'minv', 'maxv', 'seq'],
-  MapOf: ['ktype', 'vtype', 'minv', 'maxv', 'seq'],
-  Record: ['extend', 'minv', 'maxv', 'seq']
+  Map: ['id', 'extend', 'minLength', 'maxLength', 'seq'],
+  MapOf: ['ktype', 'vtype', 'minLength', 'maxLength', 'seq'],
+  Record: ['extend', 'minLength', 'maxLength', 'seq']
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
@@ -189,13 +191,29 @@ export const TypeOptionInputArgs = {
     type: 'number',
     description: '(optional) Maximum real number value'
   },
-  minv: {
+  minLength: {
     type: 'number',
-    description: '(optional) Minimum numeric value, octet or character count, or element count'
+    description: '(optional) Minimum length, octet or character count, or element count'
   },
-  maxv: {
+  maxLength: {
     type: 'number',
-    description: '(optional) Maximum numeric value, octet or character count, or element count'
+    description: '(optional) Maximum length, octet or character count, or element count'
+  },
+  minIncusive: {
+    type: 'number',
+    description: '(optional) Minimum inclusive value'
+  },
+  maxIncusive: {
+    type: 'number',
+    description: '(optional) Maximum inclusive value'
+  },
+  minExclusive: {
+    type: 'number',
+    description: '(optional) Minimum exclusive value'
+  },
+  maxExclusive: {
+    type: 'number',
+    description: '(optional) Maximum exclusive value'
   },
   unique: {
     type: 'checkbox',
