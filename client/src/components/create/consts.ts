@@ -91,9 +91,9 @@ export const defaultValues = (option: string, minLength: number = 0, minVal: num
         "/eui": "00:00:5e:00:53:01",
         "/ipv4-addr": "127.0.0.1",
         "/ipv6-addr": "2001:db8:3333:4444:5555:6666:1.2.3.4",
-        "/b64": "ABCD",
-        "/x": "acbd",
-        "/X": "ABCD",
+        "/b64": "U29tZSBkYXRh",
+        "/x": "0A1B2C3D4E",
+        "/X": "0A1B2C3D4E",
         // Core Types
         "String": pattern !== undefined ? new RandExp(pattern).gen() : strValue,
         "Integer": parseInt(minVal.toString()),
