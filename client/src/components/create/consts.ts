@@ -55,7 +55,7 @@ export const defaultValues = (option: string, minLength: number = 0, minVal: num
         "/uri-template": "https://www.example.com/api/v1/items/{/item_id}",
         "/uri-reference": "http://www.example.com/questions/3456/my-document",
         "/uri": "http://www.example.com/questions/3456/my-document",
-        "/anyURI": "http://www.test.com",
+        "/anyUri": "http://www.test.com",
         "/ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
         "/ipv4": "127.0.0.1",
         "/idn-hostname": "xn--bcher-kva.example.com",
