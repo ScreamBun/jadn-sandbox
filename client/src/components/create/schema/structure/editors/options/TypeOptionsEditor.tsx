@@ -69,31 +69,62 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
     }
   };
 
-  const validOptions = () => {
-    return safeGet(ValidOptions, optionType, []).map((key: string) => {
-      return (
-        <KeyValueEditor
-          key={key}
-          id={id}
-          name={key}
-          labelColumns={2}
-          fieldColumns={10}
-          placeholder={key}
-          removable={false}
-          options={getOptions(key)}
-          change={val => change([key, val], 'type')}
-          value={deserializedState[key]}
-          required={RequiredOptions[optionType].includes(key) ? true : false}
-          {...TypeOptionInputArgs[key]}
-        />
-      );
-    });
-  };
+  // Separate checkbox/radio options from others, similar to FieldOptionsEditor
+  const validKeys = safeGet(ValidOptions, optionType, []) as Array<keyof typeof TypeOptionInputArgs>;
+  const checkboxKeys = validKeys.filter(
+    (key) => TypeOptionInputArgs[key]?.type === 'checkbox' || TypeOptionInputArgs[key]?.type === 'radio'
+  );
+  const otherKeys = validKeys.filter(
+    (key) => TypeOptionInputArgs[key]?.type !== 'checkbox' && TypeOptionInputArgs[key]?.type !== 'radio'
+  );
 
-  if (validOptions().length != 0) {
+  const checkboxOptions = checkboxKeys.map((key) => (
+    <div key={String(key)} className="col-md-3">
+      <KeyValueEditor
+    id={id ?? ''}
+        name={String(key)}
+        placeholder={String(key)}
+        removable={false}
+        remove={() => {}}
+        options={getOptions(String(key)) as unknown as string[]}
+        change={val => change([String(key), val], 'type')}
+        value={deserializedState[String(key)]}
+        required={RequiredOptions[optionType].includes(String(key))}
+        {...TypeOptionInputArgs[key]}
+        labelColumns={3}
+        fieldColumns={9}
+      />
+    </div>
+  ));
+
+  const otherOptions = otherKeys.map((key) => (
+    <div key={String(key)} className="col-md-6">
+      <KeyValueEditor
+    id={id ?? ''}
+        name={String(key)}
+        labelColumns={4}
+        fieldColumns={7}
+        placeholder={String(key)}
+        removable={false}
+        remove={() => {}}
+        options={getOptions(String(key)) as unknown as string[]}
+        change={val => change([String(key), val], 'type')}
+        value={deserializedState[String(key)]}
+        required={RequiredOptions[optionType].includes(String(key))}
+        {...TypeOptionInputArgs[key]}
+      />
+    </div>
+  ));
+
+  if (validKeys.length !== 0) {
     return (
       <>
-        {validOptions()}
+        <div className="d-flex flex-wrap align-items-start mb-2">
+          {checkboxOptions}
+        </div>
+        <div className="d-flex flex-wrap align-items-center mb-2">
+          {otherOptions}
+        </div>
       </>
     );
   } else if (optionType == "Boolean") {

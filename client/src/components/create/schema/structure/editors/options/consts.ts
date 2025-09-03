@@ -29,8 +29,8 @@ export const TypeOptions = {
 };
 
 export const FieldOptions = {
-  'minc': '[',   // minimum cardinality, default = 1, 0 = field is optional
-  'maxc': ']',   // maximum cardinality, default = 1, 0 = inherited max, not 1 = array
+  'minOccurs': '[',   // minimum cardinality, default = 1, 0 = field is optional
+  'maxOccurs': ']',   // maximum cardinality, default = 1, 0 = inherited max, not 1 = array
   'tagid': '&',  // field that specifies the type of this field
   'dir': '<',    // pointer enumeration treats field as a collection
   'key': 'K',    // field is a primary key for this type
@@ -45,7 +45,7 @@ export const OptionTypes = {
 
 export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
 export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend', 'attr'];
-export const IntegerOpts = ['minc', 'maxc', 'tagid', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
+export const IntegerOpts = ['minOccurs', 'maxOccurs', 'tagid', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const FloatOpts = ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const EnumId = TypeOptions.enum;
@@ -108,11 +108,11 @@ export const RequiredOptions: Record<string, Array<string>> = {
 
 export const ValidOptions: Record<string, Array<string>> = {
   // Primitives
-  Binary: ['minLength', 'maxLength', 'format'],
+  Binary: ['format', 'minLength', 'maxLength'],
   Boolean: [],
-  Integer: ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'format'],
-  Number: ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'format'],
-  String: ['minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'format', 'pattern'],
+  Integer: ['format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
+  Number: ['format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
+  String: ['format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
   // Structures
   Array: ['extend', 'format', 'minLength', 'maxLength'],
   ArrayOf: ['vtype', 'minLength', 'maxLength', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
@@ -124,11 +124,11 @@ export const ValidOptions: Record<string, Array<string>> = {
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
-  minc: {
+  minOccurs: {
     type: 'number',
     description: 'Minimum cardinality'
   },
-  maxc: {
+  maxOccurs: {
     type: 'number',
     description: 'Maximum cardinality'
   },
