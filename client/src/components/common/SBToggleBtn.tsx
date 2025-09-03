@@ -1,4 +1,4 @@
-import { faCircleChevronUp, faCircleChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
@@ -19,9 +19,9 @@ const SBToggleBtn = (props: any) => {
             <div>
                 {children}
             </div>
-            <button onClick={onToggleClick} className='btn btn-sm'
+            <button onClick={onToggleClick} className='btn btn-med ${toggle ? '
                 title={`${index ? (toggle[index] == true ? 'hide' : 'show') : (toggle ? 'hide' : 'show')}`} >
-                <FontAwesomeIcon icon={index ? (toggle[index] == true ? faCircleChevronUp : faCircleChevronDown) : (toggle ? faCircleChevronUp : faCircleChevronDown)}
+                <FontAwesomeIcon icon={index ? (toggle[index] == true ? faChevronDown : faChevronUp) : (toggle ? faChevronDown : faChevronUp)}
                 />
             </button>
         </div>

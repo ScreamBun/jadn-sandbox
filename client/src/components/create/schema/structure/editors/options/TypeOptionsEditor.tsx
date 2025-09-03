@@ -5,6 +5,7 @@ import { useAppSelector } from 'reducers';
 import { getFormatOptions } from 'reducers/format';
 import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
+import { destructureField } from 'components/create/data/lib/utils';
 interface TypeOptionsEditorProps {
   id?: string;
   placeholder?: string;
@@ -56,6 +57,13 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
           }
         }
         return formats_returned;
+      case 'pointer':
+        const filteredPointer = Object.values(schemaTypesObject).filter((type) => {
+          return (type.length == 5 && Array.isArray(type[4]) && type[4].length != 0)
+        }).map((type) => {
+          return type[0]
+        })
+        return filteredPointer;
       default:
         return [];
     }

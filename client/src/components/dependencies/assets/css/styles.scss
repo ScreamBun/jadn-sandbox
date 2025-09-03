@@ -274,6 +274,14 @@ a,
     bottom: 3em;
 }
 
+.jadn-type {
+  border: none;
+}
+
+.jadn-type:hover {
+  border: 1.5px solid #ffc107;
+}
+
 // Extra small devices (portrait phones, less than 576px)
 // No media query since this is the default in Bootstrap
 
@@ -303,6 +311,9 @@ a,
 @include color-mode(dark) {
     $primary: #375a7f;
     $secondary: #383a40;
+    $danger: #dc3545;
+    $success: #28a745;
+    $warning: #ffc107;
 
     .sb-outline {
         .highlight-color {
@@ -322,9 +333,33 @@ a,
         background-color: #{$secondary} !important;
     }
 
+    [class*="danger-primary"]:not(.btn-outline-danger) {
+        background-color: #{$danger} !important;
+    }
+
+    [class*="success"]:not(.btn-outline-success) {
+        background-color: #{$success} !important;
+    }
+
+    [class*="warning"]:not(.btn-outline-warning) {
+        background-color: #{$warning} !important;
+    }
+
     .btn-outline-primary,
     .btn-primary {
         border: $primary;
+    }
+
+    .btn-danger-primary {
+        border: $danger;
+    }
+
+    .btn-success {
+        border: $success;
+    }
+
+    .btn-warning {
+        border: $warning;
     }
 
 }

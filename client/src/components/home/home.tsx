@@ -1,7 +1,7 @@
 import { faCode, faCodeBranch, faEnvelopeCircleCheck, faEye, faFileCirclePlus, faPencilRuler } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_MESSAGE, NAV_CREATE_SCHEMA, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE_SCHEMA,
+  NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_DATA, NAV_CREATE_SCHEMA, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE_SCHEMA,
   NAV_TRANSLATE_DATA
 } from 'components/utils/constants';
 import React, { useEffect } from 'react';
@@ -48,7 +48,7 @@ const Home = () => {
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
-                <Link className="card-link" to={NAV_CREATE_MESSAGE}>Data Instances</Link>
+                <Link className="card-link" to={NAV_CREATE_DATA}>Data Instances</Link>
               </div>
             </div>
             <div className="card">

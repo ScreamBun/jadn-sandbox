@@ -42,10 +42,20 @@ class FormatOptionLogic:
     ipv6_addr = FormatOptionModel("ipv6-addr", "IPv6 Address", "IPv4 address as specified in RFC 8200 3", FormatType.BINARY.value, "").__dict__
     ipv4_net = FormatOptionModel("ipv4-net", "IPv4 Network", "Binary IPv4 address and Integer prefix length as specified in RFC 4632 3.1", FormatType.ARRAY.value, "").__dict__
     ipv6_net = FormatOptionModel("ipv6-net", "IPv6 Network", "Binary IPv6 address and Integer prefix length as specified in RFC 4291 2.3", FormatType.ARRAY.value, "").__dict__
+    ud = FormatOptionModel("u\\d+", "Unsigned Integer or Bit", "Unsigned integer or bit field of <n> bits, value must be between 0 and 2^<n> - 1", FormatType.INTEGER.value, "").__dict__
+
     i8 = FormatOptionModel("i8", "i8", "Signed 8 bit integer, value must be between -128 and 127", FormatType.INTEGER.value, "").__dict__
     i16 = FormatOptionModel("i16", "i16", "Signed 16 bit integer, value must be between -32768 and 32767", FormatType.INTEGER.value, "").__dict__
     i32 = FormatOptionModel("i32", "i32", "Signed 32 bit integer", FormatType.INTEGER.value, "").__dict__
-    ud = FormatOptionModel("u\\d+", "Unsigned Integer or Bit", "Unsigned integer or bit field of <n> bits, value must be between 0 and 2^<n> - 1", FormatType.INTEGER.value, "").__dict__
+    i64 = FormatOptionModel("i64", "i64", "Signed 64 bit integer", FormatType.INTEGER.value, "").__dict__
+    non_negative_integer = FormatOptionModel("nonNegativeInteger", "nonNegativeInteger", "[0, *]", FormatType.INTEGER.value, "").__dict__
+    positive_integer = FormatOptionModel("positiveInteger", "positiveInteger", "(0, *]", FormatType.INTEGER.value, "").__dict__
+    non_positive_integer = FormatOptionModel("nonPositiveInteger", "nonPositiveInteger", "[*, 0]", FormatType.INTEGER.value, "").__dict__
+    negative_integer = FormatOptionModel("negativeInteger", "negativeInteger", "[*, 0)", FormatType.INTEGER.value, "").__dict__
+    u64 = FormatOptionModel("u64", "u64", "Unsigned 64 bit integer", FormatType.INTEGER.value, "").__dict__
+    u32 = FormatOptionModel("u32", "u32", "Unsigned 32 bit integer", FormatType.INTEGER.value, "").__dict__
+    u16 = FormatOptionModel("u16", "u16", "Unsigned 16 bit integer", FormatType.INTEGER.value, "").__dict__
+    u8 = FormatOptionModel("u8", "u8", "Unsigned 8 bit integer", FormatType.INTEGER.value, "").__dict__
 
     f16 = FormatOptionModel("f16", "float16", "Serialize as IEEE 754 Half-Precision Float (#7.25)", FormatType.NUMBER.value, "").__dict__
     f32 = FormatOptionModel("f32", "float32", "Serialize as IEEE 754 Single-Precision Float (#7.26)", FormatType.NUMBER.value, "").__dict__
@@ -53,7 +63,7 @@ class FormatOptionLogic:
     
     hex_binary = FormatOptionModel("x", "hexBinary", "Hex - base16 - lowercase out, case-folding in", FormatType.BINARY.value, "").__dict__
     hex_binary_upper_only = FormatOptionModel("X", "hexBinaryUpperOnly", "Hex - RFC 4648 Section 8 - uppercase only", FormatType.BINARY.value, "").__dict__
-    base_64_binary = FormatOptionModel("b", "base64Binary", "Base64url - RFC 4648 Section 5 (default text representation of Binary type)", FormatType.BINARY.value, "").__dict__
+    base_64_binary = FormatOptionModel("b64", "base64Binary", "Base64url - RFC 4648 Section 5 (default text representation of Binary type)", FormatType.BINARY.value, "").__dict__
 
     date_time_int = FormatOptionModel("date-time", "Date Time", "POSIX time: the number of seconds since the Epoch", FormatType.INTEGER.value, "ex: 835810335").__dict__
     time_int = FormatOptionModel("time", "Time", "POSIX Time", FormatType.INTEGER.value, "ex: 835810335").__dict__
@@ -97,6 +107,15 @@ class FormatOptionLogic:
         formats.append(self.i8)
         formats.append(self.i16)
         formats.append(self.i32)
+        formats.append(self.i64)
+        formats.append(self.non_negative_integer)
+        formats.append(self.positive_integer)
+        formats.append(self.non_positive_integer)
+        formats.append(self.negative_integer)
+        formats.append(self.u64)
+        formats.append(self.u32)
+        formats.append(self.u16)
+        formats.append(self.u8)
         formats.append(self.ud)
         formats.append(self.f16)
         formats.append(self.f32)
