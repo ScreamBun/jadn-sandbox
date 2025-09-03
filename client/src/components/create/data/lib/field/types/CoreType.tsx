@@ -162,7 +162,7 @@ const CoreType = (props: FieldProps) => {
             </div>
         );   
     } else if (type == "Integer") {
-        const isStringDuration = options.some(opt => opt === "/dayTimeDuration") || options.some(opt => opt === "/yearMonthDuration");
+        const isStringDuration = options.some(opt => ["/dayTimeDuration", "/yearMonthDuration", "/gYearMonth", "/gMonthDay"].includes(opt));
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-between'>

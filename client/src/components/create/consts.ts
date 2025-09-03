@@ -30,7 +30,7 @@ export const timeZones = [
 
 // Example data for data generator
 import RandExp from "randexp";
-export const defaultValues = (option: string, minLength: number = 0, minVal: number = 1, children: any = []) => {
+export const defaultValues = (option: string, minLength: number = 0, minVal: number = 1, children: any = [], secondVis: boolean = false) => {
     const strValue = minLength > 0 ? 'a'.repeat(minLength) : "abcdefg";
     const binValue = minLength > 0 ? '\x65'.repeat(minLength) : "\x65\x66\x67";
     const pattern = option && option.startsWith('%') ? option.slice(1) : undefined;
@@ -44,9 +44,9 @@ export const defaultValues = (option: string, minLength: number = 0, minVal: num
         "/QName": "www.example.com:Homepage",
         "/normalizedString": "letter",
         "/name": "_name",
-        "/date": "2023-01-01",
-        "/date-time": "2023-01-01T00:00+03:00",
-        "/time": "12:00:00",
+        "/date": !secondVis ? "2023-01-01" : Math.floor(Date.now() / 1000), // String : integer
+        "/date-time": !secondVis ? "2023-01-01T00:00+03:00" : Math.floor(Date.now() / 1000), // String : integer
+        "/time": !secondVis ? "12:00:00" : Math.floor(Date.now() / 1000), // String : integer
         "/token": "Milwaukee",
         "/relative-json-pointer": "0/foo",
         "/json-pointer": "/foo",
@@ -79,9 +79,6 @@ export const defaultValues = (option: string, minLength: number = 0, minVal: num
         "/gMonthDay": "--04-12Z",
         "/yearMonthDuration": "P17M",
         "/dayTimeDuration": "PT30M",
-        // dateTime
-        // date
-        // time
         "/nonNegativeInteger": 0,
         "/positiveInteger": 1,
         "/nonPositiveInteger": 0,

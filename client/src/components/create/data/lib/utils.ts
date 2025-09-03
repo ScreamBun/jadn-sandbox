@@ -180,7 +180,9 @@ export const getDefaultValue = (type: string, options: any[], children: any[] = 
     const minValue = minInclusive ? minInclusive : minExclusive ? minExclusive : undefined;
 
     for (const option of options) {
-        const val = defaultValues(option, getMinv(options), minValue, children);
+        // Check for integer versions of dates
+        const secondVis = type === "Integer" && (option === "/date-time" || option === "/date" || option === "/time");
+        const val = defaultValues(option, getMinv(options), minValue, children, secondVis);
         if (val !== undefined) {
             return val;
         }
