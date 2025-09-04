@@ -8,7 +8,7 @@ from typing import Tuple, Union
 from jadnschema.jadn import loads
 from jadnvalidation import DataValidation
 
-from server.webApp.validator.utils import BaseEnum
+from webApp.validator.utils import BaseEnum
 from webApp.utils.utils import get_value_errors
 from webApp.utils import constants
 

@@ -12,7 +12,7 @@ from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
-from jadnxml.builder.xsd_builder import convert_xsd_from_dict
+from jadnxml.builder.xsd_builder import XSDBuilder
 from jadnxml.builder.xml_builder import build_xml_from_json
 from weasyprint import HTML
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
@@ -176,7 +176,8 @@ class Convert(Resource):
                     return jadn.convert.diagram_dumps(src, puml_style)
                 
                 elif toLang == constants.XSD:
-                    return convert_xsd_from_dict(src)[0]
+                    xsd_builder = XSDBuilder()
+                    return xsd_builder.convert_xsd_from_dict(src)[0]
                 
                 else:
                     raise ValueError('Unknown JADN conversion type')
