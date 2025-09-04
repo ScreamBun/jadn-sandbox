@@ -121,6 +121,19 @@ export const getPointerChildren = (schemaObj: any, pointer: string, children: an
     });
 }
 
+//FUNCTION: Derived Enumeration Logic
+export const getDerivedOptions = (schemaObj: any, derived: string): any[] => {
+    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === derived) : [];
+    let derivedOptions: any[] = [];
+    for (const type of types) {
+        let [_idx, _name, _type, _options, _comment, children] = destructureField(type);
+        if (children.length > 0) {
+            derivedOptions = [...derivedOptions, ...children];
+        }
+    }
+    return derivedOptions;
+}
+
 //FUNCTION: ArrayOf unique & set check
 export const getUniqueOrSet = (children: any[], opts: any[]): string => {
     const isUnique = opts.some(opt => opt === "q");

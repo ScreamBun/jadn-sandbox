@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useSelector } from 'react-redux'
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getDefaultValue, getPointerChildren, isOptional } from "../../utils";
+import { destructureField, getDefaultValue, getPointerChildren, isOptional, getDerivedOptions } from "../../utils";
 import { getSelectedSchema } from "reducers/util";
 
 interface FieldProps {
@@ -41,11 +41,24 @@ const Enumerated = (props: FieldProps) => {
     });
 
     // Add pointer children to children if pointer exists
+    const schemaObj = useSelector(getSelectedSchema);
     if (pointer !== undefined) {
-        const schemaObj = useSelector(getSelectedSchema);
         children = [...children, ...getPointerChildren(schemaObj, pointer, [])];
     }
-    
+
+    // Check for derived enum
+    let derived: string | undefined = undefined;
+    options.forEach((opt) => {
+        if (String(opt).startsWith('#')) {
+            derived = String(opt).substring(1);
+        }
+    });
+
+    // Add derived options if derived exists
+    if (derived !== undefined) {
+        children = getDerivedOptions(schemaObj, derived);
+    }
+
     const isID = options.some(opt => String(opt) === '=');
 
     const enumChildren = Array.isArray(children) ? children.filter(c => Array.isArray(c)) : [];
