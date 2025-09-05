@@ -30,6 +30,16 @@ const DataGenerator = () => {
 
     const [activeView, setActiveView] = useState('message');
 
+    const handleSchemaCreation = () => {
+        if (loadedSchema) {
+            localStorage.setItem('__createdSchema__', JSON.stringify(loadedSchema));
+        }
+        if (selectedFile) {
+            localStorage.setItem('__selectedFile__', JSON.stringify(selectedFile));
+        }
+        window.location.href = '/create/schema';
+    }
+
     useEffect(() => {
         dispatch(info());
         dismissAllToast();
@@ -61,10 +71,6 @@ const DataGenerator = () => {
         setActiveView('creator');
     }
 
-    const handleSchemaCreation = () => {
-        window.location.href = '/create/schema';
-    }
-
     return (
         <div>
             <Helmet>
@@ -79,8 +85,8 @@ const DataGenerator = () => {
                             <div className="btn-group float-end" role="group" aria-label="First group">
                                 <button type='button' onClick={() => setActiveView('message')} className={`btn btn-sm btn-warning me-2 ${activeView == 'message' ? ' d-none' : ''}`} >View Schema</button>
                                 <button type='button' onClick={viewEditor} className={`btn btn-sm btn-warning me-2 ${activeView == 'creator' ? ' d-none' : ''}`} >Create Data</button>
-                                <button type='reset' className='btn btn-sm btn-danger me-2' onClick={onReset}>Reset</button>
                                 <button type="button" className="btn btn-sm btn-danger me-2" onClick={handleSchemaCreation}>Edit Schema</button>
+                                <button type='reset' className='btn btn-sm btn-danger' onClick={onReset}>Reset</button>
                             </div>
                         </div>
                         <div className='card-body p-2'>

@@ -17,8 +17,14 @@ import { clearDuplicate } from 'actions/duplicate';
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
 
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
-    const [generatedSchema, setGeneratedSchema] = useState('');
+    // See if there is a local storage item piped from create data
+    const pipedSchema = localStorage.getItem('__createdSchema__');
+    const pipedFile = localStorage.getItem('__selectedFile__');
+    localStorage.removeItem('__createdSchema__');
+    localStorage.removeItem('__selectedFile__');
+
+    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(pipedFile !== null ? JSON.parse(pipedFile) : null);
+    const [generatedSchema, setGeneratedSchema] = useState<object | ''>(pipedSchema !== null ? JSON.parse(pipedSchema) : ''); // check for piped schema
     const [cardsState, setCardsState] = useState<DragItem[]>([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -126,7 +132,7 @@ const SchemaGenerator = () => {
                                 <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
                                 <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
                                     <div className="btn-group me-2" role="group" aria-label="First group">
-                                        <button type="button" className="btn btn-sm btn-warning me-2" onClick={handleDataCreation}>Create Data</button>
+                                        <button type="button" className="btn btn-sm btn-danger me-2" onClick={handleDataCreation}>Create Data</button>
                                         <button type="reset" className="btn btn-sm btn-danger" onClick={onResetItemClick}>Reset</button>
                                     </div>
                                     <div className="btn-group" role="group" aria-label="Third group">
