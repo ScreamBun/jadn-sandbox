@@ -35,8 +35,8 @@ const SchemaGenerator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
-    // @ts-expect-error
-    dispatch(getValidFormatOpts());
+        // @ts-expect-error
+        dispatch(getValidFormatOpts());
         dismissAllToast();
     }, [dispatch])
 
@@ -116,6 +116,7 @@ const SchemaGenerator = () => {
                                 <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
                                 <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
                                     <div className="btn-group me-2" role="group" aria-label="First group">
+                                        <button type="button" className="btn btn-sm btn-warning me-2" onClick={()=>{}}>Data Creation</button>
                                         <button type="reset" className="btn btn-sm btn-danger" onClick={onResetItemClick}>Reset</button>
                                     </div>
                                     <div className="btn-group" role="group" aria-label="Third group">
