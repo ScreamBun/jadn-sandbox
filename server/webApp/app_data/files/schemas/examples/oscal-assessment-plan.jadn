@@ -6,7 +6,7 @@
     "config": {
       "$MaxBinary": 255,
       "$MaxString": 5555,
-      "$MaxElements": 250,
+      "$MaxElements": 100,
       "$Sys": "$",
       "$TypeName": "^[A-Za-z][-_$A-Za-z0-9]{0,63}$",
       "$FieldName": "^[A-Za-z][-_A-Za-z0-9]{0,63}$",
