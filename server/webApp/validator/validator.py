@@ -19,19 +19,6 @@ class SerialFormats(BaseEnum):
     XML = 'xml'    
 
 class Validator:
-    """
-    Validate messages against a given schema
-    """
-    validMsgs = [
-        "Valid",
-        "Validation passed",
-        "Validation success"
-    ]
-    invalidMsgs = [
-        "Invalid",
-        "Validation failed",
-        "Validation error"
-    ]
     
     def validateSchema(self, schema: Union[bytes, dict, str], sm: bool = True) -> Tuple[bool, Union[str, any]]:
         """
