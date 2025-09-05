@@ -52,6 +52,9 @@ const initialState: UtilState = {
 export default (state = initialState, action: util.UtilActions) => {
   switch (action.type) {
     case util.INFO_SUCCESS:
+      const examples = action.payload.schemas.examples || [];
+      const filteredExamples = examples.filter(e => e !== "start-up-template.jadn");
+      const sortedExamples = ["start-up-template.jadn", ...filteredExamples];
       return {
         ...state,
         site_title: action.payload.title,
@@ -61,7 +64,7 @@ export default (state = initialState, action: util.UtilActions) => {
         loaded: {
           ...state.loaded,
           messages: action.payload.messages,
-          schemas: action.payload.schemas
+          schemas: { ...action.payload.schemas, examples: sortedExamples }
         }
       };
 
