@@ -13,9 +13,15 @@ import { validateField as _validateFieldAction, clearFieldValidation } from 'act
 const DataGenerator = () => {
     const dispatch = useDispatch()
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
+    // See if there is a local storage item piped from create schema
+    const pipedSchema = localStorage.getItem('__createdSchema__');
+    const pipedFile = localStorage.getItem('__selectedFile__');
+    localStorage.removeItem('__createdSchema__');
+    localStorage.removeItem('__selectedFile__');
+
+    const [selectedFile, setSelectedFile] = useState<Option | null>(pipedFile !== null ? JSON.parse(pipedFile) : null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
+    const [loadedSchema, setLoadedSchema] = useState<object | null>(pipedSchema !== null ? JSON.parse(pipedSchema) : null); // check for piped schema
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [selection, setSelection] = useState<Option | null>();
 

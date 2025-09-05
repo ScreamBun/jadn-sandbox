@@ -40,6 +40,16 @@ const SchemaGenerator = () => {
         dismissAllToast();
     }, [dispatch])
 
+    const handleDataCreation = () => {
+        if (generatedSchema) {
+            localStorage.setItem('__createdSchema__', JSON.stringify(generatedSchema));
+        }
+        if (selectedSchemaFile) {
+            localStorage.setItem('__selectedFile__', JSON.stringify(selectedSchemaFile));
+        }
+        window.location.href = '/create/data';
+    }
+
     // When duplicate item is set in store, add a new card at end with "{name} copy"
     const duplicatedItem = useSelector((state: any) => state.Duplicate?.item);
     useEffect(() => {
@@ -116,7 +126,7 @@ const SchemaGenerator = () => {
                                 <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
                                 <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
                                     <div className="btn-group me-2" role="group" aria-label="First group">
-                                        <button type="button" className="btn btn-sm btn-warning me-2" onClick={()=>{}}>Data Creation</button>
+                                        <button type="button" className="btn btn-sm btn-warning me-2" onClick={handleDataCreation}>Data Creation</button>
                                         <button type="reset" className="btn btn-sm btn-danger" onClick={onResetItemClick}>Reset</button>
                                     </div>
                                     <div className="btn-group" role="group" aria-label="Third group">
