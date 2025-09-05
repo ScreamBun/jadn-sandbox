@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faClone, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import {
     FieldArray,
     InfoConfig
@@ -10,6 +10,8 @@ import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import withStructureEditor from '../ParentEditor/withStructureEditor';
 import SBOutlineFields, { DragItem } from './SBOutlineFields';
+import { useDispatch } from 'react-redux';
+import { duplicate } from 'actions/duplicate';
 
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
@@ -41,6 +43,11 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
         saveModal, toggleModal, modal, onRemoveItemClick, onChange, onBlur,
         fieldCollapse, setFieldCollapse, sortFields } = props;
 
+    const dispatch = useDispatch();
+    const handleDuplicate = () => {
+    dispatch(duplicate(valueObj));
+    }
+
     const onOutlineDrop = (item: DragItem) => {
         let reordered_types: any[] = [...valueObj.fields];
         reordered_types.splice(item.originalIndex, 1);
@@ -70,8 +77,11 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
                         <span id={valueObj.name} className="card-title" > {`${valueObj.name} (${valueObj.type})`}</span>
                     </div>
                     < div className='col' >
-                        <button type='button' className="float-end btn btn-danger btn-sm" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
+                        <button type='button' className="float-end btn btn-danger-primary btn-sm" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
                             <FontAwesomeIcon icon={faMinusCircle} />
+                        </button>
+                        <button type='button' className="float-end btn btn-primary btn-sm me-1" onClick={handleDuplicate} title="Duplicate Item">
+                            <FontAwesomeIcon icon={faClone} />
                         </button>
                     </div>
                 </div>
@@ -159,7 +169,7 @@ const StructureEditorDnd = memo(function StructureEditorDnd(props: StructureEdit
                         }
 
                         {
-                            !fieldCollapse ?
+                            !fieldCollapse ? 
                                 <button type='button' onClick={onAddField} className='btn btn-sm btn-primary btn-block rounded-pill'
                                     title='Add Field' >
                                     <FontAwesomeIcon icon={faPlusSquare} />

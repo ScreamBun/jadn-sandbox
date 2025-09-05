@@ -46,7 +46,7 @@ const SchemaGenerator = () => {
         if (!duplicatedItem) return;
 
         const src = duplicatedItem;
-        const nextName = src.name ? `${src.name} copy` : 'copy';
+        const nextName = src.name ? `${src.name}Copy` : 'Copy';
         const newTypeObject = { ...src, name: nextName };
 
         const isStructure = Array.isArray(newTypeObject.fields) && newTypeObject.fields.length >= 0;

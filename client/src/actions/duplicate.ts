@@ -10,7 +10,6 @@ const DUPLICATE_REQUEST = '@@util/DUPLICATE_REQUEST';
 export const DUPLICATE_SUCCESS = '@@util/DUPLICATE_SUCCESS';
 export const DUPLICATE_FAILURE = '@@util/DUPLICATE_FAILURE';
 export const DUPLICATE_CLEAR = '@@util/DUPLICATE_CLEAR';
-// Accepts serializable props/data, not JSX element
 export const duplicate = (propsData: Record<string, any>) => createAction({
     endpoint: `${baseAPI}`,
     method: 'POST',
@@ -21,7 +20,6 @@ export const duplicate = (propsData: Record<string, any>) => createAction({
     ]
 });
 
-// Clear the stored duplicate item after it's been consumed by the UI
 export const clearDuplicate = (): { type: typeof DUPLICATE_CLEAR } => ({ type: DUPLICATE_CLEAR });
 
 export interface DuplicateSuccessAction extends ActionSuccessResult {

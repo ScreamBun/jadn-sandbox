@@ -21,11 +21,8 @@ class ForDuplicate(Resource):
     """
 
     def post(self):
-        # Accepts and returns props/data for duplication
         request_json = request.json
         props = request_json.get('props', {})
-        # Optionally validate/transform props here
-        # For now, just echo back the props
         return jsonify({
             "props": props
         })
