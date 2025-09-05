@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown19, faCircleChevronDown, faCircleChevronUp, faClone, faMinusCircle, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import {
     FieldArray, InfoConfig
 } from '../../../interface';
@@ -9,6 +9,8 @@ import OptionsModal from '../options/OptionsModal';
 import { sbToastError } from 'components/common/SBToast';
 import withStructureEditor from '../ParentEditor/withStructureEditor';
 import { FieldEditorBtnStyle } from './FieldEditorBtn';
+import { useDispatch } from 'react-redux';
+import { duplicate } from 'actions/duplicate';
 
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
@@ -37,6 +39,12 @@ interface StructureEditorProps {
 const StructureEditorBtn = memo(function StructureEditorBtn(props: StructureEditorProps) {
     const { dataIndex, config, customStyle, change, valueObj, setValueObj, isEditableID, fieldChange, onFieldRemoval, onAddField,
         rowRef, inViewRef, saveModal, toggleModal, modal, onRemoveItemClick, onChange, onBlur, fieldCollapse, setFieldCollapse, sortFields } = props;
+
+    const dispatch = useDispatch();
+    const handleDuplicate = () => {
+        dispatch(duplicate(valueObj));
+    }
+
     const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
         let tmpFieldValues = [...valueObj.fields];
 
@@ -103,6 +111,9 @@ const StructureEditorBtn = memo(function StructureEditorBtn(props: StructureEdit
                         <button type='button' className="btn btn-danger btn-sm float-end" onClick={onRemoveItemClick}
                             title={`Delete ${valueObj.type}`}>
                             <FontAwesomeIcon icon={faMinusCircle} />
+                        </button>
+                        <button type='button' className="float-end btn btn-primary btn-sm me-1" onClick={handleDuplicate} title="Duplicate Item">
+                            <FontAwesomeIcon icon={faClone} />
                         </button>
                     </div>
                 </div>
