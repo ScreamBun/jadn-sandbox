@@ -12,6 +12,7 @@ import { SBConfirmModal } from 'components/common/SBConfirmModal';
 import { DragItem } from './structure/editors/DragStyle/SBOutline'
 import { SchemaCreatorBtnStyle } from './structure/editors/BtnStyle/SchemaCreatorBtn'
 import { SchemaCreatorDndStyle } from './structure/editors/DragStyle/SchemaCreatorDnd'
+import { clearDuplicate } from 'actions/duplicate';
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
@@ -34,9 +35,57 @@ const SchemaGenerator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
-        dispatch(getValidFormatOpts());
+    // @ts-expect-error
+    dispatch(getValidFormatOpts());
         dismissAllToast();
     }, [dispatch])
+
+    // When duplicate item is set in store, add a new card at end with "{name} copy"
+    const duplicatedItem = useSelector((state: any) => state.Duplicate?.item);
+    useEffect(() => {
+        if (!duplicatedItem) return;
+
+        const src = duplicatedItem;
+        const nextName = src.name ? `${src.name} copy` : 'copy';
+        const newTypeObject = { ...src, name: nextName };
+
+        const isStructure = Array.isArray(newTypeObject.fields) && newTypeObject.fields.length >= 0;
+        const valueArray = isStructure
+            ? [
+                newTypeObject.name,
+                newTypeObject.type,
+                newTypeObject.options || [],
+                newTypeObject.comment || '',
+                newTypeObject.fields || []
+            ]
+            : [
+                newTypeObject.name,
+                newTypeObject.type,
+                newTypeObject.options || [],
+                newTypeObject.comment || ''
+            ];
+
+        setGeneratedSchema((prev: any) => {
+            const prevTypes = prev?.types || [];
+            const newTypes = [...prevTypes, valueArray];
+            return { ...(prev || {}), types: newTypes };
+        });
+
+        setCardsState((prevCards: any[]) => {
+            const newCard = {
+                id: self.crypto?.randomUUID ? self.crypto.randomUUID() : Math.random().toString(36).slice(2),
+                index: prevCards.length,
+                text: newTypeObject.name,
+                value: valueArray,
+                isStarred: false,
+            };
+            return [...prevCards, newCard];
+        });
+
+        setFieldCollapseState((prev: any[]) => ([...prev, isStructure ? false : undefined]));
+
+        dispatch(clearDuplicate());
+    }, [duplicatedItem]);
 
     const onResetItemClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();

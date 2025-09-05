@@ -1,6 +1,8 @@
 import React, { memo } from 'react';
+import { useDispatch } from 'react-redux';
+import { duplicate } from 'actions/duplicate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faClone, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import OptionsModal from '../options/OptionsModal';
 import { PrimitiveTypeObject, StandardTypeObject } from '../consts';
 import withPrimitiveEditor from '../ParentEditor/withPrimitiveEditor';
@@ -21,6 +23,11 @@ interface PrimitiveEditorProps {
 
 const PrimitiveEditorDnd = memo(function PrimitiveEditorDnd(props: PrimitiveEditorProps) {
   const { valueObj, dataIndex, customStyle, rowRef, inViewRef, onChange, onBlur, modal, toggleModal, saveModal, onRemoveItemClick } = props;
+  const dispatch = useDispatch();
+
+  const handleDuplicate = () => {
+    dispatch(duplicate(valueObj));
+  };
 
   return (
     <>
@@ -31,8 +38,11 @@ const PrimitiveEditorDnd = memo(function PrimitiveEditorDnd(props: PrimitiveEdit
               <span id={valueObj.name} className="card-title">{`${valueObj.name} (${valueObj.type})`}</span>
             </div>
             <div className='col'>
-              <button type='button' className="float-end btn btn-danger btn-sm" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
+              <button type='button' className="float-end btn btn-danger-primary btn-sm" onClick={onRemoveItemClick} title={`Delete ${valueObj.type}`}>
                 <FontAwesomeIcon icon={faMinusCircle} />
+              </button>
+              <button type='button' className="float-end btn btn-primary btn-sm me-1" onClick={handleDuplicate} title="Duplicate Item">
+                <FontAwesomeIcon icon={faClone} />
               </button>
             </div>
           </div>

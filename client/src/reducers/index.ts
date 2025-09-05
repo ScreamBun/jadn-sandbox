@@ -6,6 +6,7 @@ import util, { UtilState } from './util';
 import validate, { ValidateState } from './validate';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import format, { FormatState } from './format';
+import duplicate, { DuplicateState } from './duplicate';
 import transform, { TransformState } from './transform';
 import validateField, { ValidateFieldState } from './validatefield';
 import toggleDefaultsReducer from './defaults';
@@ -19,6 +20,7 @@ export interface RootState {  // export so store.ts import is valid
   Format: FormatState;
   Transform: TransformState;
   ValidateField: ValidateFieldState;
+  Duplicate: DuplicateState; // Added Duplicate state
 }
 
 export default (history: History) => combineReducers({
@@ -30,7 +32,8 @@ export default (history: History) => combineReducers({
   Format: format,
   Transform: transform,
   ValidateField: validateField,
-  toggleDefaults: toggleDefaultsReducer
+  toggleDefaults: toggleDefaultsReducer,
+  Duplicate: duplicate // Added Duplicate reducer
 });
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
