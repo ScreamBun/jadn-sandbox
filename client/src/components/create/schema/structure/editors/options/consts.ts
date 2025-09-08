@@ -25,7 +25,8 @@ export const TypeOptions = {
   'seq': 'o',        // Map, MapOf, or Record instance is ordered and unique
   'combine': 'C',    // Choice is an untagged union, a logical combination of types
   'extend': 'X',     // Type has an extension point where fields may be appended
-  'default': '!'     // Default value
+  'default': '!',    // Default value
+  'const': 'v'       // Constant value
 };
 
 export const FieldOptions = {
@@ -47,7 +48,7 @@ export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
 export const BoolOpts = ['dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend', 'attr'];
 export const IntegerOpts = ['minOccurs', 'maxOccurs', 'tagid', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const FloatOpts = ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
-export const StringOpts = ['default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
+export const StringOpts = ['const', 'default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const EnumId = TypeOptions.enum;
 export const PointerId = TypeOptions.pointer;
 
@@ -108,11 +109,11 @@ export const RequiredOptions: Record<string, Array<string>> = {
 
 export const ValidOptions: Record<string, Array<string>> = {
   // Primitives
-  Binary: ['format', 'minLength', 'maxLength'],
-  Boolean: [],
-  Integer: ['format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
-  Number: ['format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
-  String: ['format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
+  Binary: ['const', 'format', 'minLength', 'maxLength'],
+  Boolean: ['const'],
+  Integer: ['const', 'format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
+  Number: ['const', 'format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
+  String: ['const', 'format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
   // Structures
   Array: ['extend', 'format', 'minLength', 'maxLength'],
   ArrayOf: ['vtype', 'minLength', 'maxLength', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
@@ -242,6 +243,10 @@ export const TypeOptionInputArgs = {
   default: {
     type: 'checkbox',
     description: '(optional) Default value'
+  },
+  const: {
+    type: 'text',
+    description: '(optional) Constant value'
   }
 };
 
