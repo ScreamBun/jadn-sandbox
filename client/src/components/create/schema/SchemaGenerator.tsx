@@ -131,7 +131,7 @@ const SchemaGenerator = () => {
                             <div className='card-header bg-secondary p-2'>
                                 <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
                                 <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
-                                    <div className="btn-group me-2" role="group" aria-label="First group">
+                                    <div className="me-2" role="group" aria-label="First group">
                                         <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleDataCreation}>Data Creation</button>
                                         <button type="reset" className="btn btn-sm btn-danger" onClick={onResetItemClick}>Reset</button>
                                     </div>

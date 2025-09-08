@@ -91,7 +91,7 @@ const DataGenerator = () => {
                                     lightBackground={true}
                                 />
                             </div>
-                            <div className="btn-group ms-auto flex-shrink-0" role="group" aria-label="First group">
+                            <div className="ms-auto flex-shrink-0" role="group" aria-label="First group">
                                 <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleSchemaCreation}>Schema Creation</button>
                                 <button type='reset' className='btn btn-sm btn-danger' onClick={onReset}>Reset</button>
                             </div>
