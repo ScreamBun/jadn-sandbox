@@ -76,7 +76,7 @@ const DataGenerator = () => {
                             <h5 className='m-0 me-2 ms-2 flex-shrink-0' style={{ display: 'inline' }}>
                                 <span className='align-middle'>Data Creation</span>
                             </h5>
-                            <div className='col-md-8 min-w-0'>
+                            <div className='col-md-9 min-w-0 p-0'>
                                 <SchemaLoader
                                     selectedFile={selectedFile}
                                     setSelectedFile={setSelectedFile}

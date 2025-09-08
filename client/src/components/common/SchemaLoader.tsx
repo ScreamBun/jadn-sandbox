@@ -219,7 +219,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         <div className={`${lightBackground ? '' : 'card'}`}>
             <div className={`${lightBackground ? '' : 'card-header p-2'}`}>
                 <div className="row no-gutters">
-                    <div className="col-lg-6 align-self-center">
+                    <div className={`${lightBackground ? 'col-lg-10 align-self-center' : 'col-lg-6 align-self-center'}`}>
                         <SBFileLoader
                             opts={schemaOpts}
                             selectedOpt={selectedFile}
@@ -245,7 +245,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             isSmStyle
                             isClearable />
                     </div>}
-                    <div className={`${lightBackground ? "col text-start align-self-center nowrap" : "col text-end align-self-center nowrap"}`}>
+                    <div className={"col text-end align-self-center nowrap"}>
                         {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
                             <SBValidateSchemaBtn
                                 isValid={isValid}
