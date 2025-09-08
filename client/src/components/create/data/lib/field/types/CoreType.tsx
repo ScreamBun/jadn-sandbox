@@ -1,7 +1,7 @@
 import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/interface";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getDefaultValue, isOptional } from "components/create/data/lib/utils";
+import { destructureField, getDefaultValue, isOptional, getDefaultOpt } from "components/create/data/lib/utils";
 import { useDispatch, useSelector } from 'react-redux';
 import { validateField as validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { getFieldError, isFieldValidating } from 'reducers/validatefield';
@@ -30,6 +30,21 @@ const CoreType = (props: FieldProps) => {
     const [clear, setClear] = useState(toClear);
 
     const _optional = isOptional(options);
+
+    // Fetch default value (option)
+    const defaultOpt = getDefaultOpt(options, type);
+    useEffect(() => {
+        if (defaultOpt !== undefined) { 
+            if (type === "Boolean") {
+                setData(defaultOpt);
+                fieldChange(name, defaultOpt);
+            } else {
+                setData(defaultOpt);
+                fieldChange(name, defaultOpt);
+            }
+        }
+    }, [defaultOpt, options, type, fieldChange, name]);
+// ...existing code...
 
     const handleBlur = (val: any, valType: string) => {
         if (val === '' || val === undefined || val === null) {
@@ -83,8 +98,8 @@ const CoreType = (props: FieldProps) => {
                     <input
                         id={`checkbox-${_idx}`}
                         type='checkbox'
-                            checked={!!data}
-                            onChange={e => {
+                        checked={!!data}
+                        onChange={e => {
                                 setData(e.target.checked);
                                 fieldChange(name, e.target.checked)
                                 if (!e.target.checked && _optional) {
