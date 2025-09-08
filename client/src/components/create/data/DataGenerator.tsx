@@ -84,8 +84,8 @@ const DataGenerator = () => {
                             <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Data Creation {selectedFile ? `(${selectedFile?.value})` : ''}</span></h5>
                             <div className="btn-group float-end" role="group" aria-label="First group">
                                 <button type='button' onClick={() => setActiveView('message')} className={`btn btn-sm btn-warning me-2 ${activeView == 'message' ? ' d-none' : ''}`} >View Schema</button>
-                                <button type='button' onClick={viewEditor} className={`btn btn-sm btn-warning me-2 ${activeView == 'creator' ? ' d-none' : ''}`} >Create Data</button>
-                                <button type="button" className="btn btn-sm btn-danger me-2" onClick={handleSchemaCreation}>Edit Schema</button>
+                                <button type='button' onClick={viewEditor} className={`btn btn-sm btn-warning me-2 ${activeView == 'creator' ? ' d-none' : ''}`} >Data Builder</button>
+                                <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleSchemaCreation}>Edit Schema</button>
                                 <button type='reset' className='btn btn-sm btn-danger' onClick={onReset}>Reset</button>
                             </div>
                         </div>
