@@ -242,3 +242,19 @@ export const convertToArrayOf = (field: any[], minOccurs: number | undefined, ma
 
     return undefined;
 }
+
+//FUNCTION: get const value
+export const getConstOpt = (options: string[], type: string): any | undefined => {
+    const defaultOpt = options.find(opt => opt.startsWith("v"));
+    switch (type) {
+        case "Integer":
+        case "Number":
+            return defaultOpt ? Number(defaultOpt.slice(1)) : undefined;
+        case "Boolean":
+            if (!defaultOpt) return undefined;
+            const boolStr = defaultOpt.slice(1);
+            return boolStr.toLowerCase() === "false" ? false : Boolean(boolStr);
+        default:
+            return defaultOpt ? String(defaultOpt.slice(1)) : undefined;
+    }
+}
