@@ -246,7 +246,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             isClearable />
                     </div>}
                     <div className={"col text-end align-self-center nowrap"}>
-                        {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
+                        {lightBackground ? null : isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
                             <SBValidateSchemaBtn
                                 isValid={isValid}
                                 setIsValid={setIsValid}
