@@ -538,7 +538,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                 <div className={`tab-pane fade ${activeView == 'schema' ? 'show active' : ''}`} id="schema" role="tabpanel" aria-labelledby="schema-tab" tabIndex={0}>
                     <div className='card'>
                         <div className='card-body p-0'>
-                            <SBEditor data={generatedSchema} isReadOnly={false}></SBEditor>
+                            <SBEditor data={generatedSchema} isReadOnly={true}></SBEditor>
                         </div>
                     </div>
                 </div>
