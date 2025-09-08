@@ -133,7 +133,7 @@ const SchemaGenerator = () => {
                                 <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
                                     <div className="me-2" role="group" aria-label="First group">
                                         <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleDataCreation}>Data Creation</button>
-                                        <button type="reset" className="btn btn-sm btn-danger" onClick={onResetItemClick}>Reset</button>
+                                        <button type="reset" className="btn btn-sm btn-danger border-0" onClick={onResetItemClick}>Reset</button>
                                     </div>
                                     <div className="btn-group" role="group" aria-label="Third group">
                                         <div className='dropdown'>
