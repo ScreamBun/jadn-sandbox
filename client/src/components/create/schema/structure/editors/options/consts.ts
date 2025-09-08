@@ -25,7 +25,7 @@ export const TypeOptions = {
   'seq': 'o',        // Map, MapOf, or Record instance is ordered and unique
   'combine': 'C',    // Choice is an untagged union, a logical combination of types
   'extend': 'X',     // Type has an extension point where fields may be appended
-  'default': '!'     // Default value
+  'default': 'u'     // Default value
 };
 
 export const FieldOptions = {
@@ -108,11 +108,11 @@ export const RequiredOptions: Record<string, Array<string>> = {
 
 export const ValidOptions: Record<string, Array<string>> = {
   // Primitives
-  Binary: ['format', 'minLength', 'maxLength'],
-  Boolean: [],
-  Integer: ['format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
-  Number: ['format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
-  String: ['format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
+  Binary: ['default', 'format', 'minLength', 'maxLength'],
+  Boolean: ['default'],
+  Integer: ['default', 'format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
+  Number: ['default', 'format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
+  String: ['default', 'format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
   // Structures
   Array: ['extend', 'format', 'minLength', 'maxLength'],
   ArrayOf: ['vtype', 'minLength', 'maxLength', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
@@ -240,7 +240,7 @@ export const TypeOptionInputArgs = {
     description: '(optional) Type has an extension point where fields may be added'
   },
   default: {
-    type: 'checkbox',
+    type: 'text',
     description: '(optional) Default value'
   }
 };
