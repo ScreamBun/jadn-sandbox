@@ -34,6 +34,7 @@ const Map = (props: FieldProps) => {
     const [data, setData] = useState(value);
 
     const isID = options.some(opt => String(opt) === '=');
+    const _ordered = options.some(opt => opt.startsWith("q"));
 
     // If isID, map child field name to child ID
     const nameToIdMap = useMemo(() => {
@@ -56,7 +57,11 @@ const Map = (props: FieldProps) => {
             const key = isID ? (nameToIdMap[childKey] ?? childKey) : childKey;
 
             if (childValue === "" || childValue === undefined || childValue === null) {
-                delete updated[key];
+                if (_ordered) {
+                    updated[childKey] = undefined; // if ordered, preserve order
+                } else {
+                    delete updated[childKey];
+                }
             } else {
                 updated[key] = childValue;
             }
@@ -76,6 +81,17 @@ const Map = (props: FieldProps) => {
             let [_childIdx, childName, _childType, _childOptions, _childComment] = destructureField(child);
             const key = isID ? (nameToIdMap[childName] ?? childName) : childName;
             let childValue = data?.[key];
+
+            // If ordered, add default data as undefined
+            if (_ordered) {
+                setData((prev: any) => {
+                    const updated = { ...prev };
+                    updated[childName] = undefined;
+                    fieldChange(name, updated);
+                    return updated;
+                })
+            }
+
             return (
                 <div className="ms-3 mt-2" key={idx}>
                     <Field
