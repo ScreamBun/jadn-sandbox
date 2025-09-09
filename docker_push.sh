@@ -49,7 +49,8 @@ fi
 
 docker login
 # Build and push multi-platform image (linux/amd64 and linux/arm64)
-docker buildx create --use --platform=linux/amd64,linux/arm64 --name my-multiplatform-builder
+docker buildx rm jadn-multiplatform-builder
+docker buildx create --use --platform=linux/amd64,linux/arm64 --name jadn-multiplatform-builder
 docker buildx build --platform linux/arm64,linux/amd64 -f Dockerfile -t $NEW_IMG --push .
 
 {
