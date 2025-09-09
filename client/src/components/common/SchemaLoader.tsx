@@ -37,6 +37,7 @@ interface SchemaLoaderProps {
     showFormatter?: boolean;
     showSave?: boolean;
     showToast?: boolean;
+    lightBackground?: boolean;
 }
 
 const SchemaLoader = (props: SchemaLoaderProps) => {
@@ -53,7 +54,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             showCopy = true, 
             showFormatter = true, 
             showSave = true,
-            showToast = true
+            showToast = true,
+            lightBackground = false
          } = props;
 
     const [isValid, setIsValid] = useState(false);
@@ -214,10 +216,10 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     }
 
     return (
-        <div className="card">
-            <div className="card-header p-2">
+        <div className={`${lightBackground ? '' : 'card'}`}>
+            <div className={`${lightBackground ? '' : 'card-header p-2'}`}>
                 <div className="row no-gutters">
-                    <div className="col-lg-6 align-self-center">
+                    <div className={`${lightBackground ? 'col-lg-10 align-self-center' : 'col-lg-6 align-self-center'}`}>
                         <SBFileLoader
                             opts={schemaOpts}
                             selectedOpt={selectedFile}
@@ -243,8 +245,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             isSmStyle
                             isClearable />
                     </div>}
-                    <div className="col text-end align-self-center nowrap">
-                        {isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
+                    <div className={"col text-end align-self-center nowrap"}>
+                        {lightBackground ? null : isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
                             <SBValidateSchemaBtn
                                 isValid={isValid}
                                 setIsValid={setIsValid}

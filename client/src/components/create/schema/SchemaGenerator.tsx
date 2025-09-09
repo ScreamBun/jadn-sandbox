@@ -17,8 +17,14 @@ import { clearDuplicate } from 'actions/duplicate';
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
 
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>();
-    const [generatedSchema, setGeneratedSchema] = useState('');
+    // See if there is a local storage item piped from create data
+    const pipedSchema = localStorage.getItem('__createdSchema__');
+    const pipedFile = localStorage.getItem('__selectedFile__');
+    localStorage.removeItem('__createdSchema__');
+    localStorage.removeItem('__selectedFile__');
+
+    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(pipedFile !== null ? JSON.parse(pipedFile) : null);
+    const [generatedSchema, setGeneratedSchema] = useState<object | ''>(pipedSchema !== null ? JSON.parse(pipedSchema) : ''); // check for piped schema
     const [cardsState, setCardsState] = useState<DragItem[]>([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -35,10 +41,20 @@ const SchemaGenerator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
     useEffect(() => {
         dispatch(info());
-    // @ts-expect-error
-    dispatch(getValidFormatOpts());
+        // @ts-expect-error
+        dispatch(getValidFormatOpts());
         dismissAllToast();
     }, [dispatch])
+
+    const handleDataCreation = () => {
+        if (generatedSchema) {
+            localStorage.setItem('__createdSchema__', JSON.stringify(generatedSchema));
+        }
+        if (selectedSchemaFile) {
+            localStorage.setItem('__selectedFile__', JSON.stringify(selectedSchemaFile));
+        }
+        window.location.href = '/create/data';
+    }
 
     // When duplicate item is set in store, add a new card at end with "{name} copy"
     const duplicatedItem = useSelector((state: any) => state.Duplicate?.item);
@@ -115,8 +131,9 @@ const SchemaGenerator = () => {
                             <div className='card-header bg-secondary p-2'>
                                 <h5 className='m-0' style={{ display: 'inline' }}><span className='align-middle'>Schema Creation</span></h5>
                                 <div className="btn-toolbar float-end" role="toolbar" aria-label="Toolbar with button groups">
-                                    <div className="btn-group me-2" role="group" aria-label="First group">
-                                        <button type="reset" className="btn btn-sm btn-danger" onClick={onResetItemClick}>Reset</button>
+                                    <div className="me-2" role="group" aria-label="First group">
+                                        <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleDataCreation}>Data Creation</button>
+                                        <button type="reset" className="btn btn-sm btn-danger border-0" onClick={onResetItemClick}>Reset</button>
                                     </div>
                                     <div className="btn-group" role="group" aria-label="Third group">
                                         <div className='dropdown'>

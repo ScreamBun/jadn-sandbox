@@ -40,13 +40,20 @@ if [ $? -eq 1 ]; then
   docker rmi $PREV_IMG
 fi
 
-# Build and push new image
+
+# Ensure docker buildx is available
+if ! docker buildx version > /dev/null 2>&1; then
+  echo "Docker buildx is not installed or not available. Please install Docker buildx."
+  exit 1
+fi
+
 docker login
-docker build -f Dockerfile -t $NEW_IMG  .
-docker push $NEW_IMG
+# Build and push multi-platform image (linux/amd64 and linux/arm64)
+docker buildx create --use --platform=linux/amd64,linux/arm64 --name my-multiplatform-builder
+docker buildx build --platform linux/arm64,linux/amd64 -f Dockerfile -t $NEW_IMG --push .
 
 {
-  docker build -f Dockerfile -t $IMG_LATEST  .
+  docker buildx build --platform linux/arm64,linux/amd64 -f Dockerfile -t $IMG_LATEST  .
 } || {
   exit $1
 }
