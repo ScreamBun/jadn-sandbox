@@ -29,8 +29,8 @@ export const configInitialState = {
 
 export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any>) {
     function WithSchemaCreator(props: any) {
-        const dispatch = useDispatch();
-        const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, setCardsState,
+    const dispatch = useDispatch();
+    const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState,
             fieldCollapseState, setFieldCollapseState,
             allFieldsCollapse, setAllFieldsCollapse, fieldCollapseStateRef } = props;
 
@@ -38,8 +38,39 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             if (!generatedSchema) {
                 setIsValidJADN(false);
                 setFieldCollapseState([]);
+                dispatch(setSchema(generatedSchema));
+                return;
             }
             dispatch(setSchema(generatedSchema));
+
+            // If a schema is piped and we don't yet have cards, build them here
+            try {
+                const schemaObj: any = typeof generatedSchema === 'string' ? JSON.parse(generatedSchema) : generatedSchema;
+                if (schemaObj && Array.isArray(schemaObj.types) && (!cardsState || cardsState.length === 0)) {
+                    flushSync(() => {
+                        setGeneratedSchema(schemaObj);
+                        setCardsState(schemaObj.types.map((item: any[], i: number) => ({
+                            id: self.crypto?.randomUUID ? self.crypto.randomUUID() : Math.random().toString(36).slice(2),
+                            index: i,
+                            text: item[0],
+                            value: item,
+                            isStarred: false,
+                            isVisibleInOutline: true
+                        })));
+                        setFieldCollapseState(schemaObj.types.map((def: any[]) => {
+                            let type = def[1]?.toLowerCase() as keyof typeof Types;
+                            if (type && Types[type]?.type === 'structure') {
+                                return false;
+                            } else {
+                                return undefined as unknown as boolean;
+                            }
+                        }))
+                    });
+                }
+            } catch (e) {
+                // Ignore JSON parse errors
+            }
+
             listRef.current?.resetAfterIndex(0, true);
         }, [generatedSchema])
 
