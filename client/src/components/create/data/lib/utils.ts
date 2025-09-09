@@ -134,7 +134,7 @@ export const getDerivedOptions = (schemaObj: any, derived: string): any[] => {
     return derivedOptions;
 }
 
-//FUNCTION: ArrayOf unique & set check
+//FUNCTION: ArrayOf and Array unique & set check
 export const getUniqueOrSet = (children: any[], opts: any[], type: string): string => {
     const isUnique = opts.some(opt => opt === "q");
     const isSet = opts.some(opt => opt === "s");
