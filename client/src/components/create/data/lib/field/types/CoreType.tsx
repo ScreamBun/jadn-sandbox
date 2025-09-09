@@ -43,22 +43,22 @@ const CoreType = (props: FieldProps) => {
                 fieldChange(name, defaultOpt);
             }
         }
-    }, [defaultOpt, options, type, fieldChange, name]);
+    }, [defaultOpt]);
 // ...existing code...
 
     // Fetch const value (optional)
     const _const = getConstOpt(options, type);
-    useEffect(() => {
-    if (_const !== undefined) { 
-        if (type === "Boolean") {
-            setData(_const);
-            fieldChange(name, _const);
-        } else {
-            setData(_const);
-            fieldChange(name, _const);
+        useEffect(() => {
+        if (_const !== undefined) { 
+            if (type === "Boolean") {
+                setData(_const);
+                fieldChange(name, _const);
+            } else {
+                setData(_const);
+                fieldChange(name, _const);
+            }
         }
-    }
-}, [_const]);
+    }, [_const]);
 
     const handleBlur = (val: any, valType: string) => {
         if (val === '' || val === undefined || val === null) {
