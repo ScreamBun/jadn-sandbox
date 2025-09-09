@@ -58,9 +58,9 @@ const Map = (props: FieldProps) => {
 
             if (childValue === "" || childValue === undefined || childValue === null) {
                 if (_ordered) {
-                    updated[childKey] = undefined; // if ordered, preserve order
+                    updated[key] = undefined; // if ordered, preserve order
                 } else {
-                    delete updated[childKey];
+                    delete updated[key];
                 }
             } else {
                 updated[key] = childValue;
