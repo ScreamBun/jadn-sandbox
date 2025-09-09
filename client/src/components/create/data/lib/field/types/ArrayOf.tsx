@@ -79,7 +79,7 @@ const ArrayOf = (props: FieldProps) => {
         } else {    
             fieldChange(String(name), output);
         }
-        setErrMsg(getUniqueOrSet(keyList, options));
+        setErrMsg(getUniqueOrSet(keyList, options, "ArrayOf"));
     }, [keyList]);
 
     const addKey = (name:any, key: any) => {
