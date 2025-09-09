@@ -119,9 +119,9 @@ export const ValidOptions: Record<string, Array<string>> = {
   ArrayOf: ['vtype', 'minLength', 'maxLength', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
   Choice: ['id', 'extend', 'combine'],
   Enumerated: ['id', 'enum', 'pointer', 'extend'],
-  Map: ['id', 'extend', 'minLength', 'maxLength', 'seq', 'ordered'],
-  MapOf: ['ktype', 'vtype', 'minLength', 'maxLength', 'seq', 'ordered'],
-  Record: ['extend', 'minLength', 'maxLength', 'seq', 'ordered']
+  Map: ['id', 'extend', 'minLength', 'maxLength', 'ordered'],
+  MapOf: ['ktype', 'vtype', 'minLength', 'maxLength', 'ordered'],
+  Record: ['extend', 'minLength', 'maxLength', 'ordered']
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
