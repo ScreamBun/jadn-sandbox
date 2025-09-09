@@ -39,6 +39,7 @@ const MapOf = (props: FieldProps) => {
             let initKeyList: Array<{name: any , key: any}> = [];
             let initValueList: Array<{name: any , value: any}> = [];
             let nextId = idNumber;
+            let nextSeq = seq;
 
             if (Array.isArray(incoming)) {
                 // Array form: [k1,v1,k2,v2,...]
@@ -47,6 +48,7 @@ const MapOf = (props: FieldProps) => {
                     const v = incoming[i+1];
                     if (k === undefined) continue;
                     nextId += 1;
+                    nextSeq += 1;
                     initCards.push({ id: nextId, key: keyType, value: valueType });
                     initKeyList.push({ name: `${name} ${nextId} ${keyType}`, key: k });
                     initValueList.push({ name: `${name} ${nextId} ${valueType}`, value: v });
@@ -54,6 +56,7 @@ const MapOf = (props: FieldProps) => {
             } else if (typeof incoming === 'object') {
                 for (const k of Object.keys(incoming)) {
                     nextId += 1;
+                    nextSeq += 1;
                     initCards.push({ id: nextId, key: keyType, value: valueType });
                     initKeyList.push({ name: `${name} ${nextId} ${keyType}`, key: k });
                     initValueList.push({ name: `${name} ${nextId} ${valueType}`, value: incoming[k] });
@@ -65,6 +68,7 @@ const MapOf = (props: FieldProps) => {
                 setKeyList(initKeyList);
                 setValueList(initValueList);
                 setIdNumber(nextId);
+                setSeq(nextSeq);
                 setNumberOfItems(initCards.length);
             }
         } catch (err) {
@@ -81,11 +85,13 @@ const MapOf = (props: FieldProps) => {
     const maxv = getMaxv(options);
 
     const _optional = isOptional(options);
+    const _ordered = options.some(opt => opt.startsWith("q"));
 
     // Extract ktype and vtype
     const keyType = options.find((opt: string) => opt.startsWith("+") || opt.startsWith(">"))?.slice(1);
     const valueType = options.find((opt: string) => opt.startsWith("*"))?.slice(1);
-    const [cards, setCards] = useState<Array<{id: number, key: string | undefined, value: string | undefined}>>([]); // Start empty
+    const [cards, setCards] = useState<Array<{id: number, key: string | undefined, value: string | undefined, idx?: number}>>([]); // Start empty
+    const [seq, setSeq] = useState(0);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
     const [valueList, setValueList] = useState<Array<{name: any , value: any}>>([]);
     const [output, setOutput] = useState<any>();
@@ -112,7 +118,14 @@ const MapOf = (props: FieldProps) => {
         let newOutput: any = isRecord ? {} : [];
 
         // Find keyEntry and valueEntry corresponding to each other
-        cards.forEach(card => {
+        const orderedCards = !_ordered ? [...cards].sort((a, b) => {
+            if (a.idx === undefined && b.idx === undefined) return 0;
+            if (a.idx === undefined) return 1;
+            if (b.idx === undefined) return -1;
+            return a.idx - b.idx;
+        }) : cards;
+
+        orderedCards.forEach(card => {
             const keyEntry = keys.find(k => k.name === `${name} ${card.id} ${card.key}`);
             const valueEntry = values.find(v => v.name === `${name} ${card.id} ${card.value}`);
             
@@ -141,7 +154,7 @@ const MapOf = (props: FieldProps) => {
         onChange();
     }, [keyList, valueList]);
 
-    const addKey = (entryName: any, key: any) => {
+    const addKey = (cardId: number, entryName: any, key: any) => {
         setKeyList(prev => {
             const existingIndex = prev.findIndex(item => item.name === entryName);
             let updated = [...prev];
@@ -152,11 +165,12 @@ const MapOf = (props: FieldProps) => {
             } else {
                 updated.push({ name: entryName, key });
             }
+            assignIdx(cardId, updated, valueList);
             return updated;
         });
     };
 
-    const addValue = (entryName: any, value: any) => {
+    const addValue = (cardId: number, entryName: any, value: any) => {
         setValueList(prev => {
             const existingIndex = prev.findIndex(item => item.name === entryName);
             let updated = [...prev];
@@ -167,8 +181,22 @@ const MapOf = (props: FieldProps) => {
             } else {
                 updated.push({ name: entryName, value });
             }
+            assignIdx(cardId, keyList, updated);
             return updated;
         });
+    };
+
+    const assignIdx = (cardId: number, kList: typeof keyList, vList: typeof valueList) => {
+        const keyName = `${name} ${cardId} ${keyType}`;
+        const valName = `${name} ${cardId} ${valueType}`;
+        const hasKey = kList.some(k => k.name === keyName && k.key !== undefined && k.key !== "");
+        const hasVal = vList.some(v => v.name === valName && v.value !== undefined && v.value !== "");
+        if (hasKey && hasVal) {
+            setCards(prev =>
+                prev.map(c => (c.id === cardId && c.idx === undefined ? { ...c, idx: seq + 1 } : c))
+            );
+            setSeq(s => s + 1);
+        }
     };
 
     const addCard = () => {
@@ -208,8 +236,8 @@ const MapOf = (props: FieldProps) => {
         const keyEntry = keyList.find(entry => entry.name === `${name} ${id} ${key}`);
         const valueEntry = valueList.find(entry => entry.name === `${name} ${id} ${value}`);
 
-        const handleKeyChange = (_: string, v: any) => addKey(`${name} ${id} ${key}`, v);
-        const handleValueChange = (_: string, v: any) => addValue(`${name} ${id} ${value}`, v);
+        const handleKeyChange = (_: string, v: any) => addKey(id, `${name} ${id} ${key}`, v);
+        const handleValueChange = (_: string, v: any) => addValue(id, `${name} ${id} ${value}`, v);
 
         const types = schemaObj.types;
         let [ trueTypeVal, trueTypeDef ] = getTrueType(types, key);

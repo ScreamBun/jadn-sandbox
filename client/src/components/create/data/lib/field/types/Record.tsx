@@ -22,6 +22,8 @@ const Record = (props: FieldProps) => {
     const [data, setData] = useState(value);
     const [clear, setClear] = useState(toClear);
 
+    const _ordered = options.some(opt => opt.startsWith("q"));
+
     useEffect(() => {
         setClear(toClear);
         if (toClear) {
@@ -35,7 +37,11 @@ const Record = (props: FieldProps) => {
          setData((prev: any) => {
             const updated = { ...prev };
             if (childValue === "" || childValue === undefined || childValue === null) {
-                delete updated[childKey];
+                if (_ordered) {
+                    updated[childKey] = undefined; // if ordered, preserve order
+                } else {
+                    delete updated[childKey];
+                }
             } else {
                 updated[childKey] = childValue;
             }
@@ -55,6 +61,17 @@ const Record = (props: FieldProps) => {
         return children.map((child, idx) => {
             let [_childIdx, childName, _childType, _childOptions, _childComment] = destructureField(child);
             let childValue = data?.[childName];
+
+            // If ordered, add default data as undefined
+            if (_ordered) {
+                setData((prev: any) => {
+                    const updated = { ...prev };
+                    updated[childName] = undefined;
+                    fieldChange(name, updated);
+                    return updated;
+                })
+            }
+
             return (
                 <div key={idx}>
                     <Field

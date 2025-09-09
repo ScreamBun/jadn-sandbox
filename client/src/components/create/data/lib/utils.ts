@@ -134,14 +134,20 @@ export const getDerivedOptions = (schemaObj: any, derived: string): any[] => {
     return derivedOptions;
 }
 
-//FUNCTION: ArrayOf unique & set check
-export const getUniqueOrSet = (children: any[], opts: any[]): string => {
+//FUNCTION: ArrayOf and Array unique & set check
+export const getUniqueOrSet = (children: any[], opts: any[], type: string): string => {
     const isUnique = opts.some(opt => opt === "q");
     const isSet = opts.some(opt => opt === "s");
     let m = "";
     if (isUnique || isSet) {
-        if (Array.from(new Set(children.map(c => c.key))).length != children.map(c => c.key).length) {
-            m = ("Error: Must not contain duplicate values");
+        if (type === "ArrayOf") {
+            if (Array.from(new Set(children.map(c => c.key))).length != children.map(c => c.key).length) {
+                m = ("Error: Must not contain duplicate values");
+            }
+        } else if (type === "Array") {
+            if (Array.from(new Set(children)).length != children.length) {
+                m = ("Error: Must not contain duplicate values");
+            }
         }
     }
     return m;
