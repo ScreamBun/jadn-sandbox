@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { getSelectedSchema } from 'reducers/util'
 import { useSelector } from 'react-redux'
 import { AllFieldArray } from '../schema/interface'
@@ -18,6 +18,7 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import SBLoadBuilder from 'components/common/SBLoadBuilder'
 import { destructureField } from './lib/utils'
+import { clearHighlight } from "actions/highlight";
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -51,6 +52,7 @@ const DataCreator = (props: any) => {
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         setLoadedFieldDefs(null);
+        dispatch<any>(clearHighlight());
     }
 
     // Handle full data validation
@@ -92,6 +94,7 @@ const DataCreator = (props: any) => {
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         dispatch(clearFieldValidation());
         setLoadedFieldDefs(null);
+        dispatch<any>(clearHighlight());
     }    
 
     const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
@@ -116,6 +119,7 @@ const DataCreator = (props: any) => {
     React.useEffect(() => {
         if (loadedFieldDefs) {
             setLoadedFieldDefs(null);
+            dispatch<any>(clearHighlight());
         }
     }, [selection, schemaObj]);
 

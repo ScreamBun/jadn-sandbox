@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
 import { Buffer } from 'buffer';
 import SBHighlightButton from "components/common/SBHighlightButton";
+import { clearHighlight } from "actions/highlight";
 
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
@@ -31,7 +32,7 @@ const CoreType = (props: FieldProps) => {
     const [clear, setClear] = useState(toClear);
 
     const _optional = isOptional(options);
-    const highlightWords = [name, data]
+    const highlightWords = [name, data];
 
     // Fetch default value (option)
     const defaultOpt = getDefaultOpt(options, type);
@@ -94,6 +95,7 @@ const CoreType = (props: FieldProps) => {
             setData('');
             fieldChange(name, '');
             dispatch(clearFieldValidation(name));
+            dispatch<any>(clearHighlight());
         }
     }, [toClear, fieldChange]);
 
