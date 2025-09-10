@@ -5,9 +5,6 @@ import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, getUniqueOrSet, isOptional } from "../../utils";
 import SBClearDataBtn from "components/common/SBClearDataBtn";
-import SBHighlightButton from "components/common/SBHighlightButton";
-import { clearHighlight } from "actions/highlight";
-import { useDispatch } from "react-redux";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -24,7 +21,6 @@ const Array = (props: FieldProps) => {
     const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
     const [errMsg, setErrMsg] = useState<string | undefined>(undefined);
-    const dispatch = useDispatch();
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -32,7 +28,6 @@ const Array = (props: FieldProps) => {
         if (toClear) {
             setData("");
             setToggle(true);
-            dispatch<any>(clearHighlight());
             setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
         }
     }, [toClear]);
@@ -54,20 +49,6 @@ const Array = (props: FieldProps) => {
             return updated;
         });
     };
-
-    let highlightWords: any = useMemo(() => {
-        const words: string[] = [`${name}`];
-
-        if (data && typeof data === "object") {
-            Object.entries(data).forEach(([k, v]) => {
-                if (v !== undefined && v !== null && v !== "") {
-                    words.push(`${JSON.stringify(v)}`);
-                }
-            });
-        }
-
-        return words;
-    }, [name, data]);
 
     const childrenCards = useMemo(() => {
         if (!toggle) return null;
@@ -97,7 +78,6 @@ const Array = (props: FieldProps) => {
                 <div className="d-flex align-items-center w-100">
                     <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
-                    <SBHighlightButton highlightWords={highlightWords} />
                     <SBClearDataBtn onClick={() => {
                         setClear(true);
                         setTimeout(() => setClear(false), 0);

@@ -5,9 +5,6 @@ import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, isOptional } from "../../utils";
 import SBClearDataBtn from "components/common/SBClearDataBtn";
-import SBHighlightButton from "components/common/SBHighlightButton";
-import { clearHighlight } from "actions/highlight";
-import { useDispatch } from "react-redux";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -27,14 +24,11 @@ const Record = (props: FieldProps) => {
 
     const _ordered = options.some(opt => opt.startsWith("q"));
     
-    const dispatch = useDispatch();
-
     useEffect(() => {
         setClear(toClear);
         if (toClear) {
             setData("");
             setToggle(true);
-            dispatch<any>(clearHighlight());
             setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
         }
     }, [toClear]);
@@ -61,20 +55,29 @@ const Record = (props: FieldProps) => {
         });
     };
 
-    let highlightWords: any = useMemo(() => {
-        const words: string[] = [`${name}`];
+    // Initialize/maintain ordered keys once when opened
+    useEffect(() => {
+        if (!toggle || !_ordered) return;
+        if (!children || children.length === 0) return;
 
-        if (data && typeof data === "object") {
-            Object.entries(data).forEach(([k, v]) => {
-                if (v !== undefined && v !== null && v !== "") {
-                    words.push(k);
-                    words.push(`${JSON.stringify(v)}`);
+        setData((prev: any) => {
+            const next: Record<string, any> = { ...(prev ?? {}) };
+            let changed = false;
+
+            children.forEach(ch => {
+                const [_ci, childName] = destructureField(ch);
+                if (!(childName in next)) {
+                    next[childName] = undefined; // preserve key order by inserting in schema order
+                    changed = true;
                 }
             });
-        }
 
-        return words;
-    }, [name, data]);
+            if (changed) {
+                fieldChange(name, next);
+            }
+            return next;
+        });
+    }, [toggle, _ordered, children, name, fieldChange]);
 
     const childrenCards = useMemo(() => {
         if (!toggle) return null;
@@ -82,16 +85,6 @@ const Record = (props: FieldProps) => {
         return children.map((child, idx) => {
             let [_childIdx, childName, _childType, _childOptions, _childComment] = destructureField(child);
             let childValue = data?.[childName];
-
-            // If ordered, add default data as undefined
-            if (_ordered) {
-                setData((prev: any) => {
-                    const updated = { ...prev };
-                    updated[childName] = undefined;
-                    fieldChange(name, updated);
-                    return updated;
-                })
-            }
 
             return (
                 <div key={idx}>
@@ -116,7 +109,6 @@ const Record = (props: FieldProps) => {
                 <div className="d-flex align-items-center w-100">
                     <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
-                    <SBHighlightButton highlightWords={highlightWords} />
                     <SBClearDataBtn onClick={() => {
                         setClear(true);
                         setTimeout(() => setClear(false), 0);
