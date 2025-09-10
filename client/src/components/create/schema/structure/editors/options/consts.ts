@@ -19,10 +19,9 @@ export const TypeOptions = {
   'maxExclusive': 'z',       // maximum exclusive value
   'minLength': '{',       // minimum byte or text string length, Integer value, element count
   'maxLength': '}',       // maximum byte or text string length, Integer value, element count
-  'unique': 'q',     // ArrayOf/Array instance must not contain duplicates
+  'ordered/unique': 'q',     // ArrayOf/Array instance must not contain duplicates (unique), or structure must be ordered
   'set': 's',        // ArrayOf instance is unordered and unique
   'unordered': 'b',  // ArrayOf instance is unordered and not unique (bag)
-  'ordered': 'q',    // MapOf, Map, Record version of unique
   'seq': 'o',        // Map, MapOf, or Record instance is ordered and unique
   'combine': 'C',    // Choice is an untagged union, a logical combination of types
   'extend': 'X',     // Type has an extension point where fields may be appended
@@ -46,7 +45,7 @@ export const OptionTypes = {
 };
 
 export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
-export const BoolOpts = ['ordered', 'dir', 'key', 'link', 'id', 'unique', 'set', 'unordered', 'extend', 'attr'];
+export const BoolOpts = ['ordered/unique', 'dir', 'key', 'link', 'id', 'set', 'unordered', 'extend', 'attr'];
 export const IntegerOpts = ['minOccurs', 'maxOccurs', 'tagid', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const FloatOpts = ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const StringOpts = ['const', 'default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
@@ -116,13 +115,13 @@ export const ValidOptions: Record<string, Array<string>> = {
   Number: ['default', 'const', 'format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
   String: ['default', 'const', 'format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
   // Structures
-  Array: ['extend', 'format', 'minLength', 'maxLength', 'unique', 'set', 'unordered'],
-  ArrayOf: ['vtype', 'minLength', 'maxLength', 'unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
+  Array: ['extend', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set', 'unordered'],
+  ArrayOf: ['vtype', 'minLength', 'maxLength', 'ordered/unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
   Choice: ['id', 'extend', 'combine'],
   Enumerated: ['id', 'enum', 'pointer', 'extend'],
-  Map: ['id', 'extend', 'minLength', 'maxLength', 'ordered'],
-  MapOf: ['ktype', 'vtype', 'minLength', 'maxLength', 'ordered'],
-  Record: ['extend', 'minLength', 'maxLength', 'ordered']
+  Map: ['id', 'extend', 'minLength', 'maxLength', 'ordered/unique'],
+  MapOf: ['ktype', 'vtype', 'minLength', 'maxLength', 'ordered/unique'],
+  Record: ['extend', 'minLength', 'maxLength', 'ordered/unique']
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
@@ -217,10 +216,6 @@ export const TypeOptionInputArgs = {
     type: 'number',
     description: '(optional) Maximum exclusive value'
   },
-  unique: {
-    type: 'checkbox',
-    description: '(optional) If present, an ArrayOf instance must not contain duplicate values'
-  },
   set: {
     type: 'checkbox',
     description: '(optional) If present, an ArrayOf instance is unordered and unique'
@@ -229,9 +224,9 @@ export const TypeOptionInputArgs = {
     type: 'checkbox',
     description: '(optional) If present, an ArrayOf instance is unordered'
   },
-  ordered: {
+  "ordered/unique": {
     type: 'checkbox',
-    description: '(optional) If present, a Map, MapOf, or Record instance is ordered'
+    description: '(optional) If present, a Map, MapOf, or Record instance is ordered, or ArrayOf/Array instance must not contain duplicate values'
   },
   seq: {
     type: 'checkbox',
