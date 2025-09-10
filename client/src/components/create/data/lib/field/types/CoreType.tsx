@@ -9,6 +9,7 @@ import { timeZones } from 'components/create/consts';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
 import { Buffer } from 'buffer';
+import SBHighlightButton from "components/common/SBHighlightButton";
 
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
@@ -30,6 +31,7 @@ const CoreType = (props: FieldProps) => {
     const [clear, setClear] = useState(toClear);
 
     const _optional = isOptional(options);
+    const highlightWords = [name, data]
 
     // Fetch default value (option)
     const defaultOpt = getDefaultOpt(options, type);
@@ -248,6 +250,7 @@ const CoreType = (props: FieldProps) => {
             <div className='form-group d-flex align-items-center justify-content-between'>
                 <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                 <SBInfoBtn comment={_comment} />
+                <SBHighlightButton highlightWords={highlightWords} />
                 {isTime || isDateTime || isDate ? <button
                     type="button"
                     className="btn btm-sm p-0 ms-1 me-1"

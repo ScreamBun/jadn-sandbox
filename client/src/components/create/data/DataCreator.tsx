@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getSelectedSchema } from 'reducers/util'
 import { useSelector } from 'react-redux'
 import { AllFieldArray } from '../schema/interface'
@@ -108,6 +108,9 @@ const DataCreator = (props: any) => {
 
     const [dataFullScreen, setDataFullScreen] = useState(false);
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
+
+    // Pull global state of highlighted items
+    const highlightedItems = useSelector((state: any) => state.Highlight.highlightWords);
 
     // Handle making sure loaded defs are reset
     React.useEffect(() => {
@@ -246,7 +249,11 @@ const DataCreator = (props: any) => {
                         </div>
                     </div>
                     <div className='card-body p-2'>
-                        <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
+                        <SBEditor 
+                        data={generatedMessage} 
+                        isReadOnly={true}
+                        initialHighlightWords={highlightedItems}
+                        ></SBEditor>
                     </div>
                 </div>
             </div>
