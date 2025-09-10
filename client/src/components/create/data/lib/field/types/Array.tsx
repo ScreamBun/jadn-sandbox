@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, isOptional } from "../../utils";
+import { destructureField, getUniqueOrSet, isOptional } from "../../utils";
 import SBClearDataBtn from "components/common/SBClearDataBtn";
 
 interface FieldProps {
@@ -20,6 +20,7 @@ const Array = (props: FieldProps) => {
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
+    const [errMsg, setErrMsg] = useState<string | undefined>(undefined);
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -44,6 +45,7 @@ const Array = (props: FieldProps) => {
             } else {    
                 fieldChange(name, updated);
             }
+            setErrMsg(getUniqueOrSet(updated, options, "Array"));
             return updated;
         });
     };
@@ -84,6 +86,7 @@ const Array = (props: FieldProps) => {
                 </div>
             </div>
             <div className={`ms-5 ${toggle ? '' : 'collapse'}`}>
+                {errMsg && <div className="text-danger">{errMsg}</div>}
                 {childrenCards}
             </div>
         </>

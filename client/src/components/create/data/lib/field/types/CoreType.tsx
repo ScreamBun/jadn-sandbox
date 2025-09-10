@@ -1,7 +1,7 @@
 import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/interface";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getDefaultValue, isOptional } from "components/create/data/lib/utils";
+import { destructureField, getDefaultValue, isOptional, getDefaultOpt, getConstOpt } from "components/create/data/lib/utils";
 import { useDispatch, useSelector } from 'react-redux';
 import { validateField as validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { getFieldError, isFieldValidating } from 'reducers/validatefield';
@@ -31,6 +31,35 @@ const CoreType = (props: FieldProps) => {
 
     const _optional = isOptional(options);
 
+    // Fetch default value (option)
+    const defaultOpt = getDefaultOpt(options, type);
+    useEffect(() => {
+        if (defaultOpt !== undefined) { 
+            if (type === "Boolean") {
+                setData(defaultOpt);
+                fieldChange(name, defaultOpt);
+            } else {
+                setData(defaultOpt);
+                fieldChange(name, defaultOpt);
+            }
+        }
+    }, [defaultOpt]);
+// ...existing code...
+
+    // Fetch const value (optional)
+    const _const = getConstOpt(options, type);
+        useEffect(() => {
+        if (_const !== undefined) { 
+            if (type === "Boolean") {
+                setData(_const);
+                fieldChange(name, _const);
+            } else {
+                setData(_const);
+                fieldChange(name, _const);
+            }
+        }
+    }, [_const]);
+
     const handleBlur = (val: any, valType: string) => {
         if (val === '' || val === undefined || val === null) {
             dispatch(clearFieldValidation(name));
@@ -59,7 +88,7 @@ const CoreType = (props: FieldProps) => {
 
     React.useEffect(() => {
         setClear(toClear);
-        if (toClear === true) {
+        if (toClear === true && _const === undefined) {
             setData('');
             fieldChange(name, '');
             dispatch(clearFieldValidation(name));
@@ -85,10 +114,12 @@ const CoreType = (props: FieldProps) => {
                         type='checkbox'
                             checked={!!data}
                             onChange={e => {
-                                setData(e.target.checked);
-                                fieldChange(name, e.target.checked)
-                                if (!e.target.checked && _optional) {
-                                    dispatch(clearFieldValidation(name));
+                                if (_const === undefined) {
+                                    setData(e.target.checked);
+                                    fieldChange(name, e.target.checked)
+                                    if (!e.target.checked && _optional) {
+                                        dispatch(clearFieldValidation(name));
+                                    }
                                 }
                             }}
                             className="form-control-medium ms-1"
@@ -116,9 +147,11 @@ const CoreType = (props: FieldProps) => {
                         type='text'
                         value={data || ''}
                         onChange={e => {
-                            const v = e.target.value;
-                            setData(v);
-                            if (v === '') dispatch(clearFieldValidation(name));
+                            if (!_const) {
+                                const v = e.target.value;
+                                setData(v);
+                                if (v === '') dispatch(clearFieldValidation(name));
+                            }
                         }}
                         onBlur = {e => {
                             fieldChange(name, e.target.value);
@@ -141,10 +174,12 @@ const CoreType = (props: FieldProps) => {
                         type='number'
                         value={data ?? ''}
                         onChange={e => {
-                            const raw = e.target.value;
-                            const num = raw === '' ? '' : parseFloat(raw);
-                            setData(num === '' ? '' : num);
-                            if (raw === '') dispatch(clearFieldValidation(name));
+                            if (!_const) {
+                                const raw = e.target.value;
+                                const num = raw === '' ? '' : parseFloat(raw);
+                                setData(num === '' ? '' : num);
+                                if (raw === '') dispatch(clearFieldValidation(name));
+                            }
                         }}
                         onBlur = {e => {
                             const raw = e.target.value;
@@ -172,10 +207,12 @@ const CoreType = (props: FieldProps) => {
                         type={isStringDuration ? 'text' : 'number'}
                         value={data ?? ''}
                         onChange={e => {
-                            const raw = e.target.value;
-                            //const num = raw === '' ? '' : parseInt(raw);
-                            setData(raw === '' ? '' : raw);
-                            if (raw === '') dispatch(clearFieldValidation(name));
+                            if (!_const) {
+                                const raw = e.target.value;
+                                //const num = raw === '' ? '' : parseInt(raw);
+                                setData(raw === '' ? '' : raw);
+                                if (raw === '') dispatch(clearFieldValidation(name));
+                            }
                         }}
                         onBlur = {e => {
                             const raw = e.target.value;
@@ -226,9 +263,11 @@ const CoreType = (props: FieldProps) => {
                     step={isTime ? '1' : undefined}
                     value={!dateToggle ? `${data || ''}${timezone}` : data || ''}
                     onChange={e => {
-                        const v = e.target.value;
-                        setData(v);
-                        if (v === '') dispatch(clearFieldValidation(name));
+                        if (!_const) {
+                            const v = e.target.value;
+                            setData(v);
+                            if (v === '') dispatch(clearFieldValidation(name));
+                        }
                     }}
                     onBlur={e => {
                         let val = e.target.value;
