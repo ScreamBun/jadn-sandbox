@@ -35,6 +35,7 @@ const ArrayOf = (props: FieldProps) => {
     // Remove { and } from options so they aren't passed to child fields
     options = options.filter(opt => !opt.startsWith('{') && !opt.startsWith('}'));
 
+    const _set = options.some(opt => opt.startsWith("s"));
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -88,7 +89,11 @@ const ArrayOf = (props: FieldProps) => {
             let updated = [...prev];
             if (key === null || key === "") {
                 //if (existingIndex !== -1) updated.splice(existingIndex, 1);
-                updated[existingIndex].key = undefined;
+                if (_set) {
+                    updated.splice(existingIndex, 1);
+                } else {
+                    updated[existingIndex].key = undefined;
+                }
             } else if (existingIndex !== -1) {
                 updated[existingIndex].key = key;
             } else {
@@ -101,7 +106,9 @@ const ArrayOf = (props: FieldProps) => {
     const addCard = () => {
         if (!keyType) return;
         setCards(prevCards => [...prevCards, { idx: idNumber, key: keyType }]);
-        addKey(`${keyType} ${idNumber + 1}`, undefined); // Add new key every time new card is added to maintain order
+        if (!_set) { // don't preserve order if set
+            addKey(`${keyType} ${idNumber + 1}`, undefined); // Add new key every time new card is added to maintain order
+        }
         setIdNumber(prev => prev + 1);
         setNumberOfItems(prev => prev + 1);
     };
