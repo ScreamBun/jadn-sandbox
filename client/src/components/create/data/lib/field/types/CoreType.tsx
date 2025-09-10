@@ -111,6 +111,7 @@ const CoreType = (props: FieldProps) => {
                 <div className='form-group d-flex align-items-center justify-content-left'>
                     <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{_optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBHighlightButton highlightWords={highlightWords} />
                     <input
                         id={`checkbox-${_idx}`}
                         type='checkbox'
@@ -145,6 +146,7 @@ const CoreType = (props: FieldProps) => {
                 <div className='form-group d-flex align-items-center justify-content-between'>
                     <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBHighlightButton highlightWords={highlightWords} />
                     <input
                         type='text'
                         value={data || ''}
@@ -172,6 +174,7 @@ const CoreType = (props: FieldProps) => {
                 <div className='form-group d-flex align-items-center justify-content-between'>
                     <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBHighlightButton highlightWords={highlightWords} />
                     <input
                         type='number'
                         value={data ?? ''}
@@ -205,6 +208,7 @@ const CoreType = (props: FieldProps) => {
                 <div className='form-group d-flex align-items-center justify-content-between'>
                     <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBHighlightButton highlightWords={highlightWords} />
                     <input
                         type={isStringDuration ? 'text' : 'number'}
                         value={data ?? ''}

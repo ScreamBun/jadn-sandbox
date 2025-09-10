@@ -85,8 +85,8 @@ const SBEditor = (props: any) => {
         
         const baseTheme = EditorView.baseTheme({
             [`.${highlightClass}`]: {
-                backgroundColor: 'rgba(255, 230, 150, 0.6)',
-                borderBottom: '1px dotted #cc8f00'
+                backgroundColor: "rgba(255, 255, 0, 0.5)",
+                border: '1px dotted #cc8f00'
             }
         });
 
