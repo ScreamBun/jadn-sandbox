@@ -115,7 +115,7 @@ export const ValidOptions: Record<string, Array<string>> = {
   Number: ['default', 'const', 'format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
   String: ['default', 'const', 'format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
   // Structures
-  Array: ['extend', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set', 'unordered'],
+  Array: ['extend', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set'],
   ArrayOf: ['vtype', 'minLength', 'maxLength', 'ordered/unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
   Choice: ['id', 'extend', 'combine'],
   Enumerated: ['id', 'enum', 'pointer', 'extend'],
