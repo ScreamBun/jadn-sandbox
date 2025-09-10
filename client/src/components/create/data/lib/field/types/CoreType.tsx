@@ -32,6 +32,7 @@ const CoreType = (props: FieldProps) => {
     const [clear, setClear] = useState(toClear);
 
     const _optional = isOptional(options);
+    const highlightWords = [name, data];
 
     // Fetch default value (option)
     const defaultOpt = getDefaultOpt(options, type);
@@ -46,7 +47,6 @@ const CoreType = (props: FieldProps) => {
             }
         }
     }, [defaultOpt]);
-// ...existing code...
 
     // Fetch const value (optional)
     const _const = getConstOpt(options, type);
@@ -107,7 +107,7 @@ const CoreType = (props: FieldProps) => {
     );
 
     if (type === "Boolean") {
-        const highlightWords = [`"${name}": ${data}`];
+        //const highlightWords = [`"${name}": ${data}`, `"${name}"`, `${data}`];
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-left'>
@@ -138,7 +138,7 @@ const CoreType = (props: FieldProps) => {
         const hexData = Buffer.from(data || '', 'utf8').toString('hex');
         const ascii = Buffer.from(data || '', 'utf8').toString('ascii');
         const base64 = Buffer.from(data || '', 'utf8').toString('base64');
-        const highlightWords = [`"${name}": "${data}"`];
+        //const highlightWords = [`"${name}": "${data}"`, `"${name}"`, `"${data}"`];
         if (_comment === "") {
             if (data) _comment += `Hex: ${hexData}<br>ASCII: ${ascii}<br>Base64: ${base64}`;
         } else {
@@ -172,7 +172,7 @@ const CoreType = (props: FieldProps) => {
             </div>
         );
     } else if (type == "Number") {
-        const highlightWords = [`"${name}": ${data}`];
+        //const highlightWords = [`"${name}": ${data}`, `"${name}"`, `${data}`];
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-between'>
@@ -207,7 +207,7 @@ const CoreType = (props: FieldProps) => {
         );   
     } else if (type == "Integer") {
         const isStringDuration = options.some(opt => ["/dayTimeDuration", "/yearMonthDuration", "/gYearMonth", "/gMonthDay"].includes(opt));
-        const highlightWords = isStringDuration ? [`"${name}": "${data}"`] : [`"${name}": ${data}`];
+        //const highlightWords = isStringDuration ? [`"${name}": "${data}"`, `"${name}"`, `"${data}"`] : [`"${name}": ${data}`, `"${name}"`, `${data}`];
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-between'>
@@ -254,7 +254,7 @@ const CoreType = (props: FieldProps) => {
         const isTime = options.some(opt => opt === "/time");
         const [timezone, setTimezone] = useState('');
         const [dateToggle, setDateToggle] = useState(false);
-        const highlightWords = [`"${name}": "${data}"`];
+        //const highlightWords = [`"${name}": "${data}"`, `"${name}"`, `"${data}"`];
         return (
         <div className='form-group'>
             <div className='form-group d-flex align-items-center justify-content-between'>
