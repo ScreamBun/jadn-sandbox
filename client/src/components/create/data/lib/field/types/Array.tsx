@@ -22,31 +22,72 @@ const Array = (props: FieldProps) => {
     const [data, setData] = useState(value);
     const [errMsg, setErrMsg] = useState<string | undefined>(undefined);
 
+
+    const _optional = isOptional(options);
+    const _set = options.some(opt => opt.startsWith("s"));
+    const [idNumber, setIdNumber] = useState(0);
+    const [inputOrder, setInputOrder] = useState<Record<any, { order: number, value: any }>>({}); // Key, {Order, Value}
+
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
         setClear(toClear);
         if (toClear) {
             setData("");
             setToggle(true);
+            setInputOrder({});       // reset set ordering on clear
+            setIdNumber(0);
             setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
         }
     }, [toClear]);
 
     const handleChange = (childKey: string, childValue: any) => {
-        setData((prev: any[] = []) => {
-            const idx = children.findIndex((child: any) => child[0] === childKey || child[1] === childKey);
-            const updated = [...prev];
-            updated[idx] = childValue;
-            while (updated.length && (updated[updated.length - 1] === undefined || updated[updated.length - 1] === "" || updated[updated.length - 1] === null)) {
-                updated.pop();
-            }
-            if (Object.keys(updated).length === 0) {
-                fieldChange(name, "");
-            } else {    
-                fieldChange(name, updated);
-            }
-            setErrMsg(getUniqueOrSet(updated, options, "Array"));
-            return updated;
+        // Update inputOrder and use the computed value immediately
+        setInputOrder(prev => {
+            const hasKey = Object.keys(prev).includes(childKey);
+            const nextInputOrder = {
+                ...prev,
+                [childKey]: {
+                    order: hasKey ? prev[childKey].order : idNumber,
+                    value: childValue
+                }
+            };
+            if (!hasKey) setIdNumber(n => n + 1);
+
+            // Now update data and call fieldChange using nextInputOrder (not stale state)
+            setData((prevData: any[] = []) => {
+                const idx = children.findIndex((child: any) => child[0] === childKey || child[1] === childKey);
+                const updated = [...prevData];
+                if (childValue === "") {
+                    if (_set) {
+                        delete nextInputOrder[childKey];
+                    } else {
+                        updated[idx] = undefined; // preserve order
+                    }
+                } else {
+                    updated[idx] = childValue;
+                }
+                while (updated.length && (updated[updated.length - 1] === undefined || updated[updated.length - 1] === "" || updated[updated.length - 1] === null)) {
+                    updated.pop();
+                }
+
+                if (Object.keys(updated).length === 0) {
+                    fieldChange(name, "");
+                } else {
+                    if (_set) {
+                        const orderedUpdated = Object.entries(nextInputOrder)
+                            .sort((a, b) => a[1].order - b[1].order)
+                            .map(([, v]) => v.value);
+                        fieldChange(name, orderedUpdated);
+                    } else {
+                        fieldChange(name, updated);
+                    }
+                }
+
+                setErrMsg(getUniqueOrSet(updated, options, "Array"));
+                return updated;
+            });
+
+            return nextInputOrder;
         });
     };
 
@@ -69,8 +110,6 @@ const Array = (props: FieldProps) => {
             );
         });
     }, [toggle, children, name, clear]);
-
-    const _optional = isOptional(options);
 
     return (
         <>
