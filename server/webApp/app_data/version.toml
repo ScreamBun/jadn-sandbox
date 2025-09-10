@@ -1,7 +1,7 @@
 major = 0
-minor = 14
+minor = 15
 bug = 0
 build_hash = ""
-build_date_in_millis = 1747775891219
-full_version = "v0.14.0_1747775891219"
-app_mode = "local"
+build_date_in_millis = 1757514425610
+full_version = "v0.15.0_1757514425610"
+app_mode = "container"
