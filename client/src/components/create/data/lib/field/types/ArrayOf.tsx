@@ -36,6 +36,7 @@ const ArrayOf = (props: FieldProps) => {
     options = options.filter(opt => !opt.startsWith('{') && !opt.startsWith('}'));
 
     const _set = options.some(opt => opt.startsWith("s"));
+    const _unordered = options.some(opt => opt.startsWith("b"));
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -89,7 +90,7 @@ const ArrayOf = (props: FieldProps) => {
             let updated = [...prev];
             if (key === null || key === "") {
                 //if (existingIndex !== -1) updated.splice(existingIndex, 1);
-                if (_set) {
+                if (_set || _unordered) {
                     updated.splice(existingIndex, 1);
                 } else {
                     updated[existingIndex].key = undefined;
@@ -106,7 +107,7 @@ const ArrayOf = (props: FieldProps) => {
     const addCard = () => {
         if (!keyType) return;
         setCards(prevCards => [...prevCards, { idx: idNumber, key: keyType }]);
-        if (!_set) { // don't preserve order if set
+        if (!_set && !_unordered) { // don't preserve order if set
             addKey(`${keyType} ${idNumber + 1}`, undefined); // Add new key every time new card is added to maintain order
         }
         setIdNumber(prev => prev + 1);
