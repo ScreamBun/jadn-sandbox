@@ -120,21 +120,21 @@ const ArrayOf = (props: FieldProps) => {
         if (!key) return null;
 
         const fieldName = `${keyName}`;
-        const entryName = `${key} ${i+1}`;
+        const entryName = `${keyType} ${i + 1}`;
         const trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
 
         // Add true options
         const trueOptions = trueTypeDef ? (typeof trueTypeDef[0] === "string" ? trueTypeDef[2] : trueTypeDef[3]) : [];
         // Remove parent * from child to prevent mixups
-        options = options.map(opt => opt.startsWith("*") ? opt.slice(1) : opt);
-        options = [...options, ...trueOptions];
+        let newOptions = options.map(opt => opt.startsWith("*") ? opt.slice(1) : opt);
+        newOptions = [...newOptions, ...trueOptions];
 
         let keyField: AllFieldArray;
         if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
             let keyChildren = trueTypeDef != undefined ? trueTypeDef[4] ? Array.isArray(trueTypeDef[4]) ? trueTypeDef[4] : [] : [] : [];
-            keyField = [fieldName, key, options, trueTypeComment, keyChildren];
+            keyField = [fieldName, key, newOptions, trueTypeComment, keyChildren];
         } else {
-            keyField = [i, fieldName, key, options, trueTypeComment];
+            keyField = [i, fieldName, key, newOptions, trueTypeComment];
         }
 
         const keyEntry = keyList.find(entry => entry.name === entryName);
@@ -153,11 +153,11 @@ const ArrayOf = (props: FieldProps) => {
                     </button>
                     <div style={{ flex: '0 1 100%' }}>
                         <Field
-                            key={`${key} ${i+1}`}
+                            key={`${keyType} ${i + 1}`}
                             field={keyField}
                             parent={String(name)}
                             fieldChange={(_n, k) => addKey(entryName, k)}
-                            value={keyEntry?.key ?? ""}
+                            value={keyEntry?.key}
                             toClear={clear}
                         />
                     </div>
