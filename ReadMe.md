@@ -11,7 +11,7 @@ For a downloadable version of the JADN Sandbox walkthrough, [click here](https:/
 
 ## Quick Startup
 
-1. Install docker [Docker](https://docs.docker.com/get-docker/)
+1. Install [Docker](https://docs.docker.com/get-docker/)
 
 2. Pull the latest JADN Sandbox Docker Image (Note: this is needed each time to ensure you are using the very latest version of the JADN Sandbox)
 
@@ -27,11 +27,9 @@ docker pull screambunn/jadn_sandbox
 
 4. Enter the url below in your browser
 
-```bash
-http://localhost:8082/
-```  
+  http://localhost:8082/
 
-5. To stop your image, just hit `ctrl+c` in your terminal or via your docker software
+5. To stop your image, just hit `ctrl+c` in your terminal or via your docker software.
 
 ## Development Startup
 
@@ -63,23 +61,25 @@ Prerequisites:
    ./startup.sh
    ```
 
-### Alternate startup
+### Alternate Startup
 
-1. Fire up server  
+1. Fire up server
 
-```bash
-cd server
-./start.sh
-```
+  ```bash
+  cd server
+  ./start.sh
+  ```
 
 2. In another terminal, fire up the client
 
-```bash
-cd client 
-yarn 
 yarn build
 yarn start
-```
+  ```bash
+  cd client
+  yarn
+  yarn build
+  yarn start
+  ```
 
 ## How To
 
@@ -93,48 +93,47 @@ Important Notes:
 * A new version tag and image should be pushed after each docker build and push.  
 * When you run docker_push.py it will ask for the version # (v[Major].[Minor].[Bug])
 
-1. Run this command once to build the image and push to Dockhub/
+1. Run this command once to build the image and push to DockerHub:
 
-```bash
-python ./docker_push.py
-```
+  ```bash
+  python ./docker_push.py
+  ```
 
 2. To start your image, enter the following, this will start the image without rebuilding
 
-```bash
-./docker_run.sh
-```
+  ```bash
+  ./docker_run.sh
+  ```
 
 Or run the following, you can replace 'latest' with a specific version if you have previously built it or pulled it (see quick start).
 
-```bash
 docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
-```
+  ```bash
+  docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
+  ```
 
 
 3. Once the build is complete go to here in your browser to verify and run smoke tests
 
-```bash
-http://localhost:8082/
-```
+  http://localhost:8082/
 
-### Create a jadnschema wheel
+### Create a jadnschema Wheel
 
 * See readme under the jadnschema repo
 
 ### Build Ruby Image and Container and use locally
 
-1. In a terminal window, from the JADN Sandbox Root dir, build the image:
+1. In a terminal window, from the JADN Sandbox root directory, build the image:
 
-   ```bash
-   docker build -t sb-ruby-image -f Dockerfile_sb_ruby .
-   ```
+    ```bash
+    docker build -t sb-ruby-image -f Dockerfile_sb_ruby .
+    ```
 
 2. Next, build the container (/bin/bash is optional this allows you to immediately investigate the contents of the container)
 
-   ```bash
-   docker run -it --name=sb-ruby-container sb-ruby-image /bin/bash
-   ```
+    ```bash
+    docker run -it --name=sb-ruby-container sb-ruby-image /bin/bash
+    ```
 
 3. Go to server / webApp / data / version.toml and change the app_mode to "local".  
 
@@ -143,22 +142,22 @@ http://localhost:8082/
 ### Develop and Test JADN Schema on the Fly
 
 * When developing and testing JADN Schema, you can link it directly to your virtual environment to avoid recreating wheels.
-  * Within your virtual environment view the python dependencies
-    * `pip freeze`
-  * Remove the jadnschema wheel
-    * `pip uninstall jadnschema`
-  * Add the jadnschema git repo source to the python dependencies
-    * cd to jadnschema
-    * `python setup.py develop`
-    * `pip freeze`
-    * You should see this something similar to this:
-      >-e git+ssh://git@ccoe-gitlab.hii-tsd.com/screamingbunny/schema/jadnschema.git@16ac517baa1499014ba221b7d1b7ffb3cef20ebe#egg=jadnschema
-  * Go back to the Web Validator and start the server
-    * `./start.sh`
-  * Remember when you are finished, make sure to
-    * recreate the jadnschema wheel, which contains the updated code
-    * uninstall the direct link, simple pip uninstall jadnschema
-    * install the updated jadnschema wheel
+  - Within your virtual environment view the python dependencies:
+    - `pip freeze`
+  - Remove the jadnschema wheel:
+    - `pip uninstall jadnschema`
+  - Add the jadnschema git repo source to the python dependencies:
+    - cd to jadnschema
+    - `python setup.py develop`
+    - `pip freeze`
+    - You should see something similar to this:
+      -e git+ssh://git@ccoe-gitlab.hii-tsd.com/screamingbunny/schema/jadnschema.git@16ac517baa1499014ba221b7d1b7ffb3cef20ebe#egg=jadnschema
+  - Go back to the Web Validator and start the server:
+    - `./start.sh`
+  - Remember when you are finished, make sure to:
+    - recreate the jadnschema wheel, which contains the updated code
+    - uninstall the direct link, simply `pip uninstall jadnschema`
+    - install the updated jadnschema wheel
 
   Note: If you update the whl filename/version, then the Dockerfile will need to be updated to use this new filename as well.
 
@@ -192,4 +191,4 @@ http://localhost:8082/
 
 * Server: `server/webApp/templates/`
 
-5. Start the server and navigate to the web browser page to verify the client is server correctly
+5. Start the server and navigate to the web browser page to verify the client is served correctly.
