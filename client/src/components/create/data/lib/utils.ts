@@ -280,3 +280,8 @@ export const getConstOpt = (options: string[], type: string): any | undefined =>
             return defaultOpt ? String(defaultOpt.slice(1)) : undefined;
     }
 }
+
+// FUNCTION: Remove wrapper from xml data
+export const removeXmlWrapper = (xml: string): string => {
+    return xml.replace(/<\/?all>/g, '');
+}

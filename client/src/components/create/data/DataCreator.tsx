@@ -16,7 +16,7 @@ import { validateMessage } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import SBLoadBuilder from 'components/common/SBLoadBuilder'
-import { destructureField } from './lib/utils'
+import { destructureField, removeXmlWrapper } from './lib/utils'
 import { LANG_XML, LANG_JSON } from 'components/utils/constants';
 import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
@@ -55,38 +55,46 @@ const DataCreator = (props: any) => {
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         setLoadedFieldDefs(null);
+        setJsonValidated(false);
+        setXmlValidated(false);
         setXml("");
         dispatch<any>(clearHighlight());
     }
 
     // Handle full data validation
     const [jsonValidated, setJsonValidated] = useState(false);
-    const handleValidate = async () => {
+    const [xmlValidated, setXmlValidated] = useState(false);
+    const handleValidate = async (lang: string) => {
         if (!schemaObj || !generatedMessage) {
             sbToastError('ERROR: Validation failed - Please select schema and enter data');
             setJsonValidated(false);
+            setXmlValidated(false);
             return;
         }
         try {
             const type = selection?.value || '';
-            const newMsg = JSON.stringify(generatedMessage[type]);
-            const action: any = await dispatch(validateMessage(schemaObj, newMsg, LANG_JSON, type));
+            const newMsg = lang === LANG_JSON ? JSON.stringify(generatedMessage[type]) : removeXmlWrapper(xml); // need to remove wrapper
+            const action: any = await dispatch(validateMessage(schemaObj, newMsg, lang, type));
             // Check if the action is a success or failure
             if (action.type === '@@validate/VALIDATE_MESSAGE_SUCCESS') {
                 if (action.payload?.valid_bool) {
                     sbToastSuccess(action.payload.valid_msg);
-                    setJsonValidated(true);
+                    if (lang === LANG_JSON) setJsonValidated(true);
+                    if (lang === LANG_XML) setXmlValidated(true);
                 } else {
                     sbToastError(action.payload.valid_msg);
-                    setJsonValidated(false);
+                    if (lang === LANG_JSON) setJsonValidated(false);
+                    if (lang === LANG_XML) setXmlValidated(false);
                 }
             } else if (action.type === '@@validate/VALIDATE_FAILURE') {
                 sbToastError(action.payload?.valid_msg || 'Validation failed');
-                setJsonValidated(false);
+                if (lang === LANG_JSON) setJsonValidated(false);
+                if (lang === LANG_XML) setXmlValidated(false);
             }
         } catch (err: any) {
             sbToastError(err.message || 'Validation error');
             setJsonValidated(false);
+            setXmlValidated(false);
         }
     };
 
@@ -97,6 +105,8 @@ const DataCreator = (props: any) => {
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         dispatch(clearFieldValidation());
+        setJsonValidated(false);
+        setXmlValidated(false);
         setLoadedFieldDefs(null);
         setXml("");
         dispatch<any>(clearHighlight());
@@ -255,7 +265,7 @@ const DataCreator = (props: any) => {
                 style={{display: dataFullScreen ? 'none' : 'block'}}>
                 <div className='card'>
                     <div className="card-header p-2 d-flex align-items-center">
-                        <h5 className = "me-2">Data Viewer</h5>
+                        <h5 className = "mb-0 me-1">Data Builder</h5>
                         <div className="col-md-4 me-2">
                             <SBSelect 
                                 value={selectedSerialization}
@@ -275,7 +285,7 @@ const DataCreator = (props: any) => {
                             <>
                                 <button type="button"
                                     className="btn btn-sm btn-primary me-1"
-                                    onClick={handleValidate}
+                                    onClick={() => handleValidate(LANG_JSON)}
                                     disabled = {selection && generatedMessage? false:true}
                                 >
                                     Valid
@@ -293,7 +303,26 @@ const DataCreator = (props: any) => {
                                 <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
                             </>
                             :
-                            <></>
+                            <><>
+                                <button type="button"
+                                    className="btn btn-sm btn-primary me-1"
+                                    onClick={() => handleValidate(LANG_XML)}
+                                    disabled = {selection && xml? false:true}
+                                >
+                                    Valid
+                                    {xmlValidated ? (
+                                        <span className="badge rounded-pill text-bg-success ms-1">
+                                            <FontAwesomeIcon icon={faCheck} />
+                                        </span>) : (
+                                        <span className="badge rounded-pill text-bg-danger ms-1">
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </span>)
+                                    }
+                                </button>
+                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={xml} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_XML} />
+                                <SBCopyToClipboard buttonId={'copyMessage'} data={xml} customClass='float-end' shouldStringify={true} />
+                                <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(xml, null, 2)} ext={LANG_XML} />
+                            </></>
                             }
                         </div>
                     </div>
