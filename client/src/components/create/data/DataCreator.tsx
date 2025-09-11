@@ -27,7 +27,7 @@ const DataCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml } = props;
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
     const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
-    const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:"JSON Viewer", value: LANG_JSON});
+    const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:LANG_JSON, value: LANG_JSON});
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
@@ -255,13 +255,14 @@ const DataCreator = (props: any) => {
                 style={{display: dataFullScreen ? 'none' : 'block'}}>
                 <div className='card'>
                     <div className="card-header p-2 d-flex align-items-center">
-                        <div className="col-md-3 me-2">
+                        <h5 className = "me-2">Data Viewer</h5>
+                        <div className="col-md-4 me-2">
                             <SBSelect 
                                 value={selectedSerialization}
                                 onChange={setSelectedSerialization}
                                 data={[
-                                    { label: "JSON Viewer", value: LANG_JSON },
-                                    { label: "XML Viewer", value: LANG_XML },
+                                    { label: LANG_JSON, value: LANG_JSON },
+                                    { label: LANG_XML, value: LANG_XML },
                                 ]}
                                 isSmStyle
                             />
@@ -298,9 +299,9 @@ const DataCreator = (props: any) => {
                     </div>
                     <div className='card-body p-2'>
                         {selectedSerialization?.value===LANG_JSON ? 
-                        <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
+                        <SBEditor data={generatedMessage} isReadOnly={true} initialHighlightWords={highlightedItems}></SBEditor>
                         :
-                        <SBEditor data={xml} isReadOnly={true} convertTo={LANG_XML}></SBEditor>
+                        <SBEditor data={xml} isReadOnly={true} convertTo={LANG_XML} initialHighlightWords={highlightedItems}></SBEditor>
                         }
                     </div>
                 </div>
