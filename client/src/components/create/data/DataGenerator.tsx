@@ -9,6 +9,7 @@ import { dismissAllToast } from 'components/common/SBToast'
 import { sbToastSuccess } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
+import { clearHighlight } from "actions/highlight";
 
 const DataGenerator = () => {
     const dispatch = useDispatch()
@@ -50,6 +51,7 @@ const DataGenerator = () => {
         setXml("");
         dispatch(setSchema(loadedSchema));
         dispatch(clearFieldValidation());
+        dispatch<any>(clearHighlight());
     }, [loadedSchema])
 
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -64,6 +66,7 @@ const DataGenerator = () => {
         dispatch(setSchema(null));
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         dispatch(clearFieldValidation());
+        dispatch<any>(clearHighlight());
     }
 
     return (

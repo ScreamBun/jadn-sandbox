@@ -1,10 +1,12 @@
 import { ArrayFieldArray, EnumeratedFieldArray } from "components/create/schema/interface";
 import React, { useState } from "react";
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, getDefaultValue, getPointerChildren, isOptional, getDerivedOptions } from "../../utils";
 import { getSelectedSchema } from "reducers/util";
+import SBHighlightButton from "components/common/SBHighlightButton";
+import { clearHighlight } from "actions/highlight";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -19,6 +21,7 @@ const Enumerated = (props: FieldProps) => {
     const { field, fieldChange, parent, value, toClear } = props;
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
+    const dispatch = useDispatch();
 
     const handleChange = (e: Option) => {
         if (e == null) {
@@ -31,6 +34,7 @@ const Enumerated = (props: FieldProps) => {
     }
 
     const _optional = isOptional(options);
+    const highlightWords = [name, typeof selectedValue === 'object' ? selectedValue.label : value];
 
     // Check for pointer
     let pointer: string | undefined = undefined;
@@ -90,6 +94,7 @@ const Enumerated = (props: FieldProps) => {
         if (toClear) {
             setSelectedValue('');
             fieldChange(name, '');
+            dispatch<any>(clearHighlight());
         }
     }, [toClear]);
 
@@ -103,6 +108,7 @@ const Enumerated = (props: FieldProps) => {
             <div className='form-group d-flex align-items-center justify-content-between'>
                 <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                 <SBInfoBtn comment={_comment} />
+                <SBHighlightButton highlightWords={highlightWords} />
                 <SBSelect id={name} name = {name} data = {getOptions}
                     onChange={handleChange}
                     placeholder={`${name} options`}

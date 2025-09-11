@@ -23,7 +23,7 @@ const Record = (props: FieldProps) => {
     const [clear, setClear] = useState(toClear);
 
     const _ordered = options.some(opt => opt.startsWith("q"));
-
+    
     useEffect(() => {
         setClear(toClear);
         if (toClear) {
@@ -55,22 +55,36 @@ const Record = (props: FieldProps) => {
         });
     };
 
+    // Initialize/maintain ordered keys once when opened
+    useEffect(() => {
+        if (!toggle || !_ordered) return;
+        if (!children || children.length === 0) return;
+
+        setData((prev: any) => {
+            const next: Record<string, any> = { ...(prev ?? {}) };
+            let changed = false;
+
+            children.forEach(ch => {
+                const [_ci, childName] = destructureField(ch);
+                if (!(childName in next)) {
+                    next[childName] = undefined; // preserve key order by inserting in schema order
+                    changed = true;
+                }
+            });
+
+            if (changed) {
+                fieldChange(name, next);
+            }
+            return next;
+        });
+    }, [toggle, _ordered, children, name, fieldChange]);
+
     const childrenCards = useMemo(() => {
         if (!toggle) return null;
         
         return children.map((child, idx) => {
             let [_childIdx, childName, _childType, _childOptions, _childComment] = destructureField(child);
             let childValue = data?.[childName];
-
-            // If ordered, add default data as undefined
-            if (_ordered) {
-                setData((prev: any) => {
-                    const updated = { ...prev };
-                    updated[childName] = undefined;
-                    fieldChange(name, updated);
-                    return updated;
-                })
-            }
 
             return (
                 <div key={idx}>

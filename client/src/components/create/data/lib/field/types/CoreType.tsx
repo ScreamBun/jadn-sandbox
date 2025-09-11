@@ -9,6 +9,8 @@ import { timeZones } from 'components/create/consts';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
 import { Buffer } from 'buffer';
+import SBHighlightButton from "components/common/SBHighlightButton";
+import { clearHighlight } from "actions/highlight";
 
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
@@ -30,6 +32,7 @@ const CoreType = (props: FieldProps) => {
     const [clear, setClear] = useState(toClear);
 
     const _optional = isOptional(options);
+    const highlightWords = [name, data];
 
     // Fetch default value (option)
     const defaultOpt = getDefaultOpt(options, type);
@@ -44,7 +47,6 @@ const CoreType = (props: FieldProps) => {
             }
         }
     }, [defaultOpt]);
-// ...existing code...
 
     // Fetch const value (optional)
     const _const = getConstOpt(options, type);
@@ -92,8 +94,9 @@ const CoreType = (props: FieldProps) => {
             setData('');
             fieldChange(name, '');
             dispatch(clearFieldValidation(name));
+            dispatch<any>(clearHighlight());
         }
-    }, [toClear, fieldChange]);
+    }, [toClear]);
 
     const commonFooter = (
         <>
@@ -104,11 +107,13 @@ const CoreType = (props: FieldProps) => {
     );
 
     if (type === "Boolean") {
+        //const highlightWords = [`"${name}": ${data}`, `"${name}"`, `${data}`];
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-left'>
                     <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{_optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBHighlightButton highlightWords={highlightWords} />
                     <input
                         id={`checkbox-${_idx}`}
                         type='checkbox'
@@ -133,6 +138,7 @@ const CoreType = (props: FieldProps) => {
         const hexData = Buffer.from(data || '', 'utf8').toString('hex');
         const ascii = Buffer.from(data || '', 'utf8').toString('ascii');
         const base64 = Buffer.from(data || '', 'utf8').toString('base64');
+        //const highlightWords = [`"${name}": "${data}"`, `"${name}"`, `"${data}"`];
         if (_comment === "") {
             if (data) _comment += `Hex: ${hexData}<br>ASCII: ${ascii}<br>Base64: ${base64}`;
         } else {
@@ -143,6 +149,7 @@ const CoreType = (props: FieldProps) => {
                 <div className='form-group d-flex align-items-center justify-content-between'>
                     <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBHighlightButton highlightWords={highlightWords} />
                     <input
                         type='text'
                         value={data || ''}
@@ -165,11 +172,13 @@ const CoreType = (props: FieldProps) => {
             </div>
         );
     } else if (type == "Number") {
+        //const highlightWords = [`"${name}": ${data}`, `"${name}"`, `${data}`];
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-between'>
                     <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBHighlightButton highlightWords={highlightWords} />
                     <input
                         type='number'
                         value={data ?? ''}
@@ -198,11 +207,13 @@ const CoreType = (props: FieldProps) => {
         );   
     } else if (type == "Integer") {
         const isStringDuration = options.some(opt => ["/dayTimeDuration", "/yearMonthDuration", "/gYearMonth", "/gMonthDay"].includes(opt));
+        //const highlightWords = isStringDuration ? [`"${name}": "${data}"`, `"${name}"`, `"${data}"`] : [`"${name}": ${data}`, `"${name}"`, `${data}`];
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-between'>
                     <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                     <SBInfoBtn comment={_comment} />
+                    <SBHighlightButton highlightWords={highlightWords} />
                     <input
                         type={isStringDuration ? 'text' : 'number'}
                         value={data ?? ''}
@@ -243,11 +254,13 @@ const CoreType = (props: FieldProps) => {
         const isTime = options.some(opt => opt === "/time");
         const [timezone, setTimezone] = useState('');
         const [dateToggle, setDateToggle] = useState(false);
+        //const highlightWords = [`"${name}": "${data}"`, `"${name}"`, `"${data}"`];
         return (
         <div className='form-group'>
             <div className='form-group d-flex align-items-center justify-content-between'>
                 <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                 <SBInfoBtn comment={_comment} />
+                <SBHighlightButton highlightWords={highlightWords} />
                 {isTime || isDateTime || isDate ? <button
                     type="button"
                     className="btn btm-sm p-0 ms-1 me-1"

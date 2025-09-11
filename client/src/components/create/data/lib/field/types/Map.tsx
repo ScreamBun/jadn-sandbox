@@ -19,7 +19,6 @@ const Map = (props: FieldProps) => {
     const { field, fieldChange, parent, value, toClear } = props;
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [toggle, setToggle] = useState(false);
-
      
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -73,6 +72,30 @@ const Map = (props: FieldProps) => {
             return updated;
         });
     };
+    
+    // Initialize/maintain ordered keys once when opened
+    useEffect(() => {
+        if (!toggle || !_ordered) return;
+        if (!children || children.length === 0) return;
+
+        setData((prev: any) => {
+            const next: Record<string, any> = { ...(prev ?? {}) };
+            let changed = false;
+
+            children.forEach(ch => {
+                const [_ci, childName] = destructureField(ch);
+                if (!(childName in next)) {
+                    next[childName] = undefined; // preserve key order by inserting in schema order
+                    changed = true;
+                }
+            });
+
+            if (changed) {
+                fieldChange(name, next);
+            }
+            return next;
+        });
+    }, [toggle, _ordered, children, name, fieldChange]);
 
     const childrenCards = useMemo(() => {
         if (!toggle) return null;
@@ -81,16 +104,6 @@ const Map = (props: FieldProps) => {
             let [_childIdx, childName, _childType, _childOptions, _childComment] = destructureField(child);
             const key = isID ? (nameToIdMap[childName] ?? childName) : childName;
             let childValue = data?.[key];
-
-            // If ordered, add default data as undefined
-            if (_ordered) {
-                setData((prev: any) => {
-                    const updated = { ...prev };
-                    updated[childName] = undefined;
-                    fieldChange(name, updated);
-                    return updated;
-                })
-            }
 
             return (
                 <div className="ms-3 mt-2" key={idx}>

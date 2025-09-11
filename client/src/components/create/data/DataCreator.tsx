@@ -19,6 +19,7 @@ import SBLoadBuilder from 'components/common/SBLoadBuilder'
 import { destructureField } from './lib/utils'
 import { LANG_XML, LANG_JSON } from 'components/utils/constants';
 import { convertData } from "actions/convert";
+import { clearHighlight } from "actions/highlight";
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -55,6 +56,7 @@ const DataCreator = (props: any) => {
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         setLoadedFieldDefs(null);
         setXml("");
+        dispatch<any>(clearHighlight());
     }
 
     // Handle full data validation
@@ -97,6 +99,7 @@ const DataCreator = (props: any) => {
         dispatch(clearFieldValidation());
         setLoadedFieldDefs(null);
         setXml("");
+        dispatch<any>(clearHighlight());
     }    
 
     const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
@@ -114,10 +117,14 @@ const DataCreator = (props: any) => {
     const [dataFullScreen, setDataFullScreen] = useState(false);
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
 
+    // Pull global state of highlighted items
+    const highlightedItems = useSelector((state: any) => state.Highlight.highlightWords);
+
     // Handle making sure loaded defs are reset
     React.useEffect(() => {
         if (loadedFieldDefs) {
             setLoadedFieldDefs(null);
+            dispatch<any>(clearHighlight());
         }
     }, [selection, schemaObj]);
 
