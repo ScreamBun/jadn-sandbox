@@ -9,7 +9,6 @@ import SBSelect, { Option } from 'components/common/SBSelect'
 import SBSaveFile from 'components/common/SBSaveFile'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
-import { LANG_JSON } from 'components/utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faExpand, faUndo, faWandSparkles, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch } from 'react-redux'
@@ -18,14 +17,16 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import SBLoadBuilder from 'components/common/SBLoadBuilder'
 import { destructureField } from './lib/utils'
+import { LANG_XML, LANG_JSON } from 'components/utils/constants';
+import { convertData } from "actions/convert";
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
-    const { generatedMessage, setGeneratedMessage, selection, setSelection } = props;
+    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml } = props;
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
     const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
-    const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:"JSON Viewer", value:"json"});
+    const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:"JSON Viewer", value: LANG_JSON});
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
@@ -37,6 +38,7 @@ const DataCreator = (props: any) => {
             } else {
                 updated[k] = v;
             }
+            convertToXML(updated);
             return updated;
         });
     };
@@ -52,6 +54,7 @@ const DataCreator = (props: any) => {
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         setLoadedFieldDefs(null);
+        setXml("");
     }
 
     // Handle full data validation
@@ -93,6 +96,7 @@ const DataCreator = (props: any) => {
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         dispatch(clearFieldValidation());
         setLoadedFieldDefs(null);
+        setXml("");
     }    
 
     const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
@@ -116,6 +120,29 @@ const DataCreator = (props: any) => {
             setLoadedFieldDefs(null);
         }
     }, [selection, schemaObj]);
+
+    // Handle: convert generatedMessage to XML
+    const convertToXML = (data: string) => {
+        try {
+            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_XML))
+                .then((rsp: any) => {
+                    if(rsp.payload.data) {
+                        if(rsp.payload.data.xml) {
+                            setXml(rsp.payload.data.xml)
+                        } 
+                    } else {
+                        console.log(rsp.payload.message);
+                    }
+                })
+                .catch((submitErr: { message: string }) => {
+                    sbToastError(submitErr.message)
+                });
+        } catch (err) {
+            if (err instanceof Error) {
+                sbToastError(err.message)
+            }
+        }        
+    }
 
     // Decide which fields to display
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
@@ -226,8 +253,8 @@ const DataCreator = (props: any) => {
                                 value={selectedSerialization}
                                 onChange={setSelectedSerialization}
                                 data={[
-                                    { label: "JSON Viewer", value: "json" },
-                                    { label: "XML Viewer", value: "xml" },
+                                    { label: "JSON Viewer", value: LANG_JSON },
+                                    { label: "XML Viewer", value: LANG_XML },
                                 ]}
                                 isSmStyle
                             />
@@ -236,28 +263,38 @@ const DataCreator = (props: any) => {
                             <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen JSON' onClick={() => setJsonFullScreen(!jsonFullScreen)}>
                                 <FontAwesomeIcon icon={faExpand} />
                             </button>
-                            <button type="button"
-                                className="btn btn-sm btn-primary me-1"
-                                onClick={handleValidate}
-                                disabled = {selection && generatedMessage? false:true}
-                            >
-                                Valid
-                                {jsonValidated ? (
-                                    <span className="badge rounded-pill text-bg-success ms-1">
-                                        <FontAwesomeIcon icon={faCheck} />
-                                    </span>) : (
-                                    <span className="badge rounded-pill text-bg-danger ms-1">
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </span>)
-                                }
-                            </button>
-                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
-                            <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
-                            <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
+                            {selectedSerialization?.value===LANG_JSON ? 
+                            <>
+                                <button type="button"
+                                    className="btn btn-sm btn-primary me-1"
+                                    onClick={handleValidate}
+                                    disabled = {selection && generatedMessage? false:true}
+                                >
+                                    Valid
+                                    {jsonValidated ? (
+                                        <span className="badge rounded-pill text-bg-success ms-1">
+                                            <FontAwesomeIcon icon={faCheck} />
+                                        </span>) : (
+                                        <span className="badge rounded-pill text-bg-danger ms-1">
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </span>)
+                                    }
+                                </button>
+                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
+                                <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
+                                <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
+                            </>
+                            :
+                            <></>
+                            }
                         </div>
                     </div>
                     <div className='card-body p-2'>
+                        {selectedSerialization?.value===LANG_JSON ? 
                         <SBEditor data={generatedMessage} isReadOnly={true}></SBEditor>
+                        :
+                        <SBEditor data={xml} isReadOnly={true} convertTo={LANG_XML}></SBEditor>
+                        }
                     </div>
                 </div>
             </div>

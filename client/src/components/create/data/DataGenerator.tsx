@@ -22,6 +22,7 @@ const DataGenerator = () => {
     const [selectedFile, setSelectedFile] = useState<Option | null>(pipedFile !== null ? JSON.parse(pipedFile) : null);
     const [loadedSchema, setLoadedSchema] = useState<object | null>(pipedSchema !== null ? JSON.parse(pipedSchema) : null); // check for piped schema
     const [generatedMessage, setGeneratedMessage] = useState({});
+    const [xml, setXml] = useState('');
     const [selection, setSelection] = useState<Option | null>();
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
 
@@ -46,6 +47,7 @@ const DataGenerator = () => {
     useEffect(() => {
         setSelection(null);
         setGeneratedMessage({});
+        setXml("");
         dispatch(setSchema(loadedSchema));
         dispatch(clearFieldValidation());
     }, [loadedSchema])
@@ -55,6 +57,7 @@ const DataGenerator = () => {
         dismissAllToast();
         setSelectedFile(null);
         setLoadedSchema(null);
+        setXml("");
         setSelection(null);
         setGeneratedMessage({});
         sbToastSuccess("Schema reset successfully");
@@ -101,7 +104,8 @@ const DataGenerator = () => {
                                 <div className='col-md-12 pr-2'>
                                     <DataCreator
                                         generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                        selection={selection} setSelection={setSelection} />
+                                        selection={selection} setSelection={setSelection}
+                                        xml={xml} setXml={setXml} />
                                 </div>
                             </div>
                         </div>
