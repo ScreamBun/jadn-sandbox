@@ -44,7 +44,6 @@ const CoreType = (props: FieldProps) => {
             }
         }
     }, [defaultOpt]);
-// ...existing code...
 
     // Fetch const value (optional)
     const _const = getConstOpt(options, type);
