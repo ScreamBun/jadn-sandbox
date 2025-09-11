@@ -25,6 +25,7 @@ const DataCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, selection, setSelection } = props;
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
     const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
+    const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:"JSON Viewer", value:"json"});
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
@@ -220,7 +221,17 @@ const DataCreator = (props: any) => {
                 style={{display: dataFullScreen ? 'none' : 'block'}}>
                 <div className='card'>
                     <div className="card-header p-2 d-flex align-items-center">
-                        <h5 className="mb-0">JSON Viewer</h5>
+                        <div className="col-md-3 me-2">
+                            <SBSelect 
+                                value={selectedSerialization}
+                                onChange={setSelectedSerialization}
+                                data={[
+                                    { label: "JSON Viewer", value: "json" },
+                                    { label: "XML Viewer", value: "xml" },
+                                ]}
+                                isSmStyle
+                            />
+                        </div>
                         <div className="ms-auto">
                             <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen JSON' onClick={() => setJsonFullScreen(!jsonFullScreen)}>
                                 <FontAwesomeIcon icon={faExpand} />
