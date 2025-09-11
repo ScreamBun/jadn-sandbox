@@ -35,6 +35,8 @@ const ArrayOf = (props: FieldProps) => {
     // Remove { and } from options so they aren't passed to child fields
     options = options.filter(opt => !opt.startsWith('{') && !opt.startsWith('}'));
 
+    const _set = options.some(opt => opt.startsWith("s"));
+    const _unordered = options.some(opt => opt.startsWith("b"));
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -88,7 +90,11 @@ const ArrayOf = (props: FieldProps) => {
             let updated = [...prev];
             if (key === null || key === "") {
                 //if (existingIndex !== -1) updated.splice(existingIndex, 1);
-                updated[existingIndex].key = undefined;
+                if (_set || _unordered) {
+                    updated.splice(existingIndex, 1);
+                } else {
+                    updated[existingIndex].key = undefined;
+                }
             } else if (existingIndex !== -1) {
                 updated[existingIndex].key = key;
             } else {
@@ -101,7 +107,9 @@ const ArrayOf = (props: FieldProps) => {
     const addCard = () => {
         if (!keyType) return;
         setCards(prevCards => [...prevCards, { idx: idNumber, key: keyType }]);
-        addKey(`${keyType} ${idNumber + 1}`, undefined); // Add new key every time new card is added to maintain order
+        if (!_set && !_unordered) { // don't preserve order if set
+            addKey(`${keyType} ${idNumber + 1}`, undefined); // Add new key every time new card is added to maintain order
+        }
         setIdNumber(prev => prev + 1);
         setNumberOfItems(prev => prev + 1);
     };
@@ -120,21 +128,21 @@ const ArrayOf = (props: FieldProps) => {
         if (!key) return null;
 
         const fieldName = `${keyName}`;
-        const entryName = `${key} ${i+1}`;
+        const entryName = `${keyType} ${i + 1}`;
         const trueTypeComment = trueTypeDef != undefined ? typeof trueTypeDef[0] === 'string' ? trueTypeDef[3] : trueTypeDef[4] : "";
 
         // Add true options
         const trueOptions = trueTypeDef ? (typeof trueTypeDef[0] === "string" ? trueTypeDef[2] : trueTypeDef[3]) : [];
         // Remove parent * from child to prevent mixups
-        options = options.map(opt => opt.startsWith("*") ? opt.slice(1) : opt);
-        options = [...options, ...trueOptions];
+        let newOptions = options.map(opt => opt.startsWith("*") ? opt.slice(1) : opt);
+        newOptions = [...newOptions, ...trueOptions];
 
         let keyField: AllFieldArray;
         if (key === "Array" || key === "Record" || key === "Map" || key === "Enumerated" || key === "Choice") {
             let keyChildren = trueTypeDef != undefined ? trueTypeDef[4] ? Array.isArray(trueTypeDef[4]) ? trueTypeDef[4] : [] : [] : [];
-            keyField = [fieldName, key, options, trueTypeComment, keyChildren];
+            keyField = [fieldName, key, newOptions, trueTypeComment, keyChildren];
         } else {
-            keyField = [i, fieldName, key, options, trueTypeComment];
+            keyField = [i, fieldName, key, newOptions, trueTypeComment];
         }
 
         const keyEntry = keyList.find(entry => entry.name === entryName);
@@ -153,11 +161,11 @@ const ArrayOf = (props: FieldProps) => {
                     </button>
                     <div style={{ flex: '0 1 100%' }}>
                         <Field
-                            key={`${key} ${i+1}`}
+                            key={`${keyType} ${i + 1}`}
                             field={keyField}
                             parent={String(name)}
                             fieldChange={(_n, k) => addKey(entryName, k)}
-                            value={keyEntry?.key ?? ""}
+                            value={keyEntry?.key}
                             toClear={clear}
                         />
                     </div>

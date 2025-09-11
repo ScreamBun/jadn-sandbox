@@ -25,6 +25,8 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
           removable={false}
           change={val => change([key, val], 'field')}
           value={deserializedState[key]}
+          labelColumns={3}
+          fieldColumns={9}
         />
       );
     });
