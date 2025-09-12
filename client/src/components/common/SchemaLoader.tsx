@@ -57,7 +57,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             lightBackground = false
          } = props;
 
-    const selectedFile = useSelector(getSelectedFilename);
+    const selectedFilename = useSelector(getSelectedFilename) as string;
+    const selectedFile = {value: selectedFilename, label: selectedFilename} as Option;
     const setSelectedFile = (fileStr: Option | null) => {
         dispatch(setFilename(fileStr?.label || ""));
     }
@@ -86,7 +87,6 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     useEffect(() => {
         if (!loadedSchema) {
             setIsValid(false);
-            setSelectedFile(null);
             setSchemaFormat(null);
         }
     }, [loadedSchema])
@@ -144,8 +144,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const sbEditorOnChange = (data: string) => {
         dismissAllToast();
         setIsValid(false);
-        setLoadedSchema({data});
-        dispatch(setSchema(null));
+        setLoadedSchema(JSON.parse(data));
         try {
             if (setDecodeSchemaTypes && setDecodeMsg) {
                 loadDecodeTypes(JSON.parse(data));
@@ -164,7 +163,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                 name: getFilenameOnly(fileStr.label),
                 ext: getFilenameExt(fileStr.label)
             }
-            setFileName(fileName);
+            //(fileName);
             setLoadedSchema(schemaObj);
             try {
                 dispatch(validateSchema(schemaObj, fileName.ext))
@@ -214,10 +213,10 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         setLoadedSchema(null);
         dispatch(setSchema(null));
         setSelectedFile(null);
-        setFileName({
-            name: '',
-            ext: LANG_JADN
-        });
+        //setFileName({
+        //    name: '',
+        //    ext: LANG_JADN
+        //});
         if (ref.current) {
             ref.current.value = '';
         }
@@ -236,7 +235,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             opts={schemaOpts}
                             selectedOpt={selectedFile}
                             loadedFileData={loadedSchema}
-                            fileName={fileName}
+                            fileName={selectedFile?.value || null}
                             fileExt={schemaFormat?.value}
                             setSelectedFile={setSelectedFile}
                             onCancelFileUpload={onCancelFileUpload}

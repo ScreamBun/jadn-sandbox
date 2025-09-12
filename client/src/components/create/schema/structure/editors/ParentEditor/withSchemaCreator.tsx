@@ -15,6 +15,7 @@ import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
 import SBDownloadBtn from 'components/common/SBDownloadBtn';
 import SBFileLoader from 'components/common/SBFileLoader';
 import { Option } from 'components/common/SBSelect';
+import SchemaLoader from 'components/common/SchemaLoader';
 
 
 export const configInitialState = {
@@ -33,6 +34,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState,
             fieldCollapseState, setFieldCollapseState,
             allFieldsCollapse, setAllFieldsCollapse, fieldCollapseStateRef } = props;
+    const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
 
         useEffect(() => {
             if (!generatedSchema) {
@@ -264,7 +266,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                 <div className='card-header p-2'>
                     <div className='row no-gutters'>
                         <div className='col-sm-3 align-self-center'>
-                            <SBFileLoader
+                            {/*<SBFileLoader
                                 opts={schemaOpts}
                                 selectedOpt={selectedFile}
                                 loadedFileData={generatedSchema}
@@ -276,6 +278,15 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                 placeholder={'Select a schema...'}
                                 loc={'schemas'}
                                 isSaveable
+                            />*/}
+                            <SchemaLoader
+                                schemaFormat={schemaFormat}
+                                setSchemaFormat={setSchemaFormat}
+                                showEditor={false}
+                                showCopy={false}
+                                showFormatter={false}
+                                showSave={false}
+                                lightBackground={true}
                             />
                         </div>
                         <div className='col-sm-9 align-self-center'>

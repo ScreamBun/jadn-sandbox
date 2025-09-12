@@ -43,7 +43,7 @@ const initialState: UtilState = {
     }
   },
   selectedSchema: {},
-  selectedFilename: "",
+  selectedFilename: null,
   types: {
     base: ['Array', 'ArrayOf', 'Binary', 'Boolean', 'Choice', 'Enumerated', 'Integer', 'Map', 'MapOf', 'Number', 'Record', 'String'],
     schema: [],
@@ -89,7 +89,7 @@ export default (state = initialState, action: util.UtilActions) => {
     case util.FILENAME_SUCCESS:
       return {
         ...state,
-        selectedFilename: action.payload.filename
+        selectedFilename: action.payload.filename || null
       };
 
     case util.INFO_FAILURE:
