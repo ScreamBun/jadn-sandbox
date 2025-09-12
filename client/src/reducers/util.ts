@@ -18,6 +18,7 @@ export interface UtilState {
     };
   },
   selectedSchema: SchemaJADN | object;
+  selectedFilename: string | null;
   types: {
     base: Array<string>;
     schema: Array<string>;
@@ -42,6 +43,7 @@ const initialState: UtilState = {
     }
   },
   selectedSchema: {},
+  selectedFilename: "",
   types: {
     base: ['Array', 'ArrayOf', 'Binary', 'Boolean', 'Choice', 'Enumerated', 'Integer', 'Map', 'MapOf', 'Number', 'Record', 'String'],
     schema: [],
@@ -84,9 +86,21 @@ export default (state = initialState, action: util.UtilActions) => {
         }
       };
 
+    case util.FILENAME_SUCCESS:
+      return {
+        ...state,
+        selectedFilename: action.payload.filename
+      };
+
     case util.INFO_FAILURE:
     case util.LOAD_FAILURE:
     case util.SCHEMA_FAILURE:
+      return {
+        ...state,
+        error: action.payload.valid_msg || action.payload.error || 'ERROR'
+      };
+
+    case util.FILENAME_FAILURE:
       return {
         ...state,
         error: action.payload.valid_msg || action.payload.error || 'ERROR'
@@ -110,3 +124,4 @@ export const getAllSchemasList = (state: { Util: { loaded: { schemas: { examples
   }
 }
 export const getSelectedSchema = (state: { Util: { selectedSchema: any; }; }) => state.Util.selectedSchema;
+export const getSelectedFilename = (state: { Util: { selectedFilename: any; }; }) => state.Util.selectedFilename;

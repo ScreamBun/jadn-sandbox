@@ -11,8 +11,11 @@ const baseAPI = '/api';
 export const SCHEMA_DEFINE = '@@util/SCHEMA_DEFINE';
 export const SCHEMA_SUCCESS = '@@util/SCHEMA_SUCCESS';
 export const SCHEMA_FAILURE = '@@util/SCHEMA_FAILURE';
+export const FILENAME_DEFINE = '@@util/FILENAME_DEFINE';
+export const FILENAME_SUCCESS = '@@util/FILENAME_SUCCESS';
+export const FILENAME_FAILURE = '@@util/FILENAME_FAILURE';
 export const setSchema = (schema: SchemaJADN | object | null) => createAction({
-  endpoint: '',
+  endpoint: `${baseAPI}/`,
   method: 'OPTIONS',
   types: [
     SCHEMA_DEFINE,
@@ -22,11 +25,28 @@ export const setSchema = (schema: SchemaJADN | object | null) => createAction({
     }, SCHEMA_FAILURE
   ]
 });
+export const setFilename = (filename: string) => createAction({
+  endpoint: `${baseAPI}/`,
+  method: 'OPTIONS',
+  types: [
+    FILENAME_DEFINE,
+    {
+      type: FILENAME_SUCCESS,
+      payload: (_action, _state) => ({ filename })
+    }, FILENAME_FAILURE
+  ]
+});
 
 export interface SetSchemaSuccessAction extends ActionSuccessResult {
   type: typeof SCHEMA_SUCCESS;
   payload: {
     schema: SchemaJADN;
+  };
+}
+export interface SetFilenameSuccessAction extends ActionSuccessResult {
+  type: typeof FILENAME_SUCCESS;
+  payload: {
+    filename: string;
   };
 }
 // API Calls
@@ -77,16 +97,16 @@ export interface LoadSuccessAction extends ActionSuccessResult {
 
 // Request Actions
 export interface UtilRequestActions extends ActionRequestResult {
-  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE;
+  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE | typeof FILENAME_DEFINE;
 }
 
 // Failure Actions
 export interface UtilFailureActions extends ActionFailureResult {
-  type: typeof INFO_FAILURE | typeof LOAD_FAILURE | typeof SCHEMA_FAILURE;
+  type: typeof INFO_FAILURE | typeof LOAD_FAILURE | typeof SCHEMA_FAILURE | typeof FILENAME_FAILURE;
 }
 
 export type UtilActions = (
   UtilRequestActions | UtilFailureActions |
   // Success Actions
-  InfoSuccessAction | LoadSuccessAction | SetSchemaSuccessAction
+  InfoSuccessAction | LoadSuccessAction | SetSchemaSuccessAction | SetFilenameSuccessAction
 );

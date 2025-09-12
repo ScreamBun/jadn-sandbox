@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSchemas } from "../../reducers/util";
-import { info, setSchema } from "../../actions/util";
+import { getAllSchemas, getSelectedFilename, getSelectedSchema } from "../../reducers/util";
+import { info, setSchema, setFilename } from "../../actions/util";
 import { getSchemaConversions } from "reducers/convert";
 import { validateSchema } from "actions/validate";
 import { LANG_JADN } from "components/utils/constants";
@@ -19,10 +19,10 @@ import SBFileLoader from "./SBFileLoader";
 //It does not need to be syntactically correct since the user can edit the schema in the code editor.
 
 interface SchemaLoaderProps {
-    selectedFile: Option | null;
-    setSelectedFile: (selectedOpt: Option | null) => void;
-    loadedSchema: object | null;
-    setLoadedSchema: (schema: object | null) => void;
+    //selectedFile: Option | null;
+    //setSelectedFile: (selectedOpt: Option | null) => void;
+    //loadedSchema: object | null;
+    //setLoadedSchema: (schema: object | null) => void;
     decodeMsg?: Option | null;
     setDecodeMsg?: (msgType: Option | null) => void;
     setDecodeSchemaTypes?: (obj: {
@@ -43,8 +43,7 @@ interface SchemaLoaderProps {
 const SchemaLoader = (props: SchemaLoaderProps) => {
     const dispatch = useDispatch();
 
-    const { selectedFile, setSelectedFile, 
-            loadedSchema, setLoadedSchema, 
+    const { 
             decodeMsg, setDecodeMsg, 
             setDecodeSchemaTypes, 
             acceptFormat, 
@@ -57,6 +56,15 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             showToast = true,
             lightBackground = false
          } = props;
+
+    const selectedFile = useSelector(getSelectedFilename);
+    const setSelectedFile = (fileStr: Option | null) => {
+        dispatch(setFilename(fileStr?.label || ""));
+    }
+    const loadedSchema = useSelector(getSelectedSchema);
+    const setLoadedSchema = (schema: object | null) => {
+        dispatch(setSchema(schema));
+    }
 
     const [isValid, setIsValid] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
@@ -119,8 +127,12 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                 msgDecode = decodeTypes.all[0];
             }
         }
-        setDecodeSchemaTypes(decodeTypes);
-        setDecodeMsg({ value: msgDecode, label: msgDecode });
+        if (setDecodeSchemaTypes) {
+            setDecodeSchemaTypes(decodeTypes);
+        }
+        if (setDecodeMsg) {
+            setDecodeMsg({ value: msgDecode, label: msgDecode });
+        }
     }
 
     const onFormatClick = (formattedSchema: object) => {
@@ -132,7 +144,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const sbEditorOnChange = (data: string) => {
         dismissAllToast();
         setIsValid(false);
-        setLoadedSchema(data);
+        setLoadedSchema({data});
         dispatch(setSchema(null));
         try {
             if (setDecodeSchemaTypes && setDecodeMsg) {
@@ -211,7 +223,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         }
         if (setDecodeSchemaTypes && setDecodeMsg) {
             setDecodeMsg(null);
-            setDecodeSchemaTypes([]);
+            setDecodeSchemaTypes({ all: [], roots: [] });
         }
     }
 
@@ -229,7 +241,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             setSelectedFile={setSelectedFile}
                             onCancelFileUpload={onCancelFileUpload}
                             onFileChange={onFileLoad}
-                            acceptableExt={acceptFormat}
+                            acceptableExt={acceptFormat ? acceptFormat.join(',') : undefined}
                             ref={ref}
                             placeholder={'Select a schema...'}
                             loc={'schemas'}

@@ -4,16 +4,20 @@ import {
   NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_DATA, NAV_CREATE_SCHEMA, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE_SCHEMA,
   NAV_TRANSLATE_DATA
 } from 'components/utils/constants';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getPageTitle } from 'reducers/util';
 import { info } from 'actions/util';
 import { dismissAllToast } from 'components/common/SBToast';
+import { Option } from "components/common/SBSelect";
+import SchemaLoader from 'components/common/SchemaLoader';
 
 const Home = () => {
   const dispatch = useDispatch();
+  
+  const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
 
   const meta_title = useSelector(getPageTitle) + ' | Home ';
   const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -29,8 +33,19 @@ const Home = () => {
         <link rel="canonical" href={meta_canonical} />
       </Helmet>
       <div className='card'>
-        <div className='card-header bg-secondary'>
-          <h5 className='m-0 title-text'>Home</h5>
+        <div className='card-header bg-secondary p-2 d-flex align-items-center'>
+          <h5 className='m-0 me-2 title-text'>Home</h5>
+          <div className='col-md-8'>
+            <SchemaLoader
+              schemaFormat={schemaFormat}
+              setSchemaFormat={setSchemaFormat}
+              showEditor={false}
+              showCopy={false}
+              showFormatter={false}
+              showSave={false}
+              lightBackground={true}
+            />
+          </div>
         </div>
         <div className='card-body'>
           <div className='card-group'>
