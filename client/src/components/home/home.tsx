@@ -4,16 +4,19 @@ import {
   NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_DATA, NAV_CREATE_SCHEMA, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE_SCHEMA,
   NAV_TRANSLATE_DATA
 } from 'components/utils/constants';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getPageTitle } from 'reducers/util';
 import { info } from 'actions/util';
 import { dismissAllToast } from 'components/common/SBToast';
+import GlobalSchemaLoader from 'components/common/GlobalSchemaLoader';
 
 const Home = () => {
   const dispatch = useDispatch();
+
+  const [globalSchema, setGlobalSchema] = useState<{ file: string, schema: object } | null>(null);
 
   const meta_title = useSelector(getPageTitle) + ' | Home ';
   const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -31,6 +34,17 @@ const Home = () => {
       <div className='card'>
         <div className='card-header bg-secondary'>
           <h5 className='m-0 title-text'>Home</h5>
+          <GlobalSchemaLoader
+            globalSchema={globalSchema}
+            setGlobalSchema={setGlobalSchema}
+            schemaFormat={null}
+            setSchemaFormat={() => {}}
+            showEditor={false}
+            showCopy={false}
+            showFormatter={false}
+            showSave={false}
+            lightBackground={true}
+          />
         </div>
         <div className='card-body'>
           <div className='card-group'>

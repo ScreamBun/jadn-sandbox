@@ -9,7 +9,8 @@ import format, { FormatState } from './format';
 import duplicate, { DuplicateState } from './duplicate';
 import transform, { TransformState } from './transform';
 import validateField, { ValidateFieldState } from './validatefield';
-import highlight, { HighlightState } from './highlight'
+import highlight, { HighlightState } from './highlight';
+import globalschema, { GlobalSchemaState } from './globalschema'
 import toggleDefaultsReducer from './defaults';
 
 export interface RootState {  // export so store.ts import is valid
@@ -22,7 +23,8 @@ export interface RootState {  // export so store.ts import is valid
   Transform: TransformState;
   ValidateField: ValidateFieldState;
   Duplicate: DuplicateState;
-  Highlight: HighlightState
+  Highlight: HighlightState;
+  GlobalSchema: GlobalSchemaState;
 }
 
 export default (history: History) => combineReducers({
@@ -36,7 +38,8 @@ export default (history: History) => combineReducers({
   ValidateField: validateField,
   toggleDefaults: toggleDefaultsReducer,
   Duplicate: duplicate,
-  Highlight: highlight
+  Highlight: highlight,
+  GlobalSchema: globalschema,
 });
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector

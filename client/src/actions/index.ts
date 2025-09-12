@@ -4,13 +4,13 @@ import * as Validate from './validate';
 import * as Interface from './interfaces';
 import * as Util from './util';
 import * as ValidateField from './validatefield';
-
+import * as GlobalSchema from './globalschema'
 
 export type DispatchAction = (
     // Pre API Call
     Interface.MinimalAction |
     // Post API Call
-    Convert.ConvertActions | Validate.ValidateActions | Util.UtilActions | ValidateField.ValidateFieldActions |
+    Convert.ConvertActions | Validate.ValidateActions | Util.UtilActions | ValidateField.ValidateFieldActions | GlobalSchema.GlobalSchemaActions |
     // Router Specific
     LocationChangeAction
 );

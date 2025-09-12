@@ -15,6 +15,7 @@ from .save import add_resources as add_save
 from .validatefield import add_resources as add_validatefield
 from .duplicate import add_resources as add_duplicate
 from .highlight import add_resources as add_highlight
+from .globalschema import add_resources as add_globalschema
 
 log = logging.getLogger()
 api = Blueprint("api", __name__)
@@ -83,3 +84,4 @@ add_save(api_root, url_prefix="/save")
 add_validatefield(api_root, url_prefix="/validate/field")
 add_duplicate(api_root, url_prefix="/duplicate")
 add_highlight(api_root, url_prefix="/highlight")
+add_globalschema(api_root, url_prefix="/globalschema")
