@@ -24,6 +24,7 @@ const DataGenerator = () => {
     const [loadedSchema, setLoadedSchema] = useState<object | null>(pipedSchema !== null ? JSON.parse(pipedSchema) : null); // check for piped schema
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [xml, setXml] = useState('');
+    const [cbor, setCbor] = useState('');
     const [selection, setSelection] = useState<Option | null>();
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
 
@@ -49,6 +50,7 @@ const DataGenerator = () => {
         setSelection(null);
         setGeneratedMessage({});
         setXml("");
+        setCbor("");
         dispatch(setSchema(loadedSchema));
         dispatch(clearFieldValidation());
         dispatch<any>(clearHighlight());
@@ -60,6 +62,7 @@ const DataGenerator = () => {
         setSelectedFile(null);
         setLoadedSchema(null);
         setXml("");
+        setCbor("");
         setSelection(null);
         setGeneratedMessage({});
         sbToastSuccess("Schema reset successfully");
@@ -108,7 +111,8 @@ const DataGenerator = () => {
                                     <DataCreator
                                         generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
                                         selection={selection} setSelection={setSelection}
-                                        xml={xml} setXml={setXml} />
+                                        xml={xml} setXml={setXml}
+                                        cbor={cbor} setCbor={setCbor} />
                                 </div>
                             </div>
                         </div>

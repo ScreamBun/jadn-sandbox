@@ -17,14 +17,14 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import SBLoadBuilder from 'components/common/SBLoadBuilder'
 import { destructureField, removeXmlWrapper } from './lib/utils'
-import { LANG_XML, LANG_JSON } from 'components/utils/constants';
+import { LANG_XML, LANG_JSON, LANG_CBOR } from 'components/utils/constants';
 import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
-    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml } = props;
+    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor } = props;
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
     const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
     const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:LANG_JSON, value: LANG_JSON});
@@ -40,6 +40,7 @@ const DataCreator = (props: any) => {
                 updated[k] = v;
             }
             convertToXML(updated);
+            convertToCbor(updated);
             return updated;
         });
     };
@@ -58,6 +59,7 @@ const DataCreator = (props: any) => {
         setJsonValidated(false);
         setXmlValidated(false);
         setXml("");
+        setCbor("");
         dispatch<any>(clearHighlight());
     }
 
@@ -109,6 +111,7 @@ const DataCreator = (props: any) => {
         setXmlValidated(false);
         setLoadedFieldDefs(null);
         setXml("");
+        setCbor("");
         dispatch<any>(clearHighlight());
     }    
 
@@ -141,7 +144,7 @@ const DataCreator = (props: any) => {
     // Handle: convert generatedMessage to XML
     const convertToXML = (data: string) => {
         try {
-            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_XML))
+            dispatch(convertData(data, LANG_JSON, LANG_XML))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.xml) {
@@ -159,6 +162,29 @@ const DataCreator = (props: any) => {
                 sbToastError(err.message)
             }
         }        
+    }
+
+    const convertToCbor = (data: string) => {
+        console.log(data)
+        try {
+            dispatch(convertData(data, LANG_JSON, LANG_CBOR)) //data[selection?.value]
+                .then((rsp: any) => {
+                    if(rsp.payload.data) {
+                        if(rsp.payload.data.cbor_hex) {
+                            setXml(rsp.payload.data.cbor_hex)
+                        } 
+                    } else {
+                        console.log(rsp.payload.message);
+                    }
+                })
+                .catch((submitErr: { message: string }) => {
+                    sbToastError(submitErr.message)
+                });
+        } catch (err) {
+            if (err instanceof Error) {
+                sbToastError(err.message)
+            }
+        }      
     }
 
     // Decide which fields to display
@@ -265,7 +291,7 @@ const DataCreator = (props: any) => {
                 style={{display: dataFullScreen ? 'none' : 'block'}}>
                 <div className='card'>
                     <div className="card-header p-2 d-flex align-items-center">
-                        <h5 className = "mb-0 me-1">Data Builder</h5>
+                        <h5 className = "mb-0 me-1">Data Viewer</h5>
                         <div className="col-md-4 me-2">
                             <SBSelect 
                                 value={selectedSerialization}
@@ -273,6 +299,7 @@ const DataCreator = (props: any) => {
                                 data={[
                                     { label: LANG_JSON, value: LANG_JSON },
                                     { label: LANG_XML, value: LANG_XML },
+                                    { label: LANG_CBOR, value: LANG_CBOR }
                                 ]}
                                 isSmStyle
                             />
@@ -303,7 +330,8 @@ const DataCreator = (props: any) => {
                                 <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
                             </>
                             :
-                            <><>
+                            selectedSerialization?.value===LANG_XML ?
+                            <>
                                 <button type="button"
                                     className="btn btn-sm btn-primary me-1"
                                     onClick={() => handleValidate(LANG_XML)}
@@ -322,7 +350,28 @@ const DataCreator = (props: any) => {
                                 <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={xml} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_XML} />
                                 <SBCopyToClipboard buttonId={'copyMessage'} data={xml} customClass='float-end' shouldStringify={true} />
                                 <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(xml, null, 2)} ext={LANG_XML} />
-                            </></>
+                            </>
+                            :
+                            <>
+                                <button type="button"
+                                    className="btn btn-sm btn-primary me-1"
+                                    onClick={() => handleValidate(LANG_CBOR)}
+                                    disabled = {selection && cbor? false:true}
+                                >
+                                    Valid
+                                    {jsonValidated ? (
+                                        <span className="badge rounded-pill text-bg-success ms-1">
+                                            <FontAwesomeIcon icon={faCheck} />
+                                        </span>) : (
+                                        <span className="badge rounded-pill text-bg-danger ms-1">
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </span>)
+                                    }
+                                </button>
+                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={cbor} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_CBOR} />
+                                <SBCopyToClipboard buttonId={'copyMessage'} data={cbor} customClass='float-end' shouldStringify={true} />
+                                <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(cbor, null, 2)} ext={LANG_CBOR} />
+                            </>
                             }
                         </div>
                     </div>
@@ -330,7 +379,10 @@ const DataCreator = (props: any) => {
                         {selectedSerialization?.value===LANG_JSON ? 
                         <SBEditor data={generatedMessage} isReadOnly={true} initialHighlightWords={highlightedItems}></SBEditor>
                         :
+                        selectedSerialization?.value===LANG_XML ?
                         <SBEditor data={xml} isReadOnly={true} convertTo={LANG_XML} initialHighlightWords={highlightedItems}></SBEditor>
+                        :
+                        <SBEditor data={cbor} isReadOnly={true} initialHighlightWords={highlightedItems}></SBEditor>
                         }
                     </div>
                 </div>
