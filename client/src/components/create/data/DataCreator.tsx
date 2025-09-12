@@ -144,7 +144,7 @@ const DataCreator = (props: any) => {
     // Handle: convert generatedMessage to XML
     const convertToXML = (data: string) => {
         try {
-            dispatch(convertData(data, LANG_JSON, LANG_XML))
+            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_XML))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.xml) {
@@ -167,11 +167,11 @@ const DataCreator = (props: any) => {
     const convertToCbor = (data: string) => {
         console.log(data)
         try {
-            dispatch(convertData(data, LANG_JSON, LANG_CBOR)) //data[selection?.value]
+            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_CBOR)) //data[selection?.value]
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.cbor_hex) {
-                            setXml(rsp.payload.data.cbor_hex)
+                            setCbor(rsp.payload.data.cbor_hex)
                         } 
                     } else {
                         console.log(rsp.payload.message);
@@ -352,10 +352,11 @@ const DataCreator = (props: any) => {
                                 <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(xml, null, 2)} ext={LANG_XML} />
                             </>
                             :
+                            selectedSerialization?.value===LANG_CBOR ?
                             <>
                                 <button type="button"
                                     className="btn btn-sm btn-primary me-1"
-                                    onClick={() => handleValidate(LANG_CBOR)}
+                                    onClick={() => handleValidate(LANG_JSON)}
                                     disabled = {selection && cbor? false:true}
                                 >
                                     Valid
@@ -372,6 +373,8 @@ const DataCreator = (props: any) => {
                                 <SBCopyToClipboard buttonId={'copyMessage'} data={cbor} customClass='float-end' shouldStringify={true} />
                                 <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(cbor, null, 2)} ext={LANG_CBOR} />
                             </>
+                            :
+                            null
                             }
                         </div>
                     </div>
@@ -382,7 +385,10 @@ const DataCreator = (props: any) => {
                         selectedSerialization?.value===LANG_XML ?
                         <SBEditor data={xml} isReadOnly={true} convertTo={LANG_XML} initialHighlightWords={highlightedItems}></SBEditor>
                         :
+                        selectedSerialization?.value===LANG_CBOR ?
                         <SBEditor data={cbor} isReadOnly={true} initialHighlightWords={highlightedItems}></SBEditor>
+                        :
+                        null
                         }
                     </div>
                 </div>
