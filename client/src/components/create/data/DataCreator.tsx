@@ -39,8 +39,7 @@ const DataCreator = (props: any) => {
             } else {
                 updated[k] = v;
             }
-            convertToXML(updated);
-            convertToCbor(updated);
+            convertJSON(updated)
             return updated;
         });
     };
@@ -141,9 +140,9 @@ const DataCreator = (props: any) => {
         }
     }, [selection, schemaObj]);
 
-    // Handle: convert generatedMessage to XML
-    const convertToXML = (data: string) => {
+    const convertJSON = (data: string) => {
         try {
+            // Convert to XML
             dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_XML))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
@@ -157,17 +156,9 @@ const DataCreator = (props: any) => {
                 .catch((submitErr: { message: string }) => {
                     sbToastError(submitErr.message)
                 });
-        } catch (err) {
-            if (err instanceof Error) {
-                sbToastError(err.message)
-            }
-        }        
-    }
 
-    const convertToCbor = (data: string) => {
-        console.log(data)
-        try {
-            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_CBOR)) //data[selection?.value]
+            // Convert to CBOR
+            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_CBOR))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.cbor_hex) {
@@ -184,7 +175,7 @@ const DataCreator = (props: any) => {
             if (err instanceof Error) {
                 sbToastError(err.message)
             }
-        }      
+        }        
     }
 
     // Decide which fields to display
@@ -308,15 +299,14 @@ const DataCreator = (props: any) => {
                             <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen JSON' onClick={() => setJsonFullScreen(!jsonFullScreen)}>
                                 <FontAwesomeIcon icon={faExpand} />
                             </button>
-                            {selectedSerialization?.value===LANG_JSON ? 
                             <>
                                 <button type="button"
                                     className="btn btn-sm btn-primary me-1"
-                                    onClick={() => handleValidate(LANG_JSON)}
+                                    onClick={() => handleValidate(selectedSerialization?.value===LANG_JSON ? LANG_JSON : selectedSerialization?.value===LANG_XML ? LANG_XML : LANG_JSON)}
                                     disabled = {selection && generatedMessage? false:true}
                                 >
                                     Valid
-                                    {jsonValidated ? (
+                                    {(selectedSerialization?.value===LANG_JSON ? jsonValidated : selectedSerialization?.value===LANG_XML ? xmlValidated : jsonValidated) ? (
                                         <span className="badge rounded-pill text-bg-success ms-1">
                                             <FontAwesomeIcon icon={faCheck} />
                                         </span>) : (
@@ -325,71 +315,32 @@ const DataCreator = (props: any) => {
                                         </span>)
                                     }
                                 </button>
-                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
-                                <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
-                                <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
+                                <SBSaveFile 
+                                    buttonId={'saveMessage'} 
+                                    toolTip={'Save Data'} 
+                                    data={selectedSerialization?.value===LANG_JSON ? generatedMessage : selectedSerialization?.value===LANG_XML ? xml : cbor} 
+                                    loc={'messages'} 
+                                    customClass={"float-end ms-1"} 
+                                    ext={selectedSerialization?.value} />
+                                <SBCopyToClipboard 
+                                    buttonId={'copyMessage'} 
+                                    data={selectedSerialization?.value===LANG_JSON ? generatedMessage : selectedSerialization?.value===LANG_XML ? xml : cbor} 
+                                    customClass='float-end' 
+                                    shouldStringify={true} />
+                                <SBDownloadBtn 
+                                    buttonId='msgDownload' 
+                                    customClass='float-end me-1' 
+                                    data={selectedSerialization?.value===LANG_JSON ? JSON.stringify(generatedMessage) : selectedSerialization?.value===LANG_XML ? JSON.stringify(xml) : JSON.stringify(cbor)} 
+                                    ext={selectedSerialization?.value} />
                             </>
-                            :
-                            selectedSerialization?.value===LANG_XML ?
-                            <>
-                                <button type="button"
-                                    className="btn btn-sm btn-primary me-1"
-                                    onClick={() => handleValidate(LANG_XML)}
-                                    disabled = {selection && xml? false:true}
-                                >
-                                    Valid
-                                    {xmlValidated ? (
-                                        <span className="badge rounded-pill text-bg-success ms-1">
-                                            <FontAwesomeIcon icon={faCheck} />
-                                        </span>) : (
-                                        <span className="badge rounded-pill text-bg-danger ms-1">
-                                            <FontAwesomeIcon icon={faXmark} />
-                                        </span>)
-                                    }
-                                </button>
-                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={xml} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_XML} />
-                                <SBCopyToClipboard buttonId={'copyMessage'} data={xml} customClass='float-end' shouldStringify={true} />
-                                <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(xml, null, 2)} ext={LANG_XML} />
-                            </>
-                            :
-                            selectedSerialization?.value===LANG_CBOR ?
-                            <>
-                                <button type="button"
-                                    className="btn btn-sm btn-primary me-1"
-                                    onClick={() => handleValidate(LANG_JSON)}
-                                    disabled = {selection && cbor? false:true}
-                                >
-                                    Valid
-                                    {jsonValidated ? (
-                                        <span className="badge rounded-pill text-bg-success ms-1">
-                                            <FontAwesomeIcon icon={faCheck} />
-                                        </span>) : (
-                                        <span className="badge rounded-pill text-bg-danger ms-1">
-                                            <FontAwesomeIcon icon={faXmark} />
-                                        </span>)
-                                    }
-                                </button>
-                                <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={cbor} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_CBOR} />
-                                <SBCopyToClipboard buttonId={'copyMessage'} data={cbor} customClass='float-end' shouldStringify={true} />
-                                <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(cbor, null, 2)} ext={LANG_CBOR} />
-                            </>
-                            :
-                            null
-                            }
                         </div>
                     </div>
                     <div className='card-body p-2'>
-                        {selectedSerialization?.value===LANG_JSON ? 
-                        <SBEditor data={generatedMessage} isReadOnly={true} initialHighlightWords={highlightedItems}></SBEditor>
-                        :
-                        selectedSerialization?.value===LANG_XML ?
-                        <SBEditor data={xml} isReadOnly={true} convertTo={LANG_XML} initialHighlightWords={highlightedItems}></SBEditor>
-                        :
-                        selectedSerialization?.value===LANG_CBOR ?
-                        <SBEditor data={cbor} isReadOnly={true} initialHighlightWords={highlightedItems}></SBEditor>
-                        :
-                        null
-                        }
+                        <SBEditor 
+                            data={selectedSerialization?.value===LANG_JSON ? generatedMessage : selectedSerialization?.value===LANG_XML ? xml : cbor} 
+                            convertTo={selectedSerialization?.value===LANG_XML ? LANG_XML : null}
+                            isReadOnly={true} 
+                            initialHighlightWords={highlightedItems}></SBEditor>
                     </div>
                 </div>
             </div>
