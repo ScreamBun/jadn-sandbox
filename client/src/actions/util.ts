@@ -7,12 +7,12 @@ import { ActionFailureResult, ActionRequestResult, ActionSuccessResult } from '.
 const baseAPI = '/api';
 
 // Helper Functions
-// OPTIONS - set schema locally for generating messages
+// OPTIONS - set schema for generating messages
 export const SCHEMA_DEFINE = '@@util/SCHEMA_DEFINE';
 export const SCHEMA_SUCCESS = '@@util/SCHEMA_SUCCESS';
 export const SCHEMA_FAILURE = '@@util/SCHEMA_FAILURE';
 export const setSchema = (schema: SchemaJADN | object | null) => createAction({
-  endpoint: '',
+  endpoint: `${baseAPI}/`,
   method: 'OPTIONS',
   types: [
     SCHEMA_DEFINE,
@@ -29,6 +29,53 @@ export interface SetSchemaSuccessAction extends ActionSuccessResult {
     schema: SchemaJADN;
   };
 }
+
+// OPTIONS- set schema file name
+export const FILE_DEFINE = '@@util/FILE_DEFINE';
+export const FILE_SUCCESS = '@@util/FILE_SUCCESS';
+export const FILE_FAILURE = '@@util/FILE_FAILURE';
+export const setFile = (file: {label: string, value: string} | null) => createAction({
+  endpoint: `${baseAPI}/`,
+  method: 'OPTIONS',
+  types: [
+    FILE_DEFINE,
+    {
+      type: FILE_SUCCESS,
+      payload: (_action, _state) => ({ file })
+    }, FILE_FAILURE
+  ]
+});
+
+export interface SetFileSuccessAction extends ActionSuccessResult {
+  type: typeof FILE_SUCCESS;
+  payload: {
+    file: {label: string, value: string} | null;
+  };
+}
+
+// OPTIONS- set schema file name
+export const VALID_DEFINE = '@@util/VALID_DEFINE';
+export const VALID_SUCCESS = '@@util/VALID_SUCCESS';
+export const VALID_FAILURE = '@@util/VALID_FAILURE';
+export const setValid = (valid: boolean) => createAction({
+  endpoint: `${baseAPI}/`,
+  method: 'OPTIONS',
+  types: [
+    VALID_DEFINE,
+    {
+      type: VALID_SUCCESS,
+      payload: (_action, _state) => ({ valid })
+    }, VALID_FAILURE
+  ]
+});
+
+export interface SetValidSuccessAction extends ActionSuccessResult {
+  type: typeof VALID_SUCCESS;
+  payload: {
+    valid: boolean;
+  };
+}
+
 // API Calls
 // GET /api/ - basic server info
 const INFO_REQUEST = '@@util/INFO_REQUEST';
@@ -77,16 +124,16 @@ export interface LoadSuccessAction extends ActionSuccessResult {
 
 // Request Actions
 export interface UtilRequestActions extends ActionRequestResult {
-  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE;
+  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE | typeof FILE_DEFINE | typeof VALID_DEFINE;
 }
 
 // Failure Actions
 export interface UtilFailureActions extends ActionFailureResult {
-  type: typeof INFO_FAILURE | typeof LOAD_FAILURE | typeof SCHEMA_FAILURE;
+  type: typeof INFO_FAILURE | typeof LOAD_FAILURE | typeof SCHEMA_FAILURE | typeof FILE_FAILURE | typeof VALID_FAILURE;
 }
 
 export type UtilActions = (
   UtilRequestActions | UtilFailureActions |
   // Success Actions
-  InfoSuccessAction | LoadSuccessAction | SetSchemaSuccessAction
+  InfoSuccessAction | LoadSuccessAction | SetSchemaSuccessAction | SetFileSuccessAction | SetValidSuccessAction
 );

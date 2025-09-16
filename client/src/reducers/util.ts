@@ -1,5 +1,6 @@
 import { SchemaJADN } from 'components/create/schema/interface';
 import * as util from '../actions/util';
+import { Option } from 'components/common/SBSelect'
 
 export interface UtilState {
   site_title: string;
@@ -18,6 +19,8 @@ export interface UtilState {
     };
   },
   selectedSchema: SchemaJADN | object;
+  selectedFile: Option | null;
+  schemaIsValid: boolean;
   types: {
     base: Array<string>;
     schema: Array<string>;
@@ -42,6 +45,8 @@ const initialState: UtilState = {
     }
   },
   selectedSchema: {},
+  selectedFile: null,
+  schemaIsValid: false,
   types: {
     base: ['Array', 'ArrayOf', 'Binary', 'Boolean', 'Choice', 'Enumerated', 'Integer', 'Map', 'MapOf', 'Number', 'Record', 'String'],
     schema: [],
@@ -69,9 +74,13 @@ export default (state = initialState, action: util.UtilActions) => {
       };
 
     case util.LOAD_SUCCESS:
-      return {
-        ...state,
-        selectedSchema: action.payload.data
+      if (action.payload.type === 'schemas') {
+        return {
+          ...state,
+          selectedSchema: action.payload.data
+        };
+      } else {
+        return state;
       }
 
     case util.SCHEMA_SUCCESS:
@@ -84,9 +93,23 @@ export default (state = initialState, action: util.UtilActions) => {
         }
       };
 
+    case util.VALID_SUCCESS:
+      return {
+        ...state,
+        schemaIsValid: action.payload.valid
+      };
+    
+    case util.FILE_SUCCESS:
+      return {
+        ...state,
+        selectedFile: action.payload.file || null
+      };
+
     case util.INFO_FAILURE:
     case util.LOAD_FAILURE:
     case util.SCHEMA_FAILURE:
+    case util.VALID_FAILURE:
+    case util.FILE_FAILURE:
       return {
         ...state,
         error: action.payload.valid_msg || action.payload.error || 'ERROR'
@@ -110,3 +133,5 @@ export const getAllSchemasList = (state: { Util: { loaded: { schemas: { examples
   }
 }
 export const getSelectedSchema = (state: { Util: { selectedSchema: any; }; }) => state.Util.selectedSchema;
+export const getSelectedFile = (state: { Util: { selectedFile: any; }; }) => state.Util.selectedFile;
+export const isSchemaValid = (state: { Util: { schemaIsValid: any; }; }) => state.Util.schemaIsValid;
