@@ -5,7 +5,6 @@ import xml.etree.ElementTree as ET
 
 from typing import Tuple, Union
 
-from jadnschema.jadn import loads
 from jadnvalidation import DataValidation
 from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_roots
 
@@ -24,24 +23,15 @@ class Validator:
         """
         Validate the given schema
         :param schema: (JSON String) schema to validate against
-        :param sm: (bool) return success message or schema
-        :return: (tuple) valid/invalid bool, message/schema
+        :param sm: (bool) return bool or schema
+        :return: (tuple) valid/invalid bool, schema
         """
-        # try :
-        #     j_validation = DataValidation(self.j_meta_schema, "Schema", schema)
-        #     j_validation.validate()
-        #     return True, "Validation passed", "", schema
-        # except Exception as e:
-        #     errorMsgs = []
-        #     errorMsgs = get_value_errors(e)
-        #     return False, errorMsgs, "", schema
-        try:
-            # TODO: Look into this, see if we can replace it with jadnvalidation
-            j = loads(schema)
-            return True, "Schema is Valid" if sm else j
+        try :
+            j_validation = DataValidation(j_meta_schema, j_meta_roots, schema)
+            j_validation.validate()
+            return True, "Schema is Valid" if sm else schema
         except Exception as e:
-            return False, f"Schema Invalid - {e}"        
-        
+            return False, f"Schema Invalid - {e}"     
 
     # TODO: Change from validateMessage to validateData
     def validateMessage(self, schema: Union[bytes, dict, str], data: Union[str, bytes, dict], data_format: str, root: str) -> Tuple:
@@ -117,9 +107,7 @@ class Validator:
             return False, f"Schema Error - {e}"
     
     def validate_jidl(self, jidl_src: str) -> Tuple[bool, str]:
-        
         try:
-            # jidl_doc = jidl_dumps(jidl_src)
             jadn_doc = jadn.convert.jidl_loads(jidl_src)
         except Exception as e:  # pylint: disable=broad-except
             return False, f"JIDL Invalid - {e}"   

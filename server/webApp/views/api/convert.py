@@ -12,8 +12,11 @@ from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
 from jadnschema.convert import SchemaFormats, dumps, html_dumps, json_to_jadn_dumps
 from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
+
 from jadnxml.builder.xsd_builder import XSDBuilder
 from jadnxml.builder.xml_builder import build_xml_from_json
+from jadnutils.html.html_converter import HtmlConverter
+
 from weasyprint import HTML
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
 from webApp.utils import constants
@@ -148,10 +151,16 @@ class Convert(Resource):
                     
                     return jadn.convert.diagram_dumps(src, gv_style)
                 
-                elif toLang == constants.HTML:
-                    kwargs["styles"] = current_app.config.get("APP_THEME", "")
-                    return dumps(src, **kwargs)
-                
+                elif toLang == constants.HTML:                       
+                    html_output = ""                        
+                    try:
+                        converter = HtmlConverter(src)
+                        html_output = converter.jadn_to_html(run_validation=False)
+                    except Exception as e:
+                        print(f"Unable to convert to HTML: {e}")                        
+
+                    return html_output
+
                 elif toLang == constants.JSON:
                     return jadn.translate.json_schema_dumps(src)
             
@@ -297,11 +306,19 @@ class ConvertPDF(Resource):
 
     def post(self):
         request_json = request.json      
+        html = ""
         pdf = BytesIO()
-        print("convert to pdf")
         val, schema = current_app.validator.validateSchema(request_json["schema"], False)
+        
         if val:  # Valid Schema
-            html = html_dumps(schema, styles=current_app.config.get("APP_THEME", ""))
+            
+            try:
+                converter = HtmlConverter(schema)
+                html = converter.jadn_to_html(run_validation=False)
+            except Exception as e:
+                print(f"Unable to convert to HTML: {e}")                
+            
+            # html = html_dumps(schema, styles=current_app.config.get("APP_THEME", ""))
         else:  # Invalid Schema
             html = "<h1>ERROR: Invalid Schema. Fix the base schema errors before converting...</h1>"
             
