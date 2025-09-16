@@ -55,8 +55,8 @@ const SchemaGenerator = () => {
     useEffect(() => {
         if (loadedSchema) {
             setGeneratedSchema(loadedSchema);
-            setCardsState([]);
-            setFieldCollapseState([]);
+            //setCardsState([]);
+            //setFieldCollapseState([]);
         } else {
             setGeneratedSchema('');
             setCardsState([]);

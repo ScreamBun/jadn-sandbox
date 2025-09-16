@@ -3,25 +3,28 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import DataCreator from './DataCreator'
 import SchemaLoader from 'components/common/SchemaLoader'
-import { getPageTitle } from 'reducers/util'
-import { info, setSchema } from 'actions/util'
+import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
+import { info, setFile, setSchema } from 'actions/util'
 import { dismissAllToast } from 'components/common/SBToast'
 import { sbToastSuccess } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { clearHighlight } from "actions/highlight";
+import { useNavigate } from 'react-router'
 
 const DataGenerator = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    // See if there is a local storage item piped from create schema
-    const pipedSchema = localStorage.getItem('__createdSchema__');
-    const pipedFile = localStorage.getItem('__selectedFile__');
-    localStorage.removeItem('__createdSchema__');
-    localStorage.removeItem('__selectedFile__');
+    const loadedSchema = useSelector(getSelectedSchema);
+    const setLoadedSchema = (schema: object | null) => {
+        dispatch(setSchema(schema));
+    }
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>(pipedFile !== null ? JSON.parse(pipedFile) : null);
-    const [loadedSchema, setLoadedSchema] = useState<object | null>(pipedSchema !== null ? JSON.parse(pipedSchema) : null); // check for piped schema
+    const selectedFile = useSelector(getSelectedFile);
+    const setSelectedFile = (file: Option | null) => {
+        dispatch(setFile(file));
+    }
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [selection, setSelection] = useState<Option | null>();
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
@@ -30,13 +33,7 @@ const DataGenerator = () => {
     const meta_canonical = `${window.location.origin}${window.location.pathname}`
 
     const handleSchemaCreation = () => {
-        if (loadedSchema) {
-            localStorage.setItem('__createdSchema__', JSON.stringify(loadedSchema));
-        }
-        if (selectedFile) {
-            localStorage.setItem('__selectedFile__', JSON.stringify(selectedFile));
-        }
-        window.location.href = '/create/schema';
+        navigate('/create/schema');
     }
 
     useEffect(() => {
