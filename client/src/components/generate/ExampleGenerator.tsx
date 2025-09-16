@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { getPageTitle } from 'reducers/util'
-import { info, setSchema } from 'actions/util'
+import { info, setSchema, setSchemaValid } from 'actions/util'
 import { convertJsonSchema, convertSchema } from 'actions/convert'
 import { LANG_JSON, LANG_JSON_UPPER } from 'components/utils/constants'
 import SchemaLoader from 'components/common/SchemaLoader'
@@ -53,6 +53,7 @@ const ExampleGenerator = () => {
         setLangSel(defaultLangOption);
         setGeneratedMessages([]);
         dispatch(setSchema(null));
+        dispatch(setSchemaValid(false))
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {

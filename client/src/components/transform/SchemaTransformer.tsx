@@ -6,6 +6,7 @@ import { info } from 'actions/transform'
 import { dismissAllToast } from 'components/common/SBToast'
 import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
 import SchemaTransformed from './SchemaTransformed'
+import { setSchemaValid } from 'actions/util'
 
 
 export interface SelectedSchema { id: string, name: string, type: string, data: {} };
@@ -46,6 +47,7 @@ const SchemaTransformer = () => {
         e.preventDefault();
         dismissAllToast();
         setSelectedSchemas([]);
+        dispatch(setSchemaValid(false))
         schemaTransformedRef.current?.onReset();
         sbMultiSchemaLoaderRef.current?.onReset();
     }

@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getValidFormatOpts } from 'actions/format'
-import { info, setFile } from 'actions/util'
+import { info, setFile, setSchemaValid } from 'actions/util'
 import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
@@ -123,6 +123,7 @@ const SchemaGenerator = () => {
             setSelectedSchemaFile(null);
             setGeneratedSchema('');
             setCardsState([]);
+            dispatch(setSchemaValid(false))
         }
     }
 

@@ -8,7 +8,7 @@ import { dismissAllToast, sbToastError, sbToastSuccess, sbToastWarning } from 'c
 import { SchemaJADN } from 'components/create/schema/interface'
 import SchemaVisualized from './SchemaVisualized'
 import { Option } from 'components/common/SBSelect'
-import { setFile, setSchema } from 'actions/util'
+import { setFile, setSchema, setSchemaValid } from 'actions/util'
 import { LANG_PLANTUML_2, PLANTUML_RENDER_LIMIT } from 'components/utils/constants'
 import { VisualOptionsModal } from './VisualOptionsModal'
 
@@ -63,6 +63,7 @@ const SchemaVisualizer = () => {
         setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
         dispatch(setSchema(null));
+        dispatch(setSchemaValid(false))
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {

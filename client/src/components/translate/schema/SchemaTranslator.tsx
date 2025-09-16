@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
-import { setFile, setSchema } from 'actions/util'
+import { setFile, setSchema, setSchemaValid } from 'actions/util'
 import { SchemaJADN } from 'components/create/schema/interface'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -54,6 +54,7 @@ const SchemaTranslator = () => {
         setSchemaFormat(null);
         setTranslatedSchema(initConvertedSchemaState);
         dispatch(setSchema(null));
+        dispatch(setSchemaValid(false))
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {

@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import DataCreator from './DataCreator'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
-import { info, setFile, setSchema } from 'actions/util'
+import { info, setFile, setSchema, setSchemaValid } from 'actions/util'
 import { dismissAllToast } from 'components/common/SBToast'
 import { sbToastSuccess } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
@@ -61,6 +61,7 @@ const DataGenerator = () => {
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         dispatch(clearFieldValidation());
         dispatch<any>(clearHighlight());
+        dispatch(setSchemaValid(false))
     }
 
     return (

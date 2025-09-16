@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import DataToTranslate from './DataToTranslate'
 import { validateMessage } from 'actions/validate'
-import { info, setFile, setSchema } from 'actions/util'
+import { info, setFile, setSchema, setSchemaValid } from 'actions/util'
 import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -84,6 +84,7 @@ const DataTranslator = () => {
             roots: []
         });
         dispatch(setSchema(null));
+        dispatch(setSchemaValid(false))
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
