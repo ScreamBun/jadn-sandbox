@@ -82,7 +82,10 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             setSelectedFile(null);
             setSchemaFormat(null);
         }
-    }, [loadedSchema])
+        if (loadedSchema && selectedFile && decodeMsg === null) {
+            if (setDecodeSchemaTypes) loadDecodeTypes(loadedSchema);
+        }
+    }, [loadedSchema, selectedFile])
 
     useEffect(() => {
         dispatch(info());
@@ -213,7 +216,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             ref.current.value = '';
         }
         if (setDecodeSchemaTypes && setDecodeMsg) {
-            setDecodeMsg(null);
+            setDecodeMsg(undefined);
             setDecodeSchemaTypes([]);
         }
     }

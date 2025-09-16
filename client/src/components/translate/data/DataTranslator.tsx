@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import DataToTranslate from './DataToTranslate'
 import { validateMessage } from 'actions/validate'
-import { info, setSchema } from 'actions/util'
-import { getPageTitle } from 'reducers/util'
+import { info, setFile, setSchema } from 'actions/util'
+import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SBSelect, { Option } from 'components/common/SBSelect'
@@ -21,12 +21,20 @@ const DataTranslator = () => {
     const dispatch = useDispatch();
     const location = useLocation();
 
+    const loadedSchema = useSelector(getSelectedSchema);
+    const setLoadedSchema = (schema: object | null) => {
+        dispatch(setSchema(schema));
+    }
+
+    const selectedSchemaFile = useSelector(getSelectedFile);
+    const setSelectedSchemaFile = (file: Option | null) => {
+        dispatch(setFile(file));
+    }
+
     const [isLoading, setIsLoading] = useState(false);
     const [isDataValid, setIsDataValid] = useState(false);
     const [isTranslating, setIsTranslating] = useState(false);
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(null);
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [selectedDataFile, setSelectedDataFile] = useState('');
     const [loadedData, setLoadedData] = useState('');
     const [cborAnnoHex, setCborAnnoHex] = useState('');
