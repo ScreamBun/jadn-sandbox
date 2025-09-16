@@ -10,8 +10,7 @@ from jadnjson.generators import json_generator
 from io import BytesIO
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
-from jadnschema.convert import SchemaFormats, dumps, html_dumps, json_to_jadn_dumps
-from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
+from jadnschema.convert import SchemaFormats, json_to_jadn_dumps
 
 from jadnxml.builder.xsd_builder import XSDBuilder
 from jadnxml.builder.xml_builder import build_xml_from_json
@@ -54,7 +53,6 @@ class Convert(Resource):
             if isinstance(schema_data, str):
                 schema_data = json.loads(schema_data)              
             
-            #TODO: Use new data / schema validation logic...
             is_valid, schema = current_app.validator.validateSchema(schema_data, False)
             if not is_valid:
                 return "Schema is not valid", 500    
@@ -65,14 +63,15 @@ class Convert(Resource):
             if isinstance(schema_data, str):
                 schema_data = json.loads(schema_data)              
             
-            is_valid, msg = validate_schema(schema_data)
+            # is_valid, msg = validate_schema(schema_data)
+            is_valid, err_msg = current_app.validator.validateSchema(schema_data, False)
             if not is_valid:
-                return f"JSON Schema Error: {msg}", 500
+                return f"JSON Schema Error: {err_msg}", 500
             
         elif schema_fmt == constants.JIDL:
-            is_valid, msg = current_app.validator.validate_jidl(schema_data)
+            is_valid, err_msg = current_app.validator.validate_jidl(schema_data)
             if not is_valid:
-                return f"JSON Schema Error: {msg}", 500  
+                return f"JSON Schema Error: {err_msg}", 500  
                                 
         else:
             return "Invalid Schema Format", 500    
@@ -310,7 +309,7 @@ class ConvertPDF(Resource):
         pdf = BytesIO()
         val, schema = current_app.validator.validateSchema(request_json["schema"], False)
         
-        if val:  # Valid Schema
+        if val:
             
             try:
                 converter = HtmlConverter(schema)
@@ -318,8 +317,7 @@ class ConvertPDF(Resource):
             except Exception as e:
                 print(f"Unable to convert to HTML: {e}")                
             
-            # html = html_dumps(schema, styles=current_app.config.get("APP_THEME", ""))
-        else:  # Invalid Schema
+        else:
             html = "<h1>ERROR: Invalid Schema. Fix the base schema errors before converting...</h1>"
             
         pdf_obj = HTML(string=html)  # the HTML to convert
