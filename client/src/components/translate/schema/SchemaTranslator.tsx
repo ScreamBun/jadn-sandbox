@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPageTitle } from 'reducers/util'
+import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
-import { setSchema } from 'actions/util'
+import { setFile, setSchema } from 'actions/util'
 import { SchemaJADN } from 'components/create/schema/interface'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
@@ -15,9 +15,17 @@ import SchemaTranslated from './SchemaTranslated'
 const SchemaTranslator = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
+    const loadedSchema = useSelector(getSelectedSchema);
+    const setLoadedSchema = (schema: object | null) => {
+        dispatch(setSchema(schema));
+    }
+
+    const selectedFile = useSelector(getSelectedFile);
+    const setSelectedFile = (file: Option | null) => {
+        dispatch(setFile(file));
+    }
+
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [translation, setTranslation] = useState<Option[]>([]);
     const [translatedSchema, setTranslatedSchema] = useState(initConvertedSchemaState);
     const [isLoading, setIsLoading] = useState(false);
