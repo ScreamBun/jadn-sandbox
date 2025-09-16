@@ -54,23 +54,14 @@ export interface SetFileSuccessAction extends ActionSuccessResult {
 }
 
 // OPTIONS- set schema file name
-export const VALID_DEFINE = '@@util/VALID_DEFINE';
-export const VALID_SUCCESS = '@@util/VALID_SUCCESS';
-export const VALID_FAILURE = '@@util/VALID_FAILURE';
-export const setValid = (valid: boolean) => createAction({
-  endpoint: `${baseAPI}/`,
-  method: 'OPTIONS',
-  types: [
-    VALID_DEFINE,
-    {
-      type: VALID_SUCCESS,
-      payload: (_action, _state) => ({ valid })
-    }, VALID_FAILURE
-  ]
+export const SET_SCHEMA_VALID = '@@util/SET_SCHEMA_VALID';
+export const setSchemaValid = (valid: boolean) => ({
+  type: SET_SCHEMA_VALID,
+  payload: { valid }
 });
 
-export interface SetValidSuccessAction extends ActionSuccessResult {
-  type: typeof VALID_SUCCESS;
+export interface SetSchemaValidAction {
+  type: typeof SET_SCHEMA_VALID;
   payload: {
     valid: boolean;
   };
@@ -124,16 +115,16 @@ export interface LoadSuccessAction extends ActionSuccessResult {
 
 // Request Actions
 export interface UtilRequestActions extends ActionRequestResult {
-  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE | typeof FILE_DEFINE | typeof VALID_DEFINE;
+  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE | typeof FILE_DEFINE | typeof SET_SCHEMA_VALID;
 }
 
 // Failure Actions
 export interface UtilFailureActions extends ActionFailureResult {
-  type: typeof INFO_FAILURE | typeof LOAD_FAILURE | typeof SCHEMA_FAILURE | typeof FILE_FAILURE | typeof VALID_FAILURE;
+  type: typeof INFO_FAILURE | typeof LOAD_FAILURE | typeof SCHEMA_FAILURE | typeof FILE_FAILURE | typeof SET_SCHEMA_VALID;
 }
 
 export type UtilActions = (
   UtilRequestActions | UtilFailureActions |
   // Success Actions
-  InfoSuccessAction | LoadSuccessAction | SetSchemaSuccessAction | SetFileSuccessAction | SetValidSuccessAction
+  InfoSuccessAction | LoadSuccessAction | SetSchemaSuccessAction | SetFileSuccessAction | SetSchemaValidAction
 );

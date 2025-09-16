@@ -4,8 +4,8 @@ import { Helmet } from 'react-helmet-async'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getValidFormatOpts } from 'actions/format'
-import { info } from 'actions/util'
-import { getPageTitle } from 'reducers/util'
+import { info, setFile } from 'actions/util'
+import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import { dismissAllToast } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
@@ -13,18 +13,19 @@ import { DragItem } from './structure/editors/DragStyle/SBOutline'
 import { SchemaCreatorBtnStyle } from './structure/editors/BtnStyle/SchemaCreatorBtn'
 import { SchemaCreatorDndStyle } from './structure/editors/DragStyle/SchemaCreatorDnd'
 import { clearDuplicate } from 'actions/duplicate';
+import { useNavigate } from 'react-router'
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    // See if there is a local storage item piped from create data
-    const pipedSchema = localStorage.getItem('__createdSchema__');
-    const pipedFile = localStorage.getItem('__selectedFile__');
-    localStorage.removeItem('__createdSchema__');
-    localStorage.removeItem('__selectedFile__');
+    const loadedSchema = useSelector(getSelectedSchema);
+    const selectedSchemaFile = useSelector(getSelectedFile);
+    const setSelectedSchemaFile = (file: Option | null) => {
+        dispatch(setFile(file));
+    }
 
-    const [selectedSchemaFile, setSelectedSchemaFile] = useState<Option | null>(pipedFile !== null ? JSON.parse(pipedFile) : null);
-    const [generatedSchema, setGeneratedSchema] = useState<object | ''>(pipedSchema !== null ? JSON.parse(pipedSchema) : ''); // check for piped schema
+    const [generatedSchema, setGeneratedSchema] = useState<object | ''>(loadedSchema);
     const [cardsState, setCardsState] = useState<DragItem[]>([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -47,14 +48,21 @@ const SchemaGenerator = () => {
     }, [dispatch])
 
     const handleDataCreation = () => {
-        if (generatedSchema) {
-            localStorage.setItem('__createdSchema__', JSON.stringify(generatedSchema));
-        }
-        if (selectedSchemaFile) {
-            localStorage.setItem('__selectedFile__', JSON.stringify(selectedSchemaFile));
-        }
-        window.location.href = '/create/data';
+        navigate('/create/data');
     }
+
+    // If a global schema exists and local state is empty, set it so the HOC can build cards
+    useEffect(() => {
+        if (loadedSchema) {
+            setGeneratedSchema(loadedSchema);
+            setCardsState([]);
+            setFieldCollapseState([]);
+        } else {
+            setGeneratedSchema('');
+            setCardsState([]);
+            setFieldCollapseState([]);
+        }
+    }, [loadedSchema]);
 
     // When duplicate item is set in store, add a new card at end with "{name} copy"
     const duplicatedItem = useSelector((state: any) => state.Duplicate?.item);

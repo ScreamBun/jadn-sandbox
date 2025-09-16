@@ -93,10 +93,10 @@ export default (state = initialState, action: util.UtilActions) => {
         }
       };
 
-    case util.VALID_SUCCESS:
+    case util.SET_SCHEMA_VALID:
       return {
         ...state,
-        schemaIsValid: action.payload.valid
+        schemaIsValid: 'valid' in action.payload ? action.payload.valid : state.schemaIsValid
       };
     
     case util.FILE_SUCCESS:
@@ -108,7 +108,6 @@ export default (state = initialState, action: util.UtilActions) => {
     case util.INFO_FAILURE:
     case util.LOAD_FAILURE:
     case util.SCHEMA_FAILURE:
-    case util.VALID_FAILURE:
     case util.FILE_FAILURE:
       return {
         ...state,

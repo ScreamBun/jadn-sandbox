@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import SBSaveFile from "./SBSaveFile";
 import SBSelect, { Option } from "./SBSelect";
 import { useDispatch } from "react-redux";
-import { loadFile } from "actions/util";
+import { loadFile, setSchemaValid } from "actions/util";
 import { sbToastError } from "./SBToast";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -47,6 +47,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
     const handleFileSelect = (e: Option) => {
         if (e == null) {
             onCancelFileUpload(null);
+            dispatch(setSchemaValid(false));
             return;
 
         } else if (e.value == "file") {
@@ -60,6 +61,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
                         sbToastError(loadFileVal.payload.response);
                         return;
                     }
+                    dispatch(setSchemaValid(true));
                     let dataObj = loadFileVal.payload.data;
                     onFileChange(dataObj, e);
                 })
