@@ -122,6 +122,7 @@ docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
 * See readme under the jadnschema repo
 
 ### Build Ruby Image and Container and use locally
+Need to start Ruby Container when you are developing and want CBOR conversion logic
 
 1. In a terminal window, from the JADN Sandbox root directory, build the image:
 

@@ -26,6 +26,8 @@ const DataGenerator = () => {
         dispatch(setFile(file));
     }
     const [generatedMessage, setGeneratedMessage] = useState({});
+    const [xml, setXml] = useState('');
+    const [cbor, setCbor] = useState('');
     const [selection, setSelection] = useState<Option | null>();
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
 
@@ -44,6 +46,8 @@ const DataGenerator = () => {
     useEffect(() => {
         setSelection(null);
         setGeneratedMessage({});
+        setXml("");
+        setCbor("");
         dispatch(setSchema(loadedSchema));
         dispatch(clearFieldValidation());
         dispatch<any>(clearHighlight());
@@ -54,6 +58,8 @@ const DataGenerator = () => {
         dismissAllToast();
         setSelectedFile(null);
         setLoadedSchema(null);
+        setXml("");
+        setCbor("");
         setSelection(null);
         setGeneratedMessage({});
         sbToastSuccess("Schema reset successfully");
@@ -102,7 +108,9 @@ const DataGenerator = () => {
                                 <div className='col-md-12 pr-2'>
                                     <DataCreator
                                         generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
-                                        selection={selection} setSelection={setSelection} />
+                                        selection={selection} setSelection={setSelection}
+                                        xml={xml} setXml={setXml}
+                                        cbor={cbor} setCbor={setCbor} />
                                 </div>
                             </div>
                         </div>

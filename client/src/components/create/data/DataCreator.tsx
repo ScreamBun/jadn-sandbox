@@ -9,7 +9,6 @@ import SBSelect, { Option } from 'components/common/SBSelect'
 import SBSaveFile from 'components/common/SBSaveFile'
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard'
 import SBDownloadBtn from 'components/common/SBDownloadBtn'
-import { LANG_JSON } from 'components/utils/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faExpand, faUndo, faWandSparkles, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch } from 'react-redux'
@@ -17,15 +16,18 @@ import { validateMessage } from 'actions/validate'
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import SBLoadBuilder from 'components/common/SBLoadBuilder'
-import { destructureField } from './lib/utils'
+import { destructureField, removeXmlWrapper } from './lib/utils'
+import { LANG_XML, LANG_JSON, LANG_CBOR } from 'components/utils/constants';
+import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
-    const { generatedMessage, setGeneratedMessage, selection, setSelection } = props;
+    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor } = props;
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
     const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
+    const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:LANG_JSON, value: LANG_JSON});
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
@@ -37,6 +39,7 @@ const DataCreator = (props: any) => {
             } else {
                 updated[k] = v;
             }
+            convertJSON(updated)
             return updated;
         });
     };
@@ -52,37 +55,47 @@ const DataCreator = (props: any) => {
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         setLoadedFieldDefs(null);
+        setJsonValidated(false);
+        setXmlValidated(false);
+        setXml("");
+        setCbor("");
         dispatch<any>(clearHighlight());
     }
 
     // Handle full data validation
     const [jsonValidated, setJsonValidated] = useState(false);
-    const handleValidate = async () => {
+    const [xmlValidated, setXmlValidated] = useState(false);
+    const handleValidate = async (lang: string) => {
         if (!schemaObj || !generatedMessage) {
             sbToastError('ERROR: Validation failed - Please select schema and enter data');
             setJsonValidated(false);
+            setXmlValidated(false);
             return;
         }
         try {
             const type = selection?.value || '';
-            const newMsg = JSON.stringify(generatedMessage[type]);
-            const action: any = await dispatch(validateMessage(schemaObj, newMsg, LANG_JSON, type));
+            const newMsg = lang === LANG_JSON ? JSON.stringify(generatedMessage[type]) : removeXmlWrapper(xml); // need to remove wrapper
+            const action: any = await dispatch(validateMessage(schemaObj, newMsg, lang, type));
             // Check if the action is a success or failure
             if (action.type === '@@validate/VALIDATE_MESSAGE_SUCCESS') {
                 if (action.payload?.valid_bool) {
                     sbToastSuccess(action.payload.valid_msg);
-                    setJsonValidated(true);
+                    if (lang === LANG_JSON) setJsonValidated(true);
+                    if (lang === LANG_XML) setXmlValidated(true);
                 } else {
                     sbToastError(action.payload.valid_msg);
-                    setJsonValidated(false);
+                    if (lang === LANG_JSON) setJsonValidated(false);
+                    if (lang === LANG_XML) setXmlValidated(false);
                 }
             } else if (action.type === '@@validate/VALIDATE_FAILURE') {
                 sbToastError(action.payload?.valid_msg || 'Validation failed');
-                setJsonValidated(false);
+                if (lang === LANG_JSON) setJsonValidated(false);
+                if (lang === LANG_XML) setXmlValidated(false);
             }
         } catch (err: any) {
             sbToastError(err.message || 'Validation error');
             setJsonValidated(false);
+            setXmlValidated(false);
         }
     };
 
@@ -93,7 +106,11 @@ const DataCreator = (props: any) => {
         setGeneratedMessage({});
         dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
         dispatch(clearFieldValidation());
+        setJsonValidated(false);
+        setXmlValidated(false);
         setLoadedFieldDefs(null);
+        setXml("");
+        setCbor("");
         dispatch<any>(clearHighlight());
     }    
 
@@ -122,6 +139,44 @@ const DataCreator = (props: any) => {
             dispatch<any>(clearHighlight());
         }
     }, [selection, schemaObj]);
+
+    const convertJSON = (data: string) => {
+        try {
+            // Convert to XML
+            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_XML))
+                .then((rsp: any) => {
+                    if(rsp.payload.data) {
+                        if(rsp.payload.data.xml) {
+                            setXml(rsp.payload.data.xml)
+                        } 
+                    } else {
+                        console.log(rsp.payload.message);
+                    }
+                })
+                .catch((submitErr: { message: string }) => {
+                    sbToastError(submitErr.message)
+                });
+
+            // Convert to CBOR
+            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_CBOR))
+                .then((rsp: any) => {
+                    if(rsp.payload.data) {
+                        if(rsp.payload.data.cbor_hex) {
+                            setCbor(rsp.payload.data.cbor_hex)
+                        } 
+                    } else {
+                        console.log(rsp.payload.message);
+                    }
+                })
+                .catch((submitErr: { message: string }) => {
+                    sbToastError(submitErr.message)
+                });
+        } catch (err) {
+            if (err instanceof Error) {
+                sbToastError(err.message)
+            }
+        }        
+    }
 
     // Decide which fields to display
     let fieldDefs: null | JSX.Element | JSX.Element[] = null;
@@ -227,37 +282,65 @@ const DataCreator = (props: any) => {
                 style={{display: dataFullScreen ? 'none' : 'block'}}>
                 <div className='card'>
                     <div className="card-header p-2 d-flex align-items-center">
-                        <h5 className="mb-0">JSON Viewer</h5>
+                        <h5 className = "mb-0 me-1">Data Viewer</h5>
+                        <div className="col-md-4 me-2">
+                            <SBSelect 
+                                value={selectedSerialization}
+                                onChange={setSelectedSerialization}
+                                data={[
+                                    { label: LANG_JSON, value: LANG_JSON },
+                                    { label: LANG_XML, value: LANG_XML },
+                                    { label: LANG_CBOR, value: LANG_CBOR }
+                                ]}
+                                isSmStyle
+                            />
+                        </div>
                         <div className="ms-auto">
                             <button className='btn btn-sm btn-primary float-end ms-1' title='Full Screen JSON' onClick={() => setJsonFullScreen(!jsonFullScreen)}>
                                 <FontAwesomeIcon icon={faExpand} />
                             </button>
-                            <button type="button"
-                                className="btn btn-sm btn-primary me-1"
-                                onClick={handleValidate}
-                                disabled = {selection && generatedMessage? false:true}
-                            >
-                                Valid
-                                {jsonValidated ? (
-                                    <span className="badge rounded-pill text-bg-success ms-1">
-                                        <FontAwesomeIcon icon={faCheck} />
-                                    </span>) : (
-                                    <span className="badge rounded-pill text-bg-danger ms-1">
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </span>)
-                                }
-                            </button>
-                            <SBSaveFile buttonId={'saveMessage'} toolTip={'Save Data'} data={generatedMessage} loc={'messages'} customClass={"float-end ms-1"} ext={LANG_JSON} />
-                            <SBCopyToClipboard buttonId={'copyMessage'} data={generatedMessage} customClass='float-end' shouldStringify={true} />
-                            <SBDownloadBtn buttonId='msgDownload' customClass='float-end me-1' data={JSON.stringify(generatedMessage, null, 2)} ext={LANG_JSON} />
+                            <>
+                                <button type="button"
+                                    className="btn btn-sm btn-primary me-1"
+                                    onClick={() => handleValidate(selectedSerialization?.value===LANG_JSON ? LANG_JSON : selectedSerialization?.value===LANG_XML ? LANG_XML : LANG_JSON)}
+                                    disabled = {selection && generatedMessage? false:true}
+                                >
+                                    Valid
+                                    {(selectedSerialization?.value===LANG_JSON ? jsonValidated : selectedSerialization?.value===LANG_XML ? xmlValidated : jsonValidated) ? (
+                                        <span className="badge rounded-pill text-bg-success ms-1">
+                                            <FontAwesomeIcon icon={faCheck} />
+                                        </span>) : (
+                                        <span className="badge rounded-pill text-bg-danger ms-1">
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </span>)
+                                    }
+                                </button>
+                                <SBSaveFile 
+                                    buttonId={'saveMessage'} 
+                                    toolTip={'Save Data'} 
+                                    data={selectedSerialization?.value===LANG_JSON ? generatedMessage : selectedSerialization?.value===LANG_XML ? xml : cbor} 
+                                    loc={'messages'} 
+                                    customClass={"float-end ms-1"} 
+                                    ext={selectedSerialization?.value} />
+                                <SBCopyToClipboard 
+                                    buttonId={'copyMessage'} 
+                                    data={selectedSerialization?.value===LANG_JSON ? generatedMessage : selectedSerialization?.value===LANG_XML ? xml : cbor} 
+                                    customClass='float-end' 
+                                    shouldStringify={true} />
+                                <SBDownloadBtn 
+                                    buttonId='msgDownload' 
+                                    customClass='float-end me-1' 
+                                    data={selectedSerialization?.value===LANG_JSON ? JSON.stringify(generatedMessage) : selectedSerialization?.value===LANG_XML ? JSON.stringify(xml) : JSON.stringify(cbor)} 
+                                    ext={selectedSerialization?.value} />
+                            </>
                         </div>
                     </div>
                     <div className='card-body p-2'>
                         <SBEditor 
-                        data={generatedMessage} 
-                        isReadOnly={true}
-                        initialHighlightWords={highlightedItems}
-                        ></SBEditor>
+                            data={selectedSerialization?.value===LANG_JSON ? generatedMessage : selectedSerialization?.value===LANG_XML ? xml : cbor} 
+                            convertTo={selectedSerialization?.value===LANG_XML ? LANG_XML : null}
+                            isReadOnly={true} 
+                            initialHighlightWords={highlightedItems}></SBEditor>
                     </div>
                 </div>
             </div>
