@@ -56,10 +56,10 @@ const Home = () => {
               <div className="card-footer bg-secondary">
                 {
                   !globalValid && Object.values(globalSchema).length > 0 ? 
-                  <p><i>
+                  <i>
                     <FontAwesomeIcon className='me-2' icon={faTriangleExclamation} />
                     Please validate the schema before creating instances.
-                  </i></p>
+                  </i>
                   :
                   <>
                     <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
