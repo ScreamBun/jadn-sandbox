@@ -1,4 +1,4 @@
-import { faCode, faCodeBranch, faEnvelopeCircleCheck, faEye, faFileCirclePlus, faPencilRuler } from '@fortawesome/free-solid-svg-icons';
+import { faCode, faCodeBranch, faEnvelopeCircleCheck, faEye, faFileCirclePlus, faPencilRuler, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   NAV_VALIDATE_MESSAGE, NAV_CONVERT_SCHEMA, NAV_CREATE_DATA, NAV_CREATE_SCHEMA, NAV_GENERATE, NAV_TRANSFORM, NAV_TRANSLATE_SCHEMA,
@@ -8,12 +8,14 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getPageTitle } from 'reducers/util';
+import { getPageTitle, getSelectedSchema, isSchemaValid } from 'reducers/util';
 import { info } from 'actions/util';
 import { dismissAllToast } from 'components/common/SBToast';
 
 const Home = () => {
   const dispatch = useDispatch();
+  const globalValid = useSelector(isSchemaValid);
+  const globalSchema = useSelector(getSelectedSchema);
 
   const meta_title = useSelector(getPageTitle) + ' | Home ';
   const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -40,15 +42,30 @@ const Home = () => {
               </div>
               <div className="card-body">
                 <h5 className="card-title">
+                  {
+                  !globalValid && Object.values(globalSchema).length > 0 ? 
+                  <p>Creation</p>
+                  :
                   <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
+                  } 
                 </h5>
                 <p className="card-text">Create and edit JADN schemas using forms, view JADN schemas in JSON format.</p>
                 <p className="card-text"> Create schema compliant data instances (documents, messages).</p>
                 <br /><br /><br />
               </div>
               <div className="card-footer bg-secondary">
-                <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
-                <Link className="card-link" to={NAV_CREATE_DATA}>Data Instances</Link>
+                {
+                  !globalValid && Object.values(globalSchema).length > 0 ? 
+                  <p><i>
+                    <FontAwesomeIcon className='me-2' icon={faTriangleExclamation} />
+                    Please validate the schema before creating instances.
+                  </i></p>
+                  :
+                  <>
+                    <Link className="card-link" to={NAV_CREATE_SCHEMA}>Schemas</Link>
+                    <Link className="card-link" to={NAV_CREATE_DATA}>Data Instances</Link>
+                  </>
+                }
               </div>
             </div>
             <div className="card">
