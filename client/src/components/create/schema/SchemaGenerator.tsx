@@ -14,6 +14,7 @@ import { SchemaCreatorBtnStyle } from './structure/editors/BtnStyle/SchemaCreato
 import { SchemaCreatorDndStyle } from './structure/editors/DragStyle/SchemaCreatorDnd'
 import { clearDuplicate } from 'actions/duplicate';
 import { useNavigate } from 'react-router'
+import { isEqual } from 'lodash';
 
 const SchemaGenerator = () => {
     const dispatch = useDispatch();
@@ -51,18 +52,28 @@ const SchemaGenerator = () => {
         navigate('/create/data');
     }
 
-    // If a global schema exists and local state is empty, set it so the HOC can build cards
     useEffect(() => {
-        if (loadedSchema) {
-            setGeneratedSchema(loadedSchema);
-            //setCardsState([]);
-            //setFieldCollapseState([]);
+        if ((generatedSchema === '' || (typeof generatedSchema === 'object' && Object.keys(generatedSchema).length === 0))) {
+            if (loadedSchema && Object.keys(loadedSchema).length <= 0) {
+                setGeneratedSchema('');
+                setCardsState([]);
+                setFieldCollapseState([]);
+            }
         } else {
-            setGeneratedSchema('');
-            setCardsState([]);
-            setFieldCollapseState([]);
+            if (loadedSchema && generatedSchema) {
+                const compareLoaded = typeof loadedSchema === 'string' ? JSON.parse(loadedSchema) : loadedSchema;
+                const compareGenerated = typeof generatedSchema === 'string' ? JSON.parse(generatedSchema) : generatedSchema;
+                const areEqual = isEqual(compareLoaded, compareGenerated);
+                if (!areEqual) {
+                    dispatch(setSchemaValid(false)); // On schema change, set valid to false
+                }
+            } else {
+                setGeneratedSchema('');
+                setCardsState([]);
+                setFieldCollapseState([]);
+            }
         }
-    }, [loadedSchema]);
+    }, [loadedSchema, generatedSchema]);
 
     // When duplicate item is set in store, add a new card at end with "{name} copy"
     const duplicatedItem = useSelector((state: any) => state.Duplicate?.item);
