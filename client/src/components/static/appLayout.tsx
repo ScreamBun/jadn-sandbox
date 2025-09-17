@@ -6,7 +6,9 @@ import favicon from '../dependencies/assets/img/jadn-favicon.png';
 import { NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_DATA, NAV_VALIDATE_MESSAGE, NAV_TRANSFORM, NAV_GENERATE, NAV_TRANSLATE_SCHEMA, NAV_ABOUT, NAV_TRANSLATE_DATA } from 'components/utils/constants';
 import { useAppSelector } from '../../reducers';
 import { ThemeContext } from './ThemeProvider';
-import { dismissAllToast } from 'components/common/SBToast';
+import { dismissAllToast, sbToastWarning } from 'components/common/SBToast';
+import { getSelectedSchema, isSchemaValid } from 'reducers/util';
+import { useSelector } from 'react-redux';
 
 const AppLayout = () => {
 
@@ -58,6 +60,9 @@ const AppLayout = () => {
     setIsTranslateDropdownOpen(prev => !prev);
   };  
 
+  const globalValid = useSelector(isSchemaValid);
+  const globalSchema = useSelector(getSelectedSchema);
+
   return (
     <div>
       <div className='fixed-top'>
@@ -85,13 +90,20 @@ const AppLayout = () => {
                   data-bs-auto-close="true"
                   aria-expanded="false"
                   title='Create a JADN Schema or Message'
-                  onClick={(e) => e.preventDefault()}
+                  onClick={(e) => {
+                    if (!globalValid && Object.values(globalSchema).length > 0) {
+                      sbToastWarning("Please validate the schema before navigating to creation.");
+                      e.preventDefault();
+                    } else {
+                     e.preventDefault();
+                    }
+                  }}
                 >
                   Creation
                 </NavLink>
                 <ul className={`dropdown-menu m-0 ${isCreationDropdownOpen ? 'show' : ''}`}>
-                  <li><NavLink className='dropdown-item nav-link' to={NAV_CREATE_SCHEMA} onClick={onCreationDropDownClick}>Schema Creation</NavLink></li>
-                  <li><NavLink className='dropdown-item nav-link' to={NAV_CREATE_DATA} onClick={onCreationDropDownClick}>Data Creation</NavLink></li>
+                  <li><NavLink className='dropdown-item nav-link' to={!globalValid && Object.values(globalSchema).length > 0 ? '#' : NAV_CREATE_SCHEMA} onClick={onCreationDropDownClick}>Schema Creation</NavLink></li>
+                  <li><NavLink className='dropdown-item nav-link' to={!globalValid && Object.values(globalSchema).length > 0 ? '#' : NAV_CREATE_DATA} onClick={onCreationDropDownClick}>Data Creation</NavLink></li>
                 </ul>
               </li>
 
