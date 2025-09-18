@@ -1,3 +1,8 @@
 {
-    "field_value_1": "officiis magnam, placeat"
+    "Schema": {
+        "field_value_1": "abcdefg",
+        "field_value_2": {
+            "field_value_1": "abcdefgfdsafdsffd"
+        }
+    }
 }
