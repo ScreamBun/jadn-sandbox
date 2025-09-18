@@ -19,19 +19,23 @@ class SerialFormats(BaseEnum):
 
 class Validator:
     
-    def validateSchema(self, schema: Union[bytes, dict, str], sm: bool = True) -> Tuple[bool, Union[str, any]]:
+    def validateSchema(self, schema: Union[dict, str], sm: bool = True) -> Tuple[bool, Union[str, any]]:
         """
         Validate the given schema
         :param schema: (JSON String) schema to validate against
         :param sm: (bool) return bool or schema
         :return: (tuple) valid/invalid bool, schema
         """
-        try :
+        try:
+            if isinstance(schema, str):
+                schema = json.loads(schema)
+                
             j_validation = DataValidation(j_meta_schema, j_meta_roots, schema)
             j_validation.validate()
+            
             return True, "Schema is Valid" if sm else schema
         except Exception as e:
-            return False, f"Schema Invalid - {e}"     
+            return False, f"Schema Invalid - {e}"
 
     # TODO: Change from validateMessage to validateData
     def validateMessage(self, schema: Union[bytes, dict, str], data: Union[str, bytes, dict], data_format: str, root: str) -> Tuple:

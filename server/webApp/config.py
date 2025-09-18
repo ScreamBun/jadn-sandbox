@@ -52,12 +52,47 @@ class Config:
 
     APP_THEME = os.path.join(APP_DATA, "app_theme.css")
 
-    VALID_SCHEMAS = ["jadn", "jidl", "json" ]
-    VALID_SCHEMA_CONV = [{ "GraphViz" : "gv" }, { "HTML" : "html" }, { "JIDL" : "jidl" }, { "JADN" : "jadn" }, { "MarkDown" : "md" }, { "JSON" : "json" }, { "PlantUML" : "puml" }, { "XSD" : "xsd" }]
-    VALID_SCHEMA_TRANSLATIONS = [ { "JADN" : "jadn" }, {"JSON" : "json" }, { "XSD" : "xsd" } ]
-    VALID_SCHEMA_VISUALIZATIONS = [{ "GraphViz" : "gv" }, { "HTML" : "html" }, { "JIDL" : "jidl" }, { "MarkDown" : "md" }, { "PlantUML" : "puml" }]
-    VALID_MESSAGES = ["json", "cbor", "xml"]
-    VALID_TRANSFORMATIONS = ["resolve references", "strip comments"]
+    VALID_SCHEMAS = [
+        {"JADN": "jadn"},
+        {"JIDL": "jidl"},
+        {"JSON": "json"}
+    ]
+    
+    VALID_SCHEMA_CONV = [
+        {"GraphViz": "gv"},
+        {"HTML": "html"},
+        {"JIDL": "jidl"},
+        {"JADN": "jadn"},
+        {"MarkDown": "md"},
+        {"JSON": "json"},
+        {"PlantUML": "puml"},
+        {"XSD": "xsd"}
+    ]
+    
+    VALID_SCHEMA_TRANSLATIONS = [
+        {"JADN": "jadn"},
+        {"JSON": "json"},
+        {"XSD": "xsd"}
+    ]
+    
+    VALID_SCHEMA_VISUALIZATIONS = [
+        {"GraphViz": "gv"},
+        {"HTML": "html"},
+        {"JIDL": "jidl"},
+        {"MarkDown": "md"},
+        {"PlantUML": "puml"}
+    ]
+    
+    VALID_DATA = [
+        {"CBOR": "cbor"},
+        {"JSON": "json"},
+        {"XML": "xml"}
+    ]
+    
+    VALID_TRANSFORMATIONS = [
+        {"Resolve References": "resolve references"},
+        {"Strip Comments": "strip comments"}
+    ]
 
 class DefaultConfig(Config):
     DEBUG = False

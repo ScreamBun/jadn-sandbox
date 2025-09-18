@@ -31,12 +31,14 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
     const { isLoading, onLoading, onSelectedSchemaReplaceAll, selectedSchemas, formId } = props;
     const dispatch = useDispatch();
 
-    const transformationOpts = useSelector(getValidTransformations);
+    const transformations = useSelector(getValidTransformations);
+    const [tranformsOpts, setTransformOpts] = useState<Option[]>([]);
+    const [transformationType, setTransformationType] = useState<Option | null>();
 
     const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
     const [isTransformDisabled, setIsTransformDisabled] = useState(true);
     const [baseFile, setBaseFile] = useState<Option | null>();
-    const [transformationType, setTransformationType] = useState<Option | null>();
+    
     const [baseFileOpts, setBaseFileOpts] = useState<String[]>([]);
     const [transformedSchema, setTransformedSchema] = useState([initTransformedSchema]);
 
@@ -48,7 +50,27 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
         setBaseFile(null);
     }, [selectedSchemas]);
 
+
     useEffect(() => {
+        if (Array.isArray(transformations) && transformations.length > 0) {
+            const opts: Option[] = [];
+            transformations.forEach(obj => {
+                Object.entries(obj).forEach(([label, value]) => {
+                    opts.push({ label, value });
+                });
+            });
+            setTransformOpts(opts);
+        }
+    }, [transformations]);   
+
+    useEffect(() => {
+        console.log('DEBUG SchemaTransformed:');
+        console.log('  selectedSchemas:', selectedSchemas);
+        console.log('  transformationType:', transformationType);
+        console.log('  transformationType.value:', transformationType && transformationType.value);
+        console.log('  strip_comments:', strip_comments);
+        console.log('  resolve_references:', resolve_references);
+        console.log('  baseFile:', baseFile);
         setIsTransformDisabled(true);
         if (selectedSchemas && selectedSchemas.length > 0 && transformationType && transformationType.value) {
             if (transformationType.value == strip_comments) {
@@ -79,7 +101,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
         setToggle((prev) => ({ ...prev, [index]: !prev[index] }));
     }
 
-    const onSelectTypeChange = (opt: Option) => {
+    const onSelectTypeChange =  (opt: Option | null) => {
         setBaseFile(null);
         setTransformedSchema([initTransformedSchema]);
         setTransformationType(opt);
@@ -140,7 +162,7 @@ const SchemaTransformed = forwardRef((props: SchemaTransformedProps, ref) => {
                         <div className='col-md-9'>
                             <div className="row">
                                 <div className="col-sm-6">
-                                    <SBSelect id={"transformation-list"} data={transformationOpts} onChange={onSelectTypeChange}
+                                    <SBSelect id={"transformation-list"} data={tranformsOpts} onChange={onSelectTypeChange}
                                         placeholder={'Select transformation type...'} value={transformationType} isSmStyle isClearable
                                     />
                                 </div>
