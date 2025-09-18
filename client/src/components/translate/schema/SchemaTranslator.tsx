@@ -54,19 +54,8 @@ const SchemaTranslator = () => {
         if (translation) {
             let schemaObj: SchemaJADN | string = loadedSchema;
 
-            // if (typeof schemaObj == 'string') {
-            //     try {
-            //         schemaObj = JSON.parse(loadedSchema);
-            //     } catch (err) {
-            //         if (err instanceof Error) {
-            //             setIsLoading(false);
-            //             sbToastError(err.message);
-            //         }
-            //     }
-            // }
-            //convertSchema takes in an array of values
-            const arr = translation.map(obj => obj.value);
-            dispatch(convertSchema(schemaObj, schemaFormat?.value, arr))
+            const arr = translation.map(obj => obj.value.toLowerCase());
+            dispatch(convertSchema(schemaObj, schemaFormat?.value.toLowerCase(), arr))
                 .then((convertSchemaVal) => {
                     if (convertSchemaVal.error) {
                         setIsLoading(false);

@@ -37,8 +37,7 @@ class Validator:
         except Exception as e:
             return False, f"Schema Invalid - {e}"
 
-    # TODO: Change from validateMessage to validateData
-    def validateMessage(self, schema: Union[bytes, dict, str], data: Union[str, bytes, dict], data_format: str, root: str) -> Tuple:
+    def validateData(self, schema: Union[bytes, dict, str], data: Union[str, bytes, dict], data_format: str, root: str) -> Tuple:
         """
         Validate messages against the given schema
         :param schema: schema to validate against
@@ -51,6 +50,11 @@ class Validator:
         if isinstance(schema, str):
             return False, "Schema Invalid - The schema failed to load", "", data
 
+        if data_format == None or data_format == "":
+            return False, "Serialization Format selection required", "", data
+        
+        data_format = data_format.lower()
+        
         if data_format not in SerialFormats:
             return False, "Serialization Format not found", "", data
         

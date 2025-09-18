@@ -66,14 +66,43 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         ext: LANG_JADN
     });
     const schemaOpts = useSelector(getAllSchemas);
-    const validSchemaFormatOpt = useSelector(getSchemaConversions);
+    const schemaFormats = useSelector(getSchemaConversions);
+    const [schemaFormatOpts, setSchemaFormatOpts] = useState<Option[]>([]);
     const ref = useRef<HTMLInputElement | null>(null);
 
+
     useEffect(() => {
-        if (fileName.ext) {
-            setSchemaFormat({ value: fileName.ext, label: fileName.ext })
+        if (Array.isArray(schemaFormats) && schemaFormats.length > 0) {
+            const opts: Option[] = [];
+            schemaFormats.forEach(obj => {
+                Object.entries(obj).forEach(([label, value]) => {
+                    opts.push({ label, value });
+                });
+            });
+            setSchemaFormatOpts(opts);
         }
-    }, [fileName])
+    }, [schemaFormats]);
+
+    useEffect(() => {
+        if (fileName.ext && Array.isArray(schemaFormats) && schemaFormats.length > 0) {
+            // schemaFormats is an array of objects like [{JADN: 'jadn'}, {JSON: 'json'}, ...]
+            let found = false;
+            for (const fmtObj of schemaFormats) {
+                for (const [label, value] of Object.entries(fmtObj)) {
+                    if (value && value.toString().toUpperCase() === fileName.ext.toUpperCase()) {
+                        setSchemaFormat({ value: value.toString().toUpperCase(), label: label.toString().toUpperCase() });
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+            if (!found) {
+                sbToastError(`File extension '${fileName.ext}' does not match any supported schema format.`);
+                setSchemaFormat(null);
+            }
+        }
+    }, [fileName, schemaFormats])
 
     useEffect(() => {
         if (!loadedSchema) {
@@ -119,8 +148,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                 msgDecode = decodeTypes.all[0];
             }
         }
-        setDecodeSchemaTypes(decodeTypes);
-        setDecodeMsg({ value: msgDecode, label: msgDecode });
+        if (setDecodeSchemaTypes) setDecodeSchemaTypes(decodeTypes);
+        if (setDecodeMsg) setDecodeMsg({ value: msgDecode, label: msgDecode });
     }
 
     const onFormatClick = (formattedSchema: object) => {
@@ -132,13 +161,15 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const sbEditorOnChange = (data: string) => {
         dismissAllToast();
         setIsValid(false);
-        setLoadedSchema(data);
-        dispatch(setSchema(null));
         try {
+            const parsed = JSON.parse(data);
+            setLoadedSchema(parsed);
+            dispatch(setSchema(null));
             if (setDecodeSchemaTypes && setDecodeMsg) {
-                loadDecodeTypes(JSON.parse(data));
+                loadDecodeTypes(parsed);
             }
         } catch {
+            // If not valid JSON, do not update loadedSchema
             return;
         }
     }
@@ -211,9 +242,13 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         }
         if (setDecodeSchemaTypes && setDecodeMsg) {
             setDecodeMsg(null);
-            setDecodeSchemaTypes([]);
+            setDecodeSchemaTypes({ all: [], roots: [] });
         }
     }
+
+    const onFormatChange =  (opt: Option | null) => {
+        setSchemaFormat(opt);
+    }    
 
     return (
         <div className={`${lightBackground ? '' : 'card'}`}>
@@ -229,7 +264,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             setSelectedFile={setSelectedFile}
                             onCancelFileUpload={onCancelFileUpload}
                             onFileChange={onFileLoad}
-                            acceptableExt={acceptFormat}
+                            acceptableExt={acceptFormat ? acceptFormat.join(',') : undefined}
                             ref={ref}
                             placeholder={'Select a schema...'}
                             loc={'schemas'}
@@ -238,8 +273,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                     </div>
                     {acceptFormat && <div className="col-lg-3 align-self-center">
                         <SBSelect id={"schema-format-list"}
-                            data={validSchemaFormatOpt}
-                            onChange={(e: Option) => setSchemaFormat(e)}
+                            data={schemaFormatOpts}
+                            onChange={onFormatChange}
                             value={schemaFormat}
                             placeholder={'Schema format...'}
                             isSmStyle

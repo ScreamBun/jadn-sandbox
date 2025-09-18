@@ -41,8 +41,8 @@ class Convert(Resource):
         conv = "Valid Base Schema"
         request_json = request.json      
         schema_data = request_json["schema"]
-        schema_lang = request_json["schema_format"]
-        schema_fmt = SchemaFormats(schema_lang) 
+        schema_fmt = request_json["schema_format"]
+        # schema_fmt = SchemaFormats(schema_lang) 
         
         opts = None
         if 'opts' in request_json:    
@@ -185,6 +185,9 @@ class Convert(Resource):
                     xsd_builder = XSDBuilder()
                     return xsd_builder.convert_xsd_from_dict(src)[0]
                 
+                elif toLang == constants.JADN:
+                    return src
+                
                 else:
                     raise ValueError('Unknown JADN conversion type')
             
@@ -267,32 +270,43 @@ class ConvertData(Resource):
         data = request_json["data"]
         conv_from = request_json["from"]
         conv_to = request_json["to"]
-        
+
+        if not conv_to:
+            return jsonify({
+                "error": "No conversion type specified (conv_to is None or empty)."
+            }), 400
+            
+        conv_to = conv_to.lower()
+
         cbor_annotated_hex_rsp = ""
         cbor_hex_rsp = ""
         xml_rsp = ""
-            
+
         try:
             data_js = json.loads(data)
-            
+
             if conv_to == constants.CBOR:
                 cbor_annotated_hex_rsp = convert_json_to_cbor_annotated_hex(data_js)
                 cbor_hex_rsp = convert_json_to_cbor_hex(data_js)
             elif conv_to == constants.XML:
                 xml_rsp = convert_json_to_xml(data_js)
-                
-        except Exception:  
+            else:
+                return jsonify({
+                    "error": f"Conversion type '{conv_to}' not supported."
+                }), 400
+
+        except Exception:
             tb = traceback.format_exc()
-            print(tb)            
+            print(tb)
             raise
-   
+
         return jsonify({
             "data":  {
-             "cbor_annotated_hex" : cbor_annotated_hex_rsp,   
+             "cbor_annotated_hex" : cbor_annotated_hex_rsp,
              "cbor_hex" : cbor_hex_rsp,
              "xml" : xml_rsp,
             }
-        }) 
+        })
 
 
 
