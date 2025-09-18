@@ -16,27 +16,40 @@ import { LANG_XSD } from "components/utils/constants";
 const SchemaTranslated = (props: any) => {
     const location = useLocation();
 
-    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading, ext, setSchemaFormat, formId } = props;
+    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading, formId } = props;
     const validSchema = useSelector(getSelectedSchema);
-    const data = useSelector(getValidTranslations);
-    let translateOpts: Option[] = data && data[ext] ? Object.entries(data[ext]).map(([key, value]) => ({
-        value: value,
-        label: key
-    })) : [];
+    const validTranslations = useSelector(getValidTranslations);
+
+    // let translateOpts: Option[] = validTranslations && validTranslations[ext] ? Object.entries(validTranslations[ext]).map(([key, value]) => ({
+    //     value: value,
+    //     label: key
+    // })) : [];
+
+    let translateOpts: Option[] = [];
+    for (let i = 0; i < Object.keys(validTranslations).length; i++) {
+        translateOpts.push({ ['label']: Object.keys(validTranslations)[i], ['value']: Object.values(validTranslations)[i] });
+    }    
 
     useEffect(() => {
-        if (location.state) {
-            Object.keys(data).map((key) => {
-                const fmt = key.toLowerCase();
-                Object.entries(data[key]).map(([key, value]) => {
-                    if (value == location.state) {
-                        setSchemaFormat({ value: fmt, label: fmt });
-                        setTranslation({ value: value, label: key });
-                    }
-                })
-            })
+        if (location && location.state) {
+            const index = translateOpts.findIndex(opt => opt.value === location.state.toUpperCase());
+            if (index !== -1) {
+                setTranslation([{ value: translateOpts[index].value, label: translateOpts[index].label }]);
+            }
         }
-    }, [])
+    }, [translateOpts]);
+
+    // useEffect(() => {
+    //     if (location.state && validTranslations) {
+    //         Object.entries(validTranslations).forEach(([fmt, opts]) => {
+    //             Object.entries(opts).forEach(([label, value]) => {
+    //                 if (value === location.state) {
+    //                     setTranslation([{ value, label }]);
+    //                 }
+    //             });
+    //         });
+    //     }
+    // }, [validTranslations]);
 
     const handleTranslation = (e: Option[]) => {
         let translateTo = [];

@@ -57,13 +57,11 @@ class Convert(Resource):
             if not is_valid:
                 return "Schema is not valid", 500    
             
-            # jadn.check(schema_data) # Calls DK's validator which is not up to date yet
         elif schema_fmt == constants.JSON:
             
             if isinstance(schema_data, str):
                 schema_data = json.loads(schema_data)              
             
-            # is_valid, msg = validate_schema(schema_data)
             is_valid, err_msg = current_app.validator.validateSchema(schema_data, False)
             if not is_valid:
                 return f"JSON Schema Error: {err_msg}", 500
@@ -125,11 +123,11 @@ class Convert(Resource):
         
     def validateConversionType(self, type: str):
         valid_conversions = current_app.config.get("VALID_SCHEMA_CONV")
-        
-        for item in valid_conversions.items():
-            if type == item[1]:
-                return item    
-        return False  
+        for conv in valid_conversions:
+            for label, value in conv.items():
+                if type == value:
+                    return label, value
+        return False
     
     def convertTo(self, src, fromLang, toLang, opts):
         kwargs = { "fmt": toLang,}
