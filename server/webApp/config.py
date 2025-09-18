@@ -54,7 +54,7 @@ class Config:
 
     VALID_SCHEMAS = ["jadn", "jidl", "json" ]
     VALID_SCHEMA_CONV = [{ "GraphViz" : "gv" }, { "HTML" : "html" }, { "JIDL" : "jidl" }, { "JADN" : "jadn" }, { "MarkDown" : "md" }, { "JSON" : "json" }, { "PlantUML" : "puml" }, { "XSD" : "xsd" }]
-    VALID_SCHEMA_TRANSLATIONS = ["jadn", "jidl", "json", "xsd" ]
+    VALID_SCHEMA_TRANSLATIONS = [ { "JADN" : "jadn" }, {"JSON" : "json" }, { "XSD" : "xsd" } ]
     VALID_SCHEMA_VISUALIZATIONS = [{ "GraphViz" : "gv" }, { "HTML" : "html" }, { "JIDL" : "jidl" }, { "MarkDown" : "md" }, { "PlantUML" : "puml" }]
     VALID_MESSAGES = ["json", "cbor", "xml"]
     VALID_TRANSFORMATIONS = ["resolve references", "strip comments"]
