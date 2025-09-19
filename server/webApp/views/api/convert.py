@@ -40,16 +40,17 @@ class Convert(Resource):
     def post(self):
         conv = "Valid Base Schema"
         request_json = request.json    
-          
+
         schema = request_json["schema"]
         if schema is None or schema == "":
             return "No Schema Provided", 500
-        
-        schema_format = request_json["schema_format"]
-        if not schema_format or schema_format == "":
-            return "Schema Format required", 500        
-        schema_format = schema_format.lower()
-        
+
+        schema_format = request_json.get("schema_format")
+        if schema_format:
+            schema_format = schema_format.lower()
+        else:
+            schema_format = constants.JADN
+            
         convert_to = request_json["convert-to"]
         if not convert_to or len(convert_to) == 0:
             return "Convert To selection required", 500

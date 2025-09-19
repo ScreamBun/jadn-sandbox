@@ -2,7 +2,7 @@
     "Schema": {
         "field_value_1": "abcdefg",
         "field_value_2": {
-            "field_value_1": "abcdefgfdsafdsffd"
+            "field_value_1": "abcdefg"
         }
     }
 }
