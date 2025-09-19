@@ -50,8 +50,6 @@ class Config:
     CUSTOM_DATA = os.path.join(DATA, "custom")
     EXAMPLE_DATA = os.path.join(DATA, "examples")
 
-    APP_THEME = os.path.join(APP_DATA, "app_theme.css")
-
     VALID_SCHEMAS = [
         {"JADN": "jadn"},
         {"JIDL": "jidl"},
