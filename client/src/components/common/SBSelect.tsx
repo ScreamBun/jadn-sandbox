@@ -59,6 +59,11 @@ const defaultStyle = {
 
     container: (css: any) => ({ ...css, flex: '1 1 auto', alignSelf: 'stretch' }),
 
+    valueContainer: (provided: any) => ({
+        ...provided,
+        padding: '6px 10px', // Adjust this value as needed
+    }),
+
     option: (styles: any) => ({
         ...styles,
         cursor: 'pointer',
@@ -101,7 +106,8 @@ const smStyle = {
         ...provided,
         textOverflow: "ellipsis",
         overflowY: state.hasValue && state.isMulti && !state.selectProps.menuIsOpen ? 'auto' : 'hidden',
-        maxHeight: 30
+        maxHeight: 30,
+        padding: '0px 4px', // Adjust this value as needed
     }),
 
     input: (provided: any) => ({
@@ -227,50 +233,50 @@ const SBSelect = (props: any) => {
         ));
 
     } else {
-        opts = data?.map((opt: string | Option) => ({
-            value: (opt.value ? opt.value : opt), label: (opt.label ? opt.label : opt)
-        }));
+        opts = data?.map((opt: string | Option) => {
+            if (typeof opt === 'object' && opt !== null && 'value' in opt && 'label' in opt) {
+                return { value: opt.value, label: opt.label };
+            } else {
+                return { value: opt, label: opt };
+            }
+        });
     }
 
     const deleteFiles = () => {
         var checkboxes = document.getElementsByName('custom-file');
         var deletionList = [];
         for (var i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].checked) {
-                deletionList.push(checkboxes[i].value);
+            const checkbox = checkboxes[i] as HTMLInputElement;
+            if (checkbox.checked) {
+                deletionList.push(checkbox.value);
             }
         }
         if (deletionList.length == 0) {
             setToggleModal(false);
             sbToastError('No files selected for deletion');
             return;
-        } else {
-            setIsLoading(true);
-            try {
-                dispatch(deleteFile(deletionList, loc))
-                    .then((val) => {
-                        if (val.error) {
-                            setIsLoading(false);
-                            sbToastError(`Error: ${val.payload.response}`);
-                            setToggleModal(false);
-                            return;
-                        }
-                        dispatch(info());
-                        setIsLoading(false);
-                        sbToastSuccess(val.payload);
-                        setToggleModal(false);
-                    })
-                    .catch((err) => {
-                        setIsLoading(false);
-                        sbToastError(`Error: ${err.payload.response}`);
-                        setToggleModal(false);
-                    });
-            } catch (err) {
-                setIsLoading(false);
-                sbToastError(`Error: ${err.payload.response}`);
-                setToggleModal(false);
-            }
         }
+        setIsLoading(true);
+        dispatch(deleteFile(deletionList, loc))
+            .then((val: any) => {
+                if (val.error) {
+                    setIsLoading(false);
+                    const response = (val.payload && typeof val.payload === 'object' && 'response' in val.payload) ? val.payload.response : 'Unknown error';
+                    sbToastError(`Error: ${response}`);
+                    setToggleModal(false);
+                    return;
+                }
+                dispatch(info());
+                setIsLoading(false);
+                sbToastSuccess(typeof val.payload === 'string' ? val.payload : 'Success');
+                setToggleModal(false);
+            })
+            .catch((err: any) => {
+                setIsLoading(false);
+                const response = (err && err.payload && typeof err.payload === 'object' && 'response' in err.payload) ? err.payload.response : 'Unknown error';
+                sbToastError(`Error: ${response}`);
+                setToggleModal(false);
+            });
     }
 
     if (isCreatable) {

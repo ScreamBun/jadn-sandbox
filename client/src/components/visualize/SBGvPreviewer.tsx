@@ -54,7 +54,8 @@ const SBGvPreviewer = (props: any) => {
 
     return (
         <>
-            <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="35vh"></SBEditor>
+            {/* <SBEditor data={convertedSchema} isReadOnly={true} convertTo={conversion} height="35vh"></SBEditor> */}
+            <SBEditor data={convertedSchema} isReadOnly={true} convertTo={'gv'} height="35vh"></SBEditor>
 
             <div id="content" className="card bg-secondary" style={{ 'height': "35vh", overflow: 'hidden' }}>
                 <div className="tools">

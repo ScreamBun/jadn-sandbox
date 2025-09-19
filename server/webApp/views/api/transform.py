@@ -34,6 +34,7 @@ class Transform(Resource):
 
         # validate all schemas
         invalid_schema_list = []
+        # Leftoff here.... getting an err 
         for schema in request_json["schema_list"]:
             is_valid, msg = current_app.validator.validateSchema(schema['data'], False)
             if not is_valid:

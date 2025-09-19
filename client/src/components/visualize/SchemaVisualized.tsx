@@ -25,18 +25,30 @@ const SchemaVisualized = (props: any) => {
     const { conversion, setConversion, convertedSchema, setConvertedSchema, spiltViewFlag, setSplitViewFlag, isLoading, formId } = props;
     const validSchema = useSelector(getSelectedSchema);
     const [pumlURL, setPumlURL] = useState('');
-    const data = useSelector(getValidVisualizations);
-    let convertOpts: Option[] = [];
-    for (let i = 0; i < Object.keys(data).length; i++) {
-        convertOpts.push({ ['label']: Object.keys(data)[i], ['value']: Object.values(data)[i] });
-    }
+
+    const visualizations = useSelector(getValidVisualizations);
+    const [convertOpts, setConvertOpts] = useState<Option[]>([]);
+
+    useEffect(() => {
+        if (Array.isArray(visualizations) && visualizations.length > 0) {
+            const opts: Option[] = [];
+            visualizations.forEach(obj => {
+                Object.entries(obj).forEach(([label, value]) => {
+                    opts.push({ label, value });
+                });
+            });
+            setConvertOpts(opts);
+        }
+    }, [visualizations]);
 
     useEffect(() => {
         if (location && location.state) {
-            const index = Object.values(data).indexOf(location.state)
-            setConversion({ value: Object.values(data)[index], label: Object.keys(data)[index] });
+            const index = convertOpts.findIndex(opt => opt.value === location.state);
+            if (index !== -1) {
+                setConversion([{ value: convertOpts[index].value, label: convertOpts[index].label }]);
+            }
         }
-    }, []);
+    }, [convertOpts]);
 
     useEffect(() => {
         if ((conversion.length == 1 ? conversion[0].value : conversion) == LANG_PLANTUML && convertedSchema.length != 0) {

@@ -1,8 +1,6 @@
 import json
 import logging
 
-from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
-
 from flask import Blueprint, current_app, jsonify, redirect, request
 from flask_restful import Api, Resource, reqparse
 
@@ -24,6 +22,7 @@ class Validate(Resource):
     Endpoint for api/validate
     """
 
+    # TODO: Update remaining "message" to "data" and "message-format" to "data-format", ui will need to be updated as well
     def post(self):
         args = parser.parse_args()
         request_json = request.json 
@@ -39,7 +38,7 @@ class Validate(Resource):
         
         
         valMsg = []
-        val, valMsg, msgJson, msgOrig = current_app.validator.validateMessage(schema, args["message"], fmt, args["message-decode"])
+        val, valMsg, msgJson, msgOrig = current_app.validator.validateData(schema, args["message"], fmt, args["message-decode"])
 
         page_data = {
             # "schema": args["schema"],
@@ -79,10 +78,11 @@ class ValidateSchema(Resource):
                     return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
             
             if schema_fmt == constants.JSON:
-                try: 
-                    validate_schema(schema) 
+                try:
+                    # Use Python's built-in JSON validation
+                    json.dumps(schema)  # Will raise TypeError if not serializable
                 except Exception as ex:
-                    print(f"JSON Schema Error: {str(ex)}")
+                    print(f"JSON Validation Error: {str(ex)}")
                     return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
 
 
