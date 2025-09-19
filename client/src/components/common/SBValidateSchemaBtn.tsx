@@ -1,8 +1,9 @@
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { setSchema } from "actions/util";
+import { setSchema, setSchemaValid } from "actions/util";
+import { isSchemaValid } from "reducers/util";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { dismissAllToast, sbToastError, sbToastSuccess } from "./SBToast";
 import { validateSchema } from "actions/validate";
 import { LANG_JADN, LANG_JIDL, LANG_JSON } from "components/utils/constants";
@@ -11,11 +12,13 @@ const SBValidateSchemaBtn = (props: any) => {
 
     const { isValid, setIsValid, setIsValidating, schemaData, schemaFormat = "jadn", customClass, showToast = true } = props;
     const dispatch = useDispatch();
+    const schemaValid = useSelector(isSchemaValid);
 
     const onValidateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         dismissAllToast();
         setIsValid(false);
+        dispatch(setSchemaValid(false));
 
         if (!schemaData) {
             sbToastError('Validation Error: No Schema to validate');
@@ -61,6 +64,7 @@ const SBValidateSchemaBtn = (props: any) => {
                 .then((validateSchemaVal: any) => {
                     if (validateSchemaVal.payload.valid_bool == true) {
                         setIsValid(true);
+                        dispatch(setSchemaValid(true));
                         dispatch(setSchema(jsonObj));
                         if (showToast){
                             sbToastSuccess(validateSchemaVal.payload.valid_msg);
@@ -88,10 +92,10 @@ const SBValidateSchemaBtn = (props: any) => {
 
     return (
         <>
-            <button id='validateJADNButton' type='button' className={`btn btn-sm btn-primary ms-1 me-1 + ${customClass}`} title={isValid ? "Schema is valid" : "Click to validate Schema"}
+            <button id='validateJADNButton' type='button' className={`btn btn-sm btn-primary ms-1 me-1 + ${customClass}`} title={schemaValid ? "Schema is valid" : "Click to validate Schema"}
                 onClick={onValidateClick}>
                 <span className="m-1">Valid</span>
-                {isValid ? (
+                {schemaValid ? (
                     <span className="badge rounded-pill text-bg-success">
                         <FontAwesomeIcon icon={faCheck} />
                     </span>) : (

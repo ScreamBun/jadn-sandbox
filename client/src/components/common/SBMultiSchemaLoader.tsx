@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { faExclamationCircle, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { info, loadFile } from "actions/util";
-import { getAllSchemas } from "reducers/util";
+import { getAllSchemas, getSelectedFile } from "reducers/util";
 import { LANG_JADN } from "components/utils/constants";
 import { isString } from "components/utils/general";
 import { SelectedSchema } from "components/transform/SchemaTransformer";
@@ -35,7 +35,8 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     const [selectedFile, setSelectedFile] = useState<null | 'file'>(null);
     const sbFileUploaderRef = useRef<HTMLInputElement | null>(null);
 
-    const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
+    const globalFile = useSelector(getSelectedFile);
+    const [selectedOptions, setSelectedOptions] = useState<Option[]>([globalFile?.label ? { label: globalFile.label, value: globalFile.label } : undefined]);
     const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
 
     // Used by SBSelector, preloads with schemas selections

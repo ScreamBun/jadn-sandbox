@@ -1,12 +1,14 @@
 import React, { forwardRef } from "react";
 import SBSaveFile from "./SBSaveFile";
 import SBSelect, { Option } from "./SBSelect";
-import { useDispatch } from "react-redux";
-import { loadFile } from "actions/util";
+import { useDispatch, useSelector } from "react-redux";
+import { loadFile, setSchemaValid } from "actions/util";
 import { sbToastError } from "./SBToast";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LANG_JADN } from "components/utils/constants";
+import { getSelectedFile } from "reducers/util";
+import { getFilenameOnly } from "components/utils/general";
 
 interface SBFileLoaderProps {
     customClass?: string;
@@ -29,6 +31,7 @@ interface SBFileLoaderProps {
 
 const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, ref) {
     const dispatch = useDispatch();
+    const selectedFile = useSelector(getSelectedFile);
     const { 
         customClass, 
         opts, 
@@ -47,6 +50,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
     const handleFileSelect = (e: Option) => {
         if (e == null) {
             onCancelFileUpload(null);
+            dispatch(setSchemaValid(false));
             return;
 
         } else if (e.value == "file") {
@@ -60,6 +64,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
                         sbToastError(loadFileVal.payload.response);
                         return;
                     }
+                    dispatch(setSchemaValid(true));
                     let dataObj = loadFileVal.payload.data;
                     onFileChange(dataObj, e);
                 })
@@ -100,7 +105,7 @@ const SBFileLoader = forwardRef(function SBLoadSchema(props: SBFileLoaderProps, 
                     isClearable
                 />
                 {isSaveable && <SBSaveFile buttonId="saveFile" toolTip={'Save as..'} data={loadedFileData} loc={loc} customClass={"float-end ms-1"}
-                    filename={fileName?.name} ext={fileExt} setDropdown={setSelectedFile} />}
+                    filename={getFilenameOnly(selectedFile?.label || "")} ext={fileExt} setDropdown={setSelectedFile} />}
             </div>
             <div className='d-none'>
                 <input type="file" id="file-input" name="file-input" accept={acceptableExt} onChange={handleFileChange} ref={ref} />
