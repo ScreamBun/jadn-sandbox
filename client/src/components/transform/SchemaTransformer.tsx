@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPageTitle } from 'reducers/util'
+import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import { info } from 'actions/transform'
 import { dismissAllToast } from 'components/common/SBToast'
 import SBMultiSchemaLoader from 'components/common/SBMultiSchemaLoader'
 import SchemaTransformed from './SchemaTransformed'
+import { setFile, setSchema, setSchemaValid } from 'actions/util'
 
 
 export interface SelectedSchema { id: string, name: string, type: string, data: {} };
@@ -15,6 +16,9 @@ const SchemaTransformer = () => {
 
     const schemaTransformedRef = useRef();
     const sbMultiSchemaLoaderRef = useRef();
+
+    const globalSchema = useSelector(getSelectedFile);
+    const globalSchemaData = useSelector(getSelectedSchema);
 
     const [selectedSchemas, setSelectedSchemas] = useState<SelectedSchema[]>([]);
     const prevSelectedSchemasRef = useRef<SelectedSchema[]>([]);  // Used to reload schema data that's not on the server
@@ -42,10 +46,29 @@ const SchemaTransformer = () => {
 
     }, [selectedSchemas]);
 
+    const addGlobalSchema = () => {
+        if (globalSchema && !selectedSchemas.some(ss => ss.name === (globalSchema.meta?.title))) {
+            const newSchema: SelectedSchema = {
+                id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
+                name: globalSchema?.label,
+                type: 'jadn', 
+                data: globalSchemaData || {}
+            };
+            setSelectedSchemas([...selectedSchemas, newSchema]);
+        }
+    };
+
+    useEffect(() => {
+        addGlobalSchema();
+    }, [globalSchema]);
+
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         dismissAllToast();
         setSelectedSchemas([]);
+        dispatch(setSchemaValid(false))
+        dispatch(setSchema(null));
+        dispatch(setFile(null))
         schemaTransformedRef.current?.onReset();
         sbMultiSchemaLoaderRef.current?.onReset();
     }

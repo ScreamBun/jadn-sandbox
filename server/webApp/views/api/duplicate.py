@@ -1,14 +1,6 @@
-from enum import Enum
-import json
 import logging
-import traceback
-
-from flask import Blueprint, current_app, jsonify, request, render_template
+from flask import Blueprint, jsonify, request
 from flask_restful import Resource, reqparse
-from jadnschema.jadn import dumps
-from pydantic import ValidationError
-
-from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
 
 logger = logging.getLogger(__name__)
 

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPageTitle } from 'reducers/util'
+import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess, sbToastWarning } from 'components/common/SBToast'
 import { SchemaJADN } from 'components/create/schema/interface'
 import SchemaVisualized from './SchemaVisualized'
 import { Option } from 'components/common/SBSelect'
-import { setSchema } from 'actions/util'
+import { setFile, setSchema, setSchemaValid } from 'actions/util'
 import { LANG_PLANTUML_2, PLANTUML_RENDER_LIMIT } from 'components/utils/constants'
 import { VisualOptionsModal } from './VisualOptionsModal'
 
@@ -21,9 +21,17 @@ export const initConvertedSchemaState = [{
 const SchemaVisualizer = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
+    const loadedSchema = useSelector(getSelectedSchema);
+    const setLoadedSchema = (schema: object | null) => {
+        dispatch(setSchema(schema));
+    }
+
+    const selectedFile = useSelector(getSelectedFile);
+    const setSelectedFile = (file: Option | null) => {
+        dispatch(setFile(file));
+    }
+
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [conversion, setConversion] = useState<Option[]>([]);
     const [convertedSchema, setConvertedSchema] = useState(initConvertedSchemaState);
     const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +63,7 @@ const SchemaVisualizer = () => {
         setConvertedSchema(initConvertedSchemaState);
         setSplitViewFlag(false);
         dispatch(setSchema(null));
+        dispatch(setSchemaValid(false))
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSchemas } from "../../reducers/util";
+import { getAllSchemas, isSchemaValid } from "../../reducers/util";
 import { info, setSchema } from "../../actions/util";
 import { getSchemaConversions } from "reducers/convert";
 import { validateSchema } from "actions/validate";
@@ -14,6 +14,7 @@ import SBFormatBtn from "./SBFormatBtn";
 import SBEditor from "./SBEditor";
 import SBValidateSchemaBtn from "./SBValidateSchemaBtn";
 import SBFileLoader from "./SBFileLoader";
+import { setSchemaValid } from "actions/util";
 
 //File Loader Note: User should be able to upload any JSON/JADN schema; 
 //It does not need to be syntactically correct since the user can edit the schema in the code editor.
@@ -58,7 +59,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             lightBackground = false
          } = props;
 
-    const [isValid, setIsValid] = useState(false);
+    const isValid = useSelector(isSchemaValid);
     const [isValidating, setIsValidating] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [fileName, setFileName] = useState({
@@ -77,11 +78,14 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
 
     useEffect(() => {
         if (!loadedSchema) {
-            setIsValid(false);
+            dispatch(setSchemaValid(false));
             setSelectedFile(null);
             setSchemaFormat(null);
         }
-    }, [loadedSchema])
+        if (loadedSchema && selectedFile && decodeMsg === null) {
+            if (setDecodeSchemaTypes) loadDecodeTypes(loadedSchema);
+        }
+    }, [loadedSchema, selectedFile])
 
     useEffect(() => {
         dispatch(info());
@@ -131,9 +135,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
 
     const sbEditorOnChange = (data: string) => {
         dismissAllToast();
-        setIsValid(false);
+        dispatch(setSchemaValid(false));
         setLoadedSchema(data);
-        dispatch(setSchema(null));
         try {
             if (setDecodeSchemaTypes && setDecodeMsg) {
                 loadDecodeTypes(JSON.parse(data));
@@ -144,7 +147,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     }
 
     const onFileLoad = async (schemaObj?: any, fileStr?: Option) => {
-        setIsValid(false);
+        dispatch(setSchemaValid(false));
         setIsLoading(true);
         if (schemaObj && fileStr) {
             setSelectedFile(fileStr);
@@ -158,7 +161,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                 dispatch(validateSchema(schemaObj, fileName.ext))
                     .then((validateSchemaVal: any) => {
                         if (validateSchemaVal.payload.valid_bool == true) {
-                            setIsValid(true);
+                            dispatch(setSchemaValid(true));
                             if (typeof schemaObj == "string") {
                                 schemaObj = JSON.parse(schemaObj);
                             }
@@ -168,12 +171,14 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             }
                         } else {
                             sbToastError(validateSchemaVal.payload.valid_msg);
+                            dispatch(setSchemaValid(false));
                             dispatch(setSchema(null));
                         }
                     })
                     .catch((validateSchemaErr) => {
                         sbToastError(validateSchemaErr.payload.valid_msg)
                         dispatch(setSchema(null));
+                        dispatch(setSchemaValid(false));
                     }).finally(() => {
                         setIsValidating(false);
                     })
@@ -198,7 +203,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         dismissAllToast();
         setIsLoading(false);
         setIsValidating(false);
-        setIsValid(false);
+        dispatch(setSchemaValid(false));
         setLoadedSchema(null);
         dispatch(setSchema(null));
         setSelectedFile(null);
@@ -210,7 +215,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             ref.current.value = '';
         }
         if (setDecodeSchemaTypes && setDecodeMsg) {
-            setDecodeMsg(null);
+            setDecodeMsg(undefined);
             setDecodeSchemaTypes([]);
         }
     }
@@ -249,7 +254,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                         {lightBackground ? null : isValidating ? <SBSpinner action={"Validating"} color={"primary"} /> :
                             <SBValidateSchemaBtn
                                 isValid={isValid}
-                                setIsValid={setIsValid}
+                                setIsValid={setSchemaValid}
                                 setIsValidating={setIsValidating}
                                 schemaData={loadedSchema}
                                 schemaFormat={schemaFormat?.value}

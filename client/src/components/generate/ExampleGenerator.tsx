@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
-import { getPageTitle } from 'reducers/util'
-import { info, setSchema } from 'actions/util'
+import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
+import { info, setFile, setSchema, setSchemaValid } from 'actions/util'
 import { convertJsonSchema, convertSchema } from 'actions/convert'
 import { LANG_JSON, LANG_JSON_UPPER } from 'components/utils/constants'
 import SchemaLoader from 'components/common/SchemaLoader'
@@ -19,9 +19,17 @@ export interface Option {
 const ExampleGenerator = () => {
     const dispatch = useDispatch();
 
-    const [selectedFile, setSelectedFile] = useState<Option | null>(null);
+    const loadedSchema = useSelector(getSelectedSchema);
+    const setLoadedSchema = (schema: object | null) => {
+        dispatch(setSchema(schema));
+    }
+
+    const selectedFile = useSelector(getSelectedFile);
+    const setSelectedFile = (file: Option | null) => {
+        dispatch(setFile(file));
+    }
+
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-    const [loadedSchema, setLoadedSchema] = useState<object | null>(null);
     const [generatedMessages, setGeneratedMessages] = useState<any[]>([]);
     const [numOfMsg, setNumOfMsg] = useState<number>(1);
 
@@ -53,6 +61,7 @@ const ExampleGenerator = () => {
         setLangSel(defaultLangOption);
         setGeneratedMessages([]);
         dispatch(setSchema(null));
+        dispatch(setSchemaValid(false))
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
