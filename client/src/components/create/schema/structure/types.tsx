@@ -80,14 +80,14 @@ export default {
   },
   mapof: {
     key: 'MapOf',
-    edit: (props: StructureDef) => primDef({ ...props, type: 'MapOf' }),
+    edit: (props: StructureDef) => typeDef({ ...props, type: 'MapOf' }),
     btneditor: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     dndeditor: (props: EditorProps) => <PrimitiveEditorDndStyle {...props} />,
     type: 'structure'
   },
   arrayof: {
     key: 'ArrayOf',
-    edit: (props: StructureDef) => primDef({ ...props, type: 'ArrayOf' }),
+    edit: (props: StructureDef) => typeDef({ ...props, type: 'ArrayOf' }),
     btneditor: (props: EditorProps) => <PrimitiveEditorBtnStyle {...props} />,
     dndeditor: (props: EditorProps) => <PrimitiveEditorDndStyle {...props} />,
     type: 'structure'
