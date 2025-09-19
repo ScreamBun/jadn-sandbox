@@ -39,39 +39,45 @@ class Convert(Resource):
 
     def post(self):
         conv = "Valid Base Schema"
-        request_json = request.json      
-        schema_data = request_json["schema"]
-        schema_fmt = request_json["schema_format"]
+        request_json = request.json    
+          
+        schema = request_json["schema"]
+        if schema is None or schema == "":
+            return "No Schema Provided", 500
+        
+        schema_format = request_json["schema_format"]
+        if not schema_format or schema_format == "":
+            return "Schema Format required", 500        
+        schema_format = schema_format.lower()
+        
+        convert_to = request_json["convert-to"]
+        if not convert_to or len(convert_to) == 0:
+            return "Convert To selection required", 500
         
         opts = None
         if 'opts' in request_json:    
             opts = request_json["opts"]
-            
-        if not schema_fmt or schema_fmt == "":
-            return "Schema Format selection required", 500
-        
-        schema_fmt = schema_fmt.lower()
 
-        if schema_fmt == constants.JADN:
+        if schema_format == constants.JADN:
             
-            if isinstance(schema_data, str):
-                schema_data = json.loads(schema_data)              
+            if isinstance(schema, str):
+                schema = json.loads(schema)              
             
-            is_valid, schema = current_app.validator.validateSchema(schema_data, False)
+            is_valid, schema = current_app.validator.validateSchema(schema, False)
             if not is_valid:
                 return "Schema is not valid", 500    
             
-        elif schema_fmt == constants.JSON:
+        elif schema_format == constants.JSON:
             
-            if isinstance(schema_data, str):
-                schema_data = json.loads(schema_data)              
+            if isinstance(schema, str):
+                schema = json.loads(schema)              
             
-            is_valid, err_msg = current_app.validator.validateSchema(schema_data, False)
+            is_valid, err_msg = current_app.validator.validateSchema(schema, False)
             if not is_valid:
                 return f"JSON Schema Error: {err_msg}", 500
             
-        elif schema_fmt == constants.JIDL:
-            is_valid, err_msg = current_app.validator.validate_jidl(schema_data)
+        elif schema_format == constants.JIDL:
+            is_valid, err_msg = current_app.validator.validate_jidl(schema)
             if not is_valid:
                 return f"JSON Schema Error: {err_msg}", 500  
                                 
@@ -91,7 +97,7 @@ class Convert(Resource):
                 return "Invalid Conversion Type", 500
                 
             try:
-                conv = self.convertTo(schema_data, schema_fmt, lang, opts)
+                conv = self.convertTo(schema, schema_format, lang, opts)
                 convertedData.append({'fmt': valid_fmt_name, 'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
             
             except (TypeError, ValueError) as err:
@@ -109,7 +115,7 @@ class Convert(Resource):
                     return "Invalid Conversion Type", 500              
                     
                 try:
-                    conv = self.convertTo(schema_data, schema_fmt, conv_type, opts)
+                    conv = self.convertTo(schema, schema_format, conv_type, opts)
                     convertedData.append({'fmt': valid_fmt_name,'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
 
                 except (TypeError, ValueError) as err:
@@ -129,7 +135,7 @@ class Convert(Resource):
         valid_conversions = current_app.config.get("VALID_SCHEMA_CONV")
         for conv in valid_conversions:
             for label, value in conv.items():
-                if type == value:
+                if type == value or type == label:
                     return label, value
         return False
     
