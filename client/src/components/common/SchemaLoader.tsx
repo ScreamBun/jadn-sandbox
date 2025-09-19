@@ -145,7 +145,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             decodeTypes.all = decodeTypes.all.filter(dt => !decodeTypes.roots.includes(dt));
             decodeTypes.all.sort();
         }
-        if (decodeMsg === null || !decodeTypes.all.includes(decodeMsg)) {
+        if (!decodeMsg || !decodeTypes.all.includes(decodeMsg.value)) {
             if (decodeTypes.roots.length >= 1) {
                 msgDecode = decodeTypes.roots[0];
             } else if (decodeTypes.all.length >= 1) {
@@ -165,7 +165,6 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const sbEditorOnChange = (data: string) => {
         dismissAllToast();
         dispatch(setSchemaValid(false));
-        setLoadedSchema(data);
         try {
             const parsed = JSON.parse(data);
             setLoadedSchema(parsed);
@@ -248,8 +247,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             ref.current.value = '';
         }
         if (setDecodeSchemaTypes && setDecodeMsg) {
-            setDecodeMsg(undefined);
-            setDecodeSchemaTypes([]);
+            setDecodeMsg(null);
+            setDecodeSchemaTypes({ all: [], roots: [] });
         }
     }
 
