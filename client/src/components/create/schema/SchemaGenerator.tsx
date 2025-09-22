@@ -36,6 +36,7 @@ const SchemaGenerator = () => {
     const [infoCollapse, setInfoCollapse] = useState(false);
     const [typesCollapse, setTypesCollapse] = useState(false);
     const [allFieldsCollapse, setAllFieldsCollapse] = useState(false);
+    const [metaCollapse, setMetaCollapse] = useState(false);
     const [fieldCollapseState, setFieldCollapseState] = useState<Boolean[]>([]);
     const fieldCollapseStateRef = useRef<Boolean[]>(fieldCollapseState);
 
@@ -190,7 +191,8 @@ const SchemaGenerator = () => {
                                     setInfoCollapse={setInfoCollapse}
                                     typesCollapse={typesCollapse}
                                     setTypesCollapse={setTypesCollapse}
-                                    fieldCollapseStateRef={fieldCollapseStateRef} /> :
+                                    fieldCollapseStateRef={fieldCollapseStateRef} 
+                                    metaCollapse={metaCollapse} setMetaCollapse={setMetaCollapse} /> :
                                     <SchemaCreatorDndStyle
                                         selectedFile={selectedSchemaFile} setSelectedFile={setSelectedSchemaFile}
                                         generatedSchema={generatedSchema} setGeneratedSchema={setGeneratedSchema}
@@ -203,7 +205,8 @@ const SchemaGenerator = () => {
                                         setInfoCollapse={setInfoCollapse}
                                         typesCollapse={typesCollapse}
                                         setTypesCollapse={setTypesCollapse}
-                                        fieldCollapseStateRef={fieldCollapseStateRef} />
+                                        fieldCollapseStateRef={fieldCollapseStateRef} 
+                                        metaCollapse={metaCollapse} setMetaCollapse={setMetaCollapse} />
                                 }
 
                             </div>
