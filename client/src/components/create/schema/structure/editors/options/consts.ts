@@ -25,6 +25,7 @@ export const TypeOptions = {
   'seq': 'o',        // Map, MapOf, or Record instance is ordered and unique
   'combine': 'C',    // Choice is an untagged union, a logical combination of types
   'extend': 'X',     // Type has an extension point where fields may be appended
+  'restricts': 'r', // Type is a restriction of the specified type
   'default': 'u',    // Default value
   'const': 'v'       // Constant value
 };
@@ -51,6 +52,7 @@ export const FloatOpts = ['minInclusive', 'maxInclusive', 'minExclusive', 'maxEx
 export const StringOpts = ['const', 'default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const EnumId = TypeOptions.enum;
 export const PointerId = TypeOptions.pointer;
+export const RestrictsId = TypeOptions.restricts;
 
 // TODO: Use BT format_options
 /* export const ValidFormats: Array<string> = [
@@ -115,13 +117,13 @@ export const ValidOptions: Record<string, Array<string>> = {
   Number: ['default', 'const', 'format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
   String: ['default', 'const', 'format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
   // Structures
-  Array: ['extend', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set'],
+  Array: ['extend', 'restricts', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set'],
   ArrayOf: ['vtype', 'minLength', 'maxLength', 'ordered/unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
-  Choice: ['id', 'extend', 'combine'],
-  Enumerated: ['id', 'enum', 'pointer', 'extend'],
-  Map: ['id', 'extend', 'minLength', 'maxLength', 'ordered/unique'],
+  Choice: ['id', 'extend', 'restricts', 'combine'],
+  Enumerated: ['id', 'enum', 'pointer', 'extend', 'restricts'],
+  Map: ['id', 'extend', 'restricts', 'minLength', 'maxLength', 'ordered/unique'],
   MapOf: ['ktype', 'vtype', 'minLength', 'maxLength', 'ordered/unique'],
-  Record: ['extend', 'minLength', 'maxLength', 'ordered/unique']
+  Record: ['extend', 'restricts', 'minLength', 'maxLength', 'ordered/unique']
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
@@ -239,6 +241,10 @@ export const TypeOptionInputArgs = {
   extend: {
     type: 'checkbox',
     description: '(optional) Type has an extension point where fields may be added'
+  },
+  restricts: {
+    type: 'SBCreatableSelect',
+    description: '(optional) Type is a restriction of the specified type'
   },
   default: {
     type: 'text',
