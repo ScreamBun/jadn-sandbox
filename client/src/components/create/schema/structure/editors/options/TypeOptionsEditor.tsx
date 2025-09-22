@@ -57,6 +57,7 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
           }
         }
         return formats_returned;
+      case 'extends':
       case 'pointer':
         const filteredPointer = Object.values(schemaTypesObject).filter((type) => {
           return (type.length == 5 && Array.isArray(type[4]) && type[4].length != 0)
