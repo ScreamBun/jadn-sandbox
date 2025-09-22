@@ -42,6 +42,7 @@ const SchemaGenerator = () => {
 
     const meta_title = useSelector(getPageTitle) + ' | Schema Creation'
     const meta_canonical = `${window.location.origin}${window.location.pathname}`;
+    
     useEffect(() => {
         dispatch(info());
         // @ts-expect-error
