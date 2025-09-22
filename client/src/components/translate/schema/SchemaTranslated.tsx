@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getValidTranslations } from "reducers/convert";
 import SBCopyToClipboard from "components/common/SBCopyToClipboard";
@@ -16,27 +16,32 @@ import { LANG_XSD } from "components/utils/constants";
 const SchemaTranslated = (props: any) => {
     const location = useLocation();
 
-    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading, ext, setSchemaFormat, formId } = props;
+    const { translation, setTranslation, translatedSchema, setTranslatedSchema, isLoading, formId } = props;
     const validSchema = useSelector(getSelectedSchema);
-    const data = useSelector(getValidTranslations);
-    let translateOpts: Option[] = data && data[ext] ? Object.entries(data[ext]).map(([key, value]) => ({
-        value: value,
-        label: key
-    })) : [];
+    const translations = useSelector(getValidTranslations);
+    const [translateOpts, setTranslateOpts] = useState<Option[]>([]);
+
 
     useEffect(() => {
-        if (location.state) {
-            Object.keys(data).map((key) => {
-                const fmt = key.toLowerCase();
-                Object.entries(data[key]).map(([key, value]) => {
-                    if (value == location.state) {
-                        setSchemaFormat({ value: fmt, label: fmt });
-                        setTranslation({ value: value, label: key });
-                    }
-                })
-            })
+        if (Array.isArray(translations) && translations.length > 0) {
+            const opts: Option[] = [];
+            translations.forEach(obj => {
+                Object.entries(obj).forEach(([label, value]) => {
+                    opts.push({ label, value });
+                });
+            });
+            setTranslateOpts(opts);
         }
-    }, [])
+    }, [translations]);
+
+    useEffect(() => {
+        if (location && location.state) {
+            const index = translateOpts.findIndex(opt => opt.value === location.state);
+            if (index !== -1) {
+                setTranslation([{ value: translateOpts[index].value, label: translateOpts[index].label }]);
+            }
+        }
+    }, [translateOpts]);
 
     const handleTranslation = (e: Option[]) => {
         let translateTo = [];

@@ -24,16 +24,32 @@ const DataValidated = (props: any) => {
         name: '',
         ext: LANG_JADN
     });
-    const msgOpts = useSelector(getMsgFiles);
-    const validMsgFormat = useSelector(getValidMsgTypes)
+    const dataFiles = useSelector(getMsgFiles);
+    const dataFormats = useSelector(getValidMsgTypes)
+    const [dataFormatOpts, setDataFormatOpts] = useState<Option[]>([]);
+
     const ref = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        if (location.state) {
-            const index = Object.values(validMsgFormat).indexOf(location.state)
-            setMsgFormat({ value: Object.values(validMsgFormat)[index], label: Object.values(validMsgFormat)[index] });
+        if (Array.isArray(dataFormats) && dataFormats.length > 0) {
+            const opts: Option[] = [];
+            dataFormats.forEach(obj => {
+                Object.entries(obj).forEach(([label, value]) => {
+                    opts.push({ label, value });
+                });
+            });
+            setDataFormatOpts(opts);
         }
-    }, [])
+    }, [dataFormats]);    
+
+    useEffect(() => {
+        if (location && location.state) {
+            const index = dataFormatOpts.findIndex(opt => opt.value === location.state);
+            if (index !== -1) {
+                setMsgFormat({ value: dataFormatOpts[index].value, label: dataFormatOpts[index].label });
+            }
+        }
+    }, [dataFormatOpts]);    
 
     const onFileLoad = async (dataFile?: any, fileStr?: Option) => {
         if (fileStr) {
@@ -82,6 +98,11 @@ const DataValidated = (props: any) => {
         }
     }
 
+    const handleDataFormat = (e: Option | null) => {
+        setMsgFormat(e);
+        setLoadedMsg(loadedMsg);
+    }
+
     return (
         <div className="card">
             <div className="card-header p-2">
@@ -91,7 +112,7 @@ const DataValidated = (props: any) => {
 
                             <SBFileLoader
                                 customClass={'me-1'}
-                                opts={msgOpts}
+                                opts={dataFiles}
                                 selectedOpt={selectedFile}
                                 fileName={fileName}
                                 setSelectedFile={setSelectedFile}
@@ -104,13 +125,13 @@ const DataValidated = (props: any) => {
                             />
 
                             <SBSelect id={"data-format-list"}
-                                    customClass={'me-1'}
-                                    data={validMsgFormat}
-                                    onChange={(e: Option) => setMsgFormat(e)}
-                                    value={msgFormat}
-                                    placeholder={'Data format...'}
-                                    isSmStyle
-                                    isClearable />                             
+                                customClass={'me-1'}
+                                data={dataFormatOpts}
+                                onChange={handleDataFormat}
+                                value={msgFormat}
+                                placeholder={'Data format...'}
+                                isSmStyle
+                                isClearable />
 
                             <SBSelect id={"data-decode-list"}
                                 customClass={'me-1'}

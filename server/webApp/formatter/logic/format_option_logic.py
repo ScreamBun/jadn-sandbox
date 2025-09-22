@@ -139,16 +139,16 @@ class FormatOptionLogic:
 
         return formats  
     
-    def get_formats_by_type(self, type: str):
+    def get_formats_by_type(self, type: str = None):
 
         formats = self.get_formats()
         formats_returned = []
 
-        if type != 'undefined':
+        if type is not None and type != "null" and type != "":
             for format in formats:
                 if format['type'].lower() == type.lower():
                     formats_returned.append(format)
         else:
             formats_returned = formats
 
-        return formats_returned      
+        return formats_returned

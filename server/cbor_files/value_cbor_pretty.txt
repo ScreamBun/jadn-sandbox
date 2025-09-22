@@ -1,8 +1,15 @@
-a1                                      # map(1)
-   69                                   # text(9)
-      54482d546172676574                # "TH-Target"
-   a1                                   # map(1)
-      6b                                # text(11)
-         64617461736f7572636573         # "datasources"
-      74                                # text(20)
-         74657374696e677a7a7a7a7a7a7a7a7a7a7a7a7a # "testingzzzzzzzzzzzzz"
+a1                                     # map(1)
+   66                                  # text(6)
+      536368656d61                     # "Schema"
+   a2                                  # map(2)
+      6d                               # text(13)
+         6669656c645f76616c75655f31    # "field_value_1"
+      67                               # text(7)
+         61626364656667                # "abcdefg"
+      6d                               # text(13)
+         6669656c645f76616c75655f32    # "field_value_2"
+      a1                               # map(1)
+         6d                            # text(13)
+            6669656c645f76616c75655f31 # "field_value_1"
+         67                            # text(7)
+            61626364656667             # "abcdefg"
