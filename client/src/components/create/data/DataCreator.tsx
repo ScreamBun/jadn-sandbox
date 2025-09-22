@@ -17,7 +17,7 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import SBLoadBuilder from 'components/common/SBLoadBuilder'
 import { destructureField, removeXmlWrapper } from './lib/utils'
-import { LANG_XML, LANG_JSON, LANG_CBOR } from 'components/utils/constants';
+import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER } from 'components/utils/constants';
 import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
 
@@ -27,7 +27,7 @@ const DataCreator = (props: any) => {
     const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor } = props;
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
     const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
-    const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:LANG_JSON, value: LANG_JSON});
+    const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:LANG_JSON_UPPER, value: LANG_JSON_UPPER});
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
@@ -74,23 +74,23 @@ const DataCreator = (props: any) => {
         }
         try {
             const type = selection?.value || '';
-            const newMsg = lang === LANG_JSON ? JSON.stringify(generatedMessage[type]) : removeXmlWrapper(xml); // need to remove wrapper
+            const newMsg = lang === LANG_JSON_UPPER ? JSON.stringify(generatedMessage[type]) : removeXmlWrapper(xml); // need to remove wrapper
             const action: any = await dispatch(validateMessage(schemaObj, newMsg, lang, type));
             // Check if the action is a success or failure
             if (action.type === '@@validate/VALIDATE_MESSAGE_SUCCESS') {
                 if (action.payload?.valid_bool) {
                     sbToastSuccess(action.payload.valid_msg);
-                    if (lang === LANG_JSON) setJsonValidated(true);
-                    if (lang === LANG_XML) setXmlValidated(true);
+                    if (lang === LANG_JSON_UPPER) setJsonValidated(true);
+                    if (lang === LANG_XML_UPPER) setXmlValidated(true);
                 } else {
                     sbToastError(action.payload.valid_msg);
-                    if (lang === LANG_JSON) setJsonValidated(false);
-                    if (lang === LANG_XML) setXmlValidated(false);
+                    if (lang === LANG_JSON_UPPER) setJsonValidated(false);
+                    if (lang === LANG_XML_UPPER) setXmlValidated(false);
                 }
             } else if (action.type === '@@validate/VALIDATE_FAILURE') {
                 sbToastError(action.payload?.valid_msg || 'Validation failed');
-                if (lang === LANG_JSON) setJsonValidated(false);
-                if (lang === LANG_XML) setXmlValidated(false);
+                if (lang === LANG_JSON_UPPER) setJsonValidated(false);
+                if (lang === LANG_XML_UPPER) setXmlValidated(false);
             }
         } catch (err: any) {
             sbToastError(err.message || 'Validation error');
@@ -143,7 +143,7 @@ const DataCreator = (props: any) => {
     const convertJSON = (data: string) => {
         try {
             // Convert to XML
-            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_XML))
+            dispatch(convertData(JSON.stringify(data), LANG_JSON_UPPER, LANG_XML_UPPER))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.xml) {
@@ -158,7 +158,7 @@ const DataCreator = (props: any) => {
                 });
 
             // Convert to CBOR
-            dispatch(convertData(JSON.stringify(data), LANG_JSON, LANG_CBOR))
+            dispatch(convertData(JSON.stringify(data), LANG_JSON_UPPER, LANG_CBOR_UPPER))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.cbor_hex) {
@@ -288,9 +288,9 @@ const DataCreator = (props: any) => {
                                 value={selectedSerialization}
                                 onChange={setSelectedSerialization}
                                 data={[
-                                    { label: LANG_JSON, value: LANG_JSON },
-                                    { label: LANG_XML, value: LANG_XML },
-                                    { label: LANG_CBOR, value: LANG_CBOR }
+                                    { label: LANG_JSON_UPPER, value: LANG_JSON_UPPER },
+                                    { label: LANG_XML_UPPER, value: LANG_XML_UPPER },
+                                    { label: LANG_CBOR_UPPER, value: LANG_CBOR_UPPER }
                                 ]}
                                 isSmStyle
                             />
@@ -302,11 +302,11 @@ const DataCreator = (props: any) => {
                             <>
                                 <button type="button"
                                     className="btn btn-sm btn-primary me-1"
-                                    onClick={() => handleValidate(selectedSerialization?.value===LANG_JSON ? LANG_JSON : selectedSerialization?.value===LANG_XML ? LANG_XML : LANG_JSON)}
+                                    onClick={() => handleValidate(selectedSerialization?.value===LANG_JSON_UPPER ? LANG_JSON_UPPER : selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : LANG_JSON_UPPER)}
                                     disabled = {selection && generatedMessage? false:true}
                                 >
                                     Valid
-                                    {(selectedSerialization?.value===LANG_JSON ? jsonValidated : selectedSerialization?.value===LANG_XML ? xmlValidated : jsonValidated) ? (
+                                    {(selectedSerialization?.value===LANG_JSON_UPPER ? jsonValidated : selectedSerialization?.value===LANG_XML_UPPER ? xmlValidated : jsonValidated) ? (
                                         <span className="badge rounded-pill text-bg-success ms-1">
                                             <FontAwesomeIcon icon={faCheck} />
                                         </span>) : (
@@ -318,27 +318,27 @@ const DataCreator = (props: any) => {
                                 <SBSaveFile 
                                     buttonId={'saveMessage'} 
                                     toolTip={'Save Data'} 
-                                    data={selectedSerialization?.value===LANG_JSON ? generatedMessage : selectedSerialization?.value===LANG_XML ? xml : cbor} 
+                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : cbor} 
                                     loc={'messages'} 
                                     customClass={"float-end ms-1"} 
                                     ext={selectedSerialization?.value} />
                                 <SBCopyToClipboard 
                                     buttonId={'copyMessage'} 
-                                    data={selectedSerialization?.value===LANG_JSON ? generatedMessage : selectedSerialization?.value===LANG_XML ? xml : cbor} 
+                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : cbor} 
                                     customClass='float-end' 
                                     shouldStringify={true} />
                                 <SBDownloadBtn 
                                     buttonId='msgDownload' 
                                     customClass='float-end me-1' 
-                                    data={selectedSerialization?.value===LANG_JSON ? JSON.stringify(generatedMessage) : selectedSerialization?.value===LANG_XML ? JSON.stringify(xml) : JSON.stringify(cbor)} 
+                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? JSON.stringify(generatedMessage) : selectedSerialization?.value===LANG_XML_UPPER ? JSON.stringify(xml) : JSON.stringify(cbor)} 
                                     ext={selectedSerialization?.value} />
                             </>
                         </div>
                     </div>
                     <div className='card-body p-2'>
                         <SBEditor 
-                            data={selectedSerialization?.value===LANG_JSON ? generatedMessage : selectedSerialization?.value===LANG_XML ? xml : cbor} 
-                            convertTo={selectedSerialization?.value===LANG_XML ? LANG_XML : null}
+                            data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : cbor} 
+                            convertTo={selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : null}
                             isReadOnly={true} 
                             initialHighlightWords={highlightedItems}></SBEditor>
                     </div>

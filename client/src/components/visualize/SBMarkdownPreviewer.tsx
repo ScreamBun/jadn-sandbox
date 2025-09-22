@@ -41,7 +41,7 @@ const SBMarkdownPreviewer = (props: any) => {
 
     return (
         <>
-            <SBEditor data={markdownText} isReadOnly={true} convertTo={conversion} height="35vh"></SBEditor>
+            <SBEditor data={markdownText} isReadOnly={true} convertTo={'md'} height="35vh"></SBEditor>
 
             <div className="card bg-secondary" style={{ 'height': "35vh", 'overflow': 'auto' }}>
                 <div className={previewerClassName}>

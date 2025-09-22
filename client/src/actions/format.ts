@@ -27,7 +27,8 @@ export interface FormatSuccessAction extends ActionSuccessResult {
 const VALID_FORMAT_OPTIONS_REQUEST = '@@util/VALID_FORMAT_OPTIONS_REQUEST';
 export const VALID_FORMAT_OPTIONS_SUCCESS = '@@util/VALID_FORMAT_OPTIONS_SUCCESS';
 export const VALID_FORMAT_OPTIONS_FAILURE = '@@util/VALID_FORMAT_OPTIONS_FAILURE';
-export const getValidFormatOpts = (type: string) => createAction({
+
+export const getValidFormatOpts = (type: string | null = null) => createAction({
     endpoint: `${baseAPI}/options/${type}`,
     method: 'GET',
     types: [
