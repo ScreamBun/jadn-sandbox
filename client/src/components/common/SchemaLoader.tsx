@@ -203,12 +203,12 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                         } else {
                             sbToastError(validateSchemaVal.payload.valid_msg);
                             dispatch(setSchemaValid(false));
-                            dispatch(setSchema(null));
+                            //dispatch(setSchema(null));
                         }
                     })
                     .catch((validateSchemaErr) => {
                         sbToastError(validateSchemaErr.payload.valid_msg)
-                        dispatch(setSchema(null));
+                        //dispatch(setSchema(null));
                         dispatch(setSchemaValid(false));
                     }).finally(() => {
                         setIsValidating(false);
