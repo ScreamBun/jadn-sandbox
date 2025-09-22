@@ -1,5 +1,8 @@
+from json import dumps
 import logging
-from flask import Blueprint, jsonify, request
+import traceback
+
+from flask import current_app, jsonify, request
 from flask_restful import Resource, reqparse
 
 logger = logging.getLogger(__name__)
@@ -13,27 +16,18 @@ class Format(Resource):
     """
 
     def post(self):
-        #args = parser.parse_args()
         request_json = request.json
 
         try:
-            output = dumps(request_json) # type: ignore
+            output = dumps(request_json)
 
         except (TypeError, ValueError) as err:
             tb = traceback.format_exc()
             print(tb)
-            errorMsgs=[]
-            if isinstance(err, ValidationError):
-                for error in err.errors():
-                    err_msg = getValidationErrorMsg(error)
-                    err_path = getValidationErrorPath(error)
-                    errorMsgs.append(err_msg + " at " +  err_path)
-                return errorMsgs, 500
-            else:
-                return err, 500
+            return tb, 500
         
         return jsonify({
-        "schema": output
+            "schema": output
         })
     
 
@@ -44,7 +38,7 @@ class FormatOptions(Resource):
     def get(self, type):
 
         #get_formats of given format type from parameters
-        if type:
+        if type is not None and type != "null" and type != "":
             format_options = current_app.formatOptionLogic.get_formats_by_type(type)
         else: 
             format_options = current_app.formatOptionLogic.get_formats_by_type()

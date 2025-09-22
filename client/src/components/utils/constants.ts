@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/prefer-default-export
 export const LANG_JADN = 'jadn';
+export const LANG_JADN_UPPER = 'JADN';
 export const LANG_JSON = 'json';
 export const LANG_JSON_UPPER = 'JSON';
 export const LANG_HTML = 'html';
@@ -8,10 +9,12 @@ export const LANG_GRAPHVIZ = 'gv';
 export const LANG_PLANTUML = 'puml';
 export const LANG_PLANTUML_2 = 'PlantUML';
 export const LANG_CBOR = 'cbor'
+export const LANG_CBOR_UPPER = 'CBOR'
 export const LANG_ANNOTATED_HEX = 'anno_hex'
 export const LANG_XML = 'xml';
 export const LANG_XML_UPPER = 'XML';
 export const LANG_XSD = 'xsd';
+export const LANG_XSD_UPPER = 'XSD';
 
 export const LANG_JIDL = 'jidl';
 export const FILE_TYPE_PDF = 'pdf';

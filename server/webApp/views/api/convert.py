@@ -10,10 +10,12 @@ from jadnjson.generators import json_generator
 from io import BytesIO
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
-from jadnschema.convert import SchemaFormats, dumps, html_dumps, json_to_jadn_dumps
-from jadnschema.convert.schema.writers.json_schema.schema_validator import validate_schema
+from jadnschema.convert import SchemaFormats, json_to_jadn_dumps
+
 from jadnxml.builder.xsd_builder import XSDBuilder
 from jadnxml.builder.xml_builder import build_xml_from_json
+from jadnutils.html.html_converter import HtmlConverter
+
 from weasyprint import HTML
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
 from webApp.utils import constants
@@ -37,39 +39,48 @@ class Convert(Resource):
 
     def post(self):
         conv = "Valid Base Schema"
-        request_json = request.json      
-        schema_data = request_json["schema"]
-        schema_lang = request_json["schema_format"]
-        schema_fmt = SchemaFormats(schema_lang) 
+        request_json = request.json    
+
+        schema = request_json["schema"]
+        if schema is None or schema == "":
+            return "No Schema Provided", 500
+
+        schema_format = request_json.get("schema_format")
+        if schema_format:
+            schema_format = schema_format.lower()
+        else:
+            schema_format = constants.JADN
+            
+        convert_to = request_json["convert-to"]
+        if not convert_to or len(convert_to) == 0:
+            return "Convert To selection required", 500
         
         opts = None
         if 'opts' in request_json:    
             opts = request_json["opts"]
 
-        if schema_fmt == constants.JADN:
+        if schema_format == constants.JADN:
             
-            if isinstance(schema_data, str):
-                schema_data = json.loads(schema_data)              
+            if isinstance(schema, str):
+                schema = json.loads(schema)              
             
-            #TODO: Use new data / schema validation logic...
-            is_valid, schema = current_app.validator.validateSchema(schema_data, False)
+            is_valid, schema = current_app.validator.validateSchema(schema, False)
             if not is_valid:
                 return "Schema is not valid", 500    
             
-            # jadn.check(schema_data) # Calls DK's validator which is not up to date yet
-        elif schema_fmt == constants.JSON:
+        elif schema_format == constants.JSON:
             
-            if isinstance(schema_data, str):
-                schema_data = json.loads(schema_data)              
+            if isinstance(schema, str):
+                schema = json.loads(schema)              
             
-            is_valid, msg = validate_schema(schema_data)
+            is_valid, err_msg = current_app.validator.validateSchema(schema, False)
             if not is_valid:
-                return f"JSON Schema Error: {msg}", 500
+                return f"JSON Schema Error: {err_msg}", 500
             
-        elif schema_fmt == constants.JIDL:
-            is_valid, msg = current_app.validator.validate_jidl(schema_data)
+        elif schema_format == constants.JIDL:
+            is_valid, err_msg = current_app.validator.validate_jidl(schema)
             if not is_valid:
-                return f"JSON Schema Error: {msg}", 500  
+                return f"JSON Schema Error: {err_msg}", 500  
                                 
         else:
             return "Invalid Schema Format", 500    
@@ -87,7 +98,7 @@ class Convert(Resource):
                 return "Invalid Conversion Type", 500
                 
             try:
-                conv = self.convertTo(schema_data, schema_fmt, lang, opts)
+                conv = self.convertTo(schema, schema_format, lang, opts)
                 convertedData.append({'fmt': valid_fmt_name, 'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
             
             except (TypeError, ValueError) as err:
@@ -105,7 +116,7 @@ class Convert(Resource):
                     return "Invalid Conversion Type", 500              
                     
                 try:
-                    conv = self.convertTo(schema_data, schema_fmt, conv_type, opts)
+                    conv = self.convertTo(schema, schema_format, conv_type, opts)
                     convertedData.append({'fmt': valid_fmt_name,'fmt_ext': valid_fmt_ext, 'schema': conv, 'err': False})
 
                 except (TypeError, ValueError) as err:
@@ -123,11 +134,11 @@ class Convert(Resource):
         
     def validateConversionType(self, type: str):
         valid_conversions = current_app.config.get("VALID_SCHEMA_CONV")
-        
-        for item in valid_conversions.items():
-            if type == item[1]:
-                return item    
-        return False  
+        for conv in valid_conversions:
+            for label, value in conv.items():
+                if type == value or type == label:
+                    return label, value
+        return False
     
     def convertTo(self, src, fromLang, toLang, opts):
         kwargs = { "fmt": toLang,}
@@ -148,10 +159,16 @@ class Convert(Resource):
                     
                     return jadn.convert.diagram_dumps(src, gv_style)
                 
-                elif toLang == constants.HTML:
-                    kwargs["styles"] = current_app.config.get("APP_THEME", "")
-                    return dumps(src, **kwargs)
-                
+                elif toLang == constants.HTML:                       
+                    html_output = ""                        
+                    try:
+                        converter = HtmlConverter(src)
+                        html_output = converter.jadn_to_html(run_validation=False)
+                    except Exception as e:
+                        print(f"Unable to convert to HTML: {e}")                        
+
+                    return html_output
+
                 elif toLang == constants.JSON:
                     return jadn.translate.json_schema_dumps(src)
             
@@ -178,6 +195,9 @@ class Convert(Resource):
                 elif toLang == constants.XSD:
                     xsd_builder = XSDBuilder()
                     return xsd_builder.convert_xsd_from_dict(src)[0]
+                
+                elif toLang == constants.JADN:
+                    return src
                 
                 else:
                     raise ValueError('Unknown JADN conversion type')
@@ -261,32 +281,43 @@ class ConvertData(Resource):
         data = request_json["data"]
         conv_from = request_json["from"]
         conv_to = request_json["to"]
-        
+
+        if not conv_to:
+            return jsonify({
+                "error": "No conversion type specified (conv_to is None or empty)."
+            }), 400
+            
+        conv_to = conv_to.lower()
+
         cbor_annotated_hex_rsp = ""
         cbor_hex_rsp = ""
         xml_rsp = ""
-            
+
         try:
             data_js = json.loads(data)
-            
+
             if conv_to == constants.CBOR:
                 cbor_annotated_hex_rsp = convert_json_to_cbor_annotated_hex(data_js)
                 cbor_hex_rsp = convert_json_to_cbor_hex(data_js)
             elif conv_to == constants.XML:
                 xml_rsp = convert_json_to_xml(data_js)
-                
-        except Exception:  
+            else:
+                return jsonify({
+                    "error": f"Conversion type '{conv_to}' not supported."
+                }), 400
+
+        except Exception:
             tb = traceback.format_exc()
-            print(tb)            
+            print(tb)
             raise
-   
+
         return jsonify({
             "data":  {
-             "cbor_annotated_hex" : cbor_annotated_hex_rsp,   
+             "cbor_annotated_hex" : cbor_annotated_hex_rsp,
              "cbor_hex" : cbor_hex_rsp,
              "xml" : xml_rsp,
             }
-        }) 
+        })
 
 
 
@@ -297,12 +328,19 @@ class ConvertPDF(Resource):
 
     def post(self):
         request_json = request.json      
+        html = ""
         pdf = BytesIO()
-        print("convert to pdf")
         val, schema = current_app.validator.validateSchema(request_json["schema"], False)
-        if val:  # Valid Schema
-            html = html_dumps(schema, styles=current_app.config.get("APP_THEME", ""))
-        else:  # Invalid Schema
+        
+        if val:
+            
+            try:
+                converter = HtmlConverter(schema)
+                html = converter.jadn_to_html(run_validation=False)
+            except Exception as e:
+                print(f"Unable to convert to HTML: {e}")                
+            
+        else:
             html = "<h1>ERROR: Invalid Schema. Fix the base schema errors before converting...</h1>"
             
         pdf_obj = HTML(string=html)  # the HTML to convert
