@@ -285,3 +285,13 @@ export const getConstOpt = (options: string[], type: string): any | undefined =>
 export const removeXmlWrapper = (xml: string): string => {
     return xml.replace(/<\/?all>/g, '');
 }
+
+// FUNCTION: Extends logic
+export const extendType = (schemaObj: any, type: string): any => {
+    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
+    for (const t of types) {
+        let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
+        return { extendChildren: children, extendOpts: _options  };
+    }
+    return undefined;
+}
