@@ -3,7 +3,7 @@ import { CoreType, Array, ArrayOf, Record, Map, MapOf, Enumerated, Choice, Deriv
 import { AllFieldArray, StandardFieldArray, ArrayFieldArray, FieldOfArray } from '../../../schema/interface';
 import { useSelector } from 'react-redux';
 import { getSelectedSchema } from 'reducers/util';
-import { caseMapOfEnumKey, destructureField, convertToArrayOf, getMultiplicity } from '../utils';
+import { caseMapOfEnumKey, destructureField, convertToArrayOf, getMultiplicity, restrictType } from '../utils';
 
 interface FieldProps {
     field: AllFieldArray;
@@ -18,6 +18,16 @@ const Field = (props: FieldProps) => {
     const { field, fieldChange, children, parent, value, toClear } = props;
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
     const schemaObj = useSelector(getSelectedSchema);
+    let restrictsField: AllFieldArray | undefined = undefined;
+
+    // Check for restricts
+    const restricts = options.find(opt => opt.startsWith("r"))?.substring(1);
+    if (restricts) {
+        // Restrict children and options
+        const {restrictChildren, restrictOpts} = restrictType(schemaObj, restricts);
+        options = options.filter(opt => !opt.startsWith("r"));
+        restrictsField = [name, type, restrictOpts, _comment, restrictChildren] as unknown as AllFieldArray;
+    }
 
     // Special Case Check: Type MapOf w/ keytype of Enum
     const enumKeys = caseMapOfEnumKey(schemaObj, field);
@@ -53,21 +63,21 @@ const Field = (props: FieldProps) => {
         case 'Integer':
             return <CoreType field={field as StandardFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
         case 'Array':
-            return <Array field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
+            return <Array field={restrictsField as ArrayFieldArray || field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
         case 'ArrayOf':
             return <ArrayOf field={field as unknown as FieldOfArray} fieldChange={fieldChange} children={[]} parent={parent} value={value} toClear={toClear} />;
         case 'Record':
-            return <Record field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
+            return <Record field={restrictsField as ArrayFieldArray || field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
         case 'Map':
-            return <Map field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
+            return <Map field={restrictsField as ArrayFieldArray || field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
         case 'MapOf':
             return <MapOf field={field as unknown as FieldOfArray} fieldChange={fieldChange} children={[]} parent={parent} value={value} toClear={toClear} />;
         case 'Enumerated':
-            return <Enumerated field={field as ArrayFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
+            return <Enumerated field={restrictsField as ArrayFieldArray || field as ArrayFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
         case 'Choice':
-            return <Choice field={field as ArrayFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
+            return <Choice field={restrictsField as ArrayFieldArray || field as ArrayFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear} />;
         default:
-            return <Derived field={field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
+            return <Derived field={restrictsField as ArrayFieldArray || field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
     }
 }
 

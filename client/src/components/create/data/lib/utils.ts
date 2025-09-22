@@ -22,7 +22,7 @@ const isDerived = (type: string): Boolean => {
 
 // FUNCTIONS: Determine the true type of a field based on its given type
 const trueTypeHelper = (types: any, type: string): [string, any] | undefined => {
-    if (!Array.isArray(types)) return undefined; // <-- Add this guard
+    if (!Array.isArray(types)) return undefined;
     const trueTypeDef = types.find((t: any) => t[0] === type || t[1] === type);
     const trueType = trueTypeDef ? (typeof trueTypeDef[0] === 'string' ? trueTypeDef[1] : trueTypeDef[2]) : undefined;
     if (trueType && isDerived(trueType)) {
@@ -284,4 +284,14 @@ export const getConstOpt = (options: string[], type: string): any | undefined =>
 // FUNCTION: Remove wrapper from xml data
 export const removeXmlWrapper = (xml: string): string => {
     return xml.replace(/<\/?all>/g, '');
+}
+
+// FUNCTION: Restrict children and options based on restricts
+export const restrictType = (schemaObj: any, type: string): any => {
+    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
+    for (const t of types) {
+        let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
+        return { restrictChildren: children, restrictOpts: _options  };
+    }
+    return undefined;
 }
