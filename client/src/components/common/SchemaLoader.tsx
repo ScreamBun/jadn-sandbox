@@ -168,7 +168,6 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
         try {
             const parsed = JSON.parse(data);
             setLoadedSchema(parsed);
-            dispatch(setSchema(null));
             if (setDecodeSchemaTypes && setDecodeMsg) {
                 loadDecodeTypes(parsed);
             }
