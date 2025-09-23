@@ -299,6 +299,15 @@ export const restrictType = (schemaObj: any, type: string): any => {
     }
     return undefined;
 }
+// FUNCTION: Extends logic
+export const extendType = (schemaObj: any, type: string): any => {
+    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
+    for (const t of types) {
+        let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
+        return { extendChildren: children, extendOpts: _options  };
+    }
+    return undefined;
+}
 // FUNCTION: Key/Link: return type and options of referenced key
 export const linkToKey = (schemaObj: any, link: any): {type: string, options: string[], children: any[]} | undefined => {
     if (!schemaObj || !schemaObj.types || !link) return undefined;
