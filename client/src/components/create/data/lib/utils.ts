@@ -53,14 +53,18 @@ export const destructureField = (field: any[]): [number, string, string, string[
     } else if (len == 4) { // Field = [name, type, options, _comment]
         _idx = 0;
         [name, type, options, _comment] = field;
+        if (typeof options === 'string') {
+            [_idx, name, type, options] = field; // Field = [_idx, name, type, _comment]
+        } // Field = [name, type, _comment, children]
         children = [];
     } else { // Field = [_idx, name, _comment]
         _idx = field[0];
         name = field[1];
         _comment = field[2];
-        type = "";
+        type = _comment;
         options = [];
         children = [];
+
     }
 
     return [_idx, name, type, options, _comment, children];
@@ -284,4 +288,22 @@ export const getConstOpt = (options: string[], type: string): any | undefined =>
 // FUNCTION: Remove wrapper from xml data
 export const removeXmlWrapper = (xml: string): string => {
     return xml.replace(/<\/?all>/g, '');
+}
+
+// FUNCTION: Key/Link: return type and options of referenced key
+export const linkToKey = (schemaObj: any, link: any): {type: string, options: string[], children: any[]} | undefined => {
+    if (!schemaObj || !schemaObj.types || !link) return undefined;
+    const types = schemaObj.types;
+    for (const type of types) {
+        const [_idx, _name, _type, _options, _comment, _children] = destructureField(type);
+        if (_name === link) { // If the link matches the name, then parent found. Go thru children to find key
+            for (const child of _children) {
+                const [_cidx, _cname, _ctype, coptions, _ccomment, _cchildren] = destructureField(child);
+                if (coptions.some((opt: any) => String(opt) === 'K')) { // If child has key option
+                    return {type: _ctype, options: coptions, children: _cchildren};
+                }
+            }
+        }
+    }
+    return undefined;
 }
