@@ -24,7 +24,7 @@ export const TypeOptions = {
   'unordered': 'b',  // ArrayOf instance is unordered and not unique (bag)
   'seq': 'o',        // Map, MapOf, or Record instance is ordered and unique
   'combine': 'C',    // Choice is an untagged union, a logical combination of types
-  'extend': 'X',     // Type has an extension point where fields may be appended
+  'extends': 'e',     // Type has an extension point where fields may be appended
   'abstract': 'a',   // Type is abstract and cannot be instantiated
   'default': 'u',    // Default value
   'const': 'v'       // Constant value
@@ -46,12 +46,13 @@ export const OptionTypes = {
 };
 
 export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
-export const BoolOpts = ['ordered/unique', 'dir', 'key', 'link', 'id', 'set', 'unordered', 'extend', 'abstract', 'attr'];
+export const BoolOpts = ['ordered/unique', 'dir', 'key', 'link', 'id', 'set', 'unordered', 'abstract', 'attr'];
 export const IntegerOpts = ['minOccurs', 'maxOccurs', 'tagid', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const FloatOpts = ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const StringOpts = ['const', 'default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const EnumId = TypeOptions.enum;
 export const PointerId = TypeOptions.pointer;
+export const ExtendsId = TypeOptions.extends;
 
 // TODO: Use BT format_options
 /* export const ValidFormats: Array<string> = [
@@ -116,13 +117,13 @@ export const ValidOptions: Record<string, Array<string>> = {
   Number: ['default', 'const', 'format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
   String: ['default', 'const', 'format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
   // Structures
-  Array: ['extend', 'abstract', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set'],
+  Array: ['extends', 'abstract', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set'],
   ArrayOf: ['vtype', 'minLength', 'maxLength', 'ordered/unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
-  Choice: ['id', 'extend', 'abstract', 'combine'],
-  Enumerated: ['id', 'enum', 'pointer', 'extend', 'abstract'],
-  Map: ['id', 'extend', 'abstract', 'minLength', 'maxLength', 'ordered/unique'],
+  Choice: ['id', 'extends', 'abstract', 'combine'],
+  Enumerated: ['id', 'enum', 'pointer', 'extends', 'abstract'],
+  Map: ['id', 'extends', 'abstract', 'minLength', 'maxLength', 'ordered/unique'],
   MapOf: ['ktype', 'vtype', 'minLength', 'maxLength', 'ordered/unique'],
-  Record: ['extend', 'abstract', 'minLength', 'maxLength', 'ordered/unique']
+  Record: ['extends', 'abstract', 'minLength', 'maxLength', 'ordered/unique']
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
@@ -237,8 +238,8 @@ export const TypeOptionInputArgs = {
     type: 'SBSelect',
     description: '(optional) If present, a Choice instance is an untagged union, a logical combination of types'
   },
-  extend: {
-    type: 'checkbox',
+  extends: {
+    type: 'SBCreatableSelect',
     description: '(optional) Type has an extension point where fields may be added'
   },
   abstract: {
