@@ -5,7 +5,6 @@ import { useAppSelector } from 'reducers';
 import { getFormatOptions } from 'reducers/format';
 import { OptionChange, RequiredOptions, TypeOptionInputArgs, ValidOptions } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
-import { destructureField } from 'components/create/data/lib/utils';
 interface TypeOptionsEditorProps {
   id?: string;
   placeholder?: string;
@@ -69,9 +68,54 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
     }
   };
 
-  const validOptions = () => {
-    return safeGet(ValidOptions, optionType, []).map((key: string) => {
-      return (
+  const validOptionsList = safeGet(ValidOptions, optionType, []); // Overarching list of valid options for the type
+
+  const validCheckboxOptions = validOptionsList.filter((opt: keyof typeof TypeOptionInputArgs) => { // Group checkbox options together
+    return TypeOptionInputArgs[opt] && TypeOptionInputArgs[opt].type === 'checkbox';
+  }).map((key: string) => {
+    return (
+        <KeyValueEditor
+          key={key}
+          id={id}
+          name={key}
+          labelColumns={8}
+          //fieldColumns={2}
+          placeholder={key}
+          removable={false}
+          options={getOptions(key)}
+          change={val => change([key, val], 'type')}
+          value={deserializedState[key]}
+          required={RequiredOptions[optionType].includes(key) ? true : false}
+          {...TypeOptionInputArgs[key]}
+        />
+    );
+  });
+
+  const validNumberOptions = validOptionsList.filter((opt: keyof typeof TypeOptionInputArgs) => { // Group number options together
+    return TypeOptionInputArgs[opt] && TypeOptionInputArgs[opt].type === 'number';
+  }).map((key: string) => {
+    return (
+        <KeyValueEditor
+          key={key}
+          id={id}
+          name={key}
+          labelColumns={6}
+          //fieldColumns={6}
+          placeholder={key}
+          removable={false}
+          options={getOptions(key)}
+          change={val => change([key, val], 'type')}
+          value={deserializedState[key]}
+          required={RequiredOptions[optionType].includes(key) ? true : false}
+          {...TypeOptionInputArgs[key]}
+        />
+    );
+  });
+  
+  const validSelectOptions = validOptionsList.filter((opt: keyof typeof TypeOptionInputArgs) => { // Group select options together
+    return TypeOptionInputArgs[opt] && (TypeOptionInputArgs[opt].type === 'SBSelect' || TypeOptionInputArgs[opt].type === 'SBCreatableSelect');
+  }).map((key: string) => {
+    return (
         <KeyValueEditor
           key={key}
           id={id}
@@ -86,21 +130,69 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
           required={RequiredOptions[optionType].includes(key) ? true : false}
           {...TypeOptionInputArgs[key]}
         />
-      );
-    });
-  };
+    );
+  });
 
-  if (validOptions().length != 0) {
+  const validOtherOptions = validOptionsList.filter((opt: keyof typeof TypeOptionInputArgs) => { // Group rest of options together
+    return !['checkbox', 'number', 'SBSelect', 'SBCreatableSelect'].includes(TypeOptionInputArgs[opt].type);
+  }).map((key: string) => {
+    return (
+        <KeyValueEditor
+          key={key}
+          id={id}
+          name={key}
+          labelColumns={3}
+          fieldColumns={9}
+          placeholder={key}
+          removable={false}
+          options={getOptions(key)}
+          change={val => change([key, val], 'type')}
+          value={deserializedState[key]}
+          required={RequiredOptions[optionType].includes(key) ? true : false}
+          {...TypeOptionInputArgs[key]}
+        />
+    );
+  });
+
+  if (validOptionsList.length != 0) {
     return (
       <>
-        {validOptions()}
+        {validNumberOptions.length != 0 ? (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '1rem',
+              alignItems: 'center',
+              marginBottom: '1rem'
+            }}
+          >
+            {validNumberOptions}
+          </div>
+        ) : null}
+        {validSelectOptions.length != 0 ? validSelectOptions : null}
+        {validCheckboxOptions.length != 0 ? (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '1rem',
+              alignItems: 'center',
+              marginBottom: '1rem'
+            }}
+          >
+            {validCheckboxOptions}
+          </div>
+        ) : null}
+        {validOtherOptions.length != 0 ? validOtherOptions : null}
       </>
     );
   } else if (optionType == "Boolean") {
     return (
       <>
         No type options available
-      </>);
+      </>
+    );
   }
   return '';
 });
