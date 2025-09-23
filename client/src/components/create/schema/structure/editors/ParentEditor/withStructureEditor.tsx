@@ -291,6 +291,11 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
         if (updatevalue.type == "Enumerated" && (updatevalue.options.find(str => str.startsWith('#'))) || (updatevalue.options.find(str => str.startsWith('>')))) {
           updatevalue = { ...updatevalue, fields: [] }
         }
+
+        // if restricts, remove field
+        if (updatevalue.options.find(str => str.startsWith('r'))) {
+          updatevalue = { ...updatevalue, fields: [] }
+        }
   
         flushSync(() => {
           setValueObj(updatevalue);
@@ -306,12 +311,12 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
 
     // If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
     // TODO: Is this used?
-    if (valueObj.options && ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>'))))) {
+    if (valueObj.options && ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>') || (valueObj.options.find(str => str.startsWith('r'))))))) {
       return (
         <>
           <div className="card mb-3" ref={rowRef} style={customStyle}>
             <div className="card-header px-2 py-2" ref={inViewRef}>
-              <span id={valueObj.name} className="col-sm-10 px-1 my-1">{`${valueObj.name} (${valueObj.type})`}</span>
+              <span id={valueObj.name} className="col-sm-10 px-1 my-1"><strong>{`${valueObj.name} (${valueObj.type})`}</strong></span>
               <button type='button' className='btn btn-sm btn-danger float-end' onClick={onRemoveItemClick} >
                 <FontAwesomeIcon icon={faMinusCircle} />
               </button>
