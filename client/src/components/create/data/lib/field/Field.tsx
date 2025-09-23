@@ -20,6 +20,17 @@ const Field = (props: FieldProps) => {
     const schemaObj = useSelector(getSelectedSchema);
     let extendsField: AllFieldArray | undefined = undefined;
 
+    // Check for abstract -- no data allowed
+    const isAbstract = options?.some(opt => opt === "a");
+    if (isAbstract) {
+        const displayChildren = _children.map((child) => {
+            return `${child[0]} - ${child[1]} (${child[2]})<br>`;
+        }).join("");
+        const newComment = `Abstract Type - No data allowed<br>Fields:<br>${displayChildren}Options: ${options}<br>Comment: ${_comment}`;
+        const newField = [name, type, [], newComment, []];
+        return <Field field={newField as AllFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear}/>;
+    }
+
     // Check for extends
     const extend = options.find(opt => opt.startsWith("e"))?.substring(1);
     if (extend) {
