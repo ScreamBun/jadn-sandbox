@@ -3,7 +3,7 @@ import { CoreType, Array, ArrayOf, Record, Map, MapOf, Enumerated, Choice, Deriv
 import { AllFieldArray, StandardFieldArray, ArrayFieldArray, FieldOfArray } from '../../../schema/interface';
 import { useSelector } from 'react-redux';
 import { getSelectedSchema } from 'reducers/util';
-import { caseMapOfEnumKey, destructureField, convertToArrayOf, getMultiplicity, extendType } from '../utils';
+import { caseMapOfEnumKey, destructureField, convertToArrayOf, getMultiplicity, extendType, linkToKey } from '../utils';
 
 interface FieldProps {
     field: AllFieldArray;
@@ -29,6 +29,16 @@ const Field = (props: FieldProps) => {
         extendsField = [name, type, [...options, ...extendOpts], _comment, [...extendChildren, ..._children]] as unknown as AllFieldArray;
     }
  
+    // Check for key/link
+    const isLink = options.some(opt => opt === "L");
+    const linkedRef = isLink ? linkToKey(schemaObj, type) : undefined;
+    if (linkedRef && linkedRef.type && linkedRef.options && linkedRef.children) {
+        let newOpts = options.filter(opt => opt !== "L");
+        let newChildren = linkedRef.children.length > 0 ? linkedRef.children : [];
+        let fieldArray = [_idx, name, linkedRef.type, [...newOpts, ...linkedRef.options], "", newChildren];
+        return <Field field={fieldArray as AllFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear}/>;
+    }
+
     // Special Case Check: Type MapOf w/ keytype of Enum
     const enumKeys = caseMapOfEnumKey(schemaObj, field);
     if (enumKeys.length > 0) {
