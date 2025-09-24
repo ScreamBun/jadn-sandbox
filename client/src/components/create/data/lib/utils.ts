@@ -302,11 +302,27 @@ export const restrictType = (schemaObj: any, type: string): any => {
 // FUNCTION: Extends logic
 export const extendType = (schemaObj: any, type: string): any => {
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
+    let extendedChildren: any[] = [];
+    let extendedOpts: any[] = [];
+
     for (const t of types) {
         let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
-        return { extendChildren: children, extendOpts: _options  };
+        // Check for recursive extension
+        const isExtended = _options.find(opt => opt.startsWith("e"));
+        if (isExtended) {
+            // Recurse
+            const parentType = isExtended.slice(1);
+            const parentExt = extendType(schemaObj, parentType);
+            const { extendChildren: baseChildren = [], extendOpts: baseOpts = [] } = parentExt || {};
+            extendedChildren.push(...baseChildren);
+            extendedOpts.push(...baseOpts);
+        }
+
+        extendedChildren.push(...children);
+        extendedOpts.push(..._options);
+        extendedOpts = extendedOpts.filter(opt => !opt.startsWith("e")); // Remove 'e' option
     }
-    return undefined;
+    return extendedChildren.length > 0 || extendedOpts.length > 0 ? { extendChildren: extendedChildren, extendOpts: extendedOpts } : undefined;
 }
 // FUNCTION: Key/Link: return type and options of referenced key
 export const linkToKey = (schemaObj: any, link: any): {type: string, options: string[], children: any[]} | undefined => {
