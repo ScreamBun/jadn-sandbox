@@ -47,7 +47,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
 
     const valueObjInit = zip(TypeKeys, value) as StandardTypeObject;
     const [valueObj, setValueObj] = useState(valueObjInit);
-    const isEditableID = valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
+    const isEditableID = valueObj.options.some(opt => opt.startsWith('e')) ? true : valueObj.type == 'Record' || valueObj.type == 'Array' ? false : true;
     let SBConfirmModalValName = valueObj.name;
 
     const rowRef = useRef<any>();
