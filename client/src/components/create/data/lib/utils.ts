@@ -295,15 +295,19 @@ export const restrictType = (schemaObj: any, type: string): any => {
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
     for (const t of types) {
         let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
+        // Check if type being restricted is final - stop
+        if (_options.some((opt: any) => String(opt) === 'f')) return undefined;
         return { restrictChildren: children, restrictOpts: _options  };
     }
     return undefined;
 }
 // FUNCTION: Extends logic
 export const extendType = (schemaObj: any, type: string): any => {
-    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
+    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];    
     for (const t of types) {
         let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
+        // Check if type being extended is final - stop
+        if (_options.some((opt: any) => String(opt) === 'f')) return undefined;
         return { extendChildren: children, extendOpts: _options  };
     }
     return undefined;
