@@ -161,7 +161,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
           if (extendedType && Array.isArray(extendedType)) {
             const extendedFields = extendedType[4];
             if (Array.isArray(extendedFields)) {
-              step = extendedFields.length;
+              step = extendedFields[extendedFields.length - 1][0];
             }
           }
         }
