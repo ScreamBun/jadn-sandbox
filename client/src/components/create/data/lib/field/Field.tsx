@@ -35,19 +35,25 @@ const Field = (props: FieldProps) => {
     const extend = options.find(opt => opt.startsWith("e"))?.substring(1);
     if (extend) {
         // Extend options & children
-        const {extendChildren, extendOpts} = extendType(schemaObj, extend);
-        options = options.filter(opt => !opt.startsWith("e"));
-        extendsField = [name, type, [...options, ...extendOpts], _comment, [...extendChildren, ..._children]] as unknown as AllFieldArray;
+        const extendResult = extendType(schemaObj, extend);
+        if (extendResult) {
+            const {extendChildren, extendOpts} = extendResult;
+            options = options.filter(opt => !opt.startsWith("e"));
+            extendsField = [name, type, [...options, ...extendOpts], _comment, [...extendChildren, ..._children]] as unknown as AllFieldArray;
+        }
     }
-     let restrictsField: AllFieldArray | undefined = undefined;
+    let restrictsField: AllFieldArray | undefined = undefined;
 
     // Check for restricts
     const restricts = options.find(opt => opt.startsWith("r"))?.substring(1);
     if (restricts) {
         // Restrict children and options
-        const {restrictChildren, restrictOpts} = restrictType(schemaObj, restricts);
-        options = options.filter(opt => !opt.startsWith("r"));
-        restrictsField = [name, type, restrictOpts, _comment, restrictChildren] as unknown as AllFieldArray;
+        const restrictResult = restrictType(schemaObj, restricts);
+        if (restrictResult) {
+            const {restrictChildren, restrictOpts} = restrictResult;
+            options = options.filter(opt => !opt.startsWith("r"));
+            restrictsField = [name, type, restrictOpts, _comment, restrictChildren] as unknown as AllFieldArray;
+        }
     }
 
     // Check for key/link

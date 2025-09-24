@@ -160,7 +160,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
           const extendedType = schemaTypes?.find((t: any) => Array.isArray(t) && t[0] === extendedTypeName);
           if (extendedType && Array.isArray(extendedType)) {
             const extendedFields = extendedType[4];
-            if (Array.isArray(extendedFields)) {
+            if (Array.isArray(extendedFields) && extendedFields.length > 0) {
               step = extendedFields[extendedFields.length - 1][0];
             }
           }
@@ -313,6 +313,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
         // if restricts, remove field
         if (updatevalue.options.find(str => str.startsWith('r'))) {
           updatevalue = { ...updatevalue, fields: [] }
+          valueObj.fields = schemaObj?.types?.find((t: any) => Array.isArray(t) && t[0] === updatevalue.type)?.[4] || [];
         }
   
         flushSync(() => {

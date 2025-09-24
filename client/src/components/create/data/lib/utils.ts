@@ -293,12 +293,39 @@ export const removeXmlWrapper = (xml: string): string => {
 // FUNCTION: Restrict children and options based on restricts
 export const restrictType = (schemaObj: any, type: string): any => {
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
+    let restrictChildren: any[] = [];
+    let restrictOpts: any[] = [];
+
     for (const t of types) {
         let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
-        return { restrictChildren: children, restrictOpts: _options  };
+
+        const isRestricted = _options.find(opt => opt.startsWith("r"));
+        if (isRestricted) {
+            const restrictTypeName = isRestricted.slice(1);
+            const restrict = restrictType(schemaObj, restrictTypeName);
+            const { restrictChildren: baseRestrictChildren = [], restrictOpts: baseRestrictOpts = [] } = restrict || {};
+            restrictChildren.push(...baseRestrictChildren);
+            restrictOpts.push(...baseRestrictOpts);
+        }
+
+        const isExtended = _options.find(opt => opt.startsWith("e"));
+        if (isExtended) {
+            // Recurse
+            const parentType = isExtended.slice(1);
+            const parentExt = extendType(schemaObj, parentType);
+            const { extendChildren: baseChildren = [], extendOpts: baseOpts = [] } = parentExt || {};
+            restrictChildren.push(...baseChildren);
+            restrictOpts.push(...baseOpts);
+        }
+
+        restrictChildren.push(...children);
+        restrictOpts.push(..._options);
+        restrictOpts = restrictOpts.filter(opt => !opt.startsWith("e")); // Remove 'e' option
+        restrictOpts = restrictOpts.filter(opt => !opt.startsWith("r")); // Remove 'r' option
     }
-    return undefined;
+    return restrictChildren.length > 0 || restrictOpts.length > 0 ? { restrictChildren, restrictOpts } : undefined;
 }
+
 // FUNCTION: Extends logic
 export const extendType = (schemaObj: any, type: string): any => {
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
@@ -318,9 +345,20 @@ export const extendType = (schemaObj: any, type: string): any => {
             extendedOpts.push(...baseOpts);
         }
 
+        // Check for restrict
+        const isRestricted = _options.find(opt => opt.startsWith("r"));
+        if (isRestricted) {
+            const restrictTypeName = isRestricted.slice(1);
+            const restrict = restrictType(schemaObj, restrictTypeName);
+            const { restrictChildren: baseRestrictChildren = [], restrictOpts: baseRestrictOpts = [] } = restrict || {};
+            extendedChildren.push(...baseRestrictChildren);
+            extendedOpts.push(...baseRestrictOpts);
+        }
+
         extendedChildren.push(...children);
         extendedOpts.push(..._options);
         extendedOpts = extendedOpts.filter(opt => !opt.startsWith("e")); // Remove 'e' option
+        extendedOpts = extendedOpts.filter(opt => !opt.startsWith("r")); // Remove 'r' option
     }
     return extendedChildren.length > 0 || extendedOpts.length > 0 ? { extendChildren: extendedChildren, extendOpts: extendedOpts } : undefined;
 }
