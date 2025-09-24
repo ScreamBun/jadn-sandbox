@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { shallowEqual } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +14,7 @@ import OptionsModal from '../options/OptionsModal';
 import { ModalSize } from '../options/ModalSize';
 import { dismissAllToast, sbToastError } from 'components/common/SBToast';
 import { SBConfirmModal } from 'components/common/SBConfirmModal';
+import { getSelectedSchema } from 'reducers/util';
 
 export interface StructureEditorProps {
   dataIndex: number; //index changes based on obj in arr (tracks the parent index)
@@ -33,6 +34,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
 
     const { value, dataIndex, config, setFieldCollapse, customStyle, setRowHeight, change, remove, setIsVisible } = props;
     const predefinedTypes = useAppSelector((state) => [...state.Util.types.base], shallowEqual);
+    const schemaObj = useSelector(getSelectedSchema);
 
     //TODO: may need to add polyfill -- support for Safari
     const { ref: inViewRef, inView, entry } = useInView({
@@ -148,8 +150,24 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
         sbToastError('Error: Field count meets $MaxElements. Cannot add more fields.');
         return;
       }
+    
+      // If extends, starting field index = length(extended_type.fields)
+      let step: number = 0;
+      if (valueObj.options?.find(str => str.startsWith('e'))) {
+        const extendedTypeName = valueObj.options.find(str => str.startsWith('e'))?.slice(1) || null;
+        if (extendedTypeName) {
+          const schemaTypes = schemaObj?.types || undefined;
+          const extendedType = schemaTypes?.find((t: any) => Array.isArray(t) && t[0] === extendedTypeName);
+          if (extendedType && Array.isArray(extendedType)) {
+            const extendedFields = extendedType[4];
+            if (Array.isArray(extendedFields)) {
+              step = extendedFields.length;
+            }
+          }
+        }
+      }
 
-      let f_count = valueObj.fields?.length + 1;
+      let f_count = valueObj.fields?.length + 1 + step;
       const listOfIDs = valueObj.fields.map((field) => { return field[0]; })
       if (listOfIDs.includes(f_count)) {
         //Create Unique ID
