@@ -27,6 +27,7 @@ export const TypeOptions = {
   'extends': 'e',     // Type has an extension point where fields may be appended
   'restricts': 'r', // Type is a restriction of the specified type
   'abstract': 'a',   // Type is abstract and cannot be instantiated
+  'final': 'f',      // Type is final and cannot be extended or restricted
   'default': 'u',    // Default value
   'const': 'v'       // Constant value
 };
@@ -47,7 +48,7 @@ export const OptionTypes = {
 };
 
 export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
-export const BoolOpts = ['ordered/unique', 'dir', 'key', 'link', 'id', 'set', 'unordered', 'abstract', 'attr'];
+export const BoolOpts = ['ordered/unique', 'dir', 'key', 'link', 'id', 'set', 'unordered', 'abstract', 'final', 'attr'];
 export const IntegerOpts = ['minOccurs', 'maxOccurs', 'tagid', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const FloatOpts = ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const StringOpts = ['const', 'default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
@@ -119,13 +120,13 @@ export const ValidOptions: Record<string, Array<string>> = {
   Number: ['default', 'const', 'format', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'],
   String: ['default', 'const', 'format', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive', 'pattern'],
   // Structures
-  Array: ['extends', 'restricts', 'abstract', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set'],
+  Array: ['extends', 'restricts', 'abstract', 'final', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set'],
   ArrayOf: ['vtype', 'minLength', 'maxLength', 'ordered/unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
-  Choice: ['id', 'extends', 'restricts', 'abstract', 'combine'],
-  Enumerated: ['id', 'enum', 'pointer', 'extends', 'restricts', 'abstract'],
-  Map: ['id', 'extends', 'restricts', 'abstract', 'minLength', 'maxLength', 'ordered/unique'],
+  Choice: ['id', 'extends', 'restricts', 'abstract', 'final', 'combine'],
+  Enumerated: ['id', 'enum', 'pointer', 'extends', 'restricts', 'abstract', 'final'],
+  Map: ['id', 'extends', 'restricts', 'abstract', 'final', 'minLength', 'maxLength', 'ordered/unique'],
   MapOf: ['ktype', 'vtype', 'minLength', 'maxLength', 'ordered/unique'],
-  Record: ['extends', 'restricts', 'abstract', 'minLength', 'maxLength', 'ordered/unique']
+  Record: ['extends', 'restricts', 'abstract', 'final', 'minLength', 'maxLength', 'ordered/unique']
 };
 
 export const FieldOptionInputArgs: { [key: string]: any } = {
@@ -251,6 +252,10 @@ export const TypeOptionInputArgs = {
   restricts: {
     type: 'SBCreatableSelect',
     description: '(optional) Type is a restriction of the specified type'
+  },
+  final: {
+    type: 'checkbox',
+    description: '(optional) Type is final and cannot be extended or restricted'
   },
   default: {
     type: 'text',
