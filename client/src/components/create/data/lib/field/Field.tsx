@@ -45,6 +45,7 @@ const Field = (props: FieldProps) => {
     let restrictsField: AllFieldArray | undefined = undefined;
 
     // Check for restricts
+    let restrictsField: AllFieldArray | undefined = undefined;
     const restricts = options.find(opt => opt.startsWith("r"))?.substring(1);
     if (restricts) {
         // Restrict children and options

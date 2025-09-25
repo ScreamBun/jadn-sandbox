@@ -298,6 +298,8 @@ export const restrictType = (schemaObj: any, type: string): any => {
 
     for (const t of types) {
         let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
+        // Check if type being restricted is final - stop
+        if (_options.some((opt: any) => String(opt) === 'f')) return undefined;
 
         const isRestricted = _options.find(opt => opt.startsWith("r"));
         if (isRestricted) {
@@ -334,6 +336,8 @@ export const extendType = (schemaObj: any, type: string): any => {
 
     for (const t of types) {
         let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
+        // Check if type being extended is final - stop
+        if (_options.some((opt: any) => String(opt) === 'f')) return undefined;
         // Check for recursive extension
         const isExtended = _options.find(opt => opt.startsWith("e"));
         if (isExtended) {
