@@ -42,7 +42,6 @@ const Field = (props: FieldProps) => {
             extendsField = [name, type, [...options, ...extendOpts], _comment, [...extendChildren, ..._children]] as unknown as AllFieldArray;
         }
     }
-    let restrictsField: AllFieldArray | undefined = undefined;
 
     // Check for restricts
     let restrictsField: AllFieldArray | undefined = undefined;
