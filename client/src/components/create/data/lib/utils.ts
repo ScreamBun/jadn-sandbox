@@ -1,4 +1,5 @@
 import { $MAX_ELEMENTS, defaultValues } from "components/create/consts";
+import { over, rest } from "lodash";
 
 // FUNCTION: Determine if a field is optional based on its options. Optional field has '[0']
 export const isOptional = (options: any[]): boolean => {
@@ -290,23 +291,48 @@ export const removeXmlWrapper = (xml: string): string => {
     return xml.replace(/<\/?all>/g, '');
 }
 
+// FUNCTION: Overwrite field - used for inheritance
+export const overwriteFields = (fieldsToReturn: any[], newFields: any[]): void => {
+    console.log("Fields to return: ", fieldsToReturn);
+    console.log("New fields: ", newFields);
+
+    for (const child of newFields) {
+        const [childID] = destructureField(child);
+        if (!fieldsToReturn.some(c => {
+            const [cID] = destructureField(c);
+            return cID === childID;
+        })) {
+            fieldsToReturn.push(child); // insert at last index of array
+        }
+    }
+    fieldsToReturn.sort((a, b) => {
+        const [aID] = destructureField(a);
+        const [bID] = destructureField(b);
+        return aID - bID;
+    });
+    console.log("Resulting fields: ", fieldsToReturn);
+}
+
 // FUNCTION: Restrict children and options based on restricts
-export const restrictType = (schemaObj: any, type: string): any => {
+export const restrictType = (schemaObj: any, type: string, overloadingChildren: any[]): any => {
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
-    let restrictChildren: any[] = [];
+    let restrictChildren: any[] = [...overloadingChildren]; // start out with overloading children
     let restrictOpts: any[] = [];
 
     for (const t of types) {
         let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
+
         // Check if type being restricted is final - stop
         if (_options.some((opt: any) => String(opt) === 'f')) return undefined;
 
+        overwriteFields(restrictChildren, children);
+
         const isRestricted = _options.find(opt => opt.startsWith("r"));
-        if (isRestricted) {
+        if (isRestricted) { // For rescursive restricts
             const restrictTypeName = isRestricted.slice(1);
-            const restrict = restrictType(schemaObj, restrictTypeName);
+            const restrict = restrictType(schemaObj, restrictTypeName, restrictChildren);
             const { restrictChildren: baseRestrictChildren = [], restrictOpts: baseRestrictOpts = [] } = restrict || {};
-            restrictChildren.push(...baseRestrictChildren);
+            overwriteFields(restrictChildren, baseRestrictChildren);
             restrictOpts.push(...baseRestrictOpts);
         }
 
@@ -314,13 +340,14 @@ export const restrictType = (schemaObj: any, type: string): any => {
         if (isExtended) {
             // Recurse
             const parentType = isExtended.slice(1);
-            const parentExt = extendType(schemaObj, parentType);
+            const parentExt = extendType(schemaObj, parentType, restrictChildren);
             const { extendChildren: baseChildren = [], extendOpts: baseOpts = [] } = parentExt || {};
-            restrictChildren.push(...baseChildren);
+            overwriteFields(restrictChildren, baseChildren);
             restrictOpts.push(...baseOpts);
         }
 
-        restrictChildren.push(...children);
+        // If children empty, push children
+        if (restrictChildren.length === 0) restrictChildren.push(...children);
         restrictOpts.push(..._options);
         restrictOpts = restrictOpts.filter(opt => !opt.startsWith("e")); // Remove 'e' option
         restrictOpts = restrictOpts.filter(opt => !opt.startsWith("r")); // Remove 'r' option
@@ -329,23 +356,26 @@ export const restrictType = (schemaObj: any, type: string): any => {
 }
 
 // FUNCTION: Extends logic
-export const extendType = (schemaObj: any, type: string): any => {
+export const extendType = (schemaObj: any, type: string, existingChildren: any[]): any => {
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === type) : [];
-    let extendedChildren: any[] = [];
+    let extendedChildren: any[] = [...existingChildren];
     let extendedOpts: any[] = [];
 
     for (const t of types) {
         let [_idx, _name, _type, _options, _comment, children] = destructureField(t);
         // Check if type being extended is final - stop
         if (_options.some((opt: any) => String(opt) === 'f')) return undefined;
+
+        overwriteFields(extendedChildren, children);
+
         // Check for recursive extension
         const isExtended = _options.find(opt => opt.startsWith("e"));
         if (isExtended) {
             // Recurse
             const parentType = isExtended.slice(1);
-            const parentExt = extendType(schemaObj, parentType);
+            const parentExt = extendType(schemaObj, parentType, extendedChildren);
             const { extendChildren: baseChildren = [], extendOpts: baseOpts = [] } = parentExt || {};
-            extendedChildren.push(...baseChildren);
+            overwriteFields(extendedChildren, baseChildren);
             extendedOpts.push(...baseOpts);
         }
 
@@ -353,13 +383,14 @@ export const extendType = (schemaObj: any, type: string): any => {
         const isRestricted = _options.find(opt => opt.startsWith("r"));
         if (isRestricted) {
             const restrictTypeName = isRestricted.slice(1);
-            const restrict = restrictType(schemaObj, restrictTypeName);
+            const restrict = restrictType(schemaObj, restrictTypeName, extendedChildren);
             const { restrictChildren: baseRestrictChildren = [], restrictOpts: baseRestrictOpts = [] } = restrict || {};
-            extendedChildren.push(...baseRestrictChildren);
+            overwriteFields(extendedChildren, baseRestrictChildren);
             extendedOpts.push(...baseRestrictOpts);
         }
 
-        extendedChildren.push(...children);
+        // If children empty, push children
+        if (extendedChildren.length === 0) extendedChildren.push(...children);
         extendedOpts.push(..._options);
         extendedOpts = extendedOpts.filter(opt => !opt.startsWith("e")); // Remove 'e' option
         extendedOpts = extendedOpts.filter(opt => !opt.startsWith("r")); // Remove 'r' option

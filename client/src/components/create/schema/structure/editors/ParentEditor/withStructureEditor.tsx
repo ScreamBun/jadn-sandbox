@@ -311,10 +311,10 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
         }
 
         // if restricts, remove field
-        if (updatevalue.options.find(str => str.startsWith('r'))) {
-          updatevalue = { ...updatevalue, fields: [] }
-          valueObj.fields = schemaObj?.types?.find((t: any) => Array.isArray(t) && t[0] === updatevalue.type)?.[4] || [];
-        }
+        //if (updatevalue.options.find(str => str.startsWith('r'))) {
+        //  updatevalue = { ...updatevalue, fields: [] }
+        //  valueObj.fields = schemaObj?.types?.find((t: any) => Array.isArray(t) && t[0] === updatevalue.type)?.[4] || [];
+        //}
   
         flushSync(() => {
           setValueObj(updatevalue);
@@ -330,7 +330,7 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
 
     // If the Derived Enumerations or Pointers extensions are present in type options, the Fields array MUST be empty.
     // TODO: Is this used?
-    if (valueObj.options && ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>') || (valueObj.options.find(str => str.startsWith('r'))))))) {
+    if (valueObj.options && ((valueObj.options.find(str => str.startsWith('#'))) || (valueObj.options.find(str => str.startsWith('>'))))) {// || (valueObj.options.find(str => str.startsWith('r'))))))) {
       return (
         <>
           <div className="card mb-3" ref={rowRef} style={customStyle}>
