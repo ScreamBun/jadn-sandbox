@@ -293,16 +293,13 @@ export const removeXmlWrapper = (xml: string): string => {
 
 // FUNCTION: Overwrite field - used for inheritance
 export const overwriteFields = (fieldsToReturn: any[], newFields: any[]): void => {
-    console.log("Fields to return: ", fieldsToReturn);
-    console.log("New fields: ", newFields);
-
     for (const child of newFields) {
         const [childID] = destructureField(child);
         if (!fieldsToReturn.some(c => {
             const [cID] = destructureField(c);
             return cID === childID;
         })) {
-            fieldsToReturn.push(child); // insert at last index of array
+            fieldsToReturn.push(child);
         }
     }
     fieldsToReturn.sort((a, b) => {
@@ -310,7 +307,6 @@ export const overwriteFields = (fieldsToReturn: any[], newFields: any[]): void =
         const [bID] = destructureField(b);
         return aID - bID;
     });
-    console.log("Resulting fields: ", fieldsToReturn);
 }
 
 // FUNCTION: Restrict children and options based on restricts
