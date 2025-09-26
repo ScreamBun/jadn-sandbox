@@ -1,8 +1,10 @@
 {
-    "Schema": {
+    "Extend-Extension": {
         "field_value_1": "abcdefg",
-        "field_value_2": {
-            "field_value_1": "abcdefg"
-        }
+        "field_value_2": "abcdefg",
+        "field_value_3": "abcdefg",
+        "field_value_4": "abcdefg",
+        "field_value_5": "abcdefg",
+        "field_value_6": "abcdefg"
     }
 }

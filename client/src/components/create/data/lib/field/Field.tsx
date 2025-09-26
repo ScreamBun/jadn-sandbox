@@ -35,11 +35,11 @@ const Field = (props: FieldProps) => {
     const extend = options.find(opt => opt.startsWith("e"))?.substring(1);
     if (extend) {
         // Extend options & children
-        const extendResult = extendType(schemaObj, extend);
+        const extendResult = extendType(schemaObj, extend, _children);
         if (extendResult) {
-            const {extendChildren, extendOpts} = extendResult
+            const {extendChildren, extendOpts} = extendResult;
             options = options.filter(opt => !opt.startsWith("e"));
-            extendsField = [name, type, [...options, ...extendOpts], _comment, [...extendChildren, ..._children]] as unknown as AllFieldArray;
+            extendsField = [name, type, [...options, ...extendOpts], _comment, extendChildren] as unknown as AllFieldArray;
         }
     }
 
@@ -48,9 +48,9 @@ const Field = (props: FieldProps) => {
     const restricts = options.find(opt => opt.startsWith("r"))?.substring(1);
     if (restricts) {
         // Restrict children and options
-        const restrictResult = restrictType(schemaObj, restricts);
+        const restrictResult = restrictType(schemaObj, restricts, _children);
         if (restrictResult) {
-            const {restrictChildren, restrictOpts} = restrictResult
+            const {restrictChildren, restrictOpts} = restrictResult;
             options = options.filter(opt => !opt.startsWith("r"));
             restrictsField = [name, type, restrictOpts, _comment, restrictChildren] as unknown as AllFieldArray;
         }
