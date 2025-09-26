@@ -165,20 +165,6 @@ const DataCreator = (props: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.cbor_hex) {
                             setCbor(rsp.payload.data.cbor_hex)
-                        } 
-                    } else {
-                        console.log(rsp.payload.message);
-                    }
-                })
-                .catch((submitErr: { message: string }) => {
-                    sbToastError(submitErr.message)
-                });
-
-            // Convert to Annotated CBOR
-            dispatch(convertData(JSON.stringify(data), LANG_JSON_UPPER, LANG_ANNOTATED_HEX))
-                .then((rsp: any) => {
-                    if(rsp.payload.data) {
-                        if(rsp.payload.data.cbor_annotated_hex) {
                             setAnnotatedCbor(rsp.payload.data.cbor_annotated_hex)
                         } 
                     } else {

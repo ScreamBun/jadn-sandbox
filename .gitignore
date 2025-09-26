@@ -243,4 +243,7 @@ yarn.lock
 client/.yarn/install-state.gz
 test.json
 
+# Convert data files
+server/cbor_files/
+
 custom/
