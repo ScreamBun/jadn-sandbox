@@ -17,14 +17,14 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import SBLoadBuilder from 'components/common/SBLoadBuilder'
 import { destructureField, removeXmlWrapper } from './lib/utils'
-import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER } from 'components/utils/constants';
+import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER, LANG_ANNOTATED_HEX } from 'components/utils/constants';
 import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
-    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor } = props;
+    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor, annotatedCbor, setAnnotatedCbor } = props;
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
     const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
     const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:LANG_JSON_UPPER, value: LANG_JSON_UPPER});
@@ -59,6 +59,7 @@ const DataCreator = (props: any) => {
         setXmlValidated(false);
         setXml("");
         setCbor("");
+        setAnnotatedCbor("");
         dispatch<any>(clearHighlight());
     }
 
@@ -111,6 +112,7 @@ const DataCreator = (props: any) => {
         setLoadedFieldDefs(null);
         setXml("");
         setCbor("");
+        setAnnotatedCbor("");
         dispatch<any>(clearHighlight());
     }    
 
@@ -171,6 +173,22 @@ const DataCreator = (props: any) => {
                 .catch((submitErr: { message: string }) => {
                     sbToastError(submitErr.message)
                 });
+
+            // Convert to Annotated CBOR
+            dispatch(convertData(JSON.stringify(data), LANG_JSON_UPPER, LANG_ANNOTATED_HEX))
+                .then((rsp: any) => {
+                    if(rsp.payload.data) {
+                        if(rsp.payload.data.cbor_annotated_hex) {
+                            setAnnotatedCbor(rsp.payload.data.cbor_annotated_hex)
+                        } 
+                    } else {
+                        console.log(rsp.payload.message);
+                    }
+                })
+                .catch((submitErr: { message: string }) => {
+                    sbToastError(submitErr.message)
+                });
+
         } catch (err) {
             if (err instanceof Error) {
                 sbToastError(err.message)
@@ -290,7 +308,8 @@ const DataCreator = (props: any) => {
                                 data={[
                                     { label: LANG_JSON_UPPER, value: LANG_JSON_UPPER },
                                     { label: LANG_XML_UPPER, value: LANG_XML_UPPER },
-                                    { label: LANG_CBOR_UPPER, value: LANG_CBOR_UPPER }
+                                    { label: LANG_CBOR_UPPER, value: LANG_CBOR_UPPER },
+                                    { label: "Annotated CBOR", value: LANG_ANNOTATED_HEX }
                                 ]}
                                 isSmStyle
                             />
@@ -318,26 +337,26 @@ const DataCreator = (props: any) => {
                                 <SBSaveFile 
                                     buttonId={'saveMessage'} 
                                     toolTip={'Save Data'} 
-                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : cbor} 
+                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
                                     loc={'messages'} 
                                     customClass={"float-end ms-1"} 
                                     ext={selectedSerialization?.value} />
                                 <SBCopyToClipboard 
                                     buttonId={'copyMessage'} 
-                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : cbor} 
+                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
                                     customClass='float-end' 
                                     shouldStringify={true} />
                                 <SBDownloadBtn 
                                     buttonId='msgDownload' 
                                     customClass='float-end me-1' 
-                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? JSON.stringify(generatedMessage) : selectedSerialization?.value===LANG_XML_UPPER ? JSON.stringify(xml) : JSON.stringify(cbor)} 
+                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? JSON.stringify(generatedMessage) : selectedSerialization?.value===LANG_XML_UPPER ? JSON.stringify(xml) : selectedSerialization?.value===LANG_CBOR_UPPER ? JSON.stringify(cbor) : JSON.stringify(annotatedCbor)} 
                                     ext={selectedSerialization?.value} />
                             </>
                         </div>
                     </div>
                     <div className='card-body p-2'>
                         <SBEditor 
-                            data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : cbor} 
+                            data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
                             convertTo={selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : null}
                             isReadOnly={true} 
                             initialHighlightWords={highlightedItems}></SBEditor>

@@ -11,6 +11,7 @@ import { Option } from 'components/common/SBSelect'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { clearHighlight } from "actions/highlight";
 import { useNavigate } from 'react-router'
+import { set } from 'lodash'
 
 const DataGenerator = () => {
     const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const DataGenerator = () => {
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [xml, setXml] = useState('');
     const [cbor, setCbor] = useState('');
+    const [annotatedCbor, setAnnotatedCbor] = useState('');
     const [selection, setSelection] = useState<Option | null>();
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
 
@@ -48,6 +50,7 @@ const DataGenerator = () => {
         setGeneratedMessage({});
         setXml("");
         setCbor("");
+        setAnnotatedCbor("");
         dispatch(setSchema(loadedSchema));
         dispatch(clearFieldValidation());
         dispatch<any>(clearHighlight());
@@ -60,6 +63,7 @@ const DataGenerator = () => {
         setLoadedSchema(null);
         setXml("");
         setCbor("");
+        setAnnotatedCbor("");
         setSelection(null);
         setGeneratedMessage({});
         sbToastSuccess("Schema reset successfully");
@@ -110,7 +114,9 @@ const DataGenerator = () => {
                                         generatedMessage={generatedMessage} setGeneratedMessage={setGeneratedMessage}
                                         selection={selection} setSelection={setSelection}
                                         xml={xml} setXml={setXml}
-                                        cbor={cbor} setCbor={setCbor} />
+                                        cbor={cbor} setCbor={setCbor}
+                                        annotatedCbor={annotatedCbor} setAnnotatedCbor={setAnnotatedCbor}
+                                        />
                                 </div>
                             </div>
                         </div>
