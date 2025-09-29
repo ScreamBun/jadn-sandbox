@@ -70,12 +70,12 @@ const SBValidateSchemaBtn = (props: any) => {
                             sbToastSuccess(validateSchemaVal.payload.valid_msg);
                         }
                     } else {
-                        dispatch(setSchema(null));
+                        //dispatch(setSchema(null));
                         sbToastError(validateSchemaVal.payload.valid_msg);
                     }
                 })
                 .catch((validateSchemaErr) => {
-                    dispatch(setSchema(null));
+                    //dispatch(setSchema(null));
                     sbToastError(validateSchemaErr.payload.valid_msg)
                 }).finally(() => {
                     setIsValidating(false);
@@ -83,7 +83,7 @@ const SBValidateSchemaBtn = (props: any) => {
 
         } catch (err) {
             if (err instanceof Error) {
-                dispatch(setSchema(null));
+                //dispatch(setSchema(null));
                 setIsValidating(false);
                 sbToastError(err.message)
             }
