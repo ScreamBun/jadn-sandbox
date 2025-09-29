@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CoreType, Array, ArrayOf, Record, Map, MapOf, Enumerated, Choice, Derived } from 'components/create/data/lib/field/types/Types';
 import { AllFieldArray, StandardFieldArray, ArrayFieldArray, FieldOfArray } from '../../../schema/interface';
 import { useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ const Field = (props: FieldProps) => {
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
     const schemaObj = useSelector(getSelectedSchema);
     let extendsField: AllFieldArray | undefined = undefined;
+    let ancestor: string | undefined = undefined;
 
     // Check for abstract -- no data allowed
     const isAbstract = options?.some(opt => opt === "a");
@@ -37,6 +38,7 @@ const Field = (props: FieldProps) => {
         // Extend options & children
         const extendResult = extendType(schemaObj, extend, _children);
         if (extendResult) {
+            ancestor = extend;
             const {extendChildren, extendOpts} = extendResult;
             options = options.filter(opt => !opt.startsWith("e"));
             extendsField = [name, type, [...options, ...extendOpts], _comment, extendChildren] as unknown as AllFieldArray;
@@ -50,6 +52,7 @@ const Field = (props: FieldProps) => {
         // Restrict children and options
         const restrictResult = restrictType(schemaObj, restricts, _children);
         if (restrictResult) {
+            ancestor = restricts;
             const {restrictChildren, restrictOpts} = restrictResult;
             options = options.filter(opt => !opt.startsWith("r"));
             restrictsField = [name, type, restrictOpts, _comment, restrictChildren] as unknown as AllFieldArray;
@@ -104,7 +107,7 @@ const Field = (props: FieldProps) => {
         case 'ArrayOf':
             return <ArrayOf field={field as unknown as FieldOfArray} fieldChange={fieldChange} children={[]} parent={parent} value={value} toClear={toClear} />;
         case 'Record':
-            return <Record field={extendsField as ArrayFieldArray || restrictsField as ArrayFieldArray || field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
+            return <Record field={extendsField as ArrayFieldArray || restrictsField as ArrayFieldArray || field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} ancestor={ancestor}/>;
         case 'Map':
             return <Map field={extendsField as ArrayFieldArray || restrictsField as ArrayFieldArray || field as ArrayFieldArray} fieldChange={fieldChange} children={children ? children : []} parent={parent} value={value} toClear={toClear} />;
         case 'MapOf':
