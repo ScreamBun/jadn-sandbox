@@ -1,7 +1,7 @@
 ./whls/jadnschema-0.4.0-py2.py3-none-any.whl
-./whls/jadnxml-1.12.0-py2.py3-none-any.whl
+./whls/jadnxml-1.13.0-py2.py3-none-any.whl
 ./whls/jadnjson-1.4.0-py2.py3-none-any.whl
-./whls/jadnvalidation-2.1.0-py2.py3-none-any.whl
+./whls/jadnvalidation-2.2.0-py2.py3-none-any.whl
 ./whls/jadnutils-0.1.0-py2.py3-none-any.whl
 
 # -e /Users/kevincressman/GitLabThings/jadn-schema
