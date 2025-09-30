@@ -245,5 +245,8 @@ test.json
 
 # Convert data files
 server/cbor_files/
+server/cbor_files
+cbor_files/
+cbor_files
 
 custom/
