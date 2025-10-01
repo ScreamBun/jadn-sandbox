@@ -21,6 +21,7 @@ const Record = (props: FieldProps) => {
     const { field, fieldChange, value, toClear, ancestor } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const optionsObj = destructureOptions(options);
+
     const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
     const [clear, setClear] = useState(toClear);
@@ -36,28 +37,6 @@ const Record = (props: FieldProps) => {
             setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
         }
     }, [toClear]);
-
-    const handleChange = (childKey: string, childValue: any) => {
-         setData((prev: any) => {
-            const updated = { ...prev };
-            if (childValue === "" || childValue === undefined || childValue === null) {
-                if (_ordered) {
-                    updated[childKey] = undefined; // if ordered, preserve order
-                } else {
-                    delete updated[childKey];
-                }
-            } else {
-                updated[childKey] = childValue;
-            }
-            // Update the overarching generatedMessage under this array field's key (name)
-            if (Object.keys(updated).length === 0) {
-                fieldChange(name, "");
-            } else {    
-                fieldChange(name, updated);
-            }
-            return updated;
-        });
-    };
 
     // Initialize/maintain ordered keys once when opened
     useEffect(() => {
@@ -82,6 +61,28 @@ const Record = (props: FieldProps) => {
             return next;
         });
     }, [toggle, _ordered, children, name, fieldChange]);
+
+    const handleChange = (childKey: string, childValue: any) => {
+         setData((prev: any) => {
+            const updated = { ...prev };
+            if (childValue === "" || childValue === undefined || childValue === null) {
+                if (_ordered) {
+                    updated[childKey] = undefined; // if ordered, preserve order
+                } else {
+                    delete updated[childKey];
+                }
+            } else {
+                updated[childKey] = childValue;
+            }
+            // Update the overarching generatedMessage under this array field's key (name)
+            if (Object.keys(updated).length === 0) {
+                fieldChange(name, "");
+            } else {    
+                fieldChange(name, updated);
+            }
+            return updated;
+        });
+    };
 
     const childrenCards = useMemo(() => {
         if (!toggle) return null;

@@ -22,17 +22,37 @@ const MapOf = (props: FieldProps) => {
     const { field, fieldChange, value, toClear } = props;
     let [_idx, name, _type, options, _comment, _children] = destructureField(field);
     const optionsObj = destructureOptions(options);
-
-    const [toggle, setToggle] = useState(true);
-    const [_toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
     const schemaObj = useSelector(getSelectedSchema);
 
+    // States
+    const [toggle, setToggle] = useState(true);
+    const [_toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
     const [clear, setClear] = useState(toClear);
+    const [idNumber, setIdNumber] = useState(0);    // Keep track of cards
+    const [numberOfItems, setNumberOfItems] = useState(0);  // Check if there are enough / too many items
+    const [cards, setCards] = useState<Array<{id: number, key: string | undefined, value: string | undefined, idx?: number}>>([]); // Start empty
+    const [seq, setSeq] = useState(0);
+    const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
+    const [valueList, setValueList] = useState<Array<{name: any , value: any}>>([]);
+    const [output, setOutput] = useState<any>();
+
+    // Options
+    const minv = optionsObj.minLength || 0;
+    const maxv = optionsObj.maxLength;
+    const _optional = optionsObj.isOptional;
+    const _ordered = optionsObj.ordered;
+    const keyType = optionsObj.keyType
+    const valueType = optionsObj.valueType
+
     useEffect(() => {
         setClear(toClear);
     }, [toClear]);
 
-    React.useEffect(() => {
+    useEffect(() => {
+        onChange();
+    }, [keyList, valueList]);
+
+    useEffect(() => {
         if (value === undefined || value === null || cards.length > 0) return; // only run once if empty
         try {
             const incoming = value;
@@ -75,26 +95,6 @@ const MapOf = (props: FieldProps) => {
         } catch (err) {
         }
     }, [value]);
-
-    // Keep track of cards
-    const [idNumber, setIdNumber] = useState(0);
-
-    // Check if there are enough / too many items
-    const [numberOfItems, setNumberOfItems] = useState(0);
-
-    const minv = optionsObj.minLength || 0;
-    const maxv = optionsObj.maxLength;
-    const _optional = optionsObj.isOptional;
-    const _ordered = optionsObj.ordered;
-
-    // Extract ktype and vtype
-    const keyType = optionsObj.keyType
-    const valueType = optionsObj.valueType
-    const [cards, setCards] = useState<Array<{id: number, key: string | undefined, value: string | undefined, idx?: number}>>([]); // Start empty
-    const [seq, setSeq] = useState(0);
-    const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
-    const [valueList, setValueList] = useState<Array<{name: any , value: any}>>([]);
-    const [output, setOutput] = useState<any>();
 
     const onChange = (nextKeyList?: typeof keyList, nextValueList?: typeof valueList) => {
         const keys = nextKeyList ?? keyList;
@@ -149,10 +149,6 @@ const MapOf = (props: FieldProps) => {
             fieldChange(String(name), newOutput);
         }
     };
-
-    React.useEffect(() => {
-        onChange();
-    }, [keyList, valueList]);
 
     const addKey = (cardId: number, entryName: any, key: any) => {
         setKeyList(prev => {
@@ -269,16 +265,10 @@ const MapOf = (props: FieldProps) => {
                     className="border-0 px-2 py-1 btn btn-sm rounded-pill me-1 mt-1"
                     title="Remove Structure"
                     onClick={() => removeCard(id, keyEntry?.name ?? "", valueEntry?.name ?? "")}
-                    //disabled = {numberOfItems <= minv}
                 >
                     <FontAwesomeIcon icon={faCircleXmark} size = "lg" />
                 </button>
                 <div style={{ flex: '0 1 100%' }}>
-                    {/*<div className="d-flex align-items-center w-100">
-                        <label style={{ fontSize: "1.1rem" }}>{`${name} ${id}${ _optional ? "" : "*"}`}</label>
-                        <SBInfoBtn comment={_comment} />
-                        <SBToggleBtn toggle={toggleField} setToggle={setToggleField} index={id} />
-                    </div>*/}
                     <div>
                         <Field key={`${name} ${id} ${key}`} field={keyField} parent={name} fieldChange={handleKeyChange} value={keyEntry?.key ?? ""} toClear={clear} />
                         <Field key={`${name} ${id} ${value}`} field={valField} parent={name} fieldChange={handleValueChange} value={valueEntry?.value ?? ""} toClear={clear} />

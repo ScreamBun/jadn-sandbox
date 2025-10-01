@@ -57,16 +57,6 @@ export const destructureOptions = (options: string[]): {
     }
 }
 
-// FUNCTION: Determine if a field is optional based on its options. Optional field has '[0']
-/*export const isOptional = (options: any[]): boolean => {
-    for (const opt of options) {
-        if (String(opt) === '[0') {
-            return true;
-        }
-    }
-    return false;
-}*/
-
 // FUNCTION: Determine if a type is derived from another type
 const isDerived = (type: string): Boolean => {
     if (type === "Array" || type === "ArrayOf" || type === "Choice" || type === "Enumerated" || 
@@ -126,17 +116,6 @@ export const destructureField = (field: any[]): [number, string, string, string[
 
     return [_idx, name, type, options, _comment, children];
 }
-
-//FUNCTION: Get the minv (minimum length) of an ArrayOf, MapOf
-/*export const getMinv = (opts: any[]): number => {
-    const minvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("{"));
-    return minvOpt ? parseInt((minvOpt as string).slice(1), 10) : 0;
-}
-
-export const getMaxv = (opts: any[]): number | undefined => {
-    const maxvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("}"));
-    return maxvOpt ? parseInt((maxvOpt as string).slice(1), 10) : undefined;
-}*/
 
 //FUNCTION: Recursively get pointer children
 const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], path: string[], isID: boolean = false): any[] => {

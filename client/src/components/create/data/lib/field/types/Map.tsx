@@ -21,23 +21,14 @@ const Map = (props: FieldProps) => {
     const { field, fieldChange, value, toClear, ancestor } = props;
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const optionsObj = destructureOptions(options);
-    const [toggle, setToggle] = useState(false);
-     
-    const [clear, setClear] = useState(toClear);
-    useEffect(() => {
-        setClear(toClear);
-        if (toClear) {
-            setData("");
-            setToggle(true);
-            setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
-        }
-    }, [toClear]);
-    
-    const [data, setData] = useState(value);
 
     const isID = optionsObj.isID;
     const _ordered = optionsObj.ordered;
     const _optional = optionsObj.isOptional;
+
+    const [toggle, setToggle] = useState(false);
+    const [clear, setClear] = useState(toClear);
+    const [data, setData] = useState(value);
 
     // If isID, map child field name to child ID
     const nameToIdMap = useMemo(() => {
@@ -76,6 +67,15 @@ const Map = (props: FieldProps) => {
             return updated;
         });
     };
+
+    useEffect(() => {
+        setClear(toClear);
+        if (toClear) {
+            setData("");
+            setToggle(true);
+            setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
+        }
+    }, [toClear]);
     
     // Initialize/maintain ordered keys once when opened
     useEffect(() => {

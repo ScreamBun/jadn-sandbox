@@ -24,18 +24,9 @@ const Enumerated = (props: FieldProps) => {
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const optionsObj = destructureOptions(options);
     const schemaObj = useSelector(getSelectedSchema);
+    const setDefaults = useSelector((state: any) => state.toggleDefaults);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const dispatch = useDispatch();
-
-    const handleChange = (e: Option) => {
-        if (e == null) {
-            setSelectedValue('');
-            fieldChange(name, '');
-        } else {
-            setSelectedValue(e);
-            fieldChange(name, e.value);
-        }
-    }
 
     const _optional = optionsObj.isOptional;
     const highlightWords = [name, typeof selectedValue === 'object' ? selectedValue.label : value];
@@ -63,7 +54,6 @@ const Enumerated = (props: FieldProps) => {
         return { label: String(fname), value: String(fname) };
     });
 
-    const setDefaults = useSelector((state: any) => state.toggleDefaults);
     React.useEffect(() => {
         if (
             (value === undefined || value === null || value === '') ||
@@ -88,6 +78,16 @@ const Enumerated = (props: FieldProps) => {
     React.useEffect(() => {
         setSelectedValue(value && value !== "" ? { label: value, value: value } : '');
     }, [value]);
+
+    const handleChange = (e: Option) => {
+        if (e == null) {
+            setSelectedValue('');
+            fieldChange(name, '');
+        } else {
+            setSelectedValue(e);
+            fieldChange(name, e.value);
+        }
+    }
 
     return (
 
