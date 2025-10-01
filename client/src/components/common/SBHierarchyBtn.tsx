@@ -6,14 +6,16 @@ import { getSelectTheme } from "./SBSelect";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import { destructureField } from "components/create/data/lib/utils";
+import { createPortal } from "react-dom";
 
 interface SBHierarchyProps {
     ancestor: string;
     current: any[];
+    isBtnPrimary?: boolean;
 }
 
 const SBHierarchyBtn = (props: SBHierarchyProps) => {
-    const { ancestor, current } = props;
+    const { ancestor, current, isBtnPrimary = false } = props;
     const [showModal, setShowModal] = useState(false);
     const { theme } = useContext(ThemeContext);
     const themeColors = getSelectTheme(theme);
@@ -73,12 +75,11 @@ const SBHierarchyBtn = (props: SBHierarchyProps) => {
                 }
             }
         }
-        
         return result;
     }, [ancestor, schemaObj, name, _children]);
 
-    return (
-        <>
+    const modalContent = showModal && (
+        <div>
             <div className="position-relative d-inline-block">
                 <button 
                     type="button" 
@@ -202,6 +203,23 @@ const SBHierarchyBtn = (props: SBHierarchyProps) => {
                     </div>
                 </div>
             )}
+        </div>
+    );
+
+    return (
+        <>
+            <div className="position-relative d-inline-block">
+                <button 
+                    type="button" 
+                    className={`btn ${isBtnPrimary ? 'btn-primary' : ''} btn-sm`}
+                    onClick={toggleModal}
+                    title={`View hierarchy for ${name}`}
+                >
+                    <FontAwesomeIcon icon={faSitemap}/>
+                </button>
+            </div>
+
+            {modalContent && createPortal(modalContent, document.body)}
         </>
     );
 }
