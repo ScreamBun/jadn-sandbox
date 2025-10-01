@@ -11,7 +11,7 @@ export const destructureField = (field: any[]): [number, string, string, string[
         switch (len) {
             case 3: // Field = [_idx, name, _comment] - Enumerated Field
                 [idx, name, comment] = field;
-                [type, options, children] = ["", [], []];
+                [type, options, children] = [comment, [], []];
                 break;
             case 4: // Field = [_idx, name, type, options, _comment]
                 [idx, name, type, options, comment] = field;
@@ -46,8 +46,8 @@ export const destructureOptions = (options: string[]): {
     keyType: string | undefined; // For MapOf
     valueType: string | undefined; // For MapOf
     isID: boolean; // For Enumerated
-    key: string | undefined;
-    link: string | undefined;
+    key: boolean;
+    link: boolean;
     restriction: string | undefined;
     extension: string | undefined;
     abstract: boolean;
@@ -77,8 +77,8 @@ export const destructureOptions = (options: string[]): {
         keyType: parseOpts(false, '+'),
         valueType: parseOpts(false, '*'),
         isID: parseOpts(true, '=') ? true : false,
-        key: parseOpts(true, 'K'),
-        link: parseOpts(true, 'L'),
+        key: parseOpts(true, 'K') ? true : false,
+        link: parseOpts(true, 'L') ? true : false,
         restriction: parseOpts(false, 'r'),
         extension: parseOpts(false, 'e'),
         abstract: parseOpts(true, 'a') ? true : false,

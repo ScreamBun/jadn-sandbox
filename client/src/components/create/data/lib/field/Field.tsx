@@ -63,9 +63,9 @@ const Field = (props: FieldProps) => {
     // Check for key/link
     const isLink = optionsObj.link;
     const linkedRef = isLink ? linkToKey(schemaObj, type) : undefined;
-    if (linkedRef && linkedRef.type && linkedRef.options && linkedRef.children) {
+    if (linkedRef && linkedRef.type) {
         let newOpts = options.filter(opt => opt !== "L");
-        let newChildren = linkedRef.children.length > 0 ? linkedRef.children : [];
+        let newChildren = linkedRef.children && linkedRef.children.length > 0 ? linkedRef.children : [];
         let fieldArray = [_idx, name, linkedRef.type, [...newOpts, ...linkedRef.options], "", newChildren];
         return <Field field={fieldArray as AllFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear}/>;
     }
