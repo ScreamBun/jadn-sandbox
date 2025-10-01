@@ -1,4 +1,34 @@
-import { $MAX_ELEMENTS, defaultValues } from "components/create/consts";
+import { $MAX_ELEMENTS, defaultValues, BASE_TYPES } from "components/create/consts";
+
+// FUNCTION Destructure Field
+export const destructureField = (field: any[]): [number, string, string, string[], string, any[]] => {
+    let idx: number, name: string, type: string, options: string[], comment: string, children: any[];
+
+    const len = field.length;
+    const hasChildren = Array.isArray(field[5]) || Array.isArray(field[4]);
+
+    if (typeof field[0] === 'number') {
+        switch (len) {
+            case 3: // Field = [_idx, name, _comment] - Enumerated Field
+                [idx, name, comment] = field;
+                [type, options, children] = ["", [], []];
+                break;
+            case 4: // Field = [_idx, name, type, options, _comment]
+                [idx, name, type, options, comment] = field;
+                children = [];
+                break;
+            default: // Field = [_idx, name, type, options, _comment, children]
+                [idx, name, type, options, comment, children] = field;
+                break;
+        }
+    } else { // Field = [name, type, options, _comment, children]
+        [name, type, options, comment] = field;
+        idx = 0;
+        children = hasChildren ? field[4] : [];
+    }
+
+    return [idx, name, type, options, comment, children];
+}
 
 // FUNCTION Destructure Options
 export const destructureOptions = (options: string[]): {
@@ -59,12 +89,7 @@ export const destructureOptions = (options: string[]): {
 
 // FUNCTION: Determine if a type is derived from another type
 const isDerived = (type: string): Boolean => {
-    if (type === "Array" || type === "ArrayOf" || type === "Choice" || type === "Enumerated" || 
-        type === "Map" || type === "MapOf" || type === "Record" || type === "String" || 
-        type === "Integer" || type === "Number" || type === "Boolean" || type === "Binary") {
-        return false;
-    }
-    return true;
+    return !BASE_TYPES.includes(type);
 }
 
 // FUNCTIONS: Determine the true type of a field based on its given type
@@ -83,38 +108,6 @@ const trueTypeHelper = (types: any, type: string): [string, any] | undefined => 
 export const getTrueType = (schemaTypes: any, type: string): any => {
     const trueTypeTuple = trueTypeHelper(schemaTypes, type);
     return trueTypeTuple ? trueTypeTuple : [undefined, undefined];
-}
-
-// FUNCTION: Determine the structure of a field
-export const destructureField = (field: any[]): [number, string, string, string[], string, any[]] => {
-    let _idx: number, name: string, type: string, options: string[], _comment: string, children: any[];
-    const len = field.length;
-    const hasChildren = Array.isArray(field[4]);
-
-    if (len == 5 && hasChildren) { // Field = [name, type, options, _comment, children]
-        _idx = 0;
-        [name, type, options, _comment, children] = field;
-    } else if (len == 5) { // Field = [_idx, name, type, options, _comment]
-        [_idx, name, type, options, _comment] = field;
-        children = [];
-    } else if (len == 4) { // Field = [name, type, options, _comment]
-        _idx = 0;
-        [name, type, options, _comment] = field;
-        if (typeof options === 'string') {
-            [_idx, name, type, options] = field; // Field = [_idx, name, type, _comment]
-        } // Field = [name, type, _comment, children]
-        children = [];
-    } else { // Field = [_idx, name, _comment]
-        _idx = field[0];
-        name = field[1];
-        _comment = field[2];
-        type = _comment;
-        options = [];
-        children = [];
-
-    }
-
-    return [_idx, name, type, options, _comment, children];
 }
 
 //FUNCTION: Recursively get pointer children
