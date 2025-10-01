@@ -1,5 +1,4 @@
-import json
-from ..models.format_option_model import FormatOptionModel, FormatType
+from webApp.formatter.models.format_option_model import FormatOptionModel, FormatType
 
 
 class FormatOptionLogic:

@@ -1,15 +1,56 @@
 import ast
 import binascii
+import cbor_json
 import json
-from json2xml import json2xml
 import os
 
-from cbor2 import dumps
-import cbor_json
+from enum import Enum, EnumMeta
+from json2xml import json2xml
 from flask import current_app
-
 from webApp.utils import constants
 
+
+class MetaEnum(EnumMeta):
+    def __contains__(cls, item):
+        try:
+            cls(item)
+        except ValueError:
+            return False
+        return True
+
+class BaseEnum(Enum, metaclass=MetaEnum):
+    pass 
+
+def getValidationErrorMsg(err: dict):
+    err_msg = err['msg']
+    return err_msg
+    
+def getValidationErrorPath(err: dict):
+    err_loc_tuple = err['loc']
+    err_loc_list = list(err_loc_tuple)
+    if '__root__' in err_loc_list:
+        err_loc_list.remove('__root__')
+    err_path = "/".join(err_loc_list)
+    return err_path
+
+def error_worker(e, err_set: set) -> list:
+    if isinstance(e, ValueError):
+        if e.__context__ is not None:
+            err_set.add(error_worker(e.__context__, err_set))
+        else:
+            err_set.add(str(e))
+
+    err_list = []
+    if err_set:
+        err_list = list(err_set)
+        
+    return err_list                
+    
+def get_value_error_messages(e) -> list:
+    err_set = set()
+    err_list = []
+    err_list = error_worker(e, err_set)
+    return err_list
 
 def does_dir_exist(dir_path: str, isCreate: bool):
     isExist = os.path.exists(dir_path)
@@ -21,7 +62,6 @@ def does_dir_exist(dir_path: str, isCreate: bool):
             return True
         else:
             return False
-
 
 def find_file_by_name(name: str, path: str):
     file_found = None
