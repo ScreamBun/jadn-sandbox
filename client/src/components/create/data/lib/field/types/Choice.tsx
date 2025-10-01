@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getDefaultValue, isOptional } from "../../utils";
+import { destructureField, destructureOptions, getDefaultValue } from "../../utils";
 import { useSelector } from "react-redux";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 interface FieldProps {
@@ -19,6 +19,9 @@ interface FieldProps {
 const Choice = (props: FieldProps) => {
     const { field, fieldChange, parent, value, toClear, ancestor } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
+    const optionsObj = destructureOptions(options);
+    const _optional = optionsObj.isOptional;
+    const isID = optionsObj.isID;
 
     const selectedLabel = value ? Object.keys(value)?.[0] : '';
     const selectedVal = value ? { value: Object.values(value)?.[0] } : {};
@@ -62,8 +65,6 @@ const Choice = (props: FieldProps) => {
         selectedLabel ? getChild(selectedLabel) : undefined
     );
     
-    const isID = options.some(opt => String(opt) === '=');
-
     // If isID, map child field name to child ID
     const nameToIdMap = useMemo(() => {
         if (!Array.isArray(children)) return {};
@@ -96,8 +97,6 @@ const Choice = (props: FieldProps) => {
     const getOptions = children.map((child: AllFieldArray) => {
         return (typeof child[0] === 'string') ? { label: child[0], value: child[0] } : { label: child[1], value: child[1] };
     });
-
-    const _optional = isOptional(options);
 
     const setDefaults = useSelector((state: any) => state.toggleDefaults);
     React.useEffect(() => {

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getDefaultValue, getPointerChildren, isOptional, getDerivedOptions } from "../../utils";
+import { destructureField, getDefaultValue, getPointerChildren, getDerivedOptions, destructureOptions } from "../../utils";
 import { getSelectedSchema } from "reducers/util";
 import SBHighlightButton from "components/common/SBHighlightButton";
 import { clearHighlight } from "actions/highlight";
@@ -20,8 +20,10 @@ interface FieldProps {
 }
 
 const Enumerated = (props: FieldProps) => {
-    const { field, fieldChange, parent, value, toClear, ancestor } = props;
+    const { field, fieldChange, value, toClear, ancestor } = props;
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
+    const optionsObj = destructureOptions(options);
+    const schemaObj = useSelector(getSelectedSchema);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const dispatch = useDispatch();
 
@@ -35,40 +37,23 @@ const Enumerated = (props: FieldProps) => {
         }
     }
 
-    const _optional = isOptional(options);
+    const _optional = optionsObj.isOptional;
     const highlightWords = [name, typeof selectedValue === 'object' ? selectedValue.label : value];
 
     // Check for pointer
-    let pointer: string | undefined = undefined;
-    options.forEach((opt) => {
-        if (String(opt).startsWith('>')) {
-            pointer = String(opt).substring(1);
-        }
-    });
-
-    // Add pointer children to children if pointer exists
-    const schemaObj = useSelector(getSelectedSchema);
-    if (pointer !== undefined) {
+    const pointer = optionsObj.pointer;
+    if (pointer) {
         children = [...children, ...getPointerChildren(schemaObj, pointer, [])];
     }
 
-    // Check for derived enum
-    let derived: string | undefined = undefined;
-    options.forEach((opt) => {
-        if (String(opt).startsWith('#')) {
-            derived = String(opt).substring(1);
-        }
-    });
-
     // Add derived options if derived exists
-    if (derived !== undefined) {
+    const derived = optionsObj.derived;
+    if (derived) {
         children = getDerivedOptions(schemaObj, derived);
     }
-
-    const isID = options.some(opt => String(opt) === '=');
-
     const enumChildren = Array.isArray(children) ? children.filter(c => Array.isArray(c)) : [];
 
+    const isID = optionsObj.isID;
     const getOptions: Option[] = enumChildren.map(child => {
         const id = child[0];
         const fname = child[1];
@@ -85,7 +70,7 @@ const Enumerated = (props: FieldProps) => {
             (selectedValue === undefined || selectedValue === null || selectedValue === '')
         ) {
             const defaultValue = getDefaultValue("Enumerated", [], getOptions.map(opt => opt.value));
-            if (/*!_optional && */defaultValue !== undefined && setDefaults) {
+            if (defaultValue !== undefined && setDefaults) {
                 setSelectedValue({ label: defaultValue, value: defaultValue });
                 fieldChange(name, defaultValue);
             }

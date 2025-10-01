@@ -5,7 +5,7 @@ import Field from "../Field";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getMaxv, getMinv, getTrueType, getUniqueOrSet, isOptional } from "../../utils";
+import { destructureField, destructureOptions, getTrueType, getUniqueOrSet } from "../../utils";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBClearDataBtn from "components/common/SBClearDataBtn";
@@ -23,6 +23,7 @@ const ArrayOf = (props: FieldProps) => {
     const { field, fieldChange, toClear, value } = props;
 
     let [_idx, name, _type, options, _comment, _children] = destructureField(field);
+    const optionsObj = destructureOptions(options);
 
     const [toggle, setToggle] = useState(true);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);
@@ -30,20 +31,21 @@ const ArrayOf = (props: FieldProps) => {
     const [idNumber, setIdNumber] = useState(0);
     // Check if there are enough / too many items
     const [numberOfItems, setNumberOfItems] = useState(0);
-    const minv = getMinv(options);
-    const maxv = getMaxv(options);
+    const minv = optionsObj.minLength || 0;
+    const maxv = optionsObj.maxLength;
+    const _optional = optionsObj.isOptional;
     // Remove { and } from options so they aren't passed to child fields
     options = options.filter(opt => !opt.startsWith('{') && !opt.startsWith('}'));
 
-    const _set = options.some(opt => opt.startsWith("s"));
-    const _unordered = options.some(opt => opt.startsWith("b"));
+    const _set = optionsObj.set;
+    const _unordered = optionsObj.unordered;
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
         setClear(toClear);
     }, [toClear]);
 
-    const keyName = options.find(opt => opt.startsWith("*"))?.slice(1);
+    const keyName = optionsObj.valueType;
     const [trueTypeVal, trueTypeDef] = getTrueType(schemaObj.types, String(keyName));
     let keyType = trueTypeVal == undefined ? keyName : trueTypeVal;
     const [cards, setCards] = useState<Array<{idx: number, key: string}>>([]);
@@ -119,8 +121,6 @@ const ArrayOf = (props: FieldProps) => {
         setKeyList(prev => prev.filter(item => item.name !== entryName));
         setNumberOfItems(prev => prev - 1);
     };
-
-    const _optional = isOptional(options);
 
    const fields = cards.map((item) => {
         const key = item.key ? item.key : "";

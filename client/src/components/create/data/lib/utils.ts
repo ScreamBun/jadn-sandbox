@@ -1,15 +1,71 @@
 import { $MAX_ELEMENTS, defaultValues } from "components/create/consts";
-import { over, rest } from "lodash";
+
+// FUNCTION Destructure Options
+export const destructureOptions = (options: string[]): {
+    isOptional: boolean; // is the field optional
+    minLength: number | undefined;
+    maxLength: number | undefined;
+    minOccurs: number | undefined;
+    maxOccurs: number | undefined;
+    pointer: string | undefined;
+    derived: string | undefined;
+    unique: boolean;
+    set: boolean;
+    unordered: boolean;
+    ordered: boolean;
+    keyType: string | undefined; // For MapOf
+    valueType: string | undefined; // For MapOf
+    isID: boolean; // For Enumerated
+    key: string | undefined;
+    link: string | undefined;
+    restriction: string | undefined;
+    extension: string | undefined;
+    abstract: boolean;
+    final: boolean;
+    formats: string[];
+} => {
+    const parseOpts = (completeMatch: boolean, opt: string) => {
+        if (completeMatch) {
+            return options.find(option => option === opt);
+        } else {
+            return options.find(option => option.startsWith(opt))?.slice(1);
+        }
+    }
+
+    return {
+        isOptional: parseOpts(true, '[0') ? true : false,
+        minLength: Number(parseOpts(false, '{')),
+        maxLength: Number(parseOpts(false, '}')),
+        minOccurs: Number(parseOpts(false, '[')),
+        maxOccurs: Number(parseOpts(false, ']')),
+        pointer: parseOpts(false, '>'),
+        derived: parseOpts(false, '#'),
+        unique: parseOpts(true, 'q') ? true : false,
+        set: parseOpts(true, 's') ? true : false,
+        unordered: parseOpts(true, 'b') ? true : false,
+        ordered: parseOpts(true, 'q') ? true : false,
+        keyType: parseOpts(false, '+'),
+        valueType: parseOpts(false, '*'),
+        isID: parseOpts(true, '=') ? true : false,
+        key: parseOpts(true, 'K'),
+        link: parseOpts(true, 'L'),
+        restriction: parseOpts(false, 'r'),
+        extension: parseOpts(false, 'e'),
+        abstract: parseOpts(true, 'a') ? true : false,
+        final: parseOpts(true, 'f') ? true : false,
+        formats: options.filter(option => option.startsWith("/"))
+    }
+}
 
 // FUNCTION: Determine if a field is optional based on its options. Optional field has '[0']
-export const isOptional = (options: any[]): boolean => {
+/*export const isOptional = (options: any[]): boolean => {
     for (const opt of options) {
         if (String(opt) === '[0') {
             return true;
         }
     }
     return false;
-}
+}*/
 
 // FUNCTION: Determine if a type is derived from another type
 const isDerived = (type: string): Boolean => {
@@ -72,7 +128,7 @@ export const destructureField = (field: any[]): [number, string, string, string[
 }
 
 //FUNCTION: Get the minv (minimum length) of an ArrayOf, MapOf
-export const getMinv = (opts: any[]): number => {
+/*export const getMinv = (opts: any[]): number => {
     const minvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("{"));
     return minvOpt ? parseInt((minvOpt as string).slice(1), 10) : 0;
 }
@@ -80,7 +136,7 @@ export const getMinv = (opts: any[]): number => {
 export const getMaxv = (opts: any[]): number | undefined => {
     const maxvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("}"));
     return maxvOpt ? parseInt((maxvOpt as string).slice(1), 10) : undefined;
-}
+}*/
 
 //FUNCTION: Recursively get pointer children
 const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], path: string[], isID: boolean = false): any[] => {
@@ -194,6 +250,7 @@ export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
 
 //FUNCTION: Get default value. If option has default value, that takes precedence over the type default value.
 export const getDefaultValue = (type: string, options: any[], children: any[] = []): any => {
+    const optionsObj = destructureOptions(options);
     const minInclusive = options.find(opt => typeof opt === 'string' && opt.startsWith("w"))?.slice(1);
     let minExclusive = options.find(opt => typeof opt === 'string' && opt.startsWith("y"))?.slice(1);
     // Adjust minExclusive
@@ -206,12 +263,12 @@ export const getDefaultValue = (type: string, options: any[], children: any[] = 
     for (const option of options) {
         // Check for integer versions of dates
         const secondVis = type === "Integer" && (option === "/date-time" || option === "/date" || option === "/time");
-        const val = defaultValues(option, getMinv(options), minValue, children, secondVis);
+        const val = defaultValues(option, optionsObj.minLength, minValue, children, secondVis);
         if (val !== undefined) {
             return val;
         }
     }
-    const val2 = defaultValues(type, getMinv(options), minValue, children);
+    const val2 = defaultValues(type, optionsObj.minLength, minValue, children);
     if (val2 !== undefined) {
         return val2;
     }
@@ -219,13 +276,13 @@ export const getDefaultValue = (type: string, options: any[], children: any[] = 
 }
 
 //FUNCTION: Deal with field multiplicity for primitives
-export const getMultiplicity = (opts: any[]): [number | undefined, number | undefined] => {
+/*export const getMultiplicity = (opts: any[]): [number | undefined, number | undefined] => {
     let minOccurs = opts.find(opt => typeof opt === 'string' && opt.startsWith("["))?.substring(1);
     minOccurs = minOccurs ? parseInt(minOccurs) : undefined;
     let maxOccurs = opts.find(opt => typeof opt === 'string' && opt.startsWith("]"))?.substring(1);
     maxOccurs = maxOccurs ? parseInt(maxOccurs) : undefined;
     return [minOccurs, maxOccurs];
-}
+}*/
 
 export const convertToArrayOf = (field: any[], minOccurs: number | undefined, maxOccurs: number | undefined): any[] | undefined => {
     let [_idx, name, type, options, _comment, _children] = destructureField(field);

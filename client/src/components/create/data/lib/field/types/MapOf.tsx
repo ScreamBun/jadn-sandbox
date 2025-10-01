@@ -7,7 +7,7 @@ import { faPlus, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { getSelectedSchema } from "reducers/util";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getMaxv, getMinv, getTrueType, isOptional } from "../../utils";
+import { destructureField, destructureOptions, getTrueType } from "../../utils";
 import SBClearDataBtn from "components/common/SBClearDataBtn";
 interface FieldProps {
     field: FieldOfArray | ArrayFieldArray | StandardFieldArray;
@@ -19,11 +19,12 @@ interface FieldProps {
 }
 
 const MapOf = (props: FieldProps) => {
-    const { field, fieldChange, parent, value, toClear } = props;
+    const { field, fieldChange, value, toClear } = props;
     let [_idx, name, _type, options, _comment, _children] = destructureField(field);
+    const optionsObj = destructureOptions(options);
 
     const [toggle, setToggle] = useState(true);
-    const [toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
+    const [_toggleField, setToggleField] = useState<{ [key: string]: Boolean }>({ [0]: true });
     const schemaObj = useSelector(getSelectedSchema);
 
     const [clear, setClear] = useState(toClear);
@@ -72,7 +73,6 @@ const MapOf = (props: FieldProps) => {
                 setNumberOfItems(initCards.length);
             }
         } catch (err) {
-            // ignore malformed incoming value
         }
     }, [value]);
 
@@ -81,15 +81,15 @@ const MapOf = (props: FieldProps) => {
 
     // Check if there are enough / too many items
     const [numberOfItems, setNumberOfItems] = useState(0);
-    const minv = getMinv(options);
-    const maxv = getMaxv(options);
 
-    const _optional = isOptional(options);
-    const _ordered = options.some(opt => opt.startsWith("q"));
+    const minv = optionsObj.minLength || 0;
+    const maxv = optionsObj.maxLength;
+    const _optional = optionsObj.isOptional;
+    const _ordered = optionsObj.ordered;
 
     // Extract ktype and vtype
-    const keyType = options.find((opt: string) => opt.startsWith("+") || opt.startsWith(">"))?.slice(1);
-    const valueType = options.find((opt: string) => opt.startsWith("*"))?.slice(1);
+    const keyType = optionsObj.keyType
+    const valueType = optionsObj.valueType
     const [cards, setCards] = useState<Array<{id: number, key: string | undefined, value: string | undefined, idx?: number}>>([]); // Start empty
     const [seq, setSeq] = useState(0);
     const [keyList, setKeyList] = useState<Array<{name: any , key: any}>>([]);

@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, isOptional } from "../../utils";
+import { destructureField, destructureOptions } from "../../utils";
 import SBClearDataBtn from "components/common/SBClearDataBtn";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 
@@ -18,13 +18,15 @@ interface FieldProps {
 }
 
 const Record = (props: FieldProps) => {
-    const { field, fieldChange, parent, value, toClear, ancestor } = props;
+    const { field, fieldChange, value, toClear, ancestor } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
+    const optionsObj = destructureOptions(options);
     const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
     const [clear, setClear] = useState(toClear);
 
-    const _ordered = options.some(opt => opt.startsWith("q"));
+    const _ordered = optionsObj.ordered;
+    const _optional = optionsObj.isOptional;
     
     useEffect(() => {
         setClear(toClear);
@@ -102,8 +104,6 @@ const Record = (props: FieldProps) => {
             );
         });
     }, [toggle, children, name, clear]);
-
-    const _optional = isOptional(options);
 
     return (
         <>
