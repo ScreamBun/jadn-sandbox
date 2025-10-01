@@ -115,12 +115,10 @@ const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], p
     let newPath = [...path];
 
     let [_idx, _name, _type, _options, _comment, children] = destructureField(type);
-    if (!Array.isArray(children)) {
-        return [];
-    }
+    children = Array.isArray(children) ? children : [];
+    
     if (children.length === 0) {
         const [_trueType, trueTypeDef] = getTrueType(schemaObj.types, _type);
-        // Don't need to list enum or choice
         if (_trueType === "Enumerated" || _trueType === "Choice") {
             return [[[...newPath, isID ? String(_idx) : _name].join('/')]];
         }
@@ -169,21 +167,19 @@ export const getDerivedOptions = (schemaObj: any, derived: string): any[] => {
 
 //FUNCTION: ArrayOf and Array unique & set check
 export const getUniqueOrSet = (children: any[], opts: any[], type: string): string => {
-    const isUnique = opts.some(opt => opt === "q");
-    const isSet = opts.some(opt => opt === "s");
-    let m = "";
-    if (isUnique || isSet) {
+    const optionsObj = destructureOptions(opts);
+    if (optionsObj.unique || optionsObj.set) {
         if (type === "ArrayOf") {
             if (Array.from(new Set(children.map(c => c.key))).length != children.map(c => c.key).length) {
-                m = ("Error: Must not contain duplicate values");
+                return ("Error: Must not contain duplicate values");
             }
         } else if (type === "Array") {
             if (Array.from(new Set(children)).length != children.length) {
-                m = ("Error: Must not contain duplicate values");
+                return ("Error: Must not contain duplicate values");
             }
         }
     }
-    return m;
+    return "";
 }
 
 //FUNCTION: Extract keys from an enumeration
@@ -196,18 +192,19 @@ const getEnumKeys = (children: any[], isID: boolean = false): any[] => {
 
 export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
     let [_idx, _name, type, options, _comment, _children] = destructureField(field);
+    const optionsObj = destructureOptions(options);
     let enumKeys: any[] = [];
     if (type === "MapOf") {
         // Check if key type or true type of key type is Enumerated
-        const keyType = options.find(opt => opt.startsWith("+"))?.substring(1);
+        const keyType = optionsObj.keyType;
         const [trueType, trueTypeDef] = getTrueType(schemaObj.types, keyType ? keyType : "");
         if (keyType === "Enumerated" || trueType === "Enumerated") {
             let [_idx, _trueName, _type, _options, _comment, children] = destructureField(trueTypeDef ? trueTypeDef : []);
-            const isID = _options.some(opt => opt.startsWith("=")); // Check if enum option has ID
+            const isID = optionsObj.isID;
             enumKeys = getEnumKeys(children, isID);
 
             // Check if enum is pointer
-            const hasPointer = _options.find(opt => opt.startsWith(">"))?.slice(1);
+            const hasPointer = optionsObj.pointer
             if (enumKeys.length === 0 && hasPointer) {
                 enumKeys = getPointerChildren(schemaObj, hasPointer, children, isID).map((child: any) => {
                     let [_idx, name, _type, _options, _comment, _children] = destructureField(child);
@@ -247,15 +244,6 @@ export const getDefaultValue = (type: string, options: any[], children: any[] = 
     return undefined;
 }
 
-//FUNCTION: Deal with field multiplicity for primitives
-/*export const getMultiplicity = (opts: any[]): [number | undefined, number | undefined] => {
-    let minOccurs = opts.find(opt => typeof opt === 'string' && opt.startsWith("["))?.substring(1);
-    minOccurs = minOccurs ? parseInt(minOccurs) : undefined;
-    let maxOccurs = opts.find(opt => typeof opt === 'string' && opt.startsWith("]"))?.substring(1);
-    maxOccurs = maxOccurs ? parseInt(maxOccurs) : undefined;
-    return [minOccurs, maxOccurs];
-}*/
-
 export const convertToArrayOf = (field: any[], minOccurs: number | undefined, maxOccurs: number | undefined): any[] | undefined => {
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
     // Remove minOccurs and maxOccurs from options
@@ -264,10 +252,8 @@ export const convertToArrayOf = (field: any[], minOccurs: number | undefined, ma
     } else {
         options = options.filter(opt => typeof opt === 'string' && !opt.startsWith("[") && !opt.startsWith("]"));
     }
-
-    // Case maxOccurs == -1
+    
     const useMaxElements = maxOccurs === -1;
-    // Case maxOccurs == -2
     const upperBoundUnlimited = maxOccurs === -2;
     
     // Convert minOccurs and maxOccurs to minLength and maxLength

@@ -1,5 +1,5 @@
 import { ArrayFieldArray, EnumeratedFieldArray } from "components/create/schema/interface";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBInfoBtn from "components/common/SBInfoBtn";
@@ -54,7 +54,7 @@ const Enumerated = (props: FieldProps) => {
         return { label: String(fname), value: String(fname) };
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (
             (value === undefined || value === null || value === '') ||
             (selectedValue === undefined || selectedValue === null || selectedValue === '')
