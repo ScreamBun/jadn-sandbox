@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getSelectedSchema } from 'reducers/util'
 import { useSelector } from 'react-redux'
 import { AllFieldArray } from '../schema/interface'
@@ -25,9 +25,24 @@ const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
     const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor, annotatedCbor, setAnnotatedCbor } = props;
+
+    // States
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
     const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
     const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:LANG_JSON_UPPER, value: LANG_JSON_UPPER});
+    const [jsonValidated, setJsonValidated] = useState(false);
+    const [xmlValidated, setXmlValidated] = useState(false);
+    const [dataFullScreen, setDataFullScreen] = useState(false);
+    const [jsonFullScreen, setJsonFullScreen] = useState(false);
+
+    // Redux states
+    const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
+    const highlightedItems = useSelector((state: any) => state.Highlight.highlightWords);
+    const schemaObj = useSelector(getSelectedSchema);
+
+    // Get selected type
+    const roots = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
+    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === selection?.value) : [];
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
@@ -44,11 +59,6 @@ const DataCreator = (props: any) => {
         });
     };
 
-    // Get the selected schema & selected roots/types
-    const schemaObj = useSelector(getSelectedSchema);
-    const roots = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
-    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === selection?.value) : [];
-
     // Handle root dropdown selection
     const handleSelection = (e: Option) => {
         setSelection(e);
@@ -64,8 +74,6 @@ const DataCreator = (props: any) => {
     }
 
     // Handle full data validation
-    const [jsonValidated, setJsonValidated] = useState(false);
-    const [xmlValidated, setXmlValidated] = useState(false);
     const handleValidate = async (lang: string) => {
         if (!schemaObj || !generatedMessage) {
             sbToastError('ERROR: Validation failed - Please select schema and enter data');
@@ -116,8 +124,6 @@ const DataCreator = (props: any) => {
         dispatch<any>(clearHighlight());
     }    
 
-    const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
-
     // Handle generate data
     const setDefaults = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -128,14 +134,8 @@ const DataCreator = (props: any) => {
         }
     }
 
-    const [dataFullScreen, setDataFullScreen] = useState(false);
-    const [jsonFullScreen, setJsonFullScreen] = useState(false);
-
-    // Pull global state of highlighted items
-    const highlightedItems = useSelector((state: any) => state.Highlight.highlightWords);
-
     // Handle making sure loaded defs are reset
-    React.useEffect(() => {
+    useEffect(() => {
         if (loadedFieldDefs) {
             setLoadedFieldDefs(null);
             dispatch<any>(clearHighlight());
@@ -217,7 +217,7 @@ const DataCreator = (props: any) => {
                         <div className = "ms-auto">
                             <SBLoadBuilder
                                 customClass={`float-start ms-1 ${selection?.value ? '' : 'disabled'}`} 
-                                onLoad={({root, fields, message}) => 
+                                onLoad={({fields, message}) => 
                                     {
                                         // Force reload of Field components
                                         setLoadVersion(v => v + 1);

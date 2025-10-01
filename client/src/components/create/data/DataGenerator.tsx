@@ -11,30 +11,29 @@ import { Option } from 'components/common/SBSelect'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { clearHighlight } from "actions/highlight";
 import { useNavigate } from 'react-router'
-import { set } from 'lodash'
 
 const DataGenerator = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const loadedSchema = useSelector(getSelectedSchema);
+    const selectedFile = useSelector(getSelectedFile);
+    const meta_title = useSelector(getPageTitle) + ' | Data Creation'
+    const meta_canonical = `${window.location.origin}${window.location.pathname}`
+
     const setLoadedSchema = (schema: object | null) => {
         dispatch(setSchema(schema));
     }
-
-    const selectedFile = useSelector(getSelectedFile);
     const setSelectedFile = (file: Option | null) => {
         dispatch(setFile(file));
     }
+
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [xml, setXml] = useState('');
     const [cbor, setCbor] = useState('');
     const [annotatedCbor, setAnnotatedCbor] = useState('');
     const [selection, setSelection] = useState<Option | null>();
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
-
-    const meta_title = useSelector(getPageTitle) + ' | Data Creation'
-    const meta_canonical = `${window.location.origin}${window.location.pathname}`
 
     const handleSchemaCreation = () => {
         navigate('/create/schema');
