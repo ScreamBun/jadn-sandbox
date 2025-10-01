@@ -5,6 +5,7 @@ import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, getDefaultValue, isOptional } from "../../utils";
 import { useSelector } from "react-redux";
+import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -12,10 +13,11 @@ interface FieldProps {
     parent?: string;
     value?: any;
     toClear: boolean;
+    ancestor?: string;
 }
 
 const Choice = (props: FieldProps) => {
-    const { field, fieldChange, parent, value, toClear } = props;
+    const { field, fieldChange, parent, value, toClear, ancestor } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
 
     const selectedLabel = value ? Object.keys(value)?.[0] : '';
@@ -116,6 +118,7 @@ const Choice = (props: FieldProps) => {
         <div className="form-group">
             <div className='form-group d-flex align-items-center justify-content-between'>
                 <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                {ancestor ? <SBHierarchyBtn ancestor={ancestor || ""} current={field} /> : null}
                 <SBInfoBtn comment={_comment} />
                 <SBSelect id={name} name={name} data={getOptions}
                     onChange={handleChange}

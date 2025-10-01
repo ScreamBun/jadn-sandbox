@@ -7,6 +7,7 @@ import { destructureField, getDefaultValue, getPointerChildren, isOptional, getD
 import { getSelectedSchema } from "reducers/util";
 import SBHighlightButton from "components/common/SBHighlightButton";
 import { clearHighlight } from "actions/highlight";
+import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -15,10 +16,11 @@ interface FieldProps {
     parent?: string;
     value?: any;
     toClear: boolean;
+    ancestor?: string;
 }
 
 const Enumerated = (props: FieldProps) => {
-    const { field, fieldChange, parent, value, toClear } = props;
+    const { field, fieldChange, parent, value, toClear, ancestor } = props;
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const dispatch = useDispatch();
@@ -107,6 +109,7 @@ const Enumerated = (props: FieldProps) => {
         <div className="form-group">
             <div className='form-group d-flex align-items-center justify-content-between'>
                 <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                {ancestor ? <SBHierarchyBtn ancestor={ancestor || ""} current={field} /> : null}
                 <SBInfoBtn comment={_comment} />
                 <SBHighlightButton highlightWords={highlightWords} />
                 <SBSelect id={name} name = {name} data = {getOptions}
