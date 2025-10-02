@@ -26,6 +26,7 @@ const Choice = (props: FieldProps) => {
     const selectedLabel = value ? Object.keys(value)?.[0] : '';
     const selectedVal = value ? { value: Object.values(value)?.[0] } : {};
     const [selectedValue, setSelectedValue] = useState<Option | string>(selectedLabel != '' ? { 'label': selectedLabel, 'value': selectedLabel } : '');
+    const toggleDataGen = useSelector((state: any) => state.toggleDefaults);
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -98,20 +99,19 @@ const Choice = (props: FieldProps) => {
         return (typeof child[0] === 'string') ? { label: child[0], value: child[0] } : { label: child[1], value: child[1] };
     });
 
-    const setDefaults = useSelector((state: any) => state.toggleDefaults);
     React.useEffect(() => {
         if (
-            (value === undefined || value === null || value === '') ||
+            (value === undefined || value === null || value === '') &&
             (selectedValue === undefined || selectedValue === null || selectedValue === '')
         ) {
-            const defaultValue = generateData([], _type, children);
-            if (defaultValue !== undefined && setDefaults) {
-                setSelectedValue({ label: defaultValue, value: defaultValue });
-                fieldChange(name, defaultValue);
-                setSelectedChild(getChild(defaultValue));
+            const genData = generateData([], _type, children);
+            if (genData !== undefined && toggleDataGen) {
+                setSelectedValue({ label: genData, value: genData });
+                fieldChange(name, genData);
+                setSelectedChild(getChild(genData));
             }
         }
-    }, [setDefaults]);
+    }, [toggleDataGen, fieldChange]);
 
     return (
         <div className="form-group">

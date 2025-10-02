@@ -24,7 +24,7 @@ const Enumerated = (props: FieldProps) => {
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const optionsObj = destructureOptions(options);
     const schemaObj = useSelector(getSelectedSchema);
-    const setDefaults = useSelector((state: any) => state.toggleDefaults);
+    const toggleDataGen = useSelector((state: any) => state.toggleDefaults);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const dispatch = useDispatch();
 
@@ -59,13 +59,13 @@ const Enumerated = (props: FieldProps) => {
             (value === undefined || value === null || value === '') ||
             (selectedValue === undefined || selectedValue === null || selectedValue === '')
         ) {
-            const defaultValue = generateData([], "Enumerated", getOptions.map(opt => opt.value));
-            if (defaultValue !== undefined && setDefaults) {
-                setSelectedValue({ label: defaultValue, value: defaultValue });
-                fieldChange(name, defaultValue);
+            const genData = generateData([], "Enumerated", getOptions.map(opt => opt.value));
+            if (genData !== undefined && toggleDataGen) {
+                setSelectedValue({ label: genData, value: genData });
+                fieldChange(name, genData);
             }
         }
-    }, [setDefaults]);
+    }, [toggleDataGen]);
 
     React.useEffect(() => {
         if (toClear) {

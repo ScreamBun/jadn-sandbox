@@ -26,6 +26,7 @@ const CoreType = (props: FieldProps) => {
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
     const optionsObj = destructureOptions(options);
 
+    const toggleDataGen = useSelector((state: any) => state.toggleDefaults);
     const [data, setData] = useState(value);
     const dispatch = useDispatch();
     const errMsg = useSelector((s: any) => getFieldError(s, name));
@@ -76,19 +77,18 @@ const CoreType = (props: FieldProps) => {
         dispatch(validateFieldAction(name, val, valType, options));
     };
 
-    const setDefaults = useSelector((state: any) => state.toggleDefaults);
     React.useEffect(() => {
         if (
             (value === undefined || value === null || value === '') &&
             (data === undefined || data === null || data === '')
         ) {
-            const defaultValue = generateData(options, type);
-            if (defaultValue !== undefined && setDefaults) {
-                setData(defaultValue);
-                fieldChange(name, defaultValue);
+            const genData = generateData(options, type);
+            if (genData !== undefined && toggleDataGen) {
+                setData(genData);
+                fieldChange(name, genData);
             }
         }
-    }, [setDefaults, fieldChange]);
+    }, [toggleDataGen, fieldChange]);
 
     React.useEffect(() => {
         setClear(toClear);

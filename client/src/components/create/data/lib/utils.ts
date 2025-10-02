@@ -117,16 +117,16 @@ export const generateData = (options: string[], type: string, children?: any[]) 
     for (const option of options) {
         switch (type) {
             case "Integer":
-                genData = INTEGER_FORMATS[option as keyof typeof INTEGER_FORMATS];
+                genData = genData === undefined ? INTEGER_FORMATS[option as keyof typeof INTEGER_FORMATS] : genData;
                 break;
             case "Number":
-                genData = NUMBER_FORMATS[option as keyof typeof NUMBER_FORMATS];
+                genData = genData === undefined ? NUMBER_FORMATS[option as keyof typeof NUMBER_FORMATS] : genData;
                 break;
             case "Binary":
-                genData = BINARY_FORMATS[option as keyof typeof BINARY_FORMATS];
+                genData = genData === undefined ? BINARY_FORMATS[option as keyof typeof BINARY_FORMATS] : genData;
                 break;
             case "String":
-                genData = STRING_FORMATS[option as keyof typeof STRING_FORMATS];
+                genData = genData === undefined ? STRING_FORMATS[option as keyof typeof STRING_FORMATS] : genData;
                 break;
             default:
                 break;
