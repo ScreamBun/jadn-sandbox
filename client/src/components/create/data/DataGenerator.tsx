@@ -50,7 +50,6 @@ const DataGenerator = () => {
         setXml("");
         setCbor("");
         setAnnotatedCbor("");
-        dispatch(setSchema(loadedSchema));
         dispatch(clearFieldValidation());
         dispatch<any>(clearHighlight());
     }, [loadedSchema])
