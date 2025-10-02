@@ -64,7 +64,7 @@ const DataCreator = (props: any) => {
     const handleSelection = (e: Option) => {
         setSelection(e);
         setGeneratedMessage({});
-        dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         setLoadedFieldDefs(null);
         setJsonValidated(false);
         setXmlValidated(false);
@@ -114,7 +114,7 @@ const DataCreator = (props: any) => {
         e.preventDefault();
         setSelection(null);
         setGeneratedMessage({});
-        dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         dispatch(clearFieldValidation());
         setJsonValidated(false);
         setXmlValidated(false);

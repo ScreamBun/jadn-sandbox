@@ -67,7 +67,7 @@ const DataGenerator = () => {
         setGeneratedMessage({});
         sbToastSuccess("Schema reset successfully");
         dispatch(setSchema(null));
-        dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         dispatch(clearFieldValidation());
         dispatch<any>(clearHighlight());
         dispatch(setSchemaValid(false))
