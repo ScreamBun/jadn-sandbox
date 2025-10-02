@@ -6,6 +6,7 @@ import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, destructureOptions, generateData } from "../../utils";
 import { useSelector } from "react-redux";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
+import { getToggleGenData } from "reducers/gendata";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -26,7 +27,7 @@ const Choice = (props: FieldProps) => {
     const selectedLabel = value ? Object.keys(value)?.[0] : '';
     const selectedVal = value ? { value: Object.values(value)?.[0] } : {};
     const [selectedValue, setSelectedValue] = useState<Option | string>(selectedLabel != '' ? { 'label': selectedLabel, 'value': selectedLabel } : '');
-    const toggleDataGen = useSelector((state: any) => state.toggleDefaults);
+    const toggleDataGen = useSelector(getToggleGenData);
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {

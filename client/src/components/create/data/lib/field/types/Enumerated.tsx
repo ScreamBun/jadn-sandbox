@@ -8,6 +8,7 @@ import { getSelectedSchema } from "reducers/util";
 import SBHighlightButton from "components/common/SBHighlightButton";
 import { clearHighlight } from "actions/highlight";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
+import { getToggleGenData } from "reducers/gendata";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -24,7 +25,7 @@ const Enumerated = (props: FieldProps) => {
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
     const optionsObj = destructureOptions(options);
     const schemaObj = useSelector(getSelectedSchema);
-    const toggleDataGen = useSelector((state: any) => state.toggleDefaults);
+    const toggleDataGen = useSelector(getToggleGenData);
     const [selectedValue, setSelectedValue] = useState<Option | string>(value != '' ? { 'label': value, 'value': value } : '');
     const dispatch = useDispatch();
 

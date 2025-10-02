@@ -11,6 +11,7 @@ import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
 import { Buffer } from 'buffer';
 import SBHighlightButton from "components/common/SBHighlightButton";
 import { clearHighlight } from "actions/highlight";
+import { getToggleGenData } from "reducers/gendata";
 
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
@@ -26,7 +27,7 @@ const CoreType = (props: FieldProps) => {
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
     const optionsObj = destructureOptions(options);
 
-    const toggleDataGen = useSelector((state: any) => state.toggleDefaults);
+    const toggleDataGen = useSelector(getToggleGenData);
     const [data, setData] = useState(value);
     const dispatch = useDispatch();
     const errMsg = useSelector((s: any) => getFieldError(s, name));

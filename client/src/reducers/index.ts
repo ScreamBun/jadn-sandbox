@@ -10,7 +10,7 @@ import duplicate, { DuplicateState } from './duplicate';
 import transform, { TransformState } from './transform';
 import validateField, { ValidateFieldState } from './validatefield';
 import highlight, { HighlightState } from './highlight'
-import toggleDefaultsReducer from './defaults';
+import toggleGenDataReducer from './gendata';
 
 export interface RootState {  // export so store.ts import is valid
   router: Reducer<RouterState<History>, LocationChangeAction<History>>; // MUST BE 'router'
@@ -34,7 +34,7 @@ export default (history: History) => combineReducers({
   Format: format,
   Transform: transform,
   ValidateField: validateField,
-  toggleDefaults: toggleDefaultsReducer,
+  toggleGenData: toggleGenDataReducer,
   Duplicate: duplicate,
   Highlight: highlight
 });
