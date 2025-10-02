@@ -20,6 +20,7 @@ import { destructureField, removeXmlWrapper } from './lib/utils'
 import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER, LANG_ANNOTATED_HEX } from 'components/utils/constants';
 import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
+import { getToggleGenData } from 'reducers/gendata'
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -36,7 +37,7 @@ const DataCreator = (props: any) => {
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
 
     // Redux states
-    const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
+    const toggleGenData = useSelector(getToggleGenData);
     const highlightedItems = useSelector((state: any) => state.Highlight.highlightWords);
     const schemaObj = useSelector(getSelectedSchema);
 
@@ -127,10 +128,10 @@ const DataCreator = (props: any) => {
     // Handle generate data
     const setDefaults = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if (toggleDefaults) {
-            dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        if (toggleGenData) {
+            dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         } else {
-            dispatch({ type: 'TOGGLE_DEFAULTS', payload: true });
+            dispatch({ type: 'TOGGLE_GEN_DATA', payload: true });
         }
     }
 
@@ -263,7 +264,7 @@ const DataCreator = (props: any) => {
                                 selection={selection}
                                 generatedMessage={generatedMessage}
                             />
-                            <button className={`btn btn-sm ${toggleDefaults ? 'btn-warning' : 'btn-primary'} float-start ms-1`} title='Generate Data' onClick={setDefaults}>
+                            <button className={`btn btn-sm ${toggleGenData ? 'btn-warning' : 'btn-primary'} float-start ms-1`} title='Generate Data' onClick={setDefaults}>
                                 <FontAwesomeIcon icon = {faWandSparkles} />
                             </button>
                             <button className='btn btn-sm btn-primary ms-1' title='Full Screen Data' onClick={() => setDataFullScreen(!dataFullScreen)}>
