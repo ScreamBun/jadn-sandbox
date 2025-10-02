@@ -1,7 +1,7 @@
 import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/interface";
 import React, {useEffect, useState} from "react";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getDefaultValue, getDefaultOpt, getConstOpt, destructureOptions } from "components/create/data/lib/utils";
+import { destructureField, generateData, getDefaultOpt, getConstOpt, destructureOptions } from "components/create/data/lib/utils";
 import { useDispatch, useSelector } from 'react-redux';
 import { validateField as validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { getFieldError, isFieldValidating } from 'reducers/validatefield';
@@ -30,7 +30,7 @@ const CoreType = (props: FieldProps) => {
     const dispatch = useDispatch();
     const errMsg = useSelector((s: any) => getFieldError(s, name));
     const validating = useSelector((s: any) => isFieldValidating(s, name));
-    const [clear, setClear] = useState(toClear);
+    const [_clear, setClear] = useState(toClear);
 
     const _optional = optionsObj.isOptional;
     const formats = optionsObj.formats;
@@ -82,8 +82,8 @@ const CoreType = (props: FieldProps) => {
             (value === undefined || value === null || value === '') &&
             (data === undefined || data === null || data === '')
         ) {
-            const defaultValue = getDefaultValue(type, options);
-            if (/*!_optional && */defaultValue !== undefined && setDefaults) {
+            const defaultValue = generateData(options, type);
+            if (defaultValue !== undefined && setDefaults) {
                 setData(defaultValue);
                 fieldChange(name, defaultValue);
             }

@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, destructureOptions, getDefaultValue } from "../../utils";
+import { destructureField, destructureOptions, generateData } from "../../utils";
 import { useSelector } from "react-redux";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 interface FieldProps {
@@ -17,7 +17,7 @@ interface FieldProps {
 }
 
 const Choice = (props: FieldProps) => {
-    const { field, fieldChange, parent, value, toClear, ancestor } = props;
+    const { field, fieldChange, value, toClear, ancestor } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const optionsObj = destructureOptions(options);
     const _optional = optionsObj.isOptional;
@@ -104,8 +104,8 @@ const Choice = (props: FieldProps) => {
             (value === undefined || value === null || value === '') ||
             (selectedValue === undefined || selectedValue === null || selectedValue === '')
         ) {
-            const defaultValue = getDefaultValue("Choice", [], children);
-            if (/*!_optional && */defaultValue !== undefined && setDefaults) {
+            const defaultValue = generateData([], _type, children);
+            if (defaultValue !== undefined && setDefaults) {
                 setSelectedValue({ label: defaultValue, value: defaultValue });
                 fieldChange(name, defaultValue);
                 setSelectedChild(getChild(defaultValue));

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 import SBSelect, { Option } from 'components/common/SBSelect';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getDefaultValue, getPointerChildren, getDerivedOptions, destructureOptions } from "../../utils";
+import { destructureField, generateData, getPointerChildren, getDerivedOptions, destructureOptions } from "../../utils";
 import { getSelectedSchema } from "reducers/util";
 import SBHighlightButton from "components/common/SBHighlightButton";
 import { clearHighlight } from "actions/highlight";
@@ -59,7 +59,7 @@ const Enumerated = (props: FieldProps) => {
             (value === undefined || value === null || value === '') ||
             (selectedValue === undefined || selectedValue === null || selectedValue === '')
         ) {
-            const defaultValue = getDefaultValue("Enumerated", [], getOptions.map(opt => opt.value));
+            const defaultValue = generateData([], "Enumerated", getOptions.map(opt => opt.value));
             if (defaultValue !== undefined && setDefaults) {
                 setSelectedValue({ label: defaultValue, value: defaultValue });
                 fieldChange(name, defaultValue);

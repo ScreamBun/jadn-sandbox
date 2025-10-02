@@ -1,3 +1,5 @@
+import RandExp from "randexp";
+
 //For Binary, String, Array, ArrayOf, Map, MapOf, and Record types: if maxv is not present or is zero, it defaults to
 export const $MAX_BINARY = 255;     //Maximum number of octets
 export const $MAX_STRING = 255;     //Maximum number of characters
@@ -16,78 +18,83 @@ export const timeZones = [
     "+09:30", "+10:00", "+10:30", "+11:00", "+12:00", "+12:45", "+13:00", "+14:00"
 ];
 
-// Primitive types
+// Type constants
 export const PRIMITIVE_TYPES = ["String", "Integer", "Number", "Binary", "Boolean"];
 export const COMPOUND_TYPES = ["Record", "Map", "MapOf", "Array", "ArrayOf", "Choice", "Enumerated"];
 export const BASE_TYPES = [...PRIMITIVE_TYPES, ...COMPOUND_TYPES];
 
-// Example data for data generator
-import RandExp from "randexp";
-export const defaultValues = (option: string, minLength: number = 0, minVal: number = 1, children: any = [], secondVis: boolean = false) => {
-    const strValue = minLength > 0 ? 'a'.repeat(minLength) : "abcdefg";
-    const binValue = minLength > 0 ? '\x65'.repeat(minLength) : "\x65\x66\x67";
-    const pattern = option && option.startsWith('%') ? option.slice(1) : undefined;
+// Options
+export const STRING_FORMATS = {
+    "/language": "en-US",
+    "/QName": "www.example.com:Homepage",
+    "/normalizedString": "letter",
+    "/name": "_name",
+    "/date": "2023-01-01",
+    "/date-time": "2023-01-01T00:00+03:00",
+    "/time": "12:00:00",
+    "/token": "Milwaukee",
+    "/relative-json-pointer": "0/foo",
+    "/json-pointer": "/foo",
+    "/iri-reference": "file://localhost/absolute/path/to/file",
+    "/iri": "https://www.website.com",
+    "/uri-template": "https://www.example.com/api/v1/items/{/item_id}",
+    "/uri-reference": "http://www.example.com/questions/3456/my-document",
+    "/uri": "http://www.example.com/questions/3456/my-document",
+    "/anyUri": "http://www.test.com",
+    "/ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+    "/ipv4": "127.0.0.1",
+    "/idn-hostname": "xn--bcher-kva.example.com",
+    "/hostname": "example.com",
+    "/idn-email": "test@test.life",
+    "/email": "jarvis@stark.com",
+    "/regex": "A(BB){1,4}",
+    "/NOTATION": "http://www.test.com"
+}
 
-    const choice = pattern ? "String" : option; // make sure sending right val to optDict
+export const INTEGER_FORMATS = {
+    "/duration": 1,
+    "/i8": 127,
+    "/i16": 32767,
+    "/i32": 2147483647,
+    "/i64": 92233720368547758,
+    "/u8": 127,
+    "/u16": 32767,
+    "/u32": 4294967294,
+    "/u64": 18446744073709551615,
+    "/gYear": 1999,
+    "/gYearMonth": "-1000-05",
+    "/gMonthDay": "--04-12Z",
+    "/yearMonthDuration": "P17M",
+    "/dayTimeDuration": "PT30M",
+    "/nonNegativeInteger": 0,
+    "/positiveInteger": 1,
+    "/nonPositiveInteger": 0,
+    "/negativeInteger": -1,
+    "/date": Math.floor(Date.now() / 1000),
+    "/date-time": Math.floor(Date.now() / 1000),
+    "/time": Math.floor(Date.now() / 1000)
+}
 
-    const optDict =  { // dont forget choice and enum
-        // Formats (take precedence)
-        // STRING FORMATS
-        "/language": "en-US",
-        "/QName": "www.example.com:Homepage",
-        "/normalizedString": "letter",
-        "/name": "_name",
-        "/date": !secondVis ? "2023-01-01" : Math.floor(Date.now() / 1000), // String : integer
-        "/date-time": !secondVis ? "2023-01-01T00:00+03:00" : Math.floor(Date.now() / 1000), // String : integer
-        "/time": !secondVis ? "12:00:00" : Math.floor(Date.now() / 1000), // String : integer
-        "/token": "Milwaukee",
-        "/relative-json-pointer": "0/foo",
-        "/json-pointer": "/foo",
-        "/iri-reference": "file://localhost/absolute/path/to/file",
-        "/iri": "https://www.website.com",
-        "/uri-template": "https://www.example.com/api/v1/items/{/item_id}",
-        "/uri-reference": "http://www.example.com/questions/3456/my-document",
-        "/uri": "http://www.example.com/questions/3456/my-document",
-        "/anyUri": "http://www.test.com",
-        "/ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
-        "/ipv4": "127.0.0.1",
-        "/idn-hostname": "xn--bcher-kva.example.com",
-        "/hostname": "example.com",
-        "/idn-email": "test@test.life",
-        "/email": "jarvis@stark.com",
-        "/regex": "A(BB){1,4}",
-        "/NOTATION": "http://www.test.com",
-        // INTEGER FORMATS
-        "/duration": 1,
-        "/i8": 127,
-        "/i16": 32767,
-        "/i32": 2147483647,
-        "/i64": 92233720368547758,
-        "/u8": 127,
-        "/u16": 32767,
-        "/u32": 4294967294,
-        "/u64": 18446744073709551615,
-        "/gYear": 1999,
-        "/gYearMonth": "-1000-05",
-        "/gMonthDay": "--04-12Z",
-        "/yearMonthDuration": "P17M",
-        "/dayTimeDuration": "PT30M",
-        "/nonNegativeInteger": 0,
-        "/positiveInteger": 1,
-        "/nonPositiveInteger": 0,
-        "/negativeInteger": -1,
-        // NUMBER FORMATS
-        "/f16": 65535,
-        "/f32": 3.402823466e+38,
-        "/f64": 1.7976931348623157e+308,
-        // BINARY FORMATS
-        "/eui": "00:00:5e:00:53:01",
-        "/ipv4-addr": "127.0.0.1",
-        "/ipv6-addr": "2001:db8:3333:4444:5555:6666:1.2.3.4",
-        "/b64": "U29tZSBkYXRh",
-        "/x": "0A1B2C3D4E",
-        "/X": "0A1B2C3D4E",
-        // Core Types
+export const NUMBER_FORMATS = {
+    "/f16": 65535,
+    "/f32": 3.402823466e+38,
+    "/f64": 1.7976931348623157e+308
+}
+
+export const BINARY_FORMATS = {
+    "/eui": "00:00:5e:00:53:01",
+    "/ipv4-addr": "127.0.0.1",
+    "/ipv6-addr": "2001:db8:3333:4444:5555:6666:1.2.3.4",
+    "/b64": "U29tZSBkYXRh",
+    "/x": "0A1B2C3D4E",
+    "/X": "0A1B2C3D4E"
+}
+
+export const TYPE_DEFAULTS = (optionsObj: any, minVal: number, children: any[]) => {
+    const strValue = optionsObj.minLength > 0 ? 'a'.repeat(optionsObj.minLength) : "abcdefg";
+    const binValue = optionsObj.minLength > 0 ? '\x65'.repeat(optionsObj.minLength) : "\x65\x66\x67";
+    const pattern = optionsObj.pattern;
+    return {
         "String": pattern !== undefined ? new RandExp(pattern).gen() : strValue,
         "Integer": parseInt(minVal.toString()),
         "Number": parseFloat((minVal === 1 ? 1.1 : minVal).toString()),
@@ -95,7 +102,5 @@ export const defaultValues = (option: string, minLength: number = 0, minVal: num
         "Boolean": true,
         "Enumerated": children.length > 0 ? children[0] : undefined,
         "Choice": children.length > 0 ? children[0][1] : undefined,
-    };
-
-    return (optDict as any)[choice] !== undefined ? (optDict as any)[choice] : undefined;
+    }
 }

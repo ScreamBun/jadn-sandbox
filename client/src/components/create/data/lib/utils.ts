@@ -1,4 +1,4 @@
-import { $MAX_ELEMENTS, defaultValues, BASE_TYPES } from "components/create/consts";
+import { $MAX_ELEMENTS, BASE_TYPES, STRING_FORMATS, INTEGER_FORMATS, NUMBER_FORMATS, BINARY_FORMATS, TYPE_DEFAULTS } from "components/create/consts";
 
 // FUNCTION Destructure Field
 export const destructureField = (field: any[]): [number, string, string, string[], string, any[]] => {
@@ -37,6 +37,10 @@ export const destructureOptions = (options: string[]): {
     maxLength: number | undefined;
     minOccurs: number | undefined;
     maxOccurs: number | undefined;
+    minInclusive: number | undefined;
+    maxInclusive: number | undefined;
+    minExclusive: number | undefined;
+    maxExclusive: number | undefined;
     pointer: string | undefined;
     derived: string | undefined;
     unique: boolean;
@@ -46,6 +50,7 @@ export const destructureOptions = (options: string[]): {
     keyType: string | undefined; // For MapOf
     valueType: string | undefined; // For MapOf
     isID: boolean; // For Enumerated
+    pattern: string | undefined;
     key: boolean;
     link: boolean;
     restriction: string | undefined;
@@ -68,6 +73,10 @@ export const destructureOptions = (options: string[]): {
         maxLength: Number(parseOpts(false, '}')),
         minOccurs: Number(parseOpts(false, '[')),
         maxOccurs: Number(parseOpts(false, ']')),
+        minInclusive: Number(parseOpts(false, 'w')),
+        maxInclusive: Number(parseOpts(false, 'x')),
+        minExclusive: Number(parseOpts(false, 'y')),
+        maxExclusive: Number(parseOpts(false, 'z')),
         pointer: parseOpts(false, '>'),
         derived: parseOpts(false, '#'),
         unique: parseOpts(true, 'q') ? true : false,
@@ -77,6 +86,7 @@ export const destructureOptions = (options: string[]): {
         keyType: parseOpts(false, '+'),
         valueType: parseOpts(false, '*'),
         isID: parseOpts(true, '=') ? true : false,
+        pattern: parseOpts(false, '%'),
         key: parseOpts(true, 'K') ? true : false,
         link: parseOpts(true, 'L') ? true : false,
         restriction: parseOpts(false, 'r'),
@@ -85,6 +95,47 @@ export const destructureOptions = (options: string[]): {
         final: parseOpts(true, 'f') ? true : false,
         formats: options.filter(option => option.startsWith("/"))
     }
+}
+
+// FUNCTION: Generate data (Magic wand)
+export const generateData = (options: string[], type: string, children?: any[]) => {
+    const optionsObj = destructureOptions(options);
+    let minVal = undefined;
+    switch(type) {
+        case "Integer":
+            minVal =  optionsObj.minExclusive ? optionsObj.minExclusive + 1 : optionsObj.minInclusive || undefined;
+            break;
+        case "Number":
+            minVal =  optionsObj.minExclusive ? optionsObj.minExclusive + 0.001 : optionsObj.minInclusive || undefined;
+            break;
+        default:
+            minVal = optionsObj.minExclusive ? optionsObj.minExclusive + 1 : optionsObj.minInclusive || undefined;
+    }
+
+    // See if options has a format - if not, use regular type defaults
+    let genData: any = undefined;
+    for (const option of options) {
+        switch (type) {
+            case "Integer":
+                genData = INTEGER_FORMATS[option as keyof typeof INTEGER_FORMATS];
+                break;
+            case "Number":
+                genData = NUMBER_FORMATS[option as keyof typeof NUMBER_FORMATS];
+                break;
+            case "Binary":
+                genData = BINARY_FORMATS[option as keyof typeof BINARY_FORMATS];
+                break;
+            case "String":
+                genData = STRING_FORMATS[option as keyof typeof STRING_FORMATS];
+                break;
+            default:
+                break;
+        }
+    }
+
+    // If no format match, use type defaults
+    if (genData === undefined) genData = TYPE_DEFAULTS(optionsObj, minVal || 1, children || [])[type as keyof ReturnType<typeof TYPE_DEFAULTS>];
+    return genData;
 }
 
 // FUNCTION: Determine if a type is derived from another type
@@ -215,33 +266,6 @@ export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
     }
 
     return enumKeys;
-}
-
-//FUNCTION: Get default value. If option has default value, that takes precedence over the type default value.
-export const getDefaultValue = (type: string, options: any[], children: any[] = []): any => {
-    const optionsObj = destructureOptions(options);
-    const minInclusive = options.find(opt => typeof opt === 'string' && opt.startsWith("w"))?.slice(1);
-    let minExclusive = options.find(opt => typeof opt === 'string' && opt.startsWith("y"))?.slice(1);
-    // Adjust minExclusive
-    if (minExclusive) {
-        if (type === "Integer") minExclusive = parseInt(minExclusive) + 1;
-        if (type === "Number") minExclusive = parseFloat(minExclusive) + 0.01;
-    }
-    const minValue = minInclusive ? minInclusive : minExclusive ? minExclusive : undefined;
-
-    for (const option of options) {
-        // Check for integer versions of dates
-        const secondVis = type === "Integer" && (option === "/date-time" || option === "/date" || option === "/time");
-        const val = defaultValues(option, optionsObj.minLength, minValue, children, secondVis);
-        if (val !== undefined) {
-            return val;
-        }
-    }
-    const val2 = defaultValues(type, optionsObj.minLength, minValue, children);
-    if (val2 !== undefined) {
-        return val2;
-    }
-    return undefined;
 }
 
 export const convertToArrayOf = (field: any[], minOccurs: number | undefined, maxOccurs: number | undefined): any[] | undefined => {
