@@ -5,6 +5,7 @@ import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, isOptional } from "../../utils";
 import SBClearDataBtn from "components/common/SBClearDataBtn";
+import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -13,10 +14,11 @@ interface FieldProps {
     parent?: string;
     value?: any;
     toClear: boolean;
+    ancestor?: string;
 }
 
 const Record = (props: FieldProps) => {
-    const { field, fieldChange, parent, value, toClear } = props;
+    const { field, fieldChange, parent, value, toClear, ancestor } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
@@ -108,6 +110,7 @@ const Record = (props: FieldProps) => {
             <div className='form-group d-flex'>
                 <div className="d-flex align-items-center w-100">
                     <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                    {ancestor ? <SBHierarchyBtn ancestor={ancestor || ""} current={field} /> : null}
                     <SBInfoBtn comment={_comment} />
                     <SBClearDataBtn onClick={() => {
                         setClear(true);

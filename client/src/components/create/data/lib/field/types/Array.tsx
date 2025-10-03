@@ -5,6 +5,7 @@ import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
 import { destructureField, getUniqueOrSet, isOptional } from "../../utils";
 import SBClearDataBtn from "components/common/SBClearDataBtn";
+import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 
 interface FieldProps {
     field: ArrayFieldArray;
@@ -13,10 +14,11 @@ interface FieldProps {
     parent?: string;
     value?: any;
     toClear: boolean;
+    ancestor?: string;
 }
 
 const Array = (props: FieldProps) => {
-    const { field, fieldChange, parent, value, toClear } = props;
+    const { field, fieldChange, parent, value, toClear, ancestor } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const [toggle, setToggle] = useState(false);
     const [data, setData] = useState(value);
@@ -40,6 +42,7 @@ const Array = (props: FieldProps) => {
         }
     }, [toClear]);
 
+    const hasIPvNetOption = options.some(opt => opt.includes("ipv4-net") || opt.includes("ipv6-net"));
     const handleChange = (childKey: string, childValue: any) => {
         // Update inputOrder and use the computed value immediately
         setInputOrder(prev => {
@@ -77,9 +80,21 @@ const Array = (props: FieldProps) => {
                         const orderedUpdated = Object.entries(nextInputOrder)
                             .sort((a, b) => a[1].order - b[1].order)
                             .map(([, v]) => v.value);
-                        fieldChange(name, orderedUpdated);
+
+                        // Join array with / if ipvnet
+                        if (hasIPvNetOption) {
+                            fieldChange(name, orderedUpdated.join("/"));
+                        } else {
+                            fieldChange(name, orderedUpdated);
+                        }
                     } else {
-                        fieldChange(name, updated);
+                        // Join array with / if ipvnet
+                        if (hasIPvNetOption) {
+                            const filteredUpdated = updated.filter(item => item !== undefined && item !== "" && item !== null);
+                            fieldChange(name, filteredUpdated.join("/"));
+                        } else {
+                            fieldChange(name, updated);
+                        }
                     }
                 }
 
@@ -116,6 +131,7 @@ const Array = (props: FieldProps) => {
             <div className='form-group d-flex'>
                 <div className="d-flex align-items-center w-100">
                     <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
+                    {ancestor ? <SBHierarchyBtn ancestor={ancestor || ""} current={field} /> : null}
                     <SBInfoBtn comment={_comment} />
                     <SBClearDataBtn onClick={() => {
                         setClear(true);
