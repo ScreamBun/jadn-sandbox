@@ -10,7 +10,7 @@ from jadnjson.generators import json_generator
 from io import BytesIO
 from flask import current_app, jsonify, Response, request
 from flask_restful import Resource
-from jadnschema.convert import SchemaFormats, json_to_jadn_dumps
+from jadnschema.convert import json_to_jadn_dumps
 
 from jadnxml.builder.xsd_builder import XSDBuilder
 from jadnxml.builder.xml_builder import build_xml_from_json
