@@ -2,19 +2,16 @@ import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { flushSync } from 'react-dom';
 import { setSchema } from 'actions/util';
-import { validateSchema } from 'actions/validate';
-import { getAllSchemas } from 'reducers/util';
-import { getFilenameExt, getFilenameOnly } from 'components/utils/general';
+import { getAllSchemas, getSelectedSchema } from 'reducers/util';
 import { LANG_JADN } from 'components/utils/constants';
 import { $MAX_BINARY, $MAX_STRING, $MAX_ELEMENTS, $SYS, $TYPENAME, $FIELDNAME, $NSID } from '../../../../consts';
 import { Types } from '../../structure';
-import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import SBCopyToClipboard from 'components/common/SBCopyToClipboard';
 import SBSpinner from 'components/common/SBSpinner';
 import SBValidateSchemaBtn from 'components/common/SBValidateSchemaBtn';
 import SBDownloadBtn from 'components/common/SBDownloadBtn';
-import SBFileLoader from 'components/common/SBFileLoader';
 import { Option } from 'components/common/SBSelect';
+import SchemaLoader from 'components/common/SchemaLoader';
 
 
 export const configInitialState = {
@@ -33,6 +30,16 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
     const { selectedFile, setSelectedFile, generatedSchema, setGeneratedSchema, cardsState, setCardsState,
             fieldCollapseState, setFieldCollapseState,
             allFieldsCollapse, setAllFieldsCollapse, fieldCollapseStateRef } = props;
+    
+    const loadedSchema = useSelector(getSelectedSchema);
+    const setLoadedSchema = (schema: object | null) => {
+        dispatch(setSchema(schema));
+    };
+    const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
+
+    useEffect(() => {
+        setGeneratedSchema(loadedSchema);
+    },  [loadedSchema])
 
         useEffect(() => {
             if (!generatedSchema) {
@@ -154,128 +161,23 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             setAllFieldsCollapse(!allFieldsCollapse)
         }
 
-        const onFileLoad = async (schemaObj?: any, fileStr?: Option) => {
-            if (schemaObj && fileStr) {
-                if (typeof schemaObj == "string") {
-                    try {
-                        schemaObj = JSON.parse(schemaObj);
-                    } catch (err) {
-                        sbToastError(`Schema cannot be loaded: Invalid JSON`);
-                        return;
-                    }
-                }
-                const validJADNSyntax = await validateJADNSyntax(schemaObj);
-                if (validJADNSyntax == true) {
-                    setIsLoading(true);
-                    setSelectedFile(fileStr);
-                    const fileName = {
-                        name: getFilenameOnly(fileStr.label),
-                        ext: getFilenameExt(fileStr.label)
-                    }
-                    setFileName(fileName);
-
-                    flushSync(() => {
-                        setGeneratedSchema(schemaObj);
-                        if (schemaObj.types) {
-                            setCardsState(schemaObj.types.map((item: any[], i: number) => ({
-                                id: self.crypto.randomUUID(),
-                                index: i,
-                                text: item[0],
-                                value: item,
-                                isStarred: false,
-                                isVisibleInOutline: true
-                            })));
-                            setFieldCollapseState(schemaObj.types.map((def: any[]) => {
-                                let type = def[1].toLowerCase() as keyof typeof Types;
-                                if (Types[type].type == 'structure') {
-                                    return false;
-                                } else {
-                                    return undefined;
-                                }
-                            }))
-                        } else {
-                            setCardsState([]);
-                            setFieldCollapseState([]);
-                        }
-                    });
-                } else {
-                    sbToastError(`Schema cannot be loaded: Invalid JADN`);
-                }
-            } else {
-                sbToastError(`Schema cannot be loaded: Empty File`);
-            }
-            setIsLoading(false);
-        }
-
-        const onCancelFileUpload = (e: React.MouseEvent<HTMLButtonElement> | React.ChangeEvent<HTMLInputElement> | null) => {
-            if (e) {
-                e.preventDefault();
-            }
-            dismissAllToast();
-            setIsValidJADN(false);
-            setIsValidating(false);
-            setIsLoading(false);
-            setFileName({
-                name: '',
-                ext: LANG_JADN
-            });
-            setSelectedFile(null);
-            setGeneratedSchema('');
-            setCardsState([]);
-            setFieldCollapseState([]);
-            if (ref.current) {
-                ref.current.value = '';
-            }
-        }
-
-        const validateJADNSyntax = (jsonObj: any) => {
-            dismissAllToast();
-            setIsValidJADN(false);
-            if (!jsonObj) {
-                sbToastError('Validation Error: No Schema to validate');
-                return false;
-            }
-
-            setIsValidating(true);
-
-            return dispatch(validateSchema(jsonObj, LANG_JADN))
-                .then((validateSchemaVal: any) => {
-                    setIsValidating(false);
-                    if (validateSchemaVal.payload.valid_bool == true) {
-                        dispatch(setSchema(jsonObj));
-                        setIsValidJADN(true);
-                        sbToastSuccess(validateSchemaVal.payload.valid_msg);
-                        return true;
-                    } else {
-                        sbToastError(validateSchemaVal.payload.valid_msg);
-                        return validateSchemaVal.payload.valid_syntax;
-                    }
-                })
-                .catch((validateSchemaErr) => {
-                    setIsValidating(false);
-                    sbToastError(validateSchemaErr.payload.valid_msg);
-                    return validateSchemaErr.payload.valid_syntax;
-                })
-        }
-
-
         return (
             <div className='card'>
                 <div className='card-header p-2'>
                     <div className='row no-gutters'>
                         <div className='col-sm-3 align-self-center'>
-                            <SBFileLoader
-                                opts={schemaOpts}
-                                selectedOpt={selectedFile}
-                                loadedFileData={generatedSchema}
-                                fileName={fileName}
+                            <SchemaLoader
+                                selectedFile={selectedFile}
                                 setSelectedFile={setSelectedFile}
-                                onCancelFileUpload={onCancelFileUpload}
-                                onFileChange={onFileLoad}
-                                ref={ref}
-                                placeholder={'Select a schema...'}
-                                loc={'schemas'}
-                                isSaveable
+                                loadedSchema={loadedSchema}
+                                setLoadedSchema={setLoadedSchema}
+                                schemaFormat={schemaFormat}
+                                setSchemaFormat={setSchemaFormat}
+                                showEditor={false}
+                                showCopy={false}
+                                showFormatter={false}
+                                showSave={true}
+                                lightBackground={true}
                             />
                         </div>
                         <div className='col-sm-9 align-self-center'>
