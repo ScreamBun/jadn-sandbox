@@ -11,6 +11,7 @@ import withStructureEditor from '../ParentEditor/withStructureEditor';
 import { FieldEditorBtnStyle } from './FieldEditorBtn';
 import { useDispatch } from 'react-redux';
 import { duplicate } from 'actions/duplicate';
+import SBHierarchyBtn from 'components/common/SBHierarchyBtn';
 
 interface StructureEditorProps {
     dataIndex: number; //index changes based on obj in arr (tracks the parent index)
@@ -44,6 +45,10 @@ const StructureEditorBtn = memo(function StructureEditorBtn(props: StructureEdit
     const handleDuplicate = () => {
         dispatch(duplicate(valueObj));
     }
+
+    const isExtended = valueObj.options?.find(opt => opt.startsWith('e'))?.slice(1);
+    const isRestricted = valueObj.options?.find(opt => opt.startsWith('r'))?.slice(1);
+    const ancestor = isExtended || isRestricted || undefined;
 
     const moveField = (val: FieldArray, oldIndex: number, newIndex: number) => {
         let tmpFieldValues = [...valueObj.fields];
@@ -115,6 +120,14 @@ const StructureEditorBtn = memo(function StructureEditorBtn(props: StructureEdit
                         <button type='button' className="float-end btn btn-primary btn-sm me-1" onClick={handleDuplicate} title="Duplicate Item">
                             <FontAwesomeIcon icon={faClone} />
                         </button>
+                        <div className = "float-end me-1" >
+                            {ancestor ? 
+                            <SBHierarchyBtn 
+                                ancestor={ancestor} 
+                                current={[valueObj.name, valueObj.type, valueObj.options.filter(opt => !opt.startsWith('r') && !opt.startsWith('e')), valueObj.comment, valueObj.fields]} 
+                                isBtnPrimary={true} /> 
+                            : null}
+                        </div>
                     </div>
                 </div>
             </div>
