@@ -42,6 +42,7 @@ const Array = (props: FieldProps) => {
         }
     }, [toClear]);
 
+    const hasIPvNetOption = options.some(opt => opt.includes("ipv4-net") || opt.includes("ipv6-net"));
     const handleChange = (childKey: string, childValue: any) => {
         // Update inputOrder and use the computed value immediately
         setInputOrder(prev => {
@@ -79,9 +80,21 @@ const Array = (props: FieldProps) => {
                         const orderedUpdated = Object.entries(nextInputOrder)
                             .sort((a, b) => a[1].order - b[1].order)
                             .map(([, v]) => v.value);
-                        fieldChange(name, orderedUpdated);
+
+                        // Join array with / if ipvnet
+                        if (hasIPvNetOption) {
+                            fieldChange(name, orderedUpdated.join("/"));
+                        } else {
+                            fieldChange(name, orderedUpdated);
+                        }
                     } else {
-                        fieldChange(name, updated);
+                        // Join array with / if ipvnet
+                        if (hasIPvNetOption) {
+                            const filteredUpdated = updated.filter(item => item !== undefined && item !== "" && item !== null);
+                            fieldChange(name, filteredUpdated.join("/"));
+                        } else {
+                            fieldChange(name, updated);
+                        }
                     }
                 }
 
