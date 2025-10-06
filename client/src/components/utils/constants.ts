@@ -51,3 +51,26 @@ export const NAV_EXTERNAL_MANUAL_PPTX = 'https://github.com/ScreamBun/jadn-sandb
 export const NAV_EXTERNAL_MANUAL_PDF = 'https://github.com/ScreamBun/jadn-sandbox/blob/develop/documentation/JADNSandboxInfo.pdf';
 
 export const PLANTUML_RENDER_LIMIT = 8000
+
+export const exampleToSchemaMappings = {
+    "music-database.jadn": 
+        ["music_library.json", "music_library.cbor"],
+    "oc2ls-v1.0.1-resolved.jadn": 
+        ["openc2_command_deny.json", "openc2_command_deny.cbor", 
+        "openc2_command_query.json", "openc2_command_query.cbor",
+        "openc2_command_scan.json", "openc2_command_scan.cbor",
+        "openc2_v101_response.json", "openc2_v101_response.cbor"],
+    "oc2ls-v1.1.0-resolved.jadn":
+        ["openc2_command_deny.json", "openc2_command_deny.cbor", 
+        "openc2_command_query.json", "openc2_command_query.cbor",
+        "openc2_command_scan.json", "openc2_command_scan.cbor",
+        "openc2_v110_response.json", "openc2_v110_response.cbor"],
+    "oscal-assessment-plan.jadn":
+        ["oscal_assessment_plan.json", "oscal_assessment_plan.cbor"],
+    "resolved-ap-hunt-v01.jadn":
+        ["threat_hunt_results.json", "threat_hunt_results.cbor",
+        "threat_hunt_target.json", "threat_hunt_target.cbor"],
+    "unresolved-ap-hunt-v01.jadn":
+        ["threat_hunt_results.json", "threat_hunt_results.cbor",
+        "threat_hunt_target.json", "threat_hunt_target.cbor"]  
+}

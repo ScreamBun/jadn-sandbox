@@ -1,6 +1,7 @@
 import { SchemaJADN } from 'components/create/schema/interface';
 import * as util from '../actions/util';
 import { Option } from 'components/common/SBSelect'
+import { exampleToSchemaMappings } from 'components/utils/constants';
 
 export interface UtilState {
   site_title: string;
@@ -10,12 +11,12 @@ export interface UtilState {
   valid_msg_types: string[];
   loaded: {
     messages: {
-      examples: Record<string, any>;
-      custom?: Record<string, any>;
+      examples: Array<Option | string>;
+      custom?: Array<Option | string>;
     };
     schemas: {
-      examples: Record<string, any>;
-      custom?: Record<string, any>;
+      examples: Array<string>;
+      custom?: Array<string>;
     };
   },
   selectedSchema: SchemaJADN | object;
@@ -75,9 +76,46 @@ export default (state = initialState, action: util.UtilActions) => {
 
     case util.LOAD_SUCCESS:
       if (action.payload.type === 'schemas') {
+        const schemaFilename = action.payload.data?.filename ?? action.payload.name;
+        const mappedMessages = schemaFilename && Object.prototype.hasOwnProperty.call(exampleToSchemaMappings, schemaFilename)
+          ? exampleToSchemaMappings[schemaFilename as keyof typeof exampleToSchemaMappings]
+          : undefined;
+
+        let reorderedMessages = state.loaded.messages;
+
+        if (mappedMessages && Array.isArray(state.loaded.messages.examples)) {
+          const exampleMessages = state.loaded.messages.examples;
+          const pickId = (msg: any) =>
+            typeof msg === 'string' ? msg : msg?.value ?? msg?.filename ?? null;
+
+          const prioritized: typeof exampleMessages = [];
+          const remaining: typeof exampleMessages = [];
+
+          exampleMessages.forEach(msg => {
+            const id = pickId(msg);
+            if (id && mappedMessages.includes(id)) {
+              prioritized.push(msg);
+            } else {
+              remaining.push(msg);
+            }
+          });
+
+          if (prioritized.length > 0) {
+            reorderedMessages = {
+              ...state.loaded.messages,
+              examples: [...prioritized, ...remaining]
+            };
+          }
+        }
+
         return {
           ...state,
-          selectedSchema: action.payload.data
+          selectedSchema: action.payload.data,
+          loaded: {
+            ...state.loaded,
+            messages: reorderedMessages || state.loaded.messages,
+            schemas: state.loaded.schemas
+          }
         };
       } else {
         return state;
