@@ -8,6 +8,7 @@ import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
+import { removeXmlWrapper } from 'components/create/data/lib/utils'
 
 
 const DataValidator = () => {
@@ -70,7 +71,10 @@ const DataValidator = () => {
 
         if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
             try {
-                dispatch(validateMessage(loadedSchema, loadedMsg, msgFormat.value, decodeMsg.value))
+                const rootType = decodeMsg.value;
+                const newMsg = msgFormat.label === "JSON" ? JSON.stringify(JSON.parse(loadedMsg)[rootType]) : msgFormat.label === "XML" ? removeXmlWrapper(loadedMsg) : loadedMsg;
+                console.log(JSON.parse(loadedMsg)[rootType]);
+                dispatch(validateMessage(loadedSchema, newMsg, msgFormat.value, rootType))
                     .then((submitVal: any) => {
                         if (submitVal && submitVal.payload.valid_bool) {
                             setIsLoading(false);
