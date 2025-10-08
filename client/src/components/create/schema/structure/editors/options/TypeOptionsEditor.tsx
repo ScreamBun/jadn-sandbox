@@ -56,6 +56,12 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
           }
         }
         return formats_returned;
+      case 'combine':
+        return [
+          {label: 'allOf', value: 'A'},
+          {label: 'anyOf', value: 'O'},
+          {label: 'oneOf', value: 'X'}
+        ];
       case 'restricts':
       case 'extends':
       case 'pointer':
