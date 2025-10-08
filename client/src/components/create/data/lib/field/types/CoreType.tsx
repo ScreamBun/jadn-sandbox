@@ -1,7 +1,7 @@
 import { StandardFieldArray, ArrayFieldArray } from "components/create/schema/interface";
 import React, {useEffect, useState} from "react";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, getDefaultValue, isOptional, getDefaultOpt, getConstOpt } from "components/create/data/lib/utils";
+import { destructureField, generateData, getDefaultOpt, getConstOpt, destructureOptions } from "components/create/data/lib/utils";
 import { useDispatch, useSelector } from 'react-redux';
 import { validateField as validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { getFieldError, isFieldValidating } from 'reducers/validatefield';
@@ -11,6 +11,7 @@ import { faToggleOff, faToggleOn } from "@fortawesome/free-solid-svg-icons";
 import { Buffer } from 'buffer';
 import SBHighlightButton from "components/common/SBHighlightButton";
 import { clearHighlight } from "actions/highlight";
+import { getToggleGenData } from "reducers/gendata";
 
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
@@ -24,14 +25,17 @@ interface FieldProps {
 const CoreType = (props: FieldProps) => {
     const { field, fieldChange, children, value, toClear } = props;
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
+    const optionsObj = destructureOptions(options);
 
+    const toggleDataGen = useSelector(getToggleGenData);
     const [data, setData] = useState(value);
     const dispatch = useDispatch();
     const errMsg = useSelector((s: any) => getFieldError(s, name));
     const validating = useSelector((s: any) => isFieldValidating(s, name));
-    const [clear, setClear] = useState(toClear);
+    const [_clear, setClear] = useState(toClear);
 
-    const _optional = isOptional(options);
+    const _optional = optionsObj.isOptional;
+    const formats = optionsObj.formats;
     const highlightWords = [name, data];
 
     // Fetch default value (option)
@@ -74,19 +78,18 @@ const CoreType = (props: FieldProps) => {
         dispatch(validateFieldAction(name, val, valType, options));
     };
 
-    const setDefaults = useSelector((state: any) => state.toggleDefaults);
     React.useEffect(() => {
         if (
             (value === undefined || value === null || value === '') &&
             (data === undefined || data === null || data === '')
         ) {
-            const defaultValue = getDefaultValue(type, options);
-            if (/*!_optional && */defaultValue !== undefined && setDefaults) {
-                setData(defaultValue);
-                fieldChange(name, defaultValue);
+            const genData = generateData(options, type);
+            if (genData !== undefined && toggleDataGen) {
+                setData(genData);
+                fieldChange(name, genData);
             }
         }
-    }, [setDefaults, fieldChange]);
+    }, [toggleDataGen, fieldChange]);
 
     React.useEffect(() => {
         setClear(toClear);
@@ -107,7 +110,6 @@ const CoreType = (props: FieldProps) => {
     );
 
     if (type === "Boolean") {
-        //const highlightWords = [`"${name}": ${data}`, `"${name}"`, `${data}`];
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-left'>
@@ -138,7 +140,6 @@ const CoreType = (props: FieldProps) => {
         const hexData = Buffer.from(data || '', 'utf8').toString('hex');
         const ascii = Buffer.from(data || '', 'utf8').toString('ascii');
         const base64 = Buffer.from(data || '', 'utf8').toString('base64');
-        //const highlightWords = [`"${name}": "${data}"`, `"${name}"`, `"${data}"`];
         if (_comment === "") {
             if (data) _comment += `Hex: ${hexData}<br>ASCII: ${ascii}<br>Base64: ${base64}`;
         } else {
@@ -172,7 +173,6 @@ const CoreType = (props: FieldProps) => {
             </div>
         );
     } else if (type == "Number") {
-        //const highlightWords = [`"${name}": ${data}`, `"${name}"`, `${data}`];
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-between'>
@@ -206,8 +206,7 @@ const CoreType = (props: FieldProps) => {
             </div>
         );   
     } else if (type == "Integer") {
-        const isStringDuration = options.some(opt => ["/dayTimeDuration", "/yearMonthDuration", "/gYearMonth", "/gMonthDay"].includes(opt));
-        //const highlightWords = isStringDuration ? [`"${name}": "${data}"`, `"${name}"`, `"${data}"`] : [`"${name}": ${data}`, `"${name}"`, `${data}`];
+        const isStringDuration = formats.some(opt => ["/dayTimeDuration", "/yearMonthDuration", "/gYearMonth", "/gMonthDay"].includes(opt));
         return (
             <div className='form-group'>
                 <div className='form-group d-flex align-items-center justify-content-between'>
@@ -220,7 +219,6 @@ const CoreType = (props: FieldProps) => {
                         onChange={e => {
                             if (!_const) {
                                 const raw = e.target.value;
-                                //const num = raw === '' ? '' : parseInt(raw);
                                 setData(raw === '' ? '' : raw);
                                 if (raw === '') dispatch(clearFieldValidation(name));
                             }
@@ -249,12 +247,11 @@ const CoreType = (props: FieldProps) => {
         );   
     } else { // default string
         //Check for date options
-        const isDate = options.some(opt => opt === "/date");
-        const isDateTime = options.some(opt => opt === "/date-time");
-        const isTime = options.some(opt => opt === "/time");
+        const isDate = formats.some(opt => opt === "/date");
+        const isDateTime = formats.some(opt => opt === "/date-time");
+        const isTime = formats.some(opt => opt === "/time");
         const [timezone, setTimezone] = useState('');
         const [dateToggle, setDateToggle] = useState(false);
-        //const highlightWords = [`"${name}": "${data}"`, `"${name}"`, `"${data}"`];
         return (
         <div className='form-group'>
             <div className='form-group d-flex align-items-center justify-content-between'>

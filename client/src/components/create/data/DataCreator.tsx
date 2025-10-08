@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getSelectedSchema } from 'reducers/util'
 import { useSelector } from 'react-redux'
 import { AllFieldArray } from '../schema/interface'
@@ -20,14 +20,30 @@ import { destructureField, removeXmlWrapper } from './lib/utils'
 import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER, LANG_ANNOTATED_HEX } from 'components/utils/constants';
 import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
+import { getToggleGenData } from 'reducers/gendata'
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
     const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor, annotatedCbor, setAnnotatedCbor } = props;
+
+    // States
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
     const [loadVersion, setLoadVersion] = useState(0); // increment to force Field remounts on each builder load
     const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:LANG_JSON_UPPER, value: LANG_JSON_UPPER});
+    const [jsonValidated, setJsonValidated] = useState(false);
+    const [xmlValidated, setXmlValidated] = useState(false);
+    const [dataFullScreen, setDataFullScreen] = useState(false);
+    const [jsonFullScreen, setJsonFullScreen] = useState(false);
+
+    // Redux states
+    const toggleGenData = useSelector(getToggleGenData);
+    const highlightedItems = useSelector((state: any) => state.Highlight.highlightWords);
+    const schemaObj = useSelector(getSelectedSchema);
+
+    // Get selected type
+    const roots = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
+    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === selection?.value) : [];
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
@@ -44,16 +60,11 @@ const DataCreator = (props: any) => {
         });
     };
 
-    // Get the selected schema & selected roots/types
-    const schemaObj = useSelector(getSelectedSchema);
-    const roots = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
-    const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === selection?.value) : [];
-
     // Handle root dropdown selection
     const handleSelection = (e: Option) => {
         setSelection(e);
         setGeneratedMessage({});
-        dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         setLoadedFieldDefs(null);
         setJsonValidated(false);
         setXmlValidated(false);
@@ -64,8 +75,6 @@ const DataCreator = (props: any) => {
     }
 
     // Handle full data validation
-    const [jsonValidated, setJsonValidated] = useState(false);
-    const [xmlValidated, setXmlValidated] = useState(false);
     const handleValidate = async (lang: string) => {
         if (!schemaObj || !generatedMessage) {
             sbToastError('ERROR: Validation failed - Please select schema and enter data');
@@ -105,7 +114,7 @@ const DataCreator = (props: any) => {
         e.preventDefault();
         setSelection(null);
         setGeneratedMessage({});
-        dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         dispatch(clearFieldValidation());
         setJsonValidated(false);
         setXmlValidated(false);
@@ -116,26 +125,18 @@ const DataCreator = (props: any) => {
         dispatch<any>(clearHighlight());
     }    
 
-    const toggleDefaults = useSelector((state: any) => state.toggleDefaults);
-
     // Handle generate data
     const setDefaults = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if (toggleDefaults) {
-            dispatch({ type: 'TOGGLE_DEFAULTS', payload: false });
+        if (toggleGenData) {
+            dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         } else {
-            dispatch({ type: 'TOGGLE_DEFAULTS', payload: true });
+            dispatch({ type: 'TOGGLE_GEN_DATA', payload: true });
         }
     }
 
-    const [dataFullScreen, setDataFullScreen] = useState(false);
-    const [jsonFullScreen, setJsonFullScreen] = useState(false);
-
-    // Pull global state of highlighted items
-    const highlightedItems = useSelector((state: any) => state.Highlight.highlightWords);
-
     // Handle making sure loaded defs are reset
-    React.useEffect(() => {
+    useEffect(() => {
         if (loadedFieldDefs) {
             setLoadedFieldDefs(null);
             dispatch<any>(clearHighlight());
@@ -217,7 +218,7 @@ const DataCreator = (props: any) => {
                         <div className = "ms-auto">
                             <SBLoadBuilder
                                 customClass={`float-start ms-1 ${selection?.value ? '' : 'disabled'}`} 
-                                onLoad={({root, fields, message}) => 
+                                onLoad={({fields, message}) => 
                                     {
                                         // Force reload of Field components
                                         setLoadVersion(v => v + 1);
@@ -263,7 +264,7 @@ const DataCreator = (props: any) => {
                                 selection={selection}
                                 generatedMessage={generatedMessage}
                             />
-                            <button className={`btn btn-sm ${toggleDefaults ? 'btn-warning' : 'btn-primary'} float-start ms-1`} title='Generate Data' onClick={setDefaults}>
+                            <button className={`btn btn-sm ${toggleGenData ? 'btn-warning' : 'btn-primary'} float-start ms-1`} title='Generate Data' onClick={setDefaults}>
                                 <FontAwesomeIcon icon = {faWandSparkles} />
                             </button>
                             <button className='btn btn-sm btn-primary ms-1' title='Full Screen Data' onClick={() => setDataFullScreen(!dataFullScreen)}>

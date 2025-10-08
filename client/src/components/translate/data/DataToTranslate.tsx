@@ -114,7 +114,11 @@ const DataToTranslate = (props: any) => {
 
                             <SBSelect id={"data-format-list"}
                                     customClass={'me-1'}
-                                    data={validMsgFormat}
+                                    data={validMsgFormat.map((fmt: any) => {
+                                        const key = Object.keys(fmt)[0];
+                                        const value = fmt[key];
+                                        return { value: value, label: key };
+                                    })}
                                     onChange={(e: Option) => setDataFormat(e)}
                                     value={dataFormat}
                                     placeholder={'Format...'}

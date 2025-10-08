@@ -1,24 +1,146 @@
-import { $MAX_ELEMENTS, defaultValues } from "components/create/consts";
-import { over, rest } from "lodash";
+import { $MAX_ELEMENTS, BASE_TYPES, STRING_FORMATS, INTEGER_FORMATS, NUMBER_FORMATS, BINARY_FORMATS, TYPE_DEFAULTS } from "components/create/consts";
 
-// FUNCTION: Determine if a field is optional based on its options. Optional field has '[0']
-export const isOptional = (options: any[]): boolean => {
-    for (const opt of options) {
-        if (String(opt) === '[0') {
-            return true;
+// FUNCTION Destructure Field
+export const destructureField = (field: any[]): [number, string, string, string[], string, any[]] => {
+    let idx: number, name: string, type: string, options: string[], comment: string, children: any[];
+
+    const len = field.length;
+    const hasChildren = Array.isArray(field[5]) || Array.isArray(field[4]);
+
+    if (typeof field[0] === 'number') {
+        switch (len) {
+            case 3: // Field = [_idx, name, _comment] - Enumerated Field
+                [idx, name, comment] = field;
+                [type, options, children] = [comment, [], []];
+                break;
+            case 4: // Field = [_idx, name, type, options, _comment]
+                [idx, name, type, options, comment] = field;
+                children = [];
+                break;
+            default: // Field = [_idx, name, type, options, _comment, children]
+                [idx, name, type, options, comment, children] = field;
+                break;
+        }
+    } else { // Field = [name, type, options, _comment, children]
+        [name, type, options, comment] = field;
+        idx = 0;
+        children = hasChildren ? field[4] : [];
+    }
+
+    return [idx, name, type, options, comment, children];
+}
+
+// FUNCTION Destructure Options
+export const destructureOptions = (options: string[]): {
+    isOptional: boolean; // is the field optional
+    minLength: number | undefined;
+    maxLength: number | undefined;
+    minOccurs: number | undefined;
+    maxOccurs: number | undefined;
+    minInclusive: number | undefined;
+    maxInclusive: number | undefined;
+    minExclusive: number | undefined;
+    maxExclusive: number | undefined;
+    pointer: string | undefined;
+    derived: string | undefined;
+    unique: boolean;
+    set: boolean;
+    unordered: boolean;
+    ordered: boolean;
+    keyType: string | undefined; // For MapOf
+    valueType: string | undefined; // For MapOf
+    isID: boolean; // For Enumerated
+    pattern: string | undefined;
+    key: boolean;
+    link: boolean;
+    restriction: string | undefined;
+    extension: string | undefined;
+    abstract: boolean;
+    final: boolean;
+    formats: string[];
+} => {
+    const parseOpts = (completeMatch: boolean, opt: string) => {
+        if (completeMatch) {
+            return options.find(option => option === opt);
+        } else {
+            return options.find(option => option.startsWith(opt))?.slice(1);
         }
     }
-    return false;
+
+    return {
+        isOptional: parseOpts(true, '[0') ? true : false,
+        minLength: Number(parseOpts(false, '{')),
+        maxLength: Number(parseOpts(false, '}')),
+        minOccurs: Number(parseOpts(false, '[')),
+        maxOccurs: Number(parseOpts(false, ']')),
+        minInclusive: Number(parseOpts(false, 'w')),
+        maxInclusive: Number(parseOpts(false, 'x')),
+        minExclusive: Number(parseOpts(false, 'y')),
+        maxExclusive: Number(parseOpts(false, 'z')),
+        pointer: parseOpts(false, '>'),
+        derived: parseOpts(false, '#'),
+        unique: parseOpts(true, 'q') ? true : false,
+        set: parseOpts(true, 's') ? true : false,
+        unordered: parseOpts(true, 'b') ? true : false,
+        ordered: parseOpts(true, 'q') ? true : false,
+        keyType: parseOpts(false, '+'),
+        valueType: parseOpts(false, '*'),
+        isID: parseOpts(true, '=') ? true : false,
+        pattern: parseOpts(false, '%'),
+        key: parseOpts(true, 'K') ? true : false,
+        link: parseOpts(true, 'L') ? true : false,
+        restriction: parseOpts(false, 'r'),
+        extension: parseOpts(false, 'e'),
+        abstract: parseOpts(true, 'a') ? true : false,
+        final: parseOpts(true, 'f') ? true : false,
+        formats: options.filter(option => option.startsWith("/"))
+    }
+}
+
+// FUNCTION: Generate data (Magic wand)
+export const generateData = (options: string[], type: string, children?: any[]) => {
+    const optionsObj = destructureOptions(options);
+    let minVal = undefined;
+    switch(type) {
+        case "Integer":
+            minVal =  optionsObj.minExclusive ? optionsObj.minExclusive + 1 : optionsObj.minInclusive || undefined;
+            break;
+        case "Number":
+            minVal =  optionsObj.minExclusive ? optionsObj.minExclusive + 0.001 : optionsObj.minInclusive || undefined;
+            break;
+        default:
+            minVal = optionsObj.minExclusive ? optionsObj.minExclusive + 1 : optionsObj.minInclusive || undefined;
+    }
+
+    // See if options has a format - if not, use regular type defaults
+    let genData: any = undefined;
+    for (const option of options) {
+        switch (type) {
+            case "Integer":
+                genData = genData === undefined ? INTEGER_FORMATS[option as keyof typeof INTEGER_FORMATS] : genData;
+                break;
+            case "Number":
+                genData = genData === undefined ? NUMBER_FORMATS[option as keyof typeof NUMBER_FORMATS] : genData;
+                break;
+            case "Binary":
+                genData = genData === undefined ? BINARY_FORMATS[option as keyof typeof BINARY_FORMATS] : genData;
+                break;
+            case "String":
+                genData = genData === undefined ? STRING_FORMATS[option as keyof typeof STRING_FORMATS] : genData;
+                break;
+            default:
+                break;
+        }
+    }
+
+    // If no format match, use type defaults
+    if (genData === undefined) genData = TYPE_DEFAULTS(optionsObj, minVal || 1, children || [])[type as keyof ReturnType<typeof TYPE_DEFAULTS>];
+    return genData;
 }
 
 // FUNCTION: Determine if a type is derived from another type
 const isDerived = (type: string): Boolean => {
-    if (type === "Array" || type === "ArrayOf" || type === "Choice" || type === "Enumerated" || 
-        type === "Map" || type === "MapOf" || type === "Record" || type === "String" || 
-        type === "Integer" || type === "Number" || type === "Boolean" || type === "Binary") {
-        return false;
-    }
-    return true;
+    return !BASE_TYPES.includes(type);
 }
 
 // FUNCTIONS: Determine the true type of a field based on its given type
@@ -39,60 +161,15 @@ export const getTrueType = (schemaTypes: any, type: string): any => {
     return trueTypeTuple ? trueTypeTuple : [undefined, undefined];
 }
 
-// FUNCTION: Determine the structure of a field
-export const destructureField = (field: any[]): [number, string, string, string[], string, any[]] => {
-    let _idx: number, name: string, type: string, options: string[], _comment: string, children: any[];
-    const len = field.length;
-    const hasChildren = Array.isArray(field[4]);
-
-    if (len == 5 && hasChildren) { // Field = [name, type, options, _comment, children]
-        _idx = 0;
-        [name, type, options, _comment, children] = field;
-    } else if (len == 5) { // Field = [_idx, name, type, options, _comment]
-        [_idx, name, type, options, _comment] = field;
-        children = [];
-    } else if (len == 4) { // Field = [name, type, options, _comment]
-        _idx = 0;
-        [name, type, options, _comment] = field;
-        if (typeof options === 'string') {
-            [_idx, name, type, options] = field; // Field = [_idx, name, type, _comment]
-        } // Field = [name, type, _comment, children]
-        children = [];
-    } else { // Field = [_idx, name, _comment]
-        _idx = field[0];
-        name = field[1];
-        _comment = field[2];
-        type = _comment;
-        options = [];
-        children = [];
-
-    }
-
-    return [_idx, name, type, options, _comment, children];
-}
-
-//FUNCTION: Get the minv (minimum length) of an ArrayOf, MapOf
-export const getMinv = (opts: any[]): number => {
-    const minvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("{"));
-    return minvOpt ? parseInt((minvOpt as string).slice(1), 10) : 0;
-}
-
-export const getMaxv = (opts: any[]): number | undefined => {
-    const maxvOpt = opts.find(opt => typeof opt === 'string' && opt.startsWith("}"));
-    return maxvOpt ? parseInt((maxvOpt as string).slice(1), 10) : undefined;
-}
-
 //FUNCTION: Recursively get pointer children
 const addPointerChildren = (schemaObj: any, type: any, pointerChildren: any[], path: string[], isID: boolean = false): any[] => {
     let newPath = [...path];
 
     let [_idx, _name, _type, _options, _comment, children] = destructureField(type);
-    if (!Array.isArray(children)) {
-        return [];
-    }
+    children = Array.isArray(children) ? children : [];
+    
     if (children.length === 0) {
         const [_trueType, trueTypeDef] = getTrueType(schemaObj.types, _type);
-        // Don't need to list enum or choice
         if (_trueType === "Enumerated" || _trueType === "Choice") {
             return [[[...newPath, isID ? String(_idx) : _name].join('/')]];
         }
@@ -141,21 +218,19 @@ export const getDerivedOptions = (schemaObj: any, derived: string): any[] => {
 
 //FUNCTION: ArrayOf and Array unique & set check
 export const getUniqueOrSet = (children: any[], opts: any[], type: string): string => {
-    const isUnique = opts.some(opt => opt === "q");
-    const isSet = opts.some(opt => opt === "s");
-    let m = "";
-    if (isUnique || isSet) {
+    const optionsObj = destructureOptions(opts);
+    if (optionsObj.unique || optionsObj.set) {
         if (type === "ArrayOf") {
             if (Array.from(new Set(children.map(c => c.key))).length != children.map(c => c.key).length) {
-                m = ("Error: Must not contain duplicate values");
+                return ("Error: Must not contain duplicate values");
             }
         } else if (type === "Array") {
             if (Array.from(new Set(children)).length != children.length) {
-                m = ("Error: Must not contain duplicate values");
+                return ("Error: Must not contain duplicate values");
             }
         }
     }
-    return m;
+    return "";
 }
 
 //FUNCTION: Extract keys from an enumeration
@@ -168,18 +243,19 @@ const getEnumKeys = (children: any[], isID: boolean = false): any[] => {
 
 export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
     let [_idx, _name, type, options, _comment, _children] = destructureField(field);
+    const optionsObj = destructureOptions(options);
     let enumKeys: any[] = [];
     if (type === "MapOf") {
         // Check if key type or true type of key type is Enumerated
-        const keyType = options.find(opt => opt.startsWith("+"))?.substring(1);
+        const keyType = optionsObj.keyType;
         const [trueType, trueTypeDef] = getTrueType(schemaObj.types, keyType ? keyType : "");
         if (keyType === "Enumerated" || trueType === "Enumerated") {
             let [_idx, _trueName, _type, _options, _comment, children] = destructureField(trueTypeDef ? trueTypeDef : []);
-            const isID = _options.some(opt => opt.startsWith("=")); // Check if enum option has ID
+            const isID = optionsObj.isID;
             enumKeys = getEnumKeys(children, isID);
 
             // Check if enum is pointer
-            const hasPointer = _options.find(opt => opt.startsWith(">"))?.slice(1);
+            const hasPointer = optionsObj.pointer
             if (enumKeys.length === 0 && hasPointer) {
                 enumKeys = getPointerChildren(schemaObj, hasPointer, children, isID).map((child: any) => {
                     let [_idx, name, _type, _options, _comment, _children] = destructureField(child);
@@ -192,41 +268,6 @@ export const caseMapOfEnumKey = (schemaObj: any, field: any[]) => {
     return enumKeys;
 }
 
-//FUNCTION: Get default value. If option has default value, that takes precedence over the type default value.
-export const getDefaultValue = (type: string, options: any[], children: any[] = []): any => {
-    const minInclusive = options.find(opt => typeof opt === 'string' && opt.startsWith("w"))?.slice(1);
-    let minExclusive = options.find(opt => typeof opt === 'string' && opt.startsWith("y"))?.slice(1);
-    // Adjust minExclusive
-    if (minExclusive) {
-        if (type === "Integer") minExclusive = parseInt(minExclusive) + 1;
-        if (type === "Number") minExclusive = parseFloat(minExclusive) + 0.01;
-    }
-    const minValue = minInclusive ? minInclusive : minExclusive ? minExclusive : undefined;
-
-    for (const option of options) {
-        // Check for integer versions of dates
-        const secondVis = type === "Integer" && (option === "/date-time" || option === "/date" || option === "/time");
-        const val = defaultValues(option, getMinv(options), minValue, children, secondVis);
-        if (val !== undefined) {
-            return val;
-        }
-    }
-    const val2 = defaultValues(type, getMinv(options), minValue, children);
-    if (val2 !== undefined) {
-        return val2;
-    }
-    return undefined;
-}
-
-//FUNCTION: Deal with field multiplicity for primitives
-export const getMultiplicity = (opts: any[]): [number | undefined, number | undefined] => {
-    let minOccurs = opts.find(opt => typeof opt === 'string' && opt.startsWith("["))?.substring(1);
-    minOccurs = minOccurs ? parseInt(minOccurs) : undefined;
-    let maxOccurs = opts.find(opt => typeof opt === 'string' && opt.startsWith("]"))?.substring(1);
-    maxOccurs = maxOccurs ? parseInt(maxOccurs) : undefined;
-    return [minOccurs, maxOccurs];
-}
-
 export const convertToArrayOf = (field: any[], minOccurs: number | undefined, maxOccurs: number | undefined): any[] | undefined => {
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
     // Remove minOccurs and maxOccurs from options
@@ -235,10 +276,8 @@ export const convertToArrayOf = (field: any[], minOccurs: number | undefined, ma
     } else {
         options = options.filter(opt => typeof opt === 'string' && !opt.startsWith("[") && !opt.startsWith("]"));
     }
-
-    // Case maxOccurs == -1
+    
     const useMaxElements = maxOccurs === -1;
-    // Case maxOccurs == -2
     const upperBoundUnlimited = maxOccurs === -2;
     
     // Convert minOccurs and maxOccurs to minLength and maxLength

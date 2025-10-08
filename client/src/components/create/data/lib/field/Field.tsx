@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CoreType, Array, ArrayOf, Record, Map, MapOf, Enumerated, Choice, Derived } from 'components/create/data/lib/field/types/Types';
 import { AllFieldArray, StandardFieldArray, ArrayFieldArray, FieldOfArray } from '../../../schema/interface';
 import { useSelector } from 'react-redux';
 import { getSelectedSchema } from 'reducers/util';
-import { caseMapOfEnumKey, destructureField, convertToArrayOf, getMultiplicity, restrictType, extendType, linkToKey } from '../utils';
+import { caseMapOfEnumKey, destructureField, convertToArrayOf, restrictType, extendType, linkToKey, destructureOptions } from '../utils';
 
 interface FieldProps {
     field: AllFieldArray;
@@ -17,12 +17,12 @@ interface FieldProps {
 const Field = (props: FieldProps) => {
     const { field, fieldChange, children, parent, value, toClear } = props;
     let [_idx, name, type, options, _comment, _children] = destructureField(field);
+    const optionsObj = destructureOptions(options);
     const schemaObj = useSelector(getSelectedSchema);
-    let extendsField: AllFieldArray | undefined = undefined;
     let ancestor: string | undefined = undefined;
 
     // Check for abstract -- no data allowed
-    const isAbstract = options?.some(opt => opt === "a");
+    const isAbstract = optionsObj.abstract;
     if (isAbstract) {
         const displayChildren = _children.map((child) => {
             return `${child[0]} - ${child[1]} (${child[2]})<br>`;
@@ -33,7 +33,8 @@ const Field = (props: FieldProps) => {
     }
 
     // Check for extends
-    const extend = options.find(opt => opt.startsWith("e"))?.substring(1);
+    let extendsField: AllFieldArray | undefined = undefined;
+    const extend = optionsObj.extension;
     if (extend) {
         // Extend options & children
         const extendResult = extendType(schemaObj, extend, _children);
@@ -47,7 +48,7 @@ const Field = (props: FieldProps) => {
 
     // Check for restricts
     let restrictsField: AllFieldArray | undefined = undefined;
-    const restricts = options.find(opt => opt.startsWith("r"))?.substring(1);
+    const restricts = optionsObj.restriction;
     if (restricts) {
         // Restrict children and options
         const restrictResult = restrictType(schemaObj, restricts, _children);
@@ -60,11 +61,11 @@ const Field = (props: FieldProps) => {
     }
 
     // Check for key/link
-    const isLink = options.some(opt => opt === "L");
+    const isLink = optionsObj.link;
     const linkedRef = isLink ? linkToKey(schemaObj, type) : undefined;
-    if (linkedRef && linkedRef.type && linkedRef.options && linkedRef.children) {
+    if (linkedRef && linkedRef.type) {
         let newOpts = options.filter(opt => opt !== "L");
-        let newChildren = linkedRef.children.length > 0 ? linkedRef.children : [];
+        let newChildren = linkedRef.children && linkedRef.children.length > 0 ? linkedRef.children : [];
         let fieldArray = [_idx, name, linkedRef.type, [...newOpts, ...linkedRef.options], "", newChildren];
         return <Field field={fieldArray as AllFieldArray} fieldChange={fieldChange} parent={parent} value={value} toClear={toClear}/>;
     }
@@ -84,7 +85,7 @@ const Field = (props: FieldProps) => {
     }
 
     // Check for multiplicities
-    const hasMultiplicity = convertToArrayOf(field, ...getMultiplicity(options));
+    const hasMultiplicity = convertToArrayOf(field, optionsObj.minOccurs, optionsObj.maxOccurs);
     if (hasMultiplicity) {
         return (
             <Field field={hasMultiplicity as unknown as AllFieldArray} fieldChange={fieldChange} parent={props.parent} value={value} toClear={toClear}/>

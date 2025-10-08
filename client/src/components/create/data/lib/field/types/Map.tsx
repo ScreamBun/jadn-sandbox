@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import SBToggleBtn from "components/common/SBToggleBtn";
 import Field from "../Field";
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, isOptional } from "../../utils";
+import { destructureField, destructureOptions } from "../../utils";
 import SBClearDataBtn from "components/common/SBClearDataBtn";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 
@@ -18,24 +18,17 @@ interface FieldProps {
 }
 
 const Map = (props: FieldProps) => {
-    const { field, fieldChange, parent, value, toClear, ancestor } = props;
+    const { field, fieldChange, value, toClear, ancestor } = props;
     let [_idx, name, _type, options, _comment, children] = destructureField(field);
-    const [toggle, setToggle] = useState(false);
-     
-    const [clear, setClear] = useState(toClear);
-    useEffect(() => {
-        setClear(toClear);
-        if (toClear) {
-            setData("");
-            setToggle(true);
-            setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
-        }
-    }, [toClear]);
-    
-    const [data, setData] = useState(value);
+    const optionsObj = destructureOptions(options);
 
-    const isID = options.some(opt => String(opt) === '=');
-    const _ordered = options.some(opt => opt.startsWith("q"));
+    const isID = optionsObj.isID;
+    const _ordered = optionsObj.ordered;
+    const _optional = optionsObj.isOptional;
+
+    const [toggle, setToggle] = useState(false);
+    const [clear, setClear] = useState(toClear);
+    const [data, setData] = useState(value);
 
     // If isID, map child field name to child ID
     const nameToIdMap = useMemo(() => {
@@ -74,6 +67,15 @@ const Map = (props: FieldProps) => {
             return updated;
         });
     };
+
+    useEffect(() => {
+        setClear(toClear);
+        if (toClear) {
+            setData("");
+            setToggle(true);
+            setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
+        }
+    }, [toClear]);
     
     // Initialize/maintain ordered keys once when opened
     useEffect(() => {
@@ -121,8 +123,6 @@ const Map = (props: FieldProps) => {
             );
         });
     }, [toggle, children, name, clear]);
-
-    const _optional = isOptional(options);
 
     return (
         <>
