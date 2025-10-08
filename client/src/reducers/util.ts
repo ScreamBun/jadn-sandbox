@@ -81,39 +81,12 @@ export default (state = initialState, action: util.UtilActions) => {
           ? exampleToSchemaMappings[schemaFilename as keyof typeof exampleToSchemaMappings]
           : undefined;
 
-        let reorderedMessages = state.loaded.messages;
-
-        if (mappedMessages && Array.isArray(state.loaded.messages.examples)) {
-          const exampleMessages = state.loaded.messages.examples;
-          const pickId = (msg: any) =>
-            typeof msg === 'string' ? msg : msg?.value ?? msg?.filename ?? null;
-
-          const prioritized: typeof exampleMessages = [];
-          const remaining: typeof exampleMessages = [];
-
-          exampleMessages.forEach(msg => {
-            const id = pickId(msg);
-            if (id && mappedMessages.includes(id)) {
-              prioritized.push(msg);
-            } else {
-              remaining.push(msg);
-            }
-          });
-
-          if (prioritized.length > 0) {
-            reorderedMessages = {
-              ...state.loaded.messages,
-              examples: [...prioritized, ...remaining]
-            };
-          }
-        }
-
         return {
           ...state,
           selectedSchema: action.payload.data,
           loaded: {
             ...state.loaded,
-            messages: reorderedMessages || state.loaded.messages,
+            messages: {custom: state.loaded.messages.custom, examples: mappedMessages || []},
             schemas: state.loaded.schemas
           }
         };

@@ -54,23 +54,33 @@ export const PLANTUML_RENDER_LIMIT = 8000
 
 export const exampleToSchemaMappings = {
     "music-database.jadn": 
-        ["music_library.json", "music_library.cbor"],
+        ["music_library.json", "music_library.xml", "music_library.cbor"],
     "oc2ls-v1.0.1-resolved.jadn": 
-        ["openc2_command_deny.json", "openc2_command_deny.cbor", 
-        "openc2_command_query.json", "openc2_command_query.cbor",
-        "openc2_command_scan.json", "openc2_command_scan.cbor",
-        "openc2_v101_response.json", "openc2_v101_response.cbor"],
+        ["openc2_command_deny.json", "openc2_command_deny.cbor",  "openc2_command_deny.xml",
+        "openc2_command_query.json", "openc2_command_query.cbor", "openc2_command_query.xml",
+        "openc2_command_scan.json", "openc2_command_scan.cbor", "openc2_command_scan.xml",
+        "openc2_v101_response.json", "openc2_v101_response.cbor", "openc2_v101_response.xml"],
     "oc2ls-v1.1.0-resolved.jadn":
-        ["openc2_command_deny.json", "openc2_command_deny.cbor", 
-        "openc2_command_query.json", "openc2_command_query.cbor",
-        "openc2_command_scan.json", "openc2_command_scan.cbor",
-        "openc2_v110_response.json", "openc2_v110_response.cbor"],
+        ["openc2_command_deny.json", "openc2_command_deny.cbor",  "openc2_command_deny.xml",
+        "openc2_command_query.json", "openc2_command_query.cbor", "openc2_command_query.xml",
+        "openc2_command_scan.json", "openc2_command_scan.cbor", "openc2_command_scan.xml",
+        "openc2_v110_response.json", "openc2_v110_response.cbor", "openc2_v110_response.xml"],
     "oscal-assessment-plan.jadn":
-        ["oscal_assessment_plan.json", "oscal_assessment_plan.cbor"],
+        ["oscal_assessment_plan.json", "oscal_assessment_plan.cbor", "oscal_assessment_plan.xml"],
+    "oscal-assessment-results.jadn":
+        ["oscal_assessment_result.json", "oscal_assessment_result.cbor", "oscal_assessment_result.xml"],
+    "oscal-catalog.jadn":
+        ["oscal_catalog.json", "oscal_catalog.cbor", "oscal_catalog.xml"],
+    "oscal-component.jadn":
+        ["oscal_component.json", "oscal_component.cbor", "oscal_component.xml"],
+    "oscal-poam.jadn":
+        ["oscal_poam.json", "oscal_poam.cbor", "oscal_poam.xml"],
+    "oscal-profile.jadn":
+        ["oscal_profile.json", "oscal_profile.cbor", "oscal_profile.xml"],
     "resolved-ap-hunt-v01.jadn":
-        ["threat_hunt_results.json", "threat_hunt_results.cbor",
-        "threat_hunt_target.json", "threat_hunt_target.cbor"],
+        ["ap_hunt_command.json", "ap_hunt_command.cbor", "ap_hunt_command.xml",
+        "ap_hunt_response.json", "ap_hunt_response.cbor", "ap_hunt_response.xml"],
     "unresolved-ap-hunt-v01.jadn":
-        ["threat_hunt_results.json", "threat_hunt_results.cbor",
-        "threat_hunt_target.json", "threat_hunt_target.cbor"]  
+        ["ap_hunt_command.json", "ap_hunt_command.cbor", "ap_hunt_command.xml",
+        "ap_hunt_response.json", "ap_hunt_response.cbor", "ap_hunt_response.xml"],
 }
