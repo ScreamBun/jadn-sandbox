@@ -1,10 +1,12 @@
 {
-    "action": "deny",
+  "OpenC2-Command": {
+    "action": "scan",
     "target": {
       "ipv4_connection": {
         "dst_addr": "192.0.2.0/32",
-        "protocol": "tcp",
-        "src_addr": "192.0.2.0/32"
+        "src_addr": "192.0.2.1/32",
+        "protocol": "tcp"
       }
     }
+  }
 }

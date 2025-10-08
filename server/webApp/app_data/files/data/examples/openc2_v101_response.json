@@ -1,11 +1,10 @@
 {
-    "status": 102,
+  "OpenC2-Response": {
+    "status": 200,
     "status_text": "successful test",
     "results": {
-      "versions": ["test1", "test2"],
-      "profiles": ["1234567890123456"],
-      "pairs": {
-        "locate": ["artifact", "command"]
-      }
+      "versions": ["1.2", "1.3"],
+      "profiles": ["oc2"]
     }
+  }
 }
