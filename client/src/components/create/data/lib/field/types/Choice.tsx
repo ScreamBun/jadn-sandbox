@@ -27,6 +27,7 @@ const Choice = (props: FieldProps) => {
     const selectedLabel = value ? Object.keys(value)?.[0] : '';
     const selectedVal = value ? { value: Object.values(value)?.[0] } : {};
     const [selectedValue, setSelectedValue] = useState<Option | string>(selectedLabel != '' ? { 'label': selectedLabel, 'value': selectedLabel } : '');
+    const isCombined = options.some(opt => ["CA", "CO", "CX"].includes(String(opt))); // check for combined options
     const toggleDataGen = useSelector(getToggleGenData);
 
     const [clear, setClear] = useState(toClear);
@@ -48,6 +49,10 @@ const Choice = (props: FieldProps) => {
         }
     };
 
+    const handleCombineChange = (_k: any, v: any) => {
+        fieldChange(name, v);
+    }
+
     const getChild = (field_name: string) => { 
         const child = children.find((child: AllFieldArray) => child[1] === field_name || child[0] === field_name);
         if (!child) return undefined;
@@ -55,7 +60,7 @@ const Choice = (props: FieldProps) => {
             <Field 
                 key={field_name} 
                 field={child}
-                fieldChange={updateChildData}
+                fieldChange={!isCombined ? updateChildData : handleCombineChange}
                 parent={name}
                 value={selectedVal.value} 
                 toClear={clear} />
