@@ -326,7 +326,7 @@ const DataCreator = (props: any) => {
                                     data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
                                     loc={'messages'} 
                                     customClass={"float-end ms-1"} 
-                                    ext={selectedSerialization?.value} />
+                                    ext={selectedSerialization?.value.toLowerCase()} />
                                 <SBCopyToClipboard 
                                     buttonId={'copyMessage'} 
                                     data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
@@ -336,7 +336,7 @@ const DataCreator = (props: any) => {
                                     buttonId='msgDownload' 
                                     customClass='float-end me-1' 
                                     data={selectedSerialization?.value===LANG_JSON_UPPER ? JSON.stringify(generatedMessage) : selectedSerialization?.value===LANG_XML_UPPER ? JSON.stringify(xml) : selectedSerialization?.value===LANG_CBOR_UPPER ? JSON.stringify(cbor) : JSON.stringify(annotatedCbor)} 
-                                    ext={selectedSerialization?.value} />
+                                    ext={selectedSerialization?.value.toLowerCase()} />
                             </>
                         </div>
                     </div>

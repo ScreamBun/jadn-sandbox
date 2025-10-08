@@ -14,6 +14,7 @@ import { convertData } from "actions/convert";
 import CborTranslated from './CborTranslated'
 import XmlTranslated from './XmlTranslated'
 import { useLocation } from 'react-router-dom'
+import { removeXmlWrapper } from 'components/create/data/lib/utils'
 
 
 const DataTranslator = () => {
@@ -94,7 +95,10 @@ const DataTranslator = () => {
 
         if (loadedSchema && loadedData && dataFormat && dataType) {
             try {
-                dispatch(validateMessage(loadedSchema, loadedData, dataFormat.value, dataType.value))
+                const rootType = dataType.value;
+                let newMsg = dataFormat.label === "JSON" || dataFormat.label === "json" ? JSON.stringify(JSON.parse(loadedData)[rootType]) : dataFormat.label === "XML" || dataFormat.label === "xml" ? removeXmlWrapper(loadedData) : loadedData;
+                newMsg = newMsg === undefined ? loadedData : newMsg; // if rootType not found, use original message
+                dispatch(validateMessage(loadedSchema, newMsg, dataFormat.value, rootType))
                     .then((submitVal: any) => {
                         if (submitVal && submitVal.payload.valid_bool) {
                             setIsLoading(false);
