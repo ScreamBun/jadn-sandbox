@@ -2,9 +2,9 @@
     "action": "deny",
     "target": {
       "ipv4_connection": {
-        "dst_addr": ["192.0.2.0", 80],
+        "dst_addr": "192.0.2.0/32",
         "protocol": "tcp",
-        "src_addr": ["192.0.2.0", 80]
+        "src_addr": "192.0.2.0/32"
       }
     }
 }
