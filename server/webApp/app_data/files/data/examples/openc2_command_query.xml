@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<all>
+	<OpenC2-Command type="dict">
+		<action type="str">query</action>
+		<target type="dict">
+			<features type="list">
+				<item type="str">pairs</item>
+				<item type="str">versions</item>
+			</features>
+		</target>
+	</OpenC2-Command>
+</all>

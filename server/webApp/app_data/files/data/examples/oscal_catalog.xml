@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<all>
+	<Catalog type="dict">
+		<uuid type="str">E46e5729-3F7E-5bF6-Aa11-A7E1bDEEb0c8</uuid>
+		<metadata type="dict">
+			<title type="str">Document Title</title>
+			<version type="str">1.1</version>
+			<oscal-version type="str">1.1</oscal-version>
+			<last-modified type="str">1926-05-30T09:25:33+12:45</last-modified>
+			<remarks type="str">abcdefg</remarks>
+		</metadata>
+	</Catalog>
+</all>

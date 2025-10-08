@@ -1,0 +1,15 @@
+{
+  "OpenC2-Command": {
+    "args": {
+      "th": {
+        "huntargs": {
+          "string_args": ["arg1", "arg2"]
+        }
+      }
+    },
+    "action": "query",
+    "target": {
+      "features": ["pairs"]
+    }
+  }
+}

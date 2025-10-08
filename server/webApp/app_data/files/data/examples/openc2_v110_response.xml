@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<all>
+	<OpenC2-Response type="dict">
+		<status type="int">200</status>
+		<status_text type="str">successful test</status_text>
+		<results type="dict">
+			<versions type="list">
+				<item type="str">1.1</item>
+				<item type="str">1.2</item>
+			</versions>
+			<profiles type="list">
+				<item type="str">https://www.oc2.com</item>
+			</profiles>
+			<pairs type="dict">
+				<locate type="list">
+					<item type="dict">
+						<ipv4_net type="str">192.168.0.1/32</ipv4_net>
+					</item>
+				</locate>
+			</pairs>
+		</results>
+	</OpenC2-Response>
+</all>

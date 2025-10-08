@@ -1,0 +1,13 @@
+{
+  "OpenC2-Response": {
+    "status": 200,
+    "results": {
+      "args": ["arg1", "arg2"],
+      "th": {
+        "huntflow_info": [{
+            "uniqueId": 12123
+          }]
+      }
+    }
+  }
+}

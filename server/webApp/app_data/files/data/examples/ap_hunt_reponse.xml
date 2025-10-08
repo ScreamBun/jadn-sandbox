@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<all>
+	<OpenC2-Response type="dict">
+		<status type="int">200</status>
+		<results type="dict">
+			<args type="list">
+				<item type="str">arg1</item>
+				<item type="str">arg2</item>
+			</args>
+			<th type="dict">
+				<huntflow_info type="list">
+					<item type="dict">
+						<uniqueId type="int">12123</uniqueId>
+					</item>
+				</huntflow_info>
+			</th>
+		</results>
+	</OpenC2-Response>
+</all>
