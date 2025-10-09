@@ -2,7 +2,8 @@ import React from "react";
 import SBEditor from "../common/SBEditor";
 import { marked } from "marked";
 import HTMLReactParser from "html-react-parser";
-import * as DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify'
+const { sanitize } = DOMPurify
 
 // markdownToHTML: ALLOWS LINE BREAKS WITH RETURN BUTTON
 marked.setOptions({
@@ -26,7 +27,7 @@ function markdownToHTML(markdownText: string) {
 
 export const onMDPopOutClick = (convertedSchema: string) => {
     const htmlContent = markdownToHTML(convertedSchema);
-    const sanitizedData = DOMPurify.sanitize(htmlContent, { FORCE_BODY: true });
+    const sanitizedData = sanitize(htmlContent, { FORCE_BODY: true });
     const blob = new Blob([sanitizedData], { type: "text/html" });
     const data = URL.createObjectURL(blob);
     window.open(data);
@@ -37,7 +38,7 @@ const SBMarkdownPreviewer = (props: any) => {
     const { markdownText, showPreviewer, conversion } = props;
     const htmlContent = markdownToHTML(markdownText);
     const previewerClassName = "previewer " + (showPreviewer ? "hide" : "");
-    const sanitizedData = DOMPurify.sanitize(htmlContent, { FORCE_BODY: true });
+    const sanitizedData = sanitize(htmlContent, { FORCE_BODY: true });
 
     return (
         <>
