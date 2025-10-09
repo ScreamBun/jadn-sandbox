@@ -30,6 +30,15 @@ const DataTranslator = () => {
     const selectedSchemaFile = useSelector(getSelectedFile);
     const setSelectedSchemaFile = (file: Option | null) => {
         dispatch(setFile(file));
+        setLoadedData('');
+        setIsDataValid(false);
+        setSelectedDataFile('');
+        setDataFormat(null);
+        setDataType(null);
+        setConvertTo(null);
+        setCborAnnoHex('');
+        setCborHex('');
+        setXml('');
     }
 
     const [isLoading, setIsLoading] = useState(false);
