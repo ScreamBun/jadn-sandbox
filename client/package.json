@@ -46,7 +46,6 @@
     "react-dom": "^19.2.0",
     "react-helmet-async": "^2.0.5",
     "react-intersection-observer": "^9.16.0",
-    "react-json-editor": "https://git@github.com/screambun/react-json-editor.git",
     "react-json-pretty": "^2.2.0",
     "react-popout": "^4.0.0",
     "react-redux": "^9.2.0",
