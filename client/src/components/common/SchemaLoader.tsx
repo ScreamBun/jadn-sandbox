@@ -191,23 +191,28 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             try {
                 dispatch(validateSchema(schemaObj, fileName.ext))
                     .then((validateSchemaVal: any) => {
-                        if (validateSchemaVal.payload.valid_bool == true) {
+                        const payload = validateSchemaVal?.payload ?? {};
+                        const valid = payload.valid_bool === true;
+                        if (valid) {
                             dispatch(setSchemaValid(true));
                             if (typeof schemaObj == "string") {
                                 schemaObj = JSON.parse(schemaObj);
                             }
                             dispatch(setSchema(schemaObj));
                             if (showToast){
-                                sbToastSuccess(validateSchemaVal.payload.valid_msg);
+                                const msg = payload.valid_msg ?? "Schema validation succeeded.";
+                                sbToastSuccess(msg);
                             }
                         } else {
-                            sbToastError(validateSchemaVal.payload.valid_msg);
+                            const msg = payload.valid_msg ?? "Schema validation failed.";
+                            sbToastError(msg);
                             dispatch(setSchemaValid(false));
                             //dispatch(setSchema(null));
                         }
                     })
                     .catch((validateSchemaErr) => {
-                        sbToastError(validateSchemaErr.payload.valid_msg)
+                        const msg = validateSchemaErr?.payload?.valid_msg ?? validateSchemaErr?.message ?? "Schema validation failed.";
+                        sbToastError(msg);
                         //dispatch(setSchema(null));
                         dispatch(setSchemaValid(false));
                     }).finally(() => {
