@@ -155,7 +155,9 @@ const DataTranslator = () => {
         }
 
         try {
-            dispatch(convertData(loadedData, LANG_JSON, convertTo.value))
+            const canUnwrap = loadedData[dataType?.value] ? true : false;
+            let newData = convertTo.value === LANG_CBOR ? canUnwrap ? JSON.stringify(loadedData[dataType?.value]) : loadedData : loadedData;
+            dispatch(convertData(newData, LANG_JSON, convertTo.value))
                 .then((rsp: any) => {
                     setIsTranslating(false);
 

@@ -33,6 +33,7 @@ const DataCreator = (props: any) => {
     const [selectedSerialization, setSelectedSerialization] = useState<Option | null>({label:LANG_JSON_UPPER, value: LANG_JSON_UPPER});
     const [jsonValidated, setJsonValidated] = useState(false);
     const [xmlValidated, setXmlValidated] = useState(false);
+    const [cborValidated, setCborValidated] = useState(false);
     const [dataFullScreen, setDataFullScreen] = useState(false);
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
 
@@ -48,6 +49,8 @@ const DataCreator = (props: any) => {
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
         setJsonValidated(false);
+        setXmlValidated(false);
+        setCborValidated(false);
         setGeneratedMessage((prev: any) => {
             const updated = { ...prev };
             if (v === "" || v === undefined || v === null) {
@@ -68,6 +71,7 @@ const DataCreator = (props: any) => {
         setLoadedFieldDefs(null);
         setJsonValidated(false);
         setXmlValidated(false);
+        setCborValidated(false);
         setXml("");
         setCbor("");
         setAnnotatedCbor("");
@@ -80,11 +84,12 @@ const DataCreator = (props: any) => {
             sbToastError('ERROR: Validation failed - Please select schema and enter data');
             setJsonValidated(false);
             setXmlValidated(false);
+            setCborValidated(false);
             return;
         }
         try {
             const type = selection?.value || '';
-            const newMsg = lang === LANG_JSON_UPPER ? JSON.stringify(generatedMessage[type]) : removeXmlWrapper(xml); // need to remove wrapper
+            const newMsg = lang === LANG_JSON_UPPER ? JSON.stringify(generatedMessage[type]) : lang === LANG_XML_UPPER ? removeXmlWrapper(xml) : cbor;
             const action: any = await dispatch(validateMessage(schemaObj, newMsg, lang, type));
             // Check if the action is a success or failure
             if (action.type === '@@validate/VALIDATE_MESSAGE_SUCCESS') {
@@ -92,15 +97,18 @@ const DataCreator = (props: any) => {
                     sbToastSuccess(action.payload.valid_msg);
                     if (lang === LANG_JSON_UPPER) setJsonValidated(true);
                     if (lang === LANG_XML_UPPER) setXmlValidated(true);
+                    if (lang === LANG_CBOR_UPPER) setCborValidated(true);
                 } else {
                     sbToastError(action.payload.valid_msg);
                     if (lang === LANG_JSON_UPPER) setJsonValidated(false);
                     if (lang === LANG_XML_UPPER) setXmlValidated(false);
+                    if (lang === LANG_CBOR_UPPER) setCborValidated(false);
                 }
             } else if (action.type === '@@validate/VALIDATE_FAILURE') {
                 sbToastError(action.payload?.valid_msg || 'Validation failed');
                 if (lang === LANG_JSON_UPPER) setJsonValidated(false);
                 if (lang === LANG_XML_UPPER) setXmlValidated(false);
+                if (lang === LANG_CBOR_UPPER) setCborValidated(false);
             }
         } catch (err: any) {
             sbToastError(err.message || 'Validation error');
@@ -161,7 +169,7 @@ const DataCreator = (props: any) => {
                 });
 
             // Convert to CBOR
-            dispatch(convertData(JSON.stringify(data), LANG_JSON_UPPER, LANG_CBOR_UPPER))
+            dispatch(convertData(JSON.stringify(data[selection?.value]), LANG_JSON_UPPER, LANG_CBOR_UPPER))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.cbor_hex) {
@@ -308,11 +316,11 @@ const DataCreator = (props: any) => {
                             <>
                                 <button type="button"
                                     className="btn btn-sm btn-primary me-1"
-                                    onClick={() => handleValidate(selectedSerialization?.value===LANG_JSON_UPPER ? LANG_JSON_UPPER : selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : LANG_JSON_UPPER)}
+                                    onClick={() => handleValidate(selectedSerialization?.value===LANG_JSON_UPPER ? LANG_JSON_UPPER : selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : selectedSerialization?.value===LANG_CBOR_UPPER ? LANG_CBOR_UPPER : LANG_JSON_UPPER)}
                                     disabled = {selection && generatedMessage? false:true}
                                 >
                                     Valid
-                                    {(selectedSerialization?.value===LANG_JSON_UPPER ? jsonValidated : selectedSerialization?.value===LANG_XML_UPPER ? xmlValidated : jsonValidated) ? (
+                                    {(selectedSerialization?.value===LANG_JSON_UPPER ? jsonValidated : selectedSerialization?.value===LANG_XML_UPPER ? xmlValidated : selectedSerialization?.value===LANG_CBOR_UPPER ? cborValidated : jsonValidated) ? (
                                         <span className="badge rounded-pill text-bg-success ms-1">
                                             <FontAwesomeIcon icon={faCheck} />
                                         </span>) : (
