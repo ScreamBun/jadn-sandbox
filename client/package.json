@@ -118,7 +118,7 @@
     "babel-plugin-dev-expression": "^0.2.3",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^11.0.0",
+    "copy-webpack-plugin": "^13.0.1",
     "cross-env": "^7.0.3",
     "css-loader": "^6.11.0",
     "eslint": "^9.37.0",
@@ -150,10 +150,10 @@
     "url-loader": "^4.1.1",
     "webpack": "^5.102.1",
     "webpack-bundle-analyzer": "4.10.2",
-    "webpack-cli": "^5.1.4",
+    "webpack-cli": "^6.0.1",
     "webpack-deadcode-plugin": "^0.1.17",
-    "webpack-dev-server": "^4.15.2",
-    "webpack-merge": "^5.10.0",
+    "webpack-dev-server": "^5.2.2",
+    "webpack-merge": "^6.0.1",
     "workbox-webpack-plugin": "^7.3.0"
   },
   "resolutions": {
