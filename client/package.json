@@ -156,6 +156,10 @@
     "webpack-merge": "^5.10.0",
     "workbox-webpack-plugin": "^7.3.0"
   },
+  "resolutions": {
+    "@lezer/common": "^1.2.1",
+    "@lezer/lr": "^1.4.2"
+  },
   "engines": {
     "node": ">=14.x",
     "npm": ">=7.x",
