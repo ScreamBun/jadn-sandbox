@@ -3,9 +3,10 @@ from .root import root
 
 
 def register_all(app):
-    app.logger.info("Registering Endpoint Blueprints")
     app.register_blueprint(root, url_prefix="")
     app.register_blueprint(api, url_prefix="/api")
+    
+    return app
 
 
 __all__ = [
