@@ -48,6 +48,29 @@ module.exports = merge(baseConfig, {
       dry: false
     })
   ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, "css-loader"]
+      },
+      {
+        test: /\.s[ac]ss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: { importLoaders: 2 }
+          },
+          "resolve-url-loader",
+          {
+            loader: "sass-loader",
+            options: { sourceMap: true }
+          }
+        ]
+      }
+    ]
+  },
   optimization: {
     minimizer: [
       new TerserPlugin({
