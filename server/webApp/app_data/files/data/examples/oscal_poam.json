@@ -1,0 +1,18 @@
+{
+  "Root": {
+    "plan-of-action-and-milestones": {
+      "uuid": "b1FbdF6A-3bd0-59Ae-AF46-2E4130b5cAF4",
+      "metadata": {
+        "title": "Poam Title",
+        "last-modified": "19-02-29T20:27:27.23+05:00",
+        "version": "1.1",
+        "oscal-version": "1.1"
+      },
+      "poam-items": [{
+          "title": "Poam Item Title",
+          "description": "Poam Item Description"
+        }]
+    },
+    "schema": "abcdefg"
+  }
+}

@@ -1,8 +1,9 @@
 from flask import Flask
 from flask_cors import CORS
-from .config import DevConfig
-from .validator import Validator
-from .formatter.logic import FormatOptionLogic
+
+from webApp.config import DevConfig
+from webApp.validator.validator import Validator
+from webApp.formatter.logic.format_option_logic import FormatOptionLogic
 
 
 # Initialize the app
@@ -15,8 +16,11 @@ print("Starting JADN Sandbox...")
 app.validator = Validator()
 app.formatOptionLogic = FormatOptionLogic()
 
-print("Go to the URL below in your browser:")
-print("http://localhost:8082/")
+from .views import * 
+app = register_all(app)
 
-from .views import *  # pylint: disable=wrong-import-position
-register_all(app)
+if app:
+    print("Ready, access the app via the link below:")
+    print("http://localhost:8082/")
+else:
+    print("Error during startup")

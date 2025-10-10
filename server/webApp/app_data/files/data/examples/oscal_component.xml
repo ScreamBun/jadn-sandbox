@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<all>
+	<Component-definition type="dict">
+		<uuid type="str">ddA2F9ef-8d20-469c-af0F-59EbC8fbB742</uuid>
+		<metadata type="dict">
+			<title type="str">Component Title</title>
+			<last-modified type="str">1969-10-31T05:36:58-03:30</last-modified>
+			<version type="str">1.1</version>
+			<oscal-version type="str">1.1</oscal-version>
+		</metadata>
+	</Component-definition>
+</all>

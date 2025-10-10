@@ -1,8 +1,8 @@
 {
-  "action": "query",
-  "target": {
-    "features": [
-      "pairs"
-    ]
+  "OpenC2-Command": {
+    "action": "query",
+    "target": {
+      "features": ["pairs", "versions"]
+    }
   }
 }

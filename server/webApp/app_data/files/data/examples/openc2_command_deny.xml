@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<all>
+	<OpenC2-Command type="dict">
+		<action type="str">scan</action>
+		<target type="dict">
+			<ipv4_connection type="dict">
+				<dst_addr type="str">192.0.2.0/32</dst_addr>
+				<src_addr type="str">192.0.2.1/32</src_addr>
+				<protocol type="str">tcp</protocol>
+			</ipv4_connection>
+		</target>
+	</OpenC2-Command>
+</all>

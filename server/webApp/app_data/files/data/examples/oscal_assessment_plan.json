@@ -1,24 +1,22 @@
 {
-  "assessment-plan": {
-    "uuid": "5Da8BBB7-eCa8-489b-AC6b-cB3d0Fd4dFde",
-    "metadata" : {
-      "title" : "metadata title",
-      "last-modified" : "1955-11-18T13:32:30Z",
-      "version" : "1.1.1",
-      "oscal-version" : "1.1.1"
-    },	
-    "import-ssp" : {
-      "href" : "https://www.example.com/index.html"
-    },
-    "reviewed-controls" : {
-      "control-selections" : [
-        {
-          "description": "test control"
-        },
-        {
-          "description": "test control"
-        }			
-      ]
+  "Root": {
+    "assessment-plan": {
+      "uuid": "c9cC1C50-1AfA-5C9e-adD2-56891d83Ba2F",
+      "metadata": {
+        "title": "Plan Title",
+        "last-modified": "2800-02-29T12:24:19.40-09:30",
+        "oscal-version": "1.1",
+        "remarks": "abcdefg",
+        "version": "1.1"
+      },
+      "reviewed-controls": {
+        "control-selections": [{
+            "remarks": "remark"
+          }]
+      },
+      "import-ssp": {
+        "href": "https://www.test.com"
+      }
     }
   }
 }

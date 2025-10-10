@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<all>
+	<Profile type="dict">
+		<uuid type="str">f2A50CcC-965A-59cf-aE5a-2BBF44aF90bC</uuid>
+		<imports type="list">
+			<item type="dict">
+				<href type="str">https://www.profile.com</href>
+			</item>
+		</imports>
+		<metadata type="dict">
+			<title type="str">Profile Title</title>
+			<version type="str">1.1</version>
+			<oscal-version type="str">1.1</oscal-version>
+			<last-modified type="str">2220-02-29T22:46:55Z</last-modified>
+		</metadata>
+	</Profile>
+</all>
