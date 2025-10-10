@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<all>
+	<OpenC2-Command type="dict">
+		<args type="dict">
+			<th type="dict">
+				<huntargs type="dict">
+					<string_args type="list">
+						<item type="str">arg1</item>
+						<item type="str">arg2</item>
+					</string_args>
+				</huntargs>
+			</th>
+		</args>
+		<action type="str">query</action>
+		<target type="dict">
+			<features type="list">
+				<item type="str">pairs</item>
+			</features>
+		</target>
+	</OpenC2-Command>
+</all>

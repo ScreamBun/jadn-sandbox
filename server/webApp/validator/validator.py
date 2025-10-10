@@ -8,8 +8,7 @@ from typing import Tuple, Union
 from jadnvalidation import DataValidation
 from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_roots
 
-from webApp.validator.utils import BaseEnum
-from webApp.utils.utils import get_value_errors
+from webApp.utils.utils import BaseEnum, get_value_errors
 from webApp.utils import constants
 
 class SerialFormats(BaseEnum):

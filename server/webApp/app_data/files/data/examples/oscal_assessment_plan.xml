@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<all>
+	<Root type="dict">
+		<assessment-plan type="dict">
+			<uuid type="str">c9cC1C50-1AfA-5C9e-adD2-56891d83Ba2F</uuid>
+			<metadata type="dict">
+				<title type="str">Plan Title</title>
+				<last-modified type="str">2800-02-29T12:24:19.40-09:30</last-modified>
+				<oscal-version type="str">1.1</oscal-version>
+				<remarks type="str">abcdefg</remarks>
+				<version type="str">1.1</version>
+			</metadata>
+			<reviewed-controls type="dict">
+				<control-selections type="list">
+					<item type="dict">
+						<remarks type="str">remark</remarks>
+					</item>
+				</control-selections>
+			</reviewed-controls>
+			<import-ssp type="dict">
+				<href type="str">https://www.test.com</href>
+			</import-ssp>
+		</assessment-plan>
+	</Root>
+</all>

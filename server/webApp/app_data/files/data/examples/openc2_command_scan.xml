@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<all>
+	<OpenC2-Command type="dict">
+		<action type="str">scan</action>
+		<target type="dict">
+			<artifact type="dict">
+				<mime_type type="str">test</mime_type>
+				<payload type="dict">
+					<bin type="str">test</bin>
+				</payload>
+			</artifact>
+		</target>
+	</OpenC2-Command>
+</all>

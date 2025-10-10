@@ -14,6 +14,7 @@ import { convertData } from "actions/convert";
 import CborTranslated from './CborTranslated'
 import XmlTranslated from './XmlTranslated'
 import { useLocation } from 'react-router-dom'
+import { removeXmlWrapper } from 'components/create/data/lib/utils'
 
 
 const DataTranslator = () => {
@@ -29,6 +30,15 @@ const DataTranslator = () => {
     const selectedSchemaFile = useSelector(getSelectedFile);
     const setSelectedSchemaFile = (file: Option | null) => {
         dispatch(setFile(file));
+        setLoadedData('');
+        setIsDataValid(false);
+        setSelectedDataFile('');
+        setDataFormat(null);
+        setDataType(null);
+        setConvertTo(null);
+        setCborAnnoHex('');
+        setCborHex('');
+        setXml('');
     }
 
     const [isLoading, setIsLoading] = useState(false);
@@ -94,7 +104,10 @@ const DataTranslator = () => {
 
         if (loadedSchema && loadedData && dataFormat && dataType) {
             try {
-                dispatch(validateMessage(loadedSchema, loadedData, dataFormat.value, dataType.value))
+                const rootType = dataType.value;
+                let newMsg = dataFormat.label === "JSON" || dataFormat.label === "json" ? JSON.stringify(JSON.parse(loadedData)[rootType]) : dataFormat.label === "XML" || dataFormat.label === "xml" ? removeXmlWrapper(loadedData) : loadedData;
+                newMsg = newMsg === undefined ? loadedData : newMsg; // if rootType not found, use original message
+                dispatch(validateMessage(loadedSchema, newMsg, dataFormat.value, rootType))
                     .then((submitVal: any) => {
                         if (submitVal && submitVal.payload.valid_bool) {
                             setIsLoading(false);
@@ -151,7 +164,9 @@ const DataTranslator = () => {
         }
 
         try {
-            dispatch(convertData(loadedData, LANG_JSON, convertTo.value))
+            const canUnwrap =JSON.parse(loadedData)[dataType?.value] ? true : false;
+            let newData = convertTo.value === LANG_CBOR ? canUnwrap ? JSON.stringify(JSON.parse(loadedData)[dataType?.value]) : loadedData : loadedData;
+            dispatch(convertData(newData, LANG_JSON, convertTo.value))
                 .then((rsp: any) => {
                     setIsTranslating(false);
 
