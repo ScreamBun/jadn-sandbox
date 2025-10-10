@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<all>
+	<Root type="dict">
+		<schema type="str">Schema</schema>
+		<assessment-results type="dict">
+			<uuid type="str">a8aeD318-7BAa-4EE4-9aC4-1ffEC3Ab2Aad</uuid>
+			<metadata type="dict">
+				<title type="str">Results</title>
+				<last-modified type="str">2025-10-08T12:55:05-05:00</last-modified>
+				<version type="str">3.1</version>
+				<oscal-version type="str">1.0</oscal-version>
+				<remarks type="str">abcdefg</remarks>
+			</metadata>
+			<import-ap type="dict">
+				<href type="str">https://www.import-schema.com</href>
+			</import-ap>
+			<results type="list">
+				<item type="dict">
+					<uuid type="str">bd5bCc8C-1f1b-4aE1-bdFC-6a8b53e08B25</uuid>
+					<title type="str">Title of Results</title>
+					<description type="str">Description of Results</description>
+					<start type="str">2025-10-01T04:14:39-05:00</start>
+					<end type="str">2025-10-07T04:14:39-05:00</end>
+					<remarks type="str">abcdefg</remarks>
+					<reviewed-controls type="dict">
+						<control-selections type="list">
+							<item type="dict">
+								<remarks type="str">remark</remarks>
+							</item>
+						</control-selections>
+					</reviewed-controls>
+				</item>
+			</results>
+		</assessment-results>
+	</Root>
+</all>

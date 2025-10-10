@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<all>
+	<Library type="dict">
+		<n012345678912 type="dict">
+			<album_artist type="dict">
+				<artist_name type="str">John Michael Stipe</artist_name>
+				<instruments type="str">vocals</instruments>
+			</album_artist>
+			<album_title type="str">test</album_title>
+			<pub_data type="dict">
+				<publisher type="str">test</publisher>
+				<release_date type="str">2025-04-24</release_date>
+			</pub_data>
+			<tracks type="dict">
+				<location type="str">test</location>
+				<metadata type="dict">
+					<track_number type="int">1</track_number>
+					<title type="str">test</title>
+					<length type="int">5</length>
+					<audio_format type="str">MP3</audio_format>
+					<featured_artist type="dict">
+						<artist_name type="str">test</artist_name>
+						<instruments type="str">guitar</instruments>
+					</featured_artist>
+					<track_art type="dict">
+						<image_format type="str">PNG</image_format>
+						<image_content type="str">test</image_content>
+					</track_art>
+					<genre type="str">rock</genre>
+				</metadata>
+			</tracks>
+			<total_tracks type="int">1</total_tracks>
+			<cover_art type="dict">
+				<image_format type="str">PNG</image_format>
+				<image_content type="str">test</image_content>
+			</cover_art>
+		</n012345678912>
+	</Library>
+</all>

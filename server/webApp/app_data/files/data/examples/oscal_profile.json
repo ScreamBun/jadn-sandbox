@@ -1,0 +1,14 @@
+{
+  "Profile": {
+    "uuid": "f2A50CcC-965A-59cf-aE5a-2BBF44aF90bC",
+    "imports": [{
+        "href": "https://www.profile.com"
+      }],
+    "metadata": {
+      "title": "Profile Title",
+      "version": "1.1",
+      "oscal-version": "1.1",
+      "last-modified": "2220-02-29T22:46:55Z"
+    }
+  }
+}
