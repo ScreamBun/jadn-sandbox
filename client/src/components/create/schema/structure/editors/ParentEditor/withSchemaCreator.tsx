@@ -53,26 +53,24 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
             // If a schema is piped and we don't yet have cards, build them here
             try {
                 const schemaObj: any = typeof generatedSchema === 'string' ? JSON.parse(generatedSchema) : generatedSchema;
-                if (schemaObj && Array.isArray(schemaObj.types) && (!cardsState || cardsState.length === 0)) {
-                    flushSync(() => {
-                        setGeneratedSchema(schemaObj);
-                        setCardsState(schemaObj.types.map((item: any[], i: number) => ({
-                            id: self.crypto?.randomUUID ? self.crypto.randomUUID() : Math.random().toString(36).slice(2),
-                            index: i,
-                            text: item[0],
-                            value: item,
-                            isStarred: false,
-                            isVisibleInOutline: true
-                        })));
-                        setFieldCollapseState(schemaObj.types.map((def: any[]) => {
-                            let type = def[1]?.toLowerCase() as keyof typeof Types;
-                            if (type && Types[type]?.type === 'structure') {
-                                return false;
-                            } else {
-                                return undefined as unknown as boolean;
-                            }
-                        }))
-                    });
+                if (schemaObj && Array.isArray(schemaObj.types)) {
+                    setGeneratedSchema(schemaObj);
+                    setCardsState(schemaObj.types.map((item: any[], i: number) => ({
+                        id: self.crypto?.randomUUID ? self.crypto.randomUUID() : Math.random().toString(36).slice(2),
+                        index: i,
+                        text: item[0],
+                        value: item,
+                        isStarred: false,
+                        isVisibleInOutline: true
+                    })));
+                    setFieldCollapseState(schemaObj.types.map((def: any[]) => {
+                        let type = def[1]?.toLowerCase() as keyof typeof Types;
+                        if (type && Types[type]?.type === 'structure') {
+                            return false;
+                        } else {
+                            return undefined as unknown as boolean;
+                        }
+                    }))
                 }
             } catch (e) {
                 // Ignore JSON parse errors
