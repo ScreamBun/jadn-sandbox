@@ -1,6 +1,5 @@
 import { Reducer, combineReducers } from 'redux';
 import { History } from 'history';
-import { LocationChangeAction, RouterState, connectRouter } from 'connected-react-router';
 import convert, { ConvertState } from './convert';
 import util, { UtilState } from './util';
 import validate, { ValidateState } from './validate';
@@ -11,9 +10,11 @@ import transform, { TransformState } from './transform';
 import validateField, { ValidateFieldState } from './validatefield';
 import highlight, { HighlightState } from './highlight'
 import toggleGenDataReducer from './gendata';
+import { createRouterReducer } from '@lagunovsky/redux-react-router';
 
+type RouterReducerState = ReturnType<ReturnType<typeof createRouterReducer>>;
 export interface RootState {  // export so store.ts import is valid
-  router: Reducer<RouterState<History>, LocationChangeAction<History>>; // MUST BE 'router'
+  router: RouterReducerState; // MUST BE 'router'
   // Custom Reducers
   Convert: ConvertState;
   Util: UtilState;
@@ -26,7 +27,7 @@ export interface RootState {  // export so store.ts import is valid
 }
 
 export default (history: History) => combineReducers({
-  router: connectRouter(history), // MUST BE 'router'
+  router: createRouterReducer(history), // MUST BE 'router'
   // Custom Reducers
   Convert: convert,
   Util: util,

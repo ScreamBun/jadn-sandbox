@@ -6,7 +6,7 @@ import { apiMiddleware } from 'redux-api-middleware';
 import { History, createBrowserHistory } from 'history';
 import { thunk } from 'redux-thunk';
 import { persistReducer, persistStore } from 'redux-persist';
-import { routerMiddleware } from 'connected-react-router';
+import { createRouterMiddleware } from '@lagunovsky/redux-react-router';
 
 import { DispatchAction } from './actions';
 import createRootReducer, { RootState } from './reducers';
@@ -28,7 +28,7 @@ export default (his: History = history): LintStore => {
   const middleware = [
     apiMiddleware,
     thunk,
-    routerMiddleware(his)
+    createRouterMiddleware(his)
   ];
 
   const extraEnhancers: Array<StoreEnhancer> = [];
