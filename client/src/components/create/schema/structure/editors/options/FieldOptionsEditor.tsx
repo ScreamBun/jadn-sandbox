@@ -105,7 +105,7 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
+              gridTemplateColumns: 'repeat(5, 1fr)',
               gap: '1rem',
               alignItems: 'center',
               marginBottom: '1rem'
