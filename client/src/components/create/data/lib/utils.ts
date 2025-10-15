@@ -454,17 +454,31 @@ export const linkToKey = (schemaObj: any, link: any): {type: string, options: st
 }
 
 // FUNCTION: Find field name of tagID
-export const findFieldByTagID = (schemaObj: any, parent: string, tagID: number): string | undefined => {
-    if (!schemaObj || !schemaObj.types || !parent || tagID === undefined) return undefined;
+export const findFieldByTagID = (schemaObj: any, parent: string, tagID: number): {tagIdName: string | undefined, tagIdType: string | undefined, tagIdChildren: any[] | undefined} => {
+    if (!schemaObj || !schemaObj.types || !parent || tagID === undefined) return { tagIdName: undefined, tagIdType: undefined, tagIdChildren: undefined };
     const types = schemaObj.types;
 
     for (const type of types) {
         const [_idx, _name, _type, _options, _comment, _children] = destructureField(type);
         if (_name === parent) {
             for (const child of _children) {
-                const [_cidx, _cname] = destructureField(child);
+                const [_cidx, _cname, _ctype] = destructureField(child);
                 if (_cidx === tagID) {
-                    return _cname;
+                    const trueTypeDef = getTrueType(schemaObj.types, _ctype)[1];
+                    const [_tId, _tName, _tType, _tOptions, _tComment, trueChildren] = destructureField(trueTypeDef ? trueTypeDef : []);
+
+                    // If children are empty
+                    if (trueChildren.length === 0) {
+                        // check for derived enum
+                        if (_tType === "Enumerated") {
+                            const isDerived = _tOptions.find(opt => opt.startsWith("#"))?.slice(1);
+                            if (isDerived) {
+                                const derivedChildren = getDerivedOptions(schemaObj, isDerived);
+                                return {tagIdName: _cname, tagIdType: _tType, tagIdChildren: derivedChildren};
+                            }
+                        }
+                    }
+                    return {tagIdName: _cname, tagIdType: _tType, tagIdChildren: trueChildren};
                 }
             }
         }

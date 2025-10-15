@@ -149,7 +149,7 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_GENERATE}>Example Data Generation</Link>
                 </h5>
-                <p className="card-text">Generate various example data instances based off of a Schema.</p>
+                <p className="card-text">Generate various example data instances of a Schema.</p>
               </div>
             </div>
           </div>

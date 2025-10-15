@@ -7,7 +7,6 @@ import { destructureField, destructureOptions, findFieldByTagID, generateData } 
 import { useSelector } from "react-redux";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 import { getToggleGenData } from "reducers/gendata";
-import { find } from "lodash";
 import { getSelectedSchema } from "reducers/util";
 interface FieldProps {
     field: ArrayFieldArray;
@@ -49,7 +48,11 @@ const Choice = (props: FieldProps) => {
         if (v === "" || v === undefined || v === null) {
             fieldChange(name, '');
         } else {
-            fieldChange(name, { [key]: v });
+            if (tagID) {
+                fieldChange(name, v);
+            } else {
+                fieldChange(name, { [key]: v });
+            }
         }
     };
 
@@ -124,11 +127,12 @@ const Choice = (props: FieldProps) => {
     }, [toggleDataGen, fieldChange]);
 
     // Handle TagID
-    let tagField = undefined;
-    if (tagID && parent) {
-        tagField = findFieldByTagID(schemaObj, parent, tagID);
-    }
-    console.log(tagField);
+    const { tagIdName, tagIdType, tagIdChildren } = parent && tagID ? findFieldByTagID(schemaObj, parent, tagID) : { tagIdName: undefined, tagIdType: undefined, tagIdChildren: undefined };
+    console.log("TAGID NAME: ", tagIdName);
+    console.log("TAGID TYPE: ", tagIdType);
+    console.log("TAGID CHILDREN: ", tagIdChildren);
+    console.log(schemaObj);
+    // Get 
 
     return (
         <div className="form-group">
