@@ -140,6 +140,7 @@ export const FieldOptionInputArgs: { [key: string]: any } = {
   },
   tagid: {
     // type: Enumerated
+    type: 'number',
     description: 'Field containing an explicit tag for this Choice type'
   },
   dir: {
