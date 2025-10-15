@@ -123,7 +123,7 @@ export const ValidOptions: Record<string, Array<string>> = {
   // Structures
   Array: ['extends', 'restricts', 'abstract', 'final', 'format', 'minLength', 'maxLength', 'ordered/unique', 'set'],
   ArrayOf: ['vtype', 'minLength', 'maxLength', 'ordered/unique', 'set', 'unordered'], //MUST NOT include more than one collection option (set, unique, or unordered)
-  Choice: ['id', 'extends', 'restricts', 'abstract', 'final', 'combine', 'not'],
+  Choice: ['id', 'extends', 'restricts', 'abstract', 'final', 'combine'],
   Enumerated: ['id', 'enum', 'pointer', 'extends', 'restricts', 'abstract', 'final'],
   Map: ['id', 'extends', 'restricts', 'abstract', 'final', 'minLength', 'maxLength', 'ordered/unique'],
   MapOf: ['ktype', 'vtype', 'minLength', 'maxLength', 'ordered/unique'],
