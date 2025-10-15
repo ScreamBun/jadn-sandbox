@@ -1,4 +1,5 @@
 import { $MAX_ELEMENTS, BASE_TYPES, STRING_FORMATS, INTEGER_FORMATS, NUMBER_FORMATS, BINARY_FORMATS, TYPE_DEFAULTS } from "components/create/consts";
+import { an } from "react-router/dist/development/routeModules-D5iJ6JYT";
 
 // FUNCTION Destructure Field
 export const destructureField = (field: any[]): [number, string, string, string[], string, any[]] => {
@@ -58,6 +59,7 @@ export const destructureOptions = (options: string[]): {
     abstract: boolean;
     final: boolean;
     formats: string[];
+    tagID: number | undefined;
 } => {
     const parseOpts = (completeMatch: boolean, opt: string) => {
         if (completeMatch) {
@@ -93,7 +95,8 @@ export const destructureOptions = (options: string[]): {
         extension: parseOpts(false, 'e'),
         abstract: parseOpts(true, 'a') ? true : false,
         final: parseOpts(true, 'f') ? true : false,
-        formats: options.filter(option => option.startsWith("/"))
+        formats: options.filter(option => option.startsWith("/")),
+        tagID: Number(parseOpts(false, '&')),
     }
 }
 
@@ -443,6 +446,25 @@ export const linkToKey = (schemaObj: any, link: any): {type: string, options: st
                 const [_cidx, _cname, _ctype, coptions, _ccomment, _cchildren] = destructureField(child);
                 if (coptions.some((opt: any) => String(opt) === 'K')) { // If child has key option
                     return {type: _ctype, options: coptions, children: _cchildren};
+                }
+            }
+        }
+    }
+    return undefined;
+}
+
+// FUNCTION: Find field name of tagID
+export const findFieldByTagID = (schemaObj: any, parent: string, tagID: number): string | undefined => {
+    if (!schemaObj || !schemaObj.types || !parent || tagID === undefined) return undefined;
+    const types = schemaObj.types;
+
+    for (const type of types) {
+        const [_idx, _name, _type, _options, _comment, _children] = destructureField(type);
+        if (_name === parent) {
+            for (const child of _children) {
+                const [_cidx, _cname] = destructureField(child);
+                if (_cidx === tagID) {
+                    return _cname;
                 }
             }
         }

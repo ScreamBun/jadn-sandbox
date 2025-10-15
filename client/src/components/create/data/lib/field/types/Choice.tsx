@@ -3,10 +3,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, destructureOptions, generateData } from "../../utils";
+import { destructureField, destructureOptions, findFieldByTagID, generateData } from "../../utils";
 import { useSelector } from "react-redux";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 import { getToggleGenData } from "reducers/gendata";
+import { find } from "lodash";
+import { getSelectedSchema } from "reducers/util";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -18,17 +20,19 @@ interface FieldProps {
 }
 
 const Choice = (props: FieldProps) => {
-    const { field, fieldChange, value, toClear, ancestor } = props;
+    const { field, fieldChange, parent, value, toClear, ancestor } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const optionsObj = destructureOptions(options);
     const _optional = optionsObj.isOptional;
     const isID = optionsObj.isID;
+    const tagID = optionsObj.tagID;
 
     const selectedLabel = value ? Object.keys(value)?.[0] : '';
     const selectedVal = value ? { value: Object.values(value)?.[0] } : {};
     const [selectedValue, setSelectedValue] = useState<Option | string>(selectedLabel != '' ? { 'label': selectedLabel, 'value': selectedLabel } : '');
     const isCombined = options.some(opt => ["CA", "CO", "CX"].includes(String(opt))); // check for combined options
     const toggleDataGen = useSelector(getToggleGenData);
+    const schemaObj = useSelector(getSelectedSchema);
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -118,6 +122,13 @@ const Choice = (props: FieldProps) => {
             }
         }
     }, [toggleDataGen, fieldChange]);
+
+    // Handle TagID
+    let tagField = undefined;
+    if (tagID && parent) {
+        tagField = findFieldByTagID(schemaObj, parent, tagID);
+    }
+    console.log(tagField);
 
     return (
         <div className="form-group">
