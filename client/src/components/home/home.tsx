@@ -5,7 +5,6 @@ import {
   NAV_TRANSLATE_DATA
 } from 'components/utils/constants';
 import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getPageTitle, getSelectedSchema, isSchemaValid } from 'reducers/util';
@@ -26,10 +25,8 @@ const Home = () => {
 
   return (
     <div>
-      <Helmet>
-        <title>{meta_title}</title>
-        <link rel="canonical" href={meta_canonical} />
-      </Helmet>
+      <title>{meta_title}</title>
+      <link rel="canonical" href={meta_canonical} />
       <div className='card'>
         <div className='card-header bg-secondary'>
           <h5 className='m-0 title-text'>Home</h5>

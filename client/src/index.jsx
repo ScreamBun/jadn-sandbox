@@ -1,7 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { HelmetProvider } from 'react-helmet-async';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ThemeProvider } from '../src/components/static/ThemeProvider';
@@ -20,11 +19,9 @@ const store = configureStore(history);
 const Root = () => (
   <ThemeProvider>
     <Provider store={store}>
-      <HelmetProvider>
-        <DndProvider backend={HTML5Backend}>
-          <App history={history} />
-        </DndProvider>
-      </HelmetProvider>
+      <DndProvider backend={HTML5Backend}>
+        <App history={history} />
+      </DndProvider>
     </Provider>
   </ThemeProvider>
 );
