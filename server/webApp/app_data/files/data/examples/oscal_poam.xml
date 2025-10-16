@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<all>
+	<Root type="dict">
+		<plan-of-action-and-milestones type="dict">
+			<uuid type="str">b1FbdF6A-3bd0-59Ae-AF46-2E4130b5cAF4</uuid>
+			<metadata type="dict">
+				<title type="str">Poam Title</title>
+				<last-modified type="str">19-02-29T20:27:27.23+05:00</last-modified>
+				<version type="str">1.1</version>
+				<oscal-version type="str">1.1</oscal-version>
+			</metadata>
+			<poam-items type="list">
+				<item type="dict">
+					<title type="str">Poam Item Title</title>
+					<description type="str">Poam Item Description</description>
+				</item>
+			</poam-items>
+		</plan-of-action-and-milestones>
+		<schema type="str">abcdefg</schema>
+	</Root>
+</all>

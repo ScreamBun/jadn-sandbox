@@ -1,10 +1,11 @@
 import React from "react";
 import SBEditor from "../common/SBEditor";
 import HTMLReactParser from "html-react-parser";
-import * as DOMPurify from 'dompurify';
+import DOMPurify from 'dompurify'
+const { sanitize } = DOMPurify
 
 export const onHTMLPopOutClick = (convertedSchema: any) => {
-    const sanitizedData = DOMPurify.sanitize(convertedSchema, { FORCE_BODY: true });
+    const sanitizedData = sanitize(convertedSchema, { FORCE_BODY: true });
     const blob = new Blob([sanitizedData], { type: "text/html" });
     const data = URL.createObjectURL(blob);
     window.open(data);
@@ -14,7 +15,7 @@ const SBHtmlPreviewer = (props: any) => {
 
     const { htmlText, showPreviewer, conversion } = props;
     const previewerClassName = "previewer " + (showPreviewer ? "hide" : "");
-    const sanitizedData = DOMPurify.sanitize(htmlText, { FORCE_BODY: true });
+    const sanitizedData = sanitize(htmlText, { FORCE_BODY: true });
 
     return (
         <>

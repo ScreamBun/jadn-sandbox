@@ -1,4 +1,4 @@
-import { LocationChangeAction } from 'connected-react-router';
+import type { LocationChangeAction } from '@lagunovsky/redux-react-router';
 import * as Convert from './convert';
 import * as Validate from './validate';
 import * as Interface from './interfaces';

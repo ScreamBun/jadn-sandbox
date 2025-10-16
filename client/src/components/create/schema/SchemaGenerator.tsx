@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Helmet } from 'react-helmet-async'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getValidFormatOpts } from 'actions/format'
@@ -143,10 +142,8 @@ const SchemaGenerator = () => {
     return (
         <>
             <div>
-                <Helmet>
-                    <title>{meta_title}</title>
-                    <link rel="canonical" href={meta_canonical} />
-                </Helmet>
+                <title>{meta_title}</title>
+                <link rel="canonical" href={meta_canonical} />
                 <div className='row'>
                     <div className='col-md-12'>
                         <div className='card'>

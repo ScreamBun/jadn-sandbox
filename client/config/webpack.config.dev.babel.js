@@ -38,13 +38,14 @@ module.exports = merge(baseConfig, {
     hot: true,
     open: true,
     historyApiFallback: true,
-    proxy: {
-      '/api': {
+    proxy: [
+      {
+        context: ['/api'],
         target: 'http://127.0.0.1:8082',
         secure: false,
         changeOrigin: true
       }
-    },
+    ],
     static: {
       directory: BUILD_DIR
     }

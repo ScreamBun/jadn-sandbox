@@ -1,6 +1,56 @@
 
 # JADN Sandbox Release Notes
 
+## v0.16.0
+
+This release deepens compatibility with **JADN 2.0**, strengthens data validation (especially around network and numeric formats), and introduces key UX improvements for navigating schema inheritance and binary data visualization. Together, these updates enhance both the flexibility and reliability of schema-based data workflows.
+
+## Issue Fixes
+
+### **Data & JADN Validation**
+
+* Fixed XML and JSON wrappers requiring manual removal during validation.
+* Corrected XML lists that appeared as dictionaries during parsing.
+* Fixed regex validation errors for XML tags with prefixed namespace identifiers (`n:`).
+* Improved IP network data validation — now supports **IPv4-net** and **IPv6-net** formats.
+* Added support for **f128** and **f256** numeric formats.
+* Updated integer format validation for JADN schemas.
+* Added JSON-formatted IP-net validation for consistent format checking.
+
+### **Schema Creation**
+
+* Fixed `sbToastSuccess` notification bug during schema save operations.
+* Resolved duplicate field ID issues when types inherit from extended fields.
+* Updated logic to allow **Restrict** and **Extend** operations to overwrite inherited fields cleanly.
+* Added support for **recursive inheritance**, ensuring complex types inherit all fields correctly across multiple layers.
+* Updated JADN XML to use **Raw URL references** for base type schema locations.
+
+### **JADN CLI / Validation**
+
+* Updated schema validation API to use the new **JADN 2.0 validation standard**.
+* Incorporated XSD attribute logic into CLI operations for improved schema accuracy.
+* Rebuilt key reference schemas using **JADN 2.0**:
+
+  * AP Hunt
+  * OC2 v1.0.1
+  * OC2 v1.1
+
+## ⚙️ Essential Updates
+
+### **Data Creation Enhancements**
+
+* Added new “Combine Logic” operation for merging data creation behaviors.
+* Improved IPv4Net and IPv6Net handling within data creation workflows.
+* Completed final logic updates for data creation consistency and error handling.
+
+## Enhancements
+
+### **Usability & Visualization**
+
+* Added **tooltips** in both **Schema Creation** and **Data Creation** views to visualize **inheritance hierarchies** for complex types.
+* Added a **CBOR Annotated Hex View** in Data Creation for deeper binary-format inspection.
+* Condensed and optimized Data Creation code for better performance and maintainability.
+
 ## v0.15.1
 
 This release introduces **new data creation logic, alternative viewers (XML & CBOR), expanded validation**, and delivers several **schema creation fixes and UI improvements**.

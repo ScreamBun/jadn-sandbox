@@ -1,11 +1,13 @@
 {
+  "OpenC2-Command": {
     "action": "scan",
     "target": {
-        "artifact": {
+      "artifact": {
         "mime_type": "test",
         "payload": {
-            "bin": "test"
+          "bin": "test"
         }
       }
+    }
   }
 }

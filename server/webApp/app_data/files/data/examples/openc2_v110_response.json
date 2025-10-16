@@ -1,11 +1,15 @@
 {
-    "status": 102,
+  "OpenC2-Response": {
+    "status": 200,
     "status_text": "successful test",
     "results": {
-      "versions": ["test1", "test2"],
-      "profiles": ["https://www.example.com/"],
+      "versions": ["1.1", "1.2"],
+      "profiles": ["https://www.oc2.com"],
       "pairs": {
-        "locate": ["artifact", "command"]
+        "locate": [{
+            "ipv4_net": "192.168.0.1/32"
+          }]
       }
     }
+  }
 }

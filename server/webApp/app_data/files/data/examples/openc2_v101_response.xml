@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<all>
+	<OpenC2-Response type="dict">
+		<status type="int">200</status>
+		<status_text type="str">successful test</status_text>
+		<results type="dict">
+			<versions type="list">
+				<item type="str">1.2</item>
+				<item type="str">1.3</item>
+			</versions>
+			<profiles type="list">
+				<item type="str">oc2</item>
+			</profiles>
+		</results>
+	</OpenC2-Response>
+</all>

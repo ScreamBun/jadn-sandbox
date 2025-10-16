@@ -1,4 +1,5 @@
 {
+  "Library": {
     "012345678912": {
       "album_artist": {
         "artist_name": "John Michael Stipe",
@@ -34,3 +35,4 @@
       }
     }
   }
+}

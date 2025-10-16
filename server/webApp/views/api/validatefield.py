@@ -1,5 +1,3 @@
-import json
-import logging
 from jadnvalidation.data_validation.integer import Integer
 from jadnvalidation.data_validation.string import String
 from jadnvalidation.data_validation.binary import Binary
@@ -14,10 +12,10 @@ from jadnvalidation.data_validation.choice import Choice
 from jadnvalidation.data_validation.record import Record
 from pydantic import ValidationError
 
-from flask import Blueprint, request, jsonify, current_app
-from flask_restful import Api, Resource, reqparse
-from webApp.utils import constants 
-from webApp.validator.utils import getValidationErrorMsg, getValidationErrorPath
+from flask import Blueprint, request, jsonify
+from flask_restful import Api, Resource
+
+from webApp.utils import utils
 
 validatefield = Blueprint("validatefield", __name__)
 api = Api(validatefield)
@@ -86,8 +84,8 @@ class ValidateField(Resource):
                 case _:
                     return jsonify({"valid": False, "message": f"Unsupported field type: {fieldType}"})
         except ValidationError as e:
-            error_msg = getValidationErrorMsg(e)
-            error_path = getValidationErrorPath(e)
+            error_msg = utils.getValidationErrorMsg(e)
+            error_path = utils.getValidationErrorPath(e)
             return jsonify({"valid": False, "message": error_msg})
         except Exception as e:
             return jsonify({"valid": False, "message": str(e)})
