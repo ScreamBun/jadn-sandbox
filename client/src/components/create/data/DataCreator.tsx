@@ -60,7 +60,7 @@ const DataCreator = (props: any) => {
                 updated[k] = v;
             }
             convertJSON(updated)
-            dispatch<any>(setGeneratedData(updated))
+            dispatch<any>(setGeneratedData(updated));
             return updated;
         });
     };
@@ -69,6 +69,7 @@ const DataCreator = (props: any) => {
     const handleSelection = (e: Option) => {
         setSelection(e);
         setGeneratedMessage({});
+        dispatch<any>(setGeneratedData({}));
         dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         setLoadedFieldDefs(null);
         setJsonValidated(false);
@@ -124,6 +125,7 @@ const DataCreator = (props: any) => {
         e.preventDefault();
         setSelection(null);
         setGeneratedMessage({});
+        dispatch<any>(setGeneratedData({}));
         dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         dispatch(clearFieldValidation());
         setJsonValidated(false);

@@ -487,14 +487,29 @@ export const findFieldByTagID = (schemaObj: any, parent: string, tagID: number):
 }
 
 // FUNCTION: Find value by tag ID name
-export const findTagIdValue = (generatedMessage: object | undefined, tagIdName: string | undefined): any => {
+const findTagIdValueHelper = (generatedMessage: object | undefined, tagIdName: string | undefined): any => {
     if (!generatedMessage || !tagIdName) return undefined;
 
-    // Traverse the generatedMessage object to find the value by tagIdName
+    console.log("TAG ID HELPER", generatedMessage, tagIdName);
+
+    // Base Case: key === tagIdName => return value
+    if (generatedMessage.hasOwnProperty(tagIdName)) {
+        console.log("FOUND TAG ID VALUE", (generatedMessage as any)[tagIdName]);
+        return (generatedMessage as any)[tagIdName];
+    }
+
+    // Recursive Case: traverse nested objects
     for (const [key, value] of Object.entries(generatedMessage)) {
-        if (key === tagIdName) {
-            return value;
+        if (typeof value === 'object' && value !== null) {
+            const result = findTagIdValueHelper(value, tagIdName);
+            if (result !== undefined) {
+                return result;
+            }
         }
     }
     return undefined;
+}
+
+export const findTagIdValue = (generatedMessage: object | undefined, tagIdName: string | undefined): any => {
+    return findTagIdValueHelper(generatedMessage, tagIdName);
 }

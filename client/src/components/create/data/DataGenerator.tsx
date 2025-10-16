@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import DataCreator from './DataCreator'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
-import { info, setFile, setSchema, setSchemaValid } from 'actions/util'
+import { info, setFile, setGeneratedData, setSchema, setSchemaValid } from 'actions/util'
 import { dismissAllToast } from 'components/common/SBToast'
 import { sbToastSuccess } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
@@ -47,6 +47,7 @@ const DataGenerator = () => {
     useEffect(() => {
         setSelection(null);
         setGeneratedMessage({});
+        dispatch<any>(setGeneratedData({}));
         setXml("");
         setCbor("");
         setAnnotatedCbor("");
@@ -64,6 +65,7 @@ const DataGenerator = () => {
         setAnnotatedCbor("");
         setSelection(null);
         setGeneratedMessage({});
+        dispatch<any>(setGeneratedData({}));
         sbToastSuccess("Schema reset successfully");
         dispatch(setSchema(null));
         dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });

@@ -7,7 +7,7 @@ import { destructureField, destructureOptions, findFieldByTagID, findTagIdValue,
 import { useSelector } from "react-redux";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 import { getToggleGenData } from "reducers/gendata";
-import { getSelectedSchema } from "reducers/util";
+import { getGeneratedData, getSelectedSchema } from "reducers/util";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -32,6 +32,7 @@ const Choice = (props: FieldProps) => {
     const isCombined = options.some(opt => ["CA", "CO", "CX"].includes(String(opt))); // check for combined options
     const toggleDataGen = useSelector(getToggleGenData);
     const schemaObj = useSelector(getSelectedSchema);
+    const dataObj = useSelector(getGeneratedData);
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -129,7 +130,18 @@ const Choice = (props: FieldProps) => {
 
     // Handle TagID
     const { tagIdName, tagIdType, tagIdChildren } = parent && tagID ? findFieldByTagID(schemaObj, parent, tagID) : { tagIdName: undefined, tagIdType: undefined, tagIdChildren: undefined };
-    const [tagIdValue, setTagIdValue] = useState<string | number | undefined>(undefined);
+    const [tagIdValue, setTagIdValue] = useState<Option | undefined>(undefined);
+
+    useEffect(() => {
+        const tagIDVal = tagIdName && tagIdType ? findTagIdValue(dataObj, tagIdName) : undefined;
+        if (tagIDVal !== undefined) {
+            setTagIdValue({ label: tagIDVal, value: String(tagIDVal) });
+            setSelectedValue({ label: tagIDVal, value: String(tagIDVal) });
+            setSelectedChild(getChild(String(tagIDVal)));
+        } else {
+            setTagIdValue(undefined);
+        }
+    }, [dataObj]);
 
     return (
         <div className="form-group">
@@ -137,7 +149,7 @@ const Choice = (props: FieldProps) => {
                 <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                 {ancestor ? <SBHierarchyBtn ancestor={ancestor || ""} current={field} /> : null}
                 <SBInfoBtn comment={_comment} />
-                <SBSelect id={name} name={name} data={getOptions}
+                <SBSelect id={name} name={name} data={tagIdValue ? [tagIdValue] : getOptions}
                     onChange={handleChange}
                     placeholder={`${name} options`}
                     value={selectedValue}
