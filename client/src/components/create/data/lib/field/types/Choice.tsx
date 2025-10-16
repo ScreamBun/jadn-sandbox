@@ -154,7 +154,7 @@ const Choice = (props: FieldProps) => {
                     placeholder={`${name} options`}
                     value={selectedValue}
                     isSearchable
-                    isClearable
+                    isClearable={tagIdValue ? false : true}
                     isSmStyle />
             </div>
             {selectedValue ? selectedChild : ""}
