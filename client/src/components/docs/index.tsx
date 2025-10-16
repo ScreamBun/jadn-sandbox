@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 
 import JADN_API, { Package } from './jadn_api';
 import {
@@ -31,10 +30,8 @@ const Docs = () => {
   const api = Object.keys(JADN_API).map((pkg, i) => pkgFormat(JADN_API[pkg], pkg, i));
   return (
     <div className='row mx-auto'>
-      <Helmet>
-        <title>{`${siteTitle} | API Docs`}</title>
-        <link rel="canonical" href={`${window.location.origin}${window.location.pathname}`} />
-      </Helmet>
+      <title>{`${siteTitle} | API Docs`}</title>
+      <link rel="canonical" href={`${window.location.origin}${window.location.pathname}`} />
       <div className="row">
         <div className="col-12">
           <h1 className="text-center">JADN</h1>

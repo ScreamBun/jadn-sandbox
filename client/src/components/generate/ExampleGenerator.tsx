@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Helmet } from 'react-helmet-async'
 import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import { info, setFile, setSchema, setSchemaValid } from 'actions/util'
 import { convertJsonSchema, convertSchema } from 'actions/convert'
@@ -153,10 +152,8 @@ const ExampleGenerator = () => {
 
     return (
         <div>
-            <Helmet>
-                <title>{meta_title}</title>
-                <link rel="canonical" href={meta_canonical} />
-            </Helmet>
+            <title>{meta_title}</title>
+            <link rel="canonical" href={meta_canonical} />
             <div className='row'>
                 <div className='col-md-12'>
                     <div className='card'>

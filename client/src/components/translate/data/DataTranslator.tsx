@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Helmet } from 'react-helmet-async'
 import DataToTranslate from './DataToTranslate'
 import { validateMessage } from 'actions/validate'
 import { info, setFile, setSchema, setSchemaValid } from 'actions/util'
@@ -222,10 +221,8 @@ const DataTranslator = () => {
 
     return (
         <div>
-            <Helmet>
-                <title>{meta_title}</title>
-                <link rel="canonical" href={meta_canonical} />
-            </Helmet>
+            <title>{meta_title}</title>
+            <link rel="canonical" href={meta_canonical} />
             <div className='row'>
                 <div className='col-md-12'>
                     <div className='card'>

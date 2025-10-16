@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet-async'
 import { useDispatch, useSelector } from 'react-redux'
 import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import { convertSchema, info } from 'actions/convert'
@@ -101,10 +100,8 @@ const SchemaTranslator = () => {
 
     return (
         <div>
-            <Helmet>
-                <title>{meta_title}</title>
-                <link rel="canonical" href={meta_canonical} />
-            </Helmet>
+            <title>{meta_title}</title>
+            <link rel="canonical" href={meta_canonical} />
             <div className='row'>
                 <div className='col-md-12'>
                     <div className='card'>
