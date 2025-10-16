@@ -22,7 +22,7 @@ const Array = (props: FieldProps) => {
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const optionsObj = destructureOptions(options);
     const [toggle, setToggle] = useState(false);
-    const [data, setData] = useState(value);
+    const [data, setData] = useState(children.length === 0 ? [] : value);
     const [errMsg, setErrMsg] = useState<string | undefined>(undefined);
 
     const _optional = optionsObj.isOptional;
@@ -41,6 +41,13 @@ const Array = (props: FieldProps) => {
             setTimeout(() => setToggle(false), 0); // make sure toggled off fields are still reset
         }
     }, [toClear]);
+
+    // If no children, set val to []
+    useEffect(() => {
+    if (children.length === 0) {
+        fieldChange(name, []);
+        }
+    }, [children.length]);
 
     const hasIPvNetOption = options.some(opt => opt.includes("ipv4-net") || opt.includes("ipv6-net"));
     const handleChange = (childKey: string, childValue: any) => {
