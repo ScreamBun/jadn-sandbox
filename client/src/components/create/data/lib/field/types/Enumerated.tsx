@@ -57,7 +57,7 @@ const Enumerated = (props: FieldProps) => {
 
     useEffect(() => {
         if (
-            (value === undefined || value === null || value === '') ||
+            (value === undefined || value === null || value === '') &&
             (selectedValue === undefined || selectedValue === null || selectedValue === '')
         ) {
             const genData = generateData([], "Enumerated", getOptions.map(opt => opt.value));
