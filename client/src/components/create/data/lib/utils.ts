@@ -483,5 +483,18 @@ export const findFieldByTagID = (schemaObj: any, parent: string, tagID: number):
             }
         }
     }
+    return { tagIdName: undefined, tagIdType: undefined, tagIdChildren: undefined };
+}
+
+// FUNCTION: Find value by tag ID name
+export const findTagIdValue = (generatedMessage: object | undefined, tagIdName: string | undefined): any => {
+    if (!generatedMessage || !tagIdName) return undefined;
+
+    // Traverse the generatedMessage object to find the value by tagIdName
+    for (const [key, value] of Object.entries(generatedMessage)) {
+        if (key === tagIdName) {
+            return value;
+        }
+    }
     return undefined;
 }

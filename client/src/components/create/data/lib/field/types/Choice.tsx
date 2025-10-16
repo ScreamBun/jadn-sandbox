@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, destructureOptions, findFieldByTagID, generateData } from "../../utils";
+import { destructureField, destructureOptions, findFieldByTagID, findTagIdValue, generateData } from "../../utils";
 import { useSelector } from "react-redux";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 import { getToggleGenData } from "reducers/gendata";
@@ -70,7 +70,8 @@ const Choice = (props: FieldProps) => {
                 fieldChange={!isCombined ? updateChildData : handleCombineChange}
                 parent={name}
                 value={selectedVal.value} 
-                toClear={clear} />
+                toClear={clear}
+                />
             </div>
     }
 
@@ -128,11 +129,7 @@ const Choice = (props: FieldProps) => {
 
     // Handle TagID
     const { tagIdName, tagIdType, tagIdChildren } = parent && tagID ? findFieldByTagID(schemaObj, parent, tagID) : { tagIdName: undefined, tagIdType: undefined, tagIdChildren: undefined };
-    console.log("TAGID NAME: ", tagIdName);
-    console.log("TAGID TYPE: ", tagIdType);
-    console.log("TAGID CHILDREN: ", tagIdChildren);
-    console.log(schemaObj);
-    // Get 
+    const [tagIdValue, setTagIdValue] = useState<string | number | undefined>(undefined);
 
     return (
         <div className="form-group">
