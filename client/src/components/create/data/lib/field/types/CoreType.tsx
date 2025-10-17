@@ -104,7 +104,7 @@ const CoreType = (props: FieldProps) => {
     const commonFooter = (
         <>
             {errMsg && <div className="text-danger">{errMsg}</div>}
-            {validating && !errMsg && <div className="text-muted"><small>Validating...</small></div>}
+            {validating && !errMsg && <div className="text-muted"><small></small></div>}
             {children}
         </>
     );
