@@ -6,6 +6,29 @@ import { ActionFailureResult, ActionRequestResult, ActionSuccessResult } from '.
 // API Base URL
 const baseAPI = '/api';
 
+// OPTIONS - set generated data
+export const GENERATED_DATA_DEFINE = '@@util/GENERATED_DATA_DEFINE';
+export const GENERATED_DATA_SUCCESS = '@@util/GENERATED_DATA_SUCCESS';
+export const GENERATED_DATA_FAILURE = '@@util/GENERATED_DATA_FAILURE';
+export const setGeneratedData = (data: Record<string, any>) => createAction({
+  endpoint: `${baseAPI}/`,
+  method: 'OPTIONS',
+  types: [
+    GENERATED_DATA_DEFINE,
+    {
+      type: GENERATED_DATA_SUCCESS,
+      payload: (_action, _state) => ({ data })
+    }, GENERATED_DATA_FAILURE
+  ]
+});
+
+export interface SetGeneratedDataSuccessAction extends ActionSuccessResult {
+  type: typeof GENERATED_DATA_SUCCESS;
+  payload: {
+    data: Record<string, any>;
+  };
+}
+
 // Helper Functions
 // OPTIONS - set schema for generating messages
 export const SCHEMA_DEFINE = '@@util/SCHEMA_DEFINE';
@@ -115,16 +138,16 @@ export interface LoadSuccessAction extends ActionSuccessResult {
 
 // Request Actions
 export interface UtilRequestActions extends ActionRequestResult {
-  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE | typeof FILE_DEFINE | typeof SET_SCHEMA_VALID;
+  type: typeof INFO_REQUEST | typeof LOAD_REQUEST | typeof SCHEMA_DEFINE | typeof FILE_DEFINE | typeof SET_SCHEMA_VALID | typeof GENERATED_DATA_DEFINE;
 }
 
 // Failure Actions
 export interface UtilFailureActions extends ActionFailureResult {
-  type: typeof INFO_FAILURE | typeof LOAD_FAILURE | typeof SCHEMA_FAILURE | typeof FILE_FAILURE | typeof SET_SCHEMA_VALID;
+  type: typeof INFO_FAILURE | typeof LOAD_FAILURE | typeof SCHEMA_FAILURE | typeof FILE_FAILURE | typeof SET_SCHEMA_VALID | typeof GENERATED_DATA_FAILURE;
 }
 
 export type UtilActions = (
   UtilRequestActions | UtilFailureActions |
   // Success Actions
-  InfoSuccessAction | LoadSuccessAction | SetSchemaSuccessAction | SetFileSuccessAction | SetSchemaValidAction
+  InfoSuccessAction | LoadSuccessAction | SetSchemaSuccessAction | SetFileSuccessAction | SetSchemaValidAction | SetGeneratedDataSuccessAction
 );

@@ -3,10 +3,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import SBSelect, { Option } from 'components/common/SBSelect';
 import Field from 'components/create/data/lib/field/Field';
 import SBInfoBtn from "components/common/SBInfoBtn";
-import { destructureField, destructureOptions, generateData } from "../../utils";
+import { destructureField, destructureOptions, findFieldByTagID, findTagIdValue, generateData } from "../../utils";
 import { useSelector } from "react-redux";
 import SBHierarchyBtn from "components/common/SBHierarchyBtn";
 import { getToggleGenData } from "reducers/gendata";
+import { getGeneratedData, getSelectedSchema } from "reducers/util";
 interface FieldProps {
     field: ArrayFieldArray;
     fieldChange: (k:string, v:any) => void;
@@ -18,17 +19,20 @@ interface FieldProps {
 }
 
 const Choice = (props: FieldProps) => {
-    const { field, fieldChange, value, toClear, ancestor } = props;
+    const { field, fieldChange, parent, value, toClear, ancestor } = props;
     const [_idx, name, _type, options, _comment, children] = destructureField(field);
     const optionsObj = destructureOptions(options);
     const _optional = optionsObj.isOptional;
     const isID = optionsObj.isID;
+    const tagID = optionsObj.tagID;
 
     const selectedLabel = value ? Object.keys(value)?.[0] : '';
     const selectedVal = value ? { value: Object.values(value)?.[0] } : {};
     const [selectedValue, setSelectedValue] = useState<Option | string>(selectedLabel != '' ? { 'label': selectedLabel, 'value': selectedLabel } : '');
     const isCombined = options.some(opt => ["CA", "CO", "CX"].includes(String(opt))); // check for combined options
     const toggleDataGen = useSelector(getToggleGenData);
+    const schemaObj = useSelector(getSelectedSchema);
+    const dataObj = useSelector(getGeneratedData);
 
     const [clear, setClear] = useState(toClear);
     useEffect(() => {
@@ -45,7 +49,11 @@ const Choice = (props: FieldProps) => {
         if (v === "" || v === undefined || v === null) {
             fieldChange(name, '');
         } else {
-            fieldChange(name, { [key]: v });
+            if (tagID) {
+                fieldChange(name, v);
+            } else {
+                fieldChange(name, { [key]: v });
+            }
         }
     };
 
@@ -63,7 +71,8 @@ const Choice = (props: FieldProps) => {
                 fieldChange={!isCombined ? updateChildData : handleCombineChange}
                 parent={name}
                 value={selectedVal.value} 
-                toClear={clear} />
+                toClear={clear}
+                />
             </div>
     }
 
@@ -119,18 +128,33 @@ const Choice = (props: FieldProps) => {
         }
     }, [toggleDataGen, fieldChange]);
 
+    // Handle TagID
+    const { tagIdName, tagIdType, tagIdChildren } = parent && tagID ? findFieldByTagID(schemaObj, parent, tagID) : { tagIdName: undefined, tagIdType: undefined, tagIdChildren: undefined };
+    const [tagIdValue, setTagIdValue] = useState<Option | undefined>(undefined);
+
+    useEffect(() => {
+        const tagIDVal = tagIdName && tagIdType ? findTagIdValue(dataObj, tagIdName) : undefined;
+        if (tagIDVal !== undefined) {
+            setTagIdValue({ label: tagIDVal, value: String(tagIDVal) });
+            setSelectedValue({ label: tagIDVal, value: String(tagIDVal) });
+            setSelectedChild(getChild(String(tagIDVal)));
+        } else {
+            setTagIdValue(undefined);
+        }
+    }, [dataObj]);
+
     return (
         <div className="form-group">
             <div className='form-group d-flex align-items-center justify-content-between'>
                 <label style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                 {ancestor ? <SBHierarchyBtn ancestor={ancestor || ""} current={field} /> : null}
                 <SBInfoBtn comment={_comment} />
-                <SBSelect id={name} name={name} data={getOptions}
+                <SBSelect id={name} name={name} data={tagIdValue ? [tagIdValue] : getOptions}
                     onChange={handleChange}
                     placeholder={`${name} options`}
                     value={selectedValue}
                     isSearchable
-                    isClearable
+                    isClearable={tagIdValue ? false : true}
                     isSmStyle />
             </div>
             {selectedValue ? selectedChild : ""}

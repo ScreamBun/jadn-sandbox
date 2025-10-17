@@ -272,10 +272,8 @@ export default function withStructureEditor(StructureWrapper: React.ComponentTyp
         let maxv = modalData.find(str => str.startsWith('}'));
 
         const clear_fields = { ...valueObj, fields: [], options: [] }; 
-        flushSync(() => {
-          setValueObj(clear_fields);
-          change(clear_fields, dataIndex);
-        });        
+        setValueObj(clear_fields);
+        change(clear_fields, dataIndex);
 
         let field_1: StandardFieldArray = ipv4_net_address; 
         let field_2: StandardFieldArray = ipv4_net_prefix_len;        

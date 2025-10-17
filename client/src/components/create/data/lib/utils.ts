@@ -1,4 +1,5 @@
 import { $MAX_ELEMENTS, BASE_TYPES, STRING_FORMATS, INTEGER_FORMATS, NUMBER_FORMATS, BINARY_FORMATS, TYPE_DEFAULTS } from "components/create/consts";
+import { an } from "react-router/dist/development/routeModules-D5iJ6JYT";
 
 // FUNCTION Destructure Field
 export const destructureField = (field: any[]): [number, string, string, string[], string, any[]] => {
@@ -58,6 +59,7 @@ export const destructureOptions = (options: string[]): {
     abstract: boolean;
     final: boolean;
     formats: string[];
+    tagID: number | undefined;
 } => {
     const parseOpts = (completeMatch: boolean, opt: string) => {
         if (completeMatch) {
@@ -93,7 +95,8 @@ export const destructureOptions = (options: string[]): {
         extension: parseOpts(false, 'e'),
         abstract: parseOpts(true, 'a') ? true : false,
         final: parseOpts(true, 'f') ? true : false,
-        formats: options.filter(option => option.startsWith("/"))
+        formats: options.filter(option => option.startsWith("/")),
+        tagID: Number(parseOpts(false, '&')),
     }
 }
 
@@ -448,4 +451,65 @@ export const linkToKey = (schemaObj: any, link: any): {type: string, options: st
         }
     }
     return undefined;
+}
+
+// FUNCTION: Find field name of tagID
+export const findFieldByTagID = (schemaObj: any, parent: string, tagID: number): {tagIdName: string | undefined, tagIdType: string | undefined, tagIdChildren: any[] | undefined} => {
+    if (!schemaObj || !schemaObj.types || !parent || tagID === undefined) return { tagIdName: undefined, tagIdType: undefined, tagIdChildren: undefined };
+    const types = schemaObj.types;
+
+    for (const type of types) {
+        const [_idx, _name, _type, _options, _comment, _children] = destructureField(type);
+        if (_name === parent) {
+            for (const child of _children) {
+                const [_cidx, _cname, _ctype] = destructureField(child);
+                if (_cidx === tagID) {
+                    const trueTypeDef = getTrueType(schemaObj.types, _ctype)[1];
+                    const [_tId, _tName, _tType, _tOptions, _tComment, trueChildren] = destructureField(trueTypeDef ? trueTypeDef : []);
+
+                    // If children are empty
+                    if (trueChildren.length === 0) {
+                        // check for derived enum
+                        if (_tType === "Enumerated") {
+                            const isDerived = _tOptions.find(opt => opt.startsWith("#"))?.slice(1);
+                            if (isDerived) {
+                                const derivedChildren = getDerivedOptions(schemaObj, isDerived);
+                                return {tagIdName: _cname, tagIdType: _tType, tagIdChildren: derivedChildren};
+                            }
+                        }
+                    }
+                    return {tagIdName: _cname, tagIdType: _tType, tagIdChildren: trueChildren};
+                }
+            }
+        }
+    }
+    return { tagIdName: undefined, tagIdType: undefined, tagIdChildren: undefined };
+}
+
+// FUNCTION: Find value by tag ID name
+const findTagIdValueHelper = (generatedMessage: object | undefined, tagIdName: string | undefined): any => {
+    if (!generatedMessage || !tagIdName) return undefined;
+
+    console.log("TAG ID HELPER", generatedMessage, tagIdName);
+
+    // Base Case: key === tagIdName => return value
+    if (generatedMessage.hasOwnProperty(tagIdName)) {
+        console.log("FOUND TAG ID VALUE", (generatedMessage as any)[tagIdName]);
+        return (generatedMessage as any)[tagIdName];
+    }
+
+    // Recursive Case: traverse nested objects
+    for (const [key, value] of Object.entries(generatedMessage)) {
+        if (typeof value === 'object' && value !== null) {
+            const result = findTagIdValueHelper(value, tagIdName);
+            if (result !== undefined) {
+                return result;
+            }
+        }
+    }
+    return undefined;
+}
+
+export const findTagIdValue = (generatedMessage: object | undefined, tagIdName: string | undefined): any => {
+    return findTagIdValueHelper(generatedMessage, tagIdName);
 }
