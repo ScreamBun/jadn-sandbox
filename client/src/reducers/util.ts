@@ -19,6 +19,7 @@ export interface UtilState {
       custom?: Array<string>;
     };
   },
+  generatedData: Record<string, any>;
   selectedSchema: SchemaJADN | object;
   selectedFile: Option | null;
   schemaIsValid: boolean;
@@ -45,6 +46,7 @@ const initialState: UtilState = {
       custom: []
     }
   },
+  generatedData: {},
   selectedSchema: {},
   selectedFile: null,
   schemaIsValid: false,
@@ -104,6 +106,12 @@ export default (state = initialState, action: util.UtilActions) => {
         }
       };
 
+    case util.GENERATED_DATA_SUCCESS:
+      return {
+        ...state,
+        generatedData: action.payload.data || {}
+      };
+
     case util.SET_SCHEMA_VALID:
       return {
         ...state,
@@ -119,6 +127,7 @@ export default (state = initialState, action: util.UtilActions) => {
     case util.INFO_FAILURE:
     case util.LOAD_FAILURE:
     case util.SCHEMA_FAILURE:
+    case util.GENERATED_DATA_FAILURE:
     case util.FILE_FAILURE:
       return {
         ...state,
@@ -144,4 +153,5 @@ export const getAllSchemasList = (state: { Util: { loaded: { schemas: { examples
 }
 export const getSelectedSchema = (state: { Util: { selectedSchema: any; }; }) => state.Util.selectedSchema;
 export const getSelectedFile = (state: { Util: { selectedFile: any; }; }) => state.Util.selectedFile;
+export const getGeneratedData = (state: { Util: { generatedData: any; }; }) => state.Util.generatedData;
 export const isSchemaValid = (state: { Util: { schemaIsValid: any; }; }) => state.Util.schemaIsValid;

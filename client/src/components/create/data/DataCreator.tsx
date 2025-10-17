@@ -21,6 +21,7 @@ import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER, LANG_ANNOTATED_HEX } 
 import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
 import { getToggleGenData } from 'reducers/gendata'
+import { setGeneratedData } from 'actions/util'
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -59,6 +60,7 @@ const DataCreator = (props: any) => {
                 updated[k] = v;
             }
             convertJSON(updated)
+            dispatch<any>(setGeneratedData(updated));
             return updated;
         });
     };
@@ -67,6 +69,7 @@ const DataCreator = (props: any) => {
     const handleSelection = (e: Option) => {
         setSelection(e);
         setGeneratedMessage({});
+        dispatch<any>(setGeneratedData({}));
         dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         setLoadedFieldDefs(null);
         setJsonValidated(false);
@@ -122,6 +125,7 @@ const DataCreator = (props: any) => {
         e.preventDefault();
         setSelection(null);
         setGeneratedMessage({});
+        dispatch<any>(setGeneratedData({}));
         dispatch({ type: 'TOGGLE_GEN_DATA', payload: false });
         dispatch(clearFieldValidation());
         setJsonValidated(false);
