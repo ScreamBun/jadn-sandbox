@@ -27,7 +27,7 @@ const SBRegexVisualizer = (props: SBRegexVisualizerProps) => {
             <div className="position-relative d-inline-block">
                 <button 
                     type="button" 
-                    className={`btn ${isBtnPrimary ? 'btn-primary' : ''} btn-medium p-2`}
+                    className={`btn ${isBtnPrimary ? 'btn-primary p-2' : 'p-1'} btn-medium`}
                     onClick={() => visualizeRegex(regex)}
                     title={`Visualize regex`}
                 >

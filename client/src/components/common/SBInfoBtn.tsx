@@ -27,7 +27,7 @@ const SBInfoBtn = (props: SBInfoProps) => {
       <div className="position-relative d-inline-block">
         <button 
             type="button" 
-            className="btn btn-sm"
+            className="btn btn-sm p-1"
             onClick = {toggleTooltip}
         >
             <FontAwesomeIcon icon={faInfoCircle}/>
