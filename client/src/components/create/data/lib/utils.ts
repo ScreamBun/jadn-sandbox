@@ -1,5 +1,4 @@
 import { $MAX_ELEMENTS, BASE_TYPES, STRING_FORMATS, INTEGER_FORMATS, NUMBER_FORMATS, BINARY_FORMATS, TYPE_DEFAULTS } from "components/create/consts";
-import { an } from "react-router/dist/development/routeModules-D5iJ6JYT";
 
 // FUNCTION Destructure Field
 export const destructureField = (field: any[]): [number, string, string, string[], string, any[]] => {
