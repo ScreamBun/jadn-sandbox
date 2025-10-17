@@ -216,6 +216,7 @@ const FieldEditorDnd = memo(function FieldEditorDnd(props: FieldEditorProps) {
               optionType={valueObj.type}
               modalSize={ModalSize.lg}
               fieldOptions={true}
+              typeName={valueObj.name}
             />
           </div>
         </div>
