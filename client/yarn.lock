@@ -6260,6 +6260,7 @@ __metadata:
     redux-logger: ^3.0.6
     redux-persist: ^6.0.0
     redux-thunk: ^3.1.0
+    regexper: ^1.0.2
     resolve-url-loader: ^5.0.0
     sass-loader: ^16.0.5
     source-map-explorer: ^2.5.3
@@ -12610,6 +12611,13 @@ __metadata:
     gopd: ^1.2.0
     set-function-name: ^2.0.2
   checksum: 18cb667e56cb328d2dda569d7f04e3ea78f2683135b866d606538cf7b1d4271f7f749f09608c877527799e6cf350e531368f3c7a20ccd1bb41048a48926bdeeb
+  languageName: node
+  linkType: hard
+
+"regexper@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "regexper@npm:1.0.2"
+  checksum: 336fdc485735576d63e5ed94c6d2e1a46106c6febf87bcade7e4a217749e145b7f75a4202fd0e715cddc7911bec3b92e91d4a1e98d2fefe80d1c335b8430e513
   languageName: node
   linkType: hard
 
