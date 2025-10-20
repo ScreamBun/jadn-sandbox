@@ -8,6 +8,7 @@ import SBEditor from 'components/common/SBEditor'
 import SBSaveFile from 'components/common/SBSaveFile'
 import SBSubmitBtn from 'components/common/SBSubmitBtn'
 import SBSelect from 'components/common/SBSelect'
+import SBCompactBtn from 'components/common/SBCompactBtn'
 
 
 export interface Option {
@@ -24,6 +25,7 @@ const ExampleCreator = (props: any) => {
     const jsonOpt = new Option(LANG_JSON_UPPER);
     const xmlOpt = new Option(LANG_XML_UPPER);
     const [langs, setLangs] = useState<Option[]>([jsonOpt, xmlOpt]);
+    const [compactJson, setCompactJson] = useState<boolean>(false);
 
     const validSchema = useSelector(getSelectedSchema);
 
@@ -48,15 +50,16 @@ const ExampleCreator = (props: any) => {
                     <button className="btn btn-link" id={`toggleMsg#${i}`} type="button" onClick={() => onToggle(i)} >
                         Data Example #{i + 1}
                     </button>
-                    <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={message} customClass='float-end' />
-                    <SBSaveFile data={message} loc={'messages'} customClass={"float-end me-1"} filename={`MessageExample${i + 1}`} ext={LANG_JSON} />
-                    <SBDownloadBtn buttonId={`downloadMsgExample${i}`} customClass='me-1 float-end' filename={`MessageExample${i + 1}`} data={message} ext={LANG_JSON} />
+                    <SBCompactBtn customClass={"float-end ms-1"} toggle={compactJson} ext={langSel?.value.toLowerCase()} data={message} handleCompactClick={() => setCompactJson(!compactJson)} />
+                    <SBCopyToClipboard buttonId={`copyMsgExample${i}`} data={compactJson ? JSON.stringify(message) : message} customClass='float-end' />
+                    <SBSaveFile data={compactJson ? JSON.stringify(message) : message} loc={'messages'} customClass={"float-end me-1"} filename={`MessageExample${i + 1}`} ext={LANG_JSON} />
+                    <SBDownloadBtn buttonId={`downloadMsgExample${i}`} customClass='me-1 float-end' filename={`MessageExample${i + 1}`} data={compactJson ? JSON.stringify(message) : message} ext={LANG_JSON} />
                 </h5>
             </div>
 
             {toggle[i] == true ?
                 <div className="card-body" key={i}>
-                    <SBEditor data={message} convertTo={langSel.value || "JSON"} isReadOnly={true} height={'35vh'}></SBEditor>
+                    <SBEditor data={compactJson ? JSON.stringify(message) : message} convertTo={langSel.value || "JSON"} isReadOnly={true} height={'35vh'}></SBEditor>
                 </div> : ''}
         </div>
     ));
