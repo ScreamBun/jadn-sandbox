@@ -59,6 +59,7 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
+    "regexper": "^1.0.2",
     "uuid": "^13.0.0",
     "vkbeautify": "^0.99.3"
   },

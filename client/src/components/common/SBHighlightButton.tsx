@@ -76,7 +76,7 @@ const SBHighlightButton = (props: SBHighlightProps) => {
       <div className="position-relative d-inline-block">
         <button 
             type="button" 
-            className={`btn btn-sm ms-1 ${toggleHighlight ? 'btn-warning' : ''}`}
+            className={`btn btn-sm pe-1 ps-1 ${toggleHighlight ? 'btn-warning' : ''}`}
             onClick={() => setToggleHighlight(!toggleHighlight)}
         >
             <FontAwesomeIcon icon={faHighlighter}/>

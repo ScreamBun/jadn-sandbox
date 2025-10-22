@@ -12,6 +12,7 @@ import { Buffer } from 'buffer';
 import SBHighlightButton from "components/common/SBHighlightButton";
 import { clearHighlight } from "actions/highlight";
 import { getToggleGenData } from "reducers/gendata";
+import SBRegexVisualizer from "components/common/SBRegexVisualizer";
 
 interface FieldProps {
     field: StandardFieldArray | ArrayFieldArray;
@@ -36,6 +37,7 @@ const CoreType = (props: FieldProps) => {
 
     const _optional = optionsObj.isOptional;
     const formats = optionsObj.formats;
+    const pattern = optionsObj.pattern;
     const highlightWords = [name, data];
 
     // Fetch default value (option)
@@ -258,6 +260,7 @@ const CoreType = (props: FieldProps) => {
                 <label className="nowrap" style={{ fontSize: "1.1rem" }}>{name}{ _optional ? "" : "*"}</label>
                 <SBInfoBtn comment={_comment} />
                 <SBHighlightButton highlightWords={highlightWords} />
+                {pattern ? <SBRegexVisualizer regex={pattern} isBtnPrimary={false} /> : null}
                 {isTime || isDateTime || isDate ? <button
                     type="button"
                     className="btn btm-sm p-0 ms-1 me-1"

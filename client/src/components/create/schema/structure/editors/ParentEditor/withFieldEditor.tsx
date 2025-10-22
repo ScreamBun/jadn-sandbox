@@ -69,7 +69,8 @@ export default function withFieldEditor(FieldWrapper: React.ComponentType<any>) 
                 }
             }
             const key = placeholder.toLowerCase();
-            setValueObj({ ...valueObj, [key]: value });
+            const val = key === 'id' ? parseInt(value) || 0 : value;
+            setValueObj({ ...valueObj, [key]: val });
         }
 
         const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -91,7 +92,8 @@ export default function withFieldEditor(FieldWrapper: React.ComponentType<any>) 
             }
 
             const key = placeholder.toLowerCase();
-            const updatevalue = { ...valueObj, [key]: value }
+            const val = key === 'id' ? parseInt(value) || 0 : value;
+            const updatevalue = { ...valueObj, [key]: val }
             if (JSON.stringify(valueObjInit) == JSON.stringify(updatevalue)) {
                 return;
             }
