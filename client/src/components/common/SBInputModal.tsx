@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from 'react-dom';
 import { ModalSize } from "components/create/schema/structure/editors/options/ModalSize";
+import { sbToastError } from "./SBToast";
 
 interface SBInputModalProps {
     isOpen: boolean;
@@ -47,7 +48,9 @@ export const SBInputModal = (props: SBInputModalProps) => {
             onValidate(intValue);
             setInputInitVal(intValue);
         } else {
+            sbToastError("Please enter a valid positive integer value.");
             onValidate(null);
+            return;
         }
         setIsOpen(false);
     };
