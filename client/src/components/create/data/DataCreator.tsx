@@ -22,6 +22,7 @@ import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
 import { getToggleGenData } from 'reducers/gendata'
 import { setGeneratedData } from 'actions/util'
+import SBCompactBtn from 'components/common/SBCompactBtn'
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
@@ -37,6 +38,7 @@ const DataCreator = (props: any) => {
     const [cborValidated, setCborValidated] = useState(false);
     const [dataFullScreen, setDataFullScreen] = useState(false);
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
+    const [compactJson, setCompactJson] = useState(false);
 
     // Redux states
     const toggleGenData = useSelector(getToggleGenData);
@@ -333,29 +335,30 @@ const DataCreator = (props: any) => {
                                         </span>)
                                     }
                                 </button>
+                                <SBCompactBtn customClass={"me-1"} toggle={compactJson} ext={selectedSerialization?.value.toLowerCase()} data={generatedMessage} handleCompactClick={() => setCompactJson(!compactJson)} />
                                 <SBSaveFile 
                                     buttonId={'saveMessage'} 
                                     toolTip={'Save Data'} 
-                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? compactJson ? JSON.stringify(generatedMessage) : generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
                                     loc={'messages'} 
                                     customClass={"float-end ms-1"} 
                                     ext={selectedSerialization?.value.toLowerCase()} />
                                 <SBCopyToClipboard 
                                     buttonId={'copyMessage'} 
-                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? compactJson ? JSON.stringify(generatedMessage) : generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
                                     customClass='float-end' 
                                     shouldStringify={true} />
                                 <SBDownloadBtn 
                                     buttonId='msgDownload' 
                                     customClass='float-end me-1' 
-                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? JSON.stringify(generatedMessage) : selectedSerialization?.value===LANG_XML_UPPER ? JSON.stringify(xml) : selectedSerialization?.value===LANG_CBOR_UPPER ? JSON.stringify(cbor) : JSON.stringify(annotatedCbor)} 
+                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? compactJson ? JSON.stringify(generatedMessage) : generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
                                     ext={selectedSerialization?.value.toLowerCase()} />
                             </>
                         </div>
                     </div>
                     <div className='card-body p-2'>
                         <SBEditor 
-                            data={selectedSerialization?.value===LANG_JSON_UPPER ? generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                            data={selectedSerialization?.value===LANG_JSON_UPPER ? compactJson ? JSON.stringify(generatedMessage) : generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
                             convertTo={selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : null}
                             isReadOnly={true} 
                             initialHighlightWords={highlightedItems}></SBEditor>
