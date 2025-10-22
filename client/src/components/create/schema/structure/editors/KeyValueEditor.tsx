@@ -1,8 +1,9 @@
 import React, { memo, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faMinusSquare, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faMicrochip, faMinusSquare, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast';
+import { SBInputModal } from 'components/common/SBInputModal';
 
 // Interface
 interface KeyValueEditorProps {
@@ -41,6 +42,8 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   const [valueData, setValueData] = useState(value);
   const [isRegex, setIsRegex] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
+  const [inputInitVal, setInputInitVal] = useState('');
 
   useEffect(() => {
     if (!value) {
@@ -165,13 +168,30 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
               <span title={description}>{name}{required ? '*' : ''}</span>
             </label>
             <div className={`col-md-${fieldColumns}`}>
-              <SBSelect id={`editor-${placeholder}-${id}`}
-                placeholder={`Please select a ${placeholder}...`}
-                data={options}
-                onChange={onSelectChange}
-                value={val}
-                isGrouped={Array.isArray(options) ? false : true}
-                isClearable />
+              <div className="input-group">
+                <SBSelect id={`editor-${placeholder}-${id}`}
+                  placeholder={`Please select a ${placeholder}...`}
+                  data={options}
+                  onChange={onSelectChange}
+                  value={val}
+                  isGrouped={Array.isArray(options) ? false : true}
+                  isClearable />
+                {typeof val !== "string" && val && val.value === "u\\d+" &&  
+                <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsInputModalOpen(!isInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faMicrochip} /></button> }
+                { isInputModalOpen &&  <SBInputModal 
+                    isOpen={isInputModalOpen} 
+                    title={"Enter an Unsigned Integer Bit Value"} 
+                    message={"Please enter a positive integer value for the unsigned integer bit pattern (e.g., 8, 16, 32)."}
+                    setIsOpen={setIsInputModalOpen}
+                    initVal={inputInitVal}
+                    setInputInitVal={setInputInitVal}
+                    onValidate={(e: string | null) => {
+                        if (e == null) return;
+                        change(`u${e}`);
+                      }
+                    }
+                  /> }
+              </div>
             </div>
           </div>
         }
