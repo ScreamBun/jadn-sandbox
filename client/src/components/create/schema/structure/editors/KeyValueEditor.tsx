@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faMicrochip, faMinusSquare, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faMinusSquare, faPenToSquare, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast';
 import { SBInputModal } from 'components/common/SBInputModal';
@@ -177,7 +177,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   isGrouped={Array.isArray(options) ? false : true}
                   isClearable />
                 {typeof val !== "string" && val && val.value === "u\\d+" &&  
-                <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsInputModalOpen(!isInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faMicrochip} /></button> }
+                <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsInputModalOpen(!isInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
                 { isInputModalOpen &&  <SBInputModal 
                     isOpen={isInputModalOpen} 
                     title={"Enter an Unsigned Integer Bit Value"} 
