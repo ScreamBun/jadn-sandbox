@@ -177,19 +177,35 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   isGrouped={Array.isArray(options) ? false : true}
                   isClearable />
                 {typeof val !== "string" && val && val.value === "u\\d+" &&  
-                <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsInputModalOpen(!isInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
-                { isInputModalOpen &&  <SBInputModal 
-                    isOpen={isInputModalOpen} 
-                    title={"Enter an Unsigned Integer Bit Value"} 
-                    message={"Please enter a positive integer value for the unsigned integer bit pattern (e.g., 8, 16, 32)."}
-                    setIsOpen={setIsInputModalOpen}
-                    initVal={inputInitVal}
-                    setInputInitVal={setInputInitVal}
-                    onValidate={(e: string | null) => {
-                        if (e == null) return;
-                        change(`u${e}`);
+                  <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsInputModalOpen(!isInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
+                  { isInputModalOpen &&  <SBInputModal 
+                      isOpen={isInputModalOpen} 
+                      title={"Enter an Unsigned Integer Bit Value"} 
+                      message={"Please enter a positive integer value for the unsigned integer bit pattern (e.g., 8, 16, 32)."}
+                      setIsOpen={setIsInputModalOpen}
+                      initVal={inputInitVal}
+                      setInputInitVal={setInputInitVal}
+                      onValidate={(e: string | null) => {
+                          if (e == null) return;
+                          change(`u${e}`);
+                        }
                       }
-                    }
+                  /> }
+
+                  {typeof val !== "string" && val && val.value === "i\\d+" &&  
+                  <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsInputModalOpen(!isInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
+                  { isInputModalOpen &&  <SBInputModal 
+                      isOpen={isInputModalOpen} 
+                      title={"Enter a Signed Integer Bit Value"} 
+                      message={"Please enter a positive integer value for the signed integer bit pattern (e.g., 8, 16, 32)."}
+                      setIsOpen={setIsInputModalOpen}
+                      initVal={inputInitVal}
+                      setInputInitVal={setInputInitVal}
+                      onValidate={(e: string | null) => {
+                          if (e == null) return;
+                          change(`i${e}`);
+                        }
+                      }
                   /> }
               </div>
             </div>
