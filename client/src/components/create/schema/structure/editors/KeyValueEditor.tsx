@@ -42,7 +42,8 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   const [valueData, setValueData] = useState(value);
   const [isRegex, setIsRegex] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [isInputModalOpen, setIsInputModalOpen] = useState(false);
+  const [isUnsignedInputModalOpen, setIsUnsignedInputModalOpen] = useState(false);
+  const [isSignedInputModalOpen, setIsSignedInputModalOpen] = useState(false);
   const [inputInitVal, setInputInitVal] = useState('');
 
   useEffect(() => {
@@ -177,12 +178,12 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   isGrouped={Array.isArray(options) ? false : true}
                   isClearable />
                 {typeof val !== "string" && val && val.value === "u\\d+" &&  
-                  <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsInputModalOpen(!isInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
-                  { isInputModalOpen &&  <SBInputModal 
-                      isOpen={isInputModalOpen} 
+                  <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsUnsignedInputModalOpen(!isUnsignedInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
+                  { isUnsignedInputModalOpen &&  <SBInputModal 
+                      isOpen={isUnsignedInputModalOpen} 
                       title={"Enter an Unsigned Integer Bit Value"} 
                       message={"Please enter a positive integer value for the unsigned integer bit pattern (e.g., 8, 16, 32)."}
-                      setIsOpen={setIsInputModalOpen}
+                      setIsOpen={setIsUnsignedInputModalOpen}
                       initVal={inputInitVal}
                       setInputInitVal={setInputInitVal}
                       onValidate={(e: string | null) => {
@@ -193,12 +194,12 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
                   /> }
 
                   {typeof val !== "string" && val && val.value === "i\\d+" &&  
-                  <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsInputModalOpen(!isInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
-                  { isInputModalOpen &&  <SBInputModal 
-                      isOpen={isInputModalOpen} 
+                  <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsSignedInputModalOpen(!isSignedInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
+                  { isSignedInputModalOpen &&  <SBInputModal 
+                      isOpen={isSignedInputModalOpen} 
                       title={"Enter a Signed Integer Bit Value"} 
                       message={"Please enter a positive integer value for the signed integer bit pattern (e.g., 8, 16, 32)."}
-                      setIsOpen={setIsInputModalOpen}
+                      setIsOpen={setIsSignedInputModalOpen}
                       initVal={inputInitVal}
                       setInputInitVal={setInputInitVal}
                       onValidate={(e: string | null) => {
