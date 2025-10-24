@@ -15,6 +15,7 @@ from jadnschema.convert import json_to_jadn_dumps
 from jadnxml.builder.xsd_builder import XSDBuilder
 from jadnxml.builder.xml_builder import build_xml_from_json
 from jadnutils.html.html_converter import HtmlConverter
+from jadnutils.json.convert_compact import convert_to_compact
 
 from weasyprint import HTML
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
@@ -206,6 +207,10 @@ class Convert(Resource):
                 
                 if toLang == constants.JADN:
                     return json_to_jadn_dumps(src, **kwargs)
+                elif toLang == constants.COMPACT_CONSTANT:
+                    return convert_to_compact(src)
+                elif toLang == constants.CONCISE_CONSTANT:
+                    pass  # implement concise conversion here
                 
                 else:
                     raise ValueError('Unknown JSON conversion type')
@@ -292,6 +297,8 @@ class ConvertData(Resource):
         cbor_annotated_hex_rsp = ""
         cbor_hex_rsp = ""
         xml_rsp = ""
+        compact_json_rsp = ""
+        concise_json_rsp = ""
 
         try:
             data_js = json.loads(data)
@@ -301,6 +308,10 @@ class ConvertData(Resource):
                 cbor_hex_rsp = convert_json_to_cbor_hex(data_js)
             elif conv_to == constants.XML:
                 xml_rsp = convert_json_to_xml(data_js)
+            elif conv_to == constants.COMPACT_CONSTANT:
+                compact_json_rsp = convert_to_compact(data_js)
+            elif conv_to == constants.CONCISE_CONSTANT:
+                pass  # implement concise conversion here
             else:
                 return jsonify({
                     "error": f"Conversion type '{conv_to}' not supported."
@@ -316,6 +327,8 @@ class ConvertData(Resource):
              "cbor_annotated_hex" : cbor_annotated_hex_rsp,
              "cbor_hex" : cbor_hex_rsp,
              "xml" : xml_rsp,
+             "compact_json" : compact_json_rsp,
+             "concise_json" : concise_json_rsp
             }
         })
 
