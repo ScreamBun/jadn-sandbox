@@ -105,6 +105,13 @@ Important Notes:
   ./docker_run.sh
   ```
 
+3. If the latest tag is not updating in Docker Hub, take the following steps to realign the tag
+
+```
+docker tag screambunn/jadn_sandbox:<version> screambunn/jadn_sandbox:latest
+docker push screambunn/jadn_sandbox:latest
+```
+
 Or run the following, you can replace 'latest' with a specific version if you have previously built it or pulled it (see quick start).
 
 docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
