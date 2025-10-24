@@ -54,10 +54,10 @@ const DataCreator = (props: any) => {
     // Handle compact/concise button click
     const onCompactBtnClick = () => {
         if (toggleCompactBtn === '') {
-            setToggleCompactBtn('compact');
-        } else if (toggleCompactBtn === 'compact') {
-            setToggleCompactBtn('concise');
-        } else if (toggleCompactBtn === 'concise') {
+            setToggleCompactBtn(COMPACT_CONST);
+        } else if (toggleCompactBtn === COMPACT_CONST) {
+            setToggleCompactBtn(CONCISE_CONST);
+        } else if (toggleCompactBtn === CONCISE_CONST) {
             setToggleCompactBtn('');
         }
     }
