@@ -207,11 +207,6 @@ class Convert(Resource):
                 
                 if toLang == constants.JADN:
                     return json_to_jadn_dumps(src, **kwargs)
-                elif toLang == constants.COMPACT_CONSTANT:
-                    return convert_to_compact(src)
-                elif toLang == constants.CONCISE_CONSTANT:
-                    pass  # implement concise conversion here
-                
                 else:
                     raise ValueError('Unknown JSON conversion type')
                 
@@ -283,6 +278,7 @@ class ConvertData(Resource):
 
     def post(self):
         request_json = request.json
+        schema = request_json["schema"]
         data = request_json["data"]
         conv_from = request_json["from"]
         conv_to = request_json["to"]
@@ -309,7 +305,7 @@ class ConvertData(Resource):
             elif conv_to == constants.XML:
                 xml_rsp = convert_json_to_xml(data_js)
             elif conv_to == constants.COMPACT_CONSTANT:
-                compact_json_rsp = convert_to_compact(data_js)
+                compact_json_rsp = convert_to_compact(schema, data_js)
             elif conv_to == constants.CONCISE_CONSTANT:
                 pass  # implement concise conversion here
             else:

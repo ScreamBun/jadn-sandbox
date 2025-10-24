@@ -4,12 +4,15 @@ import { faMinimize } from "@fortawesome/free-solid-svg-icons";
 import { LANG_JSON, LANG_JSON_UPPER, COMPACT_CONST, CONCISE_CONST } from "components/utils/constants";
 import { sbToastError } from "./SBToast";
 import { convertData } from "actions/convert";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getSelectedSchema } from "reducers/util";
+import { SchemaJADN } from "components/create/schema/interface";
 
 const SBCompactConciseBtn = (props: any) => {
 
     const { ext, data, convertTo, handleClick, setCompact, setConcise, customClass, index = null } = props;
     const dispatch = useDispatch();
+    const schemaObj: SchemaJADN = useSelector(getSelectedSchema);
 
     const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -40,7 +43,7 @@ const SBCompactConciseBtn = (props: any) => {
             }
 
             console.log(dataObj, nextConvertTo);
-            dispatch(convertData(JSON.stringify(dataObj), LANG_JSON_UPPER, nextConvertTo))
+            dispatch(convertData(JSON.stringify(dataObj), LANG_JSON_UPPER, nextConvertTo, schemaObj))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.compact_json) {

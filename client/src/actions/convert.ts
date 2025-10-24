@@ -94,7 +94,7 @@ export interface ConvertJsonSuccessAction extends ActionSuccessResult {
 const CONVERT_DATA_REQUEST = '@@convert/CONVERT_DATA_REQUEST';
 export const CONVERT_DATA_SUCCESS = '@@convert/CONVERT_DATA_SUCCESS';
 export const CONVERT_DATA_FAILURE = '@@convert/CONVERT_DATA_FAILURE';
-export const convertData = (data:string, from: string, to: string) => createAction({
+export const convertData = (data:string, from: string, to: string, schema?: SchemaJADN) => createAction({
   endpoint: `${baseAPI}/convert_data`,
   method: 'POST',
   headers: {
@@ -104,6 +104,7 @@ export const convertData = (data:string, from: string, to: string) => createActi
     'data': data,
     'from': from,
     'to': to,
+    'schema': schema
   }),
   types: [
     CONVERT_DATA_REQUEST, CONVERT_DATA_SUCCESS, CONVERT_DATA_FAILURE
