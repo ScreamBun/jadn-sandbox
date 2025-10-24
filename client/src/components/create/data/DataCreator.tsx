@@ -39,7 +39,9 @@ const DataCreator = (props: any) => {
     const [dataFullScreen, setDataFullScreen] = useState(false);
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
     const [toggleCompactBtn, setToggleCompactBtn] = useState('');
-
+    const digestFormat = selectedSerialization?.value=== LANG_JSON_UPPER ?
+                            (toggleCompactBtn == COMPACT_CONST ? compactJson : toggleCompactBtn == CONCISE_CONST ? conciseJson : generatedMessage) 
+                            : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor
     // Redux states
     const toggleGenData = useSelector(getToggleGenData);
     const highlightedItems = useSelector((state: any) => state.Highlight.highlightWords);
@@ -355,35 +357,26 @@ const DataCreator = (props: any) => {
                                 <SBSaveFile 
                                     buttonId={'saveMessage'} 
                                     toolTip={'Save Data'} 
-                                    data={selectedSerialization?.value=== LANG_JSON_UPPER ?
-                                        (toggleCompactBtn == COMPACT_CONST ? compactJson : toggleCompactBtn == CONCISE_CONST ? conciseJson : generatedMessage) 
-                                        : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                                    data={digestFormat} 
                                     loc={'messages'} 
                                     customClass={"float-end ms-1"} 
                                     ext={selectedSerialization?.value.toLowerCase()} />
                                 <SBCopyToClipboard 
                                     buttonId={'copyMessage'} 
-                                    data={selectedSerialization?.value=== LANG_JSON_UPPER ?
-                                        (toggleCompactBtn == COMPACT_CONST ? compactJson : toggleCompactBtn == CONCISE_CONST ? conciseJson : generatedMessage) 
-                                        : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                                    data={digestFormat} 
                                     customClass='float-end' 
                                     shouldStringify={true} />
                                 <SBDownloadBtn 
                                     buttonId='msgDownload' 
                                     customClass='float-end me-1' 
-                                    data={selectedSerialization?.value=== LANG_JSON_UPPER ?
-                                        (toggleCompactBtn == COMPACT_CONST ? compactJson : toggleCompactBtn == CONCISE_CONST ? conciseJson : generatedMessage) 
-                                        : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                                    data={digestFormat} 
                                     ext={selectedSerialization?.value.toLowerCase()} />
                             </>
                         </div>
                     </div>
                     <div className='card-body p-2'>
                         <SBEditor 
-                            data={
-                                selectedSerialization?.value=== LANG_JSON_UPPER ?
-                                (toggleCompactBtn == COMPACT_CONST ? compactJson : toggleCompactBtn == CONCISE_CONST ? conciseJson : generatedMessage) 
-                                : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                            data={digestFormat} 
                             convertTo={selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : null}
                             isReadOnly={true} 
                             initialHighlightWords={highlightedItems}></SBEditor>
