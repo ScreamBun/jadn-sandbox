@@ -15,6 +15,7 @@ from jadnschema.convert import json_to_jadn_dumps
 from jadnxml.builder.xsd_builder import XSDBuilder
 from jadnxml.builder.xml_builder import build_xml_from_json
 from jadnutils.html.html_converter import HtmlConverter
+from jadnutils.gv.gv_generator import GvGenerator
 
 from weasyprint import HTML
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
@@ -148,16 +149,18 @@ class Convert(Resource):
             if fromLang == constants.JADN:
                 
                 if toLang == constants.GV:
-                    gv_style = jadn.convert.diagram_style()
-                    gv_style['format'] = 'graphviz'
-                    gv_style['detail'] = 'information'
-                    gv_style['attributes'] = True
-                    gv_style['enums'] = 100
+                    
+                    gv_style = GvGenerator.STYLE_DEFAULT
                     
                     if opts and opts["graphVizOpt"]:
                         gv_style['detail'] = opts["graphVizOpt"]
+                    else:
+                        gv_style['detail'] = GvGenerator.INFORMATIONAL
+                        
+                    gv_style['enums_allowed'] = 100
+                    gv_converter = GvGenerator(src, gv_style)
                     
-                    return jadn.convert.diagram_dumps(src, gv_style)
+                    return gv_converter.generate()
                 
                 elif toLang == constants.HTML:                       
                     html_output = ""                        
