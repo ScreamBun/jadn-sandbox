@@ -65,6 +65,7 @@ const DataCreator = (props: any) => {
 
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
+        setToggleCompactBtn(''); // reset compact/concise on field change
         setJsonValidated(false);
         setXmlValidated(false);
         setCborValidated(false);
