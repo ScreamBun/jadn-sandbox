@@ -179,7 +179,7 @@ const DataCreator = (props: any) => {
     const convertJSON = (data: string) => {
         try {
             // Convert to XML
-            dispatch(convertData(JSON.stringify(data), LANG_JSON_UPPER, LANG_XML_UPPER))
+            dispatch(convertData(JSON.stringify(data), LANG_JSON_UPPER, LANG_XML_UPPER, schemaObj))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.xml) {
@@ -194,7 +194,7 @@ const DataCreator = (props: any) => {
                 });
 
             // Convert to CBOR
-            dispatch(convertData(JSON.stringify(data[selection?.value]), LANG_JSON_UPPER, LANG_CBOR_UPPER))
+            dispatch(convertData(JSON.stringify(data[selection?.value]), LANG_JSON_UPPER, LANG_CBOR_UPPER, schemaObj))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.cbor_hex) {
