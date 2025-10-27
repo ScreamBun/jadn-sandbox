@@ -142,7 +142,7 @@ const TypeOptionsEditor = memo(function TypeOptionsEditor(props: TypeOptionsEdit
   });
 
   const validOtherOptions = validOptionsList.filter((opt: keyof typeof TypeOptionInputArgs) => { // Group rest of options together
-    return !['checkbox', 'number', 'SBSelect', 'SBCreatableSelect'].includes(TypeOptionInputArgs[opt].type);
+    return TypeOptionInputArgs[opt] && !['checkbox', 'number', 'SBSelect', 'SBCreatableSelect'].includes(TypeOptionInputArgs[opt].type);
   }).map((key: string) => {
     return (
         <KeyValueEditor

@@ -120,6 +120,7 @@ const FieldEditorBtn = memo(function FieldEditorBtn(props: FieldEditorProps) {
                             optionType={valueObj.type}
                             modalSize={ModalSize.lg}
                             fieldOptions={true}
+                            typeName={valueObj.name}
                         />
                     </div>
                 </div>
