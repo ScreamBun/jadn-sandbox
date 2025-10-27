@@ -134,19 +134,57 @@ export const VisualOptionsModal = (props: any) => {
                                                         const currentValue = detailOptions.find(o => o.value === opts.detail) || detailOptions[2];
 
                                                         return (
-                                                            <SBSelect
-                                                                id="gv-detail-select"
-                                                                data={detailOptions}
-                                                                onChange={(sel: Option | null) => {
-                                                                    // sel may be an Option or null; update opts.detail to the selected value (string)
-                                                                    if (sel && typeof sel === 'object' && 'value' in sel) {
-                                                                        setOpts({ ...opts, detail: sel.value as string });
-                                                                    }
-                                                                }}
-                                                                value={currentValue}
-                                                                isSmStyle
-                                                                isClearable={false}
-                                                            />
+                                                            <div>
+                                                                <div className="d-flex align-items-center">
+                                                                    <label className="form-check-label mb-0 me-2" title="Detail" htmlFor="gv-detail-select">Detail</label>
+                                                                    <div style={{ flex: '1 1 0', minWidth: 0 }}>
+                                                                        <SBSelect
+                                                                            id="gv-detail-select"
+                                                                            data={detailOptions}
+                                                                            onChange={(sel: Option | null) => {
+                                                                                if (sel && typeof sel === 'object' && 'value' in sel) {
+                                                                                    setOpts({ ...opts, detail: sel.value as string });
+                                                                                }
+                                                                            }}
+                                                                            value={currentValue}
+                                                                            isSmStyle
+                                                                            isClearable={false}
+                                                                            ariaLabelledBy={'gv-detail-label'}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                {/* visually-hidden label for screen readers */}
+                                                                <span id="gv-detail-label" className="visually-hidden">GraphViz detail level</span>
+                                                                <div className="mt-2 d-flex align-items-center">
+                                                                    <label className="form-check-label mb-0 me-2" title="Link Orientation" htmlFor="gvLinkOrientation">Orientation</label>
+                                                                    {(() => {
+                                                                        const linkOptions: Option[] = [
+                                                                            { label: 'Vertical', value: false },
+                                                                            { label: 'Horizontal', value: true }
+                                                                        ];
+                                                                        const currentLink = linkOptions.find(o => o.value === opts.link_horizontal) || linkOptions[0];
+                                                                        return (
+                                                                            <div style={{ minWidth: '8rem' }}>
+                                                                                <SBSelect
+                                                                                    id={'gvLinkOrientation'}
+                                                                                    data={linkOptions}
+                                                                                    value={currentLink}
+                                                                                    onChange={(sel: Option | null) => {
+                                                                                        if (sel && typeof sel === 'object' && 'value' in sel) {
+                                                                                            // Map selection to boolean link_horizontal
+                                                                                            setOpts({ ...opts, link_horizontal: Boolean(sel.value) });
+                                                                                        }
+                                                                                    }}
+                                                                                    isSmStyle
+                                                                                    isClearable={false}
+                                                                                    ariaLabelledBy={'gv-linkorientation-label'}
+                                                                                />
+                                                                            </div>
+                                                                        );
+                                                                    })()}
+                                                                </div>
+                                                                <span id="gv-linkorientation-label" className="visually-hidden">Link orientation for GraphViz (vertical or horizontal)</span>
+                                                            </div>
                                                         );
                                                     })()}
                                                     <div className="mt-2 d-flex align-items-center">
