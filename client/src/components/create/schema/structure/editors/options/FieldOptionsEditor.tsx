@@ -1,6 +1,9 @@
 import React, { memo } from 'react';
 import { FieldOptionInputArgs, OptionChange } from './consts';
 import KeyValueEditor from '../KeyValueEditor';
+import { destructureField, getTrueType } from 'components/create/data/lib/utils';
+import { getSelectedSchema } from 'reducers/util';
+import { useSelector } from 'react-redux';
 
 interface FieldOptionsEditorProps {
   id?: string;
@@ -8,13 +11,44 @@ interface FieldOptionsEditorProps {
   placeholder?: string;
   fieldOptions: boolean;
   change: OptionChange;
+  optionType?: string;
+  typeName?: string;
 }
 
 const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsEditorProps) {
-  const { id, change, deserializedState, fieldOptions } = props;
+  const { id, change, deserializedState, fieldOptions, optionType, typeName } = props;
 
-  // Group field options by input type
-  const optionKeys = Object.keys(FieldOptionInputArgs);
+  const schemaObj = useSelector(getSelectedSchema);
+
+  // Check parent type and options
+  let parentType: string | undefined = undefined;
+  let parentOpts: string[] | undefined = undefined;
+  if (schemaObj?.types && Array.isArray(schemaObj.types)) {
+    for (const field of schemaObj.types) {
+      const [_cidx, _cname, ctype, coptions, _ccomment, cchildren] = destructureField(field);
+      for (const cc of cchildren || []) {
+        const [_ccidx, ccname] = destructureField(cc);
+        if (ccname === typeName) {
+          parentType = ctype;
+          parentOpts = coptions;
+          break;
+        }
+      }
+    }
+  }
+
+  const trueOptionType = getTrueType(schemaObj?.types || [], optionType || '')[0] || optionType;
+  const optionKeys = Object.keys(FieldOptionInputArgs).filter(
+    key => {
+      if (key === 'tagid') {
+        return trueOptionType === 'Choice'; // ensure tagid only shows for Choice types
+      }
+      if (key === 'not') {
+        return parentType === 'Choice' && parentOpts?.includes('CA'); // show not only for Choice types with AllOf
+      }
+      return true;
+    }
+  );
 
   const validCheckboxOptions = optionKeys.filter(
     key => FieldOptionInputArgs[key].type === 'checkbox'
@@ -105,7 +139,7 @@ const FieldOptionsEditor = memo(function FieldOptionsEditor(props: FieldOptionsE
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
+              gridTemplateColumns: 'repeat(5, 1fr)',
               gap: '1rem',
               alignItems: 'center',
               marginBottom: '1rem'

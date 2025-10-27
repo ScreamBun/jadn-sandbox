@@ -86,7 +86,7 @@
         [4, "rate_limit", "Number", ["[0"], "Maximum number of requests per minute supported by design or policy"]
       ]],
     ["Action-Targets", "MapOf", ["*Targets", "+Action", "{1"], "Map of each action supported by this actuator to the list of targets applicable to that action"],
-    ["Targets", "ArrayOf", ["*>Target", "{1", "}1", "q"], "List of JSON Pointers to Target types"],
+    ["Targets", "ArrayOf", ["*Target", "{1", "}1", "q"], "List of JSON Pointers to Target types"],
     ["Status-Code", "Enumerated", ["="], "", [
         [102, "Processing", "an interim Response used to inform the Producer that the Consumer has accepted the Command but has not yet completed it."],
         [200, "OK", "the Command has succeeded."],
