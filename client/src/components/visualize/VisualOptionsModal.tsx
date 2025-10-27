@@ -117,7 +117,7 @@ export const VisualOptionsModal = (props: any) => {
                                 </h5>
                                 <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='Close' title='Close' onClick={onCloseClick} />
                             </div>
-                            <div className="modal-body">
+                            <div className="modal-body p-1">
                                 {showGvOpts && <>
                                     <p className="mb-1">GraphViz</p>
                                     <div className="card">
@@ -270,15 +270,15 @@ export const VisualOptionsModal = (props: any) => {
                                                                     {Object.keys(opts.per_type_attrs || {}).map((tkey) => {
                                                                         const typeCfg = opts.per_type_attrs[tkey] || { fillcolor: '#ffffff', shape: 'plain' };
                                                                         const shapeOptions: Option[] = [
-                                                                            { label: 'none', value: 'none' },
-                                                                            { label: 'plain', value: 'plain' },
-                                                                            { label: 'ellipse', value: 'ellipse' }
+                                                                            { label: 'None', value: 'none' },
+                                                                            { label: 'Rectangle', value: 'plain' },
+                                                                            { label: 'Ellipse', value: 'ellipse' }
                                                                         ];
                                                                         const currentShape = shapeOptions.find(s => s.value === typeCfg.shape) || shapeOptions[1];
                                                                         return (
                                                                             <div className="col-md-6 mb-2" key={tkey}>
                                                                                 <div className="d-flex align-items-center">
-                                                                                        <div style={{ minWidth: '4rem' }} className="me-2 small text-truncate" title={tkey}>{tkey === 'Enumerated' ? 'Enum' : tkey}</div>
+                                                                                        <div style={{ minWidth: '3.25rem' }} className="me-2 small text-truncate" title={tkey}>{tkey === 'Enumerated' ? 'Enum' : tkey}</div>
                                                                                         <input
                                                                                             type="color"
                                                                                             title={`Fill color for ${tkey}`}
