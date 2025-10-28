@@ -17,6 +17,7 @@ from jadnxml.builder.xml_builder import build_xml_from_json
 from jadnutils.html.html_converter import HtmlConverter
 from jadnutils.gv.gv_generator import GvGenerator
 from jadnutils.json.convert_compact import convert_to_compact
+from jadnutils.json.convert_concise import convert_to_concise
 
 from weasyprint import HTML
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
@@ -310,7 +311,7 @@ class ConvertData(Resource):
             elif conv_to == constants.COMPACT_CONSTANT:
                 compact_json_rsp = convert_to_compact(schema, data_js)
             elif conv_to == constants.CONCISE_CONSTANT:
-                pass  # implement concise conversion here
+                concise_json_rsp = convert_to_concise(schema, data_js)
             else:
                 return jsonify({
                     "error": f"Conversion type '{conv_to}' not supported."
