@@ -377,7 +377,7 @@ const DataCreator = (props: any) => {
                     </div>
                     <div className='card-body p-2'>
                         <SBEditor 
-                            data={digestFormat} 
+                            data={digestFormat === "" ? "Loading..." : digestFormat} 
                             convertTo={selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : null}
                             isReadOnly={true} 
                             initialHighlightWords={highlightedItems}></SBEditor>

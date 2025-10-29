@@ -78,7 +78,13 @@ const ExampleCreator = (props: any) => {
 
             {toggle[i] == true ?
                 <div className="card-body" key={i}>
-                    <SBEditor data={toggleCompactBtn[i] === COMPACT_CONST ? compactJson[i] : toggleCompactBtn[i] === CONCISE_CONST ? conciseJson[i] : message} convertTo={langSel.value || "JSON"} isReadOnly={true} height={'35vh'}></SBEditor>
+                    <SBEditor data={
+                        toggleCompactBtn[i] === COMPACT_CONST ? compactJson[i] === "" ? "Loading..." : compactJson[i] :
+                        toggleCompactBtn[i] === CONCISE_CONST ? conciseJson[i] === "" ? "Loading..." : conciseJson[i] :
+                        message} 
+                        convertTo={langSel.value || "JSON"} 
+                        isReadOnly={true} 
+                        height={'35vh'}></SBEditor>
                 </div> : ''}
         </div>
     ));
