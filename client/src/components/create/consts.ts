@@ -85,9 +85,9 @@ export const BINARY_FORMATS = {
     "/eui": "00:00:5e:00:53:01",
     "/ipv4-addr": "127.0.0.1",
     "/ipv6-addr": "2001:db8:3333:4444:5555:6666:1.2.3.4",
-    "/b64": "U29tZSBkYXRh",
-    "/x": "0A1B2C3D4E",
-    "/X": "0A1B2C3D4E"
+    "/b64": "Test",
+    "/x": "ABCD",
+    "/X": "ABCD"
 }
 
 export const TYPE_DEFAULTS = (optionsObj: any, minVal: number, children: any[]) => {
