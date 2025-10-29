@@ -256,3 +256,58 @@ def get_value_errors(e) -> list:
         unique_list = list(set(err_list))     
     
     return unique_list
+
+
+def normalize_bool(val):
+    """
+    Normalize various representations of boolean-like values.
+
+    Args:
+        val: input value which may be bool, str, int, None, etc.
+
+    Returns:
+        True or False when a clear boolean interpretation exists.
+        None when the input is explicitly empty (None or empty string) and
+        should be treated as "no value provided".
+
+    Examples:
+        normalize_bool(True) -> True
+        normalize_bool('true') -> True
+        normalize_bool('False') -> False
+        normalize_bool('') -> None
+        normalize_bool(None) -> None
+        normalize_bool(1) -> True
+        normalize_bool(0) -> False
+    """
+    # explicit empty values -> treat as no value provided
+    if val is None:
+        return None
+
+    if isinstance(val, str):
+        v = val.strip()
+        if v == '':
+            return None
+        v_l = v.lower()
+        if v_l in ('true', '1', 'yes', 'on'):
+            return True
+        if v_l in ('false', '0', 'no', 'off'):
+            return False
+        # fallback: non-empty string -> True
+        return True
+
+    # booleans -> return as-is
+    if isinstance(val, bool):
+        return val
+
+    # numbers -> truthiness (0 -> False, non-zero -> True)
+    try:
+        if isinstance(val, (int, float)):
+            return bool(val)
+    except Exception:
+        pass
+
+    # fallback: coerce to bool for other types
+    try:
+        return bool(val)
+    except Exception:
+        return None

@@ -160,7 +160,8 @@ export const getSelectTheme = (theme: 'dark' | 'light') => {
 const SBSelect = (props: any) => {
 
     const { id, data, onChange, placeholder, isGrouped, isMultiSelect, loc, isFileUploader, value, customClass, isSmStyle, isCreatable, isClearable, customNoOptionMsg } = props;
-    const dispatch = useDispatch();
+    const { ariaLabel, ariaLabelledBy } = props;
+    const dispatch = useDispatch<any>();
 
     const [toggleModal, setToggleModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -285,6 +286,8 @@ const SBSelect = (props: any) => {
                 <CreatableSelect<Option, false, GroupedOption>
                     id={id}
                     placeholder={placeholder}
+                    aria-label={ariaLabel}
+                    aria-labelledby={ariaLabelledBy}
                     options={opts}
                     formatGroupLabel={formatGroupLabel}
                     isClearable={isClearable}
@@ -313,6 +316,8 @@ const SBSelect = (props: any) => {
                 <Select<Option, false, GroupedOption>
                     id={id}
                     placeholder={placeholder}
+                    aria-label={ariaLabel}
+                    aria-labelledby={ariaLabelledBy}
                     options={opts}
                     formatGroupLabel={formatGroupLabel}
                     isClearable={isClearable}

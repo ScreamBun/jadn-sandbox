@@ -20,7 +20,7 @@ from jadnutils.json.convert_compact import convert_to_compact
 from jadnutils.json.convert_concise import convert_to_concise
 
 from weasyprint import HTML
-from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml
+from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml, normalize_bool
 from webApp.utils import constants
 
 
@@ -154,12 +154,21 @@ class Convert(Resource):
                     
                     gv_style = GvGenerator.STYLE_DEFAULT
                     
-                    if opts and opts["graphVizOpt"]:
-                        gv_style['detail'] = opts["graphVizOpt"]
-                    else:
-                        gv_style['detail'] = GvGenerator.INFORMATIONAL
+                    if opts:
+                        # Frontend uses gv_style keys directly (e.g. 'detail').
+                        for key, val in opts.items():
+                            target = key
+
+                            # Only apply options that exist in the gv_style default
+                            if target not in gv_style:
+                                continue
+
+                            # Ignore explicit empty values
+                            if val is None or val == '':
+                                continue
+
+                            gv_style[target] = val
                         
-                    gv_style['enums_allowed'] = 100
                     gv_converter = GvGenerator(src, gv_style)
                     
                     return gv_converter.generate()
