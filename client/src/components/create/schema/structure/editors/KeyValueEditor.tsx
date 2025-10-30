@@ -1,8 +1,9 @@
 import React, { memo, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faMinusSquare, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faMinusSquare, faPenToSquare, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons';
 import SBSelect, { Option } from 'components/common/SBSelect';
 import { sbToastError, sbToastSuccess } from 'components/common/SBToast';
+import { SBInputModal } from 'components/common/SBInputModal';
 import SBRegexVisualizer from 'components/common/SBRegexVisualizer';
 // Interface
 interface KeyValueEditorProps {
@@ -41,6 +42,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   const [valueData, setValueData] = useState(value);
   const [isRegex, setIsRegex] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isUnsignedInputModalOpen, setIsUnsignedInputModalOpen] = useState(false);
+  const [isSignedInputModalOpen, setIsSignedInputModalOpen] = useState(false);
+  const [inputInitVal, setInputInitVal] = useState('');
 
   useEffect(() => {
     if (!value) {
@@ -61,7 +65,12 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   const inputArgs: Record<string, any> = {
     value: valueData,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => {setValueData(e.target.value); setIsChecked(false)},
-    onBlur: (e: React.FocusEvent<HTMLInputElement>) => { setValueData(e.target.value); change(e.target.value); }
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => 
+      { 
+        if (JSON.stringify(String(valueData)) === JSON.stringify(e.target.value)) return;
+        setValueData(e.target.value); 
+        change(e.target.value); 
+      }
   };
 
   const onSelectChange = (e: Option) => {
@@ -165,13 +174,46 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
               <span title={description}>{name}{required ? '*' : ''}</span>
             </label>
             <div className={`col-md-${fieldColumns}`}>
-              <SBSelect id={`editor-${placeholder}-${id}`}
-                placeholder={`Please select a ${placeholder}...`}
-                data={options}
-                onChange={onSelectChange}
-                value={val}
-                isGrouped={Array.isArray(options) ? false : true}
-                isClearable />
+              <div className="input-group">
+                <SBSelect id={`editor-${placeholder}-${id}`}
+                  placeholder={`Please select a ${placeholder}...`}
+                  data={options}
+                  onChange={onSelectChange}
+                  value={val}
+                  isGrouped={Array.isArray(options) ? false : true}
+                  isClearable />
+                {typeof val !== "string" && val && val.value === "u\\d+" &&  
+                  <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsUnsignedInputModalOpen(!isUnsignedInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
+                  { isUnsignedInputModalOpen &&  <SBInputModal 
+                      isOpen={isUnsignedInputModalOpen} 
+                      title={"Enter an Unsigned Integer Bit Value"} 
+                      message={"Please enter a positive integer value for the unsigned integer bit pattern (e.g., 8, 16, 32)."}
+                      setIsOpen={setIsUnsignedInputModalOpen}
+                      initVal={inputInitVal}
+                      setInputInitVal={setInputInitVal}
+                      onValidate={(e: string | null) => {
+                          if (e == null) return;
+                          change(`u${e}`);
+                        }
+                      }
+                  /> }
+
+                  {typeof val !== "string" && val && val.value === "i\\d+" &&  
+                  <button className = "ms-1 btn btn-medium btn-secondary" onClick={() => setIsSignedInputModalOpen(!isSignedInputModalOpen)} title={"Set Bits"}><FontAwesomeIcon icon={faPenToSquare} /></button> }
+                  { isSignedInputModalOpen &&  <SBInputModal 
+                      isOpen={isSignedInputModalOpen} 
+                      title={"Enter a Signed Integer Bit Value"} 
+                      message={"Please enter a positive integer value for the signed integer bit pattern (e.g., 8, 16, 32)."}
+                      setIsOpen={setIsSignedInputModalOpen}
+                      initVal={inputInitVal}
+                      setInputInitVal={setInputInitVal}
+                      onValidate={(e: string | null) => {
+                          if (e == null) return;
+                          change(`i${e}`);
+                        }
+                      }
+                  /> }
+              </div>
             </div>
           </div>
         }

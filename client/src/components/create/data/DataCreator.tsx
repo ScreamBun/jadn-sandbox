@@ -17,17 +17,17 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import SBLoadBuilder from 'components/common/SBLoadBuilder'
 import { destructureField, removeXmlWrapper } from './lib/utils'
-import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER, LANG_ANNOTATED_HEX } from 'components/utils/constants';
+import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER, LANG_ANNOTATED_HEX, COMPACT_CONST, CONCISE_CONST } from 'components/utils/constants';
 import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
 import { getToggleGenData } from 'reducers/gendata'
 import { setGeneratedData } from 'actions/util'
-import SBCompactBtn from 'components/common/SBCompactBtn'
+import SBCompactConciseBtn from 'components/common/SBCompactConciseBtn'
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
-    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor, annotatedCbor, setAnnotatedCbor } = props;
+    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor, annotatedCbor, setAnnotatedCbor, compactJson, setCompactJson, conciseJson, setConciseJson } = props;
 
     // States
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
@@ -38,8 +38,10 @@ const DataCreator = (props: any) => {
     const [cborValidated, setCborValidated] = useState(false);
     const [dataFullScreen, setDataFullScreen] = useState(false);
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
-    const [compactJson, setCompactJson] = useState(false);
-
+    const [toggleCompactBtn, setToggleCompactBtn] = useState('');
+    const digestFormat = selectedSerialization?.value=== LANG_JSON_UPPER ?
+                            (toggleCompactBtn == COMPACT_CONST ? compactJson : toggleCompactBtn == CONCISE_CONST ? conciseJson : generatedMessage) 
+                            : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor
     // Redux states
     const toggleGenData = useSelector(getToggleGenData);
     const highlightedItems = useSelector((state: any) => state.Highlight.highlightWords);
@@ -49,8 +51,21 @@ const DataCreator = (props: any) => {
     const roots = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === selection?.value) : [];
 
+    // Handle compact/concise button click
+    const onCompactBtnClick = () => {
+        if (toggleCompactBtn === '') {
+            setToggleCompactBtn(COMPACT_CONST);
+        } else if (toggleCompactBtn === COMPACT_CONST) {
+            setToggleCompactBtn(CONCISE_CONST);
+        } else if (toggleCompactBtn === CONCISE_CONST) {
+            setToggleCompactBtn('');
+        }
+    }
+
+
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
+        setToggleCompactBtn(''); // reset compact/concise on field change
         setJsonValidated(false);
         setXmlValidated(false);
         setCborValidated(false);
@@ -79,6 +94,8 @@ const DataCreator = (props: any) => {
         setCborValidated(false);
         setXml("");
         setCbor("");
+        setCompactJson('');
+        setConciseJson('');
         setAnnotatedCbor("");
         dispatch<any>(clearHighlight());
     }
@@ -135,6 +152,8 @@ const DataCreator = (props: any) => {
         setLoadedFieldDefs(null);
         setXml("");
         setCbor("");
+        setCompactJson('');
+        setConciseJson('');
         setAnnotatedCbor("");
         dispatch<any>(clearHighlight());
     }    
@@ -160,7 +179,7 @@ const DataCreator = (props: any) => {
     const convertJSON = (data: string) => {
         try {
             // Convert to XML
-            dispatch(convertData(JSON.stringify(data), LANG_JSON_UPPER, LANG_XML_UPPER))
+            dispatch(convertData(JSON.stringify(data), LANG_JSON_UPPER, LANG_XML_UPPER, schemaObj))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.xml) {
@@ -175,7 +194,7 @@ const DataCreator = (props: any) => {
                 });
 
             // Convert to CBOR
-            dispatch(convertData(JSON.stringify(data[selection?.value]), LANG_JSON_UPPER, LANG_CBOR_UPPER))
+            dispatch(convertData(JSON.stringify(data[selection?.value]), LANG_JSON_UPPER, LANG_CBOR_UPPER, schemaObj))
                 .then((rsp: any) => {
                     if(rsp.payload.data) {
                         if(rsp.payload.data.cbor_hex) {
@@ -335,30 +354,30 @@ const DataCreator = (props: any) => {
                                         </span>)
                                     }
                                 </button>
-                                <SBCompactBtn customClass={"me-1"} toggle={compactJson} ext={selectedSerialization?.value.toLowerCase()} data={generatedMessage} handleCompactClick={() => setCompactJson(!compactJson)} />
+                                <SBCompactConciseBtn ext={selectedSerialization?.value.toLowerCase()} data={generatedMessage} convertTo={toggleCompactBtn} handleClick={onCompactBtnClick} setCompact={setCompactJson} setConcise={setConciseJson} customClass={"me-1"} />
                                 <SBSaveFile 
                                     buttonId={'saveMessage'} 
                                     toolTip={'Save Data'} 
-                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? compactJson ? JSON.stringify(generatedMessage) : generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                                    data={digestFormat} 
                                     loc={'messages'} 
                                     customClass={"float-end ms-1"} 
                                     ext={selectedSerialization?.value.toLowerCase()} />
                                 <SBCopyToClipboard 
                                     buttonId={'copyMessage'} 
-                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? compactJson ? JSON.stringify(generatedMessage) : generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                                    data={digestFormat} 
                                     customClass='float-end' 
                                     shouldStringify={true} />
                                 <SBDownloadBtn 
                                     buttonId='msgDownload' 
                                     customClass='float-end me-1' 
-                                    data={selectedSerialization?.value===LANG_JSON_UPPER ? compactJson ? JSON.stringify(generatedMessage) : generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                                    data={digestFormat} 
                                     ext={selectedSerialization?.value.toLowerCase()} />
                             </>
                         </div>
                     </div>
                     <div className='card-body p-2'>
                         <SBEditor 
-                            data={selectedSerialization?.value===LANG_JSON_UPPER ? compactJson ? JSON.stringify(generatedMessage) : generatedMessage : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor} 
+                            data={digestFormat === "" ? "Loading..." : digestFormat} 
                             convertTo={selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : null}
                             isReadOnly={true} 
                             initialHighlightWords={highlightedItems}></SBEditor>

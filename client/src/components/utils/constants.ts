@@ -15,6 +15,8 @@ export const LANG_XML = 'xml';
 export const LANG_XML_UPPER = 'XML';
 export const LANG_XSD = 'xsd';
 export const LANG_XSD_UPPER = 'XSD';
+export const COMPACT_CONST = 'compact';
+export const CONCISE_CONST = 'concise';
 
 export const LANG_JIDL = 'jidl';
 export const FILE_TYPE_PDF = 'pdf';

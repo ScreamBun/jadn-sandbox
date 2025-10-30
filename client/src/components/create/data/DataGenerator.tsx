@@ -30,6 +30,8 @@ const DataGenerator = () => {
     const [generatedMessage, setGeneratedMessage] = useState({});
     const [xml, setXml] = useState('');
     const [cbor, setCbor] = useState('');
+    const [compactJson, setCompactJson] = useState('');
+    const [conciseJson, setConciseJson] = useState('');
     const [annotatedCbor, setAnnotatedCbor] = useState('');
     const [selection, setSelection] = useState<Option | null>();
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
@@ -50,6 +52,8 @@ const DataGenerator = () => {
         setXml("");
         setCbor("");
         setAnnotatedCbor("");
+        setCompactJson('');
+        setConciseJson('');
         dispatch(clearFieldValidation());
         dispatch<any>(clearHighlight());
     }, [loadedSchema])
@@ -61,6 +65,8 @@ const DataGenerator = () => {
         setLoadedSchema(null);
         setXml("");
         setCbor("");
+        setCompactJson('');
+        setConciseJson('');
         setAnnotatedCbor("");
         setSelection(null);
         setGeneratedMessage({});
@@ -113,6 +119,8 @@ const DataGenerator = () => {
                                         xml={xml} setXml={setXml}
                                         cbor={cbor} setCbor={setCbor}
                                         annotatedCbor={annotatedCbor} setAnnotatedCbor={setAnnotatedCbor}
+                                        compactJson={compactJson} setCompactJson={setCompactJson}
+                                        conciseJson={conciseJson} setConciseJson={setConciseJson}
                                         />
                                 </div>
                             </div>

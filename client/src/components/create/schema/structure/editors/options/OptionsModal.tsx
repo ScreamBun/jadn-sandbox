@@ -19,6 +19,7 @@ interface OptionsModalProps {
   optionValues: Array<string>;
   optionType?: string;
   modalSize?: string;
+  typeName?: string;
 }
 
 // convert array into options data state object
@@ -43,7 +44,7 @@ const serializeOptions = (type: Record<string | number, string | number | boolea
 // Component
 const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
 
-  const { id, optionValues, saveModal, fieldOptions = false, isOpen, optionType = '', toggleModal, modalSize = ModalSize.md } = props;
+  const { id, optionValues, saveModal, fieldOptions = false, isOpen, optionType = '', toggleModal, modalSize = ModalSize.md, typeName } = props;
   const [data, setData] = useState(deserializeOptions(optionValues));
   const tmpData = { ...deserializeOptions(optionValues) };
 
@@ -131,6 +132,8 @@ const OptionsModal = memo(function OptionsModal(props: OptionsModalProps) {
                 deserializedState={data['field']}
                 change={saveOptions}
                 fieldOptions={fieldOptions}
+                optionType={optionType}
+                typeName={typeName}
               />
               <TypeOptionsEditor
                 id={id}

@@ -17,6 +17,8 @@ from jadnxml.builder.xml_builder import build_xml_from_json
 from jadnutils.html.html_converter import HtmlConverter
 from jadnutils.gv.gv_generator import GvGenerator
 from jadnutils.puml.puml_generator import PumlGenerator
+from jadnutils.json.convert_compact import convert_to_compact
+from jadnutils.json.convert_concise import convert_to_concise
 
 from weasyprint import HTML
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml, normalize_bool
@@ -231,7 +233,6 @@ class Convert(Resource):
                 
                 if toLang == constants.JADN:
                     return json_to_jadn_dumps(src, **kwargs)
-                
                 else:
                     raise ValueError('Unknown JSON conversion type')
                 
@@ -303,6 +304,7 @@ class ConvertData(Resource):
 
     def post(self):
         request_json = request.json
+        schema = request_json["schema"]
         data = request_json["data"]
         conv_from = request_json["from"]
         conv_to = request_json["to"]
@@ -317,6 +319,8 @@ class ConvertData(Resource):
         cbor_annotated_hex_rsp = ""
         cbor_hex_rsp = ""
         xml_rsp = ""
+        compact_json_rsp = ""
+        concise_json_rsp = ""
 
         try:
             data_js = json.loads(data)
@@ -326,6 +330,10 @@ class ConvertData(Resource):
                 cbor_hex_rsp = convert_json_to_cbor_hex(data_js)
             elif conv_to == constants.XML:
                 xml_rsp = convert_json_to_xml(data_js)
+            elif conv_to == constants.COMPACT_CONSTANT:
+                compact_json_rsp = convert_to_compact(schema, data_js)
+            elif conv_to == constants.CONCISE_CONSTANT:
+                concise_json_rsp = convert_to_concise(schema, data_js)
             else:
                 return jsonify({
                     "error": f"Conversion type '{conv_to}' not supported."
@@ -341,6 +349,8 @@ class ConvertData(Resource):
              "cbor_annotated_hex" : cbor_annotated_hex_rsp,
              "cbor_hex" : cbor_hex_rsp,
              "xml" : xml_rsp,
+             "compact_json" : compact_json_rsp,
+             "concise_json" : concise_json_rsp
             }
         })
 

@@ -17,6 +17,8 @@ MD: str = "md"
 PUML: str = "puml"
 XML: str = "xml"
 XSD: str = "xsd"
+COMPACT_CONSTANT: str = "compact"
+CONCISE_CONSTANT: str = "concise"
 
 APP_MODE_LOCAL = "local"
 APP_MODE_CONTAINER = "container"

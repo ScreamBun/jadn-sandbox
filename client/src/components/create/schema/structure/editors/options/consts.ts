@@ -39,7 +39,8 @@ export const FieldOptions = {
   'dir': '<',    // pointer enumeration treats field as a collection
   'key': 'K',    // field is a primary key for this type
   'link': 'L',    // field is a link (foreign key) to an instance of FieldType
-  'attr': '/attr' // field is an attribute
+  'attr': '/attr', // field is an attribute
+  'not': 'N'        // Value is not an instance of FieldType in an untagged Union
 };
 
 export const OptionTypes = {
@@ -48,7 +49,7 @@ export const OptionTypes = {
 };
 
 export const OptionIds = invertObject({ ...FieldOptions, ...TypeOptions });
-export const BoolOpts = ['ordered/unique', 'dir', 'key', 'link', 'id', 'set', 'unordered', 'abstract', 'final', 'attr'];
+export const BoolOpts = ['ordered/unique', 'dir', 'key', 'link', 'id', 'set', 'unordered', 'abstract', 'final', 'attr', 'not'];
 export const IntegerOpts = ['minOccurs', 'maxOccurs', 'tagid', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const FloatOpts = ['minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
 export const StringOpts = ['const', 'default', 'enum', 'format', 'ktype', 'pattern',  'pointer', 'tagid', 'vtype', 'minLength', 'maxLength', 'minInclusive', 'maxInclusive', 'minExclusive', 'maxExclusive'];
@@ -158,6 +159,10 @@ export const FieldOptionInputArgs: { [key: string]: any } = {
   attr: {
     type: 'checkbox',
     description: 'Field is an attribute'
+  },
+  not: {
+    type: 'checkbox',
+    description: 'Value is not an instance of FieldType in an untagged Union'
   }
 };
 
