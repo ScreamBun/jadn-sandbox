@@ -65,8 +65,9 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   const inputArgs: Record<string, any> = {
     value: valueData,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => {setValueData(e.target.value); setIsChecked(false)},
-    onBlur: (e: React.FocusEvent<HTMLInputElement>) => { 
-        if (JSON.stringify(valueData) === JSON.stringify(e.target.value)) return;
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => 
+      { 
+        if (JSON.stringify(String(valueData)) === JSON.stringify(e.target.value)) return;
         setValueData(e.target.value); 
         change(e.target.value); 
       }
