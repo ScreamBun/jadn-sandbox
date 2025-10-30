@@ -83,8 +83,10 @@ class Config:
     
     VALID_DATA = [
         {"CBOR": "cbor"},
+        {"XML": "xml"},
         {"JSON": "json"},
-        {"XML": "xml"}
+        {"JSON Concise": "concise"},
+        {"JSON Compact": "compact"}
     ]
     
     VALID_TRANSFORMATIONS = [
