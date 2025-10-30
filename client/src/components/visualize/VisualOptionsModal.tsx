@@ -4,6 +4,41 @@ import { ModalSize } from "components/create/schema/structure/editors/options/Mo
 import { LANG_GRAPHVIZ, LANG_PLANTUML } from "components/utils/constants";
 import SBSelect, { Option } from "components/common/SBSelect";
 
+// PlantUML theme options - static list from PumlGenerator.AVAILABLE_THEMES
+const PLANTUML_THEME_OPTIONS: Option[] = [
+    { label: 'Amiga', value: 'amiga' },
+    { label: 'AWS Orange', value: 'aws-orange' },
+    { label: 'Black Knight', value: 'black-knight' },
+    { label: 'Blue Gray', value: 'bluegray' },
+    { label: 'Blueprint', value: 'blueprint' },
+    { label: 'Carbon Gray', value: 'carbon-gray' },
+    { label: 'Cerulean', value: 'cerulean' },
+    { label: 'Cloudscape Design', value: 'cloudscape-design' },
+    { label: 'CRT Amber', value: 'crt-amber' },
+    { label: 'Cyborg', value: 'cyborg' },
+    { label: 'Hacker', value: 'hacker' },
+    { label: 'Light Gray', value: 'lightgray' },
+    { label: 'Mars', value: 'mars' },
+    { label: 'Materia', value: 'materia' },
+    { label: 'Metal', value: 'metal' },
+    { label: 'Mimeograph', value: 'mimeograph' },
+    { label: 'Minty', value: 'minty' },
+    { label: 'Mono', value: 'mono' },
+    { label: 'None', value: '_none_' },
+    { label: 'Plain', value: 'plain' },
+    { label: 'Reddress Dark Blue', value: 'reddress-darkblue' },
+    { label: 'Reddress Light Blue', value: 'reddress-lightblue' },
+    { label: 'Sandstone', value: 'sandstone' },
+    { label: 'Silver', value: 'silver' },
+    { label: 'Sketchy', value: 'sketchy' },
+    { label: 'Spacelab', value: 'spacelab' },
+    { label: 'Sunlust', value: 'sunlust' },
+    { label: 'Superhero', value: 'superhero' },
+    { label: 'Toy', value: 'toy' },
+    { label: 'United', value: 'united' },
+    { label: 'Vibrant', value: 'vibrant' }
+];
+
 export const VisualOptionsModal = (props: any) => {
     const {
         isOpen,
@@ -418,46 +453,12 @@ export const VisualOptionsModal = (props: any) => {
                                                                     <label className="form-check-label mb-0 me-2" title="PlantUML Theme" htmlFor="puml-theme-select">Theme</label>
                                                                     <div style={{ flex: '1 1 0', minWidth: 0 }}>
                                                                         {(() => {
-                                                                            const themeOptions: Option[] = [
-                                                                                { label: 'Amiga', value: 'amiga' },
-                                                                                { label: 'AWS Orange', value: 'aws-orange' },
-                                                                                { label: 'Black Knight', value: 'black-knight' },
-                                                                                { label: 'Blue Gray', value: 'bluegray' },
-                                                                                { label: 'Blueprint', value: 'blueprint' },
-                                                                                { label: 'Carbon Gray', value: 'carbon-gray' },
-                                                                                { label: 'Cerulean', value: 'cerulean' },
-                                                                                { label: 'Cloudscape Design', value: 'cloudscape-design' },
-                                                                                { label: 'CRT Amber', value: 'crt-amber' },
-                                                                                { label: 'Cyborg', value: 'cyborg' },
-                                                                                { label: 'Hacker', value: 'hacker' },
-                                                                                { label: 'Light Gray', value: 'lightgray' },
-                                                                                { label: 'Mars', value: 'mars' },
-                                                                                { label: 'Materia', value: 'materia' },
-                                                                                { label: 'Metal', value: 'metal' },
-                                                                                { label: 'Mimeograph', value: 'mimeograph' },
-                                                                                { label: 'Minty', value: 'minty' },
-                                                                                { label: 'Mono', value: 'mono' },
-                                                                                { label: 'None', value: '_none_' },
-                                                                                { label: 'Plain', value: 'plain' },
-                                                                                { label: 'Reddress Dark Blue', value: 'reddress-darkblue' },
-                                                                                { label: 'Reddress Light Blue', value: 'reddress-lightblue' },
-                                                                                { label: 'Sandstone', value: 'sandstone' },
-                                                                                { label: 'Silver', value: 'silver' },
-                                                                                { label: 'Sketchy', value: 'sketchy' },
-                                                                                { label: 'Spacelab', value: 'spacelab' },
-                                                                                { label: 'Sunlust', value: 'sunlust' },
-                                                                                { label: 'Superhero', value: 'superhero' },
-                                                                                { label: 'Toy', value: 'toy' },
-                                                                                { label: 'United', value: 'united' },
-                                                                                { label: 'Vibrant', value: 'vibrant' }
-                                                                            ];
-
-                                                                            const currentTheme = themeOptions.find(o => o.value === opts.puml.theme) || themeOptions.find(o => o.value === 'aws-orange');
+                                                                            const currentTheme = PLANTUML_THEME_OPTIONS.find(o => o.value === opts.puml.theme) || PLANTUML_THEME_OPTIONS.find(o => o.value === 'aws-orange');
 
                                                                             return (
                                                                                 <SBSelect
                                                                                     id="puml-theme-select"
-                                                                                    data={themeOptions}
+                                                                                    data={PLANTUML_THEME_OPTIONS}
                                                                                     onChange={(sel: Option | null) => {
                                                                                         if (sel && typeof sel === 'object' && 'value' in sel) {
                                                                                             setOpts({ ...opts, puml: { ...opts.puml, theme: sel.value as string } });
