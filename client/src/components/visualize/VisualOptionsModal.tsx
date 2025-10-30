@@ -480,16 +480,52 @@ export const VisualOptionsModal = (props: any) => {
                                                 </div>                                                
                                                 <div className="col">
                                                     <div className="form-check">
-
+                                                        <input
+                                                            id="pumlShowLinksCheckbox"
+                                                            name="pumlShowLinksCheckbox"
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            onChange={(e) => {
+                                                                setOpts({ ...opts, puml: { ...opts.puml, show_links: e.currentTarget.checked } });
+                                                            }}
+                                                            checked={opts.puml.show_links} />
+                                                        <label className="form-check-label" title="Show Links" htmlFor="pumlShowLinksCheckbox">Show Links</label>
                                                     </div>
                                                     <div className="form-check">
-
+                                                        <input
+                                                            id="pumlShowFieldsCheckbox"
+                                                            name="pumlShowFieldsCheckbox"
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            onChange={(e) => {
+                                                                setOpts({ ...opts, puml: { ...opts.puml, show_fields: e.currentTarget.checked } });
+                                                            }}
+                                                            checked={opts.puml.show_fields} />
+                                                        <label className="form-check-label" title="Show Fields" htmlFor="pumlShowFieldsCheckbox">Show Fields</label>
                                                     </div>
                                                     <div className="form-check">
-
+                                                        <input
+                                                            id="pumlShowMultiplicityCheckbox"
+                                                            name="pumlShowMultiplicityCheckbox"
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            onChange={(e) => {
+                                                                setOpts({ ...opts, puml: { ...opts.puml, show_multiplicity: e.currentTarget.checked } });
+                                                            }}
+                                                            checked={opts.puml.show_multiplicity} />
+                                                        <label className="form-check-label" title="Show Multiplicity" htmlFor="pumlShowMultiplicityCheckbox">Show Multiplicity</label>
                                                     </div>
                                                     <div className="form-check">
-
+                                                        <input
+                                                            id="pumlShowPrimitiveTypesCheckbox"
+                                                            name="pumlShowPrimitiveTypesCheckbox"
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            onChange={(e) => {
+                                                                setOpts({ ...opts, puml: { ...opts.puml, show_primitive_types: e.currentTarget.checked } });
+                                                            }}
+                                                            checked={opts.puml.show_primitive_types} />
+                                                        <label className="form-check-label" title="Show Primitive Types" htmlFor="pumlShowPrimitiveTypesCheckbox">Show Primitive Types</label>
                                                     </div>
                                                 </div>                                                                                  
                                             </div>                                             
