@@ -17,6 +17,7 @@ import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
+import SBTreeView from 'components/common/SBTreeView';
 
 const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
     const { selectedFile, generatedSchema, setGeneratedSchema,
@@ -405,6 +406,18 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                                                 Types*
                                             </a>
                                         </li>
+                                        <li className='nav-item'>
+                                            <a
+                                                className={`nav-link 
+                                                    ${activeOpt == 'tree' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
+                                                onClick={() => setActiveOpt('tree')}
+                                                title="schema tree"
+                                                data-bs-toggle="pill"
+                                            >
+                                                Schema Tree
+                                            </a>
+                                        </li>
                                     </ul>
                                     <div className='tab-content mb-2'>
                                         <div className={`tab-pane fade ${activeOpt == 'meta' ? 'show active' : ''}`} id="meta" role="tabpanel" aria-labelledby="meta-tab" tabIndex={0}>
@@ -415,6 +428,11 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                                         <div className={`tab-pane fade ${activeOpt == 'types' ? 'show active' : ''}`} id="types" role="tabpanel" aria-labelledby="types-tab" tabIndex={0}>
                                             <ul className="list-group">
                                                 {typesKeys}
+                                            </ul>
+                                        </div>
+                                        <div className={`tab-pane fade ${activeOpt == 'tree' ? 'show active' : ''}`} id="tree" role="tabpanel" aria-labelledby="tree-tab" tabIndex={0}>
+                                            <ul className="list-group">
+                                                <SBTreeView schema={cardsState || {}} />
                                             </ul>
                                         </div>
                                     </div>
