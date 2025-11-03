@@ -1,5 +1,6 @@
 import { destructureField } from "components/create/data/lib/utils";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import SBSidewaysToggleBtn from "./SBSidewaysToggleBtn";
 
 interface SBTreeViewProps {
     schema: object;
@@ -8,6 +9,7 @@ interface SBTreeViewProps {
 
 const SBTreeView = (props: SBTreeViewProps) => {
     let schema = props.schema;
+    const [toggles, setToggles] = useState<{ [key: string]: boolean }>({});
 
     useEffect(() => {
         schema = props.schema;
@@ -40,18 +42,54 @@ const SBTreeView = (props: SBTreeViewProps) => {
         return parts[parts.length - 1];
     }
 
+    // Pull out parent
+    const getParent = (path: string) => {
+        const parts = path.split('.');
+        return parts[0];
+    }
+
     // Count how many dots there are in path
     const countDots = (path: string) => {
         return path.split('.').length - 1;
     }
 
+    // Group paths by parent
+    const groupPaths = (paths: string[]) => {
+        const grouped: { [key: string]: string[] } = {};
+        paths.forEach(path => {
+            const name = getName(path);
+            const parent = getParent(path);
+            if (!grouped[parent]) {
+                grouped[parent] = [];
+            }
+            if (name !== parent) grouped[parent].push(name);
+        });
+        return grouped;
+    }
+
     // Convert paths to cards
     const pathCards = (paths: string[]) => {
-        return paths.map((path, index) => (
-            <div key={index} className={`card ms-${countDots(path) * 2} p-2 border border-gray-300 rounded`}>
-                {getName(path)}
-            </div>
-        ));
+        const groupedPaths = groupPaths(paths);
+        const cards = [];
+        for (const [parent, pathList] of Object.entries(groupedPaths)) {
+            // Create a card for each group
+            cards.push(
+                <div key={parent}>
+                    <div className="d-flex align-items-center text-strong">
+                        <SBSidewaysToggleBtn toggle={toggles[parent]} setToggle={(value: boolean) => setToggles({ ...toggles, [parent]: value })} />
+                        <span className="ms-1">{parent}</span>
+                    </div>
+                    <div className={`ms-5 ${toggles[parent] ? '' : 'collapse'}`}>
+                        {pathList.map((path, index) => (
+                            <div key={index} className={`ms-${countDots(path) * 4} p-1`}>
+                                {getName(path)}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+        return cards;
     }
 
     // Generate paths and cards
