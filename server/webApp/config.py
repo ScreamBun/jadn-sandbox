@@ -85,8 +85,8 @@ class Config:
         {"CBOR": "cbor"},
         {"XML": "xml"},
         {"JSON": "json"},
-        {"JSON Concise": "concise"},
-        {"JSON Compact": "compact"}
+        #{"JSON Concise": "concise"},
+        #{"JSON Compact": "compact"}
     ]
     
     VALID_TRANSFORMATIONS = [
