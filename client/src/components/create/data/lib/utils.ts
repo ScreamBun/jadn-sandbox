@@ -141,7 +141,7 @@ export const generateData = (options: string[], type: string, children?: any[]) 
 }
 
 // FUNCTION: Determine if a type is derived from another type
-const isDerived = (type: string): Boolean => {
+export const isDerived = (type: string): Boolean => {
     return !BASE_TYPES.includes(type);
 }
 
