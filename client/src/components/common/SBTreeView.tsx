@@ -12,7 +12,6 @@ const SBTreeView = (props: SBTreeViewProps) => {
     let schema = props.schema;
     const [toggles, setToggles] = useState<{ [key: string]: boolean }>({});
     const schemaObj = useSelector(getSelectedSchema);
-    const schemaRoots = schemaObj?.meta?.roots || [];
     const schemaTypes = schemaObj?.types || [];
 
     useEffect(() => {
@@ -105,7 +104,7 @@ const SBTreeView = (props: SBTreeViewProps) => {
         if (recurse) {
             const derivedPaths = paths.filter(p => p.startsWith(name + '.'));
             return (
-                pathCards(derivedPaths)
+                pathCards(derivedPaths, name)
             )
         }
 
@@ -117,19 +116,20 @@ const SBTreeView = (props: SBTreeViewProps) => {
     }
 
     // Convert paths to cards
-    const pathCards = (paths: string[]) => {
+    const pathCards = (paths: string[], prependToggle: string = "") => {
         const groupedPaths = groupPaths(paths);
         const renderedPaths: string[] = [];
         const cards = [];
         for (const [parent, pathList] of Object.entries(groupedPaths)) {
             // Create a card for each group
+            const toggleKey = prependToggle ? `${prependToggle}.${parent}` : parent;
             cards.push(
                 <div key={parent}>
                     <div className="d-flex align-items-center text-strong">
-                        <SBSidewaysToggleBtn toggle={toggles[parent]} setToggle={(value: boolean) => setToggles({ ...toggles, [parent]: value })} />
+                        <SBSidewaysToggleBtn toggle={toggles[toggleKey]} setToggle={(value: boolean) => setToggles({ ...toggles, [toggleKey]: value })} />
                         <span>{parent}</span>
                     </div>
-                    <div className={`ms-4 ${toggles[parent] ? '' : 'collapse'}`}>
+                    <div className={`ms-4 ${toggles[toggleKey] ? '' : 'collapse'}`}>
                         {pathList.map((path) => (
                             renderField(path, paths, renderedPaths)
                         ))}
