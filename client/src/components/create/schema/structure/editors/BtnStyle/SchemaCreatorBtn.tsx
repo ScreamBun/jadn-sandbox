@@ -536,7 +536,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                                         </div>
                                         <div className={`tab-pane fade ${activeOpt == 'tree' ? 'show active' : ''}`} id="tree" role="tabpanel" aria-labelledby="tree-tab" tabIndex={0}>
                                             <ul className="list-group">
-                                                <SBTreeView schema={cardsState || {}} />
+                                                <SBTreeView schema={cardsState || {}} currType={cardsState.find(card => card.index === visibleType)?.text || ""}/>
                                             </ul>
                                         </div>
                                     </div>

@@ -1,25 +1,29 @@
 import { destructureField, destructureOptions, isDerived, extendType, restrictType, getPointerChildren, getDerivedOptions } from "components/create/data/lib/utils";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SBSidewaysToggleBtn from "./SBSidewaysToggleBtn";
 import { getSelectedSchema } from "reducers/util";
 import { useSelector } from "react-redux";
 
 interface SBTreeViewProps {
     schema: object;
+    currType?: string;
     onClick?: () => void;
 }
 
 const SBTreeView = (props: SBTreeViewProps) => {
     let schema = props.schema;
+    let currType = props.currType;
     const [toggles, setToggles] = useState<{ [key: string]: boolean }>({});
     const schemaObj = useSelector(getSelectedSchema);
     const schemaTypes = schemaObj?.types || [];
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [searchTermsFound, setSearchTermsFound] = useState<number>(0);
+    const typeRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
     useEffect(() => {
         schema = props.schema;
         setSearchTerm('');
+        matchCount = 0;
         if (typeof schema == "string") {
             schema = JSON.parse(schema);
         }
@@ -30,6 +34,12 @@ const SBTreeView = (props: SBTreeViewProps) => {
         setSearchTermsFound(matchCount);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchTerm, props.schema]);
+
+    useEffect(() => {
+        if (currType && typeRefs.current[currType]) {
+            typeRefs.current[currType]?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }, [currType]);
 
     // Track matches during render
     let matchCount = 0;
@@ -131,10 +141,11 @@ const SBTreeView = (props: SBTreeViewProps) => {
             )
         }
 
+        const isCurrentType = currType && (name === currType);
         const highlightChild = searchTerm && name.toLowerCase().includes(searchTerm.toLowerCase());
         if (highlightChild) matchCount++;
         return (
-            <div key={path} className={`ms-4 ps-3 ${highlightChild ? 'bg-warning text-primary' : ''}`}>
+            <div key={path} className={`ms-4 ps-3 ${isCurrentType ? 'bg-primary' : highlightChild ? 'bg-warning text-primary' : ''}`}>
                 {getName(path)}
             </div>
         );
@@ -148,13 +159,18 @@ const SBTreeView = (props: SBTreeViewProps) => {
         for (const [parent, pathList] of Object.entries(groupedPaths)) {
             // Create a card for each group
             const toggleKey = prependToggle ? `${prependToggle}.${parent}` : parent;
+            const isCurrentType = currType && (parent === currType);
             const highlightParent = searchTerm && parent.toLowerCase().includes(searchTerm.toLowerCase());
             if (highlightParent) matchCount++;
             cards.push(
                 <div key={parent}>
                     <div className="d-flex align-items-center text-strong">
                         <SBSidewaysToggleBtn toggle={toggles[toggleKey]} setToggle={(value: boolean) => setToggles({ ...toggles, [toggleKey]: value })} />
-                        <span className={highlightParent ? 'bg-warning text-primary' : ''}>{parent}</span>
+                        <span 
+                            className={isCurrentType ? 'bg-primary' : highlightParent ? 'bg-warning text-primary' : ''}
+                            ref={isCurrentType ? (el) => { typeRefs.current[parent] = el; } : undefined}>
+                            {parent}
+                        </span>
                     </div>
                     <div className={`ms-4 ${toggles[toggleKey] ? '' : 'collapse'}`}>
                         {pathList.map((path) => (
