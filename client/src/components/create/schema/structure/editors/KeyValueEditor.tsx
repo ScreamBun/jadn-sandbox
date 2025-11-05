@@ -40,6 +40,7 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     fieldColumns = 10
   } = props;
   const [valueData, setValueData] = useState(value);
+  const [lastCommittedValue, setLastCommittedValue] = useState(value);
   const [isRegex, setIsRegex] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isUnsignedInputModalOpen, setIsUnsignedInputModalOpen] = useState(false);
@@ -50,12 +51,14 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
     if (!value) {
       if (type == "checkbox") {
         setValueData(false)
+        setLastCommittedValue(false);
       }
       else if (type == "SBSelect" || type == "SBCreatableSelect") {
         setVal(value ? { value: value, label: value } : '')
       }
       else {
         setValueData(value)
+        setLastCommittedValue(value);
       }
     }
   }, [value])
@@ -65,12 +68,11 @@ const KeyValueEditor = memo(function KeyValueEditor(props: KeyValueEditorProps) 
   const inputArgs: Record<string, any> = {
     value: valueData,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => {setValueData(e.target.value); setIsChecked(false)},
-    onBlur: (e: React.FocusEvent<HTMLInputElement>) => 
-      { 
-        if (JSON.stringify(String(valueData)) === JSON.stringify(e.target.value)) return;
-        setValueData(e.target.value); 
-        change(e.target.value); 
-      }
+    onBlur: (e: React.FocusEvent<HTMLInputElement>) => {
+      if (String(lastCommittedValue) === e.target.value) return;
+      setLastCommittedValue(e.target.value);
+      change(e.target.value);
+    }
   };
 
   const onSelectChange = (e: Option) => {
