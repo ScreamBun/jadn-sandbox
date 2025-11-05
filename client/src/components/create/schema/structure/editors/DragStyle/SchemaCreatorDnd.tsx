@@ -434,7 +434,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                                                 title="schema tree"
                                                 data-bs-toggle="pill"
                                             >
-                                                Schema Tree
+                                                Tree
                                             </a>
                                         </li>
                                         <li className='nav-item me-2'>

@@ -541,7 +541,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                                                 title="schema tree"
                                                 data-bs-toggle="pill"
                                             >
-                                                Schema Tree
+                                                Tree
                                             </a>
                                         </li>
                                         <li className='nav-item me-2'>
