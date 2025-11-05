@@ -31,6 +31,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
         allFieldsCollapse, collapseAllFields, fieldCollapseStateRef } = props;
 
     const [visibleType, setVisibleType] = useState<number | null>(null);
+    const [localActiveOpt, setLocalActiveOpt] = useState<string>('outline');
 
     const [insertAt, setInsertAt] = useState(defaultInsertIdx);
     let indexOpts = generatedSchema.types ?
@@ -510,18 +511,6 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                                                 Types*
                                             </a>
                                         </li>
-                                        <li className='nav-item'>
-                                            <a
-                                                className={`nav-link 
-                                                    ${activeOpt == 'tree' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
-                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
-                                                onClick={() => setActiveOpt('tree')}
-                                                title="schema tree"
-                                                data-bs-toggle="pill"
-                                            >
-                                                Schema Tree
-                                            </a>
-                                        </li>
                                     </ul>
                                     <div className='tab-content mb-2'>
                                         <div className={`tab-pane fade ${activeOpt == 'meta' ? 'show active' : ''}`} id="meta" role="tabpanel" aria-labelledby="meta-tab" tabIndex={0}>
@@ -534,11 +523,6 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                                                 {typesKeys}
                                             </ul>
                                         </div>
-                                        <div className={`tab-pane fade ${activeOpt == 'tree' ? 'show active' : ''}`} id="tree" role="tabpanel" aria-labelledby="tree-tab" tabIndex={0}>
-                                            <ul className="list-group">
-                                                <SBTreeView schema={cardsState || {}} currType={cardsState.find(card => card.index === visibleType)?.text || ""}/>
-                                            </ul>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -547,15 +531,52 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                             </div>
                             <div className='row mt-2'>
                                 <div className='col'>
-                                    <SBOutlineBtnStyle
-                                        id={'schema-outline'}
-                                        cards={cardsState}
-                                        title={'Outline'}
-                                        visibleCard={visibleType}
-                                        changeIndex={changeIndex}
-                                        onStarClick={onStarClick}
-                                        onScrollToCard={onScrollToCard}
-                                    />
+                                    <ul className="nav nav-pills pb-2" id="viewKeys" role="tablist">
+                                        <li className='nav-item me-2'>
+                                            <a
+                                                className={`nav-link 
+                                                    ${localActiveOpt == 'outline' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
+                                                onClick={() => setLocalActiveOpt('outline')}
+                                                title="schema outline"
+                                                data-bs-toggle="pill"
+                                            >
+                                                Outline
+                                            </a>
+                                        </li>
+                                        <li className='nav-item'>
+                                            <a
+                                                className={`nav-link 
+                                                    ${localActiveOpt == 'tree' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
+                                                onClick={() => setLocalActiveOpt('tree')}
+                                                title="schema tree"
+                                                data-bs-toggle="pill"
+                                            >
+                                                Schema Tree
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div className='tab-content mb-2'>
+                                        <div className={`tab-pane fade ${localActiveOpt == 'outline' ? 'show active' : ''}`} id="outline" role="tabpanel" aria-labelledby="outline-tab" tabIndex={0}>
+                                            <ul className="list-group">
+                                                <SBOutlineBtnStyle
+                                                    id={'schema-outline'}
+                                                    cards={cardsState}
+                                                    title={'Outline'}
+                                                    visibleCard={visibleType}
+                                                    changeIndex={changeIndex}
+                                                    onStarClick={onStarClick}
+                                                    onScrollToCard={onScrollToCard}
+                                                />
+                                            </ul>
+                                        </div>
+                                        <div className={`tab-pane fade ${localActiveOpt == 'tree' ? 'show active' : ''}`} id="tree" role="tabpanel" aria-labelledby="tree-tab" tabIndex={0}>
+                                            <ul className="list-group">
+                                                <SBTreeView schema={cardsState || {}} currType={cardsState.find(card => card.index === visibleType)?.text || ""} />
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
