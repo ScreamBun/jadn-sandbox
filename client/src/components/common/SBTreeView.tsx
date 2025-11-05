@@ -1,4 +1,4 @@
-import { destructureField, destructureOptions, isDerived, extendType, restrictType } from "components/create/data/lib/utils";
+import { destructureField, destructureOptions, isDerived, extendType, restrictType, getPointerChildren, getDerivedOptions } from "components/create/data/lib/utils";
 import React, { useEffect, useState } from "react";
 import SBSidewaysToggleBtn from "./SBSidewaysToggleBtn";
 import { getSelectedSchema } from "reducers/util";
@@ -45,6 +45,10 @@ const SBTreeView = (props: SBTreeViewProps) => {
             const optionsObj = destructureOptions(_options || []);
             if (optionsObj.extension) _children = extendType(schemaObj, _name || "", _children || [])?.extendChildren;
             if (optionsObj.restriction) _children = restrictType(schemaObj, _name || "", _children || [])?.restrictChildren;
+
+            // Check for pointer or derived enum
+            if (optionsObj.pointer) _children = getPointerChildren(schemaObj, optionsObj.pointer, _children || [], optionsObj.isID);
+            if (optionsObj.derived) _children?.push(...getDerivedOptions(schemaObj, optionsObj.derived));
 
             const pathID = _name && _type && isDerived(_type) ? _type || _name : _name;
             const currentPath = basePath ? `${basePath}.${pathID}` : pathID;
