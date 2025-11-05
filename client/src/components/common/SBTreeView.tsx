@@ -145,7 +145,7 @@ const SBTreeView = (props: SBTreeViewProps) => {
         const highlightChild = searchTerm && name.toLowerCase().includes(searchTerm.toLowerCase());
         if (highlightChild) matchCount++;
         return (
-            <div key={path} className={`ms-4 ps-3 ${isCurrentType ? 'bg-primary' : highlightChild ? 'bg-warning text-primary' : ''}`}>
+            <div key={path} className={`ms-4 ps-3 px-2 rounded ${isCurrentType ? 'bg-primary' : highlightChild ? 'bg-warning text-dark' : ''}`}>
                 {getName(path)}
             </div>
         );
@@ -167,7 +167,7 @@ const SBTreeView = (props: SBTreeViewProps) => {
                     <div className="d-flex align-items-center text-strong">
                         <SBSidewaysToggleBtn toggle={toggles[toggleKey]} setToggle={(value: boolean) => setToggles({ ...toggles, [toggleKey]: value })} />
                         <span 
-                            className={isCurrentType ? 'bg-primary' : highlightParent ? 'bg-warning text-primary' : ''}
+                            className={`px-2 rounded ${isCurrentType ? 'bg-primary' : highlightParent ? 'bg-warning text-dark' : ''}`}
                             ref={isCurrentType ? (el) => { typeRefs.current[parent] = el; } : undefined}>
                             {parent}
                         </span>
