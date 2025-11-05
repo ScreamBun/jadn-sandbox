@@ -1,8 +1,9 @@
-import { destructureField, isDerived } from "components/create/data/lib/utils";
+import { destructureField, destructureOptions, isDerived, extendType, restrictType } from "components/create/data/lib/utils";
 import React, { useEffect, useState } from "react";
 import SBSidewaysToggleBtn from "./SBSidewaysToggleBtn";
 import { getSelectedSchema } from "reducers/util";
 import { useSelector } from "react-redux";
+
 interface SBTreeViewProps {
     schema: object;
     onClick?: () => void;
@@ -13,20 +14,38 @@ const SBTreeView = (props: SBTreeViewProps) => {
     const [toggles, setToggles] = useState<{ [key: string]: boolean }>({});
     const schemaObj = useSelector(getSelectedSchema);
     const schemaTypes = schemaObj?.types || [];
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [searchTermsFound, setSearchTermsFound] = useState<number>(0);
 
     useEffect(() => {
         schema = props.schema;
+        setSearchTerm('');
         if (typeof schema == "string") {
             schema = JSON.parse(schema);
         }
     }, [props.schema])
+
+    // Update searchTermsFound after render
+    useEffect(() => {
+        setSearchTermsFound(matchCount);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchTerm, props.schema]);
+
+    // Track matches during render
+    let matchCount = 0;
 
     // Append paths with dot notation
     const pathAppend = (obj: any, basePath: string = ''): string[] => {
         let paths: string[] = [];
         for (const entry of Object.entries(obj)) {
             const field = entry[1]["value"] || null;
-            const [_idx, _name, _type, _options, _comment, _children] = field ? destructureField(field) : [undefined, undefined, undefined, undefined, undefined, undefined];
+            let [_idx, _name, _type, _options, _comment, _children] = field ? destructureField(field) : [undefined, undefined, undefined, undefined, undefined, undefined];
+
+            // Check for inheritance
+            const optionsObj = destructureOptions(_options || []);
+            if (optionsObj.extension) _children = extendType(schemaObj, _name || "", _children || [])?.extendChildren;
+            if (optionsObj.restriction) _children = restrictType(schemaObj, _name || "", _children || [])?.restrictChildren;
+
             const pathID = _name && _type && isDerived(_type) ? _type || _name : _name;
             const currentPath = basePath ? `${basePath}.${pathID}` : pathID;
             if (field && currentPath) paths.push(currentPath);
@@ -108,8 +127,10 @@ const SBTreeView = (props: SBTreeViewProps) => {
             )
         }
 
+        const highlightChild = searchTerm && name.toLowerCase().includes(searchTerm.toLowerCase());
+        if (highlightChild) matchCount++;
         return (
-            <div key={path} className={`ms-4 ps-3`}>
+            <div key={path} className={`ms-4 ps-3 ${highlightChild ? 'bg-warning text-primary' : ''}`}>
                 {getName(path)}
             </div>
         );
@@ -123,11 +144,13 @@ const SBTreeView = (props: SBTreeViewProps) => {
         for (const [parent, pathList] of Object.entries(groupedPaths)) {
             // Create a card for each group
             const toggleKey = prependToggle ? `${prependToggle}.${parent}` : parent;
+            const highlightParent = searchTerm && parent.toLowerCase().includes(searchTerm.toLowerCase());
+            if (highlightParent) matchCount++;
             cards.push(
                 <div key={parent}>
                     <div className="d-flex align-items-center text-strong">
                         <SBSidewaysToggleBtn toggle={toggles[toggleKey]} setToggle={(value: boolean) => setToggles({ ...toggles, [toggleKey]: value })} />
-                        <span>{parent}</span>
+                        <span className={highlightParent ? 'bg-warning text-primary' : ''}>{parent}</span>
                     </div>
                     <div className={`ms-4 ${toggles[toggleKey] ? '' : 'collapse'}`}>
                         {pathList.map((path) => (
@@ -145,6 +168,27 @@ const SBTreeView = (props: SBTreeViewProps) => {
 
     return (
         <p>
+            <div className="input-group input-group-sm mb-2">
+                <input
+                    type="text"
+                    className="form-control search-input"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {searchTerm && (
+                    <button
+                        className="btn btn-outline-secondary"
+                        type="button"
+                        onClick={() => setSearchTerm('')}
+                        tabIndex={-1}
+                        aria-label="Clear search"
+                    >
+                        &times;
+                    </button>
+                )}
+            </div>
+            {searchTerm && <span className="small text-muted"> Found {searchTermsFound} result(s)</span>}
             {cards}
         </p>
     );
