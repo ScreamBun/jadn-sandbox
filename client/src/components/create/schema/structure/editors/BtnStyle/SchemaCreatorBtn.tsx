@@ -31,7 +31,7 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
         allFieldsCollapse, collapseAllFields, fieldCollapseStateRef } = props;
 
     const [visibleType, setVisibleType] = useState<number | null>(null);
-    const [localActiveOpt, setLocalActiveOpt] = useState<string>('outline');
+    const [localActiveOpt, setLocalActiveOpt] = useState<string>('tree');
 
     const [insertAt, setInsertAt] = useState(defaultInsertIdx);
     let indexOpts = generatedSchema.types ?
@@ -532,18 +532,6 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                             <div className='row mt-2'>
                                 <div className='col'>
                                     <ul className="nav nav-pills pb-2" id="viewKeys" role="tablist">
-                                        <li className='nav-item me-2'>
-                                            <a
-                                                className={`nav-link 
-                                                    ${localActiveOpt == 'outline' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
-                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
-                                                onClick={() => setLocalActiveOpt('outline')}
-                                                title="schema outline"
-                                                data-bs-toggle="pill"
-                                            >
-                                                Outline
-                                            </a>
-                                        </li>
                                         <li className='nav-item'>
                                             <a
                                                 className={`nav-link 
@@ -554,6 +542,18 @@ const SchemaCreatorBtn = memo(function SchemaCreatorBtn(props: any) {
                                                 data-bs-toggle="pill"
                                             >
                                                 Schema Tree
+                                            </a>
+                                        </li>
+                                        <li className='nav-item me-2'>
+                                            <a
+                                                className={`nav-link 
+                                                    ${localActiveOpt == 'outline' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
+                                                onClick={() => setLocalActiveOpt('outline')}
+                                                title="schema outline"
+                                                data-bs-toggle="pill"
+                                            >
+                                                Outline
                                             </a>
                                         </li>
                                     </ul>
