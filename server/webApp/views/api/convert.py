@@ -16,6 +16,7 @@ from jadnxml.builder.xsd_builder import XSDBuilder
 from jadnxml.builder.xml_builder import build_xml_from_json
 from jadnutils.html.html_converter import HtmlConverter
 from jadnutils.gv.gv_generator import GvGenerator
+from jadnutils.puml.puml_generator import PumlGenerator
 from jadnutils.json.convert_compact import convert_to_compact
 from jadnutils.json.convert_concise import convert_to_concise
 
@@ -154,9 +155,9 @@ class Convert(Resource):
                     
                     gv_style = GvGenerator.STYLE_DEFAULT
                     
-                    if opts:
+                    if opts and 'gv' in opts:
                         # Frontend uses gv_style keys directly (e.g. 'detail').
-                        for key, val in opts.items():
+                        for key, val in opts['gv'].items():
                             target = key
 
                             # Only apply options that exist in the gv_style default
@@ -194,17 +195,29 @@ class Convert(Resource):
                     md_style = jadn.convert.diagram_style()
                     return jadn.convert.markdown_dumps(src, md_style)
                 
-                elif toLang == constants.PUML:
-                    puml_style = jadn.convert.diagram_style()
-                    puml_style['format'] = 'plantuml'
-                    puml_style['detail'] = 'information'
-                    puml_style['attributes'] = True
-                    puml_style['enums'] = 100
+                if toLang == constants.PUML:
                     
-                    if opts and opts["pumlOpt"]:
-                        puml_style['detail'] = opts["pumlOpt"]                   
+                    puml_style = PumlGenerator.STYLE_DEFAULT
                     
-                    return jadn.convert.diagram_dumps(src, puml_style)
+                    if opts and 'puml' in opts:
+                        # Frontend uses puml_style keys directly (e.g. 'detail').
+                        for key, val in opts['puml'].items():
+                            target = key
+
+                            # Only apply options that exist in the puml_style default
+                            if target not in puml_style:
+                                continue
+
+                            # Ignore explicit empty values
+                            if val is None or val == '':
+                                continue
+
+                            puml_style[target] = val
+                        
+                    puml_converter = PumlGenerator(src, puml_style)
+                    
+                    return puml_converter.generate()                
+                
                 
                 elif toLang == constants.XSD:
                     xsd_builder = XSDBuilder()

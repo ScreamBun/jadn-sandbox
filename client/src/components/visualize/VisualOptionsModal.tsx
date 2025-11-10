@@ -4,6 +4,41 @@ import { ModalSize } from "components/create/schema/structure/editors/options/Mo
 import { LANG_GRAPHVIZ, LANG_PLANTUML } from "components/utils/constants";
 import SBSelect, { Option } from "components/common/SBSelect";
 
+// PlantUML theme options - static list from PumlGenerator.AVAILABLE_THEMES
+const PLANTUML_THEME_OPTIONS: Option[] = [
+    { label: 'Amiga', value: 'amiga' },
+    { label: 'AWS Orange', value: 'aws-orange' },
+    { label: 'Black Knight', value: 'black-knight' },
+    { label: 'Blue Gray', value: 'bluegray' },
+    { label: 'Blueprint', value: 'blueprint' },
+    { label: 'Carbon Gray', value: 'carbon-gray' },
+    { label: 'Cerulean', value: 'cerulean' },
+    { label: 'Cloudscape Design', value: 'cloudscape-design' },
+    { label: 'CRT Amber', value: 'crt-amber' },
+    { label: 'Cyborg', value: 'cyborg' },
+    { label: 'Hacker', value: 'hacker' },
+    { label: 'Light Gray', value: 'lightgray' },
+    { label: 'Mars', value: 'mars' },
+    { label: 'Materia', value: 'materia' },
+    { label: 'Metal', value: 'metal' },
+    { label: 'Mimeograph', value: 'mimeograph' },
+    { label: 'Minty', value: 'minty' },
+    { label: 'Mono', value: 'mono' },
+    { label: 'None', value: '_none_' },
+    { label: 'Plain', value: 'plain' },
+    { label: 'Reddress Dark Blue', value: 'reddress-darkblue' },
+    { label: 'Reddress Light Blue', value: 'reddress-lightblue' },
+    { label: 'Sandstone', value: 'sandstone' },
+    { label: 'Silver', value: 'silver' },
+    { label: 'Sketchy', value: 'sketchy' },
+    { label: 'Spacelab', value: 'spacelab' },
+    { label: 'Sunlust', value: 'sunlust' },
+    { label: 'Superhero', value: 'superhero' },
+    { label: 'Toy', value: 'toy' },
+    { label: 'United', value: 'united' },
+    { label: 'Vibrant', value: 'vibrant' }
+];
+
 export const VisualOptionsModal = (props: any) => {
     const {
         isOpen,
@@ -20,7 +55,7 @@ export const VisualOptionsModal = (props: any) => {
     type ShapeType = 'none' | 'plain' | 'ellipse';
     type PerTypeAttrs = { [key: string]: { fillcolor: string; shape: ShapeType } };
 
-    interface VisualOpts {
+    interface GvOpts {
         detail: string;
         show_links: boolean;
         show_label_name: boolean;
@@ -28,44 +63,67 @@ export const VisualOptionsModal = (props: any) => {
         show_taillabel: boolean;
         enums_allowed: number;
         link_horizontal: boolean;
-        pumlOpt: string;
         per_type_attrs: PerTypeAttrs;
     }
 
+    interface PumlOpts {
+        detail: string;
+        show_links: boolean;
+        show_fields: boolean;
+        show_multiplicity: boolean;
+        show_primitive_types: boolean;
+        title: string;
+        theme: string;
+    }
+
+    interface VisualOpts {
+        gv: GvOpts;
+        puml: PumlOpts;
+    }
+
     const [opts, setOpts] = useState<VisualOpts>({ 
-                                        detail: info,
-                                        show_links: true,
-                                        show_label_name: true,
-                                        show_headlabel: true,
-                                        show_taillabel: true,
-                                        enums_allowed: 10,
-                                        link_horizontal: false,
-                                        pumlOpt: info,
-                                        // per_type_attrs mirrors GvGenerator.STYLE_DEFAULT.per_type_attrs
-                                        per_type_attrs: {
-                                            'Record': { fillcolor: '#87CEFA', shape: 'plain' },
-                                            'Map': { fillcolor: '#87CEFA', shape: 'plain' },
-                                            'Array': { fillcolor: '#87CEFA', shape: 'plain' },
-                                            'Choice': { fillcolor: '#87CEFA', shape: 'plain' },
-                                            'Enumerated': { fillcolor: '#98FB98', shape: 'plain' },
-                                            'Integer': { fillcolor: '#98FB98', shape: 'ellipse' },
-                                            'String': { fillcolor: '#98FB98', shape: 'ellipse' },
-                                            'Binary': { fillcolor: '#98FB98', shape: 'ellipse' },
-                                            'Boolean': { fillcolor: '#98FB98', shape: 'ellipse' },
-                                            'Number': { fillcolor: '#98FB98', shape: 'ellipse' }
-                                        }
-                                    });
+        gv: {
+            detail: info,
+            show_links: true,
+            show_label_name: true,
+            show_headlabel: true,
+            show_taillabel: true,
+            enums_allowed: 10,
+            link_horizontal: false,
+            // per_type_attrs mirrors GvGenerator.STYLE_DEFAULT.per_type_attrs
+            per_type_attrs: {
+                'Record': { fillcolor: '#87CEFA', shape: 'plain' },
+                'Map': { fillcolor: '#87CEFA', shape: 'plain' },
+                'Array': { fillcolor: '#87CEFA', shape: 'plain' },
+                'Choice': { fillcolor: '#87CEFA', shape: 'plain' },
+                'Enumerated': { fillcolor: '#98FB98', shape: 'plain' },
+                'Integer': { fillcolor: '#98FB98', shape: 'ellipse' },
+                'String': { fillcolor: '#98FB98', shape: 'ellipse' },
+                'Binary': { fillcolor: '#98FB98', shape: 'ellipse' },
+                'Boolean': { fillcolor: '#98FB98', shape: 'ellipse' },
+                'Number': { fillcolor: '#98FB98', shape: 'ellipse' }
+            }
+        },
+        puml: {
+            detail: info,
+            show_links: true,
+            show_fields: true,
+            show_multiplicity: true,
+            show_primitive_types: true,
+            title: '',
+            theme: 'aws-orange'
+        }
+    });
     const [showGvOpts, setShowGvOpts] = useState(false);
     const [showPumlOpts, setShowPumlOpts] = useState(false);
     const [showTypeOptsCollapsed, setShowTypeOptsCollapsed] = useState(true);
-    // validation computed below using useMemo
     
     const isHexColor = (s: string) => /^#([0-9A-Fa-f]{6})$/.test(s);
     const validShapes: ShapeType[] = ['none', 'plain', 'ellipse'];
 
     const validation = useMemo(() => {
         const errs: string[] = [];
-        const p = opts.per_type_attrs || {};
+        const p = opts.gv.per_type_attrs || {};
         for (const [k, v] of Object.entries(p)) {
             if (!isHexColor(v.fillcolor)) {
                 errs.push(`${k}: invalid color`);
@@ -131,7 +189,7 @@ export const VisualOptionsModal = (props: any) => {
                                                             { label: 'Informational', value: info }
                                                         ];
 
-                                                        const currentValue = detailOptions.find(o => o.value === opts.detail) || detailOptions[2];
+                                                        const currentValue = detailOptions.find(o => o.value === opts.gv.detail) || detailOptions[2];
 
                                                         return (
                                                             <div>
@@ -143,7 +201,7 @@ export const VisualOptionsModal = (props: any) => {
                                                                             data={detailOptions}
                                                                             onChange={(sel: Option | null) => {
                                                                                 if (sel && typeof sel === 'object' && 'value' in sel) {
-                                                                                    setOpts({ ...opts, detail: sel.value as string });
+                                                                                    setOpts({ ...opts, gv: { ...opts.gv, detail: sel.value as string } });
                                                                                 }
                                                                             }}
                                                                             value={currentValue}
@@ -162,7 +220,7 @@ export const VisualOptionsModal = (props: any) => {
                                                                             { label: 'Vertical', value: false },
                                                                             { label: 'Horizontal', value: true }
                                                                         ];
-                                                                        const currentLink = linkOptions.find(o => o.value === opts.link_horizontal) || linkOptions[0];
+                                                                        const currentLink = linkOptions.find(o => o.value === opts.gv.link_horizontal) || linkOptions[0];
                                                                         return (
                                                                             <div style={{ minWidth: '8rem' }}>
                                                                                 <SBSelect
@@ -172,7 +230,7 @@ export const VisualOptionsModal = (props: any) => {
                                                                                     onChange={(sel: Option | null) => {
                                                                                         if (sel && typeof sel === 'object' && 'value' in sel) {
                                                                                             // Map selection to boolean link_horizontal
-                                                                                            setOpts({ ...opts, link_horizontal: Boolean(sel.value) });
+                                                                                            setOpts({ ...opts, gv: { ...opts.gv, link_horizontal: Boolean(sel.value) } });
                                                                                         }
                                                                                     }}
                                                                                     isSmStyle
@@ -196,11 +254,11 @@ export const VisualOptionsModal = (props: any) => {
                                                             min={0}
                                                             step={1}
                                                             className="form-control form-control-sm"
-                                                            value={opts.enums_allowed}
+                                                            value={opts.gv.enums_allowed}
                                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                                 const v = e.currentTarget.valueAsNumber;
                                                                 const nv = Number.isFinite(v) ? Math.max(0, Math.trunc(v)) : 0;
-                                                                setOpts({ ...opts, enums_allowed: nv });
+                                                                setOpts({ ...opts, gv: { ...opts.gv, enums_allowed: nv } });
                                                             }} />
                                                     </div>                                               
                                                 </div>                                                
@@ -212,9 +270,9 @@ export const VisualOptionsModal = (props: any) => {
                                                             type="checkbox"
                                                             className="form-check-input"
                                                             onChange={(e) => {
-                                                                setOpts({ ...opts, show_links: e.currentTarget.checked });
+                                                                setOpts({ ...opts, gv: { ...opts.gv, show_links: e.currentTarget.checked } });
                                                             }}
-                                                            checked={opts.show_links} />
+                                                            checked={opts.gv.show_links} />
                                                         <label className="form-check-label" title="Show Links" htmlFor="gvShowLinksCheckbox">Show Links</label>
                                                     </div>
                                                     <div className="form-check">
@@ -224,9 +282,9 @@ export const VisualOptionsModal = (props: any) => {
                                                             type="checkbox"
                                                             className="form-check-input"
                                                             onChange={(e) => {
-                                                                setOpts({ ...opts, show_label_name: e.currentTarget.checked });
+                                                                setOpts({ ...opts, gv: { ...opts.gv, show_label_name: e.currentTarget.checked } });
                                                             }}
-                                                            checked={opts.show_label_name} />
+                                                            checked={opts.gv.show_label_name} />
                                                         <label className="form-check-label" title="Show Label Names" htmlFor="gvShowLinksCheckbox">Show Label Names</label>
                                                     </div>
                                                     <div className="form-check">
@@ -236,9 +294,9 @@ export const VisualOptionsModal = (props: any) => {
                                                             type="checkbox"
                                                             className="form-check-input"
                                                             onChange={(e) => {
-                                                                setOpts({ ...opts, show_headlabel: e.currentTarget.checked });
+                                                                setOpts({ ...opts, gv: { ...opts.gv, show_headlabel: e.currentTarget.checked } });
                                                             }}
-                                                            checked={opts.show_headlabel} />
+                                                            checked={opts.gv.show_headlabel} />
                                                         <label className="form-check-label" title="Show Head Labels" htmlFor="gvShowHeadLabelCheckbox">Show Head Labels</label>
                                                     </div>
                                                     <div className="form-check">
@@ -248,9 +306,9 @@ export const VisualOptionsModal = (props: any) => {
                                                             type="checkbox"
                                                             className="form-check-input"
                                                             onChange={(e) => {
-                                                                setOpts({ ...opts, show_taillabel: e.currentTarget.checked });
+                                                                setOpts({ ...opts, gv: { ...opts.gv, show_taillabel: e.currentTarget.checked } });
                                                             }}
-                                                            checked={opts.show_taillabel} />
+                                                            checked={opts.gv.show_taillabel} />
                                                         <label className="form-check-label" title="Show Tail Labels" htmlFor="gvShowTailLabelCheckbox">Show Tail Labels</label>
                                                     </div>
                                                 </div>                                                                                  
@@ -267,8 +325,8 @@ export const VisualOptionsModal = (props: any) => {
                                                         <div className="card">
                                                             <div className="card-body">
                                                                 <div className="row">
-                                                                    {Object.keys(opts.per_type_attrs || {}).map((tkey) => {
-                                                                        const typeCfg = opts.per_type_attrs[tkey] || { fillcolor: '#ffffff', shape: 'plain' };
+                                                                    {Object.keys(opts.gv.per_type_attrs || {}).map((tkey) => {
+                                                                        const typeCfg = opts.gv.per_type_attrs[tkey] || { fillcolor: '#ffffff', shape: 'plain' };
                                                                         const shapeOptions: Option[] = [
                                                                             { label: 'None', value: 'none' },
                                                                             { label: 'Rectangle', value: 'plain' },
@@ -287,7 +345,19 @@ export const VisualOptionsModal = (props: any) => {
                                                                                             value={typeCfg.fillcolor}
                                                                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                                                         const newColor = e.currentTarget.value;
-                                                                                                setOpts({ ...opts, per_type_attrs: { ...(opts.per_type_attrs as PerTypeAttrs), [tkey]: { ...((opts.per_type_attrs as PerTypeAttrs)[tkey] || {}), fillcolor: newColor } } });
+                                                                                                setOpts({ 
+                                                                                                    ...opts, 
+                                                                                                    gv: { 
+                                                                                                        ...opts.gv, 
+                                                                                                        per_type_attrs: { 
+                                                                                                            ...opts.gv.per_type_attrs, 
+                                                                                                            [tkey]: { 
+                                                                                                                ...opts.gv.per_type_attrs[tkey], 
+                                                                                                                fillcolor: newColor 
+                                                                                                            } 
+                                                                                                        } 
+                                                                                                    } 
+                                                                                                });
                                                                                     }} />
                                                                                         <div style={{ flex: '1 1 0', minWidth: 0 }}>
                                                                                         <SBSelect
@@ -297,7 +367,19 @@ export const VisualOptionsModal = (props: any) => {
                                                                                             onChange={(sel: any) => {
                                                                                                 if (sel && typeof sel === 'object' && 'value' in sel) {
                                                                                                     const newShape = sel.value as ShapeType;
-                                                                                                    setOpts({ ...opts, per_type_attrs: { ...(opts.per_type_attrs as PerTypeAttrs), [tkey]: { ...((opts.per_type_attrs as PerTypeAttrs)[tkey] || {}), shape: newShape } } });
+                                                                                                    setOpts({ 
+                                                                                                        ...opts, 
+                                                                                                        gv: { 
+                                                                                                            ...opts.gv, 
+                                                                                                            per_type_attrs: { 
+                                                                                                                ...opts.gv.per_type_attrs, 
+                                                                                                                [tkey]: { 
+                                                                                                                    ...opts.gv.per_type_attrs[tkey], 
+                                                                                                                    shape: newShape 
+                                                                                                                } 
+                                                                                                            } 
+                                                                                                        } 
+                                                                                                    });
                                                                                                 }
                                                                                             }}
                                                                                             isSmStyle
@@ -321,45 +403,133 @@ export const VisualOptionsModal = (props: any) => {
                                     <p className="mb-1 mt-2">PlantUML</p>
                                     <div className="card">
                                         <div className="card-body">
-                                            <div className="form-check">
-                                                <input 
-                                                    id="pumlConceptualRadio" 
-                                                    name="pumlConceptualRadio" 
-                                                    type="radio" 
-                                                    className="form-check-input" 
-                                                    value={opts.pumlOpt} 
-                                                    onClick={() => {
-                                                        setOpts({...opts, pumlOpt: conc});
-                                                    }}
-                                                    checked={opts.pumlOpt === conc} />
-                                                <label className="form-check-label" title="Least detailed option" htmlFor="pumlConceptualRadio">Conceptual</label>
-                                            </div>
-                                            <div className="form-check">
-                                                <input 
-                                                    id="pumlLogicalRadio" 
-                                                    name="pumlLogicalRadio" 
-                                                    type="radio" 
-                                                    className="form-check-input" 
-                                                    value={opts.pumlOpt} 
-                                                    onClick={() => {
-                                                        setOpts({...opts, pumlOpt: logi});
-                                                    }}                                                 
-                                                    checked={opts.pumlOpt === logi} />
-                                                    <label className="form-check-label" htmlFor="pumlLogicalRadio">Logical</label>
-                                            </div>
-                                            <div className="form-check">
-                                                <input 
-                                                    id="pumlInformationalRadio" 
-                                                    name="pumlInformationalRadio" 
-                                                    type="radio" 
-                                                    className="form-check-input" 
-                                                    value={opts.pumlOpt} 
-                                                    onClick={() => {
-                                                        setOpts({...opts, pumlOpt: info});
-                                                    }}                                                   
-                                                    checked={opts.pumlOpt === info} />
-                                                    <label className="form-check-label" title="Most detailed option" htmlFor="pumlInformationalRadio">Informational</label>
-                                            </div> 
+                                            <div className="row">
+                                                <div className="col">
+                                                    {(() => {
+                                                        const pumlDetailOptions: Option[] = [
+                                                            { label: 'Conceptual', value: conc },
+                                                            { label: 'Logical', value: logi },
+                                                            { label: 'Informational', value: info }
+                                                        ];
+
+                                                        const currentValue = pumlDetailOptions.find(o => o.value === opts.puml.detail) || pumlDetailOptions[2];
+
+                                                        return (
+                                                            <div>
+                                                                <div className="d-flex align-items-center">
+                                                                    <label className="form-check-label mb-0 me-2" title="PlantUML Title" htmlFor="pumlTitleInput">Title</label>
+                                                                    <input
+                                                                        id="pumlTitleInput"
+                                                                        name="pumlTitleInput"
+                                                                        type="text"
+                                                                        className="form-control form-control-sm"
+                                                                        value={opts.puml.title}
+                                                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                            setOpts({ ...opts, puml: { ...opts.puml, title: e.currentTarget.value } });
+                                                                        }}
+                                                                        placeholder="Enter title" />
+                                                                </div>
+                                                                <div className="mt-2 d-flex align-items-center">
+                                                                    <label className="form-check-label mb-0 me-2" title="Detail" htmlFor="puml-detail-select">Detail</label>
+                                                                    <div style={{ flex: '1 1 0', minWidth: 0 }}>
+                                                                        <SBSelect
+                                                                            id="puml-detail-select"
+                                                                            data={pumlDetailOptions}
+                                                                            onChange={(sel: Option | null) => {
+                                                                                if (sel && typeof sel === 'object' && 'value' in sel) {
+                                                                                    setOpts({ ...opts, puml: { ...opts.puml, detail: sel.value as string } });
+                                                                                }
+                                                                            }}
+                                                                            value={currentValue}
+                                                                            isSmStyle
+                                                                            isClearable={false}
+                                                                            ariaLabelledBy={'puml-detail-label'}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                {/* visually-hidden label for screen readers */}
+                                                                <span id="puml-detail-label" className="visually-hidden">plant uml detail level</span>
+                                                                <div className="mt-2 d-flex align-items-center">
+                                                                    <label className="form-check-label mb-0 me-2" title="PlantUML Theme" htmlFor="puml-theme-select">Theme</label>
+                                                                    <div style={{ flex: '1 1 0', minWidth: 0 }}>
+                                                                        {(() => {
+                                                                            const currentTheme = PLANTUML_THEME_OPTIONS.find(o => o.value === opts.puml.theme) || PLANTUML_THEME_OPTIONS.find(o => o.value === 'aws-orange');
+
+                                                                            return (
+                                                                                <SBSelect
+                                                                                    id="puml-theme-select"
+                                                                                    data={PLANTUML_THEME_OPTIONS}
+                                                                                    onChange={(sel: Option | null) => {
+                                                                                        if (sel && typeof sel === 'object' && 'value' in sel) {
+                                                                                            setOpts({ ...opts, puml: { ...opts.puml, theme: sel.value as string } });
+                                                                                        }
+                                                                                    }}
+                                                                                    value={currentTheme}
+                                                                                    isSmStyle
+                                                                                    isClearable={false}
+                                                                                    ariaLabelledBy={'puml-theme-label'}
+                                                                                />
+                                                                            );
+                                                                        })()}
+                                                                    </div>
+                                                                </div>
+                                                                {/* visually-hidden label for screen readers */}
+                                                                <span id="puml-theme-label" className="visually-hidden">PlantUML theme selection</span>
+                                                            </div>
+                                                        );
+                                                    })()}                                              
+                                                </div>                                                
+                                                <div className="col">
+                                                    <div className="form-check">
+                                                        <input
+                                                            id="pumlShowLinksCheckbox"
+                                                            name="pumlShowLinksCheckbox"
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            onChange={(e) => {
+                                                                setOpts({ ...opts, puml: { ...opts.puml, show_links: e.currentTarget.checked } });
+                                                            }}
+                                                            checked={opts.puml.show_links} />
+                                                        <label className="form-check-label" title="Show Links" htmlFor="pumlShowLinksCheckbox">Show Links</label>
+                                                    </div>
+                                                    <div className="form-check">
+                                                        <input
+                                                            id="pumlShowFieldsCheckbox"
+                                                            name="pumlShowFieldsCheckbox"
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            onChange={(e) => {
+                                                                setOpts({ ...opts, puml: { ...opts.puml, show_fields: e.currentTarget.checked } });
+                                                            }}
+                                                            checked={opts.puml.show_fields} />
+                                                        <label className="form-check-label" title="Show Fields" htmlFor="pumlShowFieldsCheckbox">Show Fields</label>
+                                                    </div>
+                                                    <div className="form-check">
+                                                        <input
+                                                            id="pumlShowMultiplicityCheckbox"
+                                                            name="pumlShowMultiplicityCheckbox"
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            onChange={(e) => {
+                                                                setOpts({ ...opts, puml: { ...opts.puml, show_multiplicity: e.currentTarget.checked } });
+                                                            }}
+                                                            checked={opts.puml.show_multiplicity} />
+                                                        <label className="form-check-label" title="Show Multiplicity" htmlFor="pumlShowMultiplicityCheckbox">Show Multiplicity</label>
+                                                    </div>
+                                                    <div className="form-check">
+                                                        <input
+                                                            id="pumlShowPrimitiveTypesCheckbox"
+                                                            name="pumlShowPrimitiveTypesCheckbox"
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            onChange={(e) => {
+                                                                setOpts({ ...opts, puml: { ...opts.puml, show_primitive_types: e.currentTarget.checked } });
+                                                            }}
+                                                            checked={opts.puml.show_primitive_types} />
+                                                        <label className="form-check-label" title="Show Primitive Types" htmlFor="pumlShowPrimitiveTypesCheckbox">Show Primitive Types</label>
+                                                    </div>
+                                                </div>                                                                                  
+                                            </div>                                             
                                         </div>
                                     </div>   
                                 </> }                                                                                         
