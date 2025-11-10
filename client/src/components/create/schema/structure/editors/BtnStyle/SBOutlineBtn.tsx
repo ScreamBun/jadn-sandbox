@@ -94,7 +94,7 @@ const SBOutlineBtn = (props: SBOutlineBtnProps) => {
             {items && items.length > 0 ? (
                 <div id={id}>
                     <ul className="nav nav-pills">
-                        <li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link bg-primary">{title}</a></li>
+                        {/*<li className="nav-item pb-0"><a title="An outline view of all the schema types" className="active nav-link bg-primary">{title}</a></li>*/}
                     </ul>
                     <div className="input-group search" style={{ paddingTop: '5px' }}>
                         <span className="input-group-text icon" id="basic-addon1"><FontAwesomeIcon icon={faMagnifyingGlass} /></span>

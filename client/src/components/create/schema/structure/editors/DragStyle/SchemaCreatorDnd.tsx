@@ -17,6 +17,7 @@ import SBScrollToTop from 'components/common/SBScrollToTop';
 import SBOutline, { DragItem, DragItem as Item } from './SBOutline';
 import { Droppable } from './Droppable'
 import { DraggableKey } from './DraggableKey';
+import SBTreeView from 'components/common/SBTreeView';
 
 const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
     const { selectedFile, generatedSchema, setGeneratedSchema,
@@ -28,6 +29,7 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
         allFieldsCollapse, collapseAllFields, fieldCollapseStateRef } = props;
 
     const [visibleType, setVisibleType] = useState<number | null>(null);
+    const [localActiveOpt, setLocalActiveOpt] = useState<string>('tree');
 
     const onSchemaDrop = (item: Item) => {
         let key = item.text;
@@ -422,15 +424,52 @@ const SchemaCreatorDnd = memo(function SchemaCreator(props: any) {
                             </div>
                             <div className='row'>
                                 <div className='col'>
-                                    <SBOutline
-                                        id={'schema-outline'}
-                                        cards={cardsState}
-                                        title={'Outline'}
-                                        onDrop={onOutlineDrop}
-                                        onStarToggle={onStarClick}
-                                        onScrollToCard={onScrollToCard}
-                                        visibleCard={visibleType}
-                                    ></SBOutline>
+                                    <ul className="nav nav-pills pb-2" id="viewKeys" role="tablist">
+                                        <li className='nav-item'>
+                                            <a
+                                                className={`nav-link 
+                                                    ${localActiveOpt == 'tree' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
+                                                onClick={() => setLocalActiveOpt('tree')}
+                                                title="schema tree"
+                                                data-bs-toggle="pill"
+                                            >
+                                                Tree
+                                            </a>
+                                        </li>
+                                        <li className='nav-item me-2'>
+                                            <a
+                                                className={`nav-link 
+                                                    ${localActiveOpt == 'outline' && (selectedFile?.value == 'file' && !generatedSchema ? false : true) ? ' active bg-primary' : ''}
+                                                    ${selectedFile?.value == 'file' && !generatedSchema ? 'disabled' : ''}`}
+                                                onClick={() => setLocalActiveOpt('outline')}
+                                                title="schema outline"
+                                                data-bs-toggle="pill"
+                                            >
+                                                Outline
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div className='tab-content mb-2'>
+                                        <div className={`tab-pane fade ${localActiveOpt == 'outline' ? 'show active' : ''}`} id="outline" role="tabpanel" aria-labelledby="outline-tab" tabIndex={0}>
+                                            <ul className="list-group">
+                                                <SBOutline
+                                                    id={'schema-outline'}
+                                                    cards={cardsState}
+                                                    title={'Outline'}
+                                                    onDrop={onOutlineDrop}
+                                                    onStarToggle={onStarClick}
+                                                    onScrollToCard={onScrollToCard}
+                                                    visibleCard={visibleType}
+                                                ></SBOutline>
+                                            </ul>
+                                        </div>
+                                        <div className={`tab-pane fade ${localActiveOpt == 'tree' ? 'show active' : ''}`} id="tree" role="tabpanel" aria-labelledby="tree-tab" tabIndex={0}>
+                                            <ul className="list-group">
+                                                <SBTreeView schema={cardsState || {}} currType={cardsState.find(card => card.index === visibleType)?.text || ""} />
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
