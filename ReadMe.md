@@ -27,7 +27,7 @@ docker pull screambunn/jadn_sandbox
 
 4. Enter the url below in your browser
 
-  http://localhost:8082/
+  <http://localhost:8082/>
 
 5. To stop your image, just hit `ctrl+c` in your terminal or via your docker software.
 
@@ -74,6 +74,7 @@ Prerequisites:
 
 yarn build
 yarn start
+
   ```bash
   cd client
   yarn
@@ -107,28 +108,27 @@ Important Notes:
 
 3. If the latest tag is not updating in Docker Hub, take the following steps to realign the tag
 
-```
-docker tag screambunn/jadn_sandbox:<version> screambunn/jadn_sandbox:latest
-docker push screambunn/jadn_sandbox:latest
-```
+  ```bash
+    docker tag screambunn/jadn_sandbox:<version> screambunn/jadn_sandbox:latest
+    docker push screambunn/jadn_sandbox:latest
+    ```
 
 Or run the following, you can replace 'latest' with a specific version if you have previously built it or pulled it (see quick start).
 
-docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
   ```bash
   docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
   ```
 
-
 3. Once the build is complete go to here in your browser to verify and run smoke tests
 
-  http://localhost:8082/
+  <http://localhost:8082/>
 
 ### Create a jadnschema Wheel
 
 * See readme under the jadnschema repo
 
 ### Build Ruby Image and Container and use locally
+
 Need to start Ruby Container when you are developing and want CBOR conversion logic
 
 1. In a terminal window, from the JADN Sandbox root directory, build the image:
@@ -150,22 +150,22 @@ Need to start Ruby Container when you are developing and want CBOR conversion lo
 ### Develop and Test JADN Schema on the Fly
 
 * When developing and testing JADN Schema, you can link it directly to your virtual environment to avoid recreating wheels.
-  - Within your virtual environment view the python dependencies:
-    - `pip freeze`
-  - Remove the jadnschema wheel:
-    - `pip uninstall jadnschema`
-  - Add the jadnschema git repo source to the python dependencies:
-    - cd to jadnschema
-    - `python setup.py develop`
-    - `pip freeze`
-    - You should see something similar to this:
+  * Within your virtual environment view the python dependencies:
+    * `pip freeze`
+  * Remove the jadnschema wheel:
+    * `pip uninstall jadnschema`
+  * Add the jadnschema git repo source to the python dependencies:
+    * cd to jadnschema
+    * `python setup.py develop`
+    * `pip freeze`
+    * You should see something similar to this:
       -e git+ssh://git@ccoe-gitlab.hii-tsd.com/screamingbunny/schema/jadnschema.git@16ac517baa1499014ba221b7d1b7ffb3cef20ebe#egg=jadnschema
-  - Go back to the Web Validator and start the server:
-    - `./start.sh`
-  - Remember when you are finished, make sure to:
-    - recreate the jadnschema wheel, which contains the updated code
-    - uninstall the direct link, simply `pip uninstall jadnschema`
-    - install the updated jadnschema wheel
+  * Go back to the Web Validator and start the server:
+    * `./start.sh`
+  * Remember when you are finished, make sure to:
+    * recreate the jadnschema wheel, which contains the updated code
+    * uninstall the direct link, simply `pip uninstall jadnschema`
+    * install the updated jadnschema wheel
 
   Note: If you update the whl filename/version, then the Dockerfile will need to be updated to use this new filename as well.
 
