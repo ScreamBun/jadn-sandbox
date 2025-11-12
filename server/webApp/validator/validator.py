@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from typing import Tuple, Union
 
 from jadnvalidation import DataValidation
-from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_roots
+from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_schema_updated, j_meta_roots
 
 from webApp.utils.utils import BaseEnum, get_value_errors
 from webApp.utils import constants
@@ -29,7 +29,7 @@ class Validator:
             if isinstance(schema, str):
                 schema = json.loads(schema)
                 
-            j_validation = DataValidation(j_meta_schema, j_meta_roots, schema)
+            j_validation = DataValidation(j_meta_schema_updated, j_meta_roots, schema)
             j_validation.validate()
             
             return True, "Schema is Valid" if sm else schema
