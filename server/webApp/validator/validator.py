@@ -59,7 +59,7 @@ class Validator:
         
         # Validate the schema first
         try :
-            j_validation = DataValidation(j_meta_schema, j_meta_roots, schema)
+            j_validation = DataValidation(j_meta_schema_updated, j_meta_roots, schema)
             j_validation.validate()
         except Exception as e:
             errorMsgs = []
@@ -107,7 +107,7 @@ class Validator:
 
     def validate_jadn(self, jadn_src: dict) -> Tuple[bool, str]:
         try :
-            j_validation = DataValidation(j_meta_schema, j_meta_roots, jadn_src)
+            j_validation = DataValidation(j_meta_schema_updated, j_meta_roots, jadn_src)
             j_validation.validate()
             return True, ""
         except Exception as e:
