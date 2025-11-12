@@ -15,9 +15,9 @@ The JADN Sandbox provides the ability to create, convert, translate, transform, 
 
 2. Pull the latest JADN Sandbox Docker Image (Note: this is needed each time to ensure you are using the very latest version of the JADN Sandbox)
 
-```bash
-docker pull screambunn/jadn_sandbox
-```
+  ```bash
+  docker pull screambunn/jadn_sandbox
+  ```
 
 3. Run the docker image
 
