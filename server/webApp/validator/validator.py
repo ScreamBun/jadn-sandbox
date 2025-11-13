@@ -14,7 +14,9 @@ from webApp.utils import constants
 class SerialFormats(BaseEnum):
     CBOR = 'cbor'
     JSON = 'json'
-    XML = 'xml'    
+    XML = 'xml'
+    COMPACT = 'compact'
+    CONCISE = 'concise'
 
 class Validator:
     
@@ -68,7 +70,7 @@ class Validator:
         
         serial = SerialFormats(data_format)
         match serial.value:
-            case constants.JSON:
+            case (constants.JSON | constants.COMPACT_CONSTANT | constants.CONCISE_CONSTANT):
                 try:
                     data = json.loads(data)
                 except Exception as e: 

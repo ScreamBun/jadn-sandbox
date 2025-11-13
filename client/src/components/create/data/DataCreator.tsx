@@ -27,7 +27,8 @@ import SBCompactConciseBtn from 'components/common/SBCompactConciseBtn'
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
-    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor, annotatedCbor, setAnnotatedCbor, compactJson, setCompactJson, conciseJson, setConciseJson } = props;
+    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor, 
+        annotatedCbor, setAnnotatedCbor, compactJson, setCompactJson, conciseJson, setConciseJson, toggleCompactBtn, setToggleCompactBtn } = props;
 
     // States
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
@@ -36,9 +37,9 @@ const DataCreator = (props: any) => {
     const [jsonValidated, setJsonValidated] = useState(false);
     const [xmlValidated, setXmlValidated] = useState(false);
     const [cborValidated, setCborValidated] = useState(false);
+    const [compactValidated, setCompactValidated] = useState(false);
     const [dataFullScreen, setDataFullScreen] = useState(false);
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
-    const [toggleCompactBtn, setToggleCompactBtn] = useState('');
     const digestFormat = selectedSerialization?.value=== LANG_JSON_UPPER ?
                             (toggleCompactBtn == COMPACT_CONST ? compactJson : toggleCompactBtn == CONCISE_CONST ? conciseJson : generatedMessage) 
                             : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor
@@ -69,6 +70,7 @@ const DataCreator = (props: any) => {
         setJsonValidated(false);
         setXmlValidated(false);
         setCborValidated(false);
+        setCompactValidated(false);
         setGeneratedMessage((prev: any) => {
             const updated = { ...prev };
             if (v === "" || v === undefined || v === null) {
@@ -92,6 +94,7 @@ const DataCreator = (props: any) => {
         setJsonValidated(false);
         setXmlValidated(false);
         setCborValidated(false);
+        setCompactValidated(false);
         setXml("");
         setCbor("");
         setCompactJson('');
@@ -107,11 +110,15 @@ const DataCreator = (props: any) => {
             setJsonValidated(false);
             setXmlValidated(false);
             setCborValidated(false);
+            setCompactValidated(false);
             return;
         }
         try {
             const type = selection?.value || '';
-            const newMsg = lang === LANG_JSON_UPPER ? JSON.stringify(generatedMessage[type]) : lang === LANG_XML_UPPER ? removeXmlWrapper(xml) : cbor;
+            const newMsg = 
+            toggleCompactBtn === COMPACT_CONST ? JSON.stringify(compactJson[type]) :
+            lang === LANG_JSON_UPPER ? JSON.stringify(generatedMessage[type]) : 
+            lang === LANG_XML_UPPER ? removeXmlWrapper(xml) : cbor;
             const action: any = await dispatch(validateMessage(schemaObj, newMsg, lang, type));
             // Check if the action is a success or failure
             if (action.type === '@@validate/VALIDATE_MESSAGE_SUCCESS') {
@@ -120,17 +127,20 @@ const DataCreator = (props: any) => {
                     if (lang === LANG_JSON_UPPER) setJsonValidated(true);
                     if (lang === LANG_XML_UPPER) setXmlValidated(true);
                     if (lang === LANG_CBOR_UPPER) setCborValidated(true);
+                    if (lang === COMPACT_CONST) setCompactValidated(true);
                 } else {
                     sbToastError(action.payload.valid_msg);
                     if (lang === LANG_JSON_UPPER) setJsonValidated(false);
                     if (lang === LANG_XML_UPPER) setXmlValidated(false);
                     if (lang === LANG_CBOR_UPPER) setCborValidated(false);
+                    if (lang === COMPACT_CONST) setCompactValidated(false);
                 }
             } else if (action.type === '@@validate/VALIDATE_FAILURE') {
                 sbToastError(action.payload?.valid_msg || 'Validation failed');
                 if (lang === LANG_JSON_UPPER) setJsonValidated(false);
                 if (lang === LANG_XML_UPPER) setXmlValidated(false);
                 if (lang === LANG_CBOR_UPPER) setCborValidated(false);
+                if (lang === COMPACT_CONST) setCompactValidated(false);
             }
         } catch (err: any) {
             sbToastError(err.message || 'Validation error');
@@ -149,6 +159,7 @@ const DataCreator = (props: any) => {
         dispatch(clearFieldValidation());
         setJsonValidated(false);
         setXmlValidated(false);
+        setCompactValidated(false);
         setLoadedFieldDefs(null);
         setXml("");
         setCbor("");
@@ -341,11 +352,14 @@ const DataCreator = (props: any) => {
                             <>
                                 <button type="button"
                                     className="btn btn-sm btn-primary me-1"
-                                    onClick={() => handleValidate(selectedSerialization?.value===LANG_JSON_UPPER ? LANG_JSON_UPPER : selectedSerialization?.value===LANG_XML_UPPER ? LANG_XML_UPPER : selectedSerialization?.value===LANG_CBOR_UPPER ? LANG_CBOR_UPPER : LANG_JSON_UPPER)}
+                                    onClick={() => handleValidate(
+                                        toggleCompactBtn === COMPACT_CONST ? COMPACT_CONST : selectedSerialization?.value || '')}
                                     disabled = {selection && generatedMessage? false:true}
                                 >
                                     Valid
-                                    {(selectedSerialization?.value===LANG_JSON_UPPER ? jsonValidated : selectedSerialization?.value===LANG_XML_UPPER ? xmlValidated : selectedSerialization?.value===LANG_CBOR_UPPER ? cborValidated : jsonValidated) ? (
+                                    {(selectedSerialization?.value===LANG_JSON_UPPER ? (toggleCompactBtn === COMPACT_CONST ? compactValidated : jsonValidated) : 
+                                    selectedSerialization?.value===LANG_XML_UPPER ? xmlValidated : 
+                                    selectedSerialization?.value===LANG_CBOR_UPPER ? cborValidated : jsonValidated) ? (
                                         <span className="badge rounded-pill text-bg-success ms-1">
                                             <FontAwesomeIcon icon={faCheck} />
                                         </span>) : (

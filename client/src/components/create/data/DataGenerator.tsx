@@ -10,6 +10,7 @@ import { Option } from 'components/common/SBSelect'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { clearHighlight } from "actions/highlight";
 import { useNavigate } from 'react-router'
+import { COMPACT_CONST, CONCISE_CONST } from 'components/utils/constants'
 
 const DataGenerator = () => {
     const dispatch = useDispatch();
@@ -31,6 +32,7 @@ const DataGenerator = () => {
     const [xml, setXml] = useState('');
     const [cbor, setCbor] = useState('');
     const [compactJson, setCompactJson] = useState('');
+    const [toggleCompactBtn, setToggleCompactBtn] = useState('');
     const [conciseJson, setConciseJson] = useState('');
     const [annotatedCbor, setAnnotatedCbor] = useState('');
     const [selection, setSelection] = useState<Option | null>();
@@ -106,6 +108,8 @@ const DataGenerator = () => {
                                 />
                             </div>
                             <div className="ms-auto flex-shrink-0" role="group" aria-label="First group">
+                                {toggleCompactBtn == COMPACT_CONST && <span className="text-light me-2 bg-dark px-2 py-1 rounded"><i>Now viewing <span style={{color:'rgb(255, 193, 7)', fontWeight:'bold'}}>compact</span> JSON</i></span>}
+                                {toggleCompactBtn == CONCISE_CONST && <span className="text-light me-2 bg-dark px-2 py-1 rounded"><i>Now viewing <span style={{color:'rgb(220, 53, 69)', fontWeight:'bold'}}>concise</span> JSON</i></span>}
                                 <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleSchemaCreation}>Schema Creation</button>
                                 <button type='reset' className='btn btn-sm btn-danger border-0' onClick={onReset}>Reset</button>
                             </div>
@@ -121,6 +125,7 @@ const DataGenerator = () => {
                                         annotatedCbor={annotatedCbor} setAnnotatedCbor={setAnnotatedCbor}
                                         compactJson={compactJson} setCompactJson={setCompactJson}
                                         conciseJson={conciseJson} setConciseJson={setConciseJson}
+                                        toggleCompactBtn={toggleCompactBtn} setToggleCompactBtn={setToggleCompactBtn}
                                         />
                                 </div>
                             </div>

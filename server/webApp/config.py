@@ -86,7 +86,7 @@ class Config:
         {"XML": "xml"},
         {"JSON": "json"},
         #{"JSON Concise": "concise"},
-        #{"JSON Compact": "compact"}
+        {"JSON Compact": "compact"}
     ]
     
     VALID_TRANSFORMATIONS = [
