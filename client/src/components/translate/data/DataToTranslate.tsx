@@ -114,7 +114,11 @@ const DataToTranslate = (props: any) => {
 
                             <SBSelect id={"data-format-list"}
                                     customClass={'me-1'}
-                                    data={validMsgFormat.map((fmt: any) => {
+                                    data={validMsgFormat.filter((fmt: any) => {
+                                        const key = Object.keys(fmt)[0];
+                                        const value = fmt[key];
+                                        return value !== "compact";
+                                    }).map((fmt: any) => {
                                         const key = Object.keys(fmt)[0];
                                         const value = fmt[key];
                                         return { value: value, label: key };
