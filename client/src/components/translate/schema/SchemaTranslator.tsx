@@ -16,12 +16,12 @@ const SchemaTranslator = () => {
 
     const loadedSchema = useSelector(getSelectedSchema);
     const setLoadedSchema = (schema: object | null) => {
-        dispatch(setSchema(schema));
+        dispatch(setSchema(schema) as any);
     }
 
     const selectedFile = useSelector(getSelectedFile);
     const setSelectedFile = (file: Option | null) => {
-        dispatch(setFile(file));
+        dispatch(setFile(file) as any);
     }
 
     const [schemaFormat, setSchemaFormat] = useState<Option | null>(null);
@@ -34,7 +34,7 @@ const SchemaTranslator = () => {
     const formId = "translation_form";
 
     useEffect(() => {
-        dispatch(info());
+        dispatch(info() as any);
         dismissAllToast();
     }, [dispatch])
 
@@ -52,19 +52,19 @@ const SchemaTranslator = () => {
         setTranslation([]);
         setSchemaFormat(null);
         setTranslatedSchema(initConvertedSchemaState);
-        dispatch(setSchema(null));
-        dispatch(setSchemaValid(false))
+        dispatch(setSchema(null) as any);
+        dispatch(setSchemaValid(false) as any)
     }
 
     const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
         if (translation) {
-            let schemaObj: SchemaJADN | string = loadedSchema;
+            let schemaObj: SchemaJADN = loadedSchema as SchemaJADN;
 
             const arr = translation.map(obj => obj.value.toLowerCase());
-            dispatch(convertSchema(schemaObj, schemaFormat?.value.toLowerCase(), arr))
-                .then((convertSchemaVal) => {
+            dispatch(convertSchema(schemaObj, schemaFormat?.value.toLowerCase() || '', arr, []) as any)
+                .then((convertSchemaVal: any) => {
                     if (convertSchemaVal.error) {
                         setIsLoading(false);
                         setTranslatedSchema(initConvertedSchemaState);
@@ -73,7 +73,7 @@ const SchemaTranslator = () => {
                     }
                     setIsLoading(false);
                     setTranslatedSchema(convertSchemaVal.payload.schema.convert);
-                    const convertedArr = convertSchemaVal.payload.schema.convert.map(obj => obj.fmt_ext);
+                    const convertedArr = convertSchemaVal.payload.schema.convert.map((obj: any) => obj.fmt_ext);
                     for (let i = 0; i < arr.length; i++) {
                         if (convertedArr.includes(arr[i])) {
                             if (convertSchemaVal.payload.schema.convert[i].err == false) {

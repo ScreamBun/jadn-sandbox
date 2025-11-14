@@ -91,16 +91,14 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_TRANSLATE_SCHEMA}>Schema Translation</Link>
                 </h5>
-                <p className="card-text">Translate a JADN Schema to another Schema format.</p>
-                <p className="card-text">Translate a JSON Schema to a JADN Schema.</p>
+                <p className="card-text">Convert JADN schemas to other formats (JSON Schema, XSD) or translate JSON/JIDL schemas into JADN format.</p>
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_TRANSLATE_DATA}>Data Translation</Link>
                 </h5>
-                <p className="card-text">Translate a valid JSON data into CBOR or XML.  CBOR is displayed in HEX and Annotated HEX.</p>               
+                <p className="card-text">Transform JSON data into CBOR or XML formats. View CBOR output as hexadecimal or annotated hex for debugging.</p>               
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"json"}>JSON</Link>
-                {/* <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"rng"}>Relax (XML)</Link> */}
                 <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"xsd"}>XSD</Link> 
                 <span className='px-4'>|</span>
                 <Link className="card-link" to={NAV_TRANSLATE_DATA} state={"cbor"}>CBOR</Link>
