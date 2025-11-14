@@ -58,7 +58,7 @@ const SBTreeView = (props: SBTreeViewProps) => {
 
             // Check for pointer or derived enum
             if (optionsObj.pointer) _children = getPointerChildren(schemaObj, optionsObj.pointer, _children || [], optionsObj.isID);
-            if (optionsObj.derived) _children?.push(...getDerivedOptions(schemaObj, optionsObj.derived));
+            if (optionsObj.derived) _children = [...getDerivedOptions(schemaObj, optionsObj.derived)];
 
             const pathID = _name && _type && isDerived(_type) ? _type || _name : _name;
             const currentPath = basePath ? `${basePath}.${pathID}` : pathID;
