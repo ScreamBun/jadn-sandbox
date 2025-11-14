@@ -46,8 +46,8 @@ const Home = () => {
                   <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
                   } 
                 </h5>
-                <p className="card-text">Create and edit JADN schemas using forms, view JADN schemas in JSON format.</p>
-                <p className="card-text"> Create schema compliant data instances (documents, messages).</p>
+                <p className="card-text">Design and edit JADN schemas using guided forms, with the ability to view the underlying JSON representation.</p>
+                <p className="card-text">Create valid data instances that follow your schema definitions.</p>
                 <br /><br /><br />
               </div>
               <div className="card-footer bg-secondary">
@@ -73,7 +73,7 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA}>Schema Visualization</Link>
                 </h5>
-                <p className="card-text">Convert a JADN Schema into different visual representations. </p>
+                <p className="card-text">Convert a JADN Schema into a variety of visual formats such as GraphViz, HTML, JIDL, Markdown, and PlantUML. </p>
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"gv"}>GraphViz</Link>
@@ -120,7 +120,6 @@ const Home = () => {
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"cbor"}>CBOR</Link>
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"json"}>JSON</Link>
-                {/* <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"xml"}>Relax (XML)</Link> */}
               </div>
             </div>
             <div className="card mt-3">
