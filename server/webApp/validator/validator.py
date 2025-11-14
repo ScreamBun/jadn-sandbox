@@ -2,11 +2,13 @@ import json
 import cbor2
 import jadn 
 import xml.etree.ElementTree as ET
+import regex
 
 from typing import Tuple, Union
 
 from jadnvalidation import DataValidation
-from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema, j_meta_schema_updated, j_meta_roots
+from jadnvalidation.data_validation.schemas.jadn_meta_schema import j_meta_schema_updated, j_meta_roots
+from jsonschema import Draft7Validator, ValidationError, FormatChecker
 
 from webApp.utils.utils import BaseEnum, get_value_errors
 from webApp.utils import constants
@@ -18,10 +20,58 @@ class SerialFormats(BaseEnum):
 
 class Validator:
     
+    def __init__(self):
+        """Initialize the validator with custom format checker for Unicode regex patterns."""
+        self._custom_format_checker = self._create_custom_format_checker()
+    
+    def _regex_format_checker(self, instance):
+        """
+        Custom format checker for regex patterns that supports Unicode property classes.
+        Uses the 'regex' module instead of the standard 're' module.
+        """
+        if not isinstance(instance, str):
+            return True
+        try:
+            regex.compile(instance)
+            return True
+        except regex.error:
+            return False
+    
+    def _create_custom_format_checker(self):
+        """Create a custom format checker instance with Unicode regex support."""
+        format_checker = FormatChecker()
+        format_checker.checks('regex')(self._regex_format_checker)
+        return format_checker
+    
+    def validateJsonSchema(self, schema: Union[dict, str]) -> Tuple[bool, Union[str, dict]]:
+        """
+        Validate the given JSON Schema
+        :param schema: (JSON String) schema to validate against
+        :return: (tuple) valid/invalid bool, schema
+        """
+        try:
+            if isinstance(schema, dict):
+                schema = json.dumps(schema)
+                            
+            schema_dict = json.loads(schema)
+            
+            # Use a validator instance with custom format checker instead of check_schema class method
+            # This allows us to handle Unicode regex patterns properly
+            validator = Draft7Validator(Draft7Validator.META_SCHEMA, format_checker=self._custom_format_checker)
+            
+            # Validate the schema structure using our custom validator
+            list(validator.iter_errors(schema_dict))  # This will raise ValidationError if invalid
+            
+            return True, schema_dict
+        except ValidationError as e:
+            return False, f"Your JSON schema is invalid: {e.message}"
+        except Exception as e:
+            return False, f"An unexpected error occurred during json schema validation: {e}"
+    
     def validateSchema(self, schema: Union[dict, str], sm: bool = True) -> Tuple[bool, Union[str, any]]:
         """
-        Validate the given schema
-        :param schema: (JSON String) schema to validate against
+        Validate the given JADN Schema
+        :param schema: (JADN String) schema to validate against
         :param sm: (bool) return bool or schema
         :return: (tuple) valid/invalid bool, schema
         """

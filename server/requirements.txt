@@ -8,6 +8,7 @@
 # -e /home/matt/workspace/sb-jadn-xml-util
 # -e /home/matt/workspace/sb-jadn-json-util
 # -e /home/matt/workspace/jadn-validation
+# -e /home/matt/workspace/jadn-schema
 
 cbor-json==0.0.4
 docker==7.1.0
