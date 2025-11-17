@@ -74,10 +74,10 @@ class Convert(Resource):
             
         elif schema_format == constants.JSON:
             
-            if isinstance(schema, str):
-                schema = json.loads(schema)              
+            if isinstance(schema, dict):
+                schema = json.dumps(schema)              
             
-            is_valid, err_msg = current_app.validator.validateSchema(schema, False)
+            is_valid, err_msg = current_app.validator.validateJsonSchema(schema)
             if not is_valid:
                 return f"JSON Schema Error: {err_msg}", 500
             

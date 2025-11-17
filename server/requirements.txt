@@ -1,13 +1,14 @@
-./whls/jadnschema-0.4.0-py2.py3-none-any.whl
+./whls/jadnschema-0.4.1-py2.py3-none-any.whl
 ./whls/jadnxml-1.13.0-py2.py3-none-any.whl
 ./whls/jadnjson-1.4.0-py2.py3-none-any.whl
 ./whls/jadnvalidation-2.5.0-py2.py3-none-any.whl
 ./whls/jadnutils-0.6.0-py2.py3-none-any.whl
 
-# -e /Users/kevincressman/GitLabThings/jadn-schema
+# -e /Users/kevincressman/GitLabThings/jadn-schemas
 # -e /home/matt/workspace/sb-jadn-xml-util
 # -e /home/matt/workspace/sb-jadn-json-util
 # -e /home/matt/workspace/jadn-validation
+# -e /home/matt/workspace/jadn-schema
 
 cbor-json==0.0.4
 docker==7.1.0

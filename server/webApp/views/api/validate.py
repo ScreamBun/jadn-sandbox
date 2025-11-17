@@ -85,7 +85,6 @@ class ValidateSchema(Resource):
                     print(f"JSON Validation Error: {str(ex)}")
                     return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(ex)}" })
 
-
             if schema_fmt == constants.JADN:
                 valid_bool, err = current_app.validator.validate_jadn(schema)
                 if not valid_bool:
@@ -96,13 +95,7 @@ class ValidateSchema(Resource):
             valid_bool, rsp = current_app.validator.validate_jidl(schema)
             if not valid_bool:
                 print(f"JIDL Error: {str(rsp)} ")
-                return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": f"{str(rsp)}"}) 
-            
-            valid_jadn_bool, err = current_app.validator.validate_jadn(rsp)
-            if not valid_jadn_bool:
-                print(f"JADN Error: {str(err)} ")
-                return jsonify({ "valid_bool": False, "valid_syntax": False, "valid_msg": f"{str(rsp)}"})            
-                                       
+                return jsonify({ "valid_bool": False, "valid_syntax": True, "valid_msg": f"{str(rsp)}"})
 
         return jsonify( { "valid_bool": True, "valid_syntax": True, "valid_msg": "Passed validation" })
 
