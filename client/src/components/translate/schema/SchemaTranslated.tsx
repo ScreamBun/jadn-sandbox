@@ -21,13 +21,12 @@ const SchemaTranslated = (props: any) => {
     const translations = useSelector(getValidTranslations);
     const [translateOpts, setTranslateOpts] = useState<Option[]>([]);
 
-
     useEffect(() => {
         if (Array.isArray(translations) && translations.length > 0) {
             const opts: Option[] = [];
             translations.forEach(obj => {
-                Object.entries(obj).forEach(([label, value]) => {
-                    opts.push({ label, value });
+                Object.entries(obj).forEach(([key, value]) => {
+                    opts.push({ value: value as string, label: key });
                 });
             });
             setTranslateOpts(opts);
@@ -35,13 +34,33 @@ const SchemaTranslated = (props: any) => {
     }, [translations]);
 
     useEffect(() => {
-        if (location && location.state) {
-            const index = translateOpts.findIndex(opt => opt.value === location.state);
-            if (index !== -1) {
-                setTranslation([{ value: translateOpts[index].value, label: translateOpts[index].label }]);
+        if (location && location.state && translateOpts.length > 0) {
+            let matchingOpt = translateOpts.find(opt => opt.value === location.state);
+            
+            // If no exact match, try case-insensitive match on value
+            if (!matchingOpt) {
+                matchingOpt = translateOpts.find(opt => 
+                    opt.value.toLowerCase() === location.state.toLowerCase()
+                );
+            }
+            
+            // If still no match, try matching the label
+            if (!matchingOpt) {
+                matchingOpt = translateOpts.find(opt => 
+                    opt.label.toLowerCase() === location.state.toLowerCase()
+                );
+            }
+            
+            if (matchingOpt) {
+                const newTranslation = [matchingOpt];
+                
+                // Use setTimeout to ensure react-select has time to process the options
+                setTimeout(() => {
+                    setTranslation(newTranslation);
+                }, 50);
             }
         }
-    }, [translateOpts]);
+    }, [translateOpts, location.state]);
 
     const handleTranslation = (e: Option[]) => {
         let translateTo = [];
@@ -51,6 +70,8 @@ const SchemaTranslated = (props: any) => {
         setTranslation(translateTo);
         setTranslatedSchema(initConvertedSchemaState);
     }
+
+
 
     return (
         <div className="card">

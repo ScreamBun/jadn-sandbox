@@ -46,8 +46,8 @@ const Home = () => {
                   <Link className="card-link" to={NAV_CREATE_SCHEMA}>Creation</Link>
                   } 
                 </h5>
-                <p className="card-text">Create and edit JADN schemas using forms, view JADN schemas in JSON format.</p>
-                <p className="card-text"> Create schema compliant data instances (documents, messages).</p>
+                <p className="card-text">Design and edit JADN schemas using guided forms, with the ability to view the underlying JSON representation.</p>
+                <p className="card-text">Create valid data instances that follow your schema definitions.</p>
                 <br /><br /><br />
               </div>
               <div className="card-footer bg-secondary">
@@ -73,7 +73,7 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_CONVERT_SCHEMA}>Schema Visualization</Link>
                 </h5>
-                <p className="card-text">Convert a JADN Schema into different visual representations. </p>
+                <p className="card-text">Convert a JADN Schema into a variety of visual formats such as GraphViz, HTML, JIDL, Markdown, and PlantUML. </p>
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_CONVERT_SCHEMA} state={"gv"}>GraphViz</Link>
@@ -91,16 +91,14 @@ const Home = () => {
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_TRANSLATE_SCHEMA}>Schema Translation</Link>
                 </h5>
-                <p className="card-text">Translate a JADN Schema to another Schema format.</p>
-                <p className="card-text">Translate a JSON Schema to a JADN Schema.</p>
+                <p className="card-text">Convert JADN schemas to other formats (JSON Schema, XSD) or translate JSON/JIDL schemas into JADN format.</p>
                 <h5 className="card-title">
                   <Link className="card-link" to={NAV_TRANSLATE_DATA}>Data Translation</Link>
                 </h5>
-                <p className="card-text">Translate a valid JSON data into CBOR or XML.  CBOR is displayed in HEX and Annotated HEX.</p>               
+                <p className="card-text">Transform JSON data into CBOR or XML formats. View CBOR output as hexadecimal or annotated hex for debugging.</p>               
               </div>
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"json"}>JSON</Link>
-                {/* <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"rng"}>Relax (XML)</Link> */}
                 <Link className="card-link" to={NAV_TRANSLATE_SCHEMA} state={"xsd"}>XSD</Link> 
                 <span className='px-4'>|</span>
                 <Link className="card-link" to={NAV_TRANSLATE_DATA} state={"cbor"}>CBOR</Link>
@@ -122,7 +120,6 @@ const Home = () => {
               <div className="card-footer bg-secondary">
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"cbor"}>CBOR</Link>
                 <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"json"}>JSON</Link>
-                {/* <Link className="card-link" to={NAV_VALIDATE_MESSAGE} state={"xml"}>Relax (XML)</Link> */}
               </div>
             </div>
             <div className="card mt-3">
