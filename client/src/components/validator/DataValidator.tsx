@@ -140,7 +140,8 @@ const DataValidator = () => {
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
                                             loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
                                             decodeMsg={decodeMsg} setDecodeMsg={setDecodeMsg}
-                                            setDecodeSchemaTypes={setDecodeSchemaTypes} />
+                                            setDecodeSchemaTypes={setDecodeSchemaTypes}
+                                            filterFormats={[".jadn"]} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <DataValidated

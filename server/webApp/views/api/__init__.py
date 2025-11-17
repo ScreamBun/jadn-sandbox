@@ -48,13 +48,13 @@ class API(Resource):
             message_files['examples'] = sorted(message_files['examples'])
 
         custom_schema_path = os.path.join(current_app.config.get("SCHEMA_CUSTOM_DATA"))
-        custom_schemas = utils.find_file_names_by_extension(jadn_ext, custom_schema_path, isReturnNamesOnly)
+        custom_schemas = utils.find_file_names_by_extension(all_ext, custom_schema_path, isReturnNamesOnly)
         if custom_schemas:
             schema_files['custom'].extend(custom_schemas)
             schema_files['custom'] = sorted(schema_files['custom'])
 
         example_schema_path = os.path.join(current_app.config.get("SCHEMA_EXAMPLE_DATA"))
-        example_schemas = utils.find_file_names_by_extension(jadn_ext, example_schema_path, isReturnNamesOnly)  
+        example_schemas = utils.find_file_names_by_extension(all_ext, example_schema_path, isReturnNamesOnly)  
         if example_schemas:
             schema_files['examples'].extend(example_schemas)
             schema_files['examples'] = sorted(schema_files['examples'])

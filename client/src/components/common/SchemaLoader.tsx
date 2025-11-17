@@ -31,6 +31,7 @@ interface SchemaLoaderProps {
         roots: string[] | []
     }) => void;
     acceptFormat?: string[];
+    filterFormats?: string[];
     schemaFormat: Option | null;
     setSchemaFormat: (fmtOpt: Option | null) => void;
     showCopy?: boolean;
@@ -48,7 +49,8 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
             loadedSchema, setLoadedSchema, 
             decodeMsg, setDecodeMsg, 
             setDecodeSchemaTypes, 
-            acceptFormat, 
+            acceptFormat,
+            filterFormats = [".jadn", ".jidl", ".json"], 
             schemaFormat, 
             setSchemaFormat,
             showEditor = true, 
@@ -64,13 +66,29 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [fileName, setFileName] = useState({
         name: '',
-        ext: LANG_JADN
+        ext: schemaFormat?.value || LANG_JADN
     });
     const schemaOpts = useSelector(getAllSchemas);
     const schemaFormats = useSelector(getSchemaConversions);
     const [schemaFormatOpts, setSchemaFormatOpts] = useState<Option[]>([]);
+    const [filteredSchemaOpts, setFilteredSchemaOpts] = useState<any>(schemaOpts);
     const ref = useRef<HTMLInputElement | null>(null);
 
+    useEffect(() => {
+        if (filterFormats && Array.isArray(filterFormats) && filterFormats.length > 0) {
+            const filtered = {
+                examples: schemaOpts.custom?.filter((schema: string) => 
+                    filterFormats.some(ext => schema.toLowerCase().endsWith(ext.toLowerCase()))
+                ) || [],
+                custom: schemaOpts.examples?.filter((schema: string) => 
+                    filterFormats.some(ext => schema.toLowerCase().endsWith(ext.toLowerCase()))
+                ) || []
+            };
+            setFilteredSchemaOpts(filtered);
+        } else {
+            setFilteredSchemaOpts(schemaOpts);
+        }
+    }, [schemaOpts, acceptFormat]);
 
     useEffect(() => {
         if (Array.isArray(schemaFormats) && schemaFormats.length > 0) {
@@ -266,7 +284,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                 <div className="row no-gutters">
                     <div className={`${lightBackground ? 'col-lg-10 align-self-center' : 'col-lg-6 align-self-center'}`}>
                         <SBFileLoader
-                            opts={schemaOpts}
+                            opts={filteredSchemaOpts}
                             selectedOpt={selectedFile}
                             loadedFileData={loadedSchema}
                             fileName={fileName}
@@ -274,7 +292,7 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
                             setSelectedFile={setSelectedFile}
                             onCancelFileUpload={onCancelFileUpload}
                             onFileChange={onFileLoad}
-                            acceptableExt={acceptFormat ? acceptFormat.join(',') : undefined}
+                            acceptableExt={schemaFormat?.value ? `.${schemaFormat.value.toLowerCase()}` : undefined}
                             ref={ref}
                             placeholder={'Select a schema...'}
                             loc={'schemas'}

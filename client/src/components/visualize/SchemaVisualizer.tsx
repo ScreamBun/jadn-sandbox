@@ -165,7 +165,8 @@ const SchemaVisualizer = () => {
                                         <SchemaLoader
                                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                                             schemaFormat={schemaFormat} setSchemaFormat={setSchemaFormat}
-                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema} />
+                                            loadedSchema={loadedSchema} setLoadedSchema={setLoadedSchema}
+                                            filterFormats={[".jadn"]} />
                                     </div>
                                     <div className='col-md-6 pl-1'>
                                         <SchemaVisualized

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { flushSync } from 'react-dom';
 import { setSchema } from 'actions/util';
 import { getAllSchemas, getSelectedSchema } from 'reducers/util';
 import { LANG_JADN } from 'components/utils/constants';
@@ -176,6 +175,7 @@ export default function withSchemaCreator(SchemaWrapper: React.ComponentType<any
                                 showFormatter={false}
                                 showSave={true}
                                 lightBackground={true}
+                                filterFormats={[".jadn"]}
                             />
                         </div>
                         <div className='col-sm-9 align-self-center'>

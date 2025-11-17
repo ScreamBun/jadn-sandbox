@@ -103,6 +103,7 @@ const DataGenerator = () => {
                                     showFormatter={false}
                                     showSave={false}
                                     lightBackground={true}
+                                    filterFormats={[".jadn"]}
                                 />
                             </div>
                             <div className="ms-auto flex-shrink-0" role="group" aria-label="First group">
