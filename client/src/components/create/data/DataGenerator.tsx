@@ -10,7 +10,7 @@ import { validateField as _validateFieldAction, clearFieldValidation } from 'act
 import { clearHighlight } from "actions/highlight";
 import { useNavigate } from 'react-router'
 import { COMPACT_CONST, CONCISE_CONST } from 'components/utils/constants'
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const DataGenerator = () => {
@@ -115,13 +115,20 @@ const DataGenerator = () => {
                             <div className="ms-auto flex-shrink-0" role="group" aria-label="First group">
                                 {toggleCompactBtn == COMPACT_CONST && 
                                 <span className="text-light me-2 bg-dark px-2 py-1 rounded">
-                                    <FontAwesomeIcon icon={faQuestionCircle} className="me-2" style={{color:'rgb(255, 193, 7)', fontWeight:'bold'}}
-                                    onClick={()=>sbToastWarning("To ensure compact JSON validity, field values must be supplied in the exact sequence defined by the JADN schema.")}/>
+                                    <button className="text-dark border-0 me-2 bg-warning px-2 py-0 rounded"
+                                    onClick={()=>sbToastWarning("To ensure compact JSON validity, field values must be supplied in the exact sequence defined by the JADN schema.")}>
+                                        <FontAwesomeIcon icon={faInfoCircle} className="me-1" />
+                                        Help
+                                    </button>
                                     <i>Now viewing <span style={{color:'rgb(255, 193, 7)', fontWeight:'bold'}}>compact</span> JSON</i>
                                 </span>}
-                                {toggleCompactBtn == CONCISE_CONST && <span className="text-light me-2 bg-dark px-2 py-1 rounded">
-                                    <FontAwesomeIcon icon={faQuestionCircle} className="me-2" style={{color:'rgb(220, 53, 69)', fontWeight:'bold'}}
-                                    onClick={()=>sbToastWarning("To ensure concise JSON validity, field values must be supplied in the exact sequence defined by the JADN schema.")}/>
+                                {toggleCompactBtn == CONCISE_CONST && 
+                                <span className="text-light me-2 bg-dark px-2 py-1 rounded">
+                                    <button className="text-dark border-0 me-2 bg-danger px-2 py-0 rounded"
+                                    onClick={()=>sbToastWarning("To ensure concise JSON validity, field values must be supplied in the exact sequence defined by the JADN schema.")}>
+                                        <FontAwesomeIcon icon={faInfoCircle} className="me-1" />
+                                        Help
+                                    </button>
                                     <i>Now viewing <span style={{color:'rgb(220, 53, 69)', fontWeight:'bold'}}>concise</span> JSON</i>
                                 </span>}
                                 <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleSchemaCreation}>Schema Creation</button>
