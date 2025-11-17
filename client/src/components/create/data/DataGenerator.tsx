@@ -82,10 +82,6 @@ const DataGenerator = () => {
         dispatch(setSchemaValid(false))
     }
 
-    function SBToastError(): React.MouseEventHandler<SVGSVGElement> | undefined {
-        throw new Error('Function not implemented.')
-    }
-
     return (
         <div>
             <title>{meta_title}</title>
@@ -124,12 +120,12 @@ const DataGenerator = () => {
                                 </span>}
                                 {toggleCompactBtn == CONCISE_CONST && 
                                 <span className="text-light me-2 bg-dark px-2 py-1 rounded">
-                                    <button id="concise_compact_help_button" className="text-dark border-0 me-2 px-2 py-0 rounded" style={{backgroundColor: '#8c4dccff'}}
+                                    <button id="concise_compact_help_button" className="text-dark border-0 me-2 px-2 py-0 rounded" style={{backgroundColor:'rgba(221, 132, 221, 1)'}}
                                     onClick={()=>sbToastWarning("To ensure concise JSON validity, field values must be supplied in the exact sequence defined by the JADN schema.")}>
                                         <FontAwesomeIcon icon={faInfoCircle} className="me-1" />
                                         Help
                                     </button>
-                                    <i id="now_viewing">Now viewing <span style={{color:'#8c4dccff', fontWeight:'bold'}}>concise</span> JSON</i>
+                                    <i>Now viewing <span style={{color:'rgba(221, 132, 221, 1)', fontWeight:'bold'}}>concise</span> JSON</i>
                                 </span>}
                                 <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleSchemaCreation}>Schema Creation</button>
                                 <button type='reset' className='btn btn-sm btn-danger border-0' onClick={onReset}>Reset</button>
