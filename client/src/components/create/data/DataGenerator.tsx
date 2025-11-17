@@ -124,12 +124,12 @@ const DataGenerator = () => {
                                 </span>}
                                 {toggleCompactBtn == CONCISE_CONST && 
                                 <span className="text-light me-2 bg-dark px-2 py-1 rounded">
-                                    <button className="text-dark border-0 me-2 bg-danger px-2 py-0 rounded"
+                                    <button id="concise_compact_help_button" className="text-dark border-0 me-2 px-2 py-0 rounded" style={{backgroundColor: '#8c4dccff'}}
                                     onClick={()=>sbToastWarning("To ensure concise JSON validity, field values must be supplied in the exact sequence defined by the JADN schema.")}>
                                         <FontAwesomeIcon icon={faInfoCircle} className="me-1" />
                                         Help
                                     </button>
-                                    <i>Now viewing <span style={{color:'rgb(220, 53, 69)', fontWeight:'bold'}}>concise</span> JSON</i>
+                                    <i id="now_viewing">Now viewing <span style={{color:'#8c4dccff', fontWeight:'bold'}}>concise</span> JSON</i>
                                 </span>}
                                 <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleSchemaCreation}>Schema Creation</button>
                                 <button type='reset' className='btn btn-sm btn-danger border-0' onClick={onReset}>Reset</button>
