@@ -7,7 +7,7 @@ import { NAV_HOME, NAV_CREATE_SCHEMA, NAV_CONVERT_SCHEMA, NAV_CREATE_DATA, NAV_V
 import { useAppSelector } from '../../reducers';
 import { ThemeContext } from './ThemeProvider';
 import { dismissAllToast, sbToastWarning } from 'components/common/SBToast';
-import { getSelectedSchema, isSchemaValid } from 'reducers/util';
+import { getSelectedFile, getSelectedSchema, isSchemaValid } from 'reducers/util';
 import { useSelector } from 'react-redux';
 
 const AppLayout = () => {
@@ -62,6 +62,7 @@ const AppLayout = () => {
 
   const globalValid = useSelector(isSchemaValid);
   const globalSchema = useSelector(getSelectedSchema);
+  const globalFile = useSelector(getSelectedFile);
 
   return (
     <div>
@@ -94,8 +95,11 @@ const AppLayout = () => {
                     if (!globalValid && Object.values(globalSchema).length > 0) {
                       sbToastWarning("Please validate the schema before navigating to creation.");
                       e.preventDefault();
+                    } else if (globalFile && globalFile?.label.split('.')[1] !== 'jadn') {
+                      sbToastWarning("Only JADN Schemas may be used for creation pages.");
+                      e.preventDefault();
                     } else {
-                     e.preventDefault();
+                      e.preventDefault();
                     }
                   }}
                 >

@@ -7,14 +7,15 @@ import {
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getPageTitle, getSelectedSchema, isSchemaValid } from 'reducers/util';
+import { getPageTitle, getSelectedFile, getSelectedSchema, isSchemaValid } from 'reducers/util';
 import { info } from 'actions/util';
 import { dismissAllToast } from 'components/common/SBToast';
 
 const Home = () => {
   const dispatch = useDispatch();
   const globalValid = useSelector(isSchemaValid);
-  const globalSchema = useSelector(getSelectedSchema);
+  const globalSchema = useSelector(getSelectedSchema)
+  const globalFile = useSelector(getSelectedFile)
 
   const meta_title = useSelector(getPageTitle) + ' | Home ';
   const meta_canonical = `${window.location.origin}${window.location.pathname}`;
@@ -56,6 +57,12 @@ const Home = () => {
                   <i>
                     <FontAwesomeIcon className='me-2' icon={faTriangleExclamation} />
                     Please validate the schema before creating instances.
+                  </i>
+                  :
+                  globalFile && globalFile?.label.split('.')[1] !== 'jadn' ?
+                  <i>
+                    <FontAwesomeIcon className='me-2' icon={faTriangleExclamation} />
+                    Only JADN Schemas may be used for creation pages.
                   </i>
                   :
                   <>
