@@ -77,10 +77,10 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     useEffect(() => {
         if (filterFormats && Array.isArray(filterFormats) && filterFormats.length > 0) {
             const filtered = {
-                examples: schemaOpts.custom?.filter((schema: string) => 
+                custom: schemaOpts.custom?.filter((schema: string) => 
                     filterFormats.some(ext => schema.toLowerCase().endsWith(ext.toLowerCase()))
                 ) || [],
-                custom: schemaOpts.examples?.filter((schema: string) => 
+                examples: schemaOpts.examples?.filter((schema: string) => 
                     filterFormats.some(ext => schema.toLowerCase().endsWith(ext.toLowerCase()))
                 ) || []
             };
