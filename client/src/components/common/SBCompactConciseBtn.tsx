@@ -79,7 +79,8 @@ const SBCompactConciseBtn = (props: any) => {
             <button
                 id='formatButton'
                 type='button'
-                className={`btn btn-sm ${convertTo == "" || ext != LANG_JSON ? 'btn-primary' : convertTo == COMPACT_CONST ? 'btn-warning' : 'btn-danger-primary'} ` + customClass}
+                style={convertTo === CONCISE_CONST ? {backgroundColor:'rgba(221, 132, 221, 1)'} : {}}
+                className={`btn btn-sm ${convertTo == "" || ext != LANG_JSON ? 'btn-primary' : convertTo == COMPACT_CONST ? 'btn-warning' : 'btn-sm border-0'} ` + customClass}
                 disabled={ext != LANG_JSON}
                 onClick={onClick}
                 title={convertTo == "" ? 'Compact JSON' : convertTo == COMPACT_CONST ? 'Concise JSON' : 'Turn off Compact/Concise JSON'}>

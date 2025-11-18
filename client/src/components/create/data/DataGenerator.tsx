@@ -4,12 +4,14 @@ import DataCreator from './DataCreator'
 import SchemaLoader from 'components/common/SchemaLoader'
 import { getPageTitle, getSelectedFile, getSelectedSchema } from 'reducers/util'
 import { info, setFile, setGeneratedData, setSchema, setSchemaValid } from 'actions/util'
-import { dismissAllToast } from 'components/common/SBToast'
-import { sbToastSuccess } from 'components/common/SBToast'
+import { dismissAllToast, sbToastSuccess, sbToastWarning } from 'components/common/SBToast'
 import { Option } from 'components/common/SBSelect'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import { clearHighlight } from "actions/highlight";
 import { useNavigate } from 'react-router'
+import { COMPACT_CONST, CONCISE_CONST } from 'components/utils/constants'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const DataGenerator = () => {
     const dispatch = useDispatch();
@@ -31,6 +33,7 @@ const DataGenerator = () => {
     const [xml, setXml] = useState('');
     const [cbor, setCbor] = useState('');
     const [compactJson, setCompactJson] = useState('');
+    const [toggleCompactBtn, setToggleCompactBtn] = useState('');
     const [conciseJson, setConciseJson] = useState('');
     const [annotatedCbor, setAnnotatedCbor] = useState('');
     const [selection, setSelection] = useState<Option | null>();
@@ -107,6 +110,24 @@ const DataGenerator = () => {
                                 />
                             </div>
                             <div className="ms-auto flex-shrink-0" role="group" aria-label="First group">
+                                {toggleCompactBtn == COMPACT_CONST && 
+                                <span className="text-light me-2 bg-dark px-2 py-1 rounded">
+                                    <button className="text-dark border-0 me-2 bg-warning px-2 py-0 rounded"
+                                    onClick={()=>sbToastWarning("To ensure compact JSON validity, field values must be supplied in the exact sequence defined by the JADN schema.")}>
+                                        <FontAwesomeIcon icon={faInfoCircle} className="me-1" />
+                                        Help
+                                    </button>
+                                    <i>Now viewing <span style={{color:'rgb(255, 193, 7)', fontWeight:'bold'}}>compact</span> JSON</i>
+                                </span>}
+                                {toggleCompactBtn == CONCISE_CONST && 
+                                <span className="text-light me-2 bg-dark px-2 py-1 rounded">
+                                    <button id="concise_compact_help_button" className="text-dark border-0 me-2 px-2 py-0 rounded" style={{backgroundColor:'rgba(221, 132, 221, 1)'}}
+                                    onClick={()=>sbToastWarning("To ensure concise JSON validity, field values must be supplied in the exact sequence defined by the JADN schema.")}>
+                                        <FontAwesomeIcon icon={faInfoCircle} className="me-1" />
+                                        Help
+                                    </button>
+                                    <i>Now viewing <span style={{color:'rgba(221, 132, 221, 1)', fontWeight:'bold'}}>concise</span> JSON</i>
+                                </span>}
                                 <button type="button" className="btn btn-sm btn-primary me-2" onClick={handleSchemaCreation}>Schema Creation</button>
                                 <button type='reset' className='btn btn-sm btn-danger border-0' onClick={onReset}>Reset</button>
                             </div>
@@ -122,6 +143,7 @@ const DataGenerator = () => {
                                         annotatedCbor={annotatedCbor} setAnnotatedCbor={setAnnotatedCbor}
                                         compactJson={compactJson} setCompactJson={setCompactJson}
                                         conciseJson={conciseJson} setConciseJson={setConciseJson}
+                                        toggleCompactBtn={toggleCompactBtn} setToggleCompactBtn={setToggleCompactBtn}
                                         />
                                 </div>
                             </div>

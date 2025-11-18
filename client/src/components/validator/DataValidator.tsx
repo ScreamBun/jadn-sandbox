@@ -71,7 +71,7 @@ const DataValidator = () => {
         if (loadedSchema && loadedMsg && msgFormat && decodeMsg) {
             try {
                 const rootType = decodeMsg.value;
-                let newMsg = msgFormat.label === "JSON" || msgFormat.label === "json" ? JSON.stringify(JSON.parse(loadedMsg)[rootType]) : msgFormat.label === "XML" || msgFormat.label === "xml" ? removeXmlWrapper(loadedMsg) : loadedMsg;
+                let newMsg = msgFormat.label === "JSON" || msgFormat.label === "json" || msgFormat.value === "compact" ? JSON.stringify(JSON.parse(loadedMsg)[rootType]) : msgFormat.label === "XML" || msgFormat.label === "xml" ? removeXmlWrapper(loadedMsg) : loadedMsg;
                 newMsg = newMsg === undefined ? loadedMsg : newMsg; // if rootType not found, use original message
                 dispatch(validateMessage(loadedSchema, newMsg, msgFormat.value, rootType))
                     .then((submitVal: any) => {
