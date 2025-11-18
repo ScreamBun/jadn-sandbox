@@ -32,9 +32,27 @@ const DataToTranslate = (props: any) => {
         name: '',
         ext: LANG_JSON
     });
-    const msgOpts = useSelector(getMsgFiles);
+    const originalMsgOpts = useSelector(getMsgFiles);
+    const [msgOpts, setMsgOpts] = useState<Option[]>(originalMsgOpts);
     const validMsgFormat = useSelector(getValidMsgTypes)
     const ref = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        if (!dataFormat) {
+            setMsgOpts(originalMsgOpts);
+            return;
+        }
+
+        const filtered = {
+            custom: originalMsgOpts.custom?.filter((schema: string) => 
+                schema.toLowerCase().endsWith(`.${dataFormat.value.toLowerCase()}`)
+            ) || [],
+            examples: originalMsgOpts.examples?.filter((schema: string) => 
+                schema.toLowerCase().endsWith(`.${dataFormat.value.toLowerCase()}`)
+            ) || []
+        };
+        setMsgOpts(filtered);
+    }, [originalMsgOpts, dataFormat])
 
     useEffect(() => {
         if (location.state) {
