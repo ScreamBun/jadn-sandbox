@@ -70,25 +70,31 @@ const SchemaLoader = (props: SchemaLoaderProps) => {
     });
     const schemaOpts = useSelector(getAllSchemas);
     const schemaFormats = useSelector(getSchemaConversions);
+    const [filterFormatState, setFilterFormatState] = useState<string[] | undefined>(filterFormats);
     const [schemaFormatOpts, setSchemaFormatOpts] = useState<Option[]>([]);
     const [filteredSchemaOpts, setFilteredSchemaOpts] = useState<any>(schemaOpts);
     const ref = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        if (filterFormats && Array.isArray(filterFormats) && filterFormats.length > 0) {
+        if (!schemaFormat) return;
+        setFilterFormatState([`.${schemaFormat.value.toLowerCase()}`]);
+    }, [schemaFormat]);
+
+    useEffect(() => {
+        if (filterFormatState && Array.isArray(filterFormatState) && filterFormatState.length > 0) {
             const filtered = {
                 custom: schemaOpts.custom?.filter((schema: string) => 
-                    filterFormats.some(ext => schema.toLowerCase().endsWith(ext.toLowerCase()))
+                    filterFormatState.some(ext => schema.toLowerCase().endsWith(ext.toLowerCase()))
                 ) || [],
                 examples: schemaOpts.examples?.filter((schema: string) => 
-                    filterFormats.some(ext => schema.toLowerCase().endsWith(ext.toLowerCase()))
+                    filterFormatState.some(ext => schema.toLowerCase().endsWith(ext.toLowerCase()))
                 ) || []
             };
             setFilteredSchemaOpts(filtered);
         } else {
             setFilteredSchemaOpts(schemaOpts);
         }
-    }, [schemaOpts, acceptFormat]);
+    }, [schemaOpts, filterFormatState]);
 
     useEffect(() => {
         if (Array.isArray(schemaFormats) && schemaFormats.length > 0) {
