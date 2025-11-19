@@ -8,12 +8,15 @@ import SchemaLoader from 'components/common/SchemaLoader'
 import { dismissAllToast, sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import SBSelect, { Option } from 'components/common/SBSelect'
 import SBActionBtn from 'components/common/SBActionBtn'
-import { LANG_CBOR, LANG_JSON, LANG_XML } from 'components/utils/constants'
+import { LANG_CBOR, LANG_JSON, LANG_XML, COMPACT_CONST, CONCISE_CONST } from 'components/utils/constants'
 import { convertData } from "actions/convert";
 import CborTranslated from './CborTranslated'
 import XmlTranslated from './XmlTranslated'
+import CompactTranslated from './CompactTranslated'
+import ConciseTranslated from './ConciseTranslated'
 import { useLocation } from 'react-router-dom'
 import { removeXmlWrapper } from 'components/create/data/lib/utils'
+import JsonTranslated from './JsonTranslated'
 
 
 const DataTranslator = () => {
@@ -38,6 +41,9 @@ const DataTranslator = () => {
         setCborAnnoHex('');
         setCborHex('');
         setXml('');
+        setCompact('');
+        setConcise('');
+        setJson('');
     }
 
     const [isLoading, setIsLoading] = useState(false);
@@ -49,6 +55,9 @@ const DataTranslator = () => {
     const [cborAnnoHex, setCborAnnoHex] = useState('');
     const [cborHex, setCborHex] = useState('');
     const [xml, setXml] = useState('');
+    const [compact, setCompact] = useState('');
+    const [concise, setConcise] = useState('');
+    const [json, setJson] = useState('');
     const [dataFormat, setDataFormat] = useState<Option | null>(null);
     const [convertTo, setConvertTo] = useState<Option | null>({'label': LANG_CBOR, 'value' : LANG_CBOR});
     const [dataType, setDataType] = useState<Option | null>(null);
@@ -85,6 +94,10 @@ const DataTranslator = () => {
         setLoadedData('');
         setCborAnnoHex('');
         setCborHex('');
+        setXml('');
+        setCompact('');
+        setConcise('');
+        setJson('');
         setDataFormat(null);
         setConvertTo(null);
         setDataType(null);
@@ -104,7 +117,7 @@ const DataTranslator = () => {
         if (loadedSchema && loadedData && dataFormat && dataType) {
             try {
                 const rootType = dataType.value;
-                let newMsg = dataFormat.label === "JSON" || dataFormat.label === "json" ? JSON.stringify(JSON.parse(loadedData)[rootType]) : dataFormat.label === "XML" || dataFormat.label === "xml" ? removeXmlWrapper(loadedData) : loadedData;
+                let newMsg = dataFormat.label === "JSON" || dataFormat.label === "json" || dataFormat.value === "compact"  ? JSON.stringify(JSON.parse(loadedData)[rootType]) : dataFormat.label === "XML" || dataFormat.label === "xml" ? removeXmlWrapper(loadedData) : loadedData;
                 newMsg = newMsg === undefined ? loadedData : newMsg; // if rootType not found, use original message
                 dispatch(validateMessage(loadedSchema, newMsg, dataFormat.value, rootType))
                     .then((submitVal: any) => {
@@ -165,7 +178,7 @@ const DataTranslator = () => {
         try {
             const canUnwrap =JSON.parse(loadedData)[dataType?.value] ? true : false;
             let newData = convertTo.value === LANG_CBOR ? canUnwrap ? JSON.stringify(JSON.parse(loadedData)[dataType?.value]) : loadedData : loadedData;
-            dispatch(convertData(newData, LANG_JSON, convertTo.value, loadedSchema))
+            dispatch(convertData(newData, dataFormat.value, convertTo.value, loadedSchema))
                 .then((rsp: any) => {
                     setIsTranslating(false);
 
@@ -182,6 +195,18 @@ const DataTranslator = () => {
                         if(rsp.payload.data.xml) {
                             setXml(rsp.payload.data.xml)
                         } 
+
+                        if(rsp.payload.data.compact_json) {
+                            setCompact(rsp.payload.data.compact_json)
+                        }
+
+                        if(rsp.payload.data.concise_json) {
+                            setConcise(rsp.payload.data.concise_json)
+                        }
+
+                        if(rsp.payload.data.verbose_json) {
+                            setJson(rsp.payload.data.verbose_json)
+                        }
 
                         sbToastSuccess("Translation complete");
                     } else {
@@ -211,6 +236,18 @@ const DataTranslator = () => {
         } else if (convertTo && convertTo.value === LANG_XML) {
             return (
                 <XmlTranslated xml={xml}></XmlTranslated>
+            )
+        } else if (convertTo && convertTo.value === COMPACT_CONST) {
+            return (
+                <CompactTranslated compact={compact}></CompactTranslated>
+            )
+        } else if (convertTo && convertTo.value === CONCISE_CONST) {
+            return (
+                <ConciseTranslated concise={concise}></ConciseTranslated>
+            )
+        } else if (convertTo && convertTo.value === LANG_JSON) {
+            return (
+                <JsonTranslated json={json}></JsonTranslated>
             )
         } else {
             return (
@@ -267,7 +304,7 @@ const DataTranslator = () => {
                                                     <div className='col-md-4'>
                                                         <SBSelect id={"data-format-list"}
                                                             customClass={'me-1'}
-                                                            data={[LANG_CBOR, LANG_XML]}
+                                                            data={[LANG_CBOR, LANG_XML, LANG_JSON, COMPACT_CONST, CONCISE_CONST]}
                                                             onChange={(e: Option) => setConvertTo(e)}
                                                             value={convertTo}
                                                             placeholder={'Convert to...'}

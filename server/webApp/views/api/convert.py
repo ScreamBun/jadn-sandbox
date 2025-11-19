@@ -19,6 +19,7 @@ from jadnutils.gv.gv_generator import GvGenerator
 from jadnutils.puml.puml_generator import PumlGenerator
 from jadnutils.json.convert_compact import convert_to_compact
 from jadnutils.json.convert_concise import convert_to_concise
+from jadnutils.json.convert_verbose import convert_to_verbose
 
 from weasyprint import HTML
 from webApp.utils.utils import convert_json_to_cbor_annotated_hex, convert_json_to_cbor_hex, convert_json_to_xml, normalize_bool
@@ -321,6 +322,7 @@ class ConvertData(Resource):
         xml_rsp = ""
         compact_json_rsp = ""
         concise_json_rsp = ""
+        verbose_json_rsp = ""
 
         try:
             data_js = json.loads(data)
@@ -334,6 +336,13 @@ class ConvertData(Resource):
                 compact_json_rsp = convert_to_compact(schema, data_js)
             elif conv_to == constants.CONCISE_CONSTANT:
                 concise_json_rsp = convert_to_concise(schema, data_js)
+            elif conv_to == constants.JSON:
+                if conv_from == constants.COMPACT_CONSTANT:
+                    verbose_json_rsp = convert_to_verbose(schema, data_js, conv_from)
+                else:
+                    return jsonify({
+                        "error": f"Conversion from '{conv_from}' to '{conv_to}' not supported."
+                    }), 400
             else:
                 return jsonify({
                     "error": f"Conversion type '{conv_to}' not supported."
@@ -350,7 +359,8 @@ class ConvertData(Resource):
              "cbor_hex" : cbor_hex_rsp,
              "xml" : xml_rsp,
              "compact_json" : compact_json_rsp,
-             "concise_json" : concise_json_rsp
+             "concise_json" : concise_json_rsp,
+             "verbose_json" : verbose_json_rsp
             }
         })
 
