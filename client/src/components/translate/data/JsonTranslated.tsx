@@ -9,7 +9,7 @@ const JsonTranslated = (props: any) => {
         <>
         <div className="card mb-2">
             <div className="card-header p-2">
-                JSON Concise
+                JSON Verbose
             </div>
             <div className="card-body p-0 m-0">
                 <SBEditor id='jsonView' data={json} isReadOnly={'true'} onChange={''} height={'69vh'}></SBEditor> 
