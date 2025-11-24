@@ -51,11 +51,10 @@ class Transform(Resource):
                     schema_content_str = schema['data']
                     schema_content_dict = json.loads(schema_content_str)
                     schema_stripped = transform.strip_comments(schema_content_dict)
-                    schema_formatted = dumps(schema_stripped)
                     schema_name, ext = os.path.splitext(schema['name'])
                     output.append({
                         'schema_name': schema_name,
-                        'schema': schema_formatted,
+                        'schema': schema_stripped,
                         })
                 return output
             
