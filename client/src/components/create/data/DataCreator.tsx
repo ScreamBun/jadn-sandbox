@@ -17,18 +17,16 @@ import { sbToastError, sbToastSuccess } from 'components/common/SBToast'
 import { validateField as _validateFieldAction, clearFieldValidation } from 'actions/validatefield';
 import SBLoadBuilder from 'components/common/SBLoadBuilder'
 import { destructureField, removeXmlWrapper } from './lib/utils'
-import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER, LANG_ANNOTATED_HEX, COMPACT_CONST, CONCISE_CONST } from 'components/utils/constants';
+import { LANG_XML_UPPER, LANG_JSON_UPPER, LANG_CBOR_UPPER, LANG_ANNOTATED_HEX } from 'components/utils/constants';
 import { convertData } from "actions/convert";
 import { clearHighlight } from "actions/highlight";
 import { getToggleGenData } from 'reducers/gendata'
 import { setGeneratedData } from 'actions/util'
-import SBCompactConciseBtn from 'components/common/SBCompactConciseBtn'
 
 const DataCreator = (props: any) => {
     const dispatch = useDispatch();
     // Destructure props
-    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor, 
-        annotatedCbor, setAnnotatedCbor, compactJson, setCompactJson, conciseJson, setConciseJson, toggleCompactBtn, setToggleCompactBtn } = props;
+    const { generatedMessage, setGeneratedMessage, selection, setSelection, xml, setXml, cbor, setCbor, annotatedCbor, setAnnotatedCbor} = props;
 
     // States
     const [loadedFieldDefs, setLoadedFieldDefs] = useState<null | JSX.Element | JSX.Element[]>(null);
@@ -37,11 +35,9 @@ const DataCreator = (props: any) => {
     const [jsonValidated, setJsonValidated] = useState(false);
     const [xmlValidated, setXmlValidated] = useState(false);
     const [cborValidated, setCborValidated] = useState(false);
-    const [compactValidated, setCompactValidated] = useState(false);
     const [dataFullScreen, setDataFullScreen] = useState(false);
     const [jsonFullScreen, setJsonFullScreen] = useState(false);
-    const digestFormat = selectedSerialization?.value=== LANG_JSON_UPPER ?
-                            (toggleCompactBtn == COMPACT_CONST ? compactJson : toggleCompactBtn == CONCISE_CONST ? conciseJson : generatedMessage) 
+    const digestFormat = selectedSerialization?.value=== LANG_JSON_UPPER ? generatedMessage
                             : selectedSerialization?.value===LANG_XML_UPPER ? xml : selectedSerialization?.value===LANG_CBOR_UPPER ? cbor : annotatedCbor
     // Redux states
     const toggleGenData = useSelector(getToggleGenData);
@@ -52,25 +48,11 @@ const DataCreator = (props: any) => {
     const roots = schemaObj.meta ? schemaObj.meta && schemaObj.meta.roots : [];
     const types = schemaObj.types ? schemaObj.types.filter((t: any) => t[0] === selection?.value) : [];
 
-    // Handle compact/concise button click
-    const onCompactBtnClick = () => {
-        if (toggleCompactBtn === '') {
-            setToggleCompactBtn(COMPACT_CONST);
-        } else if (toggleCompactBtn === COMPACT_CONST) {
-            setToggleCompactBtn(CONCISE_CONST);
-        } else if (toggleCompactBtn === CONCISE_CONST) {
-            setToggleCompactBtn('');
-        }
-    }
-
-
     // Field Change Handler
     const fieldChange = (k: string, v: any) => {
-        setToggleCompactBtn(''); // reset compact/concise on field change
         setJsonValidated(false);
         setXmlValidated(false);
         setCborValidated(false);
-        setCompactValidated(false);
         setGeneratedMessage((prev: any) => {
             const updated = { ...prev };
             if (v === "" || v === undefined || v === null) {
@@ -94,11 +76,8 @@ const DataCreator = (props: any) => {
         setJsonValidated(false);
         setXmlValidated(false);
         setCborValidated(false);
-        setCompactValidated(false);
         setXml("");
         setCbor("");
-        setCompactJson('');
-        setConciseJson('');
         setAnnotatedCbor("");
         dispatch<any>(clearHighlight());
     }
@@ -110,13 +89,11 @@ const DataCreator = (props: any) => {
             setJsonValidated(false);
             setXmlValidated(false);
             setCborValidated(false);
-            setCompactValidated(false);
             return;
         }
         try {
             const type = selection?.value || '';
             const newMsg = 
-            toggleCompactBtn === COMPACT_CONST ? JSON.stringify(compactJson[type]) :
             lang === LANG_JSON_UPPER ? JSON.stringify(generatedMessage[type]) : 
             lang === LANG_XML_UPPER ? removeXmlWrapper(xml) : cbor;
             const action: any = await dispatch(validateMessage(schemaObj, newMsg, lang, type));
@@ -127,20 +104,17 @@ const DataCreator = (props: any) => {
                     if (lang === LANG_JSON_UPPER) setJsonValidated(true);
                     if (lang === LANG_XML_UPPER) setXmlValidated(true);
                     if (lang === LANG_CBOR_UPPER) setCborValidated(true);
-                    if (lang === COMPACT_CONST) setCompactValidated(true);
                 } else {
                     sbToastError(action.payload.valid_msg);
                     if (lang === LANG_JSON_UPPER) setJsonValidated(false);
                     if (lang === LANG_XML_UPPER) setXmlValidated(false);
                     if (lang === LANG_CBOR_UPPER) setCborValidated(false);
-                    if (lang === COMPACT_CONST) setCompactValidated(false);
                 }
             } else if (action.type === '@@validate/VALIDATE_FAILURE') {
                 sbToastError(action.payload?.valid_msg || 'Validation failed');
                 if (lang === LANG_JSON_UPPER) setJsonValidated(false);
                 if (lang === LANG_XML_UPPER) setXmlValidated(false);
                 if (lang === LANG_CBOR_UPPER) setCborValidated(false);
-                if (lang === COMPACT_CONST) setCompactValidated(false);
             }
         } catch (err: any) {
             sbToastError(err.message || 'Validation error');
@@ -159,12 +133,9 @@ const DataCreator = (props: any) => {
         dispatch(clearFieldValidation());
         setJsonValidated(false);
         setXmlValidated(false);
-        setCompactValidated(false);
         setLoadedFieldDefs(null);
         setXml("");
         setCbor("");
-        setCompactJson('');
-        setConciseJson('');
         setAnnotatedCbor("");
         dispatch<any>(clearHighlight());
     }    
@@ -352,12 +323,11 @@ const DataCreator = (props: any) => {
                             <>
                                 <button type="button"
                                     className="btn btn-sm btn-primary me-1"
-                                    onClick={() => handleValidate(
-                                        toggleCompactBtn === COMPACT_CONST ? COMPACT_CONST : selectedSerialization?.value || '')}
+                                    onClick={() => handleValidate(selectedSerialization?.value || '')}
                                     disabled = {selection && generatedMessage? false:true}
                                 >
                                     Valid
-                                    {(selectedSerialization?.value===LANG_JSON_UPPER ? (toggleCompactBtn === COMPACT_CONST ? compactValidated : jsonValidated) : 
+                                    {(selectedSerialization?.value===LANG_JSON_UPPER ? jsonValidated : 
                                     selectedSerialization?.value===LANG_XML_UPPER ? xmlValidated : 
                                     selectedSerialization?.value===LANG_CBOR_UPPER ? cborValidated : jsonValidated) ? (
                                         <span className="badge rounded-pill text-bg-success ms-1">
@@ -368,7 +338,6 @@ const DataCreator = (props: any) => {
                                         </span>)
                                     }
                                 </button>
-                                <SBCompactConciseBtn ext={selectedSerialization?.value.toLowerCase()} data={generatedMessage} convertTo={toggleCompactBtn} handleClick={onCompactBtnClick} setCompact={setCompactJson} setConcise={setConciseJson} customClass={"me-1"} />
                                 <SBSaveFile 
                                     buttonId={'saveMessage'} 
                                     toolTip={'Save Data'} 
