@@ -65,6 +65,9 @@ export const FormatJADN = (schema: number | string | Array<any> | Record<string,
   const indE = ' '.repeat(spaceCount - 2);
 
   if (typeof (schema) === 'object') {
+      if (schema === null) {
+        return 'null';
+      }
     if (Array.isArray(schema)) {
       const nested = schema && Array.isArray(schema[0]);  // Not an empty list
       const lvl = schema && Array.isArray(schema[-1]) ? _level : _level + 1;
