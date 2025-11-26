@@ -4,13 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { faExclamationCircle, faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { info, loadFile } from "actions/util";
-import { getAllSchemas, getSelectedFile } from "reducers/util";
+import { getAllSchemas, getSelectedFile, getSelectedSchema } from "reducers/util";
 import { LANG_JADN } from "components/utils/constants";
 import { isString } from "components/utils/general";
 import { SelectedSchema } from "components/transform/SchemaTransformer";
 import { dismissAllToast, sbToastError } from "./SBToast";
 import SBEditor from "./SBEditor";
 import SBSelect, { Option } from "./SBSelect";
+import { setFile, setSchema } from "actions/util";
 
 interface SBMultiSchemaLoaderProps {
     isLoading: boolean;
@@ -19,6 +20,7 @@ interface SBMultiSchemaLoaderProps {
     onSelectedSchemaAdd: (schema: SelectedSchema) => void;
     onSelectedSchemaReplaceAll: (schemas: SelectedSchema[]) => void;
     onSelectedSchemaRemove: (schema_to_remove: string) => void;
+    ignoreGlobalState?: boolean;
 }
 
 const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) => {
@@ -27,7 +29,8 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
         selectedSchemas,
         onSelectedSchemaAdd,
         onSelectedSchemaReplaceAll,
-        onSelectedSchemaRemove } = props;
+        onSelectedSchemaRemove,
+        ignoreGlobalState } = props;
 
     const dispatch = useDispatch();
 
@@ -36,7 +39,8 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     const sbFileUploaderRef = useRef<HTMLInputElement | null>(null);
 
     const globalFile = useSelector(getSelectedFile);
-    const [selectedOptions, setSelectedOptions] = useState<Option[]>([globalFile?.label ? { label: globalFile.label, value: globalFile.label } : undefined]);
+    const globalSchema = useSelector(getSelectedSchema);
+    const [selectedOptions, setSelectedOptions] = useState<Option[]>(!ignoreGlobalState ? [globalFile?.label ? { label: globalFile.label, value: globalFile.label } : undefined] : []);
     const [toggle, setToggle] = useState<{ [key: string]: boolean }>({});
 
     // Used by SBSelector, preloads with schemas selections
@@ -118,6 +122,8 @@ const SBMultiSchemaLoader = forwardRef((props: SBMultiSchemaLoaderProps, ref) =>
     const onGetSchemaData = (schema_name: string) => {
         return dispatch(loadFile('schemas', schema_name))
             .then((response) => {
+                dispatch(setSchema({}));
+                dispatch(setFile(null));
                 return response.payload.data;
             })
             .catch((loadFileErr) => { sbToastError(loadFileErr.payload.data); });
