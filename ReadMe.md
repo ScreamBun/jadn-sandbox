@@ -224,7 +224,7 @@ Prerequisites:
 5. Run the startup script to install the app's dependencies and fire up it's servers
 
    ```bash
-   ./startup.sh
+   ./local_start.sh
    ```
 
 ### Alternate Startup
@@ -263,13 +263,13 @@ Important Notes:
 1. Run this command once to build the image and push to DockerHub:
 
   ```bash
-  python ./docker_push.py
+  python ./deploy/docker/docker_push.py
   ```
 
 2. To start your image, enter the following, this will start the image without rebuilding
 
   ```bash
-  ./docker_run.sh
+  ./deploy/docker/docker_run.sh
   ```
 
 3. If the latest tag is not updating in Docker Hub, take the following steps to realign the tag
