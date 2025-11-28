@@ -1,0 +1,69 @@
+replicaCount: 2
+
+image:
+  repository: screambunn/jadn_sandbox
+  tag: v0.16.1_1762960953985
+  pullPolicy: IfNotPresent
+
+httpRoute:
+  enabled: false
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80        # external service port
+
+containerPort: 8082  # container port inside the pod
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: jadn-sandbox.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  # Example:
+  # tls:
+  #   - secretName: jadn-sandbox-tls
+  #     hosts:
+  #       - jadn-sandbox.local
+
+resources: {}
+# Example:
+# resources:
+#   requests:
+#     cpu: 100m
+#     memory: 256Mi
+#   limits:
+#     cpu: 500m
+#     memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 60
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+config:
+  apiBaseUrl: "http://jadn-sandbox.local"
+  environment: "dev"

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jadn-sandbox-config
+  namespace: jadn-sandbox
+  labels:
+    app: jadn-sandbox
+data:
+  API_BASE_URL: "http://jadn-sandbox.local"
+  ENVIRONMENT: "dev"

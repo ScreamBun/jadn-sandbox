@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jadn-sandbox.fullname" . }}-config
+  labels:
+    {{- include "jadn-sandbox.labels" . | nindent 4 }}
+data:
+  API_BASE_URL: {{ .Values.config.apiBaseUrl | quote }}
+  ENVIRONMENT: {{ .Values.config.environment | quote }}

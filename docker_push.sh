@@ -40,7 +40,6 @@ if [ $? -eq 1 ]; then
   docker rmi $PREV_IMG
 fi
 
-
 # Ensure docker buildx is available
 if ! docker buildx version > /dev/null 2>&1; then
   echo "Docker buildx is not installed or not available. Please install Docker buildx."
@@ -53,12 +52,4 @@ if ! docker buildx rm jadn-multiplatform-builder 2>/dev/null; then
   echo "Warning: buildx builder 'jadn-multiplatform-builder' not found or could not be removed. Continuing..."
 fi
 docker buildx create --use --platform=linux/amd64,linux/arm64 --name jadn-multiplatform-builder
-docker buildx build --platform linux/arm64,linux/amd64 -f Dockerfile -t $NEW_IMG --push .
-
-{
-  docker buildx build --platform linux/arm64,linux/amd64 -f Dockerfile -t $IMG_LATEST  .
-} || {
-  exit $1
-}
-
-docker push $IMG_LATEST
+docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t $NEW_IMG -t $IMG_LATEST --push .

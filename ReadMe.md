@@ -31,6 +31,172 @@ The JADN Sandbox provides the ability to create, convert, translate, transform, 
 
 5. To stop your image, just hit `ctrl+c` in your terminal or via your docker software.
 
+## Kubernetes Deployment
+
+### Prerequisites
+
+Install the following tools based on your operating system:
+
+#### kubectl
+
+**Linux:**
+```bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+```
+
+**macOS:**
+```bash
+brew install kubectl
+# Or using curl:
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+```
+
+**Windows:**
+```powershell
+# Using winget (recommended, pre-installed on Windows 10/11):
+winget install Kubernetes.kubectl
+
+# Or using Chocolatey:
+choco install kubernetes-cli
+
+# Or download from: https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/
+```
+
+Verify installation: `kubectl version --client`
+
+#### minikube (for local development)
+
+**Linux:**
+```bash
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+```
+
+**macOS:**
+```bash
+brew install minikube
+# Or using curl:
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64
+sudo install minikube-darwin-amd64 /usr/local/bin/minikube
+```
+
+**Windows:**
+```powershell
+# Using winget (recommended, pre-installed on Windows 10/11):
+winget install Kubernetes.minikube
+
+# Or using Chocolatey:
+choco install minikube
+
+# Or download installer from: https://minikube.sigs.k8s.io/docs/start/
+```
+
+Start minikube: `minikube start`
+
+Verify installation: `minikube status`
+
+#### Helm (optional, for Helm deployment)
+
+**Linux:**
+```bash
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+
+**macOS:**
+```bash
+brew install helm
+```
+
+**Windows:**
+```powershell
+# Using winget (recommended, pre-installed on Windows 10/11):
+winget install Helm.Helm
+
+# Or using Chocolatey:
+choco install kubernetes-helm
+```
+
+Verify installation: `helm version`
+
+For detailed installation instructions, visit:
+- kubectl: https://kubernetes.io/docs/tasks/tools/
+- minikube: https://minikube.sigs.k8s.io/docs/start/
+- Helm: https://helm.sh/docs/intro/install/
+
+### Plain Kubernetes Deployment (k8_start.py)
+
+Deploys JADN Sandbox using plain Kubernetes manifests.
+
+**Usage:**
+
+```bash
+# Fresh install with default/latest image
+python3 k8_start.py
+
+# Use custom image
+python3 k8_start.py -i screambunn/jadn_sandbox:v2.0
+
+# Skip image load (for remote clusters)
+python3 k8_start.py --skip-load
+```
+
+**Options:**
+- `-i, --image`: Docker image to deploy (default: `screambunn/jadn_sandbox:latest`)
+- `--skip-load`: Skip loading image into minikube (use for remote clusters)
+
+**What it does:**
+- Loads the Docker image into minikube (unless `--skip-load` is specified)
+- Deletes and recreates the `jadn-sandbox` namespace
+- Generates and applies Kubernetes manifests (ConfigMap, Deployment, Service, Ingress)
+- Waits for pods to be ready
+- Starts port-forward to `localhost:8080`
+
+### Helm Deployment (helm_start.py)
+
+Deploys JADN Sandbox using Helm charts for easier management and upgrades.
+
+**Usage:**
+
+```bash
+# Fresh install with default/latest image
+python3 helm_start.py
+
+# Upgrade existing deployment
+python3 helm_start.py --upgrade
+
+# Use custom image
+python3 helm_start.py -i screambunn/jadn_sandbox:v2.0
+
+# Skip image load (for remote clusters)
+python3 helm_start.py --skip-load
+
+# Combine options
+python3 helm_start.py --upgrade --skip-load
+```
+
+**Options:**
+- `-i, --image`: Docker image to deploy (default: `screambunn/jadn_sandbox:latest`)
+- `--upgrade`: Upgrade existing release without deleting namespace
+- `--skip-load`: Skip loading image into minikube (use for remote clusters)
+
+**What it does:**
+- Loads the Docker image into minikube (unless `--skip-load` is specified)
+- For fresh install: Deletes namespace and installs new Helm release
+- For upgrade: Updates existing Helm release in-place
+- Waits for pods to be ready
+- Starts port-forward to `localhost:8080`
+
+**Accessing the Application:**
+
+After deployment, access JADN Sandbox at:
+- Port-forward: `http://localhost:8080`
+- Ingress (if configured): `http://jadn-sandbox.local`
+
+Press `Ctrl+C` to stop the port-forward.
+
 ## Development Startup
 
 Prerequisites:
@@ -116,7 +282,7 @@ Important Notes:
 Or run the following, you can replace 'latest' with a specific version if you have previously built it or pulled it (see quick start).
 
   ```bash
-  docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest
+  docker run --rm -p 8082:8082 screambunn/jadn_sandbox:latest --no-cache
   ```
 
 3. Once the build is complete go to here in your browser to verify and run smoke tests

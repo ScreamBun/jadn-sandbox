@@ -1,0 +1,7 @@
+apiVersion: v2
+name: jadn-sandbox
+description: A Helm chart for deploying the JADN Sandbox application
+type: application
+
+version: 0.1.0          # chart version
+appVersion: "0.16.1"    # informational app version

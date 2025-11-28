@@ -1,0 +1,24 @@
+JADN Sandbox has been deployed.
+
+To see the pods:
+
+  kubectl get pods -n {{ .Release.Namespace }}
+
+To port-forward locally (containerPort -> local 8080):
+
+  kubectl port-forward deployment/{{ include "jadn-sandbox.fullname" . }} 8080:{{ .Values.containerPort }} -n {{ .Release.Namespace }}
+
+Then open:
+
+  http://localhost:8080
+
+If ingress is enabled:
+
+  1. Get minikube IP:
+     minikube ip
+
+  2. Add to /etc/hosts:
+     <minikube-ip>  jadn-sandbox.local
+
+  3. Open:
+     http://jadn-sandbox.local
