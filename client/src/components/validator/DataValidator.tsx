@@ -46,6 +46,15 @@ const DataValidator = () => {
         dismissAllToast();
     }, [dispatch])
 
+    useEffect(() => {
+        if (loadedSchema !== null && Object.keys(loadedSchema).length > 0) {
+            setDecodeSchemaTypes({
+                all: loadedSchema.types || [],
+                roots: loadedSchema.meta?.roots || []
+            })
+        }
+    }, [loadedSchema]);
+
     const onReset = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         dismissAllToast();
