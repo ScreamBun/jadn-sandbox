@@ -339,6 +339,8 @@ class ConvertData(Resource):
             elif conv_to == constants.JSON:
                 if conv_from == constants.COMPACT_CONSTANT:
                     verbose_json_rsp = convert_to_verbose(schema, data_js, conv_from)
+                elif conv_to == constants.JSON:
+                    verbose_json_rsp = json.dumps(data_js, indent=2)
                 else:
                     return jsonify({
                         "error": f"Conversion from '{conv_from}' to '{conv_to}' not supported."
