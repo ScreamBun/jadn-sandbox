@@ -1,6 +1,31 @@
 
 # JADN Sandbox Release Notes
 
+## v0.17.0
+
+Version 0.17.0 delivers a more stable, consistent, and user-friendly experience across both the JADN Sandbox. This release focuses on improving data translation reliability, enhancing error feedback, strengthening validation alignment, and addressing several long-standing UX issues.
+
+Additionally, going forward the project has formally moved to its new GitHub home under [openc2-sb](https://github.com/openc2-sb).
+
+## Key Enhancements
+
+* Resolved Redux state update issues when pasting schemas into the Data Translation panel, improving reliability and preventing unexpected UI behavior.
+* Improved Compact, Concise, and Verbose data translation for consistent and predictable conversions across formats.
+* Corrected root-selection logic during schema translation to ensure accurate processing of nested and complex schemas.
+* Enabled data editing while viewing Compact or Concise formats, making it easier to adjust and validate instance data in real time.
+* Enhanced error messaging throughout the application, providing clearer, more actionable diagnostics for users.
+
+## Known Issues
+
+* XML Nil logic is not yet implemented.
+* XML MapOf validation for XML data requires additional refinement.
+* XML Array validation for arrays containing IP address fields remains incomplete.
+* Schema transformation logic (combining multiple schemas) requires updates aligned with JADN 2.0 work.
+
+## Conclusion
+
+The 0.17.0 release strengthens the foundation of the JADN ecosystem through more dependable translation behavior, clearer user guidance, and improved alignment between the Sandbox and CLI. These updates, combined with the transition to the new GitHub organization, position the project for continued growth, expanded XML support, and deeper integration of JADN 2.0 capabilities.
+
 ## v0.16.0
 
 This release deepens compatibility with **JADN 2.0**, strengthens data validation (especially around network and numeric formats), and introduces key UX improvements for navigating schema inheritance and binary data visualization. Together, these updates enhance both the flexibility and reliability of schema-based data workflows.
