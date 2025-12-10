@@ -3,7 +3,7 @@
 
 ## v0.17.0
 
-Version 0.17.0 delivers a more stable, consistent, and user-friendly experience across both the JADN Sandbox. This release focuses on improving data translation reliability, enhancing error feedback, strengthening validation alignment, and addressing several long-standing UX issues.
+Version 0.17.0 delivers a more stable, consistent, and user-friendly experience across the JADN Sandbox. This release focuses on improving data translation reliability, enhancing error feedback, strengthening validation alignment, and addressing several long-standing UX issues.
 
 Additionally, going forward the project has formally moved to its new GitHub home under [openc2-sb](https://github.com/openc2-sb).
 
@@ -12,15 +12,14 @@ Additionally, going forward the project has formally moved to its new GitHub hom
 * Resolved Redux state update issues when pasting schemas into the Data Translation panel, improving reliability and preventing unexpected UI behavior.
 * Improved Compact, Concise, and Verbose data translation for consistent and predictable conversions across formats.
 * Corrected root-selection logic during schema translation to ensure accurate processing of nested and complex schemas.
-* Enabled data editing while viewing Compact or Concise formats, making it easier to adjust and validate instance data in real time.
 * Enhanced error messaging throughout the application, providing clearer, more actionable diagnostics for users.
 
 ## Known Issues
 
-* XML Nil logic is not yet implemented.
+* XML Nil logic is not yet implemented, possibly causing issues with Optional fields.
 * XML MapOf validation for XML data requires additional refinement.
-* XML Array validation for arrays containing IP address fields remains incomplete.
-* Schema transformation logic (combining multiple schemas) requires updates aligned with JADN 2.0 work.
+* XML Array validation for IP-net formats remains incomplete.
+* Schema transformation logic (combining multiple schemas) requires updates to align with JADN 2.0 updates.
 
 ## Conclusion
 
